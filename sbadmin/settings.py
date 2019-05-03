@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
+    'raspeedi.apps.RaspeediConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

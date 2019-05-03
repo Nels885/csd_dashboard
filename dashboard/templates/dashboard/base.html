@@ -53,28 +53,25 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Raspeedi
+                CSD Atelier
             </div>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard:tables' %}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Table produits</span></a>
-            </li>
 
             <!-- Nav Item - Raspeedi Settings Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRaspeedi"
                    aria-expanded="true" aria-controls="collapseRaspeedi">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Settings</span>
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Raspeedi</span>
                 </a>
-                <div id="collapseRaspeedi" class="collapse" aria-labelledby="headingRaspeedi" data-parent="#accordionSidebar">
+                <div id="collapseRaspeedi" class="collapse" aria-labelledby="headingRaspeedi"
+                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Raspeedi Settings:</h6>
-                        <a class="collapse-item" href="{% url 'dashboard:buttons' %}">Editing</a>
-                        <a class="collapse-item" href="{% url 'dashboard:cards' %}">Adding</a>
+                        <h6 class="collapse-header">Informations :</h6>
+                        <a class="collapse-item" href="{% url 'raspeedi:table' %}">Table produits</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item" href="{% url 'dashboard:buttons' %}">Ajout produit</a>
+                        <a class="collapse-item" href="{% url 'dashboard:cards' %}">modification produit</a>
                     </div>
                 </div>
             </li>
@@ -152,6 +149,13 @@
                 <a class="nav-link" href="{% url 'dashboard:charts' %}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Charts</span></a>
+            </li>
+
+                        <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard:tables' %}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Tables</span></a>
             </li>
 
             <!-- Divider -->
@@ -395,7 +399,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; CSD DashBoard 2019</span>
+                        <span>Copyright &copy; CSD Dashboard 2019</span>
                     </div>
                 </div>
             </footer>

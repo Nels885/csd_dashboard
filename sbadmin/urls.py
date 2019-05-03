@@ -22,6 +22,7 @@ from dashboard import views
 urlpatterns = [
     path('', views.index),
     path('dashboard/', include('dashboard.urls')),
+    path('raspeedi/', include('raspeedi.urls')),
     path('admin/', admin.site.urls),
 ]
 
