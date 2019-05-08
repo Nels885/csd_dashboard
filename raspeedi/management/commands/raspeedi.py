@@ -6,9 +6,9 @@ from django.conf import settings
 
 from raspeedi.models import Raspeedi
 
-import logging as log
+from ._excel_raspeedi import ExcelRaspeedi
 
-import xlrd
+import logging as log
 
 
 class Command(BaseCommand):
@@ -32,27 +32,15 @@ class Command(BaseCommand):
 
         if options['insert']:
             nb_prod_before = Raspeedi.objects.count()
-            data = xlrd.open_workbook(settings.XLS_RASPEEDI_FILE)
-            table = data.sheets()[0]
-            nb_lines = table.nrows
-            print(f"Nombre de ligne dans Excel:     {nb_lines}")
-            columns = table.row_values(0)[:-3]
-
-            for line in range(nb_lines):
-                if line == 0:
-                    continue  # ignore the first row
-                row = table.row_values(line)  # get the data in the ith row
-                if len(row[0]):
-                    # row[0] = int(row[0])
-                    for i in range(4, 6):
-                        if row[i] == "O":
-                            row[i] = True
-                        elif row[i] in ["N", "?", ""]:
-                            row[i] = False
-                    row_dict = dict(zip(columns, row))
-                    print(row_dict)
+            excel = ExcelRaspeedi(settings.XLS_RASPEEDI_FILE)
+            print(f"Nombre de ligne dans Excel:     {excel.nrows}")
+            columns = excel.columns
+            print(f"Noms des colonnes:              {columns}")
+            for row in excel.read():
+                log.info(row)
+                if len(row["ref_boitier"]):
                     try:
-                        m = Raspeedi(**row_dict)
+                        m = Raspeedi(**row)
                         m.save()
                     except KeyError as err:
                         log.error(f"Manque la valeur : {err}")
@@ -60,8 +48,8 @@ class Command(BaseCommand):
                         log.error(f"IntegrityError:{err}")
                     except DataError as err:
                         log.error(f"DataError: {err}")
-                    # except TypeError as err:
-                    #     log.error(f"TypeError: {err}")
+                    except TypeError as err:
+                        log.error(f"TypeError: {err}")
             nb_prod_after = Raspeedi.objects.count()
             print(f"Nombre de produits ajoutés :    {nb_prod_after - nb_prod_before}")
             print(f"Nombre de produits total :      {nb_prod_after}")
