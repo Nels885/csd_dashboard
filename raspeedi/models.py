@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
 
 class Raspeedi(models.Model):
     ref_boitier = models.BigIntegerField(primary_key=True)
@@ -20,7 +18,7 @@ class Raspeedi(models.Model):
     connecteur_ecran = models.IntegerField(null=True)
 
 
-class AddReference(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    produit_ajoute = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
-    ajoute_le = models.DateTimeField(auto_now_add=True)
+# class AddReference(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     produit_ajoute = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
+#     ajoute_le = models.DateTimeField(auto_now_add=True)
