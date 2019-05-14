@@ -17,6 +17,8 @@ class Raspeedi(models.Model):
     ref_mm = models.CharField(max_length=200, null=True)
     connecteur_ecran = models.IntegerField(null=True)
 
+    def __str__(self):
+        return "{} - {} - {} - {}".format(self.ref_boitier, self.produit, self.facade, self.type)
 
 # class AddReference(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)

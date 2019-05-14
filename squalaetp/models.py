@@ -10,3 +10,6 @@ class Xelon(models.Model):
     reparer = models.BooleanField(default=False)
     ajouter_le = models.DateField(default=timezone.now)
     cloture_le =models.DateField(null=True)
+
+    def __str__(self):
+        return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
