@@ -1,0 +1,63 @@
+from django.core.management.base import BaseCommand
+from django.core.management.color import no_style
+from django.db.utils import IntegrityError, DataError
+from django.db import connection
+from django.conf import settings
+
+from squalaetp.models import Xelon
+
+from ._excel_squalaetp import ExcelSqualaetp
+
+import logging as log
+
+
+class Command(BaseCommand):
+    help = 'Interact with the Squalaetp tables in the database'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--xelon_insert',
+            action='store_true',
+            dest='xelon_insert',
+            help='Insert Xelon table',
+        )
+        parser.add_argument(
+            '--delete',
+            action='store_true',
+            dest='delete',
+            help='Delete all data in Squalaetp tables',
+        )
+
+    def handle(self, *args, **options):
+
+        if options['xelon_insert']:
+            nb_prod_before = Xelon.objects.count()
+            excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+            self.stdout.write(f"Nombre de ligne dans Excel:     {excel.nrows}")
+            columns = excel.columns
+            self.stdout.write(f"Noms des colonnes:              {columns}")
+            for row in excel.read_xelon():
+                log.info(row)
+                if len(row["numero_de_dossier"]):
+                    try:
+                        m = Xelon(**row)
+                        m.save()
+                    except KeyError as err:
+                        log.warning(f"Manque la valeur : {err}")
+                    except IntegrityError as err:
+                        log.warning(f"IntegrityError:{err}")
+                    except DataError as err:
+                        log.warning(f"DataError: {err}")
+                    except TypeError as err:
+                        log.warning(f"TypeError: {err}")
+            nb_prod_after = Xelon.objects.count()
+            self.stdout.write(f"Nombre de produits ajoutés :    {nb_prod_after - nb_prod_before}")
+            self.stdout.write(f"Nombre de produits total :      {nb_prod_after}")
+
+        elif options['delete']:
+            Xelon.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Xelon, ])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
