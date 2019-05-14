@@ -4,7 +4,8 @@ python:
   - "3.6"
 
 # Command to install dependencies
-before_script:
+install:
+  - pip install pipenv
   - pipenv install --dev
 
 env: DJANGO_SETTINGS_MODULE="sbadmin.settings.travis"
