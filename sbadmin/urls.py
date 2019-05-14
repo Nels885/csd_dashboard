@@ -20,7 +20,7 @@ from django.urls import path, include
 from dashboard import views
 
 urlpatterns = [
-    path('', views.index),
+    path('', views.index, name="index"),
     path('dashboard/', include('dashboard.urls')),
     path('raspeedi/', include('raspeedi.urls')),
     path('squalaetp/', include('squalaetp.urls')),

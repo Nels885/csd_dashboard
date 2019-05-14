@@ -5,5 +5,5 @@ from . import views
 app_name = 'squalaetp'
 
 urlpatterns = [
-    path('table/', views.table, name='table'),
+    path('xelon/', views.xelon_table, name='xelon'),
 ]

@@ -8,6 +8,7 @@ django = "*"
 psycopg2 = "*"
 xlrd = "*"
 django-debug-toolbar = "*"
+flake8 = "*"
 
 [packages]
 

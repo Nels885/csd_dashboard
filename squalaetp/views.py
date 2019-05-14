@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import Xelon
 
 
-def table(request):
+def xelon_table(request):
     files = Xelon.objects.all().order_by('numero_de_dossier')
     context = {
         'title': 'Xelon',
