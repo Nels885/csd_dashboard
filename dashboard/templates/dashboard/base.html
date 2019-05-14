@@ -56,6 +56,26 @@
                 CSD Atelier
             </div>
 
+            <!-- Nav Item - Xelon Settings Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseXelon"
+                   aria-expanded="true" aria-controls="collapseXelon">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Xelon</span>
+                </a>
+                <div id="collapseXelon" class="collapse" aria-labelledby="headingXelon"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Informations :</h6>
+                        <a class="collapse-item" href="{% url 'squalaetp:table' %}">Table Squalaetp</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item" href="{% url 'dashboard:buttons' %}">Ajout données</a>
+                        <a class="collapse-item" href="{% url 'dashboard:cards' %}">modification données</a>
+                    </div>
+                </div>
+            </li>
+
             <!-- Nav Item - Raspeedi Settings Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRaspeedi"
@@ -78,6 +98,11 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                CSD Admin
+            </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
@@ -151,7 +176,7 @@
                     <span>Charts</span></a>
             </li>
 
-                        <!-- Nav Item - Tables -->
+            <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'dashboard:tables' %}">
                     <i class="fas fa-fw fa-table"></i>

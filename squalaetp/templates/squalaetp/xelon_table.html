@@ -1,0 +1,80 @@
+{% extends 'dashboard/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">{{ title }}</h1>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Tableau Xelon</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="xelonTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>Numéro de dossier</th>
+                        <th>V.I.N.</th>
+                        <th>Modèle produit</th>
+                        <th>Modèle véhicule</th>
+                        <th>Réparé</th>
+                        <th>Date d'ajout</th>
+                        <th>Date cloture</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Numéro de dossier</th>
+                        <th>V.I.N.</th>
+                        <th>Modèle produit</th>
+                        <th>Modèle véhicule</th>
+                        <th>Réparé</th>
+                        <th>Date d'ajout</th>
+                        <th>Date cloture</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+
+                    {% for file in files %}
+
+                        <tr>
+                            <td>{{ file.numero_de_dossier }}</td>
+                            <td>{{ file.vin }}</td>
+                            <td>{{ file.modele_produit }}</td>
+                            <td>{{ file.modele_vehicule }}</td>
+                            <td>{{ file.reparer }}</td>
+                            <td>{{ file.ajouter_le }}</td>
+                            <td>{{ file.cloture_le }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block customcss %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/vendor/datatables/datatables.min.css' %}"/>
+
+{% endblock %}
+
+
+{% block customjs %}
+
+    <!-- Page level plugins -->
+    <script type="text/javascript" src="{% static 'dashboard/vendor/datatables/datatables.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'dashboard/js/datatables.js' %}"></script>
+
+{% endblock %}

@@ -23,6 +23,7 @@ urlpatterns = [
     path('', views.index),
     path('dashboard/', include('dashboard.urls')),
     path('raspeedi/', include('raspeedi.urls')),
+    path('squalaetp/', include('squalaetp.urls')),
     path('admin/', admin.site.urls),
 ]
 
