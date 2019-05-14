@@ -1,3 +1,5 @@
 .idea/
-*__pycache__*
+__pycache__
 *.sqlite3
+sdadmin/settings/production.py
+sdadmin/staticfiles/
