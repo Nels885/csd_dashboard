@@ -8,5 +8,5 @@ class Xelon(models.Model):
     modele_produit = models.CharField(max_length=50)
     modele_vehicule = models.CharField(max_length=50)
     reparer = models.BooleanField(default=False)
-    ajouter_le = models.DateTimeField(default=timezone.now)
-    cloture_le =models.DateTimeField(null=True)
+    ajouter_le = models.DateField(default=timezone.now)
+    cloture_le =models.DateField(null=True)

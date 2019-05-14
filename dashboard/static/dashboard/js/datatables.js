@@ -24,5 +24,8 @@ $(document).ready(function () {
             });
         }
     });
-    $('#xelonTable').DataTable();
+    $('#xelonTable').DataTable({
+        pagingType: "full_numbers",
+        order: [[0, "asc"]],
+    });
 });
