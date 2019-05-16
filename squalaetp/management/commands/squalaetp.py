@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError, DataError
 from django.db import connection
 from django.conf import settings
 
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, CorvetBackup
 
 from ._excel_squalaetp import ExcelSqualaetp
 
@@ -22,6 +22,12 @@ class Command(BaseCommand):
             help='Insert Xelon table',
         )
         parser.add_argument(
+            '--backup_insert',
+            action='store_true',
+            dest='backup_insert',
+            help='Insert Corvet Backup table',
+        )
+        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -35,7 +41,7 @@ class Command(BaseCommand):
             excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
-            for row in excel.read_xelon():
+            for row in excel.xelon_table():
                 log.info(row)
                 if len(row["numero_de_dossier"]):
                     try:
@@ -53,13 +59,36 @@ class Command(BaseCommand):
             self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
             self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
 
+        elif options['backup_insert']:
+            nb_prod_before = CorvetBackup.objects.count()
+            excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+            self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
+            self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
+            for row in excel.corvet_backup_table():
+                log.info(row)
+                if len(row["vin"]):
+                    try:
+                        m = CorvetBackup(**row)
+                        m.save()
+                    except KeyError as err:
+                        log.warning("Manque la valeur : {}".format(err))
+                    except IntegrityError as err:
+                        log.warning("IntegrityError:{}".format(err))
+                    except DataError as err:
+                        log.warning("DataError: {}".format(err))
+                    except TypeError as err:
+                        log.warning("TypeError: {}".format(err))
+            nb_prod_after = CorvetBackup.objects.count()
+            self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+            self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+
         elif options['delete']:
             Xelon.objects.all().delete()
+            CorvetBackup.objects.all().delete()
 
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Xelon, ])
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Xelon, CorvetBackup, ])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            for table in ["Xelon"]:
+            for table in ["Xelon", "CorvetBackup"]:
                 self.stdout.write("Suppression des données de la table {} terminée!".format(table))
-

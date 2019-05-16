@@ -13,3 +13,11 @@ class Xelon(models.Model):
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
+
+
+class CorvetBackup(models.Model):
+    vin = models.CharField(max_length=17, unique=True)
+    data = models.CharField(max_length=5000)
+
+    def __str__(self):
+        return self.vin

@@ -1,11 +1,13 @@
 import pandas as pd
 import unicodedata
+import re
 
 
 class ExcelSqualaetp:
     """## Read data in Excel file for Squalaetp ##"""
+    XELON_COLS = ['Numéro de dossier', 'V.I.N.', 'Modèle produit', 'Modèle véhicule']
 
-    def __init__(self, file, sheet_index=0, columns=-1):
+    def __init__(self, file, sheet_index=0, columns=None):
         """
         Initialize ExcelRaspeedi class
         :param file:
@@ -14,7 +16,7 @@ class ExcelSqualaetp:
         df = pd.read_excel(file, sheet_index, na_values='#')
         df.dropna(how='all', inplace=True)
         self.sheet = df.fillna('')
-        self.nrows = self.sheet.shape[0] - 1
+        self.nrows = self.sheet.shape[0]
         self.columns = list(self.sheet.columns[:columns])
 
     def read_all(self):
@@ -25,26 +27,50 @@ class ExcelSqualaetp:
         """
         data = []
         for line in range(self.nrows):
-            if line == 0:
-                continue  # ignore the first row
             row = self.sheet.row_values(line)  # get the data in the ith row
             row_dict = dict(zip(self.columns, row))
             data.append(row_dict)
         return data
 
-    def read_xelon(self):
-        xelon_columns = ['Numéro de dossier', 'V.I.N.', 'Modèle produit', 'Modèle véhicule']
+    def xelon_table(self):
+        """
+        Extracting data for the Xelon table from the Database
+        :return:
+            list of dictionnaries that represents the data for Xelon table
+        """
         data = []
         for line in range(self.nrows):
-            if line == 0:
-                continue  # ignore the first row
-            row = list(self.sheet.loc[line, xelon_columns])  # get the data in the ith row
-            row_dict = dict(zip(self._columns_convert(xelon_columns), row))
+            row = list(self.sheet.loc[line, self.XELON_COLS])  # get the data in the ith row
+            row_dict = dict(zip(self._columns_convert(self.XELON_COLS), row))
             data.append(row_dict)
+        return data
+
+    def corvet_backup_table(self):
+        """
+        Extracting data for the Corvet Backup table form the Database
+        :return:
+            list of dictionnaries that represents the data for Corvet Backup table
+        """
+        data = []
+        corvet_cols = self.columns[4:]
+        for line in range(self.nrows):
+            vin = self.sheet.at[line, "V.I.N."]
+            data_corvet = list(self.sheet.loc[line, corvet_cols])
+            if re.match(r'^VF[37]\w{14}$', str(vin)) and len(str(data_corvet[0])) != 0:
+                corvet_dict = dict(zip(corvet_cols, data_corvet))
+                row_dict = dict(zip(["vin", "data"], [vin, corvet_dict]))
+                data.append(row_dict)
         return data
 
     @staticmethod
     def _columns_convert(columns):
+        """
+        Convert the names of the columns to be used by the database
+        :param columns:
+            List of column names
+        :return:
+            list of modified column names
+        """
         data = []
         deletion = {' ': '_', '.': ''}
         for column in columns:
