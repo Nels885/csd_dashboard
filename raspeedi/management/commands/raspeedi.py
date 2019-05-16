@@ -33,9 +33,8 @@ class Command(BaseCommand):
         if options['insert']:
             nb_prod_before = Raspeedi.objects.count()
             excel = ExcelRaspeedi(settings.XLS_RASPEEDI_FILE)
-            print(f"Nombre de ligne dans Excel:     {excel.nrows}")
-            columns = excel.columns
-            print(f"Noms des colonnes:              {columns}")
+            self.stdout.write("Nombre de ligne dans Excel:    {}".format(excel.nrows))
+            self.stdout.write("Noms des colonnes:             {}".format(excel.columns))
             for row in excel.read():
                 log.info(row)
                 if row["ref_boitier"]:
@@ -43,16 +42,16 @@ class Command(BaseCommand):
                         m = Raspeedi(**row)
                         m.save()
                     except KeyError as err:
-                        log.error(f"Manque la valeur : {err}")
+                        log.error("Manque la valeur : {}".format(err))
                     except IntegrityError as err:
-                        log.error(f"IntegrityError:{err}")
+                        log.error("IntegrityError: {}".format(err))
                     except DataError as err:
-                        log.error(f"DataError: {err}")
+                        log.error("DataError: {}".format(err))
                     except TypeError as err:
-                        log.error(f"TypeError: {err}")
+                        log.error("TypeError: {}".format(err))
             nb_prod_after = Raspeedi.objects.count()
-            print(f"Nombre de produits ajoutés :    {nb_prod_after - nb_prod_before}")
-            print(f"Nombre de produits total :      {nb_prod_after}")
+            self.stdout.write("Nombre de produits ajoutés :   {}".format(nb_prod_after - nb_prod_before))
+            self.stdout.write("Nombre de produits total :     {}".format(nb_prod_after))
 
         elif options['delete']:
             Raspeedi.objects.all().delete()
@@ -61,3 +60,4 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
+            self.stdout.write("Suppression des données de la table Raspeeti terminée!")

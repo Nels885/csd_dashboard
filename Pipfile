@@ -10,6 +10,7 @@ xlrd = "*"
 django-debug-toolbar = "*"
 flake8 = "*"
 pandas = "*"
+coverage = "*"
 
 [packages]
 

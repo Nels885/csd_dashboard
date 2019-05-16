@@ -1,4 +1,6 @@
 .idea/
+.coverage
+htmlcov/
 __pycache__
 *.sqlite3
 sdadmin/settings/production.py

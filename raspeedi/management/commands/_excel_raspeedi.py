@@ -4,7 +4,7 @@ import pandas as pd
 class ExcelRaspeedi:
     """## Read data in Excel file for Raspeedi ##"""
 
-    def __init__(self, file, sheet_index=0, columns=-3):
+    def __init__(self, file, sheet_index=0, columns=12):
         """
         Initialize ExcelRaspeedi class
         :param file:

@@ -33,9 +33,8 @@ class Command(BaseCommand):
         if options['xelon_insert']:
             nb_prod_before = Xelon.objects.count()
             excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
-            self.stdout.write(f"Nombre de ligne dans Excel:     {excel.nrows}")
-            columns = excel.columns
-            self.stdout.write(f"Noms des colonnes:              {columns}")
+            self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
+            self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
             for row in excel.read_xelon():
                 log.info(row)
                 if len(row["numero_de_dossier"]):
@@ -43,16 +42,16 @@ class Command(BaseCommand):
                         m = Xelon(**row)
                         m.save()
                     except KeyError as err:
-                        log.warning(f"Manque la valeur : {err}")
+                        log.warning("Manque la valeur : {}".format(err))
                     except IntegrityError as err:
-                        log.warning(f"IntegrityError:{err}")
+                        log.warning("IntegrityError:{}".format(err))
                     except DataError as err:
-                        log.warning(f"DataError: {err}")
+                        log.warning("DataError: {}".format(err))
                     except TypeError as err:
-                        log.warning(f"TypeError: {err}")
+                        log.warning("TypeError: {}".format(err))
             nb_prod_after = Xelon.objects.count()
-            self.stdout.write(f"Nombre de produits ajoutés :    {nb_prod_after - nb_prod_before}")
-            self.stdout.write(f"Nombre de produits total :      {nb_prod_after}")
+            self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+            self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -61,3 +60,6 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
+            for table in ["Xelon"]:
+                self.stdout.write("Suppression des données de la table {} terminée!".format(table))
+
