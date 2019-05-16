@@ -38,7 +38,7 @@ class Command(BaseCommand):
             print(f"Noms des colonnes:              {columns}")
             for row in excel.read():
                 log.info(row)
-                if len(row["ref_boitier"]):
+                if row["ref_boitier"]:
                     try:
                         m = Raspeedi(**row)
                         m.save()
