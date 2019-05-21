@@ -40,9 +40,29 @@ class ExcelSqualaetp:
         """
         data = []
         for line in range(self.nrows):
-            row = list(self.sheet.loc[line, self.XELON_COLS])  # get the data in the ith row
+            row = self.sheet.loc[line, self.XELON_COLS]  # get the data in the ith row
             row_dict = dict(zip(self._columns_convert(self.XELON_COLS), row))
             data.append(row_dict)
+        return data
+
+    def corvet_table(self, attribut_file):
+        data, columns = [], []
+        drop_col = self.XELON_COLS
+        drop_col.remove("V.I.N.")
+        df_attributs = pd.read_excel(attribut_file, 1, converters={'cle2': str})
+        df_corvet = self.sheet.drop(drop_col, axis='columns').fillna("")
+        for col in df_corvet.columns:
+            if len(df_attributs[df_attributs.cle2 == col]) != 0:
+                columns.append(list(df_attributs.loc[df_attributs.cle2 == col].cle1)[0] + "_" + col)
+            elif len(df_attributs[df_attributs.libelle == col]) != 0:
+                columns.append(list(df_attributs.loc[df_attributs.libelle == col].cle1)[0] + "_" + col)
+            else:
+                columns.append(col)
+        for line in range(self.nrows):
+            row = df_corvet.loc[line]  # get the data in the ith row
+            if re.match(r'^VF[37]\w{14}$', str(row[0])) and len(str(row[1])) != 0:
+                row_dict = dict(zip(self._columns_convert(columns), row))
+                data.append(row_dict)
         return data
 
     def corvet_backup_table(self):
@@ -55,7 +75,7 @@ class ExcelSqualaetp:
         corvet_cols = self.columns[4:]
         for line in range(self.nrows):
             vin = self.sheet.at[line, "V.I.N."]
-            data_corvet = list(self.sheet.loc[line, corvet_cols])
+            data_corvet = self.sheet.loc[line, corvet_cols]
             if re.match(r'^VF[37]\w{14}$', str(vin)) and len(str(data_corvet[0])) != 0:
                 corvet_dict = dict(zip(corvet_cols, data_corvet))
                 row_dict = dict(zip(["vin", "data"], [vin, corvet_dict]))

@@ -126,3 +126,4 @@ INTERNAL_IPS = '127.0.0.1'
 
 XLS_RASPEEDI_FILE = "~/Documents/CSD_DATABASE/PROG/RASPEEDI/table_boitier_PSA.xlsx"
 XLS_SQUALAETP_FILE = "~/Documents/CSD_DATABASE/EXTS/squalaetp.xls"
+XLS_ATTRIBUTS_FILE = "~/Documents/CSD_DATABASE/EXTS/Attributs CORVET.xlsx"
