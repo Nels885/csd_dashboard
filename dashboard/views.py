@@ -20,21 +20,21 @@ def buttons(request):
     context = {
         'title': 'Buttons',
     }
-    return render(request, 'dashboard/buttons.html', context)
+    return render(request, 'demo/buttons.html', context)
 
 
 def cards(request):
     context = {
         'title': 'Cards',
     }
-    return render(request, 'dashboard/cards.html', context)
+    return render(request, 'demo/cards.html', context)
 
 
 def colors(request):
     context = {
         'title': 'Color Utilities',
     }
-    return render(request, 'dashboard/colors.html', context)
+    return render(request, 'demo/colors.html', context)
 
 
 def border(request):
@@ -48,42 +48,42 @@ def animation(request):
     context = {
         'title': 'Animation Utilities',
     }
-    return render(request, 'dashboard/animation.html', context)
+    return render(request, 'demo/animation.html', context)
 
 
 def other(request):
     context = {
         'title': 'Other Utilities',
     }
-    return render(request, 'dashboard/other.html', context)
+    return render(request, 'demo/other.html', context)
 
 
 def login(request):
     context = {
         'title': 'Login',
     }
-    return render(request, 'dashboard/login.html', context)
+    return render(request, 'demo/login.html', context)
 
 
 def register(request):
     context = {
         'title': 'Register',
     }
-    return render(request, 'dashboard/register.html', context)
+    return render(request, 'demo/register.html', context)
 
 
 def forgot_pwd(request):
     context = {
         'title': 'Forgot Password',
     }
-    return render(request, 'dashboard/forgot-password.html', context)
+    return render(request, 'demo/forgot-password.html', context)
 
 
 def blank(request):
     context = {
         'title': 'Blank Page',
     }
-    return render(request, 'dashboard/blank.html', context)
+    return render(request, 'demo/blank.html', context)
 
 
 def error(request):
@@ -97,11 +97,11 @@ def charts(request):
     context = {
         'title': 'Charts',
     }
-    return render(request, 'dashboard/charts.html', context)
+    return render(request, 'demo/charts.html', context)
 
 
 def tables(request):
     context = {
         'title': 'Tables',
     }
-    return render(request, 'dashboard/tables.html', context)
+    return render(request, 'demo/tables.html', context)
