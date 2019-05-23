@@ -60,7 +60,7 @@ class ExcelSqualaetp:
                 columns.append(col)
         for line in range(self.nrows):
             row = df_corvet.loc[line]  # get the data in the ith row
-            if re.match(r'^VF[37]\w{14}$', str(row[0])) and len(str(row[1])) != 0:
+            if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[1] != "#":
                 row_dict = dict(zip(self._columns_convert(columns), row))
                 data.append(row_dict)
         return data
@@ -76,7 +76,7 @@ class ExcelSqualaetp:
         for line in range(self.nrows):
             vin = self.sheet.at[line, "V.I.N."]
             data_corvet = self.sheet.loc[line, corvet_cols]
-            if re.match(r'^VF[37]\w{14}$', str(vin)) and len(str(data_corvet[0])) != 0:
+            if re.match(r'^VF[37]\w{14}$', str(vin)) and data_corvet[0] != "#":
                 corvet_dict = dict(zip(corvet_cols, data_corvet))
                 row_dict = dict(zip(["vin", "data"], [vin, corvet_dict]))
                 data.append(row_dict)

@@ -46,64 +46,13 @@ class Command(BaseCommand):
         self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
         if options['xelon_insert']:
-            nb_prod_before = Xelon.objects.count()
-            for row in excel.xelon_table():
-                log.info(row)
-                if len(row["numero_de_dossier"]):
-                    try:
-                        m = Xelon(**row)
-                        m.save()
-                    except KeyError as err:
-                        log.warning("Manque la valeur : {}".format(err))
-                    except IntegrityError as err:
-                        log.warning("IntegrityError:{}".format(err))
-                    except DataError as err:
-                        log.warning("DataError: {}".format(err))
-                    except TypeError as err:
-                        log.warning("TypeError: {}".format(err))
-            nb_prod_after = Xelon.objects.count()
-            self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-            self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+            self._insert(Xelon, excel.xelon_table(), "numero_de_dossier")
 
         elif options['corvet_insert']:
-            nb_prod_before = Corvet.objects.count()
-            for row in excel.corvet_table(settings.XLS_ATTRIBUTS_FILE):
-                print(row)
-                if len(row["vin"]):
-                    try:
-                        m = Corvet(**row)
-                        m.save()
-                    except KeyError as err:
-                        log.warning("Manque la valeur : {}".format(err))
-                    except IntegrityError as err:
-                        log.warning("IntegrityError:{}".format(err))
-                    except DataError as err:
-                        log.warning("DataError: {}".format(err))
-                    except TypeError as err:
-                        log.warning("TypeError: {}".format(err))
-            nb_prod_after = Corvet.objects.count()
-            self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-            self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+            self._insert(Corvet, excel.corvet_table(settings.XLS_ATTRIBUTS_FILE), "vin")
 
         elif options['backup_insert']:
-            nb_prod_before = CorvetBackup.objects.count()
-            for row in excel.corvet_backup_table():
-                log.info(row)
-                if len(row["vin"]):
-                    try:
-                        m = CorvetBackup(**row)
-                        m.save()
-                    except KeyError as err:
-                        log.warning("Manque la valeur : {}".format(err))
-                    except IntegrityError as err:
-                        log.warning("IntegrityError:{}".format(err))
-                    except DataError as err:
-                        log.warning("DataError: {}".format(err))
-                    except TypeError as err:
-                        log.warning("TypeError: {}".format(err))
-            nb_prod_after = CorvetBackup.objects.count()
-            self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-            self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+            self._insert(CorvetBackup, excel.corvet_backup_table(), "vin")
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -116,3 +65,23 @@ class Command(BaseCommand):
                     cursor.execute(sql)
             for table in ["Xelon", "Corvet", "CorvetBackup"]:
                 self.stdout.write("Suppression des données de la table {} terminée!".format(table))
+
+    def _insert(self, model, excel_method, columns_name):
+        nb_prod_before = model.objects.count()
+        for row in excel_method:
+            log.info(row)
+            if len(row[columns_name]):
+                try:
+                    m = model(**row)
+                    m.save()
+                except KeyError as err:
+                    log.warning("Manque la valeur : {}".format(err))
+                except IntegrityError as err:
+                    log.warning("IntegrityError:{}".format(err))
+                except DataError as err:
+                    log.warning("DataError: {}".format(err))
+                except TypeError as err:
+                    log.warning("TypeError: {}".format(err))
+        nb_prod_after = model.objects.count()
+        self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
