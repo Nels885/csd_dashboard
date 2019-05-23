@@ -1,12 +1,26 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+from squalaetp.models import Xelon
 
 
 def index(request):
+    products = [
+        ["RT6/RNEG2", "text-primary"],
+        ["SMEG", "text-success"],
+        ["RT4", "text-info"],
+        ["DISPLAY", "text-dark"],
+        ["RNEG", "text-danger"],
+        ["NG4", "text-secondary"]
+    ]
+    prod_nb = []
+    for prod in products:
+        prod_nb.append(Xelon.objects.filter(modele_produit__contains=prod[0]).count())
+
     context = {
         'title': 'Dashboard',
+        'products': products,
+        'prod_nb': prod_nb,
     }
     return render(request, 'dashboard/index.html', context)
 
