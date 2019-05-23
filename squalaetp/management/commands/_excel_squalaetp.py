@@ -13,7 +13,7 @@ class ExcelSqualaetp:
         :param file:
             excel file to process
         """
-        df = pd.read_excel(file, sheet_index, na_values='#')
+        df = pd.read_excel(file, sheet_index)
         df.dropna(how='all', inplace=True)
         self.sheet = df.fillna('')
         self.nrows = self.sheet.shape[0]

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from .models import Xelon
+from .models import Xelon, Corvet
 
 
 def xelon_table(request):
@@ -11,6 +11,16 @@ def xelon_table(request):
         'files': files
     }
     return render(request, 'squalaetp/xelon_table.html', context)
+
+
+@login_required
+def corvet_table(request):
+    corvets = Corvet.objects.all().order_by('vin')
+    context = {
+        'title': 'Xelon',
+        'corvets': corvets
+    }
+    return render(request, 'squalaetp/corvet_table.html', context)
 
 
 @login_required
