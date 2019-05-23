@@ -1,0 +1,65 @@
+<!-- Heading -->
+<div class="sidebar-heading">
+    CSD Atelier
+</div>
+
+{% if user.is_authenticated %}
+
+    <!-- Nav Item - Xelon Settings Menu -->
+    <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseXelon"
+           aria-expanded="true" aria-controls="collapseXelon">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Xelon</span>
+        </a>
+        <div id="collapseXelon" class="collapse show" aria-labelledby="headingXelon"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Informations :</h6>
+                <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">Dossiers clients</a>
+                <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">Tableau Corvet</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Edition :</h6>
+                <a class="collapse-item" href="{% url 'dashboard:buttons' %}">Ajout données</a>
+                <a class="collapse-item" href="{% url 'dashboard:cards' %}">modification données</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Raspeedi Settings Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRaspeedi"
+           aria-expanded="true" aria-controls="collapseRaspeedi">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Raspeedi</span>
+        </a>
+        <div id="collapseRaspeedi" class="collapse" aria-labelledby="headingRaspeedi"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Informations :</h6>
+                <a class="collapse-item" href="{% url 'raspeedi:table' %}">Table produits</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Edition :</h6>
+                <a class="collapse-item" href="{% url 'dashboard:buttons' %}">Ajout produit</a>
+                <a class="collapse-item" href="{% url 'dashboard:cards' %}">modification produit</a>
+            </div>
+        </div>
+    </li>
+
+{% else %}
+
+    <!-- Nav Item - Dossiers clients -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'squalaetp:xelon' %}">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Dossiers clients</span></a>
+    </li>
+
+        <!-- Nav Item - tableau Raspeedi -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'raspeedi:table' %}">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Tableau Raspeedi</span></a>
+    </li>
+
+{% endif %}
