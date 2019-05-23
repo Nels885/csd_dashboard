@@ -34,19 +34,36 @@
                 Interface
             </div>
 
-            <!-- Nav Item - login -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard:login' %}">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Login</span></a>
-            </li>
+            {% if user.is_authenticated %}
 
-            <!-- Nav Item - logout -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard:login' %}">
-                    <i class="fas fa-fw fa-user-times"></i>
-                    <span>Logout</span></a>
-            </li>
+                <!-- Nav Item - logout -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">
+                        <i class="fas fa-fw fa-user-times"></i>
+                        <span>Logout</span></a>
+                </li>
+
+                {% if user.is_superuser %}
+
+                    <!-- Nav Item - administration -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">
+                            <i class="fas fa-fw fa-user-times"></i>
+                            <span>Administration</span></a>
+                    </li>
+
+                {% endif %}
+
+            {% else %}
+
+                <!-- Nav Item - login -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Login</span></a>
+                </li>
+
+            {% endif %}
 
             <!-- Divider -->
             <hr class="sidebar-divider">

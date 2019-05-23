@@ -124,6 +124,10 @@ STATIC_URL = '/static/'
 
 INTERNAL_IPS = '127.0.0.1'
 
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Config Clarion
 XLS_RASPEEDI_FILE = "~/Documents/CSD_DATABASE/PROG/RASPEEDI/table_boitier_PSA.xlsx"
 XLS_SQUALAETP_FILE = "~/Documents/CSD_DATABASE/EXTS/squalaetp.xls"
 XLS_ATTRIBUTS_FILE = "~/Documents/CSD_DATABASE/EXTS/Attributs CORVET.xlsx"

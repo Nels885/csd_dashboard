@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -8,6 +9,11 @@ def index(request):
         'title': 'Dashboard',
     }
     return render(request, 'dashboard/index.html', context)
+
+
+@login_required
+def logout(request):
+    pass
 
 
 def buttons(request):
