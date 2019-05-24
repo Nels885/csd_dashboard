@@ -1,80 +1,47 @@
-{% extends 'dashboard/base.html' %}
+{% extends 'dashboard/datatables_format.html' %}
 
-{% load static %}
+{% block table_content %}
 
-{% block content %}
+    <table class="table table-bordered" id="corvetTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>V.I.N.</th>
+            <th>Récepteur Radio</th>
+            <th>CAL. Récepteur Radio</th>
+            <th>Boitier Télématique</th>
+            <th>CAL. Boitier Télématique</th>
+            <th>Calculateur Moteur</th>
+            <th>SOFT. Calculateur Moteur</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <th>V.I.N.</th>
+            <th>Récepteur Radio</th>
+            <th>CAL. Récepteur Radio</th>
+            <th>Boitier Télématique</th>
+            <th>CAL. Boitier Télématique</th>
+            <th>Calculateur Moteur</th>
+            <th>SOFT. Calculateur Moteur</th>
+        </tr>
+        </tfoot>
+        <tbody>
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">{{ title }}</h1>
+        {% for corvet in corvets %}
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Tableau Corvet</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="corvetTable" width="100%" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th>V.I.N.</th>
-                        <th>Récepteur Radio</th>
-                        <th>CAL. Récepteur Radio</th>
-                        <th>Boitier Télématique</th>
-                        <th>CAL. Boitier Télématique</th>
-                        <th>Calculateur Moteur</th>
-                        <th>SOFT. Calculateur Moteur</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                        <th>V.I.N.</th>
-                        <th>Récepteur Radio</th>
-                        <th>CAL. Récepteur Radio</th>
-                        <th>Boitier Télématique</th>
-                        <th>CAL. Boitier Télématique</th>
-                        <th>Calculateur Moteur</th>
-                        <th>SOFT. Calculateur Moteur</th>
-                    </tr>
-                    </tfoot>
-                    <tbody>
+            <tr>
+                <td>{{ corvet.vin }}</td>
+                <td>{{ corvet.electronique_14f }}</td>
+                <td>{{ corvet.electronique_94f }}</td>
+                <td>{{ corvet.electronique_14x }}</td>
+                <td>{{ corvet.electronique_94x }}</td>
+                <td>{{ corvet.electronique_14a }}</td>
+                <td>{{ corvet.electronique_34a }}</td>
+            </tr>
 
-                    {% for corvet in corvets %}
+        {% endfor %}
 
-                        <tr>
-                            <td>{{ corvet.vin }}</td>
-                            <td>{{ corvet.electronique_14f }}</td>
-                            <td>{{ corvet.electronique_94f }}</td>
-                            <td>{{ corvet.electronique_14x }}</td>
-                            <td>{{ corvet.electronique_94x }}</td>
-                            <td>{{ corvet.electronique_14a }}</td>
-                            <td>{{ corvet.electronique_34a }}</td>
-                        </tr>
-
-                    {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-{% endblock %}
-
-
-{% block customcss %}
-
-    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/vendor/datatables/datatables.min.css' %}"/>
-
-{% endblock %}
-
-
-{% block customjs %}
-
-    <!-- Page level plugins -->
-    <script type="text/javascript" src="{% static 'dashboard/vendor/datatables/datatables.min.js' %}"></script>
-
-    <!-- Page level custom scripts -->
-    <script type="text/javascript" src="{% static 'dashboard/js/datatables.js' %}"></script>
+        </tbody>
+    </table>
 
 {% endblock %}

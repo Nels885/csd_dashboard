@@ -1,0 +1,42 @@
+{% extends 'dashboard/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">{{ title }}</h1>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ table_title }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+
+                {% block table_content %} {% endblock %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block customcss %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/vendor/datatables/datatables.min.css' %}"/>
+
+{% endblock %}
+
+
+{% block customjs %}
+
+    <!-- Page level plugins -->
+    <script type="text/javascript" src="{% static 'dashboard/vendor/datatables/datatables.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'dashboard/js/datatables.js' %}"></script>
+
+{% endblock %}

@@ -8,6 +8,7 @@ def xelon_table(request):
     files = Xelon.objects.all().order_by('numero_de_dossier')
     context = {
         'title': 'Xelon',
+        'table_title': 'Dossiers Clients',
         'files': files
     }
     return render(request, 'squalaetp/xelon_table.html', context)
@@ -18,6 +19,7 @@ def corvet_table(request):
     corvets = Corvet.objects.all().order_by('vin')
     context = {
         'title': 'Xelon',
+        'table_title': 'Tableau Corvet',
         'corvets': corvets
     }
     return render(request, 'squalaetp/corvet_table.html', context)
