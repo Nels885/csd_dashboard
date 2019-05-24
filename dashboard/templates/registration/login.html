@@ -27,14 +27,12 @@
                                     {% csrf_token %}
 
                                     <div class="form-group">
-                                        {{ form.username.errors }}
                                         <input type="text" class="form-control form-control-user"
                                                id="{{ form.username.id_for_label }}"
                                                name="{{ form.username.html_name }}" placeholder="Username"/>
                                     </div>
 
                                     <div class="form-group">
-                                        {{ form.password.errors }}
                                         <input type="password" class="form-control form-control-user"
                                                id="{{ form.password.id_for_label }}"
                                                name="{{ form.password.html_name }}" placeholder="Password">
@@ -42,12 +40,18 @@
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox small">
                                             <input type="checkbox" class="custom-control-input" id="customCheck">
-                                            <label class="custom-control-label" for="customCheck">Se souvenir de moi</label>
+                                            <label class="custom-control-label" for="customCheck">Se souvenir de
+                                                moi</label>
                                         </div>
                                     </div>
+                                    {% if form.errors %}
+                                        <p class="text-danger">
+                                            * Nom d'utilisateur ou mot de passe invalide
+                                        </p>
+                                    {% endif %}
                                     <input class="btn btn-primary btn-user btn-block" type="submit" value="Connexion">
                                     <input type="hidden" name="next" value="{{ next }}">
-                                 </form>
+                                </form>
                                 <hr>
                                 <div class="text-center">
                                     <a class="small" href="{% url 'dashboard:password' %}">Mot de passe oublié ?</a>

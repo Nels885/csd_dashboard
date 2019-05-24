@@ -55,7 +55,7 @@ def border(request):
     context = {
         'title': 'Border Utilities',
     }
-    return render(request, 'dashboard/border.html', context)
+    return render(request, 'demo/border.html', context)
 
 
 def animation(request):
