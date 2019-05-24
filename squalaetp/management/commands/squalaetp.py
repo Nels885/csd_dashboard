@@ -16,6 +16,12 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            '-f',
+            '--file',
+            dest='filename',
+            help='Specify import Excel file',
+        )
+        parser.add_argument(
             '--xelon_insert',
             action='store_true',
             dest='xelon_insert',
@@ -41,7 +47,11 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+
+        if options['filename'] is not None:
+            excel = ExcelSqualaetp(options['filename'])
+        else:
+            excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
         self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
         self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
