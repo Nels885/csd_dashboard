@@ -124,6 +124,8 @@ STATIC_URL = '/static/'
 
 INTERNAL_IPS = '127.0.0.1'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
