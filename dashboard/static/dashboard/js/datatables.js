@@ -28,4 +28,8 @@ $(document).ready(function () {
         pagingType: "full_numbers",
         order: [[0, "asc"]],
     });
+    $('#corvetTable').DataTable({
+        pagingType: "full_numbers",
+        order: [[0, "asc"]],
+    });
 });

@@ -24,6 +24,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('raspeedi/', include('raspeedi.urls')),
     path('squalaetp/', include('squalaetp.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
 ]
 

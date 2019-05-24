@@ -1,0 +1,40 @@
+<!-- Heading -->
+<div class="sidebar-heading">
+    CSD Admin
+</div>
+
+{% if user.is_authenticated %}
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    {% with name="Hotline" icon="fa-list" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Informations :</h6>
+                    <a class="collapse-item" href="#">Hotline</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Edition :</h6>
+                    <a class="collapse-item" href="#">Ajout</a>
+                    <a class="collapse-item" href="#">Modification</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+{% else %}
+
+    <!-- Nav Item - Dossiers clients -->
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Hotline</span></a>
+    </li>
+
+
+{% endif %}

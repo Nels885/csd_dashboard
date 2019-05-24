@@ -5,5 +5,5 @@ from . import views
 app_name = 'raspeedi'
 
 urlpatterns = [
-    path('table/', views.table, name='table'),
+    path('table/', views.raspeedi_table, name='table'),
 ]
