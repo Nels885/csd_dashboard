@@ -178,6 +178,33 @@
 
         {% endif %}
 
+        <!-- Nav Item - Languages -->
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-globe-europe fa-fw"></i>
+            </a>
+            <!-- Dropdown - Messages -->
+            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                 aria-labelledby="searchDropdown">
+                {% get_language_info_list for LANGUAGES as languages %}
+                <form action="{% url "set_language" %}" method="post"
+                      class="form-inline mr-auto w-100 navbar-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <select name="language" class="form-control" onchange="this.form.submit()">
+                            {% for language in languages %}
+                                <option value="{{ language.code }}"
+                                        {% if language.code == LANGUAGE_CODE %}selected="selected"{% endif %}>
+                                    {{ language.name_local }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </li>
+
         <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - User Information -->
