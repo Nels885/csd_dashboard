@@ -1,6 +1,9 @@
 {% extends 'dashboard/layout.html' %}
 
+{% load i18n %}
+
 {% block basecontent %}
+
     <!-- Page Wrapper -->
     <div id="wrapper">
 
@@ -13,7 +16,7 @@
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-cogs"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">CSD Board</sup></div>
+                <div class="sidebar-brand-text mx-3">CSD Board</div>
             </a>
 
             <!-- Divider -->
@@ -23,7 +26,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'dashboard:index' %}">
                     <i class=" fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+                    <span>{% trans "Tableau de board" %}</span></a>
             </li>
 
             <!-- Divider -->
@@ -39,7 +42,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">
                         <i class="fas fa-fw fa-user"></i>
-                        <span>Connection</span></a>
+                        <span>{% trans "Connection" %}</span></a>
                 </li>
 
                 <!-- Divider -->
