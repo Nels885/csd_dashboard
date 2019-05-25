@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext as _
 
 from squalaetp.models import Xelon
 
@@ -18,7 +19,7 @@ def index(request):
         prod_nb.append(Xelon.objects.filter(modele_produit__contains=prod[0]).count())
 
     context = {
-        'title': 'Dashboard',
+        'title': _("Dashboard"),
         'products': products,
         'prod_nb': prod_nb,
     }

@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-25 20:05+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:22
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: dashboard/templates/dashboard/base.html:45
+#: dashboard/templates/registration/login.html:58
+msgid "Login"
+msgstr "Connexion"
+
+#: dashboard/templates/dashboard/modal_logout.html:9
+msgid "Ready to Leave?"
+msgstr "Prêt à partir ?"
+
+#: dashboard/templates/dashboard/modal_logout.html:15
+msgid "Select \"Logout\" below if you are ready to end your current session."
+msgstr ""
+"Sélectionnez \"Déconnexion\" ci-dessous si vous êtes prêt à mettre fin à "
+"votre session en cours."
+
+#: dashboard/templates/dashboard/modal_logout.html:18
+msgid "Cancel"
+msgstr "Annuler"
+
+#: dashboard/templates/dashboard/modal_logout.html:19
+#: dashboard/templates/dashboard/top_bar.html:221
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: dashboard/templates/dashboard/top_bar.html:202
+msgid "Profile"
+msgstr "Mon Profil"
+
+#: dashboard/templates/dashboard/top_bar.html:206
+#, fuzzy
+#| msgid "Password"
+msgid "Change password"
+msgstr "Mot de passe"
+
+#: dashboard/templates/dashboard/top_bar.html:211
+msgid "Administration"
+msgstr "Administration"
+
+#: dashboard/templates/dashboard/top_bar.html:216
+msgid "Activity Log"
+msgstr "Journal d'activité"
+
+#: dashboard/templates/dashboard/top_bar.html:228
+msgid "Guest"
+msgstr "Invité"
+
+#: dashboard/templates/registration/login.html:25
+msgid "Welcome Back!"
+msgstr "Vous avez un compte ?"
+
+#: dashboard/templates/registration/login.html:35
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: dashboard/templates/registration/login.html:42
+msgid "Password"
+msgstr "Mot de passe"
+
+#: dashboard/templates/registration/login.html:48
+msgid "Remember Me"
+msgstr "Se souvenir de moi"
+
+#: dashboard/templates/registration/login.html:54
+msgid "Invalid username or password"
+msgstr "Nom d'utilisateur ou mot de passe invalide"
+
+#: dashboard/templates/registration/login.html:64
+msgid "Forgot Password?"
+msgstr "Mot de passe oublié ?"
+
+#: dashboard/templates/registration/login.html:69
+msgid "Create an Account!"
+msgstr "Création d'un compte !"
