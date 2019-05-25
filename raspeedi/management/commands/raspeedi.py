@@ -8,7 +8,7 @@ from raspeedi.models import Raspeedi
 
 from ._excel_raspeedi import ExcelRaspeedi
 
-import logging as log
+# import logging as log
 
 
 class Command(BaseCommand):
