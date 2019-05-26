@@ -100,6 +100,7 @@ class Corvet(models.Model):
     electronique_64b = models.CharField('BSI FOURN.CODE - Boitier Servitude Intelligent', max_length=200, null=True)
     electronique_84b = models.CharField('BSI DOTE - Boitier Servitude Intelligent', max_length=200, null=True)
     electronique_94b = models.CharField('BSI SOFT - Boitier Servitude Intelligent', max_length=200, null=True)
+    xelons = models.ManyToManyField(Xelon, related_name='corvet', blank=True)
 
     def __str__(self):
         return self.vin
