@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <!-- Heading -->
 <div class="sidebar-heading">
     CSD Atelier
@@ -17,12 +19,12 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>
-                    <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">Dossiers clients</a>
-                    <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">Tableau Corvet</a>
+                    <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
+                    <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">Edition :</h6>
-                    <a class="collapse-item" href="#">Ajout données</a>
-                    <a class="collapse-item" href="#">modification données</a>
+                    <a class="collapse-item" href="#">{% trans "Add data" %}</a>
+                    <a class="collapse-item" href="#">{% trans "Edit data" %}</a>
                 </div>
             </div>
         </li>
@@ -40,11 +42,11 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>
-                    <a class="collapse-item" href="{% url 'raspeedi:table' %}">Table produits</a>
+                    <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">Edition :</h6>
-                    <a class="collapse-item" href="#">Ajout produit</a>
-                    <a class="collapse-item" href="#">modification produit</a>
+                    <a class="collapse-item" href="#">{% trans "Add product" %}</a>
+                    <a class="collapse-item" href="#">{% trans "Edit product" %}</a>
                 </div>
             </div>
         </li>
@@ -56,14 +58,14 @@
     <li class="nav-item">
         <a class="nav-link" href="{% url 'squalaetp:xelon' %}">
             <i class="fas fa-fw fa-table"></i>
-            <span>Dossiers clients</span></a>
+            <span>{% trans "Customer files" %}</span></a>
     </li>
 
     <!-- Nav Item - tableau Raspeedi -->
     <li class="nav-item">
         <a class="nav-link" href="{% url 'raspeedi:table' %}">
             <i class="fas fa-fw fa-table"></i>
-            <span>Tableau Raspeedi</span></a>
+            <span>{% trans "Raspeedi table" %}</span></a>
     </li>
 
 {% endif %}
