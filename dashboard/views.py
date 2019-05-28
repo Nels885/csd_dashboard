@@ -120,11 +120,18 @@ def blank(request):
     return render(request, 'demo/blank.html', context)
 
 
-def error(request):
+def error_404(request):
     context = {
         'title': '404 Page',
     }
     return render(request, '404.html', context)
+
+
+def error_502(request):
+    context = {
+        'title': '502 Page',
+    }
+    return render(request, '502.html', context)
 
 
 def charts(request):

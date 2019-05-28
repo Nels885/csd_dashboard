@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.core import serializers
+
+from .xml_parser import xml_parser
 
 from .models import Xelon, Corvet
 from .forms import CorvetForm
@@ -60,9 +63,14 @@ def corvet_insert(request):
         if form.is_valid():
             vin = form.cleaned_data['vin']
             xml_data = form.cleaned_data['xml_data']
-            print(xml_data)
-            print(vin)
-            return redirect('index')
+            data = xml_parser(xml_data)
+            if vin == data['vin']:
+                try:
+                    m = Corvet(**data)
+                    m.save()
+                    return redirect('index')
+                except TypeError as err:
+                    print("TypeError: {}".format(err))
         else:
             context['errors'] = form.errors.items()
     else:

@@ -6,6 +6,13 @@ import re
 
 
 def validate_vin(value):
+    """
+    Function for the VIN validation
+    :param value:
+        VIN value
+    :return:
+        Error message if not valid
+    """
     if not re.match(r'^VF[37]\w{14}$', str(value)):
         raise ValidationError(
             _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'),

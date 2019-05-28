@@ -26,6 +26,14 @@
                 {{ form.xml_data }}
 
             </div>
+            {% if form.errors.xml_data %}
+                <p class="text-danger">
+                    * {% trans "Invalid XML format" %}
+                </p>
+            {% endif %}
+                <p class="text-danger">
+                    * Le VIN ne correspond pas !
+                </p>
             <button type="submit" class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block">
                 {% trans "Submit" %}
             </button>
