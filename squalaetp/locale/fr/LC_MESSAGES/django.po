@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-27 11:58+0200\n"
+"POT-Creation-Date: 2019-05-28 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/templates/squalaetp/corvet_insert.html:22
-msgid "CORVET integration"
-msgstr "Intégration CORVET"
+#: squalaetp/forms.py:11 squalaetp/templates/squalaetp/corvet_insert.html:21
+msgid ""
+"The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
+msgstr ""
+"Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie des "
+"véhicules PSA"
 
-#: squalaetp/templates/squalaetp/corvet_insert.html:29
+#: squalaetp/forms.py:24
 msgid "Enter the VIN number"
 msgstr "Entrez le numéro de VIN"
 
-#: squalaetp/templates/squalaetp/corvet_insert.html:35
-msgid "The VIN must be 17 characters long"
-msgstr "Le VIN doit comporter 17 caractères"
+#: squalaetp/forms.py:33
+msgid ""
+"Data in XML format available on the RepairNAV site during CORVET "
+"extraction..."
+msgstr ""
+"Données au format XML disponible sur le site RepairNAV lors de l'extraction "
+"CORVET..."
 
-#: squalaetp/templates/squalaetp/corvet_insert.html:38
+#: squalaetp/templates/squalaetp/corvet_insert.html:30
 msgid "Submit"
 msgstr "Soumettre"
+
+#: squalaetp/views.py:55
+msgid "CORVET integration"
+msgstr "Intégration CORVET"

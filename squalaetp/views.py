@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext as _
 
 from .models import Xelon, Corvet
+from .forms import CorvetForm
 
 
 def xelon_table(request):
@@ -50,7 +52,23 @@ def corvet_insert(request):
     """
     context = {
         'title': 'Corvet',
+        'card_title': _('CORVET integration'),
     }
+
+    if request.method == 'POST':
+        form = CorvetForm(request.POST)
+        if form.is_valid():
+            vin = form.cleaned_data['vin']
+            xml_data = form.cleaned_data['xml_data']
+            print(xml_data)
+            print(vin)
+            return redirect('index')
+        else:
+            context['errors'] = form.errors.items()
+    else:
+        form = CorvetForm()
+    context['form'] = form
+
     return render(request, 'squalaetp/corvet_insert.html', context)
 
 

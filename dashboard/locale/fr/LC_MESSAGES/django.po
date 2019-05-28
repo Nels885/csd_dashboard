@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-27 11:58+0200\n"
+"POT-Creation-Date: 2019-05-28 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:22
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:29
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -42,7 +42,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal_logout.html:19
-#: dashboard/templates/dashboard/top_bar.html:248
+#: dashboard/templates/dashboard/top_bar.html:268
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -56,10 +56,8 @@ msgid "Corvet table"
 msgstr "Tableau Corvet"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:26
-#, fuzzy
-#| msgid "Add data"
-msgid "Add Corvet data"
-msgstr "Ajout données"
+msgid "Add Corvet"
+msgstr "Ajout Corvet"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:27
 msgid "Add data"
@@ -87,25 +85,33 @@ msgstr "modification produit"
 msgid "Raspeedi table"
 msgstr "Tableau Raspeedi"
 
-#: dashboard/templates/dashboard/top_bar.html:229
+#: dashboard/templates/dashboard/top_bar.html:195
+msgid "English"
+msgstr "Anglais"
+
+#: dashboard/templates/dashboard/top_bar.html:203
+msgid "French"
+msgstr "Français"
+
+#: dashboard/templates/dashboard/top_bar.html:249
 msgid "Profile"
 msgstr "Mon Profil"
 
-#: dashboard/templates/dashboard/top_bar.html:233
+#: dashboard/templates/dashboard/top_bar.html:253
 #, fuzzy
 #| msgid "Password"
 msgid "Change password"
 msgstr "Mot de passe"
 
-#: dashboard/templates/dashboard/top_bar.html:238
+#: dashboard/templates/dashboard/top_bar.html:258
 msgid "Administration"
 msgstr "Administration"
 
-#: dashboard/templates/dashboard/top_bar.html:243
+#: dashboard/templates/dashboard/top_bar.html:263
 msgid "Activity Log"
 msgstr "Journal d'activité"
 
-#: dashboard/templates/dashboard/top_bar.html:255
+#: dashboard/templates/dashboard/top_bar.html:275
 msgid "Guest"
 msgstr "Invité"
 
