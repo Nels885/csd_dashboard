@@ -7,9 +7,9 @@ class Xelon(models.Model):
     vin = models.CharField('V.I.N.', max_length=17)
     modele_produit = models.CharField('modèle produit', max_length=50)
     modele_vehicule = models.CharField('modèle véhicule', max_length=50)
-    reparer = models.BooleanField('réparé', default=False)
-    ajouter_le = models.DateField('ajouté le', default=timezone.now)
-    cloture_le =models.DateField('clôturé le', null=True)
+    cloture = models.BooleanField('cloture', default=False)
+    ajout_le = models.DateField('ajout le', default=timezone.now)
+    cloture_le =models.DateField('clôture le', null=True)
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)

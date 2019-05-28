@@ -5,6 +5,13 @@ from .models import Raspeedi
 
 
 def raspeedi_table(request):
+    """
+    View of the Raspeedi table page
+    :param request:
+        Parameters of the request
+    :return:
+        Raspeedi table page
+    """
     products = Raspeedi.objects.all().order_by('ref_boitier')
     context = {
         'title': 'Raspeedi',
@@ -16,4 +23,10 @@ def raspeedi_table(request):
 
 @login_required
 def edit(request):
+    """
+    View for editing product data in the Raspeedi table
+    :param request:
+        Parameters of the request
+    :return:
+    """
     pass

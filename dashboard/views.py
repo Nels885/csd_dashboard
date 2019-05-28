@@ -1,11 +1,17 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
 from squalaetp.models import Xelon
 
 
 def index(request):
+    """
+    View of index page
+    :param request:
+        Parameters of the request
+    :return:
+        Index page
+    """
     products = [
         ["RT6/RNEG2", "text-primary"],
         ["SMEG", "text-success"],
@@ -26,10 +32,7 @@ def index(request):
     return render(request, 'dashboard/index.html', context)
 
 
-@login_required
-def logout(request):
-    pass
-
+# Demo views not use for the project
 
 def buttons(request):
     context = {

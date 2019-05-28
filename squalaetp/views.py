@@ -5,6 +5,13 @@ from .models import Xelon, Corvet
 
 
 def xelon_table(request):
+    """
+    View of Xelon table page
+    :param request:
+        Parameters of the request
+    :return:
+        Xelon table page
+    """
     files = Xelon.objects.all().order_by('numero_de_dossier')
     context = {
         'title': 'Xelon',
@@ -16,6 +23,13 @@ def xelon_table(request):
 
 @login_required
 def corvet_table(request):
+    """
+    View of Corvet table page, visible only if authenticated
+    :param request:
+        Parameters of the request
+    :return:
+        Corvet table page
+    """
     corvets = Corvet.objects.all().order_by('vin')
     context = {
         'title': 'Corvet',
@@ -27,6 +41,13 @@ def corvet_table(request):
 
 @login_required
 def corvet_insert(request):
+    """
+    View of Corvet insert page, visible only if authenticated
+    :param request:
+        Parameters of the request
+    :return:
+        Corvet insert page
+    """
     context = {
         'title': 'Corvet',
     }
