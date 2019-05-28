@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-from django.core import serializers
 
 from .xml_parser import xml_parser
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm
+from .forms import CorvetForm, ParaErrorList
 
 
 def xelon_table(request):
@@ -59,12 +58,12 @@ def corvet_insert(request):
     }
 
     if request.method == 'POST':
-        form = CorvetForm(request.POST)
+        form = CorvetForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
             vin = form.cleaned_data['vin']
             xml_data = form.cleaned_data['xml_data']
             data = xml_parser(xml_data)
-            if vin == data['vin']:
+            if data and vin == data['vin']:
                 try:
                     m = Corvet(**data)
                     m.save()
