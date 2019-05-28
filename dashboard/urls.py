@@ -6,6 +6,7 @@ app_name = 'dashboard'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('set_language/<str:user_language>/', views.set_language, name="set_lang"),
     path('buttons/', views.buttons, name='buttons'),
     path('cards/', views.cards, name='cards'),
     path('colors/', views.colors, name='colors'),

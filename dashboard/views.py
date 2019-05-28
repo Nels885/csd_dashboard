@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
+from django.utils import translation
 
 from squalaetp.models import Xelon
 
@@ -30,6 +31,21 @@ def index(request):
         'prod_nb': prod_nb,
     }
     return render(request, 'dashboard/index.html', context)
+
+
+def set_language(request, user_language):
+    """
+    View of language change
+    :param request:
+        Parameters of the request
+    :param user_language:
+        Choice of the user's language
+    :return:
+        Index page
+    """
+    translation.activate(user_language)
+    request.session[translation.LANGUAGE_SESSION_KEY] = user_language
+    return redirect('index')
 
 
 # Demo views not use for the project

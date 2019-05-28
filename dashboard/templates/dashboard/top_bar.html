@@ -184,24 +184,44 @@
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-globe-europe fa-fw"></i>
             </a>
-            <!-- Dropdown - Messages -->
-            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+            <!-- Dropdown - Languages -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="searchDropdown">
-                {% get_language_info_list for LANGUAGES as languages %}
-                <form action="{% url "set_language" %}" method="post"
-                      class="form-inline mr-auto w-100 navbar-form">
+                <a class="dropdown-item d-flex align-items-center" href="{% url "dashboard:set_lang" user_language="en" %}">
+                    <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="{% static 'dashboard/img/united-kingdom.png' %}" alt="">
+                    </div>
+                    <div class="font-weight-bold">
+                        {% trans "English" %}
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="{% url "dashboard:set_lang" user_language="fr" %}">
+                    <div class="dropdown-list-image mr-3">
+                        <img class="rounded-circle" src="{% static 'dashboard/img/france.png' %}" alt="">
+                    </div>
+                    <div class="font-weight-bold">
+                        {% trans "French" %}
+                    </div>
+                </a>
+                <!--{% get_language_info_list for LANGUAGES as languages %}
+                <form action="{% url "set_language" %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
                         <select name="language" class="form-control" onchange="this.form.submit()">
-                            {% for language in languages %}
-                                <option value="{{ language.code }}"
+                        {% for language in languages %}
+
+                            <button type="submit" name="language" value="{{ language.code }}"
+                                    class="{% if language.code == LANGUAGE_CODE %}selected{% endif %}">
+                                {{ language.name_local }}
+                            </button>
+                            <option value="{{ language.code }}"
                                         {% if language.code == LANGUAGE_CODE %}selected="selected"{% endif %}>
                                     {{ language.name_local }}
                                 </option>
-                            {% endfor %}
+                        {% endfor %}
                         </select>
                     </div>
-                </form>
+                </form>-->
             </div>
         </li>
 
