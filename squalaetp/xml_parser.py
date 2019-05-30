@@ -8,13 +8,13 @@ def xml_parser(xml_data):
         root = tree.getchildren()
         for list in root[1]:
             if list.tag == "DONNEES_VEHICULE":
-                    for child in list:
-                        if child.tag in ["WMI", "VDS", "VIS"]:
-                            data['vin'] += child.text
-                        else:
-                            key, value = "DONNEE_{}".format(child.tag), child.text
-                            # print("{} : {}".format(key, value))
-                            data[key.lower()] = value
+                for child in list:
+                    if child.tag in ["WMI", "VDS", "VIS"]:
+                        data['vin'] += child.text
+                    else:
+                        key, value = "DONNEE_{}".format(child.tag), child.text
+                        # print("{} : {}".format(key, value))
+                        data[key.lower()] = value
             elif list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
                 for child in list:
                     key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
@@ -26,5 +26,5 @@ def xml_parser(xml_data):
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
         return data
-    except ET.ParseError as err:
+    except ET.ParseError:
         return None

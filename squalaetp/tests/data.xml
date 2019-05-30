@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MESSAGE>
+    <VEHICULE Existe="O">
+        <DONNEES_VEHICULE>
+            <SILHOUETTE>SY</SILHOUETTE>
+        </DONNEES_VEHICULE>
+        <LISTE_ATTRIBUTS>
+            <ATTRIBUT>DAT24</ATTRIBUT>
+        </LISTE_ATTRIBUTS>
+        <LISTE_ELECTRONIQUES>
+            <ELECTRONIQUE>14A9666571380</ELECTRONIQUE>
+        </LISTE_ELECTRONIQUES>
+    </VEHICULE>
+</MESSAGE>
