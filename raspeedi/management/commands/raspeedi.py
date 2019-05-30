@@ -8,7 +8,7 @@ from raspeedi.models import Raspeedi
 
 from ._excel_raspeedi import ExcelRaspeedi
 
-# import logging as log
+import logging as log
 
 
 class Command(BaseCommand):
@@ -35,21 +35,18 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        verbosity = int(options['verbosity'])
-
-        if options['filename'] is not None:
-            excel = ExcelRaspeedi(options['filename'])
-        else:
-            excel = ExcelRaspeedi(settings.XLS_RASPEEDI_FILE)
 
         if options['insert']:
-            nb_prod_before = Raspeedi.objects.count()
-
+            if options['filename'] is not None:
+                excel = ExcelRaspeedi(options['filename'])
+            else:
+                excel = ExcelRaspeedi(settings.XLS_RASPEEDI_FILE)
             self.stdout.write("Nombre de ligne dans Excel:    {}".format(excel.nrows))
             self.stdout.write("Noms des colonnes:             {}".format(excel.columns))
+
+            nb_prod_before = Raspeedi.objects.count()
             for row in excel.read():
-                if verbosity > 1:
-                    self.stdout.write(str(row))
+                log.info(row)
                 if row["ref_boitier"]:
                     try:
                         m = Raspeedi(**row)
