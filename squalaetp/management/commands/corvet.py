@@ -36,14 +36,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if options['filename'] is not None:
-            excel = ExcelSqualaetp(options['filename'])
-        else:
-            excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
-        self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
-        self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
-
         if options['insert']:
+            if options['filename'] is not None:
+                excel = ExcelSqualaetp(options['filename'])
+            else:
+                excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+            self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
+            self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
+
             self._insert(Corvet, excel.corvet_table(settings.XLS_ATTRIBUTS_FILE), "vin")
 
         elif options['delete']:

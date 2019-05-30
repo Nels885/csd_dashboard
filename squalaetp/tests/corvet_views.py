@@ -2,14 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from .models import Corvet
-
-
-class XelonTestCase(TestCase):
-
-    def test_xelon_table_page(self):
-        response = self.client.get(reverse('squalaetp:xelon'))
-        self.assertEqual(response.status_code, 200)
+from ..models import Corvet
 
 
 class CorvetTestCase(TestCase):
