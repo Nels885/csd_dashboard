@@ -2,8 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
-from .xml_parser import xml_parser
-
 from .models import Xelon, Corvet
 from .forms import CorvetForm, ParaErrorList
 
@@ -37,7 +35,7 @@ def corvet_table(request):
     corvets = Corvet.objects.all().order_by('vin')
     context = {
         'title': 'Corvet',
-        'table_title': 'Tableau Corvet',
+        'table_title': _('CORVET table'),
         'corvets': corvets
     }
     return render(request, 'squalaetp/corvet_table.html', context)
@@ -60,22 +58,18 @@ def corvet_insert(request):
     if request.method == 'POST':
         form = CorvetForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
-            vin = form.cleaned_data['vin']
-            xml_data = form.cleaned_data['xml_data']
-            data = xml_parser(xml_data)
-            if data and vin == data['vin']:
+            data = form.xml_parser('xml_data')
+            if data:
                 try:
                     m = Corvet(**data)
                     m.save()
                     return redirect('index')
-                except TypeError as err:
-                    print("TypeError: {}".format(err))
-        else:
-            context['errors'] = form.errors.items()
+                except TypeError:
+                    form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
+        context['errors'] = form.errors.items()
     else:
         form = CorvetForm()
     context['form'] = form
-
     return render(request, 'squalaetp/corvet_insert.html', context)
 
 

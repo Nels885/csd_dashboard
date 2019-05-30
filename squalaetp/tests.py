@@ -26,8 +26,7 @@ class CorvetTestCase(TestCase):
             '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
             '</VEHICULE></MESSAGE>'
         )
-        user = User.objects.create_user('toto', 'toto@bibi.com', 'totopassword')
-        user.save()
+        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
 
     def test_corvet_table_page_is_disconnected(self):
         response = self.client.get(reverse('squalaetp:corvet'))

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-28 17:14+0200\n"
+"POT-Creation-Date: 2019-05-30 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/forms.py:18 squalaetp/templates/squalaetp/corvet_insert.html:21
+#: squalaetp/forms.py:21
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie des "
 "véhicules PSA"
 
-#: squalaetp/forms.py:31
+#: squalaetp/forms.py:45
 msgid "Enter the VIN number"
 msgstr "Entrez le numéro de VIN"
 
-#: squalaetp/forms.py:40
+#: squalaetp/forms.py:54
 msgid ""
 "Data in XML format available on the RepairNAV site during CORVET "
 "extraction..."
@@ -37,14 +37,32 @@ msgstr ""
 "Données au format XML disponible sur le site RepairNAV lors de l'extraction "
 "CORVET..."
 
-#: squalaetp/templates/squalaetp/corvet_insert.html:31
-msgid "Invalid XML format"
-msgstr ""
+#: squalaetp/forms.py:86
+msgid "XML data does not match VIN"
+msgstr "Les données XML ne correspondent pas au VIN"
+
+#: squalaetp/forms.py:89
+msgid "Invalid XML data"
+msgstr "Les données XML ne sont pas valide"
 
 #: squalaetp/templates/squalaetp/corvet_insert.html:35
 msgid "Submit"
 msgstr "Soumettre"
 
+#: squalaetp/templates/squalaetp/corvet_insert_done.html:26
+msgid "Back to Dashboard"
+msgstr "Retour au tableau de bord"
+
+#: squalaetp/views.py:38
+#, fuzzy
+#| msgid "CORVET integration"
+msgid "CORVET table"
+msgstr "Intégration CORVET"
+
 #: squalaetp/views.py:55
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
+
+#: squalaetp/views.py:68
+msgid "An internal error has occurred. Thank you recommend your request"
+msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
