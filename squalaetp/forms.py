@@ -1,7 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
-from django.forms.utils import ErrorList
 
 import xml.etree.ElementTree as ET
 
@@ -22,17 +21,6 @@ def validate_vin(value):
             code='invalid',
             params={'value': value},
         )
-
-
-class ParaErrorList(ErrorList):
-
-    def __str__(self):
-        return self.as_divs()
-
-    def as_divs(self):
-        if not self:
-            return ''
-        return '<div>%s</div>' % ''.join(['<p class="text-danger">* %s</p>' % e for e in self])
 
 
 class CorvetForm(forms.Form):

@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm, ParaErrorList
+from .forms import CorvetForm
+from dashboard.forms import ParaErrorList
 
 
 def xelon_table(request):

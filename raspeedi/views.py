@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 
 from .models import Raspeedi
 from .forms import RaspeediForm
+from dashboard.forms import ParaErrorList
 
 
 def table(request):
@@ -31,11 +32,14 @@ def insert(request):
     }
 
     if request.method == 'POST':
-        form = RaspeediForm(request.POST)
+        form = RaspeediForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
-            return redirect('index')
-        else:
-            context['errors'] = form.errors.items()
+            ref_case = form.cleaned_data['ref_boitier']
+            ref = Raspeedi.objects.filter(ref_boitier=ref_case)
+            if not ref.exists():
+                Raspeedi.objects.create(form)
+                return redirect('index')
+        context['errors'] = form.errors.items()
     else:
         form = RaspeediForm()
     context['form'] = form

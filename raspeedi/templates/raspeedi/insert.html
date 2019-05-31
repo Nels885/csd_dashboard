@@ -43,7 +43,7 @@
 
                 </div>
                 <div class="col-sm-3">
-                    <label for="{{ form.cam.id_for_label }}">Caméra de recul :</label>
+                    <label for="{{ form.cam.id_for_label }}">Caméra recul :</label>
 
                     {{ form.cam }}
 
@@ -75,13 +75,13 @@
 
                 </div>
                 <div class="col-sm-3">
-                    <label for="{{ form.carto.id_for_label }}">Version cartographie :</label>
+                    <label for="{{ form.carto.id_for_label }}">Version carto :</label>
 
                     {{ form.carto }}
 
                 </div>
                 <div class="col-sm-3">
-                    <label for="{{ form.connecteur_ecran.id_for_label }}">Nombre de connecteur d'écran :</label>
+                    <label for="{{ form.connecteur_ecran.id_for_label }}">Nombre d'écran :</label>
 
                     {{ form.connecteur_ecran }}
 
@@ -94,6 +94,14 @@
                     {{ form.ref_mm }}
                 </div>
             </div>
+
+            {% if errors %}
+                {% for key, error in errors %}
+                    {% autoescape off %}
+                        {{ error }}
+                    {% endautoescape %}
+                {% endfor %}
+            {% endif %}
 
             <button type="submit" class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block">
                 {% trans "Submit" %}
