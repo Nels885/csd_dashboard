@@ -37,7 +37,7 @@ def insert(request):
             ref_case = form.cleaned_data['ref_boitier']
             ref = Raspeedi.objects.filter(ref_boitier=ref_case)
             if not ref.exists():
-                Raspeedi.objects.create(form)
+                Raspeedi.objects.create(**form.cleaned_data)
                 return redirect('index')
         context['errors'] = form.errors.items()
     else:
