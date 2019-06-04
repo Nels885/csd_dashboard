@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 
 
 class Xelon(models.Model):
@@ -7,9 +6,17 @@ class Xelon(models.Model):
     vin = models.CharField('V.I.N.', max_length=17)
     modele_produit = models.CharField('modèle produit', max_length=50)
     modele_vehicule = models.CharField('modèle véhicule', max_length=50)
-    cloture = models.BooleanField('cloture', default=False)
-    ajout_le = models.DateField('ajout le', default=timezone.now)
-    cloture_le =models.DateField('clôture le', null=True)
+    date_retour = models.DateField('date retour', null=True)
+    date_de_cloture = models.DateTimeField('date de clôture', null=True)
+    type_de_cloture = models.CharField('type de clôture', max_length=10, null=True)
+    lieu_de_stockage = models.CharField('lieu de stockage', max_length=20, null=True)
+    nom_technicien = models.CharField('nom technicien', max_length=50, null=True)
+    commentaire_sav_admin = models.CharField('commentaire SAV Admin', max_length=500, null=True)
+    commentaire_de_la_fr = models.CharField('commentaire de la FR', max_length=500, null=True)
+    commentaire_action = models.CharField('commentaire action', max_length=500, null=True)
+    libelle_de_la_fiche_cas = models.CharField('libellé de la fiche cas', max_length=100, null=True)
+    dossier_vip = models.BooleanField('dossier VIP', default=False)
+    express = models.BooleanField('express', default=False)
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)

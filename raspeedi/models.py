@@ -12,6 +12,7 @@ CON_CHOICES = [
 ]
 
 MEDIA_CHOICES = [
+    ('N/A', 'Vide'),
     ('HDD', 'Disque Dur'),
     ('8Go', 'Carte SD 8Go'),
     ('16Go', 'Carte SD 16Go'),
@@ -36,7 +37,7 @@ class Raspeedi(models.Model):
     type = models.CharField(max_length=3, choices=TYPE_CHOICES)
     dab = models.BooleanField('DAB', default=False)
     cam = models.BooleanField('caméra de recul', default=False)
-    dump_peedi = models.CharField('dump PEEDI', max_length=25, null=True)
+    dump_peedi = models.CharField('dump PEEDI', max_length=25, null=True, blank=True)
     cd_version = models.CharField(max_length=10, null=True, blank=True)
     media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, null=True)
     carto = models.CharField('version cartographie', max_length=20, null=True, blank=True)

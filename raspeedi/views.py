@@ -18,7 +18,7 @@ def table(request):
     products = Raspeedi.objects.all().order_by('ref_boitier')
     context = {
         'title': 'Raspeedi',
-        'table_title': 'Tableau Produits Télématique PSA',
+        'table_title': _('Table Products Telematics PSA'),
         'products': products
     }
     return render(request, 'raspeedi/table.html', context)

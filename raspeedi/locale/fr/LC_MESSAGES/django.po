@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-04 12:05+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: raspeedi/templates/raspeedi/insert.html:14
+msgid "case reference"
+msgstr "Référence boîtier"
+
+#: raspeedi/templates/raspeedi/insert.html:20
+msgid "Product"
+msgstr "Produit"
+
+#: raspeedi/templates/raspeedi/insert.html:26
+msgid "Front"
+msgstr "Façade"
+
+#: raspeedi/templates/raspeedi/insert.html:46
+msgid "Reversing camera"
+msgstr "Caméra recul"
+
+#: raspeedi/templates/raspeedi/insert.html:54
+msgid "PEEDI dump"
+msgstr "Dump PEEDI"
+
+#: raspeedi/templates/raspeedi/insert.html:59
+msgid "RENESAS dump"
+msgstr "Dump RENESAS"
+
+#: raspeedi/templates/raspeedi/insert.html:66
+msgid "Version CD"
+msgstr "CD version"
+
+#: raspeedi/templates/raspeedi/insert.html:72
+msgid "Media type"
+msgstr "Type de média"
+
+#: raspeedi/templates/raspeedi/insert.html:78
+msgid "Carto version"
+msgstr "Version carto"
+
+#: raspeedi/templates/raspeedi/insert.html:84
+msgid "Screens number"
+msgstr "Nombre d'écran"
+
+#: raspeedi/templates/raspeedi/insert.html:92
+msgid "MM reference"
+msgstr "Référence MM"
+
+#: raspeedi/templates/raspeedi/insert.html:107
+msgid "Submit"
+msgstr "Soumettre"
+
+#: raspeedi/views.py:21
+msgid "Table Products Telematics PSA"
+msgstr "Tableau Produits Télématique PSA"
+
+#: raspeedi/views.py:31
+msgid "RASPEEDI integration"
+msgstr ""

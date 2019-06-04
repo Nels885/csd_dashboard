@@ -9,9 +9,9 @@
             <th>V.I.N.</th>
             <th>Modèle produit</th>
             <th>Modèle véhicule</th>
-            <th>Réparé</th>
-            <th>Date d'ajout</th>
-            <th>Date cloture</th>
+            <th>Type de clôture</th>
+            <th>Date Retour</th>
+            <th>Date clôture</th>
         </tr>
         </thead>
         <tfoot>
@@ -20,9 +20,9 @@
             <th>V.I.N.</th>
             <th>Modèle produit</th>
             <th>Modèle véhicule</th>
-            <th>Réparé</th>
-            <th>Date d'ajout</th>
-            <th>Date cloture</th>
+            <th>Type de clôture</th>
+            <th>Date Retour</th>
+            <th>Date clôture</th>
         </tr>
         </tfoot>
         <tbody>
@@ -34,9 +34,9 @@
                 <td>{{ file.vin }}</td>
                 <td>{{ file.modele_produit }}</td>
                 <td>{{ file.modele_vehicule }}</td>
-                <td>{{ file.cloture }}</td>
-                <td>{{ file.ajout_le }}</td>
-                <td>{{ file.cloture_le }}</td>
+                <td>{{ file.type_de_cloture }}</td>
+                <td>{{ file.date_retour }}</td>
+                <td>{{ file.date_de_cloture }}</td>
             </tr>
 
         {% endfor %}
