@@ -15,6 +15,7 @@ django-debug-toolbar = "*"
 pandas = "*"
 gunicorn = "*"
 xlwt = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = ">=3.5"

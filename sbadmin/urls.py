@@ -21,6 +21,7 @@ from dashboard import views
 
 urlpatterns = [
     path('', views.index, name="index"),
+    path('api/', include('api.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('raspeedi/', include('raspeedi.urls')),
     path('squalaetp/', include('squalaetp.urls')),

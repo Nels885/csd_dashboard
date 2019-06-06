@@ -126,7 +126,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-pie pt-4 pb-2">
-                        <canvas id="prodPieChart"></canvas>
+                        <canvas id="prodPieChart" data-url="{% url 'api:api-data' %}"></canvas>
                     </div>
                     <div class="mt-4 text-center small">
                         {% for name, color in products %}
