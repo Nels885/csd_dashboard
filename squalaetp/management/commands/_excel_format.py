@@ -3,16 +3,9 @@ import unicodedata
 import re
 
 
-class ExcelSqualaetp:
-    """## Read data in Excel file for Squalaetp ##"""
-    XELON_COLS = ['Numéro de dossier', 'V.I.N.', 'Modèle produit', 'Modèle véhicule']
+class ExcelFormat:
 
-    def __init__(self, file, sheet_index=0, columns=None):
-        """
-        Initialize ExcelRaspeedi class
-        :param file:
-            excel file to process
-        """
+    def __init__(self, file, sheet_index, columns):
         df = pd.read_excel(file, sheet_index)
         df.dropna(how='all', inplace=True)
         self.sheet = df.fillna('')
@@ -21,7 +14,7 @@ class ExcelSqualaetp:
 
     def read_all(self):
         """
-        Formatting data from the Raspeedi excel file
+        Formatting data from the excel file
         :return:
             list of dictionnaries that represents the data in the sheet
         """
@@ -31,6 +24,37 @@ class ExcelSqualaetp:
             row_dict = dict(zip(self.columns, row))
             data.append(row_dict)
         return data
+
+    @staticmethod
+    def _columns_convert(columns):
+        """
+        Convert the names of the columns to be used by the database
+        :param columns:
+            List of column names
+        :return:
+            list of modified column names
+        """
+        data = []
+        deletion = {' ': '_', '.': ''}
+        for column in columns:
+            name = unicodedata.normalize('NFKD', column).encode('ASCII', 'ignore').decode('utf8').lower()
+            for old, new in deletion.items():
+                name = name.replace(old, new)
+            data.append(name)
+        return data
+
+
+class ExcelSqualaetp(ExcelFormat):
+    """## Read data in Excel file for Squalaetp ##"""
+    XELON_COLS = ['Numéro de dossier', 'V.I.N.', 'Modèle produit', 'Modèle véhicule']
+
+    def __init__(self, file, sheet_index=0, columns=None):
+        """
+        Initialize ExcelRaspeedi class
+        :param file:
+            excel file to process
+        """
+        super().__init__(file, sheet_index, columns)
 
     def xelon_table(self):
         """
@@ -80,22 +104,4 @@ class ExcelSqualaetp:
                 corvet_dict = dict(zip(corvet_cols, data_corvet))
                 row_dict = dict(zip(["vin", "data"], [vin, corvet_dict]))
                 data.append(row_dict)
-        return data
-
-    @staticmethod
-    def _columns_convert(columns):
-        """
-        Convert the names of the columns to be used by the database
-        :param columns:
-            List of column names
-        :return:
-            list of modified column names
-        """
-        data = []
-        deletion = {' ': '_', '.': ''}
-        for column in columns:
-            name = unicodedata.normalize('NFKD', column).encode('ASCII', 'ignore').decode('utf8').lower()
-            for old, new in deletion.items():
-                name = name.replace(old, new)
-            data.append(name)
         return data
