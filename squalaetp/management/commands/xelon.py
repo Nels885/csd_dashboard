@@ -59,13 +59,17 @@ class Command(BaseCommand):
 
     def _insert(self, model, excel_method, columns_name):
         nb_prod_before = model.objects.count()
-        psa = ExcelsDelayAnalysis(settings.XLS_PSA_FILE)
+        excels = []
+        for file in settings.XLS_DELAY_FILES:
+            excels.append(ExcelsDelayAnalysis(file))
         for row in excel_method:
             if len(row[columns_name]):
                 try:
-                    row_update = psa.xelon_table(row[columns_name])
-                    if len(row_update):
-                        row.update(row_update)
+                    for excel in excels:
+                        row_update = excel.xelon_table(row[columns_name])
+                        if len(row_update):
+                            row.update(row_update)
+                            break
                     log.info(row)
                     m = model(**row)
                     m.save()
