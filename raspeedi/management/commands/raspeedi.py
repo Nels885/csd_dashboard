@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
-from django.db.utils import IntegrityError, DataError
+from django.db.utils import IntegrityError
 from django.db import connection
 from django.conf import settings
 
@@ -51,14 +51,8 @@ class Command(BaseCommand):
                     try:
                         m = Raspeedi(**row)
                         m.save()
-                    except KeyError as err:
-                        self.stderr.write("Manque la valeur : {}".format(err))
                     except IntegrityError as err:
                         self.stderr.write("IntegrityError: {}".format(err))
-                    except DataError as err:
-                        self.stderr.write("DataError: {}".format(err))
-                    except TypeError as err:
-                        self.stderr.write("TypeError: {}".format(err))
             nb_prod_after = Raspeedi.objects.count()
             self.stdout.write("Nombre de produits ajoutés :   {}".format(nb_prod_after - nb_prod_before))
             self.stdout.write("Nombre de produits total :     {}".format(nb_prod_after))

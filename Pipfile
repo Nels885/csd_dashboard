@@ -14,6 +14,7 @@ xlrd = "*"
 django-debug-toolbar = "*"
 pandas = "*"
 gunicorn = "*"
+xlwt = "*"
 
 [requires]
 python_version = ">=3.5"

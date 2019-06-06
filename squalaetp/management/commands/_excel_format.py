@@ -1,12 +1,31 @@
+from __future__ import unicode_literals
+from xlwt import Workbook
+import io
+from xlrd import XLRDError
 import pandas as pd
 import unicodedata
 import re
 
 
 class ExcelFormat:
+    """## Base class for formatting Excel files ##"""
 
-    def __init__(self, file, sheet_index, columns):
-        df = pd.read_excel(file, sheet_index)
+    def __init__(self, file, sheet_index, columns, skip_rows=None):
+        """
+        Initialize ExcelFormat class
+        :param file:
+            Excel file path
+        :param sheet_index:
+            Sheet index to be processed from excel file
+        :param columns:
+            Number of the last column to be processed
+        :param skip_rows:
+            Rows to skip at the beginning (0-indexed)
+        """
+        try:
+            df = pd.read_excel(file, sheet_index, skiprows=skip_rows)
+        except XLRDError:
+            df = self._excel_decode(file, skip_rows)
         df.dropna(how='all', inplace=True)
         self.sheet = df.fillna('')
         self.nrows = self.sheet.shape[0]
@@ -16,7 +35,7 @@ class ExcelFormat:
         """
         Formatting data from the excel file
         :return:
-            list of dictionnaries that represents the data in the sheet
+            list of dictionaries that represents the data in the sheet
         """
         data = []
         for line in range(self.nrows):
@@ -24,6 +43,16 @@ class ExcelFormat:
             row_dict = dict(zip(self.columns, row))
             data.append(row_dict)
         return data
+
+    def _date_converter(self, columns):
+        """
+        Converting columns to datetime
+        :param columns:
+            list of columns to convert
+        """
+        for col_date in columns:
+            self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', utc=True)
+        self.sheet.fillna(pd.Timestamp(2019, 1, 1), inplace=True)
 
     @staticmethod
     def _columns_convert(columns):
@@ -43,16 +72,51 @@ class ExcelFormat:
             data.append(name)
         return data
 
+    @staticmethod
+    def _excel_decode(filename, skip_rows):
+        """
+        Fix badly formatted excel files
+        :param filename:
+            Excel file path
+        :param skip_rows:
+            Rows to skip at the beginning (0-indexed)
+        :return:
+            Temporary Excel file in the 'tmp' directory
+        """
+        file1 = io.open(filename, 'r', encoding='latin3')
+        data = file1.readlines()
+
+        # Creating a workbook object
+        xldoc = Workbook()
+        # Adding a sheet to the workbook object
+        sheet = xldoc.add_sheet("Sheet1", cell_overwrite_ok=True)
+        # Iterating and saving the data to sheet
+        for i, row in enumerate(data):
+            # Two things are done here
+            # Removeing the '\n' which comes while reading the file using io.open
+            # Getting the values after splitting using '\t'
+            for j, val in enumerate(row.replace('\n', '').split('\t')):
+                sheet.write(i, j, val)
+
+        # Saving the file as an excel file
+        xldoc.save('/tmp/reformat.xls')
+        return pd.read_excel("/tmp/reformat.xls", sheet_name="Sheet1", skiprows=skip_rows)
+
 
 class ExcelSqualaetp(ExcelFormat):
     """## Read data in Excel file for Squalaetp ##"""
+
     XELON_COLS = ['Numéro de dossier', 'V.I.N.', 'Modèle produit', 'Modèle véhicule']
 
     def __init__(self, file, sheet_index=0, columns=None):
         """
-        Initialize ExcelRaspeedi class
+        Initialize ExcelSqualaetp class
         :param file:
             excel file to process
+        :param sheet_index:
+            Sheet index to be processed from excel file
+        :param columns:
+            Number of the last column to be processed
         """
         super().__init__(file, sheet_index, columns)
 
@@ -105,3 +169,41 @@ class ExcelSqualaetp(ExcelFormat):
                 row_dict = dict(zip(["vin", "data"], [vin, corvet_dict]))
                 data.append(row_dict)
         return data
+
+
+class ExcelsDelayAnalysis(ExcelFormat):
+    """## Read data in Excel file for Delay Analysis ##"""
+
+    COLS = ['Date Retour', 'Lieu de stockage', 'Date de clôture', 'Type de clôture', 'Nom Technicien',
+            'Commentaire SAV Admin', 'Commentaire de la FR', 'Commentaire action', 'Libellé de la fiche cas',
+            'Dossier VIP', 'Express']
+    COLS_DATE = ['Date Retour', 'Date de clôture']
+
+    def __init__(self, file, sheet_index=0, columns=None):
+        """
+        Initialize ExcelDelayAnalysis class
+        :param file:
+            excel file to process
+        :param sheet_index:
+            Sheet index to be processed from excel file
+        :param columns:
+            Number of the last column to be processed
+        """
+        super().__init__(file, sheet_index, columns, skip_rows=8)
+        self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
+        self._date_converter(self.COLS_DATE)
+
+    def xelon_table(self, file_number):
+        """
+        Extracting data for the Xelon table from the Database
+        :param file_number:
+            File number to search
+        :return:
+            Dictionnary that represents the data of file number to insert Xelon table
+        """
+        row_dict = {}
+        row_index = self.sheet[self.sheet['N° de dossier'] == file_number].index
+        row = self.sheet.loc[row_index, self.COLS]  # get the data in the ith row
+        if len(row):
+            row_dict = dict(zip(self._columns_convert(self.COLS), row.values[0]))
+        return row_dict

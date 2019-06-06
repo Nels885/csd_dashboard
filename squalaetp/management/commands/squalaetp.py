@@ -7,7 +7,7 @@ from django.conf import settings
 
 from squalaetp.models import Xelon, CorvetBackup, Corvet
 
-from ._excel_squalaetp import ExcelSqualaetp
+from ._excel_format import ExcelSqualaetp
 
 import logging as log
 
@@ -96,14 +96,8 @@ class Command(BaseCommand):
                 try:
                     m = model(**row)
                     m.save()
-                except KeyError as err:
-                    log.warning("Manque la valeur : {}".format(err))
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
-                except DataError as err:
-                    log.warning("DataError: {}".format(err))
-                except TypeError as err:
-                    log.warning("TypeError: {}".format(err))
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))

@@ -145,3 +145,4 @@ LOGOUT_REDIRECT_URL = '/'
 XLS_RASPEEDI_FILE = "~/Documents/CSD_DATABASE/PROG/RASPEEDI/table_boitier_PSA.xlsx"
 XLS_SQUALAETP_FILE = "~/Documents/CSD_DATABASE/EXTS/squalaetp.xls"
 XLS_ATTRIBUTS_FILE = "~/Documents/CSD_DATABASE/EXTS/Attributs CORVET.xlsx"
+XLS_PSA_FILE = "/home/nels885/Documents/CSD_DATABASE/RH/AnalyseRetards/PSA.xls"

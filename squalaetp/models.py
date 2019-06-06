@@ -9,7 +9,7 @@ class Xelon(models.Model):
     date_retour = models.DateField('date retour', null=True)
     date_de_cloture = models.DateTimeField('date de clôture', null=True)
     type_de_cloture = models.CharField('type de clôture', max_length=10, null=True)
-    lieu_de_stockage = models.CharField('lieu de stockage', max_length=20, null=True)
+    lieu_de_stockage = models.CharField('lieu de stockage', max_length=50, null=True)
     nom_technicien = models.CharField('nom technicien', max_length=50, null=True)
     commentaire_sav_admin = models.CharField('commentaire SAV Admin', max_length=500, null=True)
     commentaire_de_la_fr = models.CharField('commentaire de la FR', max_length=500, null=True)
