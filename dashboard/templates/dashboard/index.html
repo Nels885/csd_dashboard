@@ -162,7 +162,7 @@
                                 {% endif %}
                             </div>
                             <!-- Card Body -->
-                            <div class="card-body">{{ post.overview }}</div>
+                            <div class="card-body">{{ post.overview|safe }}</div>
                         </div>
 
                     {% endfor %}

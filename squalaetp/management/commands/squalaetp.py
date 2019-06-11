@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.utils import IntegrityError, DataError
+from django.db.utils import IntegrityError
 from django.db import connection
 from django.conf import settings
 
 from squalaetp.models import Xelon, CorvetBackup, Corvet
+from raspeedi.models import Raspeedi
 
 from ._excel_format import ExcelSqualaetp
 
@@ -60,17 +61,28 @@ class Command(BaseCommand):
             pass
 
         elif options['relations']:
-            xelon_files = []
-            count = 0
+            count, objects_list = 0, []
             for xelon in Xelon.objects.all():
                 try:
                     corvet = Corvet.objects.get(pk=xelon.vin)
                     corvet.xelons.add(xelon)
                     count += 1
                 except ObjectDoesNotExist:
-                    xelon_files.append(xelon.numero_de_dossier)
-            self.stdout.write("pas de relation pour les dossier Xelon suivant:\n{}".format(xelon_files))
-            self.stdout.write("Nombre de relations ajoutées: {}".format(count))
+                    objects_list.append(xelon.numero_de_dossier)
+            self.stdout.write("pas de relation pour les dossier Xelon suivant:\n{}".format(objects_list))
+            self.stdout.write("Nombre de relations Corvet/Xelon ajoutées: {}".format(count))
+            count, objects_list = 0, []
+            for corvet in Corvet.objects.all():
+                try:
+                    if corvet.electronique_14x != "#":
+                        raspeedi = Raspeedi.objects.get(pk=int(corvet.electronique_14x))
+                        raspeedi.corvets.add(corvet)
+                        count += 1
+                except ObjectDoesNotExist:
+                    objects_list.append(corvet.electronique_14x)
+
+            self.stdout.write("pas de relation pour les boitiers Corvet suivant:\n{}".format(objects_list))
+            self.stdout.write("Nombre de relations Raspeedi/Corvet ajoutées: {}".format(count))
 
         elif options['backup_insert']:
             self._insert(CorvetBackup, excel.corvet_backup_table(), "vin")

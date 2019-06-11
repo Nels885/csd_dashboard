@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from squalaetp.models import Corvet
+
 TYPE_CHOICES = [
     ('RAD', 'Radio'),
     ('NAV', 'Navigation'),
@@ -44,6 +46,7 @@ class Raspeedi(models.Model):
     dump_renesas = models.CharField(max_length=50, null=True, blank=True)
     ref_mm = models.CharField(max_length=200, null=True, blank=True)
     connecteur_ecran = models.IntegerField("nombre de connecteur d'écran", choices=CON_CHOICES, null=True)
+    corvets = models.ManyToManyField(Corvet, related_name='raspeedi', blank=True)
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.ref_boitier, self.produit, self.facade, self.type)

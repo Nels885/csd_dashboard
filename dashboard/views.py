@@ -14,7 +14,7 @@ def index(request):
     :return:
         Index page
     """
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-timestamp')
     products = [
         ["RT6/RNEG2", "text-primary"],
         ["SMEG", "text-success"],

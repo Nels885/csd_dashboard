@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-from django.core import serializers
 
 from .models import Xelon, Corvet
 from .forms import CorvetForm
