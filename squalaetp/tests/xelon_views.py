@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 
-class DashboardTestCase(TestCase):
+class XelonTestCase(TestCase):
 
     def test_xelon_table_page(self):
         response = self.client.get(reverse('squalaetp:xelon'))

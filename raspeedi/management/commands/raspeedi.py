@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
-from django.db.utils import IntegrityError, DataError
+from django.db.utils import IntegrityError
 from django.db import connection
 from django.conf import settings
 
@@ -15,6 +15,12 @@ class Command(BaseCommand):
     help = 'Interact with the Raspeedi table in the database'
 
     def add_arguments(self, parser):
+        parser.add_argument(
+            '-f',
+            '--file',
+            dest='filename',
+            help='Specify import Excel file',
+        )
         parser.add_argument(
             '--insert',
             action='store_true',
@@ -31,24 +37,22 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         if options['insert']:
-            nb_prod_before = Raspeedi.objects.count()
-            excel = ExcelRaspeedi(settings.XLS_RASPEEDI_FILE)
+            if options['filename'] is not None:
+                excel = ExcelRaspeedi(options['filename'])
+            else:
+                excel = ExcelRaspeedi(settings.XLS_RASPEEDI_FILE)
             self.stdout.write("Nombre de ligne dans Excel:    {}".format(excel.nrows))
             self.stdout.write("Noms des colonnes:             {}".format(excel.columns))
+
+            nb_prod_before = Raspeedi.objects.count()
             for row in excel.read():
                 log.info(row)
                 if row["ref_boitier"]:
                     try:
                         m = Raspeedi(**row)
                         m.save()
-                    except KeyError as err:
-                        log.error("Manque la valeur : {}".format(err))
                     except IntegrityError as err:
-                        log.error("IntegrityError: {}".format(err))
-                    except DataError as err:
-                        log.error("DataError: {}".format(err))
-                    except TypeError as err:
-                        log.error("TypeError: {}".format(err))
+                        self.stderr.write("IntegrityError: {}".format(err))
             nb_prod_after = Raspeedi.objects.count()
             self.stdout.write("Nombre de produits ajoutés :   {}".format(nb_prod_after - nb_prod_before))
             self.stdout.write("Nombre de produits total :     {}".format(nb_prod_after))
@@ -60,4 +64,4 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write("Suppression des données de la table Raspeeti terminée!")
+            self.stdout.write("Suppression des données de la table Raspeedi terminée!")

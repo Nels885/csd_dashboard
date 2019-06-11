@@ -1,34 +1,55 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.utils.translation import ugettext as _
+from django.utils import translation
 
 from squalaetp.models import Xelon
+from .models import Post
 
 
 def index(request):
+    """
+    View of index page
+    :param request:
+        Parameters of the request
+    :return:
+        Index page
+    """
+    posts = Post.objects.all().order_by('-timestamp')
     products = [
         ["RT6/RNEG2", "text-primary"],
         ["SMEG", "text-success"],
-        ["RT4", "text-info"],
-        ["DISPLAY", "text-dark"],
         ["RNEG", "text-danger"],
-        ["NG4", "text-secondary"]
+        ["NG4", "text-secondary"],
+        ["DISPLAY", "text-dark"],
+        ["RTx", "text-info"],
+        ["AUTRES", "text-warning"]
     ]
-    prod_nb = []
-    for prod in products:
-        prod_nb.append(Xelon.objects.filter(modele_produit__contains=prod[0]).count())
-
+    pending_prods = Xelon.objects.filter(type_de_cloture="").count()
     context = {
-        'title': 'Dashboard',
+        'title': _("Dashboard"),
         'products': products,
-        'prod_nb': prod_nb,
+        'pend_prods': pending_prods,
+        'posts': posts
     }
     return render(request, 'dashboard/index.html', context)
 
 
-@login_required
-def logout(request):
-    pass
+def set_language(request, user_language):
+    """
+    View of language change
+    :param request:
+        Parameters of the request
+    :param user_language:
+        Choice of the user's language
+    :return:
+        Index page
+    """
+    translation.activate(user_language)
+    request.session[translation.LANGUAGE_SESSION_KEY] = user_language
+    return redirect('index')
 
+
+# Demo views not use for the project
 
 def buttons(request):
     context = {
@@ -100,11 +121,18 @@ def blank(request):
     return render(request, 'demo/blank.html', context)
 
 
-def error(request):
+def error_404(request):
     context = {
         'title': '404 Page',
     }
     return render(request, '404.html', context)
+
+
+def error_502(request):
+    context = {
+        'title': '502 Page',
+    }
+    return render(request, '502.html', context)
 
 
 def charts(request):

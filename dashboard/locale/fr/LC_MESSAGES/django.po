@@ -1,0 +1,185 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-04 12:05+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:29
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: dashboard/templates/dashboard/base.html:45
+#: dashboard/templates/registration/login.html:58
+msgid "Login"
+msgstr "Connexion"
+
+#: dashboard/templates/dashboard/modal_logout.html:9
+msgid "Ready to Leave?"
+msgstr "Prêt à partir ?"
+
+#: dashboard/templates/dashboard/modal_logout.html:15
+msgid "Select \"Logout\" below if you are ready to end your current session."
+msgstr ""
+"Sélectionnez \"Déconnexion\" ci-dessous si vous êtes prêt à mettre fin à "
+"votre session en cours."
+
+#: dashboard/templates/dashboard/modal_logout.html:18
+msgid "Cancel"
+msgstr "Annuler"
+
+#: dashboard/templates/dashboard/modal_logout.html:19
+#: dashboard/templates/dashboard/top_bar.html:268
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:22
+#: dashboard/templates/dashboard/nav_csd_atelier.html:62
+msgid "Customer files"
+msgstr "Dossiers clients"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:23
+msgid "Corvet table"
+msgstr "Tableau Corvet"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:26
+msgid "Add Corvet"
+msgstr "Ajout Corvet"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:27
+msgid "Add data"
+msgstr "Ajout données"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:28
+msgid "Edit data"
+msgstr "modification données"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:46
+msgid "Products table"
+msgstr "Table produits"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:49
+msgid "Add product"
+msgstr "Ajout produit"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:50
+msgid "Edit product"
+msgstr "modification produit"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:69
+#, fuzzy
+#| msgid "Raspeedi Table"
+msgid "Raspeedi table"
+msgstr "Tableau Raspeedi"
+
+#: dashboard/templates/dashboard/top_bar.html:195
+msgid "English"
+msgstr "Anglais"
+
+#: dashboard/templates/dashboard/top_bar.html:203
+msgid "French"
+msgstr "Français"
+
+#: dashboard/templates/dashboard/top_bar.html:249
+msgid "Profile"
+msgstr "Mon Profil"
+
+#: dashboard/templates/dashboard/top_bar.html:253
+#, fuzzy
+#| msgid "Password"
+msgid "Change password"
+msgstr "Mot de passe"
+
+#: dashboard/templates/dashboard/top_bar.html:258
+msgid "Administration"
+msgstr "Administration"
+
+#: dashboard/templates/dashboard/top_bar.html:263
+msgid "Activity Log"
+msgstr "Journal d'activité"
+
+#: dashboard/templates/dashboard/top_bar.html:275
+msgid "Guest"
+msgstr "Invité"
+
+#: dashboard/templates/registration/login.html:25
+msgid "Welcome Back!"
+msgstr "Vous avez un compte ?"
+
+#: dashboard/templates/registration/login.html:35
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: dashboard/templates/registration/login.html:42
+msgid "Password"
+msgstr "Mot de passe"
+
+#: dashboard/templates/registration/login.html:48
+msgid "Remember Me"
+msgstr "Se souvenir de moi"
+
+#: dashboard/templates/registration/login.html:54
+msgid "Invalid username or password"
+msgstr "Nom d'utilisateur ou mot de passe invalide"
+
+#: dashboard/templates/registration/login.html:64
+msgid "Forgot Password?"
+msgstr "Mot de passe oublié ?"
+
+#: dashboard/templates/registration/login.html:69
+msgid "Create an Account!"
+msgstr "Création d'un compte !"
+
+#: dashboard/templates/registration/password_change_done.html:26
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Back to Dashboard"
+msgstr "Retour au Tableau de bord"
+
+#: dashboard/templates/registration/password_change_form.html:31
+#, fuzzy
+#| msgid "Password"
+msgid "Old password"
+msgstr "Ancien mot de passe"
+
+#: dashboard/templates/registration/password_change_form.html:36
+#, fuzzy
+#| msgid "Password"
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: dashboard/templates/registration/password_change_form.html:41
+msgid "Confirmation of the new password"
+msgstr "Confirmation du nouveau mot de passe"
+
+#: dashboard/templates/registration/password_change_form.html:49
+msgid "You must fill all the fields"
+msgstr "Vous devez remplir tout les champs"
+
+#: dashboard/templates/registration/password_change_form.html:55
+msgid "Old password does not match your account"
+msgstr "L'ancien mot de passe ne correspond pas à celui de votre compte"
+
+#: dashboard/templates/registration/password_change_form.html:61
+msgid "The new password is invalid"
+msgstr "Le nouveau mot de passe est invalide"
+
+#: dashboard/templates/registration/password_change_form.html:71
+msgid "Validate the change"
+msgstr "Valider le changement"
+
+#~ msgid "Return to the home page"
+#~ msgstr "Revenir sur la page d'acceuil"

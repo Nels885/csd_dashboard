@@ -8,12 +8,15 @@ flake8 = "*"
 coverage = "*"
 
 [packages]
-django = "*"
+django = ">=2.2.2"
 psycopg2 = "*"
 xlrd = "*"
 django-debug-toolbar = "*"
 pandas = "*"
 gunicorn = "*"
+xlwt = "*"
+djangorestframework = "*"
+pillow = "*"
 
 [requires]
 python_version = ">=3.5"

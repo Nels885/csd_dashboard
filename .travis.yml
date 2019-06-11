@@ -14,5 +14,6 @@ services:
   - postgresql
 
 script:
-  - pipenv run coverage run --source="." manage.py test
-  - pipenv run coverage report
+  - coverage run --source="." manage.py test -v 2
+  - coverage report
+  - flake8

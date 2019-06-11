@@ -7,13 +7,16 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     {% with name="Hotline" icon="fa-list" %}
-        <li class="nav-item">
+        <li class="nav-item
+                {% for group in user.groups.all %}{% if group.name == 'hotline' %}active{% endif %}{% endfor %}">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                aria-expanded="true" aria-controls="collapse{{ name }}">
                 <i class="fas fa-fw {{ icon }}"></i>
                 <span>{{ name }}</span>
             </a>
-            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+            <div id="collapse{{ name }}" class="collapse
+                    {% for group in user.groups.all %}{% if group.name == 'hotline' %}show{% endif %}{% endfor %}"
+                 aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>

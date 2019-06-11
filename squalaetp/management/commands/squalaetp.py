@@ -1,12 +1,14 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
-from django.db.utils import IntegrityError, DataError
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.utils import IntegrityError
 from django.db import connection
 from django.conf import settings
 
 from squalaetp.models import Xelon, CorvetBackup, Corvet
+from raspeedi.models import Raspeedi
 
-from ._excel_squalaetp import ExcelSqualaetp
+from ._excel_format import ExcelSqualaetp
 
 import logging as log
 
@@ -16,16 +18,22 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--xelon_insert',
-            action='store_true',
-            dest='xelon_insert',
-            help='Insert Xelon table',
+            '-f',
+            '--file',
+            dest='filename',
+            help='Specify import Excel file',
         )
         parser.add_argument(
-            '--corvet_insert',
+            '--update',
             action='store_true',
-            dest='corvet_insert',
-            help='Insert Corvet table',
+            dest='update',
+            help='update all data in Squalaetp tables',
+        )
+        parser.add_argument(
+            '--relations',
+            action='store_true',
+            dest='relations',
+            help='add the relationship between the xelon and corvet tables',
         )
         parser.add_argument(
             '--backup_insert',
@@ -41,15 +49,40 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+
+        if options['filename'] is not None:
+            excel = ExcelSqualaetp(options['filename'])
+        else:
+            excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
         self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
         self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
-        if options['xelon_insert']:
-            self._insert(Xelon, excel.xelon_table(), "numero_de_dossier")
+        if options['update']:
+            pass
 
-        elif options['corvet_insert']:
-            self._insert(Corvet, excel.corvet_table(settings.XLS_ATTRIBUTS_FILE), "vin")
+        elif options['relations']:
+            count, objects_list = 0, []
+            for xelon in Xelon.objects.all():
+                try:
+                    corvet = Corvet.objects.get(pk=xelon.vin)
+                    corvet.xelons.add(xelon)
+                    count += 1
+                except ObjectDoesNotExist:
+                    objects_list.append(xelon.numero_de_dossier)
+            self.stdout.write("pas de relation pour les dossier Xelon suivant:\n{}".format(objects_list))
+            self.stdout.write("Nombre de relations Corvet/Xelon ajoutées: {}".format(count))
+            count, objects_list = 0, []
+            for corvet in Corvet.objects.all():
+                try:
+                    if corvet.electronique_14x != "#":
+                        raspeedi = Raspeedi.objects.get(pk=int(corvet.electronique_14x))
+                        raspeedi.corvets.add(corvet)
+                        count += 1
+                except ObjectDoesNotExist:
+                    objects_list.append(corvet.electronique_14x)
+
+            self.stdout.write("pas de relation pour les boitiers Corvet suivant:\n{}".format(objects_list))
+            self.stdout.write("Nombre de relations Raspeedi/Corvet ajoutées: {}".format(count))
 
         elif options['backup_insert']:
             self._insert(CorvetBackup, excel.corvet_backup_table(), "vin")
@@ -57,6 +90,7 @@ class Command(BaseCommand):
         elif options['delete']:
             Xelon.objects.all().delete()
             Corvet.objects.all().delete()
+            Corvet.xelons.through.objects.all().delete()
             CorvetBackup.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Xelon, Corvet, CorvetBackup, ])
@@ -74,14 +108,8 @@ class Command(BaseCommand):
                 try:
                     m = model(**row)
                     m.save()
-                except KeyError as err:
-                    log.warning("Manque la valeur : {}".format(err))
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
-                except DataError as err:
-                    log.warning("DataError: {}".format(err))
-                except TypeError as err:
-                    log.warning("TypeError: {}".format(err))
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))

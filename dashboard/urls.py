@@ -6,6 +6,7 @@ app_name = 'dashboard'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('set_language/<str:user_language>/', views.set_language, name="set_lang"),
     path('buttons/', views.buttons, name='buttons'),
     path('cards/', views.cards, name='cards'),
     path('colors/', views.colors, name='colors'),
@@ -16,7 +17,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('password/', views.forgot_pwd, name='password'),
     path('blank/', views.blank, name='blank'),
-    path('error/', views.error, name='error'),
+    path('err_404/', views.error_404, name='error_404'),
+    path('err_502/', views.error_502, name='error_502'),
     path('charts/', views.charts, name='charts'),
     path('table/', views.tables, name='tables'),
 ]
