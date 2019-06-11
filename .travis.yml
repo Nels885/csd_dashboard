@@ -14,5 +14,7 @@ services:
   - postgresql
 
 script:
-  - pipenv run coverage run --source="." manage.py test -v 2
-  - pipenv run coverage report
+  - manage.py makemigrations
+  - manage.py migrate
+  - coverage run --source="." manage.py test -v 2
+  - coverage report

@@ -3,6 +3,7 @@ from django.utils.translation import ugettext as _
 from django.utils import translation
 
 from squalaetp.models import Xelon
+from .models import Post
 
 
 def index(request):
@@ -13,6 +14,7 @@ def index(request):
     :return:
         Index page
     """
+    posts = Post.objects.all()
     products = [
         ["RT6/RNEG2", "text-primary"],
         ["SMEG", "text-success"],
@@ -27,6 +29,7 @@ def index(request):
         'title': _("Dashboard"),
         'products': products,
         'pend_prods': pending_prods,
+        'posts': posts
     }
     return render(request, 'dashboard/index.html', context)
 

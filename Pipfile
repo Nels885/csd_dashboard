@@ -16,6 +16,7 @@ pandas = "*"
 gunicorn = "*"
 xlwt = "*"
 djangorestframework = "*"
+pillow = "*"
 
 [requires]
 python_version = ">=3.5"

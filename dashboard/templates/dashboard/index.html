@@ -130,44 +130,44 @@
 
                 <div class="col-lg-12">
 
-                    <!-- Dropdown Card Example -->
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    {% for post in posts %}
 
-                            <h6 class="m-0 font-weight-bold text-primary">
-                                <img alt="avatar" class="rounded-circle" width="32"
-                                     src="{% static 'dashboard/img/nels885.jpg' %}">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Nels885</span>Mise à jour
-                                <span class="small text-gray-500">11 juin 2019 à 12:23</span>
-                            </h6>
-                            {% if user.is_superuser %}
-                                <div class="dropdown no-arrow">
-                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                         aria-labelledby="dropdownMenuLink">
-                                        <div class="dropdown-header">Dropdown Header:</div>
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Something else here</a>
+                        <!-- Posts Card -->
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    <img alt="avatar" class="rounded-circle" width="32"
+                                         src="{{ post.author.profile_picture.url }}">
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ post.author }}</span>{{ post.title }}
+                                    <span class="small text-gray-500">{{ post.timestamp }}</span>
+                                </h6>
+                                {% if user.is_superuser %}
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                           data-toggle="dropdown"
+                                           aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                             aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
                                     </div>
-                                </div>
-                            {% endif %}
+                                {% endif %}
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">{{ post.overview }}</div>
                         </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            J'ai effectué quelques changements au niveau du tableau de bord, comme la suppression de la
-                            ligne de cartes inutilisée.<br>
-                            J'ai ajouté les bonnes données extraites de la table Xelon pour le
-                            graphique et les cartes.
-                        </div>
-                    </div>
 
+                    {% endfor %}
+
+                    {% comment %}
                     <!-- Dropdown Card Example -->
                     <div class="card shadow mb-4">
                         <!-- Card Header - Dropdown -->
@@ -199,6 +199,7 @@
                             Ceci est un test.
                         </div>
                     </div>
+                    {% endcomment %}
 
                 </div>
 
