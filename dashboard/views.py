@@ -16,19 +16,17 @@ def index(request):
     products = [
         ["RT6/RNEG2", "text-primary"],
         ["SMEG", "text-success"],
-        ["RT4", "text-info"],
-        ["DISPLAY", "text-dark"],
         ["RNEG", "text-danger"],
-        ["NG4", "text-secondary"]
+        ["NG4", "text-secondary"],
+        ["DISPLAY", "text-dark"],
+        ["RTx", "text-info"],
+        ["AUTRES", "text-warning"]
     ]
-    prod_nb = []
-    for prod in products:
-        prod_nb.append(Xelon.objects.filter(modele_produit__contains=prod[0]).count())
-
+    pending_prods = Xelon.objects.filter(type_de_cloture="").count()
     context = {
         'title': _("Dashboard"),
         'products': products,
-        'prod_nb': prod_nb,
+        'pend_prods': pending_prods,
     }
     return render(request, 'dashboard/index.html', context)
 
