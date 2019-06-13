@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 from squalaetp.models import Corvet
+from dashboard.models import UserProfile
 
 TYPE_CHOICES = [
     ('RAD', 'Radio'),
@@ -52,7 +52,7 @@ class Raspeedi(models.Model):
         return "{} - {} - {} - {}".format(self.ref_boitier, self.produit, self.facade, self.type)
 
 
-# class AddReference(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     produit_ajoute = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
-#     ajoute_le = models.DateTimeField(auto_now_add=True)
+class AddReference(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    add_product = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
