@@ -3,12 +3,17 @@ python:
   - "3.5"
   - "3.6"
 
+env:
+  - DJANGO_SETTINGS_MODULE="sbadmin.settings.travis"
+  - MOZ_HEADLESS=1
+
+addons:
+  firefox: latest
+
 # Command to install dependencies
 install:
   - pip install pipenv
   - pipenv install --dev
-
-env: DJANGO_SETTINGS_MODULE="sbadmin.settings.travis"
 
 services:
   - postgresql

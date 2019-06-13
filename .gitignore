@@ -5,3 +5,4 @@ __pycache__
 *.sqlite3
 sbadmin/settings/production.py
 sbadmin/staticfiles/
+geckodriver.log

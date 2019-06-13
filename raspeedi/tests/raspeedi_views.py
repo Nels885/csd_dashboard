@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
 
 from raspeedi.models import Raspeedi
@@ -53,7 +54,9 @@ class RaspeediTestCase(TestCase):
 class RaspeediFormTestCase(LiveServerTestCase):
 
     def setUp(self):
-        self.driver = webdriver.Firefox()
+        options = Options()
+        options.add_argument('-headless')
+        self.driver = webdriver.Firefox(firefox_options=options)
         self.driver.implicitly_wait(30)
         super(RaspeediFormTestCase, self).setUp()
         User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
