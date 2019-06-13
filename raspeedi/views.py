@@ -30,7 +30,6 @@ def insert(request):
         'title': 'Raspeedi',
         'card_title': _('RASPEEDI integration'),
     }
-
     if request.method == 'POST':
         form = RaspeediForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():

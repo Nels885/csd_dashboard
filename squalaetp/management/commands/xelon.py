@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, DataError
 from django.db import connection
 from django.conf import settings
 
@@ -75,6 +75,8 @@ class Command(BaseCommand):
                     m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
+                except DataError as err:
+                    self.stdout.write("DataError dossier {} : {}".format(row[columns_name], err))
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))

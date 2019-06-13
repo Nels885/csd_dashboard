@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from ..models import Corvet
+from squalaetp.models import Corvet
 
 
 class CorvetTestCase(TestCase):
@@ -39,18 +39,20 @@ class CorvetTestCase(TestCase):
         response = self.client.get(reverse('squalaetp:corvet_insert'))
         self.assertEqual(response.status_code, 200)
 
-    def test_corvet_insert_page_is_valide(self):
+    def test_corvet_insert_page_is_valid(self):
         self.client.login(username='toto', password='totopassword')
         old_corvets = Corvet.objects.count()
         vin = "VF3ABCDEF12345678"
         response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': vin, 'xml_data': self.data})
         new_corvets = Corvet.objects.count()
         self.assertEqual(new_corvets, old_corvets + 1)
+        self.assertEqual(response.status_code, 302)
 
-    def test_corvet_insert_page_is_not_valide(self):
+    def test_corvet_insert_page_is_not_valid(self):
         self.client.login(username='toto', password='totopassword')
         old_corvets = Corvet.objects.count()
         vin = ''
         response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': vin, 'xml_data': self.data})
         new_corvets = Corvet.objects.count()
         self.assertEqual(new_corvets, old_corvets)
+        self.assertEqual(response.status_code, 200)

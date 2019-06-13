@@ -14,7 +14,7 @@ class Xelon(models.Model):
     commentaire_sav_admin = models.CharField('commentaire SAV Admin', max_length=5000, null=True)
     commentaire_de_la_fr = models.CharField('commentaire de la FR', max_length=5000, null=True)
     commentaire_action = models.CharField('commentaire action', max_length=5000, null=True)
-    libelle_de_la_fiche_cas = models.CharField('libellé de la fiche cas', max_length=500, null=True)
+    libelle_de_la_fiche_cas = models.CharField('libellé de la fiche cas', max_length=5000, null=True)
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
 
