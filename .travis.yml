@@ -13,6 +13,9 @@ addons:
 install:
   - pip install pipenv
   - pipenv install --dev
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
+  - tar -xzf geckodriver-v0.21.0-linux64.tar.gz -C bin
+  - export PATH=$(pwd)/bin:$PATH
 
 services:
   - postgresql
