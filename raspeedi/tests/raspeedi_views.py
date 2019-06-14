@@ -51,23 +51,25 @@ class RaspeediTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class RaspeediFormTestCase(LiveServerTestCase):
+class RaspeediSeleniumTestCase(LiveServerTestCase):
 
     def setUp(self):
         options = Options()
         options.add_argument('-headless')
         self.driver = webdriver.Firefox(firefox_options=options)
         self.driver.implicitly_wait(30)
-        super(RaspeediFormTestCase, self).setUp()
+        super(RaspeediSeleniumTestCase, self).setUp()
         User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
 
     def tearDown(self):
         self.driver.quit()
-        super(RaspeediFormTestCase, self).tearDown()
+        super(RaspeediSeleniumTestCase, self).tearDown()
 
-    def test_raspeedi_insert(self):
+    def test_raspeedi_insert_is_valid(self):
         driver = self.driver
         old_raspeedi = Raspeedi.objects.count()
+
+        # Creating session cookie for to access Raspeedi insert form
         self.client.login(username='toto', password='totopassword')
         cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/raspeedi/insert/')
@@ -75,14 +77,14 @@ class RaspeediFormTestCase(LiveServerTestCase):
         driver.refresh()
         driver.get(self.live_server_url + '/raspeedi/insert/')
 
+        # Inserting values into the form
         ref_case = driver.find_element_by_name('ref_boitier')
         product = driver.find_element_by_name('produit')
         front = driver.find_element_by_name('facade')
         type = driver.find_element_by_name('type')
         media = driver.find_element_by_name('media')
         screen_connector = driver.find_element_by_name('connecteur_ecran')
-        submit = driver.find_element_by_name('btn_insert_raspeedi')
-
+        submit = driver.find_element_by_name('btn_raspeedi_insert')
         ref_case.send_keys('1234567890')
         product.send_keys('RT4')
         front.send_keys('FF')
