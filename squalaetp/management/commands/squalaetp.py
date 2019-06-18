@@ -74,10 +74,11 @@ class Command(BaseCommand):
             count, objects_list = 0, []
             for corvet in Corvet.objects.all():
                 try:
-                    if len(corvet.electronique_14x) != 0 and corvet.electronique_14x != "#":
-                        raspeedi = Raspeedi.objects.get(pk=int(corvet.electronique_14x))
-                        raspeedi.corvets.add(corvet)
-                        count += 1
+                    for cal in [corvet.electronique_14x, corvet.electronique_94x]:
+                        if len(cal) == 10:
+                            raspeedi = Raspeedi.objects.get(pk=int(cal))
+                            raspeedi.corvets.add(corvet)
+                            count += 1
                 except ObjectDoesNotExist:
                     objects_list.append(corvet.electronique_14x)
 

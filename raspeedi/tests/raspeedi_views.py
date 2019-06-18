@@ -1,6 +1,7 @@
 from django.test import TestCase, LiveServerTestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext as _
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -47,7 +48,7 @@ class RaspeediTestCase(TestCase):
         response = self.client.post(reverse('raspeedi:insert'))
         new_raspeedi = Raspeedi.objects.count()
         self.assertEqual(new_raspeedi, old_raspeedi)
-        self.assertFormError(response, 'form', 'ref_boitier', 'Ce champ est obligatoire.')
+        self.assertFormError(response, 'form', 'ref_boitier', _('This field is required.'))
         self.assertEqual(response.status_code, 200)
 
 
