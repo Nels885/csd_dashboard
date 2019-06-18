@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-04 12:05+0200\n"
+"POT-Creation-Date: 2019-06-18 12:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,6 +23,7 @@ msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: dashboard/templates/dashboard/base.html:45
+#: dashboard/templates/dashboard/top_bar.html:144
 #: dashboard/templates/registration/login.html:58
 msgid "Login"
 msgstr "Connexion"
@@ -42,76 +43,76 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal_logout.html:19
-#: dashboard/templates/dashboard/top_bar.html:268
+#: dashboard/templates/dashboard/top_bar.html:128
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:22
-#: dashboard/templates/dashboard/nav_csd_atelier.html:62
+#: dashboard/templates/dashboard/nav_csd_atelier.html:25
+#: dashboard/templates/dashboard/nav_csd_atelier.html:68
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:23
+#: dashboard/templates/dashboard/nav_csd_atelier.html:26
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:26
+#: dashboard/templates/dashboard/nav_csd_atelier.html:29
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:27
+#: dashboard/templates/dashboard/nav_csd_atelier.html:30
 msgid "Add data"
 msgstr "Ajout données"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:28
+#: dashboard/templates/dashboard/nav_csd_atelier.html:31
 msgid "Edit data"
 msgstr "modification données"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:46
+#: dashboard/templates/dashboard/nav_csd_atelier.html:52
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:49
+#: dashboard/templates/dashboard/nav_csd_atelier.html:55
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:50
+#: dashboard/templates/dashboard/nav_csd_atelier.html:56
 msgid "Edit product"
 msgstr "modification produit"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:69
+#: dashboard/templates/dashboard/nav_csd_atelier.html:75
 #, fuzzy
 #| msgid "Raspeedi Table"
 msgid "Raspeedi table"
 msgstr "Tableau Raspeedi"
 
-#: dashboard/templates/dashboard/top_bar.html:195
+#: dashboard/templates/dashboard/top_bar.html:73
 msgid "English"
 msgstr "Anglais"
 
-#: dashboard/templates/dashboard/top_bar.html:203
+#: dashboard/templates/dashboard/top_bar.html:82
 msgid "French"
 msgstr "Français"
 
-#: dashboard/templates/dashboard/top_bar.html:249
+#: dashboard/templates/dashboard/top_bar.html:109
 msgid "Profile"
 msgstr "Mon Profil"
 
-#: dashboard/templates/dashboard/top_bar.html:253
+#: dashboard/templates/dashboard/top_bar.html:113
 #, fuzzy
 #| msgid "Password"
 msgid "Change password"
 msgstr "Mot de passe"
 
-#: dashboard/templates/dashboard/top_bar.html:258
+#: dashboard/templates/dashboard/top_bar.html:118
 msgid "Administration"
 msgstr "Administration"
 
-#: dashboard/templates/dashboard/top_bar.html:263
+#: dashboard/templates/dashboard/top_bar.html:123
 msgid "Activity Log"
 msgstr "Journal d'activité"
 
-#: dashboard/templates/dashboard/top_bar.html:275
+#: dashboard/templates/dashboard/top_bar.html:135
 msgid "Guest"
 msgstr "Invité"
 

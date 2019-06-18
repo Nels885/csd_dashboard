@@ -5,8 +5,6 @@ from squalaetp.models import Xelon
 
 
 class CharData(APIView):
-    authentication_classes = []
-    permission_classes = []
 
     def get(self, request, format=None):
         labels = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx"]
