@@ -1,27 +1,42 @@
+from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import viewsets
 
-from squalaetp.models import Xelon
+from api.serializers import UserSerializer, GroupSerializer, XelonSerializer, CorvetSerializer, products_count
+from squalaetp.models import Xelon, Corvet
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+
+class XelonViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Xelon.objects.filter(corvet__vin__icontains='vf').prefetch_related('corvet')
+    serializer_class = XelonSerializer
+
+
+class CorvetViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Corvet.objects.all()
+    serializer_class = CorvetSerializer
 
 
 class CharData(APIView):
 
     def get(self, request, format=None):
-        labels = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx"]
-        prod_nb = []
-        rtx_nb = 0
-        for prod in labels:
-            if prod in ["DISPLAY", "SMEG"]:
-                prod_nb.append(Xelon.objects.filter(modele_produit__icontains=prod).count())
-            elif prod == "RTx":
-                for rtx in ["RT3", "RT4", "RT5"]:
-                    rtx_nb += Xelon.objects.filter(modele_produit=rtx).count()
-            else:
-                prod_nb.append(Xelon.objects.filter(modele_produit=prod).count())
-        prod_nb.append(rtx_nb)
-        labels_nb = sum(prod_nb)
-        prod_nb.append(Xelon.objects.all().count() - labels_nb)
-        labels.append("AUTRES")
+        labels, prod_nb = products_count()
         data = {
             "labels": labels,
             "default": prod_nb,
