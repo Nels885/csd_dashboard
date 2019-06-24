@@ -13,9 +13,6 @@ addons:
 services:
   - postgresql
 
-before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
-
 # Command to install dependencies
 before_install:
   - wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
