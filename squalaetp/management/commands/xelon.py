@@ -59,7 +59,7 @@ class Command(BaseCommand):
 
     def _insert(self, model, excel_method, columns_name):
         nb_prod_before = model.objects.count()
-        excels = []
+        excels, nb_prod_update = [], 0
         for file in settings.XLS_DELAY_FILES:
             excels.append(ExcelsDelayAnalysis(file))
         for row in excel_method:
@@ -71,14 +71,21 @@ class Command(BaseCommand):
                             row.update(row_update)
                             break
                     log.info(row)
-                    m = model(**row)
-                    m.save()
+                    product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
+                    if product.exists:
+                        del row["numero_de_dossier"]
+                        product.update(**row)
+                        nb_prod_update += 1
+                    else:
+                        m = model(**row)
+                        m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:
                     self.stdout.write("DataError dossier {} : {}".format(row[columns_name], err))
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("NOmbre de produits mis à jour:  {}".format(nb_prod_update))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
 
     def _update(self, model, excel_method, columns_name):
