@@ -72,7 +72,7 @@ class Command(BaseCommand):
                             break
                     log.info(row)
                     product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
-                    if product.exists:
+                    if product:
                         del row["numero_de_dossier"]
                         product.update(**row)
                         nb_prod_update += 1
