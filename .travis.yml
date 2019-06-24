@@ -8,10 +8,6 @@ env:
 
 addons:
   firefox: latest
-  postgresql: "9.6.10"
-
-services:
-  - postgresql
 
 # Command to install dependencies
 before_install:
@@ -23,6 +19,9 @@ before_install:
 install:
   - pip install pipenv
   - pipenv install --dev
+
+services:
+  - postgresql
 
 script:
   - coverage run --source="." manage.py test -v 2
