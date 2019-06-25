@@ -42,7 +42,7 @@ def xelon_edit(request, file_id):
                     m = Corvet(**data)
                     m.save()
                     context = {'title': "Modification réalisée avec succès !"}
-                    return render(request, 'squalaetp/done.html', context)
+                    return render(request, 'dashboard/done.html', context)
                 except TypeError:
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
         context['errors'] = form.errors.items()
@@ -94,7 +94,7 @@ def corvet_insert(request):
                     m = Corvet(**data)
                     m.save()
                     context = {'title': "Modification réalisée avec succès !"}
-                    return render(request, 'squalaetp/done.html', context)
+                    return render(request, 'dashboard/done.html', context)
                 except TypeError:
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
         context['errors'] = form.errors.items()

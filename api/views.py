@@ -4,8 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions
 
-from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, products_count
+from api.serializers import UserSerializer, GroupSerializer, ProgSerializer
 from squalaetp.models import Xelon
+from .utils import products_count
 
 
 class UserViewSet(viewsets.ModelViewSet):

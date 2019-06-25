@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
@@ -43,3 +43,21 @@ def insert(request):
         form = RaspeediForm()
     context['form'] = form
     return render(request, 'raspeedi/insert.html', context)
+
+
+@login_required
+def edit(request, ref_case):
+    product = get_object_or_404(Raspeedi, ref_boitier=ref_case)
+    form = RaspeediForm(request.POST or None, instance=product)
+    if form.is_valid():
+        form.save()
+        context = {'title': "Modification réalisée avec succès !"}
+        return render(request, 'dashboard/done.html', context)
+    context = {
+        'title': 'Raspeedi',
+        'card_title': _('Modification data RASPEEDI for ref case: {ref_case}'.format(ref_case=product.ref_boitier)),
+        'url': 'raspeedi:edit',
+        'prod': product,
+        'form': form,
+    }
+    return render(request, 'raspeedi/edit.html', context)

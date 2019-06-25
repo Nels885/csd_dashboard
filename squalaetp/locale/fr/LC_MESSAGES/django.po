@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-18 12:38+0200\n"
+"POT-Creation-Date: 2019-06-25 10:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/forms.py:20 squalaetp/tests/corvet_views.py:76
+#: squalaetp/forms.py:20 squalaetp/tests/tests_corvet_views.py:74
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
@@ -41,20 +41,20 @@ msgstr ""
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:77 squalaetp/tests/corvet_views.py:89
+#: squalaetp/forms.py:77 squalaetp/tests/tests_corvet_views.py:87
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
-#: squalaetp/templates/squalaetp/corvet_insert.html:36
-#: squalaetp/templates/squalaetp/xelon_edit.html:36
+#: squalaetp/templates/squalaetp/corvet_insert.html:41
+#: squalaetp/templates/squalaetp/xelon_edit.html:41
 msgid "Submit"
 msgstr "Soumettre"
 
-#: squalaetp/templates/squalaetp/corvet_insert_done.html:26
+#: squalaetp/templates/squalaetp/done.html:26
 msgid "Back to Dashboard"
 msgstr "Retour au tableau de bord"
 
-#: squalaetp/tests/corvet_views.py:64
+#: squalaetp/tests/tests_corvet_views.py:62
 msgid "This field is required."
 msgstr "Ce champ est requis."
 

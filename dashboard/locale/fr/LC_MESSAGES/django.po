@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-18 12:38+0200\n"
+"POT-Creation-Date: 2019-06-25 10:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,7 +48,7 @@ msgid "Logout"
 msgstr "Déconnexion"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:25
-#: dashboard/templates/dashboard/nav_csd_atelier.html:68
+#: dashboard/templates/dashboard/nav_csd_atelier.html:66
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -64,23 +64,15 @@ msgstr "Ajout Corvet"
 msgid "Add data"
 msgstr "Ajout données"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:31
-msgid "Edit data"
-msgstr "modification données"
-
-#: dashboard/templates/dashboard/nav_csd_atelier.html:52
+#: dashboard/templates/dashboard/nav_csd_atelier.html:51
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:55
+#: dashboard/templates/dashboard/nav_csd_atelier.html:54
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:56
-msgid "Edit product"
-msgstr "modification produit"
-
-#: dashboard/templates/dashboard/nav_csd_atelier.html:75
+#: dashboard/templates/dashboard/nav_csd_atelier.html:73
 #, fuzzy
 #| msgid "Raspeedi Table"
 msgid "Raspeedi table"
@@ -181,6 +173,12 @@ msgstr "Le nouveau mot de passe est invalide"
 #: dashboard/templates/registration/password_change_form.html:71
 msgid "Validate the change"
 msgstr "Valider le changement"
+
+#~ msgid "Edit data"
+#~ msgstr "modification données"
+
+#~ msgid "Edit product"
+#~ msgstr "modification produit"
 
 #~ msgid "Return to the home page"
 #~ msgstr "Revenir sur la page d'acceuil"

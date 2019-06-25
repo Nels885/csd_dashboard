@@ -5,7 +5,7 @@
 {% block form_content %}
 
     <div class="p-5">
-        <form method="post" action="{% url 'raspeedi:insert' %}">
+        <form method="post" action="{% url 'raspeedi:edit' ref_case=prod.ref_boitier %}">
 
             {% include 'raspeedi/forms.html' %}
 
