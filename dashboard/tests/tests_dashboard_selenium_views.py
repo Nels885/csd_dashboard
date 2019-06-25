@@ -1,26 +1,9 @@
-from django.test import TestCase, LiveServerTestCase
-from django.urls import reverse
-from django.utils import translation
+from django.test import LiveServerTestCase
 from django.contrib.auth import get_user_model
-
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
 User = get_user_model()
-
-
-class DashboardTestCase(TestCase):
-
-    def test_index_page(self):
-        response = self.client.get(reverse('index'))
-        self.assertEqual(response.status_code, 200)
-        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-
-    def test_set_language_vue_is_valid(self):
-        for lang in ['fr', 'en']:
-            response = self.client.get(reverse('dashboard:set_lang', args={'user_language': lang}))
-            self.assertTrue(translation.check_for_language(lang))
-            self.assertEqual(response.status_code, 302)
 
 
 class DashboardSeleniumTestCase(LiveServerTestCase):
@@ -64,4 +47,3 @@ class DashboardSeleniumTestCase(LiveServerTestCase):
         login[0].click()
 
         self.assertEqual(driver.current_url, self.live_server_url + '/accounts/login/')
-
