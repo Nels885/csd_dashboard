@@ -50,25 +50,28 @@ class ExcelFormat:
         :param columns:
             list of columns to convert
         """
-        for col_date in columns:
-            self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', utc=True)
-        self.sheet.fillna(pd.Timestamp(2019, 1, 1), inplace=True)
+        for col_date, col_format in columns.items():
+            self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', format=col_format, utc=True)
+        self.sheet.fillna(pd.Timestamp(1970, 1, 1), inplace=True)
 
     @staticmethod
-    def _columns_convert(columns):
+    def _columns_convert(columns, digit=True):
         """
         Convert the names of the columns to be used by the database
         :param columns:
             List of column names
+        :param digit:
+            Remove digits from the column names
         :return:
             list of modified column names
         """
         data = []
-        deletion = {' ': '_', '.': ''}
         for column in columns:
             name = unicodedata.normalize('NFKD', column).encode('ASCII', 'ignore').decode('utf8').lower()
-            for old, new in deletion.items():
-                name = name.replace(old, new)
+            name = re.sub(r"[^\w\s]+", "", name)
+            if not digit:
+                name = ''.join(i for i in name if not i.isdigit())
+            name = re.sub(r"[\s]+", "_", name)
             data.append(name)
         return data
 
@@ -176,8 +179,8 @@ class ExcelsDelayAnalysis(ExcelFormat):
 
     COLS = ['Date Retour', 'Lieu de stockage', 'Date de clôture', 'Type de clôture', 'Nom Technicien',
             'Commentaire SAV Admin', 'Commentaire de la FR', 'Commentaire action', 'Libellé de la fiche cas',
-            'Dossier VIP', 'Express']
-    COLS_DATE = ['Date Retour', 'Date de clôture']
+            'Dossier VIP', 'Express', 'Famille client', 'Famille produit']
+    COLS_DATE = {'Date Retour': "'%d/%m/%Y", 'Date de clôture': "'%d/%m/%Y %H:%M:%S"}
 
     def __init__(self, file, sheet_index=0, columns=None):
         """
@@ -205,5 +208,5 @@ class ExcelsDelayAnalysis(ExcelFormat):
         row_index = self.sheet[self.sheet['N° de dossier'] == file_number].index
         row = self.sheet.loc[row_index, self.COLS]  # get the data in the ith row
         if len(row):
-            row_dict = dict(zip(self._columns_convert(self.COLS), row.values[0]))
+            row_dict = dict(zip(self._columns_convert(self.COLS, digit=False), row.values[0]))
         return row_dict

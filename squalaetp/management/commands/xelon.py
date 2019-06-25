@@ -22,10 +22,10 @@ class Command(BaseCommand):
             help='Specify import Excel file',
         )
         parser.add_argument(
-            '--insert',
+            '--update',
             action='store_true',
-            dest='insert',
-            help='Insert Xelon table',
+            dest='update',
+            help='Update Xelon table',
         )
         parser.add_argument(
             '--delete',
@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if options['insert']:
+        if options['update']:
             if options['filename'] is not None:
                 squalaetp = ExcelSqualaetp(options['filename'])
             else:
@@ -45,7 +45,7 @@ class Command(BaseCommand):
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(squalaetp.columns))
 
-            self._insert(Xelon, squalaetp.xelon_table(),  "numero_de_dossier", )
+            self._update(Xelon, squalaetp.xelon_table(),  "numero_de_dossier", )
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -57,7 +57,7 @@ class Command(BaseCommand):
             for table in ["Xelon"]:
                 self.stdout.write("Suppression des données de la table {} terminée!".format(table))
 
-    def _insert(self, model, excel_method, columns_name):
+    def _update(self, model, excel_method, columns_name):
         nb_prod_before = model.objects.count()
         excels, nb_prod_update = [], 0
         for file in settings.XLS_DELAY_FILES:
@@ -85,8 +85,5 @@ class Command(BaseCommand):
                     self.stdout.write("DataError dossier {} : {}".format(row[columns_name], err))
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("NOmbre de produits mis à jour:  {}".format(nb_prod_update))
+        self.stdout.write("Nombre de produits mis à jour:  {}".format(nb_prod_update))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
-
-    def _update(self, model, excel_method, columns_name):
-        pass
