@@ -41,7 +41,7 @@ def xelon_edit(request, file_id):
                 try:
                     m = Corvet(**data)
                     m.save()
-                    context = {'title': "Modification réalisée avec succès !"}
+                    context = {'title': _('Modification done successfully!')}
                     return render(request, 'dashboard/done.html', context)
                 except TypeError:
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))

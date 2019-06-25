@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-25 10:19+0200\n"
+"POT-Creation-Date: 2019-06-25 11:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,10 +50,6 @@ msgstr "Les données XML ne sont pas valide"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: squalaetp/templates/squalaetp/done.html:26
-msgid "Back to Dashboard"
-msgstr "Retour au tableau de bord"
-
 #: squalaetp/tests/tests_corvet_views.py:62
 msgid "This field is required."
 msgstr "Ce champ est requis."
@@ -63,6 +59,10 @@ msgstr "Ce champ est requis."
 #| msgid "Modification data Xelon file: {}"
 msgid "Modification data Xelon file: {file}"
 msgstr "Modification données dossier Xelon : {file}"
+
+#: squalaetp/views.py:44
+msgid "Modification done successfully!"
+msgstr ""
 
 #: squalaetp/views.py:47 squalaetp/views.py:99
 msgid "An internal error has occurred. Thank you recommend your request"
@@ -77,3 +77,6 @@ msgstr "Intégration CORVET"
 #: squalaetp/views.py:85
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
+
+#~ msgid "Back to Dashboard"
+#~ msgstr "Retour au tableau de bord"

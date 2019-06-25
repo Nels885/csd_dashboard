@@ -51,7 +51,7 @@ def edit(request, ref_case):
     form = RaspeediForm(request.POST or None, instance=product)
     if form.is_valid():
         form.save()
-        context = {'title': "Modification réalisée avec succès !"}
+        context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
     context = {
         'title': 'Raspeedi',

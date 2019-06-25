@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-25 10:19+0200\n"
+"POT-Creation-Date: 2019-06-25 11:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,6 +27,13 @@ msgstr "Tableau de bord"
 #: dashboard/templates/registration/login.html:58
 msgid "Login"
 msgstr "Connexion"
+
+#: dashboard/templates/dashboard/done.html:26
+#: dashboard/templates/registration/password_change_done.html:26
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Back to Dashboard"
+msgstr "Retour au Tableau de bord"
 
 #: dashboard/templates/dashboard/modal_logout.html:9
 msgid "Ready to Leave?"
@@ -135,12 +142,6 @@ msgstr "Mot de passe oublié ?"
 #: dashboard/templates/registration/login.html:69
 msgid "Create an Account!"
 msgstr "Création d'un compte !"
-
-#: dashboard/templates/registration/password_change_done.html:26
-#, fuzzy
-#| msgid "Dashboard"
-msgid "Back to Dashboard"
-msgstr "Retour au Tableau de bord"
 
 #: dashboard/templates/registration/password_change_form.html:31
 #, fuzzy
