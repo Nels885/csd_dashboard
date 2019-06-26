@@ -24,7 +24,7 @@ def index(request):
         ["RTx", "text-info"],
         ["AUTRES", "text-warning"]
     ]
-    pending_prods = Xelon.objects.filter(type_de_cloture="").count()
+    pending_prods = Xelon.objects.filter(type_de_cloture="", date_retour__isnull=False).count()
     context = {
         'title': _("Dashboard"),
         'products': products,
