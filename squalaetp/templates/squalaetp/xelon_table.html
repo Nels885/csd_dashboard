@@ -55,8 +55,8 @@
                 <td>{{ file.modele_produit }}</td>
                 <td>{{ file.modele_vehicule }}</td>
                 <td>{{ file.type_de_cloture }}</td>
-                <td>{{ file.date_retour }}</td>
-                <td>{{ file.date_de_cloture }}</td>
+                <td>{{ file.date_retour|default:"--" }}</td>
+                <td>{{ file.date_de_cloture|default:"--" }}</td>
                 <td>{{ file.nom_technicien }}</td>
                 <td>{{ file.commentaire_action }}</td>
                 <td>{{ file.commentaire_de_la_fr }}</td>

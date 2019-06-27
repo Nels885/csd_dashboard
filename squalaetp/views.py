@@ -15,7 +15,7 @@ def xelon_table(request):
     :return:
         Xelon table page
     """
-    files = Xelon.objects.all().order_by('numero_de_dossier')
+    files = Xelon.objects.filter(date_retour__isnull=False).order_by('numero_de_dossier')
     context = {
         'title': 'Xelon',
         'table_title': 'Dossiers Clients',

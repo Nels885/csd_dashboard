@@ -52,7 +52,8 @@ class ExcelFormat:
         """
         for col_date, col_format in columns.items():
             self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', format=col_format, utc=True)
-        self.sheet.fillna(pd.Timestamp(1970, 1, 1), inplace=True)
+        # self.sheet.fillna(pd.Timestamp(1970, 1, 1), inplace=True)
+        self.sheet.fillna('', inplace=True)
 
     @staticmethod
     def _columns_convert(columns, digit=True):

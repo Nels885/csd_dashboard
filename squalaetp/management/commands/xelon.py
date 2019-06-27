@@ -69,6 +69,8 @@ class Command(BaseCommand):
                         row_update = excel.xelon_table(row[columns_name])
                         if len(row_update):
                             row.update(row_update)
+                            if not row["date_de_cloture"]:
+                                del row["date_de_cloture"]
                             break
                     log.info(row)
                     product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
