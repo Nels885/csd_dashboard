@@ -25,7 +25,7 @@ def index(request):
         ["AUTRES", "text-warning"]
     ]
     pending_prods = Xelon.objects.filter(type_de_cloture="", date_retour__isnull=False).count()
-    late_prods = Xelon.objects.filter(delai_en_jours_ouvres__gte=3).count()
+    late_prods = Xelon.objects.filter(delai_au_en_jours_ouvres__gte=3).count()
     context = {
         'title': _("Dashboard"),
         'products': products,

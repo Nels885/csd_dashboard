@@ -55,8 +55,28 @@ class ExcelFormat:
         # self.sheet.fillna(pd.Timestamp(1970, 1, 1), inplace=True)
         self.sheet.fillna('', inplace=True)
 
-    @staticmethod
-    def _columns_convert(columns, digit=True):
+    # @staticmethod
+    # def _columns_convert(columns, digit=True):
+    #     """
+    #     Convert the names of the columns to be used by the database
+    #     :param columns:
+    #         List of column names
+    #     :param digit:
+    #         Remove digits from the column names
+    #     :return:
+    #         list of modified column names
+    #     """
+    #     data = []
+    #     for column in columns:
+    #         name = unicodedata.normalize('NFKD', column).encode('ASCII', 'ignore').decode('utf8').lower()
+    #         name = re.sub(r"[^\w\s]+", "", name)
+    #         if not digit:
+    #             name = ''.join(i for i in name if not i.isdigit())
+    #         name = re.sub(r"[\s]+", "_", name)
+    #         data.append(name)
+    #     return data
+
+    def _columns_convert(self, digit=True):
         """
         Convert the names of the columns to be used by the database
         :param columns:
@@ -66,15 +86,16 @@ class ExcelFormat:
         :return:
             list of modified column names
         """
-        data = []
-        for column in columns:
+        new_columns = {}
+        for column in self.columns:
             name = unicodedata.normalize('NFKD', column).encode('ASCII', 'ignore').decode('utf8').lower()
             name = re.sub(r"[^\w\s]+", "", name)
             if not digit:
                 name = ''.join(i for i in name if not i.isdigit())
             name = re.sub(r"[\s]+", "_", name)
-            data.append(name)
-        return data
+            new_columns[column] = name
+        self.sheet.rename(columns=new_columns, inplace=True)
+        self.columns = list(self.sheet.columns)
 
     @staticmethod
     def _excel_decode(filename, skip_rows):
@@ -110,7 +131,7 @@ class ExcelFormat:
 class ExcelSqualaetp(ExcelFormat):
     """## Read data in Excel file for Squalaetp ##"""
 
-    XELON_COLS = ['Numéro de dossier', 'V.I.N.', 'Modèle produit', 'Modèle véhicule']
+    XELON_COLS = ['numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule']
 
     def __init__(self, file, sheet_index=0, columns=None):
         """
@@ -123,6 +144,7 @@ class ExcelSqualaetp(ExcelFormat):
             Number of the last column to be processed
         """
         super().__init__(file, sheet_index, columns)
+        self._columns_convert()
 
     def xelon_table(self):
         """
@@ -132,29 +154,22 @@ class ExcelSqualaetp(ExcelFormat):
         """
         data = []
         for line in range(self.nrows):
-            row = self.sheet.loc[line, self.XELON_COLS]  # get the data in the ith row
-            row_dict = dict(zip(self._columns_convert(self.XELON_COLS), row))
-            data.append(row_dict)
+            data.append(dict(self.sheet.loc[line, self.XELON_COLS]))
         return data
 
     def corvet_table(self, attribut_file):
-        data, columns = [], []
+        data = []
         drop_col = self.XELON_COLS
-        drop_col.remove("V.I.N.")
+        drop_col.remove("vin")
         df_attributs = pd.read_excel(attribut_file, 1, converters={'cle2': str})
         df_corvet = self.sheet.drop(drop_col, axis='columns').fillna("")
-        for col in df_corvet.columns:
-            if len(df_attributs[df_attributs.cle2 == col]) != 0:
-                columns.append(list(df_attributs.loc[df_attributs.cle2 == col].cle1)[0] + "_" + col)
-            elif len(df_attributs[df_attributs.libelle == col]) != 0:
-                columns.append(list(df_attributs.loc[df_attributs.libelle == col].cle1)[0] + "_" + col)
-            else:
-                columns.append(col)
+        self._add_attributs(df_corvet, df_attributs)
         for line in range(self.nrows):
+            df_corvet = self.sheet.drop(drop_col, axis='columns')
             row = df_corvet.loc[line]  # get the data in the ith row
+            print(dict(row))
             if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[1] != "#":
-                row_dict = dict(zip(self._columns_convert(columns), row))
-                data.append(row_dict)
+                data.append(dict(row))
         return data
 
     def corvet_backup_table(self):
@@ -166,7 +181,7 @@ class ExcelSqualaetp(ExcelFormat):
         data = []
         corvet_cols = self.columns[4:]
         for line in range(self.nrows):
-            vin = self.sheet.at[line, "V.I.N."]
+            vin = self.sheet.at[line, "vin"]
             data_corvet = self.sheet.loc[line, corvet_cols]
             if re.match(r'^VF[37]\w{14}$', str(vin)) and data_corvet[0] != "#":
                 corvet_dict = dict(zip(corvet_cols, data_corvet))
@@ -174,14 +189,27 @@ class ExcelSqualaetp(ExcelFormat):
                 data.append(row_dict)
         return data
 
+    def _add_attributs(self, df_corvet, df_attributs):
+        new_columns = {}
+        for col in df_corvet.columns:
+            col_upper = col.upper()
+            if len(df_attributs[df_attributs.cle2 == col_upper]) != 0:
+                new_columns[col] = list(df_attributs.loc[df_attributs.cle2 == col_upper].cle1)[0] + "_" + col
+            elif len(df_attributs[df_attributs.libelle == col_upper]) != 0:
+                new_columns[col] = list(df_attributs.loc[df_attributs.libelle == col_upper].cle1)[0] + "_" + col
+            else:
+                new_columns[col] = col
+        self.sheet.rename(columns=new_columns, inplace=True)
+        self.sheet.rename(str.lower, axis='columns', inplace=True)
+        self.columns = list(self.sheet.columns)
+
 
 class ExcelsDelayAnalysis(ExcelFormat):
     """## Read data in Excel file for Delay Analysis ##"""
 
-    COLS = ['Date Retour', 'Lieu de stockage', 'Date de clôture', 'Type de clôture', 'Nom Technicien',
-            'Commentaire SAV Admin', 'Commentaire de la FR', 'Commentaire action', 'Libellé de la fiche cas',
-            'Dossier VIP', 'Express', 'Famille client', 'Famille produit']
-    COLS_DATE = {'Date Retour': "'%d/%m/%Y", 'Date de clôture': "'%d/%m/%Y %H:%M:%S"}
+    DROP_COLS = ['ref_produit_commerciale', 'ref_produit_clarion', 'n_de_dossier', 'code_pdv', 'nom_pdv',
+                 'date_daccord_de_la_demande', 'delai_prevu_sp', 'nom_equipe', 'n_commande_de_travaux']
+    COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S"}
 
     def __init__(self, file, sheet_index=0, columns=None):
         """
@@ -194,6 +222,7 @@ class ExcelsDelayAnalysis(ExcelFormat):
             Number of the last column to be processed
         """
         super().__init__(file, sheet_index, columns, skip_rows=8)
+        self._columns_convert(digit=False)
         self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
         self._date_converter(self.COLS_DATE)
 
@@ -206,8 +235,8 @@ class ExcelsDelayAnalysis(ExcelFormat):
             Dictionnary that represents the data of file number to insert Xelon table
         """
         row_dict = {}
-        row_index = self.sheet[self.sheet['N° de dossier'] == file_number].index
-        row = self.sheet.loc[row_index, self.COLS]  # get the data in the ith row
-        if len(row):
-            row_dict = dict(zip(self._columns_convert(self.COLS, digit=False), row.values[0]))
+        row_index = self.sheet[self.sheet['n_de_dossier'] == file_number].index
+        if list(row_index):
+            df = self.sheet.drop(columns=self.DROP_COLS)
+            row_dict = dict(df.loc[row_index[0]])
         return row_dict

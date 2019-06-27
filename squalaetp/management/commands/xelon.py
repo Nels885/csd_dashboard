@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 squalaetp = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
 
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
-            self.stdout.write("Noms des colonnes:              {}".format(squalaetp.columns))
+            self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
 
             self._update(Xelon, squalaetp.xelon_table(),  "numero_de_dossier", )
 
