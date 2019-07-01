@@ -25,12 +25,17 @@ def index(request):
         ["AUTRES", "text-warning"]
     ]
     pending_prods = Xelon.objects.filter(type_de_cloture="", date_retour__isnull=False).count()
-    late_prods = Xelon.objects.filter(delai_au_en_jours_ouvres__gte=3).count()
+    late_prods = Xelon.objects.filter(
+        delai_au_en_jours_ouvres__gt=3, express=True, date_de_cloture__isnull=True).count()
+    late_prods = Xelon.objects.filter(
+        delai_au_en_jours_ouvres__gt=5, express=False, date_de_cloture__isnull=True).count() + late_prods
+    porcent_late_prods = (pending_prods / 100) * late_prods
     context = {
         'title': _("Dashboard"),
         'products': products,
         'pend_prods': pending_prods,
         'late_prods': late_prods,
+        'porcent_late_prods': porcent_late_prods,
         'posts': posts
     }
     return render(request, 'dashboard/index.html', context)

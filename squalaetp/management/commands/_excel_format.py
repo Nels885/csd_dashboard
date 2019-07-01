@@ -167,7 +167,7 @@ class ExcelSqualaetp(ExcelFormat):
         for line in range(self.nrows):
             df_corvet = self.sheet.drop(drop_col, axis='columns')
             row = df_corvet.loc[line]  # get the data in the ith row
-            print(dict(row))
+            # print(dict(row))
             if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[1] != "#":
                 data.append(dict(row))
         return data
