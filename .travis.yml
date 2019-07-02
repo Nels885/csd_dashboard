@@ -3,15 +3,15 @@ python:
   - "3.5"
   - "3.6"
 
-services:
-  - postgresql
-
 env:
   - DJANGO_SETTINGS_MODULE="sbadmin.settings.travis" MOZ_HEADLESS=1
 
 addons:
   firefox: latest
   postgresql : "9.6.10"
+
+services:
+  - postgresql
 
 # Command to install dependencies
 before_install:
@@ -22,7 +22,6 @@ before_install:
 
 before_script:
   - psql --version
-  - psql -c 'create database travis_ci_test;' -U postgres
 
 install:
   - pip install pipenv
