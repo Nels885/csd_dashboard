@@ -3,6 +3,9 @@ python:
   - "3.5"
   - "3.6"
 
+services:
+  - postgresql
+
 env:
   - DJANGO_SETTINGS_MODULE="sbadmin.settings.travis" MOZ_HEADLESS=1
 
@@ -16,13 +19,11 @@ before_install:
   - mkdir geckodriver
   - tar -xzf geckodriver-v0.24.0-linux64.tar.gz -C geckodriver
   - export PATH=$PATH:$(pwd)/geckodriver
+  - psql -c 'create database travis_ci_test;' -U postgres
 
 install:
   - pip install pipenv
   - pipenv install --dev
-
-services:
-  - postgresql
 
 script:
   - coverage run --source="." manage.py test -v 2
