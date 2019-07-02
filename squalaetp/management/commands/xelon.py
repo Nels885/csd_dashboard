@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, DataError
 from django.db import connection
 from django.conf import settings
 
@@ -22,10 +22,10 @@ class Command(BaseCommand):
             help='Specify import Excel file',
         )
         parser.add_argument(
-            '--insert',
+            '--update',
             action='store_true',
-            dest='insert',
-            help='Insert Xelon table',
+            dest='update',
+            help='Update Xelon table',
         )
         parser.add_argument(
             '--delete',
@@ -36,16 +36,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if options['insert']:
+        if options['update']:
             if options['filename'] is not None:
                 squalaetp = ExcelSqualaetp(options['filename'])
             else:
                 squalaetp = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
 
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
-            self.stdout.write("Noms des colonnes:              {}".format(squalaetp.columns))
+            self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
 
-            self._insert(Xelon, squalaetp.xelon_table(),  "numero_de_dossier", )
+            self._update(Xelon, squalaetp.xelon_table(),  "numero_de_dossier", )
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -57,9 +57,9 @@ class Command(BaseCommand):
             for table in ["Xelon"]:
                 self.stdout.write("Suppression des données de la table {} terminée!".format(table))
 
-    def _insert(self, model, excel_method, columns_name):
+    def _update(self, model, excel_method, columns_name):
         nb_prod_before = model.objects.count()
-        excels = []
+        excels, nb_prod_update = [], 0
         for file in settings.XLS_DELAY_FILES:
             excels.append(ExcelsDelayAnalysis(file))
         for row in excel_method:
@@ -69,15 +69,23 @@ class Command(BaseCommand):
                         row_update = excel.xelon_table(row[columns_name])
                         if len(row_update):
                             row.update(row_update)
+                            if not row["date_de_cloture"]:
+                                del row["date_de_cloture"]
                             break
                     log.info(row)
-                    m = model(**row)
-                    m.save()
+                    product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
+                    if product:
+                        del row["numero_de_dossier"]
+                        product.update(**row)
+                        nb_prod_update += 1
+                    else:
+                        m = model(**row)
+                        m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
+                except DataError as err:
+                    self.stdout.write("DataError dossier {} : {}".format(row[columns_name], err))
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("Nombre de produits mis à jour:  {}".format(nb_prod_update))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
-
-    def _update(self, model, excel_method, columns_name):
-        pass

@@ -5,6 +5,27 @@
     <table class="table table-bordered" id="xelonTable" width="100%" cellspacing="0">
         <thead>
         <tr>
+            <th class="all">Numéro de dossier</th>
+            <th>V.I.N.</th>
+            <th class="all">Modèle produit</th>
+            <th>Modèle véhicule</th>
+            <th class="all">Type de clôture</th>
+            <th class="all">Date Retour</th>
+            <th>Date clôture</th>
+            <th>Nom Technicien</th>
+            <th>Commentaire action</th>
+            <th>Commentaire de la FR</th>
+            <th>Commentaire SAV Admin</th>
+            <th>Libellé de la fiche K</th>
+            <th>Lieu de stockage</th>
+            <th>Dossier VIP</th>
+            <th>Express</th>
+            <th class="all"></th>
+            <th class="all"></th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
             <th>Numéro de dossier</th>
             <th>V.I.N.</th>
             <th>Modèle produit</th>
@@ -20,25 +41,8 @@
             <th>Lieu de stockage</th>
             <th>Dossier VIP</th>
             <th>Express</th>
-        </tr>
-        </thead>
-        <tfoot>
-        <tr>
-            <th class="all">Numéro de dossier</th>
-            <th class="all">V.I.N.</th>
-            <th>Modèle produit</th>
-            <th>Modèle véhicule</th>
-            <th>Type de clôture</th>
-            <th>Date Retour</th>
-            <th>Date clôture</th>
-            <th>Nom Technicien</th>
-            <th>Commentaire action</th>
-            <th>Commentaire de la FR</th>
-            <th>Commentaire SAV Admin</th>
-            <th>Libellé de la fiche K</th>
-            <th>Lieu de stockage</th>
-            <th>Dossier VIP</th>
-            <th>Express</th>
+            <th></th>
+            <th></th>
         </tr>
         </tfoot>
         <tbody>
@@ -51,8 +55,8 @@
                 <td>{{ file.modele_produit }}</td>
                 <td>{{ file.modele_vehicule }}</td>
                 <td>{{ file.type_de_cloture }}</td>
-                <td>{{ file.date_retour }}</td>
-                <td>{{ file.date_de_cloture }}</td>
+                <td>{{ file.date_retour|default:"--" }}</td>
+                <td>{{ file.date_de_cloture|default:"--" }}</td>
                 <td>{{ file.nom_technicien }}</td>
                 <td>{{ file.commentaire_action }}</td>
                 <td>{{ file.commentaire_de_la_fr }}</td>
@@ -61,6 +65,12 @@
                 <td>{{ file.lieu_de_stockage }}</td>
                 <td>{{ file.dossier_vip }}</td>
                 <td>{{ file.express }}</td>
+                <td><a href="{% url 'squalaetp:xelon_edit' file_id=file.id %}"
+                       class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                </td>
+                <td>
+                    <a href="#" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                </td>
             </tr>
 
         {% endfor %}

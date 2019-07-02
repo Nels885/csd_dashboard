@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-04 12:05+0200\n"
+"POT-Creation-Date: 2019-06-25 11:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,58 +17,71 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-#: raspeedi/templates/raspeedi/insert.html:14
-msgid "case reference"
-msgstr "Référence boîtier"
+#: raspeedi/templates/raspeedi/forms.html:7
+msgid "Case reference"
+msgstr "Référence Boîtier"
 
-#: raspeedi/templates/raspeedi/insert.html:20
+#: raspeedi/templates/raspeedi/forms.html:14
 msgid "Product"
 msgstr "Produit"
 
-#: raspeedi/templates/raspeedi/insert.html:26
+#: raspeedi/templates/raspeedi/forms.html:21
 msgid "Front"
 msgstr "Façade"
 
-#: raspeedi/templates/raspeedi/insert.html:46
+#: raspeedi/templates/raspeedi/forms.html:41
 msgid "Reversing camera"
-msgstr "Caméra recul"
+msgstr "Caméra de recul"
 
-#: raspeedi/templates/raspeedi/insert.html:54
+#: raspeedi/templates/raspeedi/forms.html:49
 msgid "PEEDI dump"
-msgstr "Dump PEEDI"
+msgstr ""
 
-#: raspeedi/templates/raspeedi/insert.html:59
+#: raspeedi/templates/raspeedi/forms.html:54
 msgid "RENESAS dump"
 msgstr "Dump RENESAS"
 
-#: raspeedi/templates/raspeedi/insert.html:66
+#: raspeedi/templates/raspeedi/forms.html:61
 msgid "Version CD"
-msgstr "CD version"
+msgstr "Version CD"
 
-#: raspeedi/templates/raspeedi/insert.html:72
+#: raspeedi/templates/raspeedi/forms.html:67
 msgid "Media type"
-msgstr "Type de média"
+msgstr "Type Media"
 
-#: raspeedi/templates/raspeedi/insert.html:78
+#: raspeedi/templates/raspeedi/forms.html:74
 msgid "Carto version"
-msgstr "Version carto"
+msgstr "Version Carto"
 
-#: raspeedi/templates/raspeedi/insert.html:84
+#: raspeedi/templates/raspeedi/forms.html:80
 msgid "Screens number"
 msgstr "Nombre d'écran"
 
-#: raspeedi/templates/raspeedi/insert.html:92
+#: raspeedi/templates/raspeedi/forms.html:89
 msgid "MM reference"
 msgstr "Référence MM"
 
-#: raspeedi/templates/raspeedi/insert.html:107
+#: raspeedi/templates/raspeedi/forms.html:105
 msgid "Submit"
 msgstr "Soumettre"
 
+#: raspeedi/tests/tests_raspeedi_views.py:47
+msgid "This field is required."
+msgstr "Ce champ est requis."
+
 #: raspeedi/views.py:21
 msgid "Table Products Telematics PSA"
-msgstr "Tableau Produits Télématique PSA"
+msgstr "Table produits télématique PSA"
 
 #: raspeedi/views.py:31
 msgid "RASPEEDI integration"
-msgstr ""
+msgstr "Intégration données RASPEEDI"
+
+#: raspeedi/views.py:54
+msgid "Modification done successfully!"
+msgstr "Modification effectuée avec succès !"
+
+#: raspeedi/views.py:58
+#, python-brace-format
+msgid "Modification data RASPEEDI for ref case: {ref_case}"
+msgstr "Modification des données RASPEEDI pour la réf. Boîtier : {ref_case}"

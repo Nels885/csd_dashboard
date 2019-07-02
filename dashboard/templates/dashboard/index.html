@@ -31,10 +31,10 @@
                         <!-- Card Body -->
                         <div class="card-body">
                             <div class="chart-pie">
-                                <canvas id="prodPieChart" data-url="{% url 'api:api-data' %}"></canvas>
+                                <canvas id="prodPieChart" data-url="{% url 'api-data' %}"></canvas>
                             </div>
                             <div class="mt-2 text-center small">
-                                {% for name, color in products %}
+                                {% for name, color in prods.listProds %}
                                     <span class="mr-2"><i class="fas fa-circle {{ color }}"></i> {{ name }}</span>
                                 {% endfor %}
                             </div>
@@ -54,7 +54,7 @@
                                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">nombre de
                                             produits à réparer
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pend_prods }}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.pending }}</div>
                                     </div>
                                     <div class="col-auto">
                                         <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -75,13 +75,14 @@
                                         </div>
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">100</div>
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ prods.late }}</div>
                                             </div>
                                             <div class="col">
                                                 <div class="progress progress-sm mr-2">
                                                     <div class="progress-bar bg-info" role="progressbar"
-                                                         style="width: 40%"
-                                                         aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                                         style="width: {{ prods.percent }}%"
+                                                         aria-valuenow="50" aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>

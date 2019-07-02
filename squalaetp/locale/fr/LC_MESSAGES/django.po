@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-04 12:05+0200\n"
+"POT-Creation-Date: 2019-06-25 11:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/forms.py:20
+#: squalaetp/forms.py:20 squalaetp/tests/tests_corvet_views.py:74
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
@@ -41,28 +41,42 @@ msgstr ""
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:77
+#: squalaetp/forms.py:77 squalaetp/tests/tests_corvet_views.py:87
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
-#: squalaetp/templates/squalaetp/corvet_insert.html:35
+#: squalaetp/templates/squalaetp/corvet_insert.html:41
+#: squalaetp/templates/squalaetp/xelon_edit.html:41
 msgid "Submit"
 msgstr "Soumettre"
 
-#: squalaetp/templates/squalaetp/corvet_insert_done.html:26
-msgid "Back to Dashboard"
-msgstr "Retour au tableau de bord"
+#: squalaetp/tests/tests_corvet_views.py:62
+msgid "This field is required."
+msgstr "Ce champ est requis."
 
-#: squalaetp/views.py:39
+#: squalaetp/views.py:32
+#, fuzzy, python-brace-format
+#| msgid "Modification data Xelon file: {}"
+msgid "Modification data Xelon file: {file}"
+msgstr "Modification données dossier Xelon : {file}"
+
+#: squalaetp/views.py:44
+msgid "Modification done successfully!"
+msgstr ""
+
+#: squalaetp/views.py:47 squalaetp/views.py:99
+msgid "An internal error has occurred. Thank you recommend your request"
+msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
+
+#: squalaetp/views.py:68
 #, fuzzy
 #| msgid "CORVET integration"
 msgid "CORVET table"
 msgstr "Intégration CORVET"
 
-#: squalaetp/views.py:56
+#: squalaetp/views.py:85
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: squalaetp/views.py:69
-msgid "An internal error has occurred. Thank you recommend your request"
-msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
+#~ msgid "Back to Dashboard"
+#~ msgstr "Retour au tableau de bord"

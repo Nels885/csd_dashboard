@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 from squalaetp.models import Corvet
+from dashboard.models import UserProfile
 
 TYPE_CHOICES = [
     ('RAD', 'Radio'),
@@ -39,12 +39,12 @@ class Raspeedi(models.Model):
     type = models.CharField(max_length=3, choices=TYPE_CHOICES)
     dab = models.BooleanField('DAB', default=False)
     cam = models.BooleanField('caméra de recul', default=False)
-    dump_peedi = models.CharField('dump PEEDI', max_length=25, null=True, blank=True)
-    cd_version = models.CharField(max_length=10, null=True, blank=True)
+    dump_peedi = models.CharField('dump PEEDI', max_length=25, default="", blank=True)
+    cd_version = models.CharField(max_length=10, default="", blank=True)
     media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, null=True)
-    carto = models.CharField('version cartographie', max_length=20, null=True, blank=True)
-    dump_renesas = models.CharField(max_length=50, null=True, blank=True)
-    ref_mm = models.CharField(max_length=200, null=True, blank=True)
+    carto = models.CharField('version cartographie', max_length=20, default="", blank=True)
+    dump_renesas = models.CharField(max_length=50, default="", blank=True)
+    ref_mm = models.CharField(max_length=200, default="", blank=True)
     connecteur_ecran = models.IntegerField("nombre de connecteur d'écran", choices=CON_CHOICES, null=True)
     corvets = models.ManyToManyField(Corvet, related_name='raspeedi', blank=True)
 
@@ -52,7 +52,7 @@ class Raspeedi(models.Model):
         return "{} - {} - {} - {}".format(self.ref_boitier, self.produit, self.facade, self.type)
 
 
-# class AddReference(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     produit_ajoute = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
-#     ajoute_le = models.DateTimeField(auto_now_add=True)
+class AddReference(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    add_product = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)

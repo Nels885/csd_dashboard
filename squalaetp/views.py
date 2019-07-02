@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
@@ -15,13 +15,42 @@ def xelon_table(request):
     :return:
         Xelon table page
     """
-    files = Xelon.objects.all().order_by('numero_de_dossier')
+    files = Xelon.objects.filter(date_retour__isnull=False).order_by('numero_de_dossier')
     context = {
         'title': 'Xelon',
         'table_title': 'Dossiers Clients',
         'files': files
     }
     return render(request, 'squalaetp/xelon_table.html', context)
+
+
+@login_required
+def xelon_edit(request, file_id):
+    file = get_object_or_404(Xelon, pk=file_id)
+    context = {
+        'title': 'Xelon',
+        'card_title': _('Modification data Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'file': file,
+    }
+
+    if request.method == 'POST':
+        form = CorvetForm(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            data = form.xml_parser('xml_data')
+            if data:
+                try:
+                    m = Corvet(**data)
+                    m.save()
+                    context = {'title': _('Modification done successfully!')}
+                    return render(request, 'dashboard/done.html', context)
+                except TypeError:
+                    form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
+        context['errors'] = form.errors.items()
+    else:
+        form = CorvetForm()
+        form.fields['vin'].initial = file.vin
+    context['form'] = form
+    return render(request, 'squalaetp/xelon_edit.html', context)
 
 
 @login_required
@@ -64,7 +93,8 @@ def corvet_insert(request):
                 try:
                     m = Corvet(**data)
                     m.save()
-                    return redirect('index')
+                    context = {'title': "Modification réalisée avec succès !"}
+                    return render(request, 'dashboard/done.html', context)
                 except TypeError:
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
         context['errors'] = form.errors.items()
@@ -72,8 +102,3 @@ def corvet_insert(request):
         form = CorvetForm()
     context['form'] = form
     return render(request, 'squalaetp/corvet_insert.html', context)
-
-
-@login_required
-def edit(request):
-    pass

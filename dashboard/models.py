@@ -20,3 +20,13 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class CsdSoftware(models.Model):
+    jig = models.CharField(max_length=100)
+    version = models.CharField(max_length=20)
+    link_download = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    status = models.CharField(max_length=50)
+    validation_date = models.DateField(null=True, blank=True)

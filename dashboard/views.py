@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
 from django.utils import translation
 
-from squalaetp.models import Xelon
+from .utils import ProductAnalysis
 from .models import Post
 
 
@@ -15,20 +15,9 @@ def index(request):
         Index page
     """
     posts = Post.objects.all().order_by('-timestamp')
-    products = [
-        ["RT6/RNEG2", "text-primary"],
-        ["SMEG", "text-success"],
-        ["RNEG", "text-danger"],
-        ["NG4", "text-secondary"],
-        ["DISPLAY", "text-dark"],
-        ["RTx", "text-info"],
-        ["AUTRES", "text-warning"]
-    ]
-    pending_prods = Xelon.objects.filter(type_de_cloture="").count()
     context = {
         'title': _("Dashboard"),
-        'products': products,
-        'pend_prods': pending_prods,
+        'prods': ProductAnalysis(),
         'posts': posts
     }
     return render(request, 'dashboard/index.html', context)
