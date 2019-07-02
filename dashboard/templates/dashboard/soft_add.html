@@ -1,0 +1,70 @@
+{% extends 'dashboard/forms_format.html' %}
+
+{% load i18n %}
+
+{% block form_content %}
+
+    <div class="p-5">
+        <form method="post" action="{% url 'dashboard:soft-add' %}">
+
+            {% csrf_token %}
+
+            <div class="form-group row">
+                <div class="col-sm-8 mb-3 mb-sm-0">
+                    <label for="{{ form.jig.id_for_label }}">{% trans "JIG Name" %} : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.jig }}
+
+                </div>
+                <div class="col-sm-4">
+                    <label for="{{ form.new_version.id_for_label }}">{% trans "Version" %} : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.new_version }}
+
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12 mb-3 mb-sm-0">
+                    <label for="{{ form.link_download.id_for_label }}">{% trans "Link download" %} : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.link_download }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                    <label for="{{ form.status.id_for_label }}">Status : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.status }}
+
+                </div>
+                <div class="col-sm-4">
+                    <label for="{{ form.validation_date.id_for_label }}">{% trans "Validation date" %} : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.validation_date }}
+
+                </div>
+            </div>
+
+            {% if errors %}
+                {% for key, error in errors %}
+                    {% autoescape off %}
+                        {{ error }}
+                    {% endautoescape %}
+                {% endfor %}
+            {% endif %}
+
+            <button type="submit" name="btn_raspeedi_insert"
+                    class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-block">
+                {% trans "Submit" %}
+            </button>
+
+        </form>
+
+    </div>
+
+{% endblock %}

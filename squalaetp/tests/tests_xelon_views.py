@@ -31,10 +31,10 @@ class XelonTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_xelon_edit_page_is_disconnected(self):
-        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': 1}))
+        response = self.client.get(reverse('squalaetp:xelon-edit', kwargs={'file_id': 1}))
         self.assertEqual(response.status_code, 302)
 
     def test_xelon_edit_page_is_connected(self):
         self.client.login(username='toto', password='totopassword')
-        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': 1}))
+        response = self.client.get(reverse('squalaetp:xelon-edit', kwargs={'file_id': 1}))
         self.assertEqual(response.status_code, 200)

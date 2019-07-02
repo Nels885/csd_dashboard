@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
 
 from .utils import ProductAnalysis
-from .models import Post
+from .models import Post, CsdSoftware, User
+from .forms import SoftwareForm, ParaErrorList
 
 
 def index(request):
@@ -36,6 +38,43 @@ def set_language(request, user_language):
     translation.activate(user_language)
     request.session[translation.LANGUAGE_SESSION_KEY] = user_language
     return redirect('index')
+
+
+def soft_list(request):
+    softs = CsdSoftware.objects.all()
+    context = {
+        'title': 'Software',
+        'table_title': _('Software list'),
+        'softs': softs,
+    }
+    return render(request, 'dashboard/soft_table.html', context)
+
+
+@login_required
+def soft_add(request):
+    context = {
+        'title': 'Software',
+        'card_title': _('Software integration'),
+    }
+    if request.method == 'POST':
+        user = User.objects.get(pk=request.user.id)
+        form = SoftwareForm(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            jig = form.cleaned_data['jig']
+            ref = CsdSoftware.objects.filter(jig=jig)
+            if not ref.exists():
+                CsdSoftware.objects.create(**form.cleaned_data, created_by=user)
+                return redirect('index')
+        context['errors'] = form.errors.items()
+    else:
+        form = SoftwareForm()
+    context['form'] = form
+    return render(request, 'dashboard/soft_add.html', context)
+
+
+@login_required
+def soft_edit(request, soft_id):
+    pass
 
 
 # Demo views not use for the project

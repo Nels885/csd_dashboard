@@ -2,6 +2,21 @@
 
 {% block table_content %}
 
+    <div>
+        Toggle column: <a class="toggle-vis text-primary" data-column="1">V.I.N.</a> -
+        <a class="toggle-vis text-primary" data-column="3">Modèle véhicule</a> -
+        <a class="toggle-vis text-primary" data-column="6">Date clôture</a> -
+        <a class="toggle-vis text-primary" data-column="7">Nom Technicien</a> -
+        <a class="toggle-vis text-primary" data-column="8">Commentaire action</a> -
+        <a class="toggle-vis text-primary" data-column="9">Commentaire de la FR</a> -
+        <a class="toggle-vis text-primary" data-column="10">Commentaire SAV Admin</a> -
+        <a class="toggle-vis text-primary" data-column="11">Libellé de la fiche K</a> -
+        <a class="toggle-vis text-primary" data-column="12">Lieu de stockage</a> -
+        <a class="toggle-vis text-primary" data-column="13">Dossier VIP</a> -
+        <a class="toggle-vis text-primary" data-column="14">Express</a>
+    </div>
+    <br>
+
     <table class="table table-bordered" id="xelonTable" width="100%" cellspacing="0">
         <thead>
         <tr>
@@ -65,7 +80,7 @@
                 <td>{{ file.lieu_de_stockage }}</td>
                 <td>{{ file.dossier_vip }}</td>
                 <td>{{ file.express }}</td>
-                <td><a href="{% url 'squalaetp:xelon_edit' file_id=file.id %}"
+                <td><a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td>
