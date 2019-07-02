@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-from dashboard.models import CsdSoftware, UserProfile
+from dashboard.models import CsdSoftware
 
 
 class DashboardTestCase(TestCase):
