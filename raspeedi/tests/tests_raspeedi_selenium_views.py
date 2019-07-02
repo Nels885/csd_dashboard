@@ -54,7 +54,7 @@ class RaspeediSeleniumTestCase(LiveServerTestCase):
 
         new_raspeedi = Raspeedi.objects.count()
         self.assertEqual(new_raspeedi, old_raspeedi + 1)
-        self.assertEqual(driver.current_url, self.live_server_url + '/')
+        self.assertEqual(driver.current_url, self.live_server_url + '/raspeedi/insert/')
 
     def test_raspeedi_table_page(self):
         driver = self.driver

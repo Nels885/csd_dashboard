@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-25 11:49+0200\n"
+"POT-Creation-Date: 2019-07-02 17:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,9 +60,9 @@ msgstr "Ce champ est requis."
 msgid "Modification data Xelon file: {file}"
 msgstr "Modification données dossier Xelon : {file}"
 
-#: squalaetp/views.py:44
+#: squalaetp/views.py:44 squalaetp/views.py:96
 msgid "Modification done successfully!"
-msgstr ""
+msgstr "Modification réalisée avec succès !"
 
 #: squalaetp/views.py:47 squalaetp/views.py:99
 msgid "An internal error has occurred. Thank you recommend your request"

@@ -1,5 +1,7 @@
 {% extends 'dashboard/datatables_format.html' %}
 
+{% load static %}
+
 {% block table_content %}
 
     <div>
@@ -92,5 +94,12 @@
 
         </tbody>
     </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'dashboard/js/xelon-tables.js' %}"></script>
 
 {% endblock %}

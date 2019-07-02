@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-25 11:49+0200\n"
+"POT-Creation-Date: 2019-07-02 17:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: raspeedi/templates/raspeedi/forms.html:7
 msgid "Case reference"
 msgstr "Référence Boîtier"
@@ -35,7 +36,7 @@ msgstr "Caméra de recul"
 
 #: raspeedi/templates/raspeedi/forms.html:49
 msgid "PEEDI dump"
-msgstr ""
+msgstr "Dump PEEDI"
 
 #: raspeedi/templates/raspeedi/forms.html:54
 msgid "RENESAS dump"
@@ -77,11 +78,17 @@ msgstr "Table produits télématique PSA"
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: raspeedi/views.py:54
+#: raspeedi/views.py:40
+#, fuzzy
+#| msgid "Modification done successfully!"
+msgid "Added successfully!"
+msgstr "Ajout réalisé avec succès !"
+
+#: raspeedi/views.py:55
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: raspeedi/views.py:58
+#: raspeedi/views.py:59
 #, python-brace-format
 msgid "Modification data RASPEEDI for ref case: {ref_case}"
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : {ref_case}"

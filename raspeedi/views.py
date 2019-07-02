@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
@@ -37,7 +37,8 @@ def insert(request):
             ref = Raspeedi.objects.filter(ref_boitier=ref_case)
             if not ref.exists():
                 Raspeedi.objects.create(**form.cleaned_data)
-                return redirect('index')
+                context = {'title': _('Added successfully!')}
+                return render(request, 'dashboard/done.html', context)
         context['errors'] = form.errors.items()
     else:
         form = RaspeediForm()

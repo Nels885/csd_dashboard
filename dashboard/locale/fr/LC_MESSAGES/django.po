@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-25 11:49+0200\n"
+"POT-Creation-Date: 2019-07-02 17:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:29
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:21
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -55,7 +55,7 @@ msgid "Logout"
 msgstr "Déconnexion"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:25
-#: dashboard/templates/dashboard/nav_csd_atelier.html:66
+#: dashboard/templates/dashboard/nav_csd_atelier.html:89
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -67,23 +67,48 @@ msgstr "Tableau Corvet"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:30
-msgid "Add data"
-msgstr "Ajout données"
+#: dashboard/templates/dashboard/nav_csd_atelier.html:50
+#: dashboard/templates/dashboard/nav_csd_atelier.html:96 dashboard/views.py:47
+msgid "Software list"
+msgstr "Liste Logiciel"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:51
+#: dashboard/templates/dashboard/nav_csd_atelier.html:53
+msgid "Software Add"
+msgstr "Ajout Logiciel"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:74
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:54
+#: dashboard/templates/dashboard/nav_csd_atelier.html:77
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:73
+#: dashboard/templates/dashboard/nav_csd_atelier.html:103
 #, fuzzy
 #| msgid "Raspeedi Table"
 msgid "Raspeedi table"
 msgstr "Tableau Raspeedi"
+
+#: dashboard/templates/dashboard/soft_add.html:14
+msgid "JIG Name"
+msgstr "Nom JIG"
+
+#: dashboard/templates/dashboard/soft_add.html:21
+msgid "Version"
+msgstr "Version"
+
+#: dashboard/templates/dashboard/soft_add.html:30
+msgid "Link download"
+msgstr ""
+
+#: dashboard/templates/dashboard/soft_add.html:45
+msgid "Validation date"
+msgstr "Date de validation"
+
+#: dashboard/templates/dashboard/soft_add.html:63
+msgid "Submit"
+msgstr "Soumettre"
 
 #: dashboard/templates/dashboard/top_bar.html:73
 msgid "English"
@@ -174,6 +199,19 @@ msgstr "Le nouveau mot de passe est invalide"
 #: dashboard/templates/registration/password_change_form.html:71
 msgid "Validate the change"
 msgstr "Valider le changement"
+
+#: dashboard/views.py:57
+msgid "Software integration"
+msgstr "Intégration logiciel"
+
+#: dashboard/views.py:67
+#, fuzzy
+#| msgid "Modification done successfully!"
+msgid "Added successfully!"
+msgstr "Ajout réalisé avec succès !"
+
+#~ msgid "Add data"
+#~ msgstr "Ajout données"
 
 #~ msgid "Edit data"
 #~ msgstr "modification données"

@@ -1,5 +1,7 @@
 {% extends 'dashboard/datatables_format.html' %}
 
+{% load static %}
+
 {% block table_content %}
 
     <table class="table table-bordered" id="corvetTable" width="100%" cellspacing="0">
@@ -43,5 +45,12 @@
 
         </tbody>
     </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'dashboard/js/datatables.js' %}"></script>
 
 {% endblock %}

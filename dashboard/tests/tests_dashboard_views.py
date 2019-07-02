@@ -1,11 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import translation
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
-
-from dashboard.models import CsdSoftware
+from dashboard.models import CsdSoftware, User
 
 
 class DashboardTestCase(TestCase):
@@ -45,4 +42,4 @@ class DashboardTestCase(TestCase):
         response = self.client.post(reverse('dashboard:soft-add'), self.form_data)
         new_soft = CsdSoftware.objects.count()
         self.assertEqual(new_soft, old_soft + 1)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)

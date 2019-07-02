@@ -64,7 +64,8 @@ def soft_add(request):
             ref = CsdSoftware.objects.filter(jig=jig)
             if not ref.exists():
                 CsdSoftware.objects.create(**form.cleaned_data, created_by=user)
-                return redirect('index')
+                context = {'title': _('Added successfully!')}
+                return render(request, 'dashboard/done.html', context)
         context['errors'] = form.errors.items()
     else:
         form = SoftwareForm()

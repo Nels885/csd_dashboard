@@ -23,7 +23,6 @@
 
 {% endblock %}
 
-
 {% block customcss %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'dashboard/vendor/datatables/datatables.min.css' %}"/>
@@ -31,6 +30,8 @@
           href="{% static 'dashboard/vendor/datatables/DataTables-1.10.18/css/jquery.dataTables.min.css' %}"/>-->
     <link rel="stylesheet" type="text/css"
           href="{% static 'dashboard/vendor/datatables/responsive.dataTables.min.css' %}"/>
+
+    {% block tablecss %} {% endblock %}
 
 {% endblock %}
 
@@ -44,7 +45,6 @@
     <script type="text/javascript"
             src="{% static 'dashboard/vendor/datatables/dataTables.responsive.min.js' %}"></script>
 
-    <!-- Page level custom scripts -->
-    <script type="text/javascript" src="{% static 'dashboard/js/datatables.js' %}"></script>
+    {% block tablejs %} {% endblock %}
 
 {% endblock %}
