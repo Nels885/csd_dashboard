@@ -9,7 +9,7 @@ class DashboardTestCase(TestCase):
 
     def setUp(self):
         self.form_data = {
-            'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'TEST',
+            'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test',
         }
         User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
 
