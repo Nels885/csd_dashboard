@@ -78,24 +78,13 @@ WSGI_APPLICATION = 'sbadmin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'csd_atelier',
-#         'USER': 'nels885',
-#         'PASSWORD': 'kikoulol',
-#         'HOST': '',
-#         'PORT': '5432',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'csd_atelier',
-        'USER': 'lvoirin',
-        'PASSWORD': 'p0stGRE!',
-        'HOST': 'gogs.clarion.fr',
+        'USER': 'nels885',
+        'PASSWORD': 'kikoulol',
+        'HOST': '',
         'PORT': '5432',
     }
 }
