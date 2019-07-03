@@ -4,9 +4,11 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 STATUS_CHOICES = [
-    ('TEST', 'En test'),
-    ('VALID', 'Validé'),
-    ('ABANDONED', 'Abandonné'),
+    ('Validé', 'Validé'),
+    ('En test', 'En test'),
+    ('Etudes', 'Etudes'),
+    ('Abandonné', 'Abandonné'),
+    ('PDI Only', 'PDI Only')
 ]
 
 
@@ -37,3 +39,6 @@ class CsdSoftware(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)
     validation_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.jig
