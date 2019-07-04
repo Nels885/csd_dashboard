@@ -26,10 +26,13 @@ def xelon_table(request):
 
 def xelon_detail(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
+    dict_file = vars(file)
+    for key in ["id", "_state"]:
+        del dict_file[key]
     context = {
         'title': 'Xelon',
         'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
-        'file': file,
+        'dict_file': dict_file,
     }
     return render(request, 'squalaetp/xelon_detail.html', context)
 

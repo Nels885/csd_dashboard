@@ -9,6 +9,14 @@
     <table class="table table-striped table-condensed">
 
         <tbody>
+        {% for key, value in dict_file.items %}
+        <tr>
+            <td class="text-dark">{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+
+        {% comment %}
         <tr>
             <td class="text-dark">Numéro de dossier</td>
             <td>{{ file.numero_de_dossier }}</td>
@@ -69,6 +77,8 @@
             <td class="text-dark">Express</td>
             <td>{{ file.express }}</td>
         </tr>
+        {% endcomment %}
+
         </tbody>
     </table>
 
