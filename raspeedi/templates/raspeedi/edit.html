@@ -1,13 +1,11 @@
 {% extends 'dashboard/forms_format.html' %}
 
-{% load i18n %}
-
 {% block form_content %}
 
     <div class="p-5">
         <form method="post" action="{% url 'raspeedi:edit' ref_case=prod.ref_boitier %}">
 
-            {% include 'raspeedi/forms.html' %}
+            {% include 'raspeedi/form.html' %}
 
         </form>
 

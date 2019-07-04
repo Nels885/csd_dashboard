@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
@@ -75,7 +75,20 @@ def soft_add(request):
 
 @login_required
 def soft_edit(request, soft_id):
-    pass
+    soft = get_object_or_404(CsdSoftware, pk=soft_id)
+    form = SoftwareForm(request.POST or None, instance=soft)
+    if form.is_valid():
+        form.save()
+        context = {'title': _('Modification done successfully!')}
+        return render(request, 'dashboard/done.html', context)
+    context = {
+        'title': 'Software',
+        'card_title': _('Modification data Software for JIG: {jig}'.format(jig=soft.jig)),
+        'url': 'dashboard:soft-edit',
+        'soft': soft,
+        'form': form,
+    }
+    return render(request, 'dashboard/soft_edit.html', context)
 
 
 # Demo views not use for the project
