@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-02 17:30+0200\n"
+"POT-Creation-Date: 2019-07-04 13:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,7 +70,7 @@ msgstr "Ajout Corvet"
 #: dashboard/templates/dashboard/nav_csd_atelier.html:50
 #: dashboard/templates/dashboard/nav_csd_atelier.html:96 dashboard/views.py:47
 msgid "Software list"
-msgstr "Liste Logiciel"
+msgstr "Liste Logiciels"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:53
 msgid "Software Add"
@@ -100,7 +100,7 @@ msgstr "Version"
 
 #: dashboard/templates/dashboard/soft_add.html:30
 msgid "Link download"
-msgstr ""
+msgstr "lien téléchargement"
 
 #: dashboard/templates/dashboard/soft_add.html:45
 msgid "Validation date"

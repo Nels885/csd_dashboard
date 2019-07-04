@@ -13,8 +13,6 @@
             <th class="all">Lien téléchargement</th>
             <th class="all">Status</th>
             <th class="all">Date de validation</th>
-            <th>Ajouté le</th>
-            <th>Par</th>
             <th class="all"></th>
         </tr>
         </thead>
@@ -29,8 +27,6 @@
                 <td>{{ soft.link_download }}</td>
                 <td>{{ soft.status }}</td>
                 <td>{{ soft.validation_date|default:"--" }}</td>
-                <td>{{ soft.created_at }}</td>
-                <td>{{ soft.created_by }}</td>
                 <td><a href="{% url 'dashboard:soft-edit' soft_id=soft.id %}"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
@@ -43,9 +39,24 @@
 
 {% endblock %}
 
+{% block tablecss %}
+
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'dashboard/vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
+
+{% endblock %}
+
 {% block tablejs %}
 
-        <!-- Page level custom scripts -->
-    <script type="text/javascript" src="{% static 'dashboard/js/datatables.js' %}"></script>
+    <!-- Page level custom scripts -->
+    <script src="{% static 'dashboard/js/datatables.js' %}"></script>
+
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/JSZip/jszip.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/pdfmake/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/buttons.print.min.js' %}"></script>
 
 {% endblock %}

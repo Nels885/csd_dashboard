@@ -2,12 +2,12 @@
 
 {% load static %}
 
+{% load i18n %}
+
 {% block table_content %}
 
     <div>
-        Toggle column: <a class="toggle-vis text-primary" data-column="1">V.I.N.</a> -
-        <a class="toggle-vis text-primary" data-column="3">Modèle véhicule</a> -
-        <a class="toggle-vis text-primary" data-column="6">Date clôture</a> -
+        {% trans "Hide column:" %}
         <a class="toggle-vis text-primary" data-column="7">Nom Technicien</a> -
         <a class="toggle-vis text-primary" data-column="8">Commentaire action</a> -
         <a class="toggle-vis text-primary" data-column="9">Commentaire de la FR</a> -
