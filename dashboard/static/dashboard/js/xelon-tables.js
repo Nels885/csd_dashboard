@@ -6,12 +6,12 @@ $(document).ready(function () {
         },
         // Disable sorting for the Tags and Actions columns.
         columnDefs: [{
-            targets: [15, 16],
+            targets: [10, 11],
             searchable: false,
             orderable: false,
         }],
         initComplete: function () {
-            this.api().columns([0, 1, 2, 3, 4, 5, 6]).every(function () {
+            this.api().columns([0, 1, 2, 3, 4, 5, 6, 7]).every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.footer()).empty())

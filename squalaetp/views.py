@@ -24,6 +24,16 @@ def xelon_table(request):
     return render(request, 'squalaetp/xelon_table.html', context)
 
 
+def xelon_detail(request, file_id):
+    file = get_object_or_404(Xelon, pk=file_id)
+    context = {
+        'title': 'Xelon',
+        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'file': file,
+    }
+    return render(request, 'squalaetp/xelon_detail.html', context)
+
+
 @login_required
 def xelon_edit(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)

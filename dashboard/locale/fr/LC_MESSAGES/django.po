@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-04 13:54+0200\n"
+"POT-Creation-Date: 2019-07-04 17:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,23 +90,23 @@ msgstr "Ajout produit"
 msgid "Raspeedi table"
 msgstr "Tableau Raspeedi"
 
-#: dashboard/templates/dashboard/soft_add.html:14
+#: dashboard/templates/dashboard/soft_form.html:7
 msgid "JIG Name"
 msgstr "Nom JIG"
 
-#: dashboard/templates/dashboard/soft_add.html:21
+#: dashboard/templates/dashboard/soft_form.html:14
 msgid "Version"
 msgstr "Version"
 
-#: dashboard/templates/dashboard/soft_add.html:30
+#: dashboard/templates/dashboard/soft_form.html:23
 msgid "Link download"
 msgstr "lien téléchargement"
 
-#: dashboard/templates/dashboard/soft_add.html:45
+#: dashboard/templates/dashboard/soft_form.html:38
 msgid "Validation date"
 msgstr "Date de validation"
 
-#: dashboard/templates/dashboard/soft_add.html:63
+#: dashboard/templates/dashboard/soft_form.html:55
 msgid "Submit"
 msgstr "Soumettre"
 
@@ -209,6 +209,17 @@ msgstr "Intégration logiciel"
 #| msgid "Modification done successfully!"
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
+
+#: dashboard/views.py:82
+#, fuzzy
+#| msgid "Modification done successfully!"
+msgid "Modification done successfully!"
+msgstr "Ajout réalisé avec succès !"
+
+#: dashboard/views.py:86
+#, python-brace-format
+msgid "Modification data Software for JIG: {jig}"
+msgstr ""
 
 #~ msgid "Add data"
 #~ msgstr "Ajout données"

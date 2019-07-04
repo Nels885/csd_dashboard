@@ -9,14 +9,10 @@
     <div>
         {% trans "Hide column:" %}
         <a class="toggle-vis text-primary" data-column="1">V.I.N.</a> -
+        <a class="toggle-vis text-primary" data-column="3">Modèle véhicule</a> -
         <a class="toggle-vis text-primary" data-column="7">Nom Technicien</a> -
-        <a class="toggle-vis text-primary" data-column="8">Commentaire action</a> -
-        <a class="toggle-vis text-primary" data-column="9">Commentaire de la FR</a> -
-        <a class="toggle-vis text-primary" data-column="10">Commentaire SAV Admin</a> -
-        <a class="toggle-vis text-primary" data-column="11">Libellé de la fiche K</a> -
-        <a class="toggle-vis text-primary" data-column="12">Lieu de stockage</a> -
-        <a class="toggle-vis text-primary" data-column="13">Dossier VIP</a> -
-        <a class="toggle-vis text-primary" data-column="14">Express</a>
+        <a class="toggle-vis text-primary" data-column="8">Dossier VIP</a> -
+        <a class="toggle-vis text-primary" data-column="9">Express</a>
     </div>
     <br>
 
@@ -31,11 +27,6 @@
             <th class="all">Date Retour</th>
             <th>Date clôture</th>
             <th>Nom Technicien</th>
-            <th>Commentaire action</th>
-            <th>Commentaire de la FR</th>
-            <th>Commentaire SAV Admin</th>
-            <th>Libellé de la fiche K</th>
-            <th>Lieu de stockage</th>
             <th>Dossier VIP</th>
             <th>Express</th>
             <th class="all"></th>
@@ -52,11 +43,6 @@
             <th>Date Retour</th>
             <th>Date clôture</th>
             <th>Nom Technicien</th>
-            <th>Commentaire action</th>
-            <th>Commentaire de la FR</th>
-            <th>Commentaire SAV Admin</th>
-            <th>Libellé de la fiche K</th>
-            <th>Lieu de stockage</th>
             <th>Dossier VIP</th>
             <th>Express</th>
             <th></th>
@@ -76,18 +62,14 @@
                 <td>{{ file.date_retour|default:"--" }}</td>
                 <td>{{ file.date_de_cloture|default:"--" }}</td>
                 <td>{{ file.nom_technicien }}</td>
-                <td>{{ file.commentaire_action }}</td>
-                <td>{{ file.commentaire_de_la_fr }}</td>
-                <td>{{ file.commentaire_sav_admin }}</td>
-                <td>{{ file.libelle_de_la_fiche_cas }}</td>
-                <td>{{ file.lieu_de_stockage }}</td>
                 <td>{{ file.dossier_vip }}</td>
                 <td>{{ file.express }}</td>
                 <td><a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                    <a href="{% url 'squalaetp:xelon-detail' file_id=file.id %}"
+                       class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
             </tr>
 

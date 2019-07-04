@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-04 13:54+0200\n"
+"POT-Creation-Date: 2019-07-04 17:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,51 +18,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: raspeedi/templates/raspeedi/forms.html:7
+#: raspeedi/templates/raspeedi/form.html:7
 msgid "Case reference"
 msgstr "Référence Boîtier"
 
-#: raspeedi/templates/raspeedi/forms.html:14
+#: raspeedi/templates/raspeedi/form.html:14
 msgid "Product"
 msgstr "Produit"
 
-#: raspeedi/templates/raspeedi/forms.html:21
+#: raspeedi/templates/raspeedi/form.html:21
 msgid "Front"
 msgstr "Façade"
 
-#: raspeedi/templates/raspeedi/forms.html:41
+#: raspeedi/templates/raspeedi/form.html:41
 msgid "Reversing camera"
 msgstr "Caméra de recul"
 
-#: raspeedi/templates/raspeedi/forms.html:49
+#: raspeedi/templates/raspeedi/form.html:49
 msgid "PEEDI dump"
 msgstr "Dump PEEDI"
 
-#: raspeedi/templates/raspeedi/forms.html:54
+#: raspeedi/templates/raspeedi/form.html:54
 msgid "RENESAS dump"
 msgstr "Dump RENESAS"
 
-#: raspeedi/templates/raspeedi/forms.html:61
+#: raspeedi/templates/raspeedi/form.html:61
 msgid "Version CD"
 msgstr "Version CD"
 
-#: raspeedi/templates/raspeedi/forms.html:67
+#: raspeedi/templates/raspeedi/form.html:67
 msgid "Media type"
 msgstr "Type Media"
 
-#: raspeedi/templates/raspeedi/forms.html:74
+#: raspeedi/templates/raspeedi/form.html:74
 msgid "Carto version"
 msgstr "Version Carto"
 
-#: raspeedi/templates/raspeedi/forms.html:80
+#: raspeedi/templates/raspeedi/form.html:80
 msgid "Screens number"
 msgstr "Nombre d'écran"
 
-#: raspeedi/templates/raspeedi/forms.html:89
+#: raspeedi/templates/raspeedi/form.html:89
 msgid "MM reference"
 msgstr "Référence MM"
 
-#: raspeedi/templates/raspeedi/forms.html:105
+#: raspeedi/templates/raspeedi/form.html:105
 msgid "Submit"
 msgstr "Soumettre"
 
