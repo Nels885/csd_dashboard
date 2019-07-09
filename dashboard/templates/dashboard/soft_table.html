@@ -20,15 +20,18 @@
 
         {% for soft in softs %}
 
-            <tr>
+            <tr {% if soft.status == "Abandonné" %}class="bg-danger text-light"
+                {% elif soft.status == "En test" %}class="bg-warning text-gray-800"
+                {% elif soft.status == "Etudes" %}class="bg-info text-light"
+                {% else %}class="bg-success text-gray-700"{% endif %}>
                 <td>{{ soft.jig }}</td>
                 <td>{{ soft.new_version }}</td>
                 <td>{{ soft.old_version|default:"--" }}</td>
                 <td>{{ soft.link_download }}</td>
                 <td>{{ soft.status }}</td>
                 <td>{{ soft.validation_date|default:"--" }}</td>
-                <td><a href="{% url 'dashboard:soft-edit' soft_id=soft.id %}"
-                       class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                <td class="bg-white"><a href="{% url 'dashboard:soft-edit' soft_id=soft.id %}"
+                                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
             </tr>
 

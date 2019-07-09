@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-04 17:41+0200\n"
+"POT-Creation-Date: 2019-07-09 11:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/forms.py:20 squalaetp/tests/tests_corvet_views.py:74
+#: squalaetp/forms.py:20 squalaetp/tests/tests_corvet_views.py:72
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
@@ -41,7 +41,7 @@ msgstr ""
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:77 squalaetp/tests/tests_corvet_views.py:87
+#: squalaetp/forms.py:77 squalaetp/tests/tests_corvet_views.py:85
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
@@ -54,37 +54,37 @@ msgstr "Soumettre"
 msgid "Hide column:"
 msgstr "Masquer la colonne :"
 
-#: squalaetp/tests/tests_corvet_views.py:62
+#: squalaetp/tests/tests_corvet_views.py:60
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: squalaetp/views.py:31
+#: squalaetp/views.py:35
 #, fuzzy, python-brace-format
 #| msgid "Modification data Xelon file: {}"
 msgid "Detail data for the Xelon file: {file}"
 msgstr "Modification données dossier Xelon : {file}"
 
-#: squalaetp/views.py:42
+#: squalaetp/views.py:51
 #, fuzzy, python-brace-format
 #| msgid "Modification data Xelon file: {}"
 msgid "Modification data Xelon file: {file}"
 msgstr "Modification données dossier Xelon : {file}"
 
-#: squalaetp/views.py:54 squalaetp/views.py:106
+#: squalaetp/views.py:63 squalaetp/views.py:107
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:57 squalaetp/views.py:109
+#: squalaetp/views.py:66 squalaetp/views.py:110
 msgid "An internal error has occurred. Thank you recommend your request"
 msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
 
-#: squalaetp/views.py:78
+#: squalaetp/views.py:83
 #, fuzzy
 #| msgid "CORVET integration"
 msgid "CORVET table"
 msgstr "Intégration CORVET"
 
-#: squalaetp/views.py:95
+#: squalaetp/views.py:96
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 

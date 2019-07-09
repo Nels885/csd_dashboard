@@ -13,7 +13,7 @@ STATUS_CHOICES = [
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture = models.ImageField()
+    image = models.ImageField(default='default.png', upload_to='profile_pics')
 
     def __str__(self):
         return self.user.username

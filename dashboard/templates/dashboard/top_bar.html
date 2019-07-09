@@ -94,16 +94,12 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                         {{ user.username }}
                 </span>
-                    {% if user.is_superuser %}
-                        <img class="img-profile rounded-circle" src="{% static 'dashboard/img/nels885.jpg' %}">
-                    {% else %}
-                        <img class="img-profile rounded-circle" src="{% static 'dashboard/img/avatar.png' %}">
-                    {% endif %}
+                    <img class="img-profile rounded-circle" src="{{ user.userprofile.image.url }}" alt="">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                      aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'dashboard:user-profile' %}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Profile" %}
                     </a>
@@ -133,7 +129,7 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                         {% trans "Guest" %}
                 </span>
-                    <img class="img-profile rounded-circle" src="{% static 'dashboard/img/avatar.png' %}">
+                    <img class="img-profile rounded-circle" src="{% static 'dashboard/img/avatar.png' %}" alt="">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

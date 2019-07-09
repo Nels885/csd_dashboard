@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-04 17:41+0200\n"
+"POT-Creation-Date: 2019-07-09 11:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:21
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:17
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: dashboard/templates/dashboard/base.html:45
-#: dashboard/templates/dashboard/top_bar.html:144
+#: dashboard/templates/dashboard/top_bar.html:140
 #: dashboard/templates/registration/login.html:58
 msgid "Login"
 msgstr "Connexion"
 
 #: dashboard/templates/dashboard/done.html:26
 #: dashboard/templates/registration/password_change_done.html:26
-#, fuzzy
-#| msgid "Dashboard"
 msgid "Back to Dashboard"
 msgstr "Retour au Tableau de bord"
 
@@ -50,7 +48,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal_logout.html:19
-#: dashboard/templates/dashboard/top_bar.html:128
+#: dashboard/templates/dashboard/top_bar.html:124
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -85,8 +83,6 @@ msgid "Add product"
 msgstr "Ajout produit"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:103
-#, fuzzy
-#| msgid "Raspeedi Table"
 msgid "Raspeedi table"
 msgstr "Tableau Raspeedi"
 
@@ -118,25 +114,24 @@ msgstr "Anglais"
 msgid "French"
 msgstr "Français"
 
-#: dashboard/templates/dashboard/top_bar.html:109
+#: dashboard/templates/dashboard/top_bar.html:105
 msgid "Profile"
 msgstr "Mon Profil"
 
-#: dashboard/templates/dashboard/top_bar.html:113
+#: dashboard/templates/dashboard/top_bar.html:109
 #, fuzzy
-#| msgid "Password"
 msgid "Change password"
 msgstr "Mot de passe"
 
-#: dashboard/templates/dashboard/top_bar.html:118
+#: dashboard/templates/dashboard/top_bar.html:114
 msgid "Administration"
 msgstr "Administration"
 
-#: dashboard/templates/dashboard/top_bar.html:123
+#: dashboard/templates/dashboard/top_bar.html:119
 msgid "Activity Log"
 msgstr "Journal d'activité"
 
-#: dashboard/templates/dashboard/top_bar.html:135
+#: dashboard/templates/dashboard/top_bar.html:131
 msgid "Guest"
 msgstr "Invité"
 
@@ -145,6 +140,7 @@ msgid "Welcome Back!"
 msgstr "Vous avez un compte ?"
 
 #: dashboard/templates/registration/login.html:35
+#: dashboard/templates/registration/profile.html:33
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
@@ -161,22 +157,22 @@ msgid "Invalid username or password"
 msgstr "Nom d'utilisateur ou mot de passe invalide"
 
 #: dashboard/templates/registration/login.html:64
+#: dashboard/templates/registration/profile.html:53
 msgid "Forgot Password?"
 msgstr "Mot de passe oublié ?"
 
 #: dashboard/templates/registration/login.html:69
+#: dashboard/templates/registration/profile.html:58
 msgid "Create an Account!"
 msgstr "Création d'un compte !"
 
 #: dashboard/templates/registration/password_change_form.html:31
 #, fuzzy
-#| msgid "Password"
 msgid "Old password"
 msgstr "Ancien mot de passe"
 
 #: dashboard/templates/registration/password_change_form.html:36
 #, fuzzy
-#| msgid "Password"
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
@@ -200,35 +196,41 @@ msgstr "Le nouveau mot de passe est invalide"
 msgid "Validate the change"
 msgstr "Valider le changement"
 
-#: dashboard/views.py:57
+#: dashboard/templates/registration/profile.html:22
+msgid "User Profile"
+msgstr "Mon Profil"
+
+#: dashboard/templates/registration/profile.html:29
+msgid "Profile picture"
+msgstr "Image de profile"
+
+#: dashboard/templates/registration/profile.html:37
+msgid "Last name"
+msgstr "Nom de famille"
+
+#: dashboard/templates/registration/profile.html:41
+msgid "First name"
+msgstr "Prénon"
+
+#: dashboard/templates/registration/profile.html:45
+msgid "E-mail address"
+msgstr "Adresse E-mail"
+
+#: dashboard/views.py:60
 msgid "Software integration"
 msgstr "Intégration logiciel"
 
-#: dashboard/views.py:67
+#: dashboard/views.py:70
 #, fuzzy
-#| msgid "Modification done successfully!"
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: dashboard/views.py:82
+#: dashboard/views.py:90
 #, fuzzy
-#| msgid "Modification done successfully!"
 msgid "Modification done successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: dashboard/views.py:86
+#: dashboard/views.py:94
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
-msgstr ""
-
-#~ msgid "Add data"
-#~ msgstr "Ajout données"
-
-#~ msgid "Edit data"
-#~ msgstr "modification données"
-
-#~ msgid "Edit product"
-#~ msgstr "modification produit"
-
-#~ msgid "Return to the home page"
-#~ msgstr "Revenir sur la page d'acceuil"
+msgstr "Modification des données pour le Software du JIG: {jig}"

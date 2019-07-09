@@ -32,6 +32,11 @@ def set_language(request, user_language):
     return redirect('index')
 
 
+@login_required
+def user_profile(request):
+    return render(request, 'registration/profile.html')
+
+
 def soft_list(request):
     """
     View of Software list page
