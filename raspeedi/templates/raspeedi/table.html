@@ -11,12 +11,7 @@
             <th>Produit</th>
             <th>Façade</th>
             <th>Type</th>
-            <th>DAB</th>
-            <th>Caméra</th>
             <th class="all">Dump PEEDI</th>
-            <th>CD Version</th>
-            <th>Media</th>
-            <th>Carto</th>
             <th class="all">Dump Renesas</th>
             <th class="all"></th>
             <th class="all"></th>
@@ -28,12 +23,7 @@
             <th>Produit</th>
             <th>Façade</th>
             <th>Type</th>
-            <th>DAB</th>
-            <th>Caméra</th>
             <th>Dump PEEDI</th>
-            <th>CD Version</th>
-            <th>Media</th>
-            <th>Carto</th>
             <th>Dump Renesas</th>
             <th></th>
             <th></th>
@@ -43,21 +33,16 @@
 
         {% for prod in products %}
 
-            <tr>
+            <tr {% if prod.dump_renesas %}class="bg-success text-gray-700"{% endif %}>
                 <td>{{ prod.ref_boitier }}</td>
                 <td>{{ prod.produit }}</td>
                 <td>{{ prod.facade }}</td>
                 <td>{{ prod.type }}</td>
-                <td>{{ prod.dab }}</td>
-                <td>{{ prod.cam }}</td>
                 <td>{{ prod.dump_peedi }}</td>
-                <td>{{ prod.cd_version }}</td>
-                <td>{{ prod.media }}</td>
-                <td>{{ prod.carto }}</td>
                 <td>{{ prod.dump_renesas }}</td>
-                <td><a href="{% url 'raspeedi:edit' ref_case=prod.ref_boitier %}" title="Modification"
+                <td class="bg-white"><a href="{% url 'raspeedi:edit' ref_case=prod.ref_boitier %}" title="Modification"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a></td>
-                <td><a href="{% url 'raspeedi:detail' ref_case=prod.ref_boitier %}" title="Détail"
+                <td class="bg-white"><a href="{% url 'raspeedi:detail' ref_case=prod.ref_boitier %}" title="Détail"
                        class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a></td>
             </tr>
 

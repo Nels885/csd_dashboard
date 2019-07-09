@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
+from django.contrib.admin.models import LogEntry
+
+import re
 
 from .utils import ProductAnalysis
 from .models import Post, CsdSoftware, User
 from .forms import SoftwareForm, ParaErrorList
+from squalaetp.models import Xelon
 
 
 def index(request):
@@ -21,6 +25,22 @@ def index(request):
     return render(request, 'dashboard/index.html', context)
 
 
+def search(request):
+    """
+    """
+    query = request.GET.get('query')
+    if re.match(r'^VF\w{15}$', str(query)):
+        file = get_object_or_404(Xelon, vin=query)
+    else:
+        file = get_object_or_404(Xelon, numero_de_dossier=query)
+    context = {
+        'title': 'Xelon',
+        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'file': file,
+    }
+    return render(request, 'squalaetp/xelon_detail.html', context)
+
+
 def set_language(request, user_language):
     """
     View of language change
@@ -30,6 +50,17 @@ def set_language(request, user_language):
     translation.activate(user_language)
     request.session[translation.LANGUAGE_SESSION_KEY] = user_language
     return redirect('index')
+
+
+@login_required
+def activity_log(request):
+    logs = LogEntry.objects.filter(user_id=request.user.id)
+    context = {
+        'title': _("Dashboard"),
+        'table_title': _('Activity log'),
+        'logs': logs,
+    }
+    return render(request, 'dashboard/activity_log.html', context)
 
 
 @login_required
@@ -178,11 +209,11 @@ def error_404(request):
     return render(request, '404.html', context)
 
 
-def error_502(request):
+def error_500(request):
     context = {
-        'title': '502 Page',
+        'title': '500 Page',
     }
-    return render(request, '502.html', context)
+    return render(request, '500.html', context)
 
 
 def charts(request):

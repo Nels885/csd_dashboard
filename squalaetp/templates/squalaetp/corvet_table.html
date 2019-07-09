@@ -41,7 +41,7 @@
                 <td>{{ corvet.electronique_94x }}</td>
                 <td>{{ corvet.electronique_14a }}</td>
                 <td>{{ corvet.electronique_34a }}</td>
-                <td><a href="#" title="Détail"
+                <td><a href="{% url 'squalaetp:corvet-detail' vin=corvet.vin %}" title="Détail"
                        class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a></td>
             </tr>
 

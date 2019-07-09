@@ -45,6 +45,18 @@ class ApiTestCase(APITestCase):
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
+    def test_cal_list_is_disconnected(self):
+        response = self.client.get(reverse('api-cal'), format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, self.authError)
+
+    def test_cal_list_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
+        response = self.client.get(reverse('api-cal'), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
     def test_chart_data_is_valid(self):
         response = self.client.get(reverse('api-data'), format='json')
         self.assertEqual(response.status_code, 200)

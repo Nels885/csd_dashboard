@@ -39,12 +39,18 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RaspeediSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Raspeedi table
+    """
     class Meta:
         model = Raspeedi
         fields = ('ref_boitier', 'produit', 'facade', 'dump_peedi', 'media', 'dump_renesas',)
 
 
 class CorvetSerializer(DynamicFieldsModelSerializer):
+    """
+    Serializer for the Corvet table with conversion of column names
+    """
     ref_radio = serializers.CharField(source='electronique_14l')
     cal_radio = serializers.CharField(source='electronique_94l')
     ref_nav = serializers.CharField(source='electronique_14x')
@@ -58,6 +64,9 @@ class CorvetSerializer(DynamicFieldsModelSerializer):
 
 
 class ProgSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the programming data that will be used by the Raspeedi tool
+    """
     corvet = CorvetSerializer(many=True, read_only=True)
 
     class Meta:
@@ -67,6 +76,9 @@ class ProgSerializer(serializers.ModelSerializer):
 
 
 class CalSerializer(serializers.ModelSerializer):
+    """
+    Serializer of the calibration data that will be used by the calibration tool
+    """
     corvet = CorvetSerializer(many=True, read_only=True,
                               fields=('ref_radio', 'cal_radio', 'ref_nav', 'cal_nav', 'no_serie'))
 

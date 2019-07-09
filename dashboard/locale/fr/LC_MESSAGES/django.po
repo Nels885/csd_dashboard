@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-09 11:01+0200\n"
+"POT-Creation-Date: 2019-07-09 17:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:17
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:21
+#: dashboard/views.py:59
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: dashboard/templates/dashboard/base.html:45
-#: dashboard/templates/dashboard/top_bar.html:140
+#: dashboard/templates/dashboard/top_bar.html:143
 #: dashboard/templates/registration/login.html:58
 msgid "Login"
 msgstr "Connexion"
@@ -48,7 +49,8 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal_logout.html:19
-#: dashboard/templates/dashboard/top_bar.html:124
+#: dashboard/templates/dashboard/top_bar.html:127
+#: dashboard/templates/registration/profile.html:61
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -66,7 +68,7 @@ msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:50
-#: dashboard/templates/dashboard/nav_csd_atelier.html:96 dashboard/views.py:47
+#: dashboard/templates/dashboard/nav_csd_atelier.html:96 dashboard/views.py:78
 msgid "Software list"
 msgstr "Liste Logiciels"
 
@@ -106,32 +108,37 @@ msgstr "Date de validation"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: dashboard/templates/dashboard/top_bar.html:73
+#: dashboard/templates/dashboard/top_bar.html:18
+msgid "Search Xelon or VIN..."
+msgstr "Rechercher Xelon ou VIN..."
+
+#: dashboard/templates/dashboard/top_bar.html:76
 msgid "English"
 msgstr "Anglais"
 
-#: dashboard/templates/dashboard/top_bar.html:82
+#: dashboard/templates/dashboard/top_bar.html:85
 msgid "French"
 msgstr "Français"
 
-#: dashboard/templates/dashboard/top_bar.html:105
+#: dashboard/templates/dashboard/top_bar.html:108
 msgid "Profile"
 msgstr "Mon Profil"
 
-#: dashboard/templates/dashboard/top_bar.html:109
+#: dashboard/templates/dashboard/top_bar.html:112
+#: dashboard/templates/registration/profile.html:48
 #, fuzzy
 msgid "Change password"
 msgstr "Mot de passe"
 
-#: dashboard/templates/dashboard/top_bar.html:114
+#: dashboard/templates/dashboard/top_bar.html:117
 msgid "Administration"
 msgstr "Administration"
 
-#: dashboard/templates/dashboard/top_bar.html:119
+#: dashboard/templates/dashboard/top_bar.html:122
 msgid "Activity Log"
 msgstr "Journal d'activité"
 
-#: dashboard/templates/dashboard/top_bar.html:131
+#: dashboard/templates/dashboard/top_bar.html:134
 msgid "Guest"
 msgstr "Invité"
 
@@ -145,6 +152,7 @@ msgid "Username"
 msgstr "Nom d'utilisateur"
 
 #: dashboard/templates/registration/login.html:42
+#: dashboard/templates/registration/profile.html:45
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -157,12 +165,10 @@ msgid "Invalid username or password"
 msgstr "Nom d'utilisateur ou mot de passe invalide"
 
 #: dashboard/templates/registration/login.html:64
-#: dashboard/templates/registration/profile.html:53
 msgid "Forgot Password?"
 msgstr "Mot de passe oublié ?"
 
 #: dashboard/templates/registration/login.html:69
-#: dashboard/templates/registration/profile.html:58
 msgid "Create an Account!"
 msgstr "Création d'un compte !"
 
@@ -212,25 +218,36 @@ msgstr "Nom de famille"
 msgid "First name"
 msgstr "Prénon"
 
-#: dashboard/templates/registration/profile.html:45
+#: dashboard/templates/registration/profile.html:52
 msgid "E-mail address"
 msgstr "Adresse E-mail"
 
+#: dashboard/views.py:38
+#, python-brace-format
+msgid "Detail data for the Xelon file: {file}"
+msgstr "Données détaillées pour le dossier Xelon : {file}"
+
 #: dashboard/views.py:60
+#, fuzzy
+#| msgid "Activity Log"
+msgid "Activity log"
+msgstr "Journal d'activité"
+
+#: dashboard/views.py:91
 msgid "Software integration"
 msgstr "Intégration logiciel"
 
-#: dashboard/views.py:70
+#: dashboard/views.py:101
 #, fuzzy
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: dashboard/views.py:90
+#: dashboard/views.py:121
 #, fuzzy
 msgid "Modification done successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: dashboard/views.py:94
+#: dashboard/views.py:125
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Modification des données pour le Software du JIG: {jig}"

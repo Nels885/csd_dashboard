@@ -85,3 +85,18 @@ class CorvetTestCase(TestCase):
                 _('Invalid XML data')
             )
             self.assertEqual(response.status_code, 200)
+
+    def test_corvet_detail_page_is_disconnected(self):
+        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': self.vin}))
+        self.assertEqual(response.status_code, 302)
+
+    def test_corvet_detail_page_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
+        self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': self.data})
+        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': self.vin}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_corvet_detail_page_is_not_found(self):
+        self.client.login(username='toto', password='totopassword')
+        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': "123456789"}))
+        self.assertEqual(response.status_code, 404)

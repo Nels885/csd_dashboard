@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils import translation
 
 from dashboard.models import CsdSoftware, User
+from squalaetp.models import Xelon
 
 
 class DashboardTestCase(TestCase):
@@ -11,13 +12,16 @@ class DashboardTestCase(TestCase):
         self.form_data = {
             'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test',
         }
+        self.vin = 'VF3ABCDEF12345678'
         User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
+                             modele_vehicule='peugeot')
 
     def test_index_page(self):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
 
-    def test_set_language_vue_is_valid(self):
+    def test_set_language_view_is_valid(self):
         for lang in ['fr', 'en']:
             response = self.client.get(reverse('dashboard:set-lang', args={'user_language': lang}))
             self.assertTrue(translation.check_for_language(lang))
@@ -42,4 +46,16 @@ class DashboardTestCase(TestCase):
         response = self.client.post(reverse('dashboard:soft-add'), self.form_data)
         new_soft = CsdSoftware.objects.count()
         self.assertEqual(new_soft, old_soft + 1)
+        self.assertEqual(response.status_code, 200)
+
+    def test_search_is_not_found(self):
+        response = self.client.get(reverse('dashboard:search'))
+        self.assertEqual(response.status_code, 404)
+
+    def test_search_vin_is_valid(self):
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin})
+        self.assertEqual(response.status_code, 200)
+
+    def test_search_xelon_is_valid(self):
+        response = self.client.get(reverse('dashboard:search'), {'query': 'A123456789'})
         self.assertEqual(response.status_code, 200)

@@ -42,20 +42,23 @@
                                         <td>{{ user.first_name }}</td>
                                     </tr>
                                     <tr>
+                                        <td class="text-dark">{% trans "Password" %} :</td>
+                                        <td>
+                                            <a class="small"
+                                               href="{% url 'password_change' %}">{% trans "Change password" %}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="text-dark">{% trans "E-mail address" %} :</td>
                                         <td>{{ user.email }}</td>
                                     </tr>
                                     </tbody>
                                 </table>
 
+                                <hr>
                                 <div class="text-center">
-                                    <a class="small" href="{% url 'dashboard:password' %}">
-                                        {% trans "Forgot Password?" %}
-                                    </a>
-                                </div>
-                                <div class="text-center">
-                                    <a class="small" href="{% url 'dashboard:register' %}">
-                                        {% trans "Create an Account!" %}
+                                    <a class="small" href="#" data-toggle="modal" data-target="#logoutModal">
+                                        {% trans "Logout" %}
                                     </a>
                                 </div>
                             </div>

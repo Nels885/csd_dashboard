@@ -36,3 +36,7 @@ class XelonTestCase(TestCase):
         self.client.login(username='toto', password='totopassword')
         response = self.client.get(reverse('squalaetp:xelon-edit', kwargs={'file_id': 1}))
         self.assertEqual(response.status_code, 200)
+
+    # def test_xelon_detail_page_is_not_found(self):
+    #     response = self.client.get(reverse('squalaetp:xelon-detail', kwargs={'file_id': 2}))
+    #     self.assertEqual(response.status_code, 404)
