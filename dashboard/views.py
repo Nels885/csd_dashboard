@@ -11,10 +11,6 @@ from .forms import SoftwareForm, ParaErrorList
 def index(request):
     """
     View of index page
-    :param request:
-        Parameters of the request
-    :return:
-        Index page
     """
     posts = Post.objects.all().order_by('-timestamp')
     context = {
@@ -28,12 +24,8 @@ def index(request):
 def set_language(request, user_language):
     """
     View of language change
-    :param request:
-        Parameters of the request
     :param user_language:
         Choice of the user's language
-    :return:
-        Index page
     """
     translation.activate(user_language)
     request.session[translation.LANGUAGE_SESSION_KEY] = user_language
@@ -41,6 +33,9 @@ def set_language(request, user_language):
 
 
 def soft_list(request):
+    """
+    View of Software list page
+    """
     softs = CsdSoftware.objects.all()
     context = {
         'title': 'Software',
@@ -52,6 +47,9 @@ def soft_list(request):
 
 @login_required
 def soft_add(request):
+    """
+    View for adding a software in the list
+    """
     context = {
         'title': 'Software',
         'card_title': _('Software integration'),
@@ -75,6 +73,11 @@ def soft_add(request):
 
 @login_required
 def soft_edit(request, soft_id):
+    """
+    View for changing software data
+    :param soft_id:
+        Software id to edit
+    """
     soft = get_object_or_404(CsdSoftware, pk=soft_id)
     form = SoftwareForm(request.POST or None, instance=soft)
     if form.is_valid():

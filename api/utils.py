@@ -2,6 +2,11 @@ from squalaetp.models import Xelon
 
 
 def products_count():
+    """
+    Function to count the number of products to repair
+    :return:
+        list of name and number of different products
+    """
     labels = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx"]
     prod_nb = []
     rtx_nb = 0

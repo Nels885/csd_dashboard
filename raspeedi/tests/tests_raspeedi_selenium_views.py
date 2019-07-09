@@ -1,13 +1,11 @@
 from django.test import LiveServerTestCase
-from django.contrib.auth import get_user_model
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
 
 from raspeedi.models import Raspeedi
-
-User = get_user_model()
+from dashboard.models import User
 
 
 class RaspeediSeleniumTestCase(LiveServerTestCase):

@@ -1,12 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 
 
 from squalaetp.models import Corvet
-
-User = get_user_model()
+from dashboard.models import User
 
 
 class CorvetTestCase(TestCase):

@@ -1,12 +1,10 @@
 from django.test import LiveServerTestCase
-from django.contrib.auth import get_user_model
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
 from squalaetp.models import Corvet
-
-User = get_user_model()
+from dashboard.models import User
 
 
 class CorvetSeleniumTestCase(LiveServerTestCase):

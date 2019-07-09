@@ -10,10 +10,6 @@ from dashboard.forms import ParaErrorList
 def xelon_table(request):
     """
     View of Xelon table page
-    :param request:
-        Parameters of the request
-    :return:
-        Xelon table page
     """
     files = Xelon.objects.filter(date_retour__isnull=False).order_by('numero_de_dossier')
     context = {
@@ -25,6 +21,11 @@ def xelon_table(request):
 
 
 def xelon_detail(request, file_id):
+    """
+    detailed view of Xelon data for a file
+    :param file_id:
+        Xelon file id
+    """
     file = get_object_or_404(Xelon, pk=file_id)
     dict_file = vars(file)
     for key in ["id", "_state"]:
@@ -39,6 +40,11 @@ def xelon_detail(request, file_id):
 
 @login_required
 def xelon_edit(request, file_id):
+    """
+    View for changing Xelon data
+    :param file_id:
+        Xelon file id to edit
+    """
     file = get_object_or_404(Xelon, pk=file_id)
     context = {
         'title': 'Xelon',
@@ -70,10 +76,6 @@ def xelon_edit(request, file_id):
 def corvet_table(request):
     """
     View of Corvet table page, visible only if authenticated
-    :param request:
-        Parameters of the request
-    :return:
-        Corvet table page
     """
     corvets = Corvet.objects.all().order_by('vin')
     context = {
@@ -88,10 +90,6 @@ def corvet_table(request):
 def corvet_insert(request):
     """
     View of Corvet insert page, visible only if authenticated
-    :param request:
-        Parameters of the request
-    :return:
-        Corvet insert page
     """
     context = {
         'title': 'Corvet',
