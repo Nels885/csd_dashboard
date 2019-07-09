@@ -64,11 +64,11 @@
                 <td>{{ file.nom_technicien }}</td>
                 <td>{{ file.dossier_vip }}</td>
                 <td>{{ file.express }}</td>
-                <td><a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}"
+                <td><a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}" title="Modification"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td>
-                    <a href="{% url 'squalaetp:xelon-detail' file_id=file.id %}"
+                    <a href="{% url 'squalaetp:xelon-detail' file_id=file.id %}" title="Détail"
                        class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
             </tr>

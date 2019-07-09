@@ -55,9 +55,10 @@
                 <td>{{ prod.media }}</td>
                 <td>{{ prod.carto }}</td>
                 <td>{{ prod.dump_renesas }}</td>
-                <td><a href="{% url 'raspeedi:edit' ref_case=prod.ref_boitier %}"
+                <td><a href="{% url 'raspeedi:edit' ref_case=prod.ref_boitier %}" title="Modification"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a></td>
-                <td><a href="#" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a></td>
+                <td><a href="{% url 'raspeedi:detail' ref_case=prod.ref_boitier %}" title="Détail"
+                       class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a></td>
             </tr>
 
         {% endfor %}

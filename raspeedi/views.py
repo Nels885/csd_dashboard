@@ -24,6 +24,24 @@ def table(request):
     return render(request, 'raspeedi/table.html', context)
 
 
+def detail(request, ref_case):
+    """
+    detailed view of Raspeedi data for a product
+    :param ref_case:
+        Ref case of product
+    """
+    product = get_object_or_404(Raspeedi, ref_boitier=ref_case)
+    dict_prod = vars(product)
+    for key in ["_state"]:
+        del dict_prod[key]
+    context = {
+        'title': 'Raspeedi',
+        'card_title': _('Detail raspeedi data for the ref case of Product: {file}'.format(file=product.ref_boitier)),
+        'dict_prod': dict_prod,
+    }
+    return render(request, 'raspeedi/detail.html', context)
+
+
 @login_required
 def insert(request):
     context = {
