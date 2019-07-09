@@ -33,11 +33,15 @@
                             <div class="chart-pie">
                                 <canvas id="prodPieChart" data-url="{% url 'api-data' %}"></canvas>
                             </div>
+
+                            {% comment %}
                             <div class="mt-2 text-center small">
                                 {% for name, color in prods.listProds %}
                                     <span class="mr-2"><i class="fas fa-circle {{ color }}"></i> {{ name }}</span>
                                 {% endfor %}
                             </div>
+                            {% endcomment %}
+
                         </div>
                     </div>
                 </div>
@@ -140,7 +144,7 @@
 
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     <img alt="avatar" class="rounded-circle" width="32"
-                                         src="{{ post.author.profile_picture.url }}">
+                                         src="{{ post.author.image.url }}">
                                     <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ post.author }}</span>{{ post.title }}
                                     <span class="small text-gray-500">{{ post.timestamp }}</span>
                                 </h6>

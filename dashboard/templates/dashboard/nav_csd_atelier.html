@@ -26,8 +26,31 @@
                     <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">Edition :</h6>
-                    <a class="collapse-item" href="{% url 'squalaetp:corvet_insert' %}">{% trans "Add Corvet" %}</a>
-                    <a class="collapse-item" href="#">{% trans "Add data" %}</a>
+                    <a class="collapse-item" href="{% url 'squalaetp:corvet-insert' %}">{% trans "Add Corvet" %}</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+    <!-- Nav Item - Software Settings Menu -->
+    {% with name="Software" icon="fa-table" %}
+        <li class="nav-item
+                {% for group in user.groups.all %}{% if group.name == 'software' %}active{% endif %}{% endfor %}">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse
+                    {% for group in user.groups.all %}{% if group.name == 'software' %}show{% endif %}{% endfor %}"
+                 aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Informations :</h6>
+                    <a class="collapse-item" href="{% url 'dashboard:soft-list' %}">{% trans "Software list" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Edition :</h6>
+                    <a class="collapse-item" href="{% url 'dashboard:soft-add' %}">{% trans "Software Add" %}</a>
                 </div>
             </div>
         </li>
@@ -64,6 +87,13 @@
         <a class="nav-link" href="{% url 'squalaetp:xelon' %}">
             <i class="fas fa-fw fa-table"></i>
             <span>{% trans "Customer files" %}</span></a>
+    </li>
+
+    <!-- Nav Item - tableau Software -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:soft-list' %}">
+            <i class="fas fa-fw fa-table"></i>
+            <span>{% trans "Software list" %}</span></a>
     </li>
 
     <!-- Nav Item - tableau Raspeedi -->

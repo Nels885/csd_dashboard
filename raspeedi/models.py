@@ -1,7 +1,7 @@
 from django.db import models
 
 from squalaetp.models import Corvet
-from dashboard.models import UserProfile
+from dashboard.models import User
 
 TYPE_CHOICES = [
     ('RAD', 'Radio'),
@@ -53,6 +53,6 @@ class Raspeedi(models.Model):
 
 
 class AddReference(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     add_product = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

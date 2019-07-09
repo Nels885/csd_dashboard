@@ -11,12 +11,14 @@
     </button>
 
     <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+          action="{% url 'dashboard:search' %}" method="get">
         <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+            <input type="text" class="form-control bg-light border-0 small" name="query"
+                   placeholder="{% trans "Search Xelon or VIN..." %}"
                    aria-label="Search" aria-describedby="basic-addon2">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="submit">
                     <i class="fas fa-search fa-sm"></i>
                 </button>
             </div>
@@ -35,13 +37,14 @@
             <!-- Dropdown - Messages -->
             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                  aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
+                <form class="form-inline mr-auto w-100 navbar-search"
+                      action="{% url 'dashboard:search' %}" method="get">
                     <div class="input-group">
                         <input type="text" class="form-control bg-light border-0 small"
-                               placeholder="Search for..." aria-label="Search"
+                               placeholder="Search for..." aria-label="Search" name="query"
                                aria-describedby="basic-addon2">
                         <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
+                            <button class="btn btn-primary" type="submit">
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
                         </div>
@@ -64,7 +67,7 @@
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="searchDropdown">
                 <a class="dropdown-item d-flex align-items-center"
-                   href="{% url "dashboard:set_lang" user_language="en" %}">
+                   href="{% url "dashboard:set-lang" user_language="en" %}">
                     <div class="dropdown-list-image mr-3">
                         <img class="rounded-circle" src="{% static 'dashboard/img/united-kingdom.png' %}" alt="">
                     </div>
@@ -73,7 +76,7 @@
                     </div>
                 </a>
                 <a class="dropdown-item d-flex align-items-center"
-                   href="{% url "dashboard:set_lang" user_language="fr" %}">
+                   href="{% url "dashboard:set-lang" user_language="fr" %}">
                     <div class="dropdown-list-image mr-3">
                         <img class="rounded-circle" src="{% static 'dashboard/img/france.png' %}" alt="">
                     </div>
@@ -94,16 +97,12 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                         {{ user.username }}
                 </span>
-                    {% if user.is_superuser %}
-                        <img class="img-profile rounded-circle" src="{% static 'dashboard/img/nels885.jpg' %}">
-                    {% else %}
-                        <img class="img-profile rounded-circle" src="{% static 'dashboard/img/avatar.png' %}">
-                    {% endif %}
+                    <img class="img-profile rounded-circle" src="{{ user.userprofile.image.url }}" alt="">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                      aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'dashboard:user-profile' %}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Profile" %}
                     </a>
@@ -114,10 +113,10 @@
                     {% if user.is_superuser %}
                         <a class="dropdown-item" href="{% url 'admin:index' %}">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                            {% trans "Administration" %}
+                            <strong class="text-primary">{% trans "Administration" %}</strong>
                         </a>
                     {% endif %}
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'dashboard:activity-log' %}">
                         <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Activity Log" %}
                     </a>
@@ -133,7 +132,7 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                         {% trans "Guest" %}
                 </span>
-                    <img class="img-profile rounded-circle" src="{% static 'dashboard/img/avatar.png' %}">
+                    <img class="img-profile rounded-circle" src="{% static 'dashboard/img/avatar.png' %}" alt="">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

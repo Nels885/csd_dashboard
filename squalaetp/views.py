@@ -10,10 +10,6 @@ from dashboard.forms import ParaErrorList
 def xelon_table(request):
     """
     View of Xelon table page
-    :param request:
-        Parameters of the request
-    :return:
-        Xelon table page
     """
     files = Xelon.objects.filter(date_retour__isnull=False).order_by('numero_de_dossier')
     context = {
@@ -24,8 +20,28 @@ def xelon_table(request):
     return render(request, 'squalaetp/xelon_table.html', context)
 
 
+def xelon_detail(request, file_id):
+    """
+    detailed view of Xelon data for a file
+    :param file_id:
+        Xelon file id
+    """
+    file = get_object_or_404(Xelon, pk=file_id)
+    context = {
+        'title': 'Xelon',
+        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'file': file,
+    }
+    return render(request, 'squalaetp/xelon_detail.html', context)
+
+
 @login_required
 def xelon_edit(request, file_id):
+    """
+    View for changing Xelon data
+    :param file_id:
+        Xelon file id to edit
+    """
     file = get_object_or_404(Xelon, pk=file_id)
     context = {
         'title': 'Xelon',
@@ -57,10 +73,6 @@ def xelon_edit(request, file_id):
 def corvet_table(request):
     """
     View of Corvet table page, visible only if authenticated
-    :param request:
-        Parameters of the request
-    :return:
-        Corvet table page
     """
     corvets = Corvet.objects.all().order_by('vin')
     context = {
@@ -72,13 +84,28 @@ def corvet_table(request):
 
 
 @login_required
+def corvet_detail(request, vin):
+    """
+    detailed view of Corvet data for a file
+    :param vin:
+        VIN for Corvet data
+    """
+    corvet = get_object_or_404(Corvet, vin=vin)
+    dict_corvet = vars(corvet)
+    for key in ["_state"]:
+        del dict_corvet[key]
+    context = {
+        'title': 'Xelon',
+        'card_title': _('Detail Corvet data for the VIN: {vin}'.format(vin=corvet.vin)),
+        'dict_corvet': dict_corvet,
+    }
+    return render(request, 'squalaetp/corvet_detail.html', context)
+
+
+@login_required
 def corvet_insert(request):
     """
     View of Corvet insert page, visible only if authenticated
-    :param request:
-        Parameters of the request
-    :return:
-        Corvet insert page
     """
     context = {
         'title': 'Corvet',
@@ -93,7 +120,7 @@ def corvet_insert(request):
                 try:
                     m = Corvet(**data)
                     m.save()
-                    context = {'title': "Modification réalisée avec succès !"}
+                    context = {'title': _('Modification done successfully!')}
                     return render(request, 'dashboard/done.html', context)
                 except TypeError:
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))

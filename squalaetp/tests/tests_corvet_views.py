@@ -1,12 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 
 
 from squalaetp.models import Corvet
-
-User = get_user_model()
+from dashboard.models import User
 
 
 class CorvetTestCase(TestCase):
@@ -36,18 +34,18 @@ class CorvetTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_is_disconnected(self):
-        response = self.client.get(reverse('squalaetp:corvet_insert'))
+        response = self.client.get(reverse('squalaetp:corvet-insert'))
         self.assertEqual(response.status_code, 302)
 
     def test_corvet_insert_page_is_connected(self):
         self.client.login(username='toto', password='totopassword')
-        response = self.client.get(reverse('squalaetp:corvet_insert'))
+        response = self.client.get(reverse('squalaetp:corvet-insert'))
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_is_valid(self):
         self.client.login(username='toto', password='totopassword')
         old_corvets = Corvet.objects.count()
-        response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.data})
+        response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': self.data})
         new_corvets = Corvet.objects.count()
         self.assertEqual(new_corvets, old_corvets + 1)
         self.assertEqual(response.status_code, 200)
@@ -56,7 +54,7 @@ class CorvetTestCase(TestCase):
         self.client.login(username='toto', password='totopassword')
         old_corvets = Corvet.objects.count()
         vin = ''
-        response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': vin, 'xml_data': self.data})
+        response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': vin, 'xml_data': self.data})
         new_corvets = Corvet.objects.count()
         self.assertEqual(new_corvets, old_corvets)
         self.assertFormError(response, 'form', 'vin', _('This field is required.'))
@@ -66,7 +64,7 @@ class CorvetTestCase(TestCase):
         self.client.login(username='toto', password='totopassword')
         old_corvets = Corvet.objects.count()
         for vin in ['123456789', 'VF4ABCDEF12345678']:
-            response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': vin, 'xml_data': self.data})
+            response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': vin, 'xml_data': self.data})
             new_corvets = Corvet.objects.count()
             self.assertEqual(new_corvets, old_corvets)
             self.assertFormError(
@@ -79,7 +77,7 @@ class CorvetTestCase(TestCase):
         self.client.login(username='toto', password='totopassword')
         old_corvets = Corvet.objects.count()
         for xml_data in ['abcdefgh', '<?xml version="1.0" encoding="UTF-8"?>']:
-            response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': xml_data})
+            response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': xml_data})
             new_corvets = Corvet.objects.count()
             self.assertEqual(new_corvets, old_corvets)
             self.assertFormError(
@@ -87,3 +85,18 @@ class CorvetTestCase(TestCase):
                 _('Invalid XML data')
             )
             self.assertEqual(response.status_code, 200)
+
+    def test_corvet_detail_page_is_disconnected(self):
+        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': self.vin}))
+        self.assertEqual(response.status_code, 302)
+
+    def test_corvet_detail_page_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
+        self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': self.data})
+        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': self.vin}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_corvet_detail_page_is_not_found(self):
+        self.client.login(username='toto', password='totopassword')
+        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': "123456789"}))
+        self.assertEqual(response.status_code, 404)

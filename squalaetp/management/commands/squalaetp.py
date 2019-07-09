@@ -24,12 +24,6 @@ class Command(BaseCommand):
             help='Specify import Excel file',
         )
         parser.add_argument(
-            '--update',
-            action='store_true',
-            dest='update',
-            help='update all data in Squalaetp tables',
-        )
-        parser.add_argument(
             '--relations',
             action='store_true',
             dest='relations',
@@ -57,10 +51,7 @@ class Command(BaseCommand):
         self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
         self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
-        if options['update']:
-            pass
-
-        elif options['relations']:
+        if options['relations']:
             count, objects_list = 0, []
             for xelon in Xelon.objects.all():
                 try:

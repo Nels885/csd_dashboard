@@ -1,0 +1,62 @@
+{% extends 'dashboard/datatables_format.html' %}
+
+{% load static %}
+
+{% block table_content %}
+
+    <table class="table table-bordered" id="logTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Date/heure</th>
+            <th>Table</th>
+            <th>Ligne modifiée</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <th>Date/heure</th>
+            <th>Table</th>
+            <th>Ligne modifiée</th>
+            <th>Action</th>
+        </tr>
+        </tfoot>
+        <tbody>
+
+        {% for log in logs %}
+
+            <tr>
+                <td>{{ log.action_time }}</td>
+                <td>{{ log.content_type.model }}</td>
+                <td>{{ log.object_repr }}</td>
+                <td> {{ log.change_message }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablecss %}
+
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'dashboard/vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'dashboard/js/activity-tables.js' %}"></script>
+
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/JSZip/jszip.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/pdfmake/pdfmake.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/datatables/Buttons/js/buttons.print.min.js' %}"></script>
+
+{% endblock %}

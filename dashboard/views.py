@@ -1,18 +1,20 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
+from django.contrib.admin.models import LogEntry
+
+import re
 
 from .utils import ProductAnalysis
-from .models import Post
+from .models import Post, CsdSoftware, User
+from .forms import SoftwareForm, ParaErrorList
+from squalaetp.models import Xelon
 
 
 def index(request):
     """
     View of index page
-    :param request:
-        Parameters of the request
-    :return:
-        Index page
     """
     posts = Post.objects.all().order_by('-timestamp')
     context = {
@@ -23,19 +25,109 @@ def index(request):
     return render(request, 'dashboard/index.html', context)
 
 
+def search(request):
+    """
+    """
+    query = request.GET.get('query')
+    if re.match(r'^VF\w{15}$', str(query)):
+        file = get_object_or_404(Xelon, vin=query)
+    else:
+        file = get_object_or_404(Xelon, numero_de_dossier=query)
+    context = {
+        'title': 'Xelon',
+        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'file': file,
+    }
+    return render(request, 'squalaetp/xelon_detail.html', context)
+
+
 def set_language(request, user_language):
     """
     View of language change
-    :param request:
-        Parameters of the request
     :param user_language:
         Choice of the user's language
-    :return:
-        Index page
     """
     translation.activate(user_language)
     request.session[translation.LANGUAGE_SESSION_KEY] = user_language
     return redirect('index')
+
+
+@login_required
+def activity_log(request):
+    logs = LogEntry.objects.filter(user_id=request.user.id)
+    context = {
+        'title': _("Dashboard"),
+        'table_title': _('Activity log'),
+        'logs': logs,
+    }
+    return render(request, 'dashboard/activity_log.html', context)
+
+
+@login_required
+def user_profile(request):
+    return render(request, 'registration/profile.html')
+
+
+def soft_list(request):
+    """
+    View of Software list page
+    """
+    softs = CsdSoftware.objects.all()
+    context = {
+        'title': 'Software',
+        'table_title': _('Software list'),
+        'softs': softs,
+    }
+    return render(request, 'dashboard/soft_table.html', context)
+
+
+@login_required
+def soft_add(request):
+    """
+    View for adding a software in the list
+    """
+    context = {
+        'title': 'Software',
+        'card_title': _('Software integration'),
+    }
+    if request.method == 'POST':
+        user = User.objects.get(pk=request.user.id)
+        form = SoftwareForm(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            jig = form.cleaned_data['jig']
+            ref = CsdSoftware.objects.filter(jig=jig)
+            if not ref.exists():
+                CsdSoftware.objects.create(**form.cleaned_data, created_by=user)
+                context = {'title': _('Added successfully!')}
+                return render(request, 'dashboard/done.html', context)
+        context['errors'] = form.errors.items()
+    else:
+        form = SoftwareForm()
+    context['form'] = form
+    return render(request, 'dashboard/soft_add.html', context)
+
+
+@login_required
+def soft_edit(request, soft_id):
+    """
+    View for changing software data
+    :param soft_id:
+        Software id to edit
+    """
+    soft = get_object_or_404(CsdSoftware, pk=soft_id)
+    form = SoftwareForm(request.POST or None, instance=soft)
+    if form.is_valid():
+        form.save()
+        context = {'title': _('Modification done successfully!')}
+        return render(request, 'dashboard/done.html', context)
+    context = {
+        'title': 'Software',
+        'card_title': _('Modification data Software for JIG: {jig}'.format(jig=soft.jig)),
+        'url': 'dashboard:soft-edit',
+        'soft': soft,
+        'form': form,
+    }
+    return render(request, 'dashboard/soft_edit.html', context)
 
 
 # Demo views not use for the project
@@ -117,11 +209,11 @@ def error_404(request):
     return render(request, '404.html', context)
 
 
-def error_502(request):
+def error_500(request):
     context = {
-        'title': '502 Page',
+        'title': '500 Page',
     }
-    return render(request, '502.html', context)
+    return render(request, '500.html', context)
 
 
 def charts(request):

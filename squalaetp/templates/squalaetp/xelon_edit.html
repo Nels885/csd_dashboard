@@ -5,7 +5,7 @@
 {% block form_content %}
 
     <div class="p-5">
-        <form method="post" action="{% url 'squalaetp:xelon_edit' file_id=file.id %}">
+        <form method="post" action="{% url 'squalaetp:xelon-edit' file_id=file.id %}">
 
             {% csrf_token %}
 

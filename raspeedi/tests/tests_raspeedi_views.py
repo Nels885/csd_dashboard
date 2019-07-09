@@ -1,11 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 
 from raspeedi.models import Raspeedi
-
-User = get_user_model()
+from dashboard.models import User
 
 
 class RaspeediTestCase(TestCase):
@@ -36,7 +34,7 @@ class RaspeediTestCase(TestCase):
         response = self.client.post(reverse('raspeedi:insert'), self.form_data)
         new_raspeedi = Raspeedi.objects.count()
         self.assertEqual(new_raspeedi, old_raspeedi + 1)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_is_not_valid(self):
         self.client.login(username='toto', password='totopassword')

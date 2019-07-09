@@ -1,0 +1,16 @@
+{% extends 'dashboard/forms_format.html' %}
+
+{% load i18n %}
+
+{% block form_content %}
+
+    <div class="p-5">
+        <form method="post" action="{% url 'dashboard:soft-edit' soft_id=soft.id %}">
+
+            {% include 'dashboard/soft_form.html' %}
+
+        </form>
+
+    </div>
+
+{% endblock %}

@@ -13,7 +13,9 @@ class RaspeediForm(ModelForm):
         widgets = {
             'ref_boitier': TextInput(attrs={'class': 'form-control'}),
             'produit': Select(attrs={'class': 'form-control'}),
-            'facade': TextInput(attrs={'class': 'form-control'}),
+            'facade': TextInput(attrs={
+                'class': 'form-control', 'pattern': '[A-Z0-9]+', 'style': 'text-transform: uppercase;'
+            }),
             'type': Select(attrs={'class': 'form-control'}),
             'dab': CheckboxInput(attrs={'class': 'form-control'}),
             'cam': CheckboxInput(attrs={'class': 'form-control'}),

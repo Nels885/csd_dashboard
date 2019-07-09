@@ -8,6 +8,7 @@ env:
 
 addons:
   firefox: latest
+  postgresql: "9.6"
 
 # Command to install dependencies
 before_install:
@@ -15,6 +16,9 @@ before_install:
   - mkdir geckodriver
   - tar -xzf geckodriver-v0.24.0-linux64.tar.gz -C geckodriver
   - export PATH=$PATH:$(pwd)/geckodriver
+
+before_script:
+  - psql --version
 
 install:
   - pip install pipenv
