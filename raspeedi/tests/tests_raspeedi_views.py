@@ -36,7 +36,7 @@ class RaspeediTestCase(TestCase):
         self.assertEqual(new_raspeedi, old_raspeedi + 1)
         self.assertEqual(response.status_code, 200)
 
-    def test_corvet_insert_page_is_not_valid(self):
+    def test_raspeedi_insert_page_is_not_valid(self):
         self.client.login(username='toto', password='totopassword')
         old_raspeedi = Raspeedi.objects.count()
         response = self.client.post(reverse('raspeedi:insert'))
@@ -44,3 +44,23 @@ class RaspeediTestCase(TestCase):
         self.assertEqual(new_raspeedi, old_raspeedi)
         self.assertFormError(response, 'form', 'ref_boitier', _('This field is required.'))
         self.assertEqual(response.status_code, 200)
+
+    def test_raspeedi_edit_page_is_disconnected(self):
+        Raspeedi.objects.create(**self.form_data)
+        response = self.client.get(reverse('raspeedi:edit', kwargs={'ref_case': 1234567890}))
+        self.assertEqual(response.status_code, 302)
+
+    def test_raspeedi_edit_page_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
+        Raspeedi.objects.create(**self.form_data)
+        response = self.client.get(reverse('raspeedi:edit', kwargs={'ref_case': 1234567890}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_raspeedi_detail_page_is_valid(self):
+        Raspeedi.objects.create(**self.form_data)
+        response = self.client.get(reverse('raspeedi:detail', kwargs={'ref_case': 1234567890}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_raspeedi_detail_page_is_not_found(self):
+        response = self.client.get(reverse('raspeedi:detail', kwargs={'ref_case': 1234567890}))
+        self.assertEqual(response.status_code, 404)
