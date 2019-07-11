@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'raspeedi.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',
+    'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
