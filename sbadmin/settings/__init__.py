@@ -157,7 +157,7 @@ INTERNAL_IPS = '127.0.0.1'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/profile/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Config Clarion
