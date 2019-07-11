@@ -155,19 +155,21 @@ MEDIA_URL = '/media/'
 INTERNAL_IPS = '127.0.0.1'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Config Clarion
-XLS_RASPEEDI_FILE = "~/Documents/CSD_DATABASE/PROG/RASPEEDI/table_boitier_PSA.xlsx"
-XLS_SQUALAETP_FILE = "~/Documents/CSD_DATABASE/EXTS/squalaetp.xls"
-XLS_ATTRIBUTS_FILE = "~/Documents/CSD_DATABASE/EXTS/Attributs CORVET.xlsx"
+XLS_ROOT = os.path.abspath('/home/nels885/Documents/CSD_DATABASE')
+
+XLS_RASPEEDI_FILE = os.path.join(XLS_ROOT, "PROG/RASPEEDI/table_boitier_PSA.xlsx")
+XLS_SQUALAETP_FILE = os.path.join(XLS_ROOT, "EXTS/squalaetp.xls")
+XLS_ATTRIBUTS_FILE = os.path.join(XLS_ROOT, "EXTS/Attributs CORVET.xlsx")
 XLS_DELAY_FILES = [
-    "/home/nels885/Documents/CSD_DATABASE/RH/AnalyseRetards/PSA.xls",
-    "/home/nels885/Documents/CSD_DATABASE/RH/AnalyseRetards/ILOTAUTRE.xls",
-    "/home/nels885/Documents/CSD_DATABASE/RH/AnalyseRetards/LaboQual.xls",
-    "/home/nels885/Documents/CSD_DATABASE/RH/AnalyseRetards/DEFAUT.xls",
-    "/home/nels885/Documents/CSD_DATABASE/RH/AnalyseRetards/CLARION.xls",
+    os.path.join(XLS_ROOT, "RH/AnalyseRetards/PSA.xls"),
+    os.path.join(XLS_ROOT, "RH/AnalyseRetards/ILOTAUTRE.xls"),
+    os.path.join(XLS_ROOT, "RH/AnalyseRetards/LaboQual.xls"),
+    os.path.join(XLS_ROOT, "RH/AnalyseRetards/DEFAUT.xls"),
+    os.path.join(XLS_ROOT, "RH/AnalyseRetards/CLARION.xls"),
 ]
