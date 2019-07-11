@@ -6,3 +6,4 @@ __pycache__
 sbadmin/settings/production.py
 sbadmin/staticfiles/
 geckodriver.log
+media/profile_pics/

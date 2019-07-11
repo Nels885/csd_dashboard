@@ -53,7 +53,7 @@
 
         {% for file in files %}
 
-            <tr>
+            <tr {% if "PSA" in file.famille_client and "VF" in file.vin and not file.corvet.exists %}class="bg-danger text-light"{% endif %}>
                 <td>{{ file.numero_de_dossier }}</td>
                 <td>{{ file.vin }}</td>
                 <td>{{ file.modele_produit }}</td>
@@ -64,10 +64,11 @@
                 <td>{{ file.nom_technicien }}</td>
                 <td>{{ file.dossier_vip }}</td>
                 <td>{{ file.express }}</td>
-                <td><a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}" title="Modification VIN et Corvet"
+                <td class="bg-white">
+                    <a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}" title="Modification VIN et Corvet"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
-                <td>
+                <td class="bg-white">
                     <a href="{% url 'squalaetp:xelon-detail' file_id=file.id %}" title="Détail"
                        class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>

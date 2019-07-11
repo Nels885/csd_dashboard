@@ -27,12 +27,17 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="api:user-detail")
+    groups = serializers.HyperlinkedIdentityField(view_name="api:group-detail")
+
     class Meta:
         model = User
         fields = ('url', 'username', 'email', 'groups')
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="api:user-detail")
+
     class Meta:
         model = Group
         fields = ('url', 'name')
