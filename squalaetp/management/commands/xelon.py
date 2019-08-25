@@ -45,7 +45,8 @@ class Command(BaseCommand):
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
 
-            self._update(Xelon, squalaetp.xelon_table(),  "numero_de_dossier", )
+            self._insert(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
+            self._update(Xelon)
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -57,7 +58,7 @@ class Command(BaseCommand):
             for table in ["Xelon"]:
                 self.stdout.write("Suppression des données de la table {} terminée!".format(table))
 
-    def _update(self, model, excel_method, columns_name):
+    def _insert(self, model, excel_method, columns_name):
         nb_prod_before = model.objects.count()
         excels, nb_prod_update = [], 0
         for file in settings.XLS_DELAY_FILES:
@@ -69,9 +70,6 @@ class Command(BaseCommand):
                         row_update = excel.xelon_table(row[columns_name])
                         if len(row_update):
                             row.update(row_update)
-                            if not row["date_de_cloture"]:
-                                del row["date_de_cloture"]
-                            break
                     log.info(row)
                     product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
                     if product:
@@ -86,6 +84,35 @@ class Command(BaseCommand):
                 except DataError as err:
                     self.stdout.write("DataError dossier {} : {}".format(row[columns_name], err))
         nb_prod_after = model.objects.count()
-        self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("Nombre de produits mis à jour:  {}".format(nb_prod_update))
-        self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write("[INSERT] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("[INSERT] Nombre de produits mis à jour:  {}".format(nb_prod_update))
+        self.stdout.write("[INSERT] Nombre de produits total :      {}".format(nb_prod_after))
+
+    def _update(self, model):
+        excels, nb_prod_update = [], 0
+        for file in settings.XLS_DELAY_FILES:
+            excels.append(ExcelsDelayAnalysis(file))
+        nb_prod_before = model.objects.count()
+        for product in model.objects.all():
+            if len(product.numero_de_dossier):
+                row = []
+                try:
+                    for excel in excels:
+                        row = excel.xelon_table(product.numero_de_dossier)
+                        if len(row):
+                            product = Xelon.objects.filter(numero_de_dossier=product.numero_de_dossier)
+                            if product:
+                                product.update(**row)
+                                nb_prod_update += 1
+                            else:
+                                m = model(**row)
+                                m.save()
+                            break
+                except IntegrityError as err:
+                    log.warning("IntegrityError:{}".format(err))
+                except DataError as err:
+                    self.stdout.write("DataError dossier {} : {}".format(product.numero_de_dossier, err))
+        nb_prod_after = model.objects.count()
+        self.stdout.write("[UPDATE] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("[UPDATE] Nombre de produits mis à jour:  {}".format(nb_prod_update))
+        self.stdout.write("[UPDATE] Nombre de produits total :      {}".format(nb_prod_after))

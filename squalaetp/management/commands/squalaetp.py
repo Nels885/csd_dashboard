@@ -66,7 +66,7 @@ class Command(BaseCommand):
             for corvet in Corvet.objects.all():
                 try:
                     for cal in [corvet.electronique_14x, corvet.electronique_94x]:
-                        if len(cal) == 10:
+                        if cal is not None and len(cal) == 10:
                             raspeedi = Raspeedi.objects.get(pk=int(cal))
                             raspeedi.corvets.add(corvet)
                             count += 1

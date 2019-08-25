@@ -207,7 +207,7 @@ class ExcelSqualaetp(ExcelFormat):
 class ExcelsDelayAnalysis(ExcelFormat):
     """## Read data in Excel file for Delay Analysis ##"""
 
-    DROP_COLS = ['ref_produit_commerciale', 'ref_produit_clarion', 'n_de_dossier', 'code_pdv', 'nom_pdv',
+    DROP_COLS = ['ref_produit_commerciale', 'ref_produit_clarion', 'code_pdv', 'nom_pdv',
                  'date_daccord_de_la_demande', 'delai_prevu_sp', 'nom_equipe', 'n_commande_de_travaux']
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S"}
 
@@ -239,4 +239,27 @@ class ExcelsDelayAnalysis(ExcelFormat):
         if list(row_index):
             df = self.sheet.drop(columns=self.DROP_COLS)
             row_dict = dict(df.loc[row_index[0]])
+            row_dict = self.del_empty_dates(row_dict)
+            del row_dict["n_de_dossier"]
         return row_dict
+
+    def table(self):
+        """
+        Extracting data for the table from the Database
+        :return:
+            list of dictionnaries that represents the data for table
+        """
+        data = []
+        df = self.sheet.drop(columns=self.DROP_COLS)
+        for line in range(self.nrows):
+            try:
+                data.append(self.del_empty_dates(dict(df.loc[line])))
+            except KeyError as err:
+                print("KeyError", err)
+        return data
+
+    @staticmethod
+    def del_empty_dates(data):
+        if not data["date_de_cloture"]:
+            del data["date_de_cloture"]
+        return data
