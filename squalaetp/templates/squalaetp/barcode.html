@@ -6,21 +6,59 @@
 
 {% block detail_content %}
 
-        <table class="table">
-            <tr>
-{#                <td style='padding:10px; text-align:center; font-size:15px; font-family:Arial,Helvetica;'>#}
-{#                    <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>#}
-{#                        <img src='https://www.tec-it.com/pics/banner/web/TEC-IT_Banner_120x42.gif'#}
-{#                             alt='Barcode Software by TEC-IT' border='0'/>#}
-{#                    </a>#}
-{#                    <br/>#}
-{#                    <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>Barcode Software</a>#}
-{#                </td>#}
-                <td>
-                    <img src='https://barcode.tec-it.com/barcode.ashx?data=A000865048%0A&code=&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&qunit=Mm&quiet=0'
-                         alt='Barcode Generator TEC-IT'/>
-                </td>
-            </tr>
-        </table>
+    <table class="table table-striped table-condensed">
+        <tr>
+            <td class="text-dark">Numéro de dossier</td>
+            <td>{{ file.numero_de_dossier }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">V.I.N.</td>
+            <td>
+                <img src='https://barcode.tec-it.com/barcode.ashx?data={{ file.vin }}%0A&code=&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&qunit=Mm&quiet=0'
+                     alt='{{ file.vin }}'/>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-dark">Modèle produit</td>
+            <td>{{ file.modele_produit }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">Modèle véhicule</td>
+            <td>{{ file.modele_vehicule }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">Réf HW RAD</td>
+            <td>{{ corvet.electronique_14f }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">CAL RAD</td>
+            <td>{{ corvet.electronique_94f }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">Réf HW NAV</td>
+            <td>{{ corvet.electronique_14x }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">CAL NAV</td>
+            <td>{{ corvet.electronique_94x }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">Réf HW ECU moteur</td>
+            <td>{{ corvet.electronique_14a }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">CAL ECU moteur</td>
+            <td>{{ corvet.electronique_34a }}</td>
+        </tr>
+    </table>
+
+    <div class="text-center" style='padding:10px; font-size:15px; font-family:Arial,Helvetica;'>
+        <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>
+            <img src='https://www.tec-it.com/pics/banner/web/TEC-IT_Banner_120x42.gif'
+                 alt='Barcode Software by TEC-IT'/>
+        </a>
+        <br/>
+        <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>Barcode Software</a>
+    </div>
 
 {% endblock %}

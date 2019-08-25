@@ -36,9 +36,13 @@ def xelon_detail(request, file_id):
 
 
 def barcode(request):
+    file = get_object_or_404(Xelon, pk=2)
+    corvet = get_object_or_404(Corvet, vin=file.vin)
     context = {
-        'title': 'Xelon',
-        'table_title': 'Dossiers Clients',
+        'title': 'IHM Extraction',
+        'card_title': 'Information dossier client',
+        'file': file,
+        'corvet': corvet,
     }
     return render(request, 'squalaetp/barcode.html', context)
 
