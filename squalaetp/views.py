@@ -35,6 +35,14 @@ def xelon_detail(request, file_id):
     return render(request, 'squalaetp/xelon_detail.html', context)
 
 
+def barcode(request):
+    context = {
+        'title': 'Xelon',
+        'table_title': 'Dossiers Clients',
+    }
+    return render(request, 'squalaetp/barcode.html', context)
+
+
 @login_required
 def xelon_edit(request, file_id):
     """

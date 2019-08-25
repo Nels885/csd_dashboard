@@ -27,18 +27,21 @@ def index(request):
 
 def search(request):
     """
+    View of search page
     """
     query = request.GET.get('query')
-    if re.match(r'^VF\w{15}$', str(query)):
-        file = get_object_or_404(Xelon, vin=query)
-    else:
-        file = get_object_or_404(Xelon, numero_de_dossier=query)
-    context = {
-        'title': 'Xelon',
-        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
-        'file': file,
-    }
-    return render(request, 'squalaetp/xelon_detail.html', context)
+    if query:
+        if re.match(r'^VF\w{15}$', str(query)):
+            file = get_object_or_404(Xelon, vin=query)
+        else:
+            file = get_object_or_404(Xelon, numero_de_dossier=query)
+        context = {
+            'title': 'Xelon',
+            'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
+            'file': file,
+        }
+        return render(request, 'squalaetp/xelon_detail.html', context)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def set_language(request, user_language):
@@ -49,7 +52,7 @@ def set_language(request, user_language):
     """
     translation.activate(user_language)
     request.session[translation.LANGUAGE_SESSION_KEY] = user_language
-    return redirect('index')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required

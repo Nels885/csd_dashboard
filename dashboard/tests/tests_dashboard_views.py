@@ -16,6 +16,7 @@ class DashboardTestCase(TestCase):
         User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
+        self.redirectUrl = reverse('index')
 
     def test_index_page(self):
         response = self.client.get(reverse('index'))
@@ -23,9 +24,11 @@ class DashboardTestCase(TestCase):
 
     def test_set_language_view_is_valid(self):
         for lang in ['fr', 'en']:
-            response = self.client.get(reverse('dashboard:set-lang', args={'user_language': lang}))
+            response = self.client.get(reverse('dashboard:set-lang', args={'user_language': lang}),
+                                       HTTP_REFERER=self.redirectUrl)
             self.assertTrue(translation.check_for_language(lang))
             self.assertEqual(response.status_code, 302)
+            self.assertRedirects(response, self.redirectUrl)
 
     def test_soft_list_page(self):
         response = self.client.get(reverse('dashboard:soft-list'))
@@ -49,8 +52,13 @@ class DashboardTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_search_is_not_found(self):
-        response = self.client.get(reverse('dashboard:search'))
+        response = self.client.get(reverse('dashboard:search'), {'query': "null"}, HTTP_REFERER=self.redirectUrl)
         self.assertEqual(response.status_code, 404)
+
+    def test_search_is_not_value(self):
+        response = self.client.get(reverse('dashboard:search'), HTTP_REFERER=self.redirectUrl)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.redirectUrl)
 
     def test_search_vin_is_valid(self):
         response = self.client.get(reverse('dashboard:search'), {'query': self.vin})

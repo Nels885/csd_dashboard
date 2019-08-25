@@ -14,7 +14,13 @@
     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
           action="{% url 'dashboard:search' %}" method="get">
         <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" name="query"
+            <div class="input-group-prepend">
+                <select class="custom-select bg-light border-0" id="selectSearch">
+                    <option value="xelon">Xelon</option>
+                    <option value="ihm">IHM</option>
+                </select>
+            </div>
+            <input type="text" class="form-control bg-light border-0" name="query"
                    placeholder="{% trans "Search Xelon or VIN..." %}"
                    aria-label="Search" aria-describedby="basic-addon2">
             <div class="input-group-append">
