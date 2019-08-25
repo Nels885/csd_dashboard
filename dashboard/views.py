@@ -9,7 +9,7 @@ import re
 from .utils import ProductAnalysis
 from .models import Post, CsdSoftware, User
 from .forms import SoftwareForm, ParaErrorList
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Corvet
 
 
 def index(request):
@@ -31,6 +31,7 @@ def search(request):
     """
     query = request.GET.get('query')
     if query:
+        select = request.GET.get('select')
         if re.match(r'^VF\w{15}$', str(query)):
             file = get_object_or_404(Xelon, vin=query)
         else:
@@ -40,7 +41,14 @@ def search(request):
             'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
             'file': file,
         }
-        return render(request, 'squalaetp/xelon_detail.html', context)
+        if select == "xelon":
+            return render(request, 'squalaetp/xelon_detail.html', context)
+        else:
+            corvet = get_object_or_404(Corvet, vin=file.vin)
+            context['title'] = 'IHM Extraction'
+            context['corvet'] = corvet
+            return render(request, 'squalaetp/barcode.html', context)
+
     return redirect(request.META.get('HTTP_REFERER'))
 
 

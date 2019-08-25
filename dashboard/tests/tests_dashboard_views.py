@@ -52,7 +52,8 @@ class DashboardTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_search_is_not_found(self):
-        response = self.client.get(reverse('dashboard:search'), {'query': "null"}, HTTP_REFERER=self.redirectUrl)
+        response = self.client.get(reverse('dashboard:search'), {'query': 'null', 'select': 'xelon'},
+                                   HTTP_REFERER=self.redirectUrl)
         self.assertEqual(response.status_code, 404)
 
     def test_search_is_not_value(self):
@@ -61,9 +62,9 @@ class DashboardTestCase(TestCase):
         self.assertRedirects(response, self.redirectUrl)
 
     def test_search_vin_is_valid(self):
-        response = self.client.get(reverse('dashboard:search'), {'query': self.vin})
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'xelon'})
         self.assertEqual(response.status_code, 200)
 
     def test_search_xelon_is_valid(self):
-        response = self.client.get(reverse('dashboard:search'), {'query': 'A123456789'})
+        response = self.client.get(reverse('dashboard:search'), {'query': 'A123456789', 'select': 'xelon'})
         self.assertEqual(response.status_code, 200)
