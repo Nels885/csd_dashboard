@@ -52,6 +52,48 @@
         </tr>
     </table>
 
+    <hr>
+    <h3 class="h3 mb-4 text-gray-800">Modification des données :</h3>
+
+    <form method="post" action="{% url 'squalaetp:xelon-edit' file_id=file.id %}">
+
+        {% csrf_token %}
+
+        <div class="form-group row">
+            <div class="col-sm-4 mb-3 mb-sm-0">
+
+                {{ form.vin }}
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            Pour récupérer les données XML, cliquer sur le lien
+            <a href="https://www.repairnav.com/clarionservice_v2/corvet.xhtml" target="_blank">CORVET</a>.
+        </div>
+
+        <div class="form-group">
+
+            {{ form.xml_data }}
+
+        </div>
+
+        {% if errors %}
+            {% for key, error in errors %}
+                {% autoescape off %}
+                    {{ error }}
+                {% endautoescape %}
+            {% endfor %}
+        {% endif %}
+
+        <button name="btn_corvet_insert" type="submit"
+                class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block">
+            {% trans "Submit" %}
+        </button>
+    </form>
+
+    <br>
+
     <div class="text-center" style='padding:10px; font-size:15px; font-family:Arial,Helvetica;'>
         <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>
             <img src='https://www.tec-it.com/pics/banner/web/TEC-IT_Banner_120x42.gif'

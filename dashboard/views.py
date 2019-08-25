@@ -44,11 +44,7 @@ def search(request):
         if select == "xelon":
             return render(request, 'squalaetp/xelon_detail.html', context)
         else:
-            corvet = get_object_or_404(Corvet, vin=file.vin)
-            context['title'] = 'IHM Extraction'
-            context['corvet'] = corvet
-            return render(request, 'squalaetp/barcode.html', context)
-
+            return redirect('squalaetp:ihm-detail', file_id=file.id)
     return redirect(request.META.get('HTTP_REFERER'))
 
 

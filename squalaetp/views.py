@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
@@ -35,16 +35,26 @@ def xelon_detail(request, file_id):
     return render(request, 'squalaetp/xelon_detail.html', context)
 
 
-def barcode(request):
-    file = get_object_or_404(Xelon, pk=2)
-    corvet = get_object_or_404(Corvet, vin=file.vin)
+def ihm(request):
+    return redirect('squalaetp:ihm-detail', file_id=1)
+
+
+def ihm_detail(request, file_id):
+    file = get_object_or_404(Xelon, pk=file_id)
+    if file.corvet.exists():
+        corvet = get_object_or_404(Corvet, vin=file.vin)
+    else:
+        corvet = None
+    form = CorvetForm()
+    form.fields['vin'].initial = file.vin
     context = {
         'title': 'IHM Extraction',
-        'card_title': 'Information dossier client',
+        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
         'file': file,
         'corvet': corvet,
+        'form': form,
     }
-    return render(request, 'squalaetp/barcode.html', context)
+    return render(request, 'squalaetp/ihm_detail.html', context)
 
 
 @login_required
