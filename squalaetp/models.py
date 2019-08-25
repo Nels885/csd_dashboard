@@ -3,7 +3,7 @@ from django.db import models
 
 class Xelon(models.Model):
     numero_de_dossier = models.CharField('numéro de dossier', max_length=10, unique=True)
-    vin = models.CharField('V.I.N.', max_length=17)
+    vin = models.CharField('V.I.N.', max_length=17, null=True, blank=True)
     modele_produit = models.CharField('modèle produit', max_length=50)
     modele_vehicule = models.CharField('modèle véhicule', max_length=50)
     famille_client = models.CharField('famille Client', max_length=5000, default="")
@@ -36,8 +36,8 @@ class CorvetBackup(models.Model):
 
 class Corvet(models.Model):
     vin = models.CharField('V.I.N.', max_length=17, primary_key=True)
-    donnee_date_debut_garantie = models.CharField('Date d?but garantie', max_length=200, null=True)
-    donnee_date_entree_montage = models.CharField('Date entr?e montage', max_length=200, null=True)
+    donnee_date_debut_garantie = models.CharField('Date début garantie', max_length=200, null=True)
+    donnee_date_entree_montage = models.CharField('Date entrée montage', max_length=200, null=True)
     donnee_ligne_de_produit = models.CharField('LIGNE_DE_PRODUIT', max_length=200, null=True)
     donnee_marque_commerciale = models.CharField('MARQUE_COMMERCIALE', max_length=200, null=True)
     donnee_silhouette = models.CharField('SILHOUETTE', max_length=200, null=True)

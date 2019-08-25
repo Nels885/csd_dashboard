@@ -9,7 +9,7 @@ import re
 from .utils import ProductAnalysis
 from .models import Post, CsdSoftware, User
 from .forms import SoftwareForm, ParaErrorList
-from squalaetp.models import Xelon, Corvet
+from squalaetp.models import Xelon
 
 
 def index(request):
