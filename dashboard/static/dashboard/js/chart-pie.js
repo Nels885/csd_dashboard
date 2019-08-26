@@ -20,7 +20,9 @@ $.ajax({
                 labels: labels,
                 datasets: [{
                     data: defaultData,
-                    backgroundColor: ['#4e73df', '#1cc88a', '#E74A3B', '#848696', '#5A5B68', '#36b9cc', '#F6C23E'],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#E74A3B', '#848696',
+                        '#5A5B68', '#36b9cc', '#F6C23E', '#99FF33',
+                        '#FF7733'],
                     // hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                 }],
