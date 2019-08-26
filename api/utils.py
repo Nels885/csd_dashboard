@@ -7,11 +7,11 @@ def products_count():
     :return:
         list of name and number of different products
     """
-    labels = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI"]
+    labels = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN']
     prod_nb = []
     rtx_nb = 0
     for prod in labels:
-        if prod in ["DISPLAY", "SMEG"]:
+        if prod in ["DISPLAY", "SMEG", "NISSAN"]:
             prod_nb.append(Xelon.objects.filter(modele_produit__icontains=prod, date_retour__isnull=False).count())
         elif prod == "RTx":
             for rtx in ["RT3", "RT4", "RT5"]:
