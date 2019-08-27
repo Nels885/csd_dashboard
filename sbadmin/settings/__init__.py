@@ -162,7 +162,7 @@ LOGIN_REDIRECT_URL = '/dashboard/profile/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Config Clarion
-XLS_ROOT = os.path.abspath('/home/nels885/Documents/CSD_DATABASE')
+XLS_ROOT = os.path.abspath(os.path.expanduser('~') + '/Documents/CSD_DATABASE')
 
 XLS_RASPEEDI_FILE = os.path.join(XLS_ROOT, "PROG/RASPEEDI/table_boitier_PSA.xlsx")
 XLS_SQUALAETP_FILE = os.path.join(XLS_ROOT, "EXTS/squalaetp.xls")

@@ -45,8 +45,8 @@ class Command(BaseCommand):
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
 
-            self._insert(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
-            self._update(Xelon)
+            self._squalaetp_file(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
+            self._delay_files(Xelon)
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -58,18 +58,12 @@ class Command(BaseCommand):
             for table in ["Xelon"]:
                 self.stdout.write("Suppression des données de la table {} terminée!".format(table))
 
-    def _insert(self, model, excel_method, columns_name):
+    def _squalaetp_file(self, model, excel_method, columns_name):
         nb_prod_before = model.objects.count()
-        excels, nb_prod_update = [], 0
-        for file in settings.XLS_DELAY_FILES:
-            excels.append(ExcelsDelayAnalysis(file))
+        nb_prod_update = 0
         for row in excel_method:
             if len(row[columns_name]):
                 try:
-                    for excel in excels:
-                        row_update = excel.xelon_table(row[columns_name])
-                        if len(row_update):
-                            row.update(row_update)
                     log.info(row)
                     product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
                     if product:
@@ -84,35 +78,34 @@ class Command(BaseCommand):
                 except DataError as err:
                     self.stdout.write("DataError dossier {} : {}".format(row[columns_name], err))
         nb_prod_after = model.objects.count()
-        self.stdout.write("[INSERT] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("[INSERT] Nombre de produits mis à jour:  {}".format(nb_prod_update))
-        self.stdout.write("[INSERT] Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write("[SQUALAETP] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("[SQUALAETP] Nombre de produits mis à jour:  {}".format(nb_prod_update))
+        self.stdout.write("[SQUALAETP] Nombre de produits total :      {}".format(nb_prod_after))
 
-    def _update(self, model):
+    def _delay_files(self, model):
         excels, nb_prod_update = [], 0
         for file in settings.XLS_DELAY_FILES:
             excels.append(ExcelsDelayAnalysis(file))
         nb_prod_before = model.objects.count()
-        for product in model.objects.all():
-            if len(product.numero_de_dossier):
-                row = []
+        for excel in excels:
+            for row in excel.table():
                 try:
-                    for excel in excels:
-                        row = excel.xelon_table(product.numero_de_dossier)
-                        if len(row):
-                            product = Xelon.objects.filter(numero_de_dossier=product.numero_de_dossier)
-                            if product:
-                                product.update(**row)
-                                nb_prod_update += 1
-                            else:
-                                m = model(**row)
-                                m.save()
-                            break
+                    if len(row):
+                        row["numero_de_dossier"] = row["n_de_dossier"]
+                        del row["n_de_dossier"]
+                        product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
+                        if product:
+                            del row["numero_de_dossier"]
+                            product.update(**row)
+                            nb_prod_update += 1
+                        else:
+                            m = model(**row)
+                            m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:
-                    self.stdout.write("DataError dossier {} : {}".format(product.numero_de_dossier, err))
+                    self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
         nb_prod_after = model.objects.count()
-        self.stdout.write("[UPDATE] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("[UPDATE] Nombre de produits mis à jour:  {}".format(nb_prod_update))
-        self.stdout.write("[UPDATE] Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("[DELAY] Nombre de produits mis à jour:  {}".format(nb_prod_update))
+        self.stdout.write("[DELAY] Nombre de produits total :      {}".format(nb_prod_after))

@@ -5,6 +5,7 @@ from xlrd import XLRDError
 import pandas as pd
 import unicodedata
 import re
+import os
 
 
 class ExcelFormat:
@@ -52,29 +53,7 @@ class ExcelFormat:
         """
         for col_date, col_format in columns.items():
             self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', format=col_format, utc=True)
-        # self.sheet.fillna(pd.Timestamp(1970, 1, 1), inplace=True)
         self.sheet.fillna('', inplace=True)
-
-    # @staticmethod
-    # def _columns_convert(columns, digit=True):
-    #     """
-    #     Convert the names of the columns to be used by the database
-    #     :param columns:
-    #         List of column names
-    #     :param digit:
-    #         Remove digits from the column names
-    #     :return:
-    #         list of modified column names
-    #     """
-    #     data = []
-    #     for column in columns:
-    #         name = unicodedata.normalize('NFKD', column).encode('ASCII', 'ignore').decode('utf8').lower()
-    #         name = re.sub(r"[^\w\s]+", "", name)
-    #         if not digit:
-    #             name = ''.join(i for i in name if not i.isdigit())
-    #         name = re.sub(r"[\s]+", "_", name)
-    #         data.append(name)
-    #     return data
 
     def _columns_convert(self, digit=True):
         """
@@ -124,8 +103,13 @@ class ExcelFormat:
                 sheet.write(i, j, val)
 
         # Saving the file as an excel file
-        xldoc.save('/tmp/reformat.xls')
-        return pd.read_excel("/tmp/reformat.xls", sheet_name="Sheet1", skiprows=skip_rows)
+        basename = os.path.basename(filename[:filename.find('.')])
+        xldoc.save('/tmp/{}_reformat.xls'.format(basename))
+        df = pd.read_excel("/tmp/{}_reformat.xls".format(basename), sheet_name="Sheet1", skiprows=skip_rows)
+        dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
+        dataframe.reset_index(drop=True, inplace=True)
+        print("File : {}.xls - Row number : {}".format(basename, dataframe.shape[0]))
+        return dataframe
 
 
 class ExcelSqualaetp(ExcelFormat):
@@ -224,6 +208,7 @@ class ExcelsDelayAnalysis(ExcelFormat):
         super().__init__(file, sheet_index, columns, skip_rows=8)
         self._columns_convert(digit=False)
         self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
+        self.sheet.drop(columns=self.DROP_COLS, inplace=True)
         self._date_converter(self.COLS_DATE)
 
     def xelon_table(self, file_number):
@@ -237,8 +222,7 @@ class ExcelsDelayAnalysis(ExcelFormat):
         row_dict = {}
         row_index = self.sheet[self.sheet['n_de_dossier'] == file_number].index
         if list(row_index):
-            df = self.sheet.drop(columns=self.DROP_COLS)
-            row_dict = dict(df.loc[row_index[0]])
+            row_dict = dict(self.sheet.loc[row_index[0]])
             row_dict = self.del_empty_dates(row_dict)
             del row_dict["n_de_dossier"]
         return row_dict
@@ -250,12 +234,8 @@ class ExcelsDelayAnalysis(ExcelFormat):
             list of dictionnaries that represents the data for table
         """
         data = []
-        df = self.sheet.drop(columns=self.DROP_COLS)
         for line in range(self.nrows):
-            try:
-                data.append(self.del_empty_dates(dict(df.loc[line])))
-            except KeyError as err:
-                print("KeyError", err)
+            data.append(self.del_empty_dates(dict(self.sheet.loc[line])))
         return data
 
     @staticmethod
