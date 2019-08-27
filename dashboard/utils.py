@@ -10,7 +10,6 @@ class ProductAnalysis:
         self.pending = Xelon.objects.filter(delai_au_en_jours_ouvres__isnull=False,
                                             delai_au_en_jours_ouvres__lt=30,
                                             date_de_cloture__isnull=True).count()
-        self.pending = Xelon.objects.filter(type_de_cloture="", date_retour__isnull=False).count()
         self.late = self._late_products()
         self.percent = int(self._percent_of_late_products())
         self.listProds = [
