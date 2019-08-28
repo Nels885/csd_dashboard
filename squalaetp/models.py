@@ -4,8 +4,8 @@ from django.db import models
 class Xelon(models.Model):
     numero_de_dossier = models.CharField('numéro de dossier', max_length=10, unique=True)
     vin = models.CharField('V.I.N.', max_length=17, null=True, blank=True)
-    modele_produit = models.CharField('modèle produit', max_length=50)
-    modele_vehicule = models.CharField('modèle véhicule', max_length=50)
+    modele_produit = models.CharField('modèle produit', max_length=50, null=True, blank=True)
+    modele_vehicule = models.CharField('modèle véhicule', max_length=50, null=True, blank=True)
     famille_client = models.CharField('famille Client', max_length=5000, default="")
     famille_produit = models.CharField('famille produit', max_length=100, default="")
     date_retour = models.DateField('date retour', null=True)
