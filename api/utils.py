@@ -12,7 +12,7 @@ def products_count():
     rtx_nb = 0
     pending_prod = Xelon.objects.filter(delai_au_en_jours_ouvres__isnull=False,
                                         delai_au_en_jours_ouvres__lt=30,
-                                        date_de_cloture__isnull=True)
+                                        type_de_cloture='')
     for prod in labels:
         if prod in ["DISPLAY", "SMEG", "NISSAN"]:
             prod_nb.append(pending_prod.filter(modele_produit__icontains=prod).count())
