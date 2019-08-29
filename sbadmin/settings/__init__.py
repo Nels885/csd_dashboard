@@ -170,7 +170,7 @@ XLS_ATTRIBUTS_FILE = os.path.join(XLS_ROOT, "EXTS/Attributs CORVET.xlsx")
 XLS_DELAY_FILES = [
     os.path.join(XLS_ROOT, "RH/AnalyseRetards/PSA.xls"),
     os.path.join(XLS_ROOT, "RH/AnalyseRetards/ILOTAUTRE.xls"),
-    # os.path.join(XLS_ROOT, "RH/AnalyseRetards/LaboQual.xls"),
-    # os.path.join(XLS_ROOT, "RH/AnalyseRetards/DEFAUT.xls"),
+    os.path.join(XLS_ROOT, "RH/AnalyseRetards/LaboQual.xls"),
+    os.path.join(XLS_ROOT, "RH/AnalyseRetards/DEFAUT.xls"),
     os.path.join(XLS_ROOT, "RH/AnalyseRetards/CLARION.xls"),
 ]

@@ -23,6 +23,7 @@ class ExcelFormat:
         :param skip_rows:
             Rows to skip at the beginning (0-indexed)
         """
+        self.basename = os.path.basename(file[:file.find('.')])
         try:
             df = pd.read_excel(file, sheet_index, skiprows=skip_rows)
         except XLRDError:
@@ -76,8 +77,7 @@ class ExcelFormat:
         self.sheet.rename(columns=new_columns, inplace=True)
         self.columns = list(self.sheet.columns)
 
-    @staticmethod
-    def _excel_decode(filename, skip_rows):
+    def _excel_decode(self, file, skip_rows):
         """
         Fix badly formatted excel files
         :param filename:
@@ -87,7 +87,7 @@ class ExcelFormat:
         :return:
             Temporary Excel file in the 'tmp' directory
         """
-        file1 = io.open(filename, 'r', encoding='latin3')
+        file1 = io.open(file, 'r', encoding='latin3')
         data = file1.readlines()
 
         # Creating a workbook object
@@ -103,12 +103,11 @@ class ExcelFormat:
                 sheet.write(i, j, val)
 
         # Saving the file as an excel file
-        basename = os.path.basename(filename[:filename.find('.')])
-        xldoc.save('/tmp/{}_reformat.xls'.format(basename))
-        df = pd.read_excel("/tmp/{}_reformat.xls".format(basename), sheet_name="Sheet1", skiprows=skip_rows)
+        xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
+        df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skip_rows)
         dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
         dataframe.reset_index(drop=True, inplace=True)
-        print("File : {}.xls - Row number : {}".format(basename, dataframe.shape[0]))
+        print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
         return dataframe
 
 
@@ -235,7 +234,9 @@ class ExcelsDelayAnalysis(ExcelFormat):
         """
         data = []
         for line in range(self.nrows):
-            data.append(self.del_empty_dates(dict(self.sheet.loc[line])))
+            row_dict = dict(self.sheet.loc[line])
+            row_dict['ilot'] = self.basename
+            data.append(self.del_empty_dates(row_dict))
         return data
 
     @staticmethod

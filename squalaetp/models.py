@@ -21,6 +21,7 @@ class Xelon(models.Model):
     libelle_de_la_fiche_cas = models.CharField('libellé de la fiche cas', max_length=5000, blank=True)
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
+    ilot = models.CharField('ilot', max_length=100, blank=True)
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
