@@ -8,7 +8,7 @@ from rest_framework import viewsets, permissions
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from raspeedi.models import Raspeedi
 from squalaetp.models import Xelon
-from .utils import products_count
+from utils.product_Analysis import ProductAnalysis
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -94,7 +94,8 @@ class CharData(APIView):
         """
         Return a dictionnary of data
         """
-        labels, prod_nb = products_count()
+        analysis = ProductAnalysis()
+        labels, prod_nb = analysis.products_count()
         data = {
             "labels": labels,
             "default": prod_nb,

@@ -6,7 +6,7 @@ from django.contrib.admin.models import LogEntry
 
 import re
 
-from .utils import ProductAnalysis
+from utils.product_Analysis import ProductAnalysis
 from .models import Post, CsdSoftware, User
 from .forms import SoftwareForm, ParaErrorList
 from squalaetp.models import Xelon

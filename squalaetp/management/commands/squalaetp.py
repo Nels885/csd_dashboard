@@ -8,7 +8,7 @@ from django.conf import settings
 from squalaetp.models import Xelon, CorvetBackup, Corvet
 from raspeedi.models import Raspeedi
 
-from ._excel_format import ExcelSqualaetp
+from ._excel_squalaetp import ExcelSqualaetp
 
 import logging as log
 

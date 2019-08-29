@@ -6,7 +6,8 @@ from django.conf import settings
 
 from squalaetp.models import Xelon
 
-from ._excel_format import ExcelSqualaetp, ExcelsDelayAnalysis
+from ._excel_squalaetp import ExcelSqualaetp
+from ._excel_delay_analysis import ExcelDelayAnalysis
 
 import logging as log
 
@@ -45,8 +46,8 @@ class Command(BaseCommand):
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
 
-            self._squalaetp_file(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
             self._delay_files(Xelon)
+            self._squalaetp_file(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -83,9 +84,9 @@ class Command(BaseCommand):
         self.stdout.write("[SQUALAETP] Nombre de produits total :      {}".format(nb_prod_after))
 
     def _delay_files(self, model):
-        excels, nb_prod_update = [], 0
+        excels, prod_update, nb_prod_update = [], [], 0
         for file in settings.XLS_DELAY_FILES:
-            excels.append(ExcelsDelayAnalysis(file))
+            excels.append(ExcelDelayAnalysis(file))
         nb_prod_before = model.objects.count()
         for excel in excels:
             for row in excel.table():
@@ -98,6 +99,8 @@ class Command(BaseCommand):
                             del row["numero_de_dossier"]
                             product.update(**row)
                             nb_prod_update += 1
+                            for query in product:
+                                prod_update.append(query.numero_de_dossier)
                         else:
                             m = model(**row)
                             m.save()
@@ -108,4 +111,5 @@ class Command(BaseCommand):
         nb_prod_after = model.objects.count()
         self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("[DELAY] Nombre de produits mis à jour:  {}".format(nb_prod_update))
+        self.stdout.write("[DELAY] liste des dossiers: {}".format(prod_update))
         self.stdout.write("[DELAY] Nombre de produits total :      {}".format(nb_prod_after))
