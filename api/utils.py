@@ -10,8 +10,8 @@ def products_count():
     labels = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN']
     prod_nb = []
     rtx_nb = 0
-    pending_prod = Xelon.objects.filter(delai_au_en_jours_ouvres__isnull=False,
-                                        delai_au_en_jours_ouvres__lt=30,
+    pending_prod = Xelon.objects.filter(delai_au_en_jours_calendaires__isnull=False,
+                                        delai_au_en_jours_calendaires__lt=30,
                                         type_de_cloture='')
     for prod in labels:
         if prod in ["DISPLAY", "SMEG", "NISSAN"]:

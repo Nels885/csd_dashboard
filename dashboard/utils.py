@@ -7,9 +7,10 @@ class ProductAnalysis:
         """
         Initialization of the ProductAnalysis class
         """
-        self.pending = Xelon.objects.filter(delai_au_en_jours_ouvres__isnull=False,
-                                            delai_au_en_jours_ouvres__lt=30,
-                                            type_de_cloture='').count()
+        self.pendingQueries = Xelon.objects.filter(delai_au_en_jours_calendaires__isnull=False,
+                                                   delai_au_en_jours_calendaires__lte=30,
+                                                   type_de_cloture='').exclude(lieu_de_stockage='MAGATTREPA/ZONECE')
+        self.pending = self.pendingQueries.count()
         self.late = self._late_products()
         self.percent = int(self._percent_of_late_products())
         self.listProds = [
@@ -28,17 +29,15 @@ class ProductAnalysis:
         :return:
             result
         """
-        return (self.pending / 100) * self.late
+        if self.pending:
+            return (self.late / self.pending) * 100
+        else:
+            return 0
 
-    @staticmethod
-    def _late_products():
+    def _late_products(self):
         """
         Calculating of the number of late products
         :return:
             result
         """
-        prods = Xelon.objects.filter(
-            delai_au_en_jours_ouvres__gt=3, express=True, date_de_cloture__isnull=True).count()
-        prods = Xelon.objects.filter(
-            delai_au_en_jours_ouvres__gt=5, express=False, date_de_cloture__isnull=True).count() + prods
-        return prods
+        return self.pendingQueries.filter(delai_au_en_jours_calendaires__gt=3).count()
