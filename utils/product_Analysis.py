@@ -2,7 +2,7 @@ from squalaetp.models import Xelon
 
 
 class ProductAnalysis:
-    LABELS = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN']
+    LABELS = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN', "AUTRES"]
 
     def __init__(self):
         """
@@ -48,10 +48,9 @@ class ProductAnalysis:
         :return:
             list of name and number of different products
         """
-        prod_nb = []
-        rtx_nb = 0
+        prod_nb, rtx_nb = [], 0
         pending_prod = self.pendingQueries.filter(type_de_cloture__in=['', 'Sauvée'])
-        for prod in self.LABELS:
+        for prod in self.LABELS[:-1]:
             if prod in ["DISPLAY", "SMEG", "NISSAN"]:
                 prod_nb.append(pending_prod.filter(modele_produit__icontains=prod).count())
             elif prod == "RTx":
@@ -64,5 +63,4 @@ class ProductAnalysis:
         prod_nb.append(rtx_nb)
         labels_nb = sum(prod_nb)
         prod_nb.append(pending_prod.count() - labels_nb)
-        self.LABELS.append("AUTRES")
         return self.LABELS, prod_nb

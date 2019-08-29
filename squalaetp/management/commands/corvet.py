@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError
 from django.db import connection
 from django.conf import settings
 
-from squalaetp.models import Corvet
+from squalaetp.models import Corvet, CorvetBackup
 
 from ._excel_squalaetp import ExcelSqualaetp
 
@@ -28,6 +28,12 @@ class Command(BaseCommand):
             help='Insert Corvet table',
         )
         parser.add_argument(
+            '--backup_insert',
+            action='store_true',
+            dest='backup_insert',
+            help='Insert Corvet Backup table',
+        )
+        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -45,6 +51,16 @@ class Command(BaseCommand):
             self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
             self._insert(Corvet, excel.corvet_table(settings.XLS_ATTRIBUTS_FILE), "vin")
+
+        elif options['backup_insert']:
+            if options['filename'] is not None:
+                excel = ExcelSqualaetp(options['filename'])
+            else:
+                excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+            self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
+            self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
+
+            self._insert(CorvetBackup, excel.corvet_backup_table(), "vin")
 
         elif options['delete']:
             Corvet.objects.all().delete()

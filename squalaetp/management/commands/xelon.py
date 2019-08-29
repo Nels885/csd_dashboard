@@ -46,8 +46,8 @@ class Command(BaseCommand):
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
 
-            self._delay_files(Xelon)
             self._squalaetp_file(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
+            self._delay_files(Xelon)
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -84,7 +84,7 @@ class Command(BaseCommand):
         self.stdout.write("[SQUALAETP] Nombre de produits total :      {}".format(nb_prod_after))
 
     def _delay_files(self, model):
-        excels, prod_update, nb_prod_update = [], [], 0
+        excels, nb_prod_update = [], 0
         for file in settings.XLS_DELAY_FILES:
             excels.append(ExcelDelayAnalysis(file))
         nb_prod_before = model.objects.count()
@@ -92,24 +92,19 @@ class Command(BaseCommand):
             for row in excel.table():
                 try:
                     if len(row):
-                        row["numero_de_dossier"] = row["n_de_dossier"]
-                        del row["n_de_dossier"]
                         product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
                         if product:
                             del row["numero_de_dossier"]
                             product.update(**row)
                             nb_prod_update += 1
-                            for query in product:
-                                prod_update.append(query.numero_de_dossier)
-                        else:
-                            m = model(**row)
-                            m.save()
+                        # else:
+                        #     m = model(**row)
+                        #     m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:
                     self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
         nb_prod_after = model.objects.count()
         self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("[DELAY] Nombre de produits mis à jour:  {}".format(nb_prod_update))
-        self.stdout.write("[DELAY] liste des dossiers: {}".format(prod_update))
+        self.stdout.write("[DELAY] Nombre de produits mis à jour : {}".format(nb_prod_update))
         self.stdout.write("[DELAY] Nombre de produits total :      {}".format(nb_prod_after))

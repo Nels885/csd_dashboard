@@ -36,8 +36,7 @@ class ExcelDelayAnalysis(ExcelFormat):
         row_index = self.sheet[self.sheet['n_de_dossier'] == file_number].index
         if list(row_index):
             row_dict = dict(self.sheet.loc[row_index[0]])
-            row_dict = self.del_empty_dates(row_dict)
-            del row_dict["n_de_dossier"]
+            row_dict = self.key_formatting(self.del_empty_dates(row_dict))
         return row_dict
 
     def table(self):
@@ -48,9 +47,14 @@ class ExcelDelayAnalysis(ExcelFormat):
         """
         data = []
         for line in range(self.nrows):
-            row_dict = dict(self.sheet.loc[line])
-            row_dict['ilot'] = self.basename
+            row_dict = self.key_formatting(dict(self.sheet.loc[line]))
             data.append(self.del_empty_dates(row_dict))
+        return data
+
+    def key_formatting(self, data):
+        data['ilot'] = self.basename
+        data["numero_de_dossier"] = data["n_de_dossier"]
+        del data["n_de_dossier"]
         return data
 
     @staticmethod
