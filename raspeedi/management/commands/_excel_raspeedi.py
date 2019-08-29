@@ -1,7 +1,7 @@
-import pandas as pd
+from utils.excel_format import ExcelFormat
 
 
-class ExcelRaspeedi:
+class ExcelRaspeedi(ExcelFormat):
     """## Read data in Excel file for Raspeedi ##"""
 
     def __init__(self, file, sheet_index=0, columns=12):
@@ -10,11 +10,8 @@ class ExcelRaspeedi:
         :param file:
             excel file to process
         """
-        df = pd.read_excel(file, sheet_index, converters={'ref_boitier': int, 'cd_version': str})
-        df.dropna(how='all', inplace=True)
-        self.sheet = df.fillna('')
-        self.nrows = self.sheet.shape[0] - 1
-        self.columns = list(self.sheet.columns[:columns])
+        super().__init__(file, sheet_index, columns)
+        self._convert_boolean()
 
     def read(self):
         """
@@ -24,24 +21,19 @@ class ExcelRaspeedi:
         """
         data = []
         for line in range(self.nrows):
-            row = list(self.sheet.loc[line, self.columns])  # get the data in the ith row
-            row = self._convert_boolean(row)
-            row_dict = dict(zip(self.columns, row))
-            data.append(row_dict)
+            try:
+                row = list(self.sheet.loc[line, self.columns])  # get the data in the ith row
+                row_dict = dict(zip(self.columns, row))
+                data.append(row_dict)
+            except KeyError as err:
+                print("KeyError pour la ligne : {}".format(err))
         return data
 
-    @staticmethod
-    def _convert_boolean(row):
+    def _convert_boolean(self):
         """
         Converting string values 'O' or 'N' in boolean
-        :param row:
-            Data line
-         :return:
+        :return:
             Data line converts
         """
-        for i in range(4, 6):
-            if row[i] == "O":
-                row[i] = True
-            elif row[i] in ["N", "?", ""]:
-                row[i] = False
-        return row
+        for col in ["dab", "cam"]:
+            self.sheet[col] = self.sheet[col].replace({"O": True, "N": False, "?": False, "": False})

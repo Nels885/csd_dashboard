@@ -41,9 +41,13 @@ class ExcelFormat:
         """
         data = []
         for line in range(self.nrows):
-            row = self.sheet.row_values(line)  # get the data in the ith row
-            row_dict = dict(zip(self.columns, row))
-            data.append(row_dict)
+            try:
+                row = list(self.sheet.loc[line, self.columns])  # get the data in the ith row
+                row_dict = dict(zip(self.columns, row))
+                data.append(row_dict)
+                self.sheet.row_values()
+            except KeyError as err:
+                print("KeyError pour la ligne : {}".format(err))
         return data
 
     def _date_converter(self, columns):
