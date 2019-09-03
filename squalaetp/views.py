@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from .models import Xelon, Corvet
 from .forms import CorvetForm
 from dashboard.forms import ParaErrorList
+from utils.scraping import ScrapingCorvet
 
 
 def xelon_table(request):
@@ -86,8 +87,11 @@ def xelon_edit(request, file_id):
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
         context['errors'] = form.errors.items()
     else:
+        corvet = ScrapingCorvet()
         form = CorvetForm()
         form.fields['vin'].initial = file.vin
+        form.fields['xml_data'].initial = corvet.result(file.vin)
+        corvet.close()
     context['form'] = form
     return render(request, 'squalaetp/xelon_edit.html', context)
 
