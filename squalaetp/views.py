@@ -30,7 +30,7 @@ def xelon_detail(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
     context = {
         'title': 'Xelon',
-        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'card_title': _('Detail data for the Xelon file: ') + file.numero_de_dossier,
         'file': file,
     }
     return render(request, 'squalaetp/xelon_detail.html', context)
@@ -50,7 +50,7 @@ def ihm_detail(request, file_id):
     form.fields['vin'].initial = file.vin
     context = {
         'title': 'IHM Extraction',
-        'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'card_title': _('Detail data for the Xelon file: ') + file.numero_de_dossier,
         'file': file,
         'corvet': corvet,
         'form': form,
@@ -68,7 +68,7 @@ def xelon_edit(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
     context = {
         'title': 'Xelon',
-        'card_title': _('Modification data Xelon file: {file}'.format(file=file.numero_de_dossier)),
+        'card_title': _('Modification data Xelon file: ') + file.numero_de_dossier,
         'file': file,
     }
 
@@ -122,8 +122,8 @@ def corvet_detail(request, vin):
     for key in ["_state"]:
         del dict_corvet[key]
     context = {
-        'title': 'Xelon',
-        'card_title': _('Detail Corvet data for the VIN: {vin}'.format(vin=corvet.vin)),
+        'title': 'Corvet',
+        'card_title': _('Detail Corvet data for the VIN: ') + corvet.vin,
         'dict_corvet': dict_corvet,
     }
     return render(request, 'squalaetp/corvet_detail.html', context)

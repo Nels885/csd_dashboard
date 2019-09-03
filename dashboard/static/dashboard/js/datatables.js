@@ -23,4 +23,9 @@ $(document).ready(function () {
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
     });
+
+    $('#unlockTable').DataTable({
+        pagingType: "full_numbers",
+        order: [[2, "desc"]],
+    });
 });

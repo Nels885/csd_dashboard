@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-09 17:53+0200\n"
+"POT-Creation-Date: 2019-09-03 19:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,13 +46,14 @@ msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
 #: squalaetp/templates/squalaetp/corvet_insert.html:41
+#: squalaetp/templates/squalaetp/ihm_detail.html:91
 #: squalaetp/templates/squalaetp/xelon_edit.html:41
 msgid "Submit"
 msgstr "Soumettre"
 
 #: squalaetp/templates/squalaetp/xelon_detail.html:81
 msgid "Corvet data"
-msgstr ""
+msgstr "Données Corvet"
 
 #: squalaetp/templates/squalaetp/xelon_table.html:10
 msgid "Hide column:"
@@ -62,41 +63,30 @@ msgstr "Masquer la colonne :"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: squalaetp/views.py:32
-#, fuzzy, python-brace-format
-#| msgid "Modification data Xelon file: {}"
-msgid "Detail data for the Xelon file: {file}"
-msgstr "Modification données dossier Xelon : {file}"
+#: squalaetp/views.py:33 squalaetp/views.py:53
+msgid "Detail data for the Xelon file: "
+msgstr "Données détaillées du fichier Xelon : "
 
-#: squalaetp/views.py:48
-#, fuzzy, python-brace-format
-#| msgid "Modification data Xelon file: {}"
-msgid "Modification data Xelon file: {file}"
-msgstr "Modification données dossier Xelon : {file}"
+#: squalaetp/views.py:71
+msgid "Modification data Xelon file: "
+msgstr "Modification données dossier Xelon : "
 
-#: squalaetp/views.py:60 squalaetp/views.py:123
+#: squalaetp/views.py:84 squalaetp/views.py:150
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:63 squalaetp/views.py:126
+#: squalaetp/views.py:87 squalaetp/views.py:153
 msgid "An internal error has occurred. Thank you recommend your request"
 msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
 
-#: squalaetp/views.py:80
-#, fuzzy
-#| msgid "CORVET integration"
+#: squalaetp/views.py:107
 msgid "CORVET table"
-msgstr "Intégration CORVET"
+msgstr "Table CORVET"
 
-#: squalaetp/views.py:99
-#, fuzzy, python-brace-format
-#| msgid "Modification data Xelon file: {}"
-msgid "Detail Corvet data for the VIN: {vin}"
-msgstr "Modification données dossier Xelon : {file}"
+#: squalaetp/views.py:126
+msgid "Detail Corvet data for the VIN: "
+msgstr "Données détaillées de Corvet pour le VIN : "
 
-#: squalaetp/views.py:112
+#: squalaetp/views.py:139
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
-
-#~ msgid "Back to Dashboard"
-#~ msgstr "Retour au tableau de bord"

@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Select, CheckboxInput
+from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 
 from .models import Raspeedi
 
@@ -27,3 +27,10 @@ class RaspeediForm(ModelForm):
             'ref_mm': TextInput(attrs={'class': 'form-control'}),
             'connecteur_ecran': Select(attrs={'class': 'form-control'}),
         }
+
+
+class UnlockForm(Form):
+    unlock = CharField(
+        label='Numéro de dossier', max_length=10,
+        widget=TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'})
+    )

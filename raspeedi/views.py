@@ -2,9 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
-from .models import Raspeedi
-from .forms import RaspeediForm
+from .models import Raspeedi, UnlockProduct, UserProfile
+from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
+from squalaetp.models import Xelon
 
 
 def table(request):
@@ -36,10 +37,31 @@ def detail(request, ref_case):
         del dict_prod[key]
     context = {
         'title': 'Raspeedi',
-        'card_title': _('Detail raspeedi data for the ref case of Product: {file}'.format(file=product.ref_boitier)),
+        'card_title': _('Detail raspeedi data for the ref case of Product: ') + str(product.ref_boitier),
         'dict_prod': dict_prod,
     }
     return render(request, 'raspeedi/detail.html', context)
+
+
+@login_required
+def unlock_prods(request):
+    unlock = UnlockProduct.objects.all().order_by('created_at')
+    context = {
+        'title': 'Raspeedi',
+        'table_title': _('Unlocking product for programming'),
+        'products': unlock
+    }
+    if request.method == 'POST':
+        user = UserProfile.objects.get(user_id=request.user.id)
+        form = UnlockForm(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            unlock = form.cleaned_data['unlock']
+            product = get_object_or_404(Xelon, numero_de_dossier=unlock)
+            UnlockProduct.objects.create(user=user, unlock=product)
+    else:
+        form = UnlockForm()
+    context['form'] = form
+    return render(request, 'raspeedi/unlock_prods.html', context)
 
 
 @login_required
@@ -74,7 +96,7 @@ def edit(request, ref_case):
         return render(request, 'dashboard/done.html', context)
     context = {
         'title': 'Raspeedi',
-        'card_title': _('Modification data RASPEEDI for ref case: {ref_case}'.format(ref_case=product.ref_boitier)),
+        'card_title': _('Modification data RASPEEDI for ref case: ') + str(product.ref_boitier),
         'url': 'raspeedi:edit',
         'prod': product,
         'form': form,
