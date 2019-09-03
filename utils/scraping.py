@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 
 
 class ScrapingCorvet(webdriver.Firefox):
@@ -26,17 +27,20 @@ class ScrapingCorvet(webdriver.Firefox):
         :return: Corvet data
         """
         self.login()
-        vin = self.find_element_by_id('form:input_vin')
-        submit = self.find_element_by_id('form:suite')
-        vin.clear()
-        if vin_value:
-            vin.send_keys(vin_value)
-        submit.click()
-        time.sleep(3)
-        data = WebDriverWait(self, 10).until(
-            EC.presence_of_element_located((By.ID, 'form:resultat_CORVET'))
-        ).text
-        self.logout()
+        try:
+            vin = self.find_element_by_id('form:input_vin')
+            submit = self.find_element_by_id('form:suite')
+            vin.clear()
+            if vin_value:
+                vin.send_keys(vin_value)
+            submit.click()
+            time.sleep(3)
+            data = WebDriverWait(self, 10).until(
+                EC.presence_of_element_located((By.ID, 'form:resultat_CORVET'))
+            ).text
+            self.logout()
+        except NoSuchElementException:
+            data = "Corvet login Error !!!"
         return data
 
     def login(self):
