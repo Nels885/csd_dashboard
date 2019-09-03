@@ -5,6 +5,8 @@ python:
 
 env:
   - DJANGO_SETTINGS_MODULE="sbadmin.settings.travis" MOZ_HEADLESS=1
+  - USER_CORVET='test'
+  - PWD_CORVET='test'
 
 addons:
   firefox: latest
