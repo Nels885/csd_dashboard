@@ -5,12 +5,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementClickInterceptedException
 
 
 class ScrapingCorvet(webdriver.Firefox):
     """ Scraping data Corvet of the repairnav web site"""
     START_URLS = 'https://www.repairnav.com/clarionservice_v2/corvet.xhtml'
+    USER_CORVET = os.environ.get('USER_CORVET')
+    PWD_CORVET = os.environ.get('PWD_CORVET')
 
     def __init__(self):
         """ Initialization """
@@ -26,9 +28,8 @@ class ScrapingCorvet(webdriver.Firefox):
         :param vin_value: VIN number for the Corvet data
         :return: Corvet data
         """
-        self.login()
-        try:
-            vin = self.find_element_by_id('form:input_vin')
+        if self.login():
+            vin = self.find_element_by_name('form:input_vin')
             submit = self.find_element_by_id('form:suite')
             vin.clear()
             if vin_value:
@@ -36,10 +37,10 @@ class ScrapingCorvet(webdriver.Firefox):
             submit.click()
             time.sleep(3)
             data = WebDriverWait(self, 10).until(
-                EC.presence_of_element_located((By.ID, 'form:resultat_CORVET'))
+                EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
             ).text
             self.logout()
-        except NoSuchElementException:
+        else:
             data = "Corvet login Error !!!"
         return data
 
@@ -47,17 +48,27 @@ class ScrapingCorvet(webdriver.Firefox):
         """
         Login on the web site
         """
-        username = self.find_element_by_id('form:identifiant2')
-        password = self.find_element_by_id('form:password2')
-        login = self.find_elements_by_id('form:login2')
-        username.send_keys(os.environ.get('USER_CORVET'))
-        password.send_keys(os.environ.get('PWD_CORVET'))
-        login[0].click()
+        try:
+            username = self.find_element_by_name('form:identifiant2')
+            password = self.find_element_by_name('form:password2')
+            login = self.find_element_by_id('form:login2')
+            for element, value in {username: self.USER_CORVET, password: self.PWD_CORVET}.items():
+                element.clear()
+                element.send_keys(value)
+            login.click()
+            WebDriverWait(self, 1).until(EC.presence_of_element_located((By.NAME, 'form:input_vin')))
+        except (NoSuchElementException, TimeoutException, ElementClickInterceptedException):
+            return False
+        return True
 
     def logout(self):
         """
         Logout on the web site
         :return:
         """
-        logout = self.find_element_by_id('form:deconnect2')
-        logout.click()
+        try:
+            logout = self.find_element_by_id('form:deconnect2')
+            logout.click()
+        except (NoSuchElementException, ElementClickInterceptedException):
+            return False
+        return True
