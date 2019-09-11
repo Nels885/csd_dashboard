@@ -6,6 +6,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementClickInterceptedException
+from selenium.common.exceptions import WebDriverException
 
 
 class ScrapingCorvet(webdriver.Firefox):
@@ -13,14 +14,18 @@ class ScrapingCorvet(webdriver.Firefox):
     START_URLS = 'https://www.repairnav.com/clarionservice_v2/corvet.xhtml'
     USER_CORVET = os.environ.get('USER_CORVET')
     PWD_CORVET = os.environ.get('PWD_CORVET')
+    ERROR = False
 
     def __init__(self):
         """ Initialization """
         options = Options()
         options.add_argument('-headless')
-        super().__init__(firefox_options=options)
-        self.implicitly_wait(10)
-        self.get(self.START_URLS)
+        try:
+            super().__init__(firefox_options=options)
+            self.implicitly_wait(10)
+            self.get(self.START_URLS)
+        except WebDriverException:
+            self.ERROR = True
 
     def result(self, vin_value=None):
         """
@@ -28,7 +33,7 @@ class ScrapingCorvet(webdriver.Firefox):
         :param vin_value: VIN number for the Corvet data
         :return: Corvet data
         """
-        if self.login():
+        if not self.ERROR and self.login():
             vin = self.find_element_by_name('form:input_vin')
             submit = self.find_element_by_id('form:suite')
             vin.clear()

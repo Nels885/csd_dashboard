@@ -51,16 +51,14 @@ class ProductAnalysis:
         prod_nb, rtx_nb = [], 0
         pending_prod = self.pendingQueries.filter(type_de_cloture__in=['', 'Sauvée'])
         for prod in self.LABELS[:-1]:
-            if prod in ["DISPLAY", "SMEG", "NISSAN"]:
-                prod_nb.append(pending_prod.filter(modele_produit__icontains=prod).count())
-            elif prod == "RTx":
+            if prod == "RTx":
                 for rtx in ["RT3", "RT4", "RT5"]:
-                    rtx_nb += pending_prod.filter(modele_produit=rtx).count()
+                    rtx_nb += pending_prod.filter(modele_produit__startswith=rtx).count()
+                prod_nb.append(rtx_nb)
             elif prod in ["CALC MOT", "BSI"]:
-                prod_nb.append(pending_prod.filter(famille_produit=prod).count())
+                prod_nb.append(pending_prod.filter(famille_produit__startswith=prod).count())
             else:
-                prod_nb.append(pending_prod.filter(modele_produit=prod).count())
-        prod_nb.append(rtx_nb)
+                prod_nb.append(pending_prod.filter(modele_produit__startswith=prod).count())
         labels_nb = sum(prod_nb)
         prod_nb.append(pending_prod.count() - labels_nb)
         return self.LABELS, prod_nb
