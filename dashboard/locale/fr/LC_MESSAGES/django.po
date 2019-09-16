@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-03 19:48+0200\n"
+"POT-Creation-Date: 2019-09-16 15:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,7 +55,8 @@ msgid "Logout"
 msgstr "Déconnexion"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:25
-#: dashboard/templates/dashboard/nav_csd_atelier.html:97
+#: dashboard/templates/dashboard/nav_csd_atelier.html:50
+#: dashboard/templates/dashboard/nav_csd_atelier.html:114
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -67,33 +68,36 @@ msgstr "Tableau Corvet"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:39
-#: dashboard/templates/dashboard/nav_csd_atelier.html:104
-msgid "IHM Extraction"
-msgstr "Extracion IHM"
+#: dashboard/templates/dashboard/nav_csd_atelier.html:53
+msgid "Create file"
+msgstr "Création dossier"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:57
-#: dashboard/templates/dashboard/nav_csd_atelier.html:111 dashboard/views.py:85
+#: dashboard/templates/dashboard/nav_csd_atelier.html:74
+#: dashboard/templates/dashboard/nav_csd_atelier.html:128 dashboard/views.py:85
 msgid "Software list"
 msgstr "Liste Logiciels"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:60
+#: dashboard/templates/dashboard/nav_csd_atelier.html:77
 msgid "Software Add"
 msgstr "Ajout Logiciel"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:81
+#: dashboard/templates/dashboard/nav_csd_atelier.html:98
 msgid "Unlock VIN"
 msgstr "Déverrouillage VIN"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:82
+#: dashboard/templates/dashboard/nav_csd_atelier.html:99
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:85
+#: dashboard/templates/dashboard/nav_csd_atelier.html:102
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:118
+#: dashboard/templates/dashboard/nav_csd_atelier.html:121
+msgid "Reman files"
+msgstr ""
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:135
 msgid "Raspeedi table"
 msgstr "Tableau Raspeedi"
 
@@ -260,3 +264,6 @@ msgstr "Ajout réalisé avec succès !"
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Modification des données pour le Software du JIG: {jig}"
+
+#~ msgid "IHM Extraction"
+#~ msgstr "Extraction IHM"

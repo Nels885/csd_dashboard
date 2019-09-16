@@ -125,6 +125,7 @@ def corvet_detail(request, vin):
         'title': 'Corvet',
         'card_title': _('Detail Corvet data for the VIN: ') + corvet.vin,
         'dict_corvet': dict_corvet,
+        'redirect': request.META.get('HTTP_REFERER')
     }
     return render(request, 'squalaetp/corvet_detail.html', context)
 

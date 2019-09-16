@@ -6,6 +6,19 @@
 
 {% block detail_content %}
 
+    <div class="text-center">
+        <a class="col-sm-2 align-self-center btn btn-primary btn-user"
+           href="{% url 'squalaetp:ihm-detail' file_id=file.id %}">{% trans "IHM Extraction" %}
+        </a>
+        {% if file.corvet.exists %}
+            <a class="col-sm-2 align-self-center btn btn-primary btn-user"
+               href="{% url 'squalaetp:corvet-detail' vin=file.vin %}">{% trans "Corvet data" %}
+            </a>
+        {% endif %}
+    </div>
+
+    <br>
+
     <table class="table table-striped table-condensed">
 
         <tbody>
@@ -73,15 +86,5 @@
 
         </tbody>
     </table>
-
-    {% if file.corvet.exists %}
-
-        <div class="text-center">
-            <a class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block"
-               href="{% url 'squalaetp:corvet-detail' vin=file.vin %}">{% trans "Corvet data" %}
-            </a>
-        </div>
-
-    {% endif %}
 
 {% endblock %}

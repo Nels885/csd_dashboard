@@ -32,12 +32,29 @@
         </li>
     {% endwith %}
 
-    <!-- Nav Item - Diagbox Barcode -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'squalaetp:ihm' %}">
-            <i class="fas fa-fw fa-table"></i>
-            <span>{% trans "IHM Extraction" %}</span></a>
-    </li>
+    <!-- Nav Item - Reman Settings Menu -->
+    {% with name="Reman" icon="fa-table" %}
+        <li class="nav-item
+                {% for group in user.groups.all %}{% if group.name == 'reman' %}active{% endif %}{% endfor %}">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse
+                    {% for group in user.groups.all %}{% if group.name == 'reman' %}show{% endif %}{% endfor %}"
+                 aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Informations :</h6>
+                    <a class="collapse-item" href="#">{% trans "Customer files" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Edition :</h6>
+                    <a class="collapse-item" href="#">{% trans "Create file" %}</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
 
     <!-- Nav Item - Software Settings Menu -->
     {% with name="Software" icon="fa-table" %}
@@ -97,11 +114,11 @@
             <span>{% trans "Customer files" %}</span></a>
     </li>
 
-    <!-- Nav Item - Diagbox Barcode -->
+    <!-- Nav Item - Dossiers Reman -->
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'squalaetp:ihm' %}">
+        <a class="nav-link" href="{% url 'squalaetp:xelon' %}">
             <i class="fas fa-fw fa-table"></i>
-            <span>{% trans "IHM Extraction" %}</span></a>
+            <span>{% trans "Reman files" %}</span></a>
     </li>
 
     <!-- Nav Item - tableau Software -->
