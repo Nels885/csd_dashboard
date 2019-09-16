@@ -1,3 +1,5 @@
+import csv
+
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db.utils import IntegrityError
@@ -28,6 +30,12 @@ class Command(BaseCommand):
             help='Insert Corvet table',
         )
         parser.add_argument(
+            '--import_csv',
+            action='store_true',
+            dest='import_csv',
+            help='import Corvet CSV file',
+        )
+        parser.add_argument(
             '--backup_insert',
             action='store_true',
             dest='backup_insert',
@@ -51,6 +59,12 @@ class Command(BaseCommand):
             self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
             self._insert(Corvet, excel.corvet_table(settings.XLS_ATTRIBUTS_FILE), "vin")
+
+        elif options['import_csv']:
+            if options['filename'] is not None:
+                self._import(Corvet, options['filename'])
+            else:
+                self.stdout.write("Fichier CSV manquant")
 
         elif options['backup_insert']:
             if options['filename'] is not None:
@@ -82,6 +96,19 @@ class Command(BaseCommand):
                     m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
+        nb_prod_after = model.objects.count()
+        self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+
+    def _import(self, model, csv_file):
+        nb_prod_before = model.objects.count()
+        with open(csv_file) as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if row[0] == "vin":
+                    continue
+                m = model(*row)
+                m.save()
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))

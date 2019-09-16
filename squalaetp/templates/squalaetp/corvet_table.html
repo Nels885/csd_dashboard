@@ -4,6 +4,11 @@
 
 {% block table_content %}
 
+    <div class="text-center">
+        <a class="col-sm-2 align-self-center btn btn-primary btn-user"
+           href="{% url 'squalaetp:export-corvet-csv' %}">Export CSV</a>
+    </div>
+
     <table class="table table-bordered" id="corvetTable" width="100%" cellspacing="0">
         <thead>
         <tr>

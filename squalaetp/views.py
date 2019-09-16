@@ -1,4 +1,7 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import csv
+import datetime
+
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
@@ -54,6 +57,7 @@ def ihm_detail(request, file_id):
         'file': file,
         'corvet': corvet,
         'form': form,
+        'redirect': request.META.get('HTTP_REFERER')
     }
     return render(request, 'squalaetp/ihm_detail.html', context)
 
@@ -157,3 +161,26 @@ def corvet_insert(request):
         form = CorvetForm()
     context['form'] = form
     return render(request, 'squalaetp/corvet_insert.html', context)
+
+
+@login_required
+def export_corvet_csv(request):
+    date = datetime.datetime.now()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="corvet_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
+
+    writer = csv.writer(response)
+    writer.writerow(
+        ['vin', 'date_debut_garantie', 'date_entree_montage', 'ligne_de_produit', 'marque_commerciale', 'silhouette',
+         'genre_de_produit', 'ddo', 'dgm', 'dhb', 'dhg', 'djq', 'djy', 'dkx', 'dlx', 'doi', 'dqm', 'dqs', 'drc', 'drt',
+         'dti', 'dun', 'dwl', 'dwt', 'dxj', 'dyb', 'dym', 'dyr', 'dzv', 'gg8', '14f', '14j', '14k', '14l', '14r', '14x',
+         '19z', '44f', '44l', '44x', '54f', '54k', '54l', '84f', '84l', '84x', '94f', '94l', '94x', 'dat', 'dcx', '19h',
+         '49h', '64f', '64x', '69h', '89h', '99h', '14a', '34a', '44a', '54a', '64a', '84a', '94a', 'p4a', 'moteur',
+         'transmission', '10', '14b', '20', '44b', '54b', '64b', '84b', '94b'])
+
+    corvets = Corvet.objects.all().values_list()
+    for corvet in corvets:
+        print(corvet)
+        writer.writerow(corvet)
+
+    return response
