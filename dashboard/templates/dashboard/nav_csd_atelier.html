@@ -50,7 +50,8 @@
                     <a class="collapse-item" href="#">{% trans "Customer files" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">Edition :</h6>
-                    <a class="collapse-item" href="#">{% trans "Create file" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:new-folder' %}">{% trans "Create file" %}</a>
+                    <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
                 </div>
             </div>
         </li>
