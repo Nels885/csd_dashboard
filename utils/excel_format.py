@@ -28,8 +28,7 @@ class ExcelFormat:
             df = pd.read_excel(file, sheet_index, skiprows=skip_rows)
         except XLRDError:
             df = self._excel_decode(file, skip_rows)
-        df.dropna(how='all', inplace=True)
-        self.sheet = df.fillna('')
+        self.sheet = df.dropna(how='all')
         self.nrows = self.sheet.shape[0]
         self.columns = list(self.sheet.columns[:columns])
 
@@ -58,7 +57,6 @@ class ExcelFormat:
         """
         for col_date, col_format in columns.items():
             self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', format=col_format, utc=True)
-        self.sheet.fillna('', inplace=True)
 
     def _columns_convert(self, digit=True):
         """

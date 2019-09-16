@@ -12,6 +12,7 @@ class ExcelRaspeedi(ExcelFormat):
         """
         super().__init__(file, sheet_index, columns)
         self._convert_boolean()
+        self.sheet.fillna("", inplace=True)
 
     def read(self):
         """
@@ -36,4 +37,4 @@ class ExcelRaspeedi(ExcelFormat):
             Data line converts
         """
         for col in ["dab", "cam"]:
-            self.sheet[col] = self.sheet[col].replace({"O": True, "N": False, "?": False, "": False})
+            self.sheet[col] = self.sheet[col].replace({"O": True, "N": False, "?": False, None: False})
