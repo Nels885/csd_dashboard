@@ -3,36 +3,28 @@ from django.db import models
 from squalaetp.models import Corvet, Xelon
 from dashboard.models import UserProfile
 
-TYPE_CHOICES = [
-    ('RAD', 'Radio'),
-    ('NAV', 'Navigation'),
-]
-
-CON_CHOICES = [
-    (1, '1'),
-    (2, '2'),
-]
-
-MEDIA_CHOICES = [
-    ('N/A', 'Vide'),
-    ('HDD', 'Disque Dur'),
-    ('8Go', 'Carte SD 8Go'),
-    ('16Go', 'Carte SD 16Go'),
-    ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
-]
-
-PRODUCT_CHOICES = [
-    ('RT4', 'RT4'),
-    ('RT5', 'RT5'),
-    ('RT6', 'RT6'),
-    ('RT6v2', 'RT6 version 2'),
-    ('SMEG', 'SMEG'),
-    ('SMEGP', 'SMEG+ / SMEG+ IV1'),
-    ('SMEGP2', 'SMEG+ IV2'),
-]
-
 
 class Raspeedi(models.Model):
+
+    TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
+    CON_CHOICES = [(1, '1'), (2, '2')]
+    MEDIA_CHOICES = [
+        ('N/A', 'Vide'),
+        ('HDD', 'Disque Dur'),
+        ('8Go', 'Carte SD 8Go'),
+        ('16Go', 'Carte SD 16Go'),
+        ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
+    ]
+    PRODUCT_CHOICES = [
+        ('RT4', 'RT4'),
+        ('RT5', 'RT5'),
+        ('RT6', 'RT6'),
+        ('RT6v2', 'RT6 version 2'),
+        ('SMEG', 'SMEG'),
+        ('SMEGP', 'SMEG+ / SMEG+ IV1'),
+        ('SMEGP2', 'SMEG+ IV2'),
+    ]
+
     ref_boitier = models.BigIntegerField('référence boîtier', primary_key=True)
     produit = models.CharField(max_length=20, choices=PRODUCT_CHOICES)
     facade = models.CharField('façade', max_length=2)
@@ -65,4 +57,3 @@ class UnlockProduct(models.Model):
 
     def __str__(self):
         return self.unlock.numero_de_dossier
-

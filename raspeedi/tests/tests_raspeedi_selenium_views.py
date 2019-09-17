@@ -1,11 +1,11 @@
 from django.test import LiveServerTestCase
+from django.contrib.auth.models import User, Group
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
 
 from raspeedi.models import Raspeedi
-from dashboard.models import User
 
 
 class RaspeediSeleniumTestCase(LiveServerTestCase):
@@ -16,7 +16,9 @@ class RaspeediSeleniumTestCase(LiveServerTestCase):
         self.driver = webdriver.Firefox(firefox_options=options)
         self.driver.implicitly_wait(30)
         super(RaspeediSeleniumTestCase, self).setUp()
-        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user.groups.add(Group.objects.create(name="cellule"))
+        user.save()
 
     def tearDown(self):
         self.driver.quit()

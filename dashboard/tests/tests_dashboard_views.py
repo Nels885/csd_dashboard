@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import translation
+from django.contrib.auth.models import User, Group
 
-from dashboard.models import CsdSoftware, User
+from dashboard.models import CsdSoftware
 from squalaetp.models import Xelon
 
 
@@ -13,7 +14,9 @@ class DashboardTestCase(TestCase):
             'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test',
         }
         self.vin = 'VF3ABCDEF12345678'
-        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user.groups.add(Group.objects.create(name="cellule"))
+        user.save()
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
         self.redirectUrl = reverse('index')

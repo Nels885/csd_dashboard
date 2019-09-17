@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext as _
+from django.contrib.auth.models import User, Group
 
 from raspeedi.models import Raspeedi
-from dashboard.models import User
 
 
 class RaspeediTestCase(TestCase):
@@ -13,7 +13,9 @@ class RaspeediTestCase(TestCase):
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
-        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user.groups.add(Group.objects.create(name="cellule"))
+        user.save()
 
     def test_raspeedi_table_page(self):
         response = self.client.get(reverse('raspeedi:table'))

@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User, Group
 
 from squalaetp.models import Xelon
-from dashboard.models import User
 
 
 class XelonTestCase(TestCase):
@@ -20,7 +20,9 @@ class XelonTestCase(TestCase):
             '</VEHICULE></MESSAGE>'
         )
         self.vin = 'VF3ABCDEF12345678'
-        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user.groups.add(Group.objects.create(name="cellule"))
+        user.save()
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
 

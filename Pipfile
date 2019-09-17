@@ -18,6 +18,7 @@ xlwt = "*"
 djangorestframework = "*"
 pillow = "*"
 selenium = "*"
+django-model-utils = "*"
 
 [requires]
 python_version = ">=3.5"

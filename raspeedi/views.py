@@ -6,6 +6,7 @@ from .models import Raspeedi, UnlockProduct, UserProfile
 from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
 from squalaetp.models import Xelon
+from utils.decorators import group_required
 
 
 def table(request):
@@ -44,6 +45,7 @@ def detail(request, ref_case):
 
 
 @login_required
+@group_required('cellule', 'technician', 'operator')
 def unlock_prods(request):
     unlock = UnlockProduct.objects.all().order_by('created_at')
     context = {
@@ -65,6 +67,7 @@ def unlock_prods(request):
 
 
 @login_required
+@group_required('cellule', 'technician')
 def insert(request):
     context = {
         'title': 'Raspeedi',
@@ -87,6 +90,7 @@ def insert(request):
 
 
 @login_required
+@group_required('cellule', 'technician')
 def edit(request, ref_case):
     product = get_object_or_404(Raspeedi, ref_boitier=ref_case)
     form = RaspeediForm(request.POST or None, instance=product)

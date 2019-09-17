@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 from .models import Xelon, Corvet
 from .forms import CorvetForm
 from dashboard.forms import ParaErrorList
+from utils.decorators import group_required
 # from utils.scraping import ScrapingCorvet
 
 
@@ -63,6 +64,7 @@ def ihm_detail(request, file_id):
 
 
 @login_required
+@group_required('cellule', 'technician')
 def xelon_edit(request, file_id):
     """
     View for changing Xelon data
@@ -135,6 +137,7 @@ def corvet_detail(request, vin):
 
 
 @login_required
+@group_required('cellule', 'technician')
 def corvet_insert(request):
     """
     View of Corvet insert page, visible only if authenticated
@@ -164,6 +167,7 @@ def corvet_insert(request):
 
 
 @login_required
+@group_required('cellule', 'technician')
 def export_corvet_csv(request):
     date = datetime.datetime.now()
     response = HttpResponse(content_type='text/csv')

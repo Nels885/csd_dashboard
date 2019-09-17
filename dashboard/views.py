@@ -7,6 +7,7 @@ from django.contrib.admin.models import LogEntry
 import re
 
 from utils.product_Analysis import ProductAnalysis
+from utils.decorators import group_required
 from .models import Post, CsdSoftware, User
 from .forms import SoftwareForm, ParaErrorList
 from squalaetp.models import Xelon
@@ -89,6 +90,7 @@ def soft_list(request):
 
 
 @login_required
+@group_required('cellule')
 def soft_add(request):
     """
     View for adding a software in the list
@@ -115,6 +117,7 @@ def soft_add(request):
 
 
 @login_required
+@group_required('cellule')
 def soft_edit(request, soft_id):
     """
     View for changing software data

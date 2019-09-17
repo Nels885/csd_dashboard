@@ -1,10 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext as _
-
+from django.contrib.auth.models import User, Group
 
 from squalaetp.models import Corvet
-from dashboard.models import User
 
 
 class CorvetTestCase(TestCase):
@@ -22,7 +21,9 @@ class CorvetTestCase(TestCase):
             '</VEHICULE></MESSAGE>'
         )
         self.vin = 'VF3ABCDEF12345678'
-        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user.groups.add(Group.objects.create(name="cellule"))
+        user.save()
 
     def test_corvet_table_page_is_disconnected(self):
         response = self.client.get(reverse('squalaetp:corvet'))
