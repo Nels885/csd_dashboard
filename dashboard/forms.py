@@ -1,7 +1,7 @@
 from django.forms.utils import ErrorList
 from django.forms import ModelForm, TextInput, Select, DateInput
 
-from .models import CsdSoftware
+from .models import CsdSoftware, UserProfile
 
 
 class ParaErrorList(ErrorList):
@@ -29,3 +29,9 @@ class SoftwareForm(ModelForm):
             'status': Select(attrs={'class': 'form-control'}),
             'validation_date': DateInput(attrs={'class': 'form-control'}),
         }
+
+
+class UserProfileForm(ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['image']

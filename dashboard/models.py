@@ -40,7 +40,7 @@ class UserProfile(models.Model):
             img = img.convert('RGB')
 
             # resize picture
-            img = img.resize((140,140), Image.ANTIALIAS)
+            img = img.resize((140, 140), Image.ANTIALIAS)
 
             # make readable picture
             output = BytesIO()

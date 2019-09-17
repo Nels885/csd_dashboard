@@ -8,8 +8,8 @@ import re
 
 from utils.product_Analysis import ProductAnalysis
 from utils.decorators import group_required
-from .models import Post, CsdSoftware, User
-from .forms import SoftwareForm, ParaErrorList
+from .models import Post, CsdSoftware, User, UserProfile
+from .forms import SoftwareForm, ParaErrorList, UserProfileForm
 from squalaetp.models import Xelon
 
 
@@ -73,7 +73,20 @@ def activity_log(request):
 
 @login_required
 def user_profile(request):
-    return render(request, 'registration/profile.html')
+    context = {
+        'title': 'Software',
+        'card_title': _('Software integration'),
+    }
+    if request.method == 'POST':
+        user = get_object_or_404(UserProfile, user=request.user.id)
+        form = UserProfileForm(request.POST or None, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+        context['errors'] = form.errors.items()
+    else:
+        form = UserProfileForm()
+    context['form'] = form
+    return render(request, 'registration/profile.html', context)
 
 
 @login_required
@@ -82,7 +95,7 @@ def register(request):
     context = {
         'title': 'Register',
     }
-    return render(request, 'demo/register.html', context)
+    return render(request, 'registration/register.html', context)
 
 
 def soft_list(request):
