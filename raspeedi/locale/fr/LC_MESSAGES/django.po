@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-16 15:28+0200\n"
+"POT-Creation-Date: 2019-09-17 17:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,36 +67,34 @@ msgstr "Référence MM"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: raspeedi/tests/tests_raspeedi_views.py:45
+#: raspeedi/tests/tests_raspeedi_views.py:47
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: raspeedi/views.py:22
+#: raspeedi/views.py:23
 msgid "Table Products Telematics PSA"
 msgstr "Table produits télématique PSA"
 
-#: raspeedi/views.py:40
+#: raspeedi/views.py:41
 msgid "Detail raspeedi data for the ref case of Product: "
 msgstr "Détail des données raspeedi pour le cas de référence du produit: "
 
-#: raspeedi/views.py:51
+#: raspeedi/views.py:53
 msgid "Unlocking product for programming"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: raspeedi/views.py:71
+#: raspeedi/views.py:74
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: raspeedi/views.py:80
-#, fuzzy
-#| msgid "Modification done successfully!"
+#: raspeedi/views.py:83
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: raspeedi/views.py:95
+#: raspeedi/views.py:99
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: raspeedi/views.py:99
+#: raspeedi/views.py:103
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "

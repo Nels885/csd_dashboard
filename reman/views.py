@@ -12,7 +12,7 @@ from dashboard.forms import ParaErrorList
 def new_folder(request):
     context = {
         'title': 'Reman',
-        'card_title': 'Nouveau dossier client',
+        'card_title': _('New customer folder'),
     }
     if request.method == 'POST':
         form = RaspeediForm(request.POST, error_class=ParaErrorList)

@@ -33,6 +33,21 @@ class DashboardTestCase(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertRedirects(response, self.redirectUrl)
 
+    def test_user_profile_is_disconnected(self):
+        response = self.client.get(reverse('dashboard:user-profile'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/dashboard/profile/')
+
+    def test_user_profile_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
+        response = self.client.get(reverse('dashboard:user-profile'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_register_page_is_not_staff(self):
+        response = self.client.get(reverse('dashboard:register'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/dashboard/register/')
+
     def test_soft_list_page(self):
         response = self.client.get(reverse('dashboard:soft-list'))
         self.assertEqual(response.status_code, 200)
@@ -40,6 +55,7 @@ class DashboardTestCase(TestCase):
     def test_soft_add_page_is_disconnected(self):
         response = self.client.get(reverse('dashboard:soft-add'))
         self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/dashboard/soft/add/')
 
     def test_soft_add_page_is_connected(self):
         self.client.login(username='toto', password='totopassword')

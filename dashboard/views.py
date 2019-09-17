@@ -76,6 +76,15 @@ def user_profile(request):
     return render(request, 'registration/profile.html')
 
 
+@login_required
+@group_required('admin')
+def register(request):
+    context = {
+        'title': 'Register',
+    }
+    return render(request, 'demo/register.html', context)
+
+
 def soft_list(request):
     """
     View of Software list page
@@ -191,11 +200,11 @@ def login(request):
     return render(request, 'demo/login.html', context)
 
 
-def register(request):
-    context = {
-        'title': 'Register',
-    }
-    return render(request, 'demo/register.html', context)
+# def register(request):
+#     context = {
+#         'title': 'Register',
+#     }
+#     return render(request, 'demo/register.html', context)
 
 
 def forgot_pwd(request):
