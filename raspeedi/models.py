@@ -40,6 +40,10 @@ class Raspeedi(models.Model):
     connecteur_ecran = models.IntegerField("nombre de connecteur d'écran", choices=CON_CHOICES, null=True, blank=True)
     corvets = models.ManyToManyField(Corvet, related_name='raspeedi', blank=True)
 
+    class Meta:
+        verbose_name = "Données RASPEEDI"
+        ordering = ['ref_boitier']
+
     def __str__(self):
         return "{} - {} - {} - {}".format(self.ref_boitier, self.produit, self.facade, self.type)
 

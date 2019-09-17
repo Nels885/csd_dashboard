@@ -23,6 +23,10 @@ class Xelon(models.Model):
     express = models.BooleanField('express', default=False)
     ilot = models.CharField('ilot', max_length=100, blank=True)
 
+    class Meta:
+        verbose_name = "dossier Xelon"
+        ordering = ['numero_de_dossier']
+
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
 
@@ -113,6 +117,10 @@ class Corvet(models.Model):
     electronique_84b = models.CharField('BSI DOTE - Boitier Servitude Intelligent', max_length=200, null=True)
     electronique_94b = models.CharField('BSI SOFT - Boitier Servitude Intelligent', max_length=200, null=True)
     xelons = models.ManyToManyField(Xelon, related_name='corvet', blank=True)
+
+    class Meta:
+        verbose_name = "données CORVET"
+        ordering = ['vin']
 
     def __str__(self):
         return self.vin
