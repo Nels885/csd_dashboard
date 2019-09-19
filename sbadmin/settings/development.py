@@ -40,3 +40,5 @@ XLS_DELAY_FILES = [
     os.path.join(XLS_ROOT, "RH/AnalyseRetards/DEFAUT.xls"),
     os.path.join(XLS_ROOT, "RH/AnalyseRetards/CLARION.xls"),
 ]
+
+XML_PATH = os.path.join(XLS_ROOT, 'EXTS/xml_extraction')
