@@ -19,12 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'q2sb*vqltbpi59f#l2c&mak*%h&xzv1)i^#e0_as^cmx^-9)8x'
+# SECRET_KEY = 'q2sb*vqltbpi59f#l2c&mak*%h&xzv1)i^#e0_as^cmx^-9)8x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# DEBUG = True
+#
+# ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'rest_framework',
     'rest_framework.authtoken',
 ]
@@ -54,7 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'sbadmin.urls'
@@ -81,16 +79,13 @@ WSGI_APPLICATION = 'sbadmin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'csd_atelier',
-        'USER': 'nels885',
-        'PASSWORD': 'kikoulol',
-        'HOST': '',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -154,24 +149,8 @@ LOCALE_PATHS = [
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-INTERNAL_IPS = '127.0.0.1'
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
 LOGIN_REDIRECT_URL = '/dashboard/profile/'
 LOGOUT_REDIRECT_URL = '/'
-
-# Config Clarion
-XLS_ROOT = os.path.abspath(os.path.expanduser('~') + '/Documents/CSD_DATABASE')
-
-XLS_RASPEEDI_FILE = os.path.join(XLS_ROOT, "PROG/RASPEEDI/table_boitier_PSA.xlsx")
-XLS_SQUALAETP_FILE = os.path.join(XLS_ROOT, "EXTS/squalaetp.xls")
-XLS_ATTRIBUTS_FILE = os.path.join(XLS_ROOT, "EXTS/Attributs CORVET.xlsx")
-XLS_DELAY_FILES = [
-    os.path.join(XLS_ROOT, "RH/AnalyseRetards/PSA.xls"),
-    os.path.join(XLS_ROOT, "RH/AnalyseRetards/ILOTAUTRE.xls"),
-    os.path.join(XLS_ROOT, "RH/AnalyseRetards/LaboQual.xls"),
-    os.path.join(XLS_ROOT, "RH/AnalyseRetards/DEFAUT.xls"),
-    os.path.join(XLS_ROOT, "RH/AnalyseRetards/CLARION.xls"),
-]

@@ -6,12 +6,12 @@ verify_ssl = true
 [dev-packages]
 flake8 = "*"
 coverage = "*"
+django-debug-toolbar = "*"
 
 [packages]
 django = ">=2.2.2"
 psycopg2 = "*"
 xlrd = "*"
-django-debug-toolbar = "*"
 pandas = "*"
 gunicorn = "*"
 xlwt = "*"
