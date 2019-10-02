@@ -1,0 +1,26 @@
+{% extends 'dashboard/forms_format.html' %}
+
+{% load i18n %}
+
+{% block form_content %}
+
+    <div class="p-5">
+        <form method="post" action= "{% url 'dashboard:config-edit' %}">
+
+            {% csrf_token %}
+
+            <div class="form-group row">
+                <label for="config">Example textarea</label>
+                    <textarea class="form-control" name="config" rows="{{ nb_lines }}">{{ config|safe }}</textarea>
+            </div>
+
+            <button type="submit" name="btn_soft_add"
+                    class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-block">
+                {% trans "Submit" %}
+            </button>
+
+        </form>
+
+    </div>
+
+{% endblock %}

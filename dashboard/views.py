@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
+from django.conf import settings
 
 import re
 
@@ -160,6 +161,29 @@ def soft_edit(request, soft_id):
         'form': form,
     }
     return render(request, 'dashboard/soft_edit.html', context)
+
+
+@login_required
+@group_required('cellule')
+def config_edit(request):
+
+    if request.method == 'POST':
+        query = request.POST.get('config')
+        with open(settings.CONF_FILE, 'w+') as file:
+            file.write(query)
+
+    with open(settings.CONF_FILE, 'r') as file:
+        conf = file.read()
+    nb_lines = len(open(settings.CONF_FILE, 'r').readlines()) + 1
+
+    context = {
+        'title': 'Configuration',
+        'card_title': 'Modification du fichier "utils/config.py"',
+        'config': conf,
+        'nb_lines': nb_lines,
+    }
+
+    return render(request, 'dashboard/config.html', context)
 
 
 # Demo views not use for the project

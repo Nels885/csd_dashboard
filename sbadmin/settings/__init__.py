@@ -154,3 +154,5 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
 LOGIN_REDIRECT_URL = '/dashboard/profile/'
 LOGOUT_REDIRECT_URL = '/'
+
+CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/config.py')
