@@ -4,7 +4,7 @@ from django.conf import settings
 
 try:
     from . import current as config
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     shutil.copyfile(settings.CONF_DEFAULT_FILE, settings.CONF_FILE)
     from . import current as config
 
