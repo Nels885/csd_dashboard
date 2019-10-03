@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import shutil
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -158,3 +159,6 @@ LOGOUT_REDIRECT_URL = '/'
 # Configuration files for Clarion
 CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/current.py')
 CONF_DEFAULT_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/default.py')
+
+if not os.path.exists(CONF_FILE):
+    shutil.copyfile(CONF_DEFAULT_FILE, CONF_FILE)

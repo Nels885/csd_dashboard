@@ -1,12 +1,6 @@
 import os
-import shutil
-from django.conf import settings
 
-try:
-    from . import current as config
-except (ImportError, ModuleNotFoundError):
-    shutil.copyfile(settings.CONF_DEFAULT_FILE, settings.CONF_FILE)
-    from . import current as config
+from . import current as config
 
 
 XLS_ROOT = os.path.abspath(os.path.expanduser(config.base_dir[0]) + config.base_dir[1:])
