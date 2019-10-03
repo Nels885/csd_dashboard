@@ -178,7 +178,7 @@ def config_edit(request):
 
     context = {
         'title': 'Configuration',
-        'card_title': 'Modification du fichier "utils/config.py"',
+        'card_title': 'Modification du fichier de configuration',
         'config': conf,
         'nb_lines': nb_lines,
     }

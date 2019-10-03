@@ -155,4 +155,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 LOGIN_REDIRECT_URL = '/dashboard/profile/'
 LOGOUT_REDIRECT_URL = '/'
 
-CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/config.py')
+# Configuration files for Clarion
+CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/current.py')
+CONF_DEFAULT_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/default.py')

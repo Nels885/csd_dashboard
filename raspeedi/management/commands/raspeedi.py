@@ -2,9 +2,9 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db.utils import IntegrityError
 from django.db import connection
-from django.conf import settings
 
 from raspeedi.models import Raspeedi
+from utils.conf import XLS_RASPEEDI_FILE
 
 from ._excel_raspeedi import ExcelRaspeedi
 
@@ -40,7 +40,7 @@ class Command(BaseCommand):
             if options['filename'] is not None:
                 excel = ExcelRaspeedi(options['filename'])
             else:
-                excel = ExcelRaspeedi(settings.XLS_RASPEEDI_FILE)
+                excel = ExcelRaspeedi(XLS_RASPEEDI_FILE)
             self.stdout.write("Nombre de ligne dans Excel:    {}".format(excel.nrows))
             self.stdout.write("Noms des colonnes:             {}".format(excel.columns))
 

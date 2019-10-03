@@ -4,9 +4,9 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db.utils import IntegrityError
 from django.db import connection
-from django.conf import settings
 
 from squalaetp.models import Corvet, CorvetBackup
+from utils.conf import XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE
 
 from ._excel_squalaetp import ExcelSqualaetp
 
@@ -54,11 +54,11 @@ class Command(BaseCommand):
             if options['filename'] is not None:
                 excel = ExcelSqualaetp(options['filename'])
             else:
-                excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+                excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
-            self._insert(Corvet, excel.corvet_table(settings.XLS_ATTRIBUTS_FILE), "vin")
+            self._insert(Corvet, excel.corvet_table(XLS_ATTRIBUTS_FILE), "vin")
 
         elif options['import_csv']:
             if options['filename'] is not None:
@@ -70,7 +70,7 @@ class Command(BaseCommand):
             if options['filename'] is not None:
                 excel = ExcelSqualaetp(options['filename'])
             else:
-                excel = ExcelSqualaetp(settings.XLS_SQUALAETP_FILE)
+                excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
             self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
 
