@@ -1,6 +1,6 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function () {
-    $('#raspTable').DataTable({
+    $('#remanTable').DataTable({
         pagingType: "full_numbers",
         order: [[0, "asc"]],
         responsive: {

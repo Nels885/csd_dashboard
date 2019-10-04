@@ -4,9 +4,13 @@ from dashboard.models import UserProfile
 
 
 class Reman(models.Model):
+    MODEL_CHOICES = [
+        ('EDC15C2', 'EDC15C2'),
+        ('EDC17', 'EDC17'),
+    ]
     batch_number = models.CharField("numéro de lot", max_length=50)
     identify_number = models.CharField("numéro d'identification", max_length=50)
-    product_model = models.CharField("modèle produit", max_length=50)
+    product_model = models.CharField("modèle produit", max_length=50, choices=MODEL_CHOICES)
     product_reference = models.CharField("référence produit", max_length=50)
     serial_number = models.CharField("numéro de série", max_length=100, blank=True)
     remark = models.CharField("remarques", max_length=1000, blank=True)

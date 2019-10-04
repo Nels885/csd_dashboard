@@ -2,10 +2,22 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
-from raspeedi.models import Raspeedi
-
-from raspeedi.forms import RaspeediForm
+from .models import Reman
+from .forms import AddRemanForm
 from dashboard.forms import ParaErrorList
+
+
+def reman_table(request):
+    """
+    View of Xelon table page
+    """
+    files = Reman.objects.all()
+    context = {
+        'title': 'Reman',
+        'table_title': 'Dossiers Reman',
+        'files': files
+    }
+    return render(request, 'reman/reman_table.html', context)
 
 
 @login_required
@@ -15,17 +27,15 @@ def new_folder(request):
         'card_title': _('New customer folder'),
     }
     if request.method == 'POST':
-        form = RaspeediForm(request.POST, error_class=ParaErrorList)
+        form = AddRemanForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
-            ref_case = form.cleaned_data['ref_boitier']
-            ref = Raspeedi.objects.filter(ref_boitier=ref_case)
-            if not ref.exists():
-                Raspeedi.objects.create(**form.cleaned_data)
-                context = {'title': _('Added successfully!')}
-                return render(request, 'dashboard/done.html', context)
+            reman = form.save(commit=False)
+            reman.user_id = request.user.id
+            reman.save()
+            context = {'title': _('Added successfully!')}
+            return render(request, 'dashboard/done.html', context)
         context['errors'] = form.errors.items()
     else:
-        form = RaspeediForm()
-        form.fields['ref_boitier'].initial = "RE000001"
+        form = AddRemanForm()
     context['form'] = form
     return render(request, 'reman/new_folder.html', context)
