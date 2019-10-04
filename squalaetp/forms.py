@@ -40,7 +40,7 @@ class CorvetForm(forms.Form):
             attrs={
                 'class': 'form-control',
                 'placeholder': _("Data in XML format available on the RepairNAV site during CORVET extraction..."),
-                'rows': 15,
+                'rows': 10,
             }
         ),
         required=True
