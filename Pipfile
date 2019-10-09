@@ -9,7 +9,7 @@ coverage = "*"
 django-debug-toolbar = "*"
 
 [packages]
-django = ">=2.2.2"
+django = ">=2.2.6"
 psycopg2 = "*"
 xlrd = "*"
 pandas = "*"
@@ -19,7 +19,7 @@ djangorestframework = "*"
 pillow = "*"
 selenium = "*"
 django-model-utils = "*"
-sentry-sdk = "==0.12.1"
+sentry-sdk = "==0.12.3"
 
 [requires]
 python_version = ">=3.5"
