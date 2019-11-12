@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
+from django.core.exceptions import FieldDoesNotExist
 from django.db.utils import IntegrityError, DataError
 from django.db import connection
 
@@ -104,6 +105,8 @@ class Command(BaseCommand):
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:
                     self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
+                except FieldDoesNotExist as err:
+                    self.stdout.write("FieldDoesNotExist dossier {} : {}".format(row["numero_de_dossier"], err))
         nb_prod_after = model.objects.count()
         self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("[DELAY] Nombre de produits mis à jour : {}".format(nb_prod_update))
