@@ -106,7 +106,7 @@ class Command(BaseCommand):
                 except DataError as err:
                     self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
                 except FieldDoesNotExist as err:
-                    self.stdout.write("FieldDoesNotExist dossier {} : {}".format(row["numero_de_dossier"], err))
+                    self.stdout.write("FieldDoesNotExist row {} : {}".format(row, err))
         nb_prod_after = model.objects.count()
         self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("[DELAY] Nombre de produits mis à jour : {}".format(nb_prod_update))
