@@ -116,6 +116,10 @@ class Corvet(models.Model):
     electronique_64b = models.CharField('BSI FOURN.CODE - Boitier Servitude Intelligent', max_length=200, null=True)
     electronique_84b = models.CharField('BSI DOTE - Boitier Servitude Intelligent', max_length=200, null=True)
     electronique_94b = models.CharField('BSI SOFT - Boitier Servitude Intelligent', max_length=200, null=True)
+    electronique_16p = models.CharField('HDC HARD - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
+    electronique_46p = models.CharField('HDC FOURN.NO.SERIE - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
+    electronique_56p = models.CharField('HDC FOURN.DATE.FAB - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
+    electronique_66p = models.CharField('HDC FOURN.CODE - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
     xelons = models.ManyToManyField(Xelon, related_name='corvet', blank=True)
 
     class Meta:
