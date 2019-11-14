@@ -11,6 +11,8 @@ from .forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.decorators import group_required
 from utils.xml_export_file import xml_export_file
+
+
 # from utils.scraping import ScrapingCorvet
 
 
@@ -18,18 +20,8 @@ def xelon_table(request):
     """
     View of Xelon table page
     """
-    files_list = Xelon.objects.filter(date_retour__isnull=False).order_by('numero_de_dossier')
-
-    paginator = Paginator(files_list, 50)
-    page = request.GET.get('page')
-    try:
-        files = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        files = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        files = paginator.page(paginator.num_pages)
+    files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
+        'numero_de_dossier')
 
     context = {
         'title': 'Xelon',
@@ -207,7 +199,7 @@ def export_corvet_csv(request):
          'dti', 'dun', 'dwl', 'dwt', 'dxj', 'dyb', 'dym', 'dyr', 'dzv', 'gg8', '14f', '14j', '14k', '14l', '14r', '14x',
          '19z', '44f', '44l', '44x', '54f', '54k', '54l', '84f', '84l', '84x', '94f', '94l', '94x', 'dat', 'dcx', '19h',
          '49h', '64f', '64x', '69h', '89h', '99h', '14a', '34a', '44a', '54a', '64a', '84a', '94a', 'p4a', 'moteur',
-         'transmission', '10', '14b', '20', '44b', '54b', '64b', '84b', '94b'])
+         'transmission', '10', '14b', '20', '44b', '54b', '64b', '84b', '94b', '16p', '46p', '56p', '66p'])
 
     corvets = Corvet.objects.all().values_list()
     for corvet in corvets:
