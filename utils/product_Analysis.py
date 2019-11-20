@@ -1,4 +1,4 @@
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Corvet
 
 
 class ProductAnalysis:
@@ -62,3 +62,11 @@ class ProductAnalysis:
         labels_nb = sum(prod_nb)
         prod_nb.append(pending_prod.count() - labels_nb)
         return self.LABELS, prod_nb
+
+    def corvet_count(self):
+        """
+        Function to count the number of Corvet data
+        :return:
+            number of Corvet data
+        """
+        return Corvet.objects.all().count()
