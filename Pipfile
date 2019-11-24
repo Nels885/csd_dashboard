@@ -16,10 +16,10 @@ pandas = "*"
 gunicorn = "*"
 xlwt = "*"
 djangorestframework = "*"
-pillow = "*"
+pillow = ">=6.2.0"
 selenium = "*"
 django-model-utils = "*"
-sentry-sdk = "==0.12.3"
+sentry-sdk = "==0.13.2"
 
 [requires]
 python_version = ">=3.5"

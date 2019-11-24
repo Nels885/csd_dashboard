@@ -29,10 +29,10 @@
                     <span>{% trans "Dashboard" %}</span></a>
             </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
             {% if user.is_authenticated is not True %}
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
 
                 <div class="sidebar-heading">
                     Interface
@@ -45,15 +45,9 @@
                         <span>{% trans "Login" %}</span></a>
                 </li>
 
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
             {% endif %}
 
             {% include 'dashboard/nav_csd_atelier.html' %}
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
 
             {% include 'dashboard/nav_csd_admin.html' %}
 
