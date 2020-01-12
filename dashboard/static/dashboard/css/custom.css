@@ -1,3 +1,8 @@
+@font-face {
+    font-family: fira-code;
+    src: url("fira-code/FiraCode-Regular.otf") format("otf");
+}
+
 .fb-page,
 .fb-page span,
 .fb-page span iframe[style] {
@@ -5,3 +10,9 @@
 }
 
 div.container { max-width: 1200px }
+
+textarea.form-cfg, textarea.form-cfg:focus {
+    font-family: fira-code, sans-serif;
+    background: #2B2B2B;
+    font-size: 15px;
+}

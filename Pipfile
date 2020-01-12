@@ -6,18 +6,20 @@ verify_ssl = true
 [dev-packages]
 flake8 = "*"
 coverage = "*"
-selenium = "*"
+django-debug-toolbar = "*"
 
 [packages]
-django = ">=2.2.2"
+django = ">=2.2.6"
 psycopg2 = "*"
 xlrd = "*"
-django-debug-toolbar = "*"
 pandas = "*"
 gunicorn = "*"
 xlwt = "*"
 djangorestframework = "*"
-pillow = "*"
+pillow = ">=6.2.0"
+selenium = "*"
+django-model-utils = "*"
+sentry-sdk = "==0.13.2"
 
 [requires]
 python_version = ">=3.5"

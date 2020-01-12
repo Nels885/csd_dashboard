@@ -7,3 +7,5 @@ sbadmin/settings/production.py
 sbadmin/staticfiles/
 geckodriver.log
 media/profile_pics/
+utils/conf/current.py
+Pipfile.lock

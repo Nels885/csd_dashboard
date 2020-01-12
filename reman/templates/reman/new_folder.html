@@ -1,0 +1,14 @@
+{% extends 'dashboard/forms_format.html' %}
+
+{% block form_content %}
+
+    <div class="p-2">
+        <form method="post" action="{% url 'reman:new-folder' %}">
+
+            {% include 'reman/create_form.html' %}
+
+        </form>
+
+    </div>
+
+{% endblock %}

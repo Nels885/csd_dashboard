@@ -52,6 +52,16 @@ $ cd csd_dashboard
 $ pipenv install --dev
 ```
 
+### Environment variables
+
+two variables must be created for the recovery of Corvet data from the
+website, as below, and added to the file **/etc/environment/**
+
+```bash
+export USER_CORVET="<username>"
+export PWD_CORVET="<password>"
+```
+
 ### Starting the server
 
 To launch the application, simply execute the following commands

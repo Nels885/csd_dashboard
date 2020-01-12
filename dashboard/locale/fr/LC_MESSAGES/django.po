@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-09 17:53+0200\n"
+"POT-Creation-Date: 2019-09-17 17:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,13 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:21
-#: dashboard/views.py:59
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:22
+#: dashboard/views.py:67
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: dashboard/templates/dashboard/base.html:45
-#: dashboard/templates/dashboard/top_bar.html:143
+#: dashboard/templates/dashboard/top_bar.html:153
 #: dashboard/templates/registration/login.html:58
 msgid "Login"
 msgstr "Connexion"
@@ -49,13 +49,14 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal_logout.html:19
-#: dashboard/templates/dashboard/top_bar.html:127
-#: dashboard/templates/registration/profile.html:61
+#: dashboard/templates/dashboard/top_bar.html:137
+#: dashboard/templates/registration/profile.html:62
 msgid "Logout"
 msgstr "Déconnexion"
 
 #: dashboard/templates/dashboard/nav_csd_atelier.html:25
-#: dashboard/templates/dashboard/nav_csd_atelier.html:89
+#: dashboard/templates/dashboard/nav_csd_atelier.html:50
+#: dashboard/templates/dashboard/nav_csd_atelier.html:115
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -67,24 +68,40 @@ msgstr "Tableau Corvet"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:50
-#: dashboard/templates/dashboard/nav_csd_atelier.html:96 dashboard/views.py:78
+#: dashboard/templates/dashboard/nav_csd_atelier.html:53
+msgid "Create file"
+msgstr "Création dossier"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:54
+msgid "Current folder"
+msgstr "Dossiers en cours"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:75
+#: dashboard/templates/dashboard/nav_csd_atelier.html:129 dashboard/views.py:95
 msgid "Software list"
 msgstr "Liste Logiciels"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:53
+#: dashboard/templates/dashboard/nav_csd_atelier.html:78
 msgid "Software Add"
 msgstr "Ajout Logiciel"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:74
+#: dashboard/templates/dashboard/nav_csd_atelier.html:99
+msgid "Unlock VIN"
+msgstr "Déverrouillage VIN"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:100
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:77
+#: dashboard/templates/dashboard/nav_csd_atelier.html:103
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: dashboard/templates/dashboard/nav_csd_atelier.html:103
+#: dashboard/templates/dashboard/nav_csd_atelier.html:122
+msgid "Reman files"
+msgstr "Dossiers Reman"
+
+#: dashboard/templates/dashboard/nav_csd_atelier.html:136
 msgid "Raspeedi table"
 msgstr "Tableau Raspeedi"
 
@@ -108,37 +125,40 @@ msgstr "Date de validation"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: dashboard/templates/dashboard/top_bar.html:18
+#: dashboard/templates/dashboard/top_bar.html:24
 msgid "Search Xelon or VIN..."
 msgstr "Rechercher Xelon ou VIN..."
 
-#: dashboard/templates/dashboard/top_bar.html:76
+#: dashboard/templates/dashboard/top_bar.html:82
 msgid "English"
 msgstr "Anglais"
 
-#: dashboard/templates/dashboard/top_bar.html:85
+#: dashboard/templates/dashboard/top_bar.html:91
 msgid "French"
 msgstr "Français"
 
-#: dashboard/templates/dashboard/top_bar.html:108
+#: dashboard/templates/dashboard/top_bar.html:114
 msgid "Profile"
 msgstr "Mon Profil"
 
-#: dashboard/templates/dashboard/top_bar.html:112
+#: dashboard/templates/dashboard/top_bar.html:118
 #: dashboard/templates/registration/profile.html:48
-#, fuzzy
 msgid "Change password"
-msgstr "Mot de passe"
+msgstr "Changer le mot de passe"
 
-#: dashboard/templates/dashboard/top_bar.html:117
+#: dashboard/templates/dashboard/top_bar.html:123
 msgid "Administration"
 msgstr "Administration"
 
-#: dashboard/templates/dashboard/top_bar.html:122
+#: dashboard/templates/dashboard/top_bar.html:127
+msgid "New user"
+msgstr "Nouveau utilisateur"
+
+#: dashboard/templates/dashboard/top_bar.html:132
 msgid "Activity Log"
 msgstr "Journal d'activité"
 
-#: dashboard/templates/dashboard/top_bar.html:134
+#: dashboard/templates/dashboard/top_bar.html:144
 msgid "Guest"
 msgstr "Invité"
 
@@ -173,12 +193,10 @@ msgid "Create an Account!"
 msgstr "Création d'un compte !"
 
 #: dashboard/templates/registration/password_change_form.html:31
-#, fuzzy
 msgid "Old password"
 msgstr "Ancien mot de passe"
 
 #: dashboard/templates/registration/password_change_form.html:36
-#, fuzzy
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
@@ -222,32 +240,28 @@ msgstr "Prénon"
 msgid "E-mail address"
 msgstr "Adresse E-mail"
 
-#: dashboard/views.py:38
+#: dashboard/views.py:42
 #, python-brace-format
 msgid "Detail data for the Xelon file: {file}"
 msgstr "Données détaillées pour le dossier Xelon : {file}"
 
-#: dashboard/views.py:60
-#, fuzzy
-#| msgid "Activity Log"
+#: dashboard/views.py:68
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:91
+#: dashboard/views.py:109
 msgid "Software integration"
 msgstr "Intégration logiciel"
 
-#: dashboard/views.py:101
-#, fuzzy
+#: dashboard/views.py:119
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: dashboard/views.py:121
-#, fuzzy
+#: dashboard/views.py:140
 msgid "Modification done successfully!"
-msgstr "Ajout réalisé avec succès !"
+msgstr "Modification effectuée avec succès !"
 
-#: dashboard/views.py:125
+#: dashboard/views.py:144
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Modification des données pour le Software du JIG: {jig}"

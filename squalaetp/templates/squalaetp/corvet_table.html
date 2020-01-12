@@ -4,6 +4,11 @@
 
 {% block table_content %}
 
+    <div class="text-center">
+        <a class="col-sm-2 align-self-center btn btn-primary btn-user"
+           href="{% url 'squalaetp:export-corvet-csv' %}">Export CSV</a>
+    </div>
+
     <table class="table table-bordered" id="corvetTable" width="100%" cellspacing="0">
         <thead>
         <tr>
@@ -49,6 +54,25 @@
 
         </tbody>
     </table>
+
+    <br>
+    <div class="pagination">
+        <span class="step-links">
+            {% if corvets.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ corvets.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ corvets.number }} of {{ corvets.paginator.num_pages }}.
+            </span>
+
+            {% if files.has_next %}
+                <a href="?page={{ corvets.next_page_number }}">next</a>
+                <a href="?page={{ corvets.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 
 {% endblock %}
 

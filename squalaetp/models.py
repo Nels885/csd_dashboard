@@ -3,24 +3,29 @@ from django.db import models
 
 class Xelon(models.Model):
     numero_de_dossier = models.CharField('numéro de dossier', max_length=10, unique=True)
-    vin = models.CharField('V.I.N.', max_length=17)
-    modele_produit = models.CharField('modèle produit', max_length=50)
-    modele_vehicule = models.CharField('modèle véhicule', max_length=50)
-    famille_client = models.CharField('famille Client', max_length=5000, default="")
-    famille_produit = models.CharField('famille produit', max_length=100, default="")
-    date_retour = models.DateField('date retour', null=True)
-    delai_au_en_jours_ouvres = models.IntegerField('délai en jours ouvrés', null=True)
-    delai_au_en_jours_calendaires = models.IntegerField('délai en jours calendaires', null=True)
+    vin = models.CharField('V.I.N.', max_length=17, blank=True)
+    modele_produit = models.CharField('modèle produit', max_length=50, blank=True)
+    modele_vehicule = models.CharField('modèle véhicule', max_length=50, blank=True)
+    famille_client = models.CharField('famille Client', max_length=5000, blank=True)
+    famille_produit = models.CharField('famille produit', max_length=100, blank=True)
+    date_retour = models.DateField('date retour', null=True, blank=True)
+    delai_au_en_jours_ouvres = models.IntegerField('délai en jours ouvrés', null=True, blank=True)
+    delai_au_en_jours_calendaires = models.IntegerField('délai en jours calendaires', null=True, blank=True)
     date_de_cloture = models.DateTimeField('date de clôture', null=True, blank=True)
-    type_de_cloture = models.CharField('type de clôture', max_length=50, default="")
-    lieu_de_stockage = models.CharField('lieu de stockage', max_length=50, default="")
-    nom_technicien = models.CharField('nom technicien', max_length=50, default="")
-    commentaire_sav_admin = models.CharField('commentaire SAV Admin', max_length=5000, default="")
-    commentaire_de_la_fr = models.CharField('commentaire de la FR', max_length=5000, default="")
-    commentaire_action = models.CharField('commentaire action', max_length=5000, default="")
-    libelle_de_la_fiche_cas = models.CharField('libellé de la fiche cas', max_length=5000, default="")
+    type_de_cloture = models.CharField('type de clôture', max_length=50, blank=True)
+    lieu_de_stockage = models.CharField('lieu de stockage', max_length=50, blank=True)
+    nom_technicien = models.CharField('nom technicien', max_length=50, blank=True)
+    commentaire_sav_admin = models.CharField('commentaire SAV Admin', max_length=5000, blank=True)
+    commentaire_de_la_fr = models.CharField('commentaire de la FR', max_length=5000, blank=True)
+    commentaire_action = models.CharField('commentaire action', max_length=5000, blank=True)
+    libelle_de_la_fiche_cas = models.CharField('libellé de la fiche cas', max_length=5000, blank=True)
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
+    ilot = models.CharField('ilot', max_length=100, blank=True)
+
+    class Meta:
+        verbose_name = "dossier Xelon"
+        ordering = ['numero_de_dossier']
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
@@ -36,8 +41,8 @@ class CorvetBackup(models.Model):
 
 class Corvet(models.Model):
     vin = models.CharField('V.I.N.', max_length=17, primary_key=True)
-    donnee_date_debut_garantie = models.CharField('Date d?but garantie', max_length=200, null=True)
-    donnee_date_entree_montage = models.CharField('Date entr?e montage', max_length=200, null=True)
+    donnee_date_debut_garantie = models.CharField('Date début garantie', max_length=200, null=True)
+    donnee_date_entree_montage = models.CharField('Date entrée montage', max_length=200, null=True)
     donnee_ligne_de_produit = models.CharField('LIGNE_DE_PRODUIT', max_length=200, null=True)
     donnee_marque_commerciale = models.CharField('MARQUE_COMMERCIALE', max_length=200, null=True)
     donnee_silhouette = models.CharField('SILHOUETTE', max_length=200, null=True)
@@ -111,7 +116,15 @@ class Corvet(models.Model):
     electronique_64b = models.CharField('BSI FOURN.CODE - Boitier Servitude Intelligent', max_length=200, null=True)
     electronique_84b = models.CharField('BSI DOTE - Boitier Servitude Intelligent', max_length=200, null=True)
     electronique_94b = models.CharField('BSI SOFT - Boitier Servitude Intelligent', max_length=200, null=True)
+    electronique_16p = models.CharField('HDC HARD - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
+    electronique_46p = models.CharField('HDC FOURN.NO.SERIE - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
+    electronique_56p = models.CharField('HDC FOURN.DATE.FAB - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
+    electronique_66p = models.CharField('HDC FOURN.CODE - Haut de Colonne de Direction (COM200x)', max_length=200, blank=True)
     xelons = models.ManyToManyField(Xelon, related_name='corvet', blank=True)
+
+    class Meta:
+        verbose_name = "données CORVET"
+        ordering = ['vin']
 
     def __str__(self):
         return self.vin

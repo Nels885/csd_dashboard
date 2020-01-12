@@ -7,6 +7,7 @@ app_name = 'raspeedi'
 urlpatterns = [
     path('table/', views.table, name='table'),
     path('insert/', views.insert, name='insert'),
+    path('unlock/', views.unlock_prods, name='unlock-prods'),
     path('<int:ref_case>/edit/', views.edit, name='edit'),
     path('<int:ref_case>/detail/', views.detail, name="detail"),
 ]

@@ -13,6 +13,7 @@ urlpatterns = [
     path('soft/', views.soft_list, name="soft-list"),
     path('soft/add/', views.soft_add, name="soft-add"),
     path('soft/<int:soft_id>/edit/', views.soft_edit, name="soft-edit"),
+    path('config/edit/', views.config_edit, name="config-edit"),
     path('buttons/', views.buttons, name='buttons'),
     path('cards/', views.cards, name='cards'),
     path('colors/', views.colors, name='colors'),

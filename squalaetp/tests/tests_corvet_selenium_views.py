@@ -1,10 +1,10 @@
 from django.test import LiveServerTestCase
+from django.contrib.auth.models import User, Group
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
 from squalaetp.models import Corvet
-from dashboard.models import User
 
 
 class CorvetSeleniumTestCase(LiveServerTestCase):
@@ -15,7 +15,9 @@ class CorvetSeleniumTestCase(LiveServerTestCase):
         self.driver = webdriver.Firefox(firefox_options=options)
         self.driver.implicitly_wait(30)
         super(CorvetSeleniumTestCase, self).setUp()
-        User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user.groups.add(Group.objects.create(name="cellule"))
+        user.save()
         self.data = (
             '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
             '<VEHICULE Existe="O">'

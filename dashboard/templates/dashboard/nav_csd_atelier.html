@@ -1,106 +1,151 @@
 {% load i18n %}
+{% load user_tags %}
 
-<!-- Heading -->
-<div class="sidebar-heading">
-    CSD Atelier
-</div>
+{% if user.is_authenticated and user|has_group:'operator' or user.is_superuser %}
 
-{% if user.is_authenticated %}
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        CSD Atelier
+    </div>
 
     <!-- Nav Item - Xelon Settings Menu -->
     {% with name="Xelon" icon="fa-table" %}
-        <li class="nav-item
-                {% for group in user.groups.all %}{% if group.name == 'squalaetp' %}active{% endif %}{% endfor %}">
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                aria-expanded="true" aria-controls="collapse{{ name }}">
                 <i class="fas fa-fw {{ icon }}"></i>
                 <span>{{ name }}</span>
             </a>
-            <div id="collapse{{ name }}" class="collapse
-                    {% for group in user.groups.all %}{% if group.name == 'squalaetp' %}show{% endif %}{% endfor %}"
-                 aria-labelledby="heading{{ name }}"
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>
                     <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
                     <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Edition :</h6>
-                    <a class="collapse-item" href="{% url 'squalaetp:corvet-insert' %}">{% trans "Add Corvet" %}</a>
+                    {% if user|has_group:'technician' %}
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item"
+                           href="{% url 'squalaetp:corvet-insert' %}">{% trans "Add Corvet" %}</a>
+                    {% endif %}
                 </div>
             </div>
         </li>
     {% endwith %}
+
+    {% if user|has_group:'reman' %}
+
+        <!-- Nav Item - Reman Settings Menu -->
+        {% with name="Reman" icon="fa-table" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>{{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Informations :</h6>
+                        <a class="collapse-item"
+                           href="{% url 'reman:reman-table' %}">{% trans "Customer files" %}</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item" href="{% url 'reman:new-folder' %}">{% trans "Create file" %}</a>
+                        <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+
+    {% endif %}
 
     <!-- Nav Item - Software Settings Menu -->
     {% with name="Software" icon="fa-table" %}
-        <li class="nav-item
-                {% for group in user.groups.all %}{% if group.name == 'software' %}active{% endif %}{% endfor %}">
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                aria-expanded="true" aria-controls="collapse{{ name }}">
                 <i class="fas fa-fw {{ icon }}"></i>
                 <span>{{ name }}</span>
             </a>
-            <div id="collapse{{ name }}" class="collapse
-                    {% for group in user.groups.all %}{% if group.name == 'software' %}show{% endif %}{% endfor %}"
-                 aria-labelledby="heading{{ name }}"
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>
-                    <a class="collapse-item" href="{% url 'dashboard:soft-list' %}">{% trans "Software list" %}</a>
+                    <a class="collapse-item"
+                       href="{% url 'dashboard:soft-list' %}">{% trans "Software list" %}</a>
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Edition :</h6>
-                    <a class="collapse-item" href="{% url 'dashboard:soft-add' %}">{% trans "Software Add" %}</a>
+                    {% if user|has_group:'cellule' %}
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item"
+                           href="{% url 'dashboard:soft-add' %}">{% trans "Software Add" %}</a>
+                    {% endif %}
                 </div>
             </div>
         </li>
     {% endwith %}
+
 
     <!-- Nav Item - Raspeedi Settings Menu -->
     {% with name="Raspeedi" icon="fa-table" %}
-        <li class="nav-item
-                {% for group in user.groups.all %}{% if group.name == 'raspeedi' %}active{% endif %}{% endfor %}">
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                aria-expanded="true" aria-controls="collapse{{ name }}">
                 <i class="fas fa-fw {{ icon }}"></i>
                 <span>{{ name }}</span>
             </a>
-            <div id="collapse{{ name }}" class="collapse
-                    {% for group in user.groups.all %}{% if group.name == 'raspeedi' %}show{% endif %}{% endfor %}"
-                 aria-labelledby="heading{{ name }}"
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>
-                    <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
-                    <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Edition :</h6>
-                    <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
+                    <a class="collapse-item" href="{% url 'raspeedi:unlock-prods' %}">{% trans "Unlock VIN" %}</a>
+
+                    {% if user|has_group:'technician' %}
+
+                        <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
+
+                    {% endif %}
+
                 </div>
             </div>
         </li>
     {% endwith %}
 
-{% else %}
+    {#    {% else %}#}
+    {##}
+    {#        <!-- Nav Item - Dossiers clients -->#}
+    {#        <li class="nav-item">#}
+    {#            <a class="nav-link" href="{% url 'squalaetp:xelon' %}">#}
+    {#                <i class="fas fa-fw fa-table"></i>#}
+    {#                <span>{% trans "Customer files" %}</span></a>#}
+    {#        </li>#}
+    {##}
+    {#        <!-- Nav Item - Dossiers Reman -->#}
+    {#        <li class="nav-item">#}
+    {#            <a class="nav-link" href="{% url 'squalaetp:xelon' %}">#}
+    {#                <i class="fas fa-fw fa-table"></i>#}
+    {#                <span>{% trans "Reman files" %}</span></a>#}
+    {#        </li>#}
+    {##}
+    {#        <!-- Nav Item - tableau Software -->#}
+    {#        <li class="nav-item">#}
+    {#            <a class="nav-link" href="{% url 'dashboard:soft-list' %}">#}
+    {#                <i class="fas fa-fw fa-table"></i>#}
+    {#                <span>{% trans "Software list" %}</span></a>#}
+    {#        </li>#}
+    {##}
+    {#        <!-- Nav Item - tableau Raspeedi -->#}
+    {#        <li class="nav-item">#}
+    {#            <a class="nav-link" href="{% url 'raspeedi:table' %}">#}
+    {#                <i class="fas fa-fw fa-table"></i>#}
+    {#                <span>{% trans "Raspeedi table" %}</span></a>#}
+    {#        </li>#}
 
-    <!-- Nav Item - Dossiers clients -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'squalaetp:xelon' %}">
-            <i class="fas fa-fw fa-table"></i>
-            <span>{% trans "Customer files" %}</span></a>
-    </li>
-
-    <!-- Nav Item - tableau Software -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'dashboard:soft-list' %}">
-            <i class="fas fa-fw fa-table"></i>
-            <span>{% trans "Software list" %}</span></a>
-    </li>
-
-    <!-- Nav Item - tableau Raspeedi -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'raspeedi:table' %}">
-            <i class="fas fa-fw fa-table"></i>
-            <span>{% trans "Raspeedi table" %}</span></a>
-    </li>
 
 {% endif %}

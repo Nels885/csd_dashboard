@@ -1,0 +1,65 @@
+{% extends 'dashboard/datatables_format.html' %}
+
+{% load i18n %}
+
+{% load static %}
+
+{% block table_content %}
+
+    <form class="form-inline" method="post" action="{% url 'raspeedi:unlock-prods' %}">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.unlock.id_for_label }}" class="mb-2 mr-sm-4">Numéro de dossier</label>
+
+            {{ form.unlock }}
+        </div>
+
+        {% if errors %}
+            {% for key, error in errors %}
+                {% autoescape off %}
+                    {{ error }}
+                {% endautoescape %}
+            {% endfor %}
+        {% endif %}
+
+        <button type="submit" name="btn_unlock_prods" class="btn btn-primary mb-2">
+            {% trans "Submit" %}
+        </button>
+
+    </form>
+
+    <hr>
+
+    <table class="table table-bordered" id="unlockTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Numéro de dossier</th>
+            <th>Utilisateur</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for prod in products %}
+
+            <tr>
+                <td>{{ prod.unlock.numero_de_dossier }}</td>
+                <td>{{ prod.user }}</td>
+                <td>{{ prod.created_at }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'dashboard/js/datatables.js' %}"></script>
+
+{% endblock %}
