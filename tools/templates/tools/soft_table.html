@@ -30,7 +30,7 @@
                 <td>{{ soft.link_download }}</td>
                 <td>{{ soft.status }}</td>
                 <td>{{ soft.validation_date|default:"--" }}</td>
-                <td class="bg-white"><a href="{% url 'dashboard:soft-edit' soft_id=soft.id %}" title="Modification"
+                <td class="bg-white"><a href="{% url 'tools:soft-edit' soft_id=soft.id %}" title="Modification"
                                         class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
             </tr>

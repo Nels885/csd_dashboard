@@ -27,10 +27,11 @@ urlpatterns = [
     path('raspeedi/', include('raspeedi.urls')),
     path('squalaetp/', include('squalaetp.urls')),
     path('reman/', include('reman.urls')),
+    path('demo/', include('demo.urls')),
+    path('tools/', include('tools.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
-    path('demo/', include('demo.urls')),
 ]
 
 if settings.DEBUG:

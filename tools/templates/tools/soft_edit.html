@@ -5,9 +5,9 @@
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="{% url 'dashboard:soft-edit' soft_id=soft.id %}">
+        <form method="post" action="{% url 'tools:soft-edit' soft_id=soft.id %}">
 
-            {% include 'dashboard/soft_form.html' %}
+            {% include 'tools/soft_form.html' %}
 
         </form>
 
