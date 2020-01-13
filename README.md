@@ -49,6 +49,7 @@ Download the repository and create the virtual environment:
 ```bash
 $ git clone https://github.com/Nels885/csd_dashboard
 $ cd csd_dashboard
+$ pipenv --python 3 
 $ pipenv install --dev
 ```
 
