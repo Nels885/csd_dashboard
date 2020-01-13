@@ -1,5 +1,7 @@
 from django.forms.utils import ErrorList
-from django.forms import ModelForm, TextInput, Select, DateInput
+from django.forms import ModelForm, TextInput, Select, DateInput, CharField, EmailField
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 from .models import CsdSoftware, UserProfile
 
@@ -35,3 +37,13 @@ class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         fields = ['image']
+
+
+class SignUpForm(UserCreationForm):
+    first_name = CharField(max_length=30, required=False, help_text='Optional.')
+    last_name = CharField(max_length=30, required=False, help_text='Optional.')
+    email = EmailField(max_length=254, help_text='Required. Inform a valid email address.')
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']

@@ -31,7 +31,7 @@ class DashboardSeleniumTestCase(LiveServerTestCase):
         # Inserting values into the form
         username = driver.find_element_by_name('username')
         password = driver.find_element_by_name('password')
-        login = driver.find_elements_by_css_selector('input.btn.btn-primary.btn-user.btn-block')
+        login = driver.find_elements_by_css_selector('button.btn.btn-primary.btn-user.btn-block')
         username.send_keys('toto')
         password.send_keys('totopassword')
         login[0].click()
@@ -45,7 +45,7 @@ class DashboardSeleniumTestCase(LiveServerTestCase):
         # Inserting values into the form
         username = driver.find_element_by_name('username')
         password = driver.find_element_by_name('password')
-        login = driver.find_elements_by_css_selector('input.btn.btn-primary.btn-user.btn-block')
+        login = driver.find_elements_by_css_selector('button.btn.btn-primary.btn-user.btn-block')
         username.send_keys('toto')
         password.send_keys('toto')
         login[0].click()

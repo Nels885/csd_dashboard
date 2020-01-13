@@ -10,7 +10,7 @@ import re
 from utils.product_Analysis import ProductAnalysis
 from utils.decorators import group_required
 from .models import Post, CsdSoftware, User, UserProfile
-from .forms import SoftwareForm, ParaErrorList, UserProfileForm
+from .forms import SoftwareForm, ParaErrorList, UserProfileForm, SignUpForm
 from squalaetp.models import Xelon
 
 
@@ -75,8 +75,7 @@ def activity_log(request):
 @login_required
 def user_profile(request):
     context = {
-        'title': 'Software',
-        'card_title': _('Software integration'),
+        'title': 'Profile',
     }
     if request.method == 'POST':
         user = get_object_or_404(UserProfile, user=request.user.id)
@@ -96,6 +95,16 @@ def register(request):
     context = {
         'title': 'Register',
     }
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            UserProfile(user=user).save()
+            return render(request, 'dashboard/done.html', context)
+        context['errors'] = form.errors.items()
+    else:
+        form = SignUpForm()
+    context['form'] = form
     return render(request, 'registration/register.html', context)
 
 
