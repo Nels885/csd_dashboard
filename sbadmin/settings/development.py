@@ -17,7 +17,7 @@ MIDDLEWARE += [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'csd_atelier',
+        'NAME': 'corvet',
         'USER': 'nels885',
         'PASSWORD': 'kikoulol',
         'HOST': '',
