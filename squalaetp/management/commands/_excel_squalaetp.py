@@ -6,6 +6,7 @@ class ExcelSqualaetp(ExcelFormat):
 
     CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule']
     XELON_COLS = CORVET_DROP_COLS + ['vin']
+    COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
     def __init__(self, file, sheet_index=0, columns=None):
         """
@@ -18,8 +19,9 @@ class ExcelSqualaetp(ExcelFormat):
             Number of the last column to be processed
         """
         super().__init__(file, sheet_index, columns)
-        self.sheet.replace({"#": None}, inplace=True)
         self._columns_convert()
+        self.sheet.replace({"#": None}, inplace=True)
+        self._date_converter(self.COLS_DATE)
 
     def xelon_table(self):
         """

@@ -39,14 +39,12 @@ class ExcelFormat:
             list of dictionaries that represents the data in the sheet
         """
         data = []
+        sheet = self.sheet.reindex(columns=self.columns)
         for line in range(self.nrows):
-            try:
-                row = list(self.sheet.loc[line, self.columns])  # get the data in the ith row
-                row_dict = dict(zip(self.columns, row))
-                data.append(row_dict)
-                self.sheet.row_values()
-            except KeyError as err:
-                print("KeyError pour la ligne : {}".format(err))
+            row = list(sheet.loc[line])  # get the data in the ith row
+            row_dict = dict(zip(self.columns, row))
+            data.append(row_dict)
+            self.sheet.row_values()
         return data
 
     def _date_converter(self, columns):

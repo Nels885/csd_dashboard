@@ -41,8 +41,8 @@ class CorvetBackup(models.Model):
 
 class Corvet(models.Model):
     vin = models.CharField('V.I.N.', max_length=17, primary_key=True)
-    donnee_date_debut_garantie = models.CharField('Date d?but garantie', max_length=200, blank=True)
-    donnee_date_entree_montage = models.CharField('Date entr?e montage', max_length=200, blank=True)
+    donnee_date_debut_garantie = models.DateTimeField('Date d?but garantie', null=True, blank=True)
+    donnee_date_entree_montage = models.DateTimeField('Date entr?e montage', null=True, blank=True)
     donnee_ligne_de_produit = models.CharField('LIGNE_DE_PRODUIT', max_length=200, blank=True)
     donnee_marque_commerciale = models.CharField('MARQUE_COMMERCIALE', max_length=200, blank=True)
     donnee_silhouette = models.CharField('SILHOUETTE', max_length=200, blank=True)
