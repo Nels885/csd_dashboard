@@ -4,7 +4,9 @@ from utils.excel_format import ExcelFormat, re, pd
 class ExcelSqualaetp(ExcelFormat):
     """## Read data in Excel file for Squalaetp ##"""
 
-    XELON_COLS = ['numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule']
+    CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule']
+    XELON_COLS = CORVET_DROP_COLS + ['vin']
+    COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
     def __init__(self, file, sheet_index=0, columns=None):
         """
@@ -18,6 +20,8 @@ class ExcelSqualaetp(ExcelFormat):
         """
         super().__init__(file, sheet_index, columns)
         self._columns_convert()
+        self.sheet.replace({"#": None}, inplace=True)
+        self._date_converter(self.COLS_DATE)
 
     def xelon_table(self):
         """
@@ -31,18 +35,21 @@ class ExcelSqualaetp(ExcelFormat):
         return data
 
     def corvet_table(self, attribut_file):
+        """
+        Extracting data for the Corvet table form the Database
+        :return:
+            list of dictionnaries that represents the data for Corvet table
+        """
         data = []
-        drop_col = self.XELON_COLS
-        drop_col.remove("vin")
-        df_attributs = pd.read_excel(attribut_file, 1, converters={'cle2': str})
-        df_corvet = self.sheet.drop(drop_col, axis='columns').fillna("")
-        self._add_attributs(df_corvet, df_attributs)
+        df_corvet = self.sheet.drop(self.CORVET_DROP_COLS, axis='columns').fillna("")
+        if attribut_file:
+            df_attributs = pd.read_excel(attribut_file, 1, converters={'cle2': str})
+            self._add_attributs(df_corvet, df_attributs)
         for line in range(self.nrows):
-            df_corvet = self.sheet.drop(drop_col, axis='columns')
+            df_corvet = self.sheet.drop(self.CORVET_DROP_COLS, axis='columns')
             row = df_corvet.loc[line]  # get the data in the ith row
-            # print(dict(row))
-            if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[1] != "#":
-                data.append(dict(row))
+            if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[1] is not None:
+                data.append(dict(row.dropna()))
         return data
 
     def corvet_backup_table(self):
@@ -51,16 +58,7 @@ class ExcelSqualaetp(ExcelFormat):
         :return:
             list of dictionnaries that represents the data for Corvet Backup table
         """
-        data = []
-        corvet_cols = self.columns[4:]
-        for line in range(self.nrows):
-            vin = self.sheet.at[line, "vin"]
-            data_corvet = self.sheet.loc[line, corvet_cols]
-            if re.match(r'^VF[37]\w{14}$', str(vin)) and data_corvet[0] != "#":
-                corvet_dict = dict(zip(corvet_cols, data_corvet))
-                row_dict = dict(zip(["vin", "data"], [vin, corvet_dict]))
-                data.append(row_dict)
-        return data
+        return self.corvet_table(None)
 
     def _add_attributs(self, df_corvet, df_attributs):
         new_columns = {}

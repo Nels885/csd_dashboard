@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'raspeedi.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',
     'reman.apps.RemanConfig',
+    'demo.apps.DemoConfig',
+    'tools.apps.ToolsConfig',
     'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
