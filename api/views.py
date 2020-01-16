@@ -2,13 +2,14 @@ from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions
-
+from rest_framework import viewsets, permissions, status
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
+from api.serializers import XelonSerializer
 from raspeedi.models import Raspeedi
 from squalaetp.models import Xelon
 from utils.product_Analysis import ProductAnalysis
+from api.models import query_xelon_by_args
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -101,3 +102,22 @@ class CharData(APIView):
             "default": prod_nb,
         }
         return Response(data)
+
+
+class XelonViewSet(viewsets.ModelViewSet):
+    queryset = Xelon.objects.all()
+    serializer_class = XelonSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            xelon = query_xelon_by_args(**request.query_params)
+            serializer = XelonSerializer(xelon['items'], many=True)
+            result = dict()
+            result['data'] = serializer.data
+            result['draw'] = xelon['draw']
+            result['recordsTotal'] = xelon['total']
+            result['recordsFiltered'] = xelon['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+
+        except Exception as e:
+            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)

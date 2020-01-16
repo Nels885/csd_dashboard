@@ -1,44 +1,29 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function () {
     let xelon = $('#xelonTable').DataTable({
-        responsive: {
-            details: true
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "/api/xelon/",
+            type: "GET",
         },
-        // Disable sorting for the Tags and Actions columns.
-        columnDefs: [{
-            targets: [10, 11],
-            searchable: false,
-            orderable: false,
-        }],
-        initComplete: function () {
-            this.api().columns([0, 1, 2, 3, 4, 5, 6, 7]).every(function () {
-                var column = this;
-                var select = $('<select><option value=""></option></select>')
-                    .appendTo($(column.footer()).empty())
-                    .on('change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    });
-
-                column.data().unique().sort().each(function (d, j) {
-                    select.append('<option value="' + d + '">' + d + '</option>')
-                });
-            });
-        },
+        columns: [
+            {data: "numero_de_dossier"},
+            {data: "vin"},
+            {data: "modele_produit"},
+            {data: "modele_vehicule"},
+            {data: "date_retour"},
+            {data: "type_de_cloture"},
+            {data: "nom_technicien"},
+            {
+                data: null,
+                defaultContent: '<a href="#" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>'
+            },
+            {
+                data: null,
+                defaultContent: '<a href="#" title="Edit" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
+            }
+        ]
     });
 
-    $('a.toggle-vis').on('click', function (e) {
-        e.preventDefault();
-
-        // Get the column API object
-        var column = xelon.column($(this).attr('data-column'));
-
-        // Toggle the visibility
-        column.visible(!column.visible());
-    });
 });

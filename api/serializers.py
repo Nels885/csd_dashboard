@@ -47,6 +47,7 @@ class RaspeediSerializer(serializers.ModelSerializer):
     """
     Serializer for the Raspeedi table
     """
+
     class Meta:
         model = Raspeedi
         fields = ('ref_boitier', 'produit', 'facade', 'dump_peedi', 'media', 'dump_renesas',)
@@ -90,3 +91,13 @@ class CalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Xelon
         fields = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet')
+
+
+class XelonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Xelon
+        fields = (
+            'id', 'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture',
+            'nom_technicien'
+        )

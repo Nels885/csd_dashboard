@@ -23,60 +23,13 @@
             <th>V.I.N.</th>
             <th class="all">Modèle produit</th>
             <th>Modèle véhicule</th>
+            <th>Date Retour</th>
             <th class="all">Type de clôture</th>
-            <th class="all">Date Retour</th>
-            <th>Date clôture</th>
             <th>Nom Technicien</th>
-            <th>Dossier VIP</th>
-            <th>Express</th>
-            <th class="all"></th>
-            <th class="all"></th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
-        <tfoot>
-        <tr>
-            <th>Numéro de dossier</th>
-            <th>V.I.N.</th>
-            <th>Modèle produit</th>
-            <th>Modèle véhicule</th>
-            <th>Type de clôture</th>
-            <th>Date Retour</th>
-            <th>Date clôture</th>
-            <th>Nom Technicien</th>
-            <th>Dossier VIP</th>
-            <th>Express</th>
-            <th></th>
-            <th></th>
-        </tr>
-        </tfoot>
-        <tbody>
-
-        {% for file in files %}
-
-            <tr {% if "PSA" in file.famille_client and "VF" in file.vin and not file.corvet.exists %}class="bg-danger text-light"{% endif %}>
-                <td>{{ file.numero_de_dossier }}</td>
-                <td>{{ file.vin }}</td>
-                <td>{{ file.modele_produit }}</td>
-                <td>{{ file.modele_vehicule }}</td>
-                <td>{{ file.type_de_cloture }}</td>
-                <td>{{ file.date_retour|default:"--" }}</td>
-                <td>{{ file.date_de_cloture|default:"--" }}</td>
-                <td>{{ file.nom_technicien }}</td>
-                <td>{{ file.dossier_vip }}</td>
-                <td>{{ file.express }}</td>
-                <td class="bg-white">
-                    <a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}" title="Modification VIN et Corvet"
-                       class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                </td>
-                <td class="bg-white">
-                    <a href="{% url 'squalaetp:xelon-detail' file_id=file.id %}" title="Détail"
-                       class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
-                </td>
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
     </table>
 
     <br>
