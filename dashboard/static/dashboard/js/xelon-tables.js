@@ -23,7 +23,18 @@ $(document).ready(function () {
                 data: null,
                 defaultContent: '<a href="#" title="Edit" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
             }
-        ]
+        ],
+        rowCallback: function (row, data, index) {
+            if (data['corvet'].length === 0 && (data['vin'].includes('VF3') || data['vin'].includes('VF7'))) {
+                $('td', row).addClass('bg-danger text-light');
+            }
+        },
+        // Disable sorting for the Tags and Actions columns.
+        columnDefs: [{
+            targets: [5, 7, 8],
+            searchable: false,
+            orderable: false,
+        }],
     });
 
 });
