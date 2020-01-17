@@ -5,11 +5,11 @@ from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from api.serializers import XelonSerializer
+from api.serializers import XelonSerializer, CorvetSerializer
 from raspeedi.models import Raspeedi
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Corvet
 from utils.product_Analysis import ProductAnalysis
-from api.models import query_xelon_by_args
+from api.models import query_xelon_by_args, query_corvet_by_args
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -119,5 +119,24 @@ class XelonViewSet(viewsets.ModelViewSet):
             result['recordsFiltered'] = xelon['count']
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
 
-        except Exception as e:
-            return Response(e, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class CorvetViewSet(viewsets.ModelViewSet):
+    queryset = Corvet.objects.all()
+    serializer_class = CorvetSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            corvet = query_corvet_by_args(**request.query_params)
+            serializer = CorvetSerializer(corvet['items'], many=True)
+            result = dict()
+            result['data'] = serializer.data
+            result['draw'] = corvet['draw']
+            result['recordsTotal'] = corvet['total']
+            result['recordsFiltered'] = corvet['count']
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)

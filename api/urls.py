@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'xelon', views.XelonViewSet)
+router.register(r'corvet', views.CorvetViewSet)
 
 app_name = 'api'
 

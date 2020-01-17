@@ -62,11 +62,12 @@ class CorvetSerializer(DynamicFieldsModelSerializer):
     ref_nav = serializers.CharField(source='electronique_14x')
     cal_nav = serializers.CharField(source='electronique_94x')
     no_serie = serializers.CharField(source='electronique_44x')
+
     raspeedi = RaspeediSerializer(many=True, read_only=True)
 
     class Meta:
         model = Corvet
-        fields = ('ref_radio', 'cal_radio', 'ref_nav', 'cal_nav', 'no_serie', 'raspeedi')
+        fields = ('vin', 'ref_radio', 'cal_radio', 'ref_nav', 'cal_nav', 'no_serie', 'raspeedi')
 
 
 class ProgSerializer(serializers.ModelSerializer):

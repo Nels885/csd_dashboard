@@ -17,62 +17,13 @@
             <th>CAL. Récepteur Radio</th>
             <th>Boitier Télématique</th>
             <th>CAL. Boitier Télématique</th>
-            <th>Calculateur Moteur</th>
-            <th>SOFT. Calculateur Moteur</th>
+{#            <th>Calculateur Moteur</th>#}
+{#            <th>SOFT. Calculateur Moteur</th>#}
+            <th>N° série</th>
             <th></th>
         </tr>
         </thead>
-        <tfoot>
-        <tr>
-            <th>V.I.N.</th>
-            <th>Récepteur Radio</th>
-            <th>CAL. Récepteur Radio</th>
-            <th>Boitier Télématique</th>
-            <th>CAL. Boitier Télématique</th>
-            <th>Calculateur Moteur</th>
-            <th>SOFT. Calculateur Moteur</th>
-            <th></th>
-        </tr>
-        </tfoot>
-        <tbody>
-
-        {% for corvet in corvets %}
-
-            <tr>
-                <td>{{ corvet.vin }}</td>
-                <td>{{ corvet.electronique_14f }}</td>
-                <td>{{ corvet.electronique_94f }}</td>
-                <td>{{ corvet.electronique_14x }}</td>
-                <td>{{ corvet.electronique_94x }}</td>
-                <td>{{ corvet.electronique_14a }}</td>
-                <td>{{ corvet.electronique_34a }}</td>
-                <td><a href="{% url 'squalaetp:corvet-detail' vin=corvet.vin %}" title="Détail"
-                       class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a></td>
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
     </table>
-
-    <br>
-    <div class="pagination">
-        <span class="step-links">
-            {% if corvets.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ corvets.previous_page_number }}">previous</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ corvets.number }} of {{ corvets.paginator.num_pages }}.
-            </span>
-
-            {% if files.has_next %}
-                <a href="?page={{ corvets.next_page_number }}">next</a>
-                <a href="?page={{ corvets.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
 
 {% endblock %}
 

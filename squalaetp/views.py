@@ -4,7 +4,6 @@ import datetime
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .models import Xelon, Corvet
 from .forms import CorvetForm
@@ -20,13 +19,13 @@ def xelon_table(request):
     """
     View of Xelon table page
     """
-    files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
-        'numero_de_dossier')
+    # files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
+    #     'numero_de_dossier')
 
     context = {
         'title': 'Xelon',
         'table_title': 'Dossiers Clients',
-        'files': files
+        # 'files': files
     }
     return render(request, 'squalaetp/xelon_table.html', context)
 
@@ -114,23 +113,12 @@ def corvet_table(request):
     """
     View of Corvet table page, visible only if authenticated
     """
-    corvets_list = Corvet.objects.all().order_by('vin')
-
-    paginator = Paginator(corvets_list, 500)
-    page = request.GET.get('page')
-    try:
-        corvets = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        corvets = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        corvets = paginator.page(paginator.num_pages)
+    # corvets_list = Corvet.objects.all().order_by('vin')
 
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),
-        'corvets': corvets
+        # 'corvets': corvets
     }
     return render(request, 'squalaetp/corvet_table.html', context)
 
