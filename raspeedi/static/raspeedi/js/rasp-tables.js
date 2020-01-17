@@ -33,4 +33,9 @@ $(document).ready(function () {
             });
         },
     });
+
+    $('#unlockTable').DataTable({
+        pagingType: "full_numbers",
+        order: [[2, "desc"]],
+    });
 });

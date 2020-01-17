@@ -8,13 +8,6 @@ $(document).ready(function () {
             type: "GET",
         },
         columns: [
-            {data: "numero_de_dossier"},
-            {data: "vin"},
-            {data: "modele_produit"},
-            {data: "modele_vehicule"},
-            {data: "date_retour"},
-            {data: "type_de_cloture"},
-            {data: "nom_technicien"},
             {
                 data: null,
                 defaultContent: '<a href="#" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>'
@@ -22,7 +15,14 @@ $(document).ready(function () {
             {
                 data: null,
                 defaultContent: '<a href="#" title="Edit" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
-            }
+            },
+            {data: "numero_de_dossier"},
+            {data: "vin"},
+            {data: "modele_produit"},
+            {data: "modele_vehicule"},
+            {data: "date_retour"},
+            {data: "type_de_cloture"},
+            {data: "nom_technicien"},
         ],
         rowCallback: function (row, data, index) {
             if (data['corvet'].length === 0 && (data['vin'].includes('VF3') || data['vin'].includes('VF7'))) {
@@ -31,7 +31,7 @@ $(document).ready(function () {
         },
         // Disable sorting for the Tags and Actions columns.
         columnDefs: [{
-            targets: [5, 7, 8],
+            targets: [0, 1],
             searchable: false,
             orderable: false,
         }],

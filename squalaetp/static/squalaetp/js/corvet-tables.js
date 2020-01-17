@@ -1,17 +1,12 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function () {
-    $('#softTable').DataTable({
+    $('#corvetTable').DataTable({
         pagingType: "full_numbers",
         order: [[0, "asc"]],
         columnDefs: [{
-            targets: 6,
+            targets: 7,
             searchable: false,
             orderable: false,
         }],
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
     });
-
 });
