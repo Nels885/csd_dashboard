@@ -1,6 +1,4 @@
-// Call the dataTables jQuery plugin
-$(document).ready(function () {
-    $('#corvetTable').DataTable({
+let table = $('#corvetTable').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
@@ -16,7 +14,7 @@ $(document).ready(function () {
             {data: "no_serie"},
             {
                 data: null,
-                defaultContent: '<a href="#" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
+                defaultContent: '<button type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>'
             },
         ],
         columnDefs: [{
@@ -25,4 +23,14 @@ $(document).ready(function () {
             orderable: false,
         }],
     });
+
+let vin = 0;
+
+$('#corvetTable tbody').on('click', 'button', function () {
+    let data = table.row($(this).parents('tr')).data();
+    let class_name = $(this).attr('class');
+    vin = data['vin'];
+    if (class_name === 'btn btn-info btn-circle btn-sm') {
+        location.href = '/squalaetp/corvet/' + vin + '/detail/'
+    }
 });
