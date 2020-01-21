@@ -22,10 +22,12 @@ def xelon_table(request):
     # files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
     #     'numero_de_dossier')
 
+    form = CorvetForm()
     context = {
         'title': 'Xelon',
         'table_title': 'Dossiers Clients',
         # 'files': files
+        'form': form
     }
     return render(request, 'squalaetp/xelon_table.html', context)
 

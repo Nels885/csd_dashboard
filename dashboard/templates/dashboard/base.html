@@ -1,4 +1,4 @@
-{% extends 'dashboard/layout.html' %}
+{% extends 'dashboard/base/layout.html' %}
 
 {% load i18n %}
 
@@ -47,9 +47,9 @@
 
             {% endif %}
 
-            {% include 'dashboard/nav_csd_atelier.html' %}
+            {% include 'dashboard/base/nav_csd_atelier.html' %}
 
-            {% include 'dashboard/nav_csd_admin.html' %}
+            {% include 'dashboard/base/nav_csd_admin.html' %}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -70,7 +70,7 @@
             <!-- Main Content -->
             <div id="content">
 
-                {% include 'dashboard/top_bar.html' %}
+                {% include 'dashboard/base/top_bar.html' %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -104,5 +104,8 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    {% include 'dashboard/modal_logout.html' %}
+    {% include 'dashboard/base/modal_logout.html' %}
+
+    {% block custommodal %} {% endblock %}
+
 {% endblock %}
