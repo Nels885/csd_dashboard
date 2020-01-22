@@ -9,7 +9,7 @@ coverage = "*"
 django-debug-toolbar = "*"
 
 [packages]
-django = ">=2.2.6"
+django = ">=3"
 psycopg2 = "*"
 xlrd = "*"
 pandas = "*"
