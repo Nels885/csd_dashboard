@@ -112,13 +112,13 @@ class XelonViewSet(viewsets.ModelViewSet):
         try:
             xelon = query_xelon_by_args(**request.query_params)
             serializer = XelonSerializer(xelon['items'], many=True)
-            result = dict()
-            result['data'] = serializer.data
-            result['draw'] = xelon['draw']
-            result['recordsTotal'] = xelon['total']
-            result['recordsFiltered'] = xelon['count']
+            result = {
+                'data': serializer.data,
+                'draw': xelon['draw'],
+                'recordsTotal': xelon['total'],
+                'recordsFiltered': xelon['count']
+            }
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
-
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
 
@@ -131,12 +131,12 @@ class CorvetViewSet(viewsets.ModelViewSet):
         try:
             corvet = query_corvet_by_args(**request.query_params)
             serializer = CorvetSerializer(corvet['items'], many=True)
-            result = dict()
-            result['data'] = serializer.data
-            result['draw'] = corvet['draw']
-            result['recordsTotal'] = corvet['total']
-            result['recordsFiltered'] = corvet['count']
+            result = {
+                'data': serializer.data,
+                'draw': corvet['draw'],
+                'recordsTotal': corvet['total'],
+                'recordsFiltered': corvet['count']
+            }
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
-
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)

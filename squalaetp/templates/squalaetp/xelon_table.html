@@ -58,7 +58,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'squalaetp:xelon-edit' 1 %}">
+                    <form method="post" action="{% url 'squalaetp:xelon-edit' file_id=1 %}">
 
                         {% csrf_token %}
 

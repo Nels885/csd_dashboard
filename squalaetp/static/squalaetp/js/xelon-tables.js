@@ -43,8 +43,7 @@ $('#xelonTable tbody').on('click', 'button', function () {
     id = data['id'];
     if (class_name === 'btn btn-success btn-circle btn-sm') {
         // EDIT button
-
-        $("#xelonEditModal").modal();
+        $('#xelonEditModal').modal();
     } else {
         location.href = '/squalaetp/xelon/' + id + '/detail/'
     }
