@@ -36,7 +36,7 @@ def query_xelon_by_args(**kwargs):
     if order == 'desc':
         order_column = '-' + order_column
 
-    queryset = Xelon.objects.all()
+    queryset = Xelon.objects.filter(date_retour__isnull=False)
     total = queryset.count()
 
     if search_value:
@@ -44,6 +44,7 @@ def query_xelon_by_args(**kwargs):
                                    Q(vin__icontains=search_value) |
                                    Q(modele_produit__icontains=search_value) |
                                    Q(modele_vehicule__icontains=search_value) |
+                                   Q(date_retour__icontains=search_value) |
                                    Q(type_de_cloture__icontains=search_value) |
                                    Q(nom_technicien__icontains=search_value))
 
