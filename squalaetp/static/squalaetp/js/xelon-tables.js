@@ -42,9 +42,40 @@ $('#xelonTable tbody').on('click', 'button', function () {
     let class_name = $(this).attr('class');
     id = data['id'];
     if (class_name === 'btn btn-success btn-circle btn-sm') {
-        // EDIT button
+        // Edit button
+        $('#xelonModalLabel').text('Modification données dossier Xelon : ' + data["numero_de_dossier"]);
+        $('#id_vin').val(data["vin"]);
+        $('#id_xml_data').val('');
         $('#xelonEditModal').modal();
     } else {
+        // Detail button
         location.href = '/squalaetp/xelon/' + id + '/detail/'
     }
+});
+
+$('#xelonModalBody form').on('submit', function (e) {
+    e.preventDefault();
+    $.ajax({
+        url: '/squalaetp/ajax/xelon/',
+        method: 'POST',
+        data: {
+            file_id: id,
+            vin: $('#id_vin').val(),
+            xml_data: $('#id_xml_data').val(),
+            btn_corvet_insert: '',
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: 'json',
+        success: function (data) {
+            //get your modal body by class and change its html
+            document.getElementById('xelonModalBody').innerHTML = '<div class="text-center">' + data.title + '</div>';
+            window.setTimeout(function () {
+                window.location.reload()
+            }, 2000);
+        },
+        error: function (data) {
+            document.getElementById('xelonErrors').innerHTML = '<p class="text-danger">* Les données XML ne sont pas valide</p>';
+            $('#id_xml_data').val('');
+        }
+    });
 });

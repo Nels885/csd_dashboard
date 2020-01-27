@@ -155,7 +155,7 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
-LOGIN_REDIRECT_URL = '/dashboard/profile/'
+LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Configuration files for Clarion

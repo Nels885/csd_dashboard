@@ -4,6 +4,7 @@ import datetime
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.http import JsonResponse
 
 from .models import Xelon, Corvet
 from .forms import CorvetForm
@@ -108,6 +109,33 @@ def xelon_edit(request, file_id):
         # corvet.close()
     context['form'] = form
     return render(request, 'squalaetp/xelon_edit.html', context)
+
+
+@login_required
+@group_required('cellule', 'technician')
+def ajax_xelon(request):
+    """
+    View for changing Xelon data
+    """
+    if request.method == 'POST':
+        form = CorvetForm(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            file_id = request.POST.get('file_id')
+            file = get_object_or_404(Xelon, pk=file_id)
+            data = form.xml_parser('xml_data')
+            if data:
+                try:
+                    # xml_export_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    m = Corvet(**data)
+                    m.save()
+                    m.xelons.add(file)
+                    context = {'title': _('Modification done successfully!')}
+                    # return render(request, 'dashboard/done.html', context)
+                    return JsonResponse(context)
+                except TypeError:
+                    form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
+        print(form.errors)
+    return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 
 
 @login_required

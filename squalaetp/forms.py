@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
+from datetime import datetime
 
 import xml.etree.ElementTree as ET
 
@@ -56,6 +57,10 @@ class CorvetForm(forms.Form):
                     for child in list:
                         if child.tag in ["WMI", "VDS", "VIS"]:
                             data['vin'] += child.text
+                        elif child.tag in ["DATE_DEBUT_GARANTIE", "DATE_ENTREE_MONTAGE"]:
+                            key, value = "DONNEE_{}".format(child.tag), child.text
+                            if value:
+                                data[key.lower()] = datetime.strptime(value, "%d/%m/%Y %H:%M:%S")
                         else:
                             key, value = "DONNEE_{}".format(child.tag), child.text
                             # print("{} : {}".format(key, value))
