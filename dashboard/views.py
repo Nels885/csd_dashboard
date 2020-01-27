@@ -20,11 +20,21 @@ def index(request):
     """
     posts = Post.objects.all().order_by('-timestamp')
     context = {
-        'title': _("Dashboard"),
-        'prods': ProductAnalysis(),
+        'title': _("Acceuil"),
         'posts': posts
     }
     return render(request, 'dashboard/index.html', context)
+
+
+def charts(request):
+    """
+    View of charts page
+    """
+    context = {
+        'title': _("Dashboard"),
+        'prods': ProductAnalysis(),
+    }
+    return render(request, 'dashboard/charts.html', context)
 
 
 def search(request):

@@ -86,7 +86,7 @@ class CalList(generics.ListAPIView):
         return queryset
 
 
-class CharData(APIView):
+class CharPie(APIView):
     """
     API endpoint that allows chart data to be viewed
     """

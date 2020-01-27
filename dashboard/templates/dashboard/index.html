@@ -17,114 +17,8 @@
 
     <div class="row">
 
-        <!-- Pie Chart + Cards + Blog -->
+        <!-- Blog -->
         <div class="col-lg-8 mb-6">
-
-            <div class="row">
-
-                <div class="col-xl-8 col-md-6 mb-6">
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary">Proportion des produits à réparer</h6>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            <div class="chart-pie">
-                                <canvas id="prodPieChart" data-url="{% url 'api:data' %}"></canvas>
-                            </div>
-
-                            {% comment %}
-                            <div class="mt-2 text-center small">
-                                {% for name, color in prods.listProds %}
-                                    <span class="mr-2"><i class="fas fa-circle {{ color }}"></i> {{ name }}</span>
-                                {% endfor %}
-                            </div>
-                            {% endcomment %}
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cards of important values -->
-                <div class="col-xl-4 col-md-6 mb-4">
-
-                    <!-- Products to be repaired Card -->
-                    <div class="mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">nombre de
-                                            produits à réparer
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.pending }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-folder fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Late products Card -->
-                    <div class="mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">produits en
-                                            retard
-                                        </div>
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ prods.late }}</div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="progress progress-sm mr-2">
-                                                    <div class="progress-bar bg-danger" role="progressbar"
-                                                         style="width: {{ prods.percent }}%"
-                                                         aria-valuenow="50" aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total
-                                            données CORVET
-                                        </div>
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ prods.corvet_count }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-database fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
 
             <div class="row">
 
@@ -166,40 +60,6 @@
                         </div>
 
                     {% endfor %}
-
-                    {% comment %}
-                    <!-- Dropdown Card Example -->
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary">
-                                <img alt="avatar" class="rounded-circle" width="32"
-                                     src="{% static 'dashboard/img/nels885.jpg' %}">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Nels885</span>test
-                                <span class="small text-gray-500">December 12, 2019</span>
-                            </h6>
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                   data-toggle="dropdown"
-                                   aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                     aria-labelledby="dropdownMenuLink">
-                                    <div class="dropdown-header">Dropdown Header:</div>
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            Ceci est un test.
-                        </div>
-                    </div>
-                    {% endcomment %}
 
                 </div>
 
@@ -253,12 +113,6 @@
 {% endblock %}
 
 {% block customjs %}
-
-    <!-- Page level plugins -->
-    <script src="{% static 'dashboard/vendor/chart.js/Chart.min.js' %}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{% static 'dashboard/js/chart-pie.js' %}"></script>
 
     <!-- Facebook Plugin Pages scripts -->
     <script async defer crossorigin="anonymous"
