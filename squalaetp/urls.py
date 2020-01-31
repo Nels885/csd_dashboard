@@ -15,4 +15,5 @@ urlpatterns = [
     path('ihm/', views.ihm, name='ihm'),
     path('ihm/<int:file_id>/detail/', views.ihm_detail, name='ihm-detail'),
     path('ajax/xelon/', views.ajax_xelon, name='ajax-xelon'),
+    path('<int:file_id>/detail/', views.detail, name='detail'),
 ]

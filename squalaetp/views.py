@@ -71,6 +71,29 @@ def ihm_detail(request, file_id):
     return render(request, 'squalaetp/ihm_detail.html', context)
 
 
+def detail(request, file_id):
+    file = get_object_or_404(Xelon, pk=file_id)
+    if file.corvet.exists():
+        corvet = get_object_or_404(Corvet, vin=file.vin)
+        dict_corvet = vars(corvet)
+        for key in ["_state"]:
+            del dict_corvet[key]
+    else:
+        corvet = dict_corvet = None
+    dict_corvet = vars(corvet)
+    form = CorvetForm()
+    form.fields['vin'].initial = file.vin
+    context = {
+        'title': file.numero_de_dossier,
+        'file': file,
+        'corvet': corvet,
+        'dict_corvet': dict_corvet,
+        'form': form,
+        'redirect': request.META.get('HTTP_REFERER')
+    }
+    return render(request, 'squalaetp/detail.html', context)
+
+
 @login_required
 @group_required('cellule', 'technician')
 def xelon_edit(request, file_id):

@@ -4,6 +4,33 @@
 
 {% load i18n %}
 
+{% block card_header %}
+
+    <div class="card-header">
+        <div class="py-2">
+            <h6 class="m-0 font-weight-bold text-primary">{{ card_title }}</h6>
+        </div>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'squalaetp:xelon-detail' file_id=file.id %}">
+                    Info Xelon
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'squalaetp:ihm-detail' file_id=file.id %}">
+                    {% trans "IHM Extraction" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'squalaetp:corvet-detail' vin=file.vin %}">
+                    {% trans "Corvet data" %}
+                </a>
+            </li>
+        </ul>
+    </div>
+
+{% endblock %}
+
 {% block detail_content %}
 
     <div class="text-center">

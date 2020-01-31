@@ -1,0 +1,231 @@
+{% extends 'dashboard/detail_format.html' %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
+            <li class="nav-item active">
+                <a class="nav-link active" href="#xelon" role="tab" aria-controls="xelon" aria-selected="true">
+                    Info Xelon
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#ihm" role="tab" aria-controls="ihm" aria-selected="false">
+                    {% trans "IHM Extraction" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#corvet" role="tab" aria-controls="corvet" aria-selected="false">
+                    {% trans "Corvet data" %}
+                </a>
+            </li>
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block detail_content %}
+
+    <div class="tab-content mt-3">
+
+        <!-- Detail Xelon -->
+        <div class="tab-pane active" id="xelon" role="tabpanel" aria-labelledby="xelon-tab">
+            <table class="table table-striped table-condensed">
+                <tbody>
+
+                <tr>
+                    <td class="text-dark">Numéro de dossier</td>
+                    <td>{{ file.numero_de_dossier }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">V.I.N.</td>
+                    <td>{{ file.vin }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Modèle produit</td>
+                    <td>{{ file.modele_produit }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Modèle véhicule</td>
+                    <td>{{ file.modele_vehicule }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Date Retour</td>
+                    <td>{{ file.date_retour }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Type de clôture</td>
+                    <td>{{ file.type_de_cloture }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Date de clôture</td>
+                    <td>{{ file.date_de_cloture }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Nom technicien</td>
+                    <td>{{ file.nom_technicien }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Commentaire action</td>
+                    <td>{{ file.commentaire_action }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Commentaire FR</td>
+                    <td>{{ file.commentaire_de_la_fr }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Commentaire SAV Admin</td>
+                    <td>{{ file.commentaire_sav_admin }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Libellé de la fiche K</td>
+                    <td>{{ file.libelle_de_la_fiche_cas }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Lieu de stockage</td>
+                    <td>{{ file.lieu_de_stockage }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Dossier VIP</td>
+                    <td>{{ file.dossier_vip }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Express</td>
+                    <td>{{ file.express }}</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Detail IHM -->
+        <div class="tab-pane" id="ihm" role="tabpanel" aria-labelledby="ihm-tab">
+            <table class="table table-striped table-condensed">
+                <tr>
+                    <td class="text-dark">Numéro de dossier</td>
+                    <td>{{ file.numero_de_dossier }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">V.I.N.</td>
+                    <td>
+                        <img src='https://barcode.tec-it.com/barcode.ashx?data={{ file.vin }}%0A&code=&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&qunit=Mm&quiet=0'
+                             alt='{{ file.vin }}'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Modèle produit</td>
+                    <td>{{ file.modele_produit }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Modèle véhicule</td>
+                    <td>{{ file.modele_vehicule }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Réf HW RAD</td>
+                    <td>{{ corvet.electronique_14f }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">CAL RAD</td>
+                    <td>{{ corvet.electronique_94f }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Réf HW NAV</td>
+                    <td>{{ corvet.electronique_14x }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">CAL NAV</td>
+                    <td>{{ corvet.electronique_94x }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Réf HW ECU moteur</td>
+                    <td>{{ corvet.electronique_14a }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">CAL ECU moteur</td>
+                    <td>{{ corvet.electronique_34a }}</td>
+                </tr>
+            </table>
+
+            <hr>
+            <h3 class="h3 mb-4 text-gray-800">Modification des données :</h3>
+
+            <form method="post" action="{% url 'squalaetp:xelon-edit' file_id=file.id %}">
+
+                {% csrf_token %}
+
+                <div class="form-group row">
+                    <div class="col-sm-4 mb-3 mb-sm-0">
+
+                        {{ form.vin }}
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    Pour récupérer les données XML, cliquer sur le lien
+                    <a href="https://www.repairnav.com/clarionservice_v2/corvet.xhtml" target="_blank">CORVET</a>.
+                </div>
+
+                <div class="form-group">
+
+                    {{ form.xml_data }}
+
+                </div>
+
+                {% if errors %}
+                    {% for key, error in errors %}
+                        {% autoescape off %}
+                            {{ error }}
+                        {% endautoescape %}
+                    {% endfor %}
+                {% endif %}
+
+                <button name="btn_corvet_insert" type="submit"
+                        class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block">
+                    {% trans "Submit" %}
+                </button>
+            </form>
+
+            <br>
+
+            <div class="text-center" style='padding:10px; font-size:15px; font-family:Arial,Helvetica;'>
+                <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>
+                    <img src='https://www.tec-it.com/pics/banner/web/TEC-IT_Banner_120x42.gif'
+                         alt='Barcode Software by TEC-IT'/>
+                </a>
+                <br/>
+                <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>Barcode Software</a>
+            </div>
+        </div>
+
+        <!-- Detail Corvert -->
+        <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
+            <table class="table table-striped table-condensed">
+                <tbody>
+
+                {% for key, value in dict_corvet.items %}
+                    <tr>
+                        <td class="text-dark">{{ key }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block customjs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'squalaetp/js/custom.js' %}"></script>
+
+{% endblock %}

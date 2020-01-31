@@ -4,18 +4,34 @@
 
 {% load i18n %}
 
-{% block detail_content %}
+{% block card_header %}
 
-    <div class="text-center">
-        <a class="col-sm-2 align-self-center btn btn-primary btn-user"
-           href="{% url 'squalaetp:ihm-detail' file_id=file.id %}">{% trans "IHM Extraction" %}
-        </a>
-        {% if file.corvet.exists %}
-            <a class="col-sm-2 align-self-center btn btn-primary btn-user"
-               href="{% url 'squalaetp:corvet-detail' vin=file.vin %}">{% trans "Corvet data" %}
-            </a>
-        {% endif %}
+    <div class="card-header">
+        <div class="py-2">
+            <h6 class="m-0 font-weight-bold text-primary">{{ card_title }}</h6>
+        </div>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'squalaetp:xelon-detail' file_id=file.id %}">
+                    Info Xelon
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'squalaetp:ihm-detail' file_id=file.id %}">
+                    {% trans "IHM Extraction" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'squalaetp:corvet-detail' vin=file.vin %}">
+                    {% trans "Corvet data" %}
+                </a>
+            </li>
+        </ul>
     </div>
+
+{% endblock %}
+
+{% block detail_content %}
 
     <br>
 
