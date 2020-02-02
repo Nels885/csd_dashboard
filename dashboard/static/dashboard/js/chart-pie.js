@@ -2,16 +2,13 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
-let endpoint = $("#prodPieChart").attr("data-url");
-let defaultData = [];
-let labels = [];
 $.ajax({
     method: "GET",
-    url: endpoint,
+    url: $("#dataCharts").attr("data-url"),
     success: function (data) {
-        console.log(data);
-        labels = data.labels;
-        defaultData = data.default;
+        // console.log(data);
+        let labels = data.pieLabels;
+        let defaultData = data.pieDefault;
         // Pie Chart Product
         var ctx = document.getElementById("prodPieChart");
         var prodPieChart = new Chart(ctx, {

@@ -86,7 +86,7 @@ class CalList(generics.ListAPIView):
         return queryset
 
 
-class CharPie(APIView):
+class Charts(APIView):
     """
     API endpoint that allows chart data to be viewed
     """
@@ -98,8 +98,10 @@ class CharPie(APIView):
         analysis = ProductAnalysis()
         labels, prod_nb = analysis.products_count()
         data = {
-            "labels": labels,
-            "default": prod_nb,
+            "pieLabels": labels,
+            "pieDefault": prod_nb,
+            "areaLabels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            "areaDefault": [50, 70, 160, 80, 110, 120, 150, 40, 90, 130, 125, 100],
         }
         return Response(data)
 
