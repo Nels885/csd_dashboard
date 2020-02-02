@@ -137,16 +137,14 @@
 {% block extrascripts %}
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $(function () {
-                // Log in & Sign up buttons
-                $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
-            });
-        });
+        $(function () {
+            // Log in buttons
+            $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
 
-        // Hide message
-        $(".alert").fadeTo(2000, 500).slideUp(500, function () {
-            $(".alert").slideUp(500);
+            // Hide message
+            $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+                $(".alert").slideUp(500);
+            });
         });
     </script>
 
