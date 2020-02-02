@@ -79,6 +79,21 @@
             <!-- Main Content -->
             <div id="content">
 
+                <div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div style="border-radius:0;" {% if message.tags %}
+                                 class="alert alert-icon alert-{{ message.tags }} alert-dismissible fade show mb-0"
+                                 role="alert" {% endif %}>
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
                 {% include 'dashboard/base/top_bar.html' %}
 
                 <!-- Begin Page Content -->
@@ -127,6 +142,11 @@
                 // Log in & Sign up buttons
                 $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
             });
+        });
+
+        // Hide message
+        $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+            $(".alert").slideUp(500);
         });
     </script>
 
