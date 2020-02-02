@@ -8,7 +8,7 @@ from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, Cal
 from api.serializers import XelonSerializer, CorvetSerializer
 from raspeedi.models import Raspeedi
 from squalaetp.models import Xelon, Corvet
-from utils.product_Analysis import ProductAnalysis
+from utils.analysis import ProductAnalysis, DealAnalysis
 from api.models import query_xelon_by_args, query_corvet_by_args
 
 
@@ -95,13 +95,14 @@ class Charts(APIView):
         """
         Return a dictionnary of data
         """
-        analysis = ProductAnalysis()
-        labels, prod_nb = analysis.products_count()
+        analysis, deal = ProductAnalysis(), DealAnalysis()
+        prod_labels, prod_nb = analysis.products_count()
+        deal_labels, deal_nb = deal.count()
         data = {
-            "pieLabels": labels,
-            "pieDefault": prod_nb,
-            "areaLabels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            "areaDefault": [50, 70, 160, 80, 110, 120, 150, 40, 90, 130, 125, 100],
+            "prodLabels": prod_labels,
+            "prodDefault": prod_nb,
+            "dealLabels": deal_labels,
+            "dealDefault": deal_nb,
         }
         return Response(data)
 

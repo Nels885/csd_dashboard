@@ -7,11 +7,11 @@ $.ajax({
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
         console.log(data);
-        let labels = data.areaLabels;
-        let defaultData = data.areaDefault;
+        let labels = data.dealLabels;
+        let defaultData = data.dealDefault;
 
         // Area Chart Example
-        var ctx = document.getElementById("repairAreaChart");
+        var ctx = document.getElementById("dealAreaChart");
         var repairLineChart = new Chart(ctx, {
             type: 'line',
             data: {

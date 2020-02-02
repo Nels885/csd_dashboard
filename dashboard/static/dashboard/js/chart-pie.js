@@ -7,8 +7,8 @@ $.ajax({
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
         // console.log(data);
-        let labels = data.pieLabels;
-        let defaultData = data.pieDefault;
+        let labels = data.prodLabels;
+        let defaultData = data.prodDefault;
         // Pie Chart Product
         var ctx = document.getElementById("prodPieChart");
         var prodPieChart = new Chart(ctx, {

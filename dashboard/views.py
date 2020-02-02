@@ -10,7 +10,7 @@ import re
 
 from bootstrap_modal_forms.generic import BSModalLoginView
 
-from utils.product_Analysis import ProductAnalysis
+from utils.analysis import ProductAnalysis
 from utils.decorators import group_required
 from .models import Post, UserProfile
 from .forms import UserProfileForm, SignUpForm, CustomAuthenticationForm

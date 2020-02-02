@@ -70,3 +70,17 @@ class ProductAnalysis:
             number of Corvet data
         """
         return Corvet.objects.all().count()
+
+
+class DealAnalysis:
+    LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+    def __init__(self):
+        """
+        Initialization of the ProductAnalysis class
+        """
+        self.queries = Xelon.objects.filter(date_retour__isnull=False)
+
+    def count(self):
+        deal_nb = [50, 70, 160, 80, 110, 120, 150, 40, 90, 130, 125, 100]
+        return self.LABELS, deal_nb
