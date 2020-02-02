@@ -1,6 +1,6 @@
 from django.forms.utils import ErrorList
 from django.forms import ModelForm, TextInput, Select, DateInput, CharField, EmailField
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 from .models import CsdSoftware, UserProfile
@@ -47,3 +47,9 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password']

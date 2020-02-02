@@ -13,4 +13,5 @@ urlpatterns = [
     path('search/', views.search, name="search"),
     path('config/edit/', views.config_edit, name="config-edit"),
     path('register/', views.register, name='register'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
 ]

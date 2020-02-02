@@ -49,7 +49,7 @@ $('#xelonTable tbody').on('click', 'button', function () {
         $('#xelonEditModal').modal();
     } else {
         // Detail button
-        location.href = '/squalaetp/xelon/' + id + '/detail/'
+        location.href = '/squalaetp/' + id + '/detail/'
     }
 });
 

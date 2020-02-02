@@ -30,6 +30,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = [
+    'bootstrap_modal_forms',
+    'widget_tweaks',
     'dashboard.apps.DashboardConfig',
     'raspeedi.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',

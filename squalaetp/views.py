@@ -1,7 +1,7 @@
 import csv
 import datetime
 
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.http import JsonResponse
@@ -33,44 +33,6 @@ def xelon_table(request):
     return render(request, 'squalaetp/xelon_table.html', context)
 
 
-def xelon_detail(request, file_id):
-    """
-    detailed view of Xelon data for a file
-    :param file_id:
-        Xelon file id
-    """
-    file = get_object_or_404(Xelon, pk=file_id)
-    context = {
-        'title': 'Xelon',
-        'card_title': _('Detail data for the Xelon file: ') + file.numero_de_dossier,
-        'file': file,
-    }
-    return render(request, 'squalaetp/xelon_detail.html', context)
-
-
-def ihm(request):
-    return redirect('squalaetp:ihm-detail', file_id=1)
-
-
-def ihm_detail(request, file_id):
-    file = get_object_or_404(Xelon, pk=file_id)
-    if file.corvet.exists():
-        corvet = get_object_or_404(Corvet, vin=file.vin)
-    else:
-        corvet = None
-    form = CorvetForm()
-    form.fields['vin'].initial = file.vin
-    context = {
-        'title': 'IHM Extraction',
-        'card_title': _('Detail data for the Xelon file: ') + file.numero_de_dossier,
-        'file': file,
-        'corvet': corvet,
-        'form': form,
-        'redirect': request.META.get('HTTP_REFERER')
-    }
-    return render(request, 'squalaetp/ihm_detail.html', context)
-
-
 def detail(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
     if file.corvet.exists():
@@ -78,9 +40,10 @@ def detail(request, file_id):
         dict_corvet = vars(corvet)
         for key in ["_state"]:
             del dict_corvet[key]
+        dict_corvet = vars(corvet)
     else:
         corvet = dict_corvet = None
-    dict_corvet = vars(corvet)
+
     form = CorvetForm()
     form.fields['vin'].initial = file.vin
     context = {

@@ -4,13 +4,16 @@ from django.utils.translation import ugettext as _
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.conf import settings
+from django.urls import reverse_lazy
 
 import re
+
+from bootstrap_modal_forms.generic import BSModalLoginView
 
 from utils.product_Analysis import ProductAnalysis
 from utils.decorators import group_required
 from .models import Post, UserProfile
-from .forms import UserProfileForm, SignUpForm
+from .forms import UserProfileForm, SignUpForm, CustomAuthenticationForm
 from squalaetp.models import Xelon
 
 
@@ -139,3 +142,10 @@ def config_edit(request):
     }
 
     return render(request, 'dashboard/config.html', context)
+
+
+class CustomLoginView(BSModalLoginView):
+    authentication_form = CustomAuthenticationForm
+    template_name = 'dashboard/login.html'
+    success_message = 'Success: You were successfully logged in.'
+    success_url = reverse_lazy('charts')

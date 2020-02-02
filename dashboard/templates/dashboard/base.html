@@ -40,14 +40,18 @@
 
                 <!-- Nav Item - login -->
                 <li class="nav-item">
-{#                    <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">#}
-{#                        <i class="fas fa-fw fa-user"></i>#}
-{#                        <span>{% trans "Login" %}</span>#}
-{#                    </a>#}
-                    <a class="nav-link" href="{% url 'login' %}">
+                    {#                    <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">#}
+                    {#                        <i class="fas fa-fw fa-user"></i>#}
+                    {#                        <span>{% trans "Login" %}</span>#}
+                    {#                    </a>#}
+                    <a class="login-btn nav-link" href="#">
                         <i class="fas fa-fw fa-user"></i>
                         <span>{% trans "Login" %}</span>
                     </a>
+                    {#                    <a class="nav-link" href="{% url 'login' %}">#}
+                    {#                        <i class="fas fa-fw fa-user"></i>#}
+                    {#                        <span>{% trans "Login" %}</span>#}
+                    {#                    </a>#}
                 </li>
 
             {% endif %}
@@ -112,5 +116,18 @@
     {% include 'dashboard/base/modal.html' %}
 
     {% block custommodal %} {% endblock %}
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                // Log in & Sign up buttons
+                $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
+            });
+        });
+    </script>
 
 {% endblock %}
