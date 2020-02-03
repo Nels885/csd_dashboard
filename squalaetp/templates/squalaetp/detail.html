@@ -18,12 +18,13 @@
                     {% trans "IHM Extraction" %}
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal" aria-selected="false">
-                    {% trans "VIN Barcode" %}
-                </a>
-            </li>
             {% if corvet %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
+                       aria-selected="false">
+                        {% trans "VIN Barcode" %}
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#corvet" role="tab" aria-controls="corvet" aria-selected="false">
                         {% trans "Corvet data" %}
