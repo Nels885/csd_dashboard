@@ -18,6 +18,11 @@
                     {% trans "IHM Extraction" %}
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal" aria-selected="false">
+                    {% trans "VIN Barcode" %}
+                </a>
+            </li>
             {% if corvet %}
                 <li class="nav-item">
                     <a class="nav-link" href="#corvet" role="tab" aria-controls="corvet" aria-selected="false">
@@ -66,6 +71,38 @@
 
     </div>
 
+
+{% endblock %}
+
+{% block custommodal %}
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="vinModal" tabindex="-1" role="dialog" aria-labelledby="vinModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="vinModalLabel">VIN produit : {{ file.numero_de_dossier }}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src='https://barcode.tec-it.com/barcode.ashx?data={{ file.vin }}%0A&code=&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&qunit=Mm&quiet=0'
+                         alt='{{ file.vin }}'/>
+                    <hr>
+                    <div class="text-center" style='padding:10px; font-size:15px; font-family:Arial,Helvetica;'>
+                        <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>
+                            <img src='https://www.tec-it.com/pics/banner/web/TEC-IT_Banner_120x42.gif'
+                                 alt='Barcode Software by TEC-IT'/>
+                        </a>
+                        <br/>
+                        <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>Barcode Software</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
