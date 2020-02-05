@@ -44,9 +44,10 @@ def search(request):
     """
     View of search page
     """
-    query = request.GET.get('query').upper()
+    query = request.GET.get('query')
     if query:
-        select = request.GET.get('select')
+        query = query.upper()
+        # select = request.GET.get('select')
         if re.match(r'^\w{17}$', str(query)):
             file = get_object_or_404(Xelon, vin=query)
         elif re.match(r'^[A-Z]\d{9}$', str(query)):

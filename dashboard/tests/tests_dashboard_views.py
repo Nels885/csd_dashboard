@@ -13,8 +13,9 @@ class DashboardTestCase(TestCase):
         user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
         user.groups.add(Group.objects.create(name="cellule"))
         user.save()
-        Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
-                             modele_vehicule='peugeot')
+        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
+                                     modele_vehicule='peugeot')
+        self.xelonId = str(xelon.id)
         self.redirectUrl = reverse('index')
 
     def test_index_page(self):
@@ -45,9 +46,11 @@ class DashboardTestCase(TestCase):
         self.assertRedirects(response, '/accounts/login/?next=/dashboard/register/')
 
     def test_search_is_not_found(self):
-        response = self.client.get(reverse('dashboard:search'), {'query': 'null', 'select': 'xelon'},
-                                   HTTP_REFERER=self.redirectUrl)
-        self.assertEqual(response.status_code, 404)
+        for value in ['null', 'A1234567890', 'azertyuiop123456789', 'AZERTIOP']:
+            response = self.client.get(reverse('dashboard:search'), {'query': 'null', 'select': 'xelon'},
+                                       HTTP_REFERER=self.redirectUrl)
+            self.assertEqual(response.status_code, 302)
+            self.assertRedirects(response, self.redirectUrl)
 
     def test_search_is_not_value(self):
         response = self.client.get(reverse('dashboard:search'), HTTP_REFERER=self.redirectUrl)
@@ -55,9 +58,13 @@ class DashboardTestCase(TestCase):
         self.assertRedirects(response, self.redirectUrl)
 
     def test_search_vin_is_valid(self):
-        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'xelon'})
-        self.assertEqual(response.status_code, 200)
+        for value in [self.vin, self.vin.lower()]:
+            response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'xelon'})
+            self.assertEqual(response.status_code, 302)
+            self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/')
 
     def test_search_xelon_is_valid(self):
-        response = self.client.get(reverse('dashboard:search'), {'query': 'A123456789', 'select': 'xelon'})
-        self.assertEqual(response.status_code, 200)
+        for value in ['A123456789', 'a123456789', 'Z000000000', 'z000000000']:
+            response = self.client.get(reverse('dashboard:search'), {'query': 'A123456789', 'select': 'xelon'})
+            self.assertEqual(response.status_code, 302)
+            self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/')
