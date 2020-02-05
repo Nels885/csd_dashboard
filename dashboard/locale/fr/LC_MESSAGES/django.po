@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-02 17:28+0100\n"
+"POT-Creation-Date: 2020-02-05 15:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,32 +19,32 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: dashboard/templates/dashboard/base.html:29 dashboard/views.py:37
-#: dashboard/views.py:81
+#: dashboard/views.py:75
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: dashboard/templates/dashboard/base.html:49
 #: dashboard/templates/dashboard/base/top_bar.html:157
-#: dashboard/templates/dashboard/login.html:37
+#: dashboard/templates/dashboard/login.html:40
 #: dashboard/templates/registration/login.html:58
 msgid "Login"
 msgstr "Connexion"
 
-#: dashboard/templates/dashboard/base/modal.html:9
+#: dashboard/templates/dashboard/base/_modal.html:9
 msgid "Ready to Leave?"
 msgstr "Prêt à partir ?"
 
-#: dashboard/templates/dashboard/base/modal.html:15
+#: dashboard/templates/dashboard/base/_modal.html:15
 msgid "Select \"Logout\" below if you are ready to end your current session."
 msgstr ""
 "Sélectionnez \"Déconnexion\" ci-dessous si vous êtes prêt à mettre fin à "
 "votre session en cours."
 
-#: dashboard/templates/dashboard/base/modal.html:18
+#: dashboard/templates/dashboard/base/_modal.html:18
 msgid "Cancel"
 msgstr "Annuler"
 
-#: dashboard/templates/dashboard/base/modal.html:19
+#: dashboard/templates/dashboard/base/_modal.html:19
 #: dashboard/templates/dashboard/base/top_bar.html:141
 #: dashboard/templates/registration/profile.html:77
 msgid "Logout"
@@ -71,25 +71,29 @@ msgstr "Création dossier"
 msgid "Current folder"
 msgstr "Dossiers en cours"
 
-#: dashboard/templates/dashboard/base/nav_csd_atelier.html:79
-msgid "Software list"
-msgstr "Liste Logiciels"
-
-#: dashboard/templates/dashboard/base/nav_csd_atelier.html:84
-msgid "Software Add"
-msgstr "Ajout Logiciel"
-
-#: dashboard/templates/dashboard/base/nav_csd_atelier.html:104
+#: dashboard/templates/dashboard/base/nav_csd_atelier.html:78
 msgid "Unlock VIN"
 msgstr "Déverrouillage VIN"
 
-#: dashboard/templates/dashboard/base/nav_csd_atelier.html:108
+#: dashboard/templates/dashboard/base/nav_csd_atelier.html:82
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/base/nav_csd_atelier.html:111
+#: dashboard/templates/dashboard/base/nav_csd_atelier.html:85
 msgid "Add product"
 msgstr "Ajout produit"
+
+#: dashboard/templates/dashboard/base/nav_tools.html:11
+msgid "Tools"
+msgstr "Outils"
+
+#: dashboard/templates/dashboard/base/nav_tools.html:27
+msgid "Software list"
+msgstr "Liste Logiciels"
+
+#: dashboard/templates/dashboard/base/nav_tools.html:32
+msgid "Software Add"
+msgstr "Ajout Logiciel"
 
 #: dashboard/templates/dashboard/base/top_bar.html:24
 msgid "Search Xelon or VIN..."
@@ -142,16 +146,6 @@ msgstr "Retour au Tableau de bord"
 msgid "Welcome Back!"
 msgstr "Vous avez un compte ?"
 
-#: dashboard/templates/dashboard/login.html:46
-#: dashboard/templates/registration/login.html:64
-msgid "Forgot Password?"
-msgstr "Mot de passe oublié ?"
-
-#: dashboard/templates/dashboard/login.html:51
-#: dashboard/templates/registration/login.html:69
-msgid "Create an Account!"
-msgstr "Création d'un compte !"
-
 #: dashboard/templates/registration/login.html:35
 #: dashboard/templates/registration/profile.html:46
 msgid "Username"
@@ -169,6 +163,14 @@ msgstr "Se souvenir de moi"
 #: dashboard/templates/registration/login.html:54
 msgid "Invalid username or password"
 msgstr "Nom d'utilisateur ou mot de passe invalide"
+
+#: dashboard/templates/registration/login.html:64
+msgid "Forgot Password?"
+msgstr "Mot de passe oublié ?"
+
+#: dashboard/templates/registration/login.html:69
+msgid "Create an Account!"
+msgstr "Création d'un compte !"
 
 #: dashboard/templates/registration/password_change_form.html:31
 msgid "Old password"
@@ -222,18 +224,16 @@ msgstr "Adresse E-mail"
 msgid "Acceuil"
 msgstr "Acceuil"
 
-#: dashboard/views.py:56
-#, python-brace-format
-msgid "Detail data for the Xelon file: {file}"
-msgstr "Données détaillées pour le dossier Xelon : {file}"
-
-#: dashboard/views.py:82
+#: dashboard/views.py:76
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:150
+#: dashboard/views.py:144
 msgid "Success: You were successfully logged in."
 msgstr "Succès: vous vous êtes connecté avec succès."
+
+#~ msgid "Detail data for the Xelon file: {file}"
+#~ msgstr "Données détaillées pour le dossier Xelon : {file}"
 
 #~ msgid "Reman files"
 #~ msgstr "Dossiers Reman"

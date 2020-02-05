@@ -44,22 +44,16 @@ def search(request):
     """
     View of search page
     """
-    query = request.GET.get('query')
+    query = request.GET.get('query').upper()
     if query:
         select = request.GET.get('select')
-        if re.match(r'^VF\w{15}$', str(query)):
+        if re.match(r'^\w{17}$', str(query)):
             file = get_object_or_404(Xelon, vin=query)
-        else:
+        elif re.match(r'^[A-Z]\d{9}$', str(query)):
             file = get_object_or_404(Xelon, numero_de_dossier=query)
-        context = {
-            'title': 'Xelon',
-            'card_title': _('Detail data for the Xelon file: {file}'.format(file=file.numero_de_dossier)),
-            'file': file,
-        }
-        if select == "xelon":
-            return render(request, 'squalaetp/xelon_detail.html', context)
         else:
-            return redirect('squalaetp:ihm-detail', file_id=file.id)
+            return redirect(request.META.get('HTTP_REFERER'))
+        return redirect('squalaetp:detail', file_id=file.id)
     return redirect(request.META.get('HTTP_REFERER'))
 
 

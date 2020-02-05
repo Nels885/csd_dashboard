@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-02 17:28+0100\n"
+"POT-Creation-Date: 2020-02-05 15:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgid "Previous page"
 msgstr "Page précédente"
 
 #: squalaetp/templates/squalaetp/corvet_insert.html:41
-#: squalaetp/templates/squalaetp/ihm_detail.html:86
+#: squalaetp/templates/squalaetp/ihm_detail.html:83
 #: squalaetp/templates/squalaetp/xelon_edit.html:41
 #: squalaetp/templates/squalaetp/xelon_table.html:85
 msgid "Submit"
@@ -60,7 +60,11 @@ msgstr "Soumettre"
 msgid "IHM Extraction"
 msgstr "Extraction IHM"
 
-#: squalaetp/templates/squalaetp/detail.html:24
+#: squalaetp/templates/squalaetp/detail.html:25
+msgid "VIN Barcode"
+msgstr ""
+
+#: squalaetp/templates/squalaetp/detail.html:30
 msgid "Corvet data"
 msgstr "Données Corvet"
 
