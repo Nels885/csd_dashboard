@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-05 15:29+0100\n"
+"POT-Creation-Date: 2020-02-06 15:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:37
-#: dashboard/views.py:75
+#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:39
+#: dashboard/views.py:79
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: dashboard/templates/dashboard/base.html:49
+#: dashboard/templates/dashboard/base.html:45
 #: dashboard/templates/dashboard/base/top_bar.html:157
 #: dashboard/templates/dashboard/login.html:40
 #: dashboard/templates/registration/login.html:58
@@ -121,6 +121,7 @@ msgid "Administration"
 msgstr "Administration"
 
 #: dashboard/templates/dashboard/base/top_bar.html:127
+#: dashboard/templates/dashboard/modal_form/signup.html:9
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
@@ -133,6 +134,7 @@ msgid "Guest"
 msgstr "Invité"
 
 #: dashboard/templates/dashboard/config.html:22
+#: dashboard/templates/dashboard/modal_form/signup.html:37
 msgid "Submit"
 msgstr "Soumettre"
 
@@ -167,10 +169,6 @@ msgstr "Nom d'utilisateur ou mot de passe invalide"
 #: dashboard/templates/registration/login.html:64
 msgid "Forgot Password?"
 msgstr "Mot de passe oublié ?"
-
-#: dashboard/templates/registration/login.html:69
-msgid "Create an Account!"
-msgstr "Création d'un compte !"
 
 #: dashboard/templates/registration/password_change_form.html:31
 msgid "Old password"
@@ -220,17 +218,28 @@ msgstr "Prénom"
 msgid "E-mail address"
 msgstr "Adresse E-mail"
 
-#: dashboard/views.py:26
+#: dashboard/views.py:28
 msgid "Acceuil"
 msgstr "Acceuil"
 
-#: dashboard/views.py:76
+#: dashboard/views.py:58
+msgid "Warning: The research was not successful."
+msgstr "Avertissement: la recherche n'a pas réussi."
+
+#: dashboard/views.py:80
 msgid "Activity log"
 msgstr "Journal d'activité"
 
 #: dashboard/views.py:144
 msgid "Success: You were successfully logged in."
 msgstr "Succès: vous vous êtes connecté avec succès."
+
+#: dashboard/views.py:153
+msgid "Success: Sign up succeeded. You can now Log in."
+msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
+
+#~ msgid "Create an Account!"
+#~ msgstr "Création d'un compte !"
 
 #~ msgid "Detail data for the Xelon file: {file}"
 #~ msgstr "Données détaillées pour le dossier Xelon : {file}"

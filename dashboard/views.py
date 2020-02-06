@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from django.utils.decorators import method_decorator
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
+from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse_lazy
 
@@ -54,6 +55,7 @@ def search(request):
         elif re.match(r'^[A-Z]\d{9}$', str(query)):
             file = get_object_or_404(Xelon, numero_de_dossier=query)
         else:
+            messages.warning(request, _('Warning: The research was not successful.'))
             return redirect(request.META.get('HTTP_REFERER'))
         return redirect('squalaetp:detail', file_id=file.id)
     return redirect(request.META.get('HTTP_REFERER'))
