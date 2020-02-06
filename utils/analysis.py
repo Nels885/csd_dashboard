@@ -1,4 +1,6 @@
 from squalaetp.models import Xelon, Corvet
+import datetime
+import itertools
 
 
 class ProductAnalysis:
@@ -73,7 +75,8 @@ class ProductAnalysis:
 
 
 class DealAnalysis:
-    LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    # LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    LAST_30_DAYS = datetime.datetime.today() - datetime.timedelta(30)
 
     def __init__(self):
         """
@@ -82,5 +85,11 @@ class DealAnalysis:
         self.queries = Xelon.objects.filter(date_retour__isnull=False)
 
     def count(self):
-        deal_nb = [50, 70, 160, 80, 110, 120, 150, 40, 90, 130, 125, 100]
-        return self.LABELS, deal_nb
+        labels, deals_nb = [], []
+        deals = Xelon.objects.filter(date_retour__isnull=False, date_retour__gte=self.LAST_30_DAYS)
+        grouped = itertools.groupby(deals, lambda record: record.date_retour.strftime("%d/%m/%Y"))
+        # deals_by_day = [{'x': day, 'y': len(list(deals_this_day))} for day, deals_this_day in grouped]
+        for day, value in grouped:
+            labels.append(day)
+            deals_nb.append(len(list(value)))
+        return labels, deals_nb
