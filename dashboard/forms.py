@@ -3,6 +3,8 @@ from django.forms import ModelForm, TextInput, Select, DateInput, CharField, Ema
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
+from bootstrap_modal_forms.mixins import PopRequestMixin, CreateUpdateAjaxMixin
+
 from .models import CsdSoftware, UserProfile
 
 
@@ -39,7 +41,13 @@ class UserProfileForm(ModelForm):
         fields = ['image']
 
 
-class SignUpForm(UserCreationForm):
+class CustomAuthenticationForm(AuthenticationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+
+class CustomUserCreationForm(PopRequestMixin, CreateUpdateAjaxMixin, UserCreationForm):
     first_name = CharField(max_length=30, required=False, help_text='Optional.')
     last_name = CharField(max_length=30, required=False, help_text='Optional.')
     email = EmailField(max_length=254, help_text='Required. Inform a valid email address.')
@@ -47,9 +55,3 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
-
-
-class CustomAuthenticationForm(AuthenticationForm):
-    class Meta:
-        model = User
-        fields = ['username', 'password']

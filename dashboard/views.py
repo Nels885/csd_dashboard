@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.utils.decorators import method_decorator
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.conf import settings
@@ -8,12 +9,12 @@ from django.urls import reverse_lazy
 
 import re
 
-from bootstrap_modal_forms.generic import BSModalLoginView
+from bootstrap_modal_forms.generic import BSModalLoginView, BSModalCreateView
 
 from utils.analysis import ProductAnalysis
 from utils.decorators import group_required
 from .models import Post, UserProfile
-from .forms import UserProfileForm, SignUpForm, CustomAuthenticationForm
+from .forms import UserProfileForm, CustomAuthenticationForm, CustomUserCreationForm
 from squalaetp.models import Xelon
 
 
@@ -98,25 +99,6 @@ def user_profile(request):
 
 
 @login_required
-@group_required('admin')
-def register(request):
-    context = {
-        'title': 'Register',
-    }
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            UserProfile(user=user).save()
-            return render(request, 'dashboard/done.html', context)
-        context['errors'] = form.errors.items()
-    else:
-        form = SignUpForm()
-    context['form'] = form
-    return render(request, 'registration/register.html', context)
-
-
-@login_required
 @group_required('cellule')
 def config_edit(request):
 
@@ -139,8 +121,32 @@ def config_edit(request):
     return render(request, 'dashboard/config.html', context)
 
 
+def class_view_decorator(function_decorator):
+    """Convert a function based decorator into a class based decorator usable
+    on class based Views.
+
+    Can't subclass the `View` as it breaks inheritance (super in particular),
+    so we monkey-patch instead.
+    """
+
+    def simple_decorator(view):
+        view.dispatch = method_decorator(function_decorator)(view.dispatch)
+        return view
+
+    return simple_decorator
+
+
 class CustomLoginView(BSModalLoginView):
     authentication_form = CustomAuthenticationForm
     template_name = 'dashboard/login.html'
     success_message = _('Success: You were successfully logged in.')
     success_url = reverse_lazy('charts')
+
+
+@class_view_decorator(login_required)
+@class_view_decorator(group_required('admin'))
+class SignUpView(BSModalCreateView):
+    form_class = CustomUserCreationForm
+    template_name = 'dashboard/modal_form/signup.html'
+    success_message = _('Success: Sign up succeeded. You can now Log in.')
+    success_url = reverse_lazy('index')

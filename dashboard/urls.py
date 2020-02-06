@@ -12,6 +12,6 @@ urlpatterns = [
     path('activity_log/', views.activity_log, name="activity-log"),
     path('search/', views.search, name="search"),
     path('config/edit/', views.config_edit, name="config-edit"),
-    path('register/', views.register, name='register'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('signup/', views.SignUpView.as_view(), name='signup'),
 ]

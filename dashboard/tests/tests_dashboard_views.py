@@ -41,9 +41,9 @@ class DashboardTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_register_page_is_not_staff(self):
-        response = self.client.get(reverse('dashboard:register'))
+        response = self.client.get(reverse('dashboard:signup'))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/?next=/dashboard/register/')
+        self.assertRedirects(response, '/accounts/login/?next=/dashboard/signup/')
 
     def test_search_is_not_found(self):
         for value in ['null', 'A1234567890', 'azertyuiop123456789', 'AZERTIOP']:

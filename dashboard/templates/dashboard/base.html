@@ -40,18 +40,10 @@
 
                 <!-- Nav Item - login -->
                 <li class="nav-item">
-                    {#                    <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">#}
-                    {#                        <i class="fas fa-fw fa-user"></i>#}
-                    {#                        <span>{% trans "Login" %}</span>#}
-                    {#                    </a>#}
                     <a class="login-btn nav-link" href="#">
                         <i class="fas fa-fw fa-user"></i>
                         <span>{% trans "Login" %}</span>
                     </a>
-                    {#                    <a class="nav-link" href="{% url 'login' %}">#}
-                    {#                        <i class="fas fa-fw fa-user"></i>#}
-                    {#                        <span>{% trans "Login" %}</span>#}
-                    {#                    </a>#}
                 </li>
 
             {% endif %}
@@ -143,11 +135,16 @@
             // Log in buttons
             $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
 
+            // Sign up button
+            $(".signup-btn").modalForm({formURL: "{% url 'dashboard:signup' %}"});
+
+
             // Hide message
             $(".alert").fadeTo(2000, 500).slideUp(500, function () {
                 $(".alert").slideUp(500);
             });
-        });
+        })
+        ;
     </script>
 
 {% endblock %}
