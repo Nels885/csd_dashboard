@@ -80,7 +80,7 @@ class ProductAnalysis:
 
 class DealAnalysis:
     # LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    LAST_15_DAYS = datetime.datetime.today() - datetime.timedelta(15)
+    LAST_60_DAYS = datetime.datetime.today() - datetime.timedelta(60)
 
     def __init__(self):
         """
@@ -90,8 +90,8 @@ class DealAnalysis:
 
     def count(self):
         labels, deals_nb = [], []
-        deals = Xelon.objects.filter(date_retour__gte=self.LAST_15_DAYS).extra(
-            {"day": "date_trunc('day', date_retour)"}).values("day").order_by().annotate(count=Count("id"))
+        deals = Xelon.objects.filter(date_retour__gte=self.LAST_60_DAYS).extra(
+            {"day": "date_trunc('day', date_retour)"}).values("day").order_by('date_retour').annotate(count=Count("id"))
         for nb in range(len(deals)):
             labels.append(deals[nb]["day"].strftime("%d/%m/%Y"))
             deals_nb.append(deals[nb]['count'])

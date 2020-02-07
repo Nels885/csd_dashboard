@@ -18,7 +18,7 @@ $.ajax({
                 labels: labels,
                 datasets: [{
                     data: defaultData,
-                    label: "Demandes",
+                    label: "Pdts en cours",
                     lineTension: 0.3,
                     backgroundColor: "rgba(78, 115, 223, 0.05)",
                     borderColor: "rgba(78, 115, 223, 1)",
@@ -70,7 +70,7 @@ $.ajax({
                     }],
                 },
                 legend: {
-                    display: false
+                    display: true
                 },
             },
         });
