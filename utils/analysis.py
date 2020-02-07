@@ -1,6 +1,10 @@
+from django.db.models.aggregates import Count
+
 from squalaetp.models import Xelon, Corvet
 import datetime
-import itertools
+
+
+# import itertools
 
 
 class ProductAnalysis:
@@ -76,7 +80,7 @@ class ProductAnalysis:
 
 class DealAnalysis:
     # LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    LAST_30_DAYS = datetime.datetime.today() - datetime.timedelta(30)
+    LAST_15_DAYS = datetime.datetime.today() - datetime.timedelta(15)
 
     def __init__(self):
         """
@@ -86,10 +90,15 @@ class DealAnalysis:
 
     def count(self):
         labels, deals_nb = [], []
-        deals = Xelon.objects.filter(date_retour__isnull=False, date_retour__gte=self.LAST_30_DAYS)
-        grouped = itertools.groupby(deals, lambda record: record.date_retour.strftime("%d/%m/%Y"))
+        deals = Xelon.objects.filter(date_retour__gte=self.LAST_15_DAYS).extra(
+            {"day": "date_trunc('day', date_retour)"}).order_by().annotate(count=Count("id"))
+        for nb in range(len(deals)):
+            labels.append(deals[nb]["day"].strftime("%d/%m/%Y"))
+            deals_nb.append(deals[nb]['count'])
+        # deals = Xelon.objects.filter(date_retour__isnull=False, date_retour__gte=self.LAST_15_DAYS)
+        # grouped = itertools.groupby(deals, lambda record: record.get('date_retour').strftime("%d/%m/%Y"))
         # deals_by_day = [{'x': day, 'y': len(list(deals_this_day))} for day, deals_this_day in grouped]
-        for day, value in grouped:
-            labels.append(day)
-            deals_nb.append(len(list(value)))
+        # for day, value in grouped:
+        #     labels.append(day)
+        #     deals_nb.append(len(list(value)))
         return labels, deals_nb
