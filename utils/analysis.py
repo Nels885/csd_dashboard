@@ -91,7 +91,7 @@ class DealAnalysis:
     def count(self):
         labels, deals_nb = [], []
         deals = Xelon.objects.filter(date_retour__gte=self.LAST_15_DAYS).extra(
-            {"day": "date_trunc('day', date_retour)"}).order_by().annotate(count=Count("id"))
+            {"day": "date_trunc('day', date_retour)"}).values("day").order_by().annotate(count=Count("id"))
         for nb in range(len(deals)):
             labels.append(deals[nb]["day"].strftime("%d/%m/%Y"))
             deals_nb.append(deals[nb]['count'])
