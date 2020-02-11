@@ -101,6 +101,26 @@ def user_profile(request):
 
 
 @login_required
+@group_required('admin')
+def register(request):
+    context = {
+        'title': 'Register',
+    }
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.groups.add(form.cleaned_data['groups'])
+            UserProfile(user=user).save()
+            messages.success(request, _('Success: Sign up succeeded. You can now Log in.'))
+        context['errors'] = form.errors.items()
+    else:
+        form = CustomUserCreationForm()
+    context['form'] = form
+    return render(request, 'registration/register.html', context)
+
+
+@login_required
 @group_required('cellule')
 def config_edit(request):
 

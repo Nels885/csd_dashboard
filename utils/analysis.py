@@ -95,7 +95,7 @@ class DealAnalysis:
         for nb in range(len(deals)):
             labels.append(deals[nb]["day"].strftime("%d/%m/%Y"))
             deals_nb.append(deals[nb]['count'])
-        # deals = Xelon.objects.filter(date_retour__isnull=False, date_retour__gte=self.LAST_15_DAYS)
+        # deals = Xelon.objects.filter(date_retour__gte=self.LAST_60_DAYS).order_by('date_retour')
         # grouped = itertools.groupby(deals, lambda record: record.get('date_retour').strftime("%d/%m/%Y"))
         # deals_by_day = [{'x': day, 'y': len(list(deals_this_day))} for day, deals_this_day in grouped]
         # for day, value in grouped:
