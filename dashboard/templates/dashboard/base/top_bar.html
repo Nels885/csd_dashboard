@@ -121,14 +121,10 @@
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "Administration" %}</strong>
                         </a>
-                        <a class="dropdown-item" href="{% url 'dashboard:register' %}">
+                        <a class="dropdown-item" href="{% url 'dashboard:signup' %}">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "New user" %}</strong>
                         </a>
-{#                        <a class="signup-btn dropdown-item" href="#">#}
-{#                            <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>#}
-{#                            <strong class="text-primary">{% trans "New user" %}</strong>#}
-{#                        </a>#}
                         <a class="dropdown-item" href="{% url 'dashboard:config-edit' %}">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">Configuration</strong>

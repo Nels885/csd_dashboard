@@ -135,10 +135,6 @@
             // Log in buttons
             $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
 
-            // Sign up button
-            $(".signup-btn").modalForm({formURL: "{% url 'dashboard:signup' %}"});
-
-
             // Hide message
             $(".alert").fadeTo(2000, 500).slideUp(500, function () {
                 $(".alert").slideUp(500);

@@ -12,7 +12,9 @@ urlpatterns = [
     path('activity_log/', views.activity_log, name="activity-log"),
     path('search/', views.search, name="search"),
     path('config/edit/', views.config_edit, name="config-edit"),
-    path('register/', views.register, name='register'),
+    path('signup/', views.signup, name='signup'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
-    path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+    # re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.activate,
+    #         name='activate')
 ]
