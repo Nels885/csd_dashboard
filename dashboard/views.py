@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.utils.decorators import method_decorator
@@ -124,7 +124,7 @@ def signup(request):
             # user.groups.add(form.cleaned_data['groups'])
             UserProfile(user=user).save()
             current_site = get_current_site(request)
-            mail_subject = 'Activate your blog account.'
+            mail_subject = 'Activate your CSD Dashboard account.'
             message = render_to_string('dashboard/acc_active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
@@ -133,7 +133,7 @@ def signup(request):
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
-                        mail_subject, message, from_email=settings.SERVER_EMAIL, to=[to_email]
+                        mail_subject, message, to=[to_email]
             )
             email.send()
             messages.success(request, _('Success: Sign up succeeded. You can now Log in.'))
@@ -155,9 +155,10 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user)
         # return redirect('home')
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        context = {'title': _('Thank you for your email confirmation. Now you can login your account.')}
     else:
-        return HttpResponse('Activation link is invalid!')
+        context = {'title': _('Activation link is invalid!')}
+    return render(request, 'dashboard/done.html', context)
 
 
 @login_required
