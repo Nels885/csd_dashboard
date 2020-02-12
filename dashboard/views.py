@@ -118,7 +118,9 @@ def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
+            password = User.objects.make_random_password()
             user = form.save(commit=False)
+            user.set_password(password)
             user.is_active = False
             user.save()
             # user.groups.add(form.cleaned_data['groups'])
@@ -127,6 +129,7 @@ def signup(request):
             mail_subject = 'Activate your CSD Dashboard account.'
             message = render_to_string('dashboard/acc_active_email.html', {
                 'user': user,
+                'password': password,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
