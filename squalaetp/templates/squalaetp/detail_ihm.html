@@ -1,48 +1,120 @@
 {% load i18n %}
 
-
-<table class="table table-striped table-condensed">
-    <tr>
-        <td class="text-dark">Numéro de dossier</td>
-        <td>{{ file.numero_de_dossier }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">V.I.N.</td>
-        <td>{{ file.vin }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">Modèle produit</td>
-        <td>{{ file.modele_produit }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">Modèle véhicule</td>
-        <td>{{ file.modele_vehicule }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">Réf HW RAD</td>
-        <td>{{ corvet.electronique_14f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">CAL RAD</td>
-        <td>{{ corvet.electronique_94f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">Réf HW NAV</td>
-        <td>{{ corvet.electronique_14x }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">CAL NAV</td>
-        <td>{{ corvet.electronique_94x }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">Réf HW ECU moteur</td>
-        <td>{{ corvet.electronique_14a }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark">CAL ECU moteur</td>
-        <td>{{ corvet.electronique_34a }}</td>
-    </tr>
-</table>
+<div class="row">
+    <section class="col-sm-6">
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3>Données Xelon :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark">Numéro de dossier</td>
+                <td>{{ file.numero_de_dossier }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">V.I.N.</td>
+                <td>{{ file.vin }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Modèle produit</td>
+                <td>{{ file.modele_produit }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Modèle véhicule</td>
+                <td>{{ file.modele_vehicule }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3>Données Raspeedi :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark">Façade</td>
+                <td>{{ raspeedi.facade }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Type</td>
+                <td>{{ raspeedi.type }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Option DAB</td>
+                <td>{{ raspeedi.dab }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Option Caméra</td>
+                <td>{{ raspeedi.cam }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Support Cartographie</td>
+                <td>{{ raspeedi.media }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Version Cartographie</td>
+                <td>{{ raspeedi.carto }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="col-sm-6">
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3>Données Corvet :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark">Réf HW RAD</td>
+                <td>{{ corvet.electronique_14f }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">CAL RAD</td>
+                <td>{{ corvet.electronique_94f }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">N° série RAD</td>
+                <td>{{ corvet.electronique_44f }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Réf HW NAV</td>
+                <td>{{ corvet.electronique_14x }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">CAL NAV</td>
+                <td>{{ corvet.electronique_94x }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">N° série NAV</td>
+                <td>{{ corvet.electronique_44x }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Réf HW ECU moteur</td>
+                <td>{{ corvet.electronique_14a }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">CAL ECU moteur</td>
+                <td>{{ corvet.electronique_94a }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">N° série ECU moteur</td>
+                <td>{{ corvet.electronique_44a }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Réf HW BSI</td>
+                <td>{{ corvet.electronique_14b }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">CAL BSI</td>
+                <td>{{ corvet.electronique_94b }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">N° série BSI</td>
+                <td>{{ corvet.electronique_44b }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
 
 <hr>
 <h3 class="h3 mb-4 text-gray-800">Modification des données :</h3>

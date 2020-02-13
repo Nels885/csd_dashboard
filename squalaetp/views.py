@@ -37,12 +37,13 @@ def detail(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
     if file.corvet.exists():
         corvet = get_object_or_404(Corvet, vin=file.vin)
+        raspeedi = corvet.raspeedi.first()
         dict_corvet = vars(corvet)
         for key in ["_state"]:
             del dict_corvet[key]
         dict_corvet = vars(corvet)
     else:
-        corvet = dict_corvet = None
+        corvet = dict_corvet = raspeedi = None
 
     form = CorvetForm()
     form.fields['vin'].initial = file.vin
@@ -50,6 +51,7 @@ def detail(request, file_id):
         'title': file.numero_de_dossier,
         'file': file,
         'corvet': corvet,
+        'raspeedi': raspeedi,
         'dict_corvet': dict_corvet,
         'form': form,
         'redirect': request.META.get('HTTP_REFERER')
