@@ -160,8 +160,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
 
-EMAIL_HOST = 'domcustines.clarion.fr'
-EMAIL_PORT = 25
 
 # Configuration files for Clarion
 CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/current.py')
