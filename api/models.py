@@ -4,22 +4,25 @@ from django.db.models import Q
 from squalaetp.models import Xelon, Corvet
 
 ORDER_XELON_COLUMN_CHOICES = Choices(
-    ('0', 'numero_de_dossier'),
-    ('1', 'vin'),
-    ('2', 'modele_produit'),
-    ('3', 'modele_vehicule'),
-    ('4', 'date_retour'),
-    ('5', 'type_de_cloture'),
-    ('6', 'nom_technicien'),
+    ('2', 'numero_de_dossier'),
+    ('3', 'vin'),
+    ('4', 'modele_produit'),
+    ('5', 'modele_vehicule'),
+    ('6', 'date_retour'),
+    ('7', 'type_de_cloture'),
+    ('8', 'nom_technicien'),
 )
 
 ORDER_CORVET_COLUMN_CHOICES = Choices(
-    ('0', 'vin'),
-    ('1', 'electronique_14l'),
-    ('2', 'electronique_94l'),
-    ('3', 'electronique_14x'),
-    ('4', 'electronique_94x'),
-    ('5', 'electronique_44x'),
+    ('1', 'vin'),
+    ('2', 'electronique_14f'),
+    ('3', 'electronique_94f'),
+    ('4', 'electronique_14x'),
+    ('5', 'electronique_94x'),
+    ('6', 'electronique_14a'),
+    ('7', 'electronique_94a'),
+    ('8', 'electronique_14b'),
+    ('9', 'electronique_94b'),
 )
 
 
@@ -76,11 +79,15 @@ def query_corvet_by_args(**kwargs):
 
     if search_value:
         queryset = queryset.filter(Q(vin__icontains=search_value) |
-                                   Q(electronique_14l__icontains=search_value) |
-                                   Q(electronique_94l__icontains=search_value) |
+                                   Q(electronique_14f__icontains=search_value) |
+                                   Q(electronique_94f__icontains=search_value) |
                                    Q(electronique_94x__icontains=search_value) |
                                    Q(electronique_14x__icontains=search_value) |
-                                   Q(electronique_44x__icontains=search_value))
+                                   Q(electronique_14a__icontains=search_value) |
+                                   Q(electronique_14a__icontains=search_value) |
+                                   Q(electronique_94a__icontains=search_value) |
+                                   Q(electronique_14b__icontains=search_value) |
+                                   Q(electronique_94b__icontains=search_value))
 
     count = queryset.count()
     queryset = queryset.order_by(order_column)[start:start + length]

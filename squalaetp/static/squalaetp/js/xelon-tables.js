@@ -1,18 +1,13 @@
 let table = $('#xelonTable').DataTable({
     processing: true,
     serverSide: true,
+    scrollX: true,
+    order: [[6, 'desc']],
     ajax: {
         url: "/api/xelon/",
         type: "GET",
     },
     columns: [
-        {data: "numero_de_dossier"},
-        {data: "vin"},
-        {data: "modele_produit"},
-        {data: "modele_vehicule"},
-        {data: "date_retour"},
-        {data: "type_de_cloture"},
-        {data: "nom_technicien"},
         {
             data: null,
             defaultContent: '<button type="button" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>'
@@ -21,6 +16,13 @@ let table = $('#xelonTable').DataTable({
             data: null,
             defaultContent: '<button type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>'
         },
+        {data: "numero_de_dossier"},
+        {data: "vin"},
+        {data: "modele_produit"},
+        {data: "modele_vehicule"},
+        {data: "date_retour"},
+        {data: "type_de_cloture"},
+        {data: "nom_technicien"},
     ],
     rowCallback: function (row, data, index) {
         if (data['corvet'].length === 0 && (data['vin'].includes('VF3') || data['vin'].includes('VF7'))) {
@@ -29,7 +31,7 @@ let table = $('#xelonTable').DataTable({
     },
     // Disable sorting for the Tags and Actions columns.
     columnDefs: [{
-        targets: [7, 8],
+        targets: [0, 1],
         searchable: false,
         orderable: false,
     }],
