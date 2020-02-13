@@ -30,6 +30,11 @@
                         {% trans "Corvet data" %}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#logs" role="tab" aria-controls="logs" aria-selected="false">
+                        {% trans "Log Files" %}
+                    </a>
+                </li>
             {% endif %}
         </ul>
     </div>
@@ -43,14 +48,14 @@
         <!-- Detail Xelon -->
         <div class="tab-pane active" id="xelon" role="tabpanel" aria-labelledby="xelon-tab">
 
-            {% include 'squalaetp/xelon_detail.html' %}
+            {% include 'squalaetp/detail_xelon.html' %}
 
         </div>
 
         <!-- Detail IHM -->
         <div class="tab-pane" id="ihm" role="tabpanel" aria-labelledby="ihm-tab">
 
-            {% include 'squalaetp/ihm_detail.html' %}
+            {% include 'squalaetp/detail_ihm.html' %}
 
         </div>
 
@@ -68,6 +73,13 @@
 
                 </tbody>
             </table>
+        </div>
+
+        <!-- Detail LOGs -->
+        <div class="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+
+            {% include 'squalaetp/detail_logs.html' %}
+
         </div>
 
     </div>
