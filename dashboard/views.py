@@ -206,6 +206,6 @@ def class_view_decorator(function_decorator):
 
 class CustomLoginView(BSModalLoginView):
     authentication_form = CustomAuthenticationForm
-    template_name = 'dashboard/login.html'
+    template_name = 'dashboard/modal_form/login.html'
     success_message = _('Success: You were successfully logged in.')
     success_url = reverse_lazy('charts')

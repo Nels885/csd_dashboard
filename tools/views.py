@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
+from django.contrib import messages
 
 from utils.decorators import group_required
+from utils.export import calibre_file
 from dashboard.models import CsdSoftware, User
 from dashboard.forms import SoftwareForm, ParaErrorList
 
@@ -69,3 +71,18 @@ def soft_edit(request, soft_id):
         'form': form,
     }
     return render(request, 'tools/soft_edit.html', context)
+
+
+@login_required
+@group_required('technician')
+def tag_xelon_multi(request):
+    if request.method == 'POST':
+        xelon = request.POST.get('xelon')
+        comments = request.POST.get('comments')
+        if calibre_file(comments, xelon, request.user.username):
+            messages.success(request, 'Success: Création du fichier CALIBRE avec succès !')
+        else:
+            messages.warning(request, 'Warning: Le fichier CALIBRE éxiste !')
+        return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        return render(request, 'tools/modal_form/tag_xelon_multi.html')

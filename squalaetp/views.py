@@ -10,7 +10,7 @@ from .models import Xelon, Corvet
 from .forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.decorators import group_required
-from utils.xml_export_file import xml_export_file
+from utils.export import xml_file
 
 
 # from utils.scraping import ScrapingCorvet
@@ -80,7 +80,7 @@ def xelon_edit(request, file_id):
             data = form.xml_parser('xml_data')
             if data:
                 try:
-                    xml_export_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)
@@ -113,7 +113,7 @@ def ajax_xelon(request):
             data = form.xml_parser('xml_data')
             if data:
                 try:
-                    # xml_export_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    # xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)

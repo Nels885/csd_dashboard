@@ -135,8 +135,10 @@
             // Log in buttons
             $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
 
+            $(".tag-xelon-multi-btn").modalForm({formURL: "{% url 'tools:tag-xelon-multi' %}"});
+
             // Hide message
-            $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+            $(".alert").fadeTo(5000, 500).slideUp(500, function () {
                 $(".alert").slideUp(500);
             });
         })
