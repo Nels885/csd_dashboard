@@ -1,16 +1,16 @@
 import csv
 import datetime
 
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import JsonResponse
 
 from .models import Xelon, Corvet
 from .forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.decorators import group_required
-# from utils.xml_export_file import xml_export_file
+from utils.export import xml_file
 
 
 # from utils.scraping import ScrapingCorvet
@@ -20,53 +20,43 @@ def xelon_table(request):
     """
     View of Xelon table page
     """
-    files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
-        'numero_de_dossier')
+    # files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
+    #     'numero_de_dossier')
 
+    form = CorvetForm()
     context = {
         'title': 'Xelon',
         'table_title': 'Dossiers Clients',
-        'files': files
+        # 'files': files
+        'form': form
     }
     return render(request, 'squalaetp/xelon_table.html', context)
 
 
-def xelon_detail(request, file_id):
-    """
-    detailed view of Xelon data for a file
-    :param file_id:
-        Xelon file id
-    """
-    file = get_object_or_404(Xelon, pk=file_id)
-    context = {
-        'title': 'Xelon',
-        'card_title': _('Detail data for the Xelon file: ') + file.numero_de_dossier,
-        'file': file,
-    }
-    return render(request, 'squalaetp/xelon_detail.html', context)
-
-
-def ihm(request):
-    return redirect('squalaetp:ihm-detail', file_id=1)
-
-
-def ihm_detail(request, file_id):
+def detail(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
     if file.corvet.exists():
         corvet = get_object_or_404(Corvet, vin=file.vin)
+        raspeedi = corvet.raspeedi.first()
+        dict_corvet = vars(corvet)
+        for key in ["_state"]:
+            del dict_corvet[key]
+        dict_corvet = vars(corvet)
     else:
-        corvet = None
+        corvet = dict_corvet = raspeedi = None
+
     form = CorvetForm()
     form.fields['vin'].initial = file.vin
     context = {
-        'title': 'IHM Extraction',
-        'card_title': _('Detail data for the Xelon file: ') + file.numero_de_dossier,
+        'title': file.numero_de_dossier,
         'file': file,
         'corvet': corvet,
+        'raspeedi': raspeedi,
+        'dict_corvet': dict_corvet,
         'form': form,
         'redirect': request.META.get('HTTP_REFERER')
     }
-    return render(request, 'squalaetp/ihm_detail.html', context)
+    return render(request, 'squalaetp/detail.html', context)
 
 
 @login_required
@@ -90,7 +80,7 @@ def xelon_edit(request, file_id):
             data = form.xml_parser('xml_data')
             if data:
                 try:
-                    # xml_export_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)
@@ -110,27 +100,43 @@ def xelon_edit(request, file_id):
 
 
 @login_required
+@group_required('cellule', 'technician')
+def ajax_xelon(request):
+    """
+    View for changing Xelon data
+    """
+    if request.method == 'POST':
+        form = CorvetForm(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            file_id = request.POST.get('file_id')
+            file = get_object_or_404(Xelon, pk=file_id)
+            data = form.xml_parser('xml_data')
+            if data:
+                try:
+                    # xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    m = Corvet(**data)
+                    m.save()
+                    m.xelons.add(file)
+                    context = {'title': _('Modification done successfully!')}
+                    # return render(request, 'dashboard/done.html', context)
+                    return JsonResponse(context)
+                except TypeError:
+                    form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
+        print(form.errors)
+    return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
+
+
+@login_required
 def corvet_table(request):
     """
     View of Corvet table page, visible only if authenticated
     """
-    corvets_list = Corvet.objects.all().order_by('vin')
-
-    paginator = Paginator(corvets_list, 500)
-    page = request.GET.get('page')
-    try:
-        corvets = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        corvets = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        corvets = paginator.page(paginator.num_pages)
+    # corvets_list = Corvet.objects.all().order_by('vin')
 
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),
-        'corvets': corvets
+        # 'corvets': corvets
     }
     return render(request, 'squalaetp/corvet_table.html', context)
 

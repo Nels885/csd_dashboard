@@ -2,13 +2,14 @@ from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions
-
+from rest_framework import viewsets, permissions, status
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
+from api.serializers import XelonSerializer, CorvetSerializer
 from raspeedi.models import Raspeedi
-from squalaetp.models import Xelon
-from utils.product_Analysis import ProductAnalysis
+from squalaetp.models import Xelon, Corvet
+from utils.analysis import ProductAnalysis, DealAnalysis
+from api.models import query_xelon_by_args, query_corvet_by_args
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -85,7 +86,7 @@ class CalList(generics.ListAPIView):
         return queryset
 
 
-class CharData(APIView):
+class Charts(APIView):
     """
     API endpoint that allows chart data to be viewed
     """
@@ -94,10 +95,51 @@ class CharData(APIView):
         """
         Return a dictionnary of data
         """
-        analysis = ProductAnalysis()
-        labels, prod_nb = analysis.products_count()
+        analysis, deal = ProductAnalysis(), DealAnalysis()
+        prod_labels, prod_nb = analysis.products_count()
+        deal_labels, deal_nb = deal.count()
         data = {
-            "labels": labels,
-            "default": prod_nb,
+            "prodLabels": prod_labels,
+            "prodDefault": prod_nb,
+            "dealLabels": deal_labels,
+            "dealDefault": deal_nb,
         }
         return Response(data)
+
+
+class XelonViewSet(viewsets.ModelViewSet):
+    queryset = Xelon.objects.all()
+    serializer_class = XelonSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            xelon = query_xelon_by_args(**request.query_params)
+            serializer = XelonSerializer(xelon['items'], many=True)
+            result = {
+                'data': serializer.data,
+                'draw': xelon['draw'],
+                'recordsTotal': xelon['total'],
+                'recordsFiltered': xelon['count']
+            }
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+class CorvetViewSet(viewsets.ModelViewSet):
+    queryset = Corvet.objects.all()
+    serializer_class = CorvetSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            corvet = query_corvet_by_args(**request.query_params)
+            serializer = CorvetSerializer(corvet['items'], many=True)
+            result = {
+                'data': serializer.data,
+                'draw': corvet['draw'],
+                'recordsTotal': corvet['total'],
+                'recordsFiltered': corvet['count']
+            }
+            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)

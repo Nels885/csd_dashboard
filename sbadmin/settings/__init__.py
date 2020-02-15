@@ -30,6 +30,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = [
+    'bootstrap_modal_forms',
+    'widget_tweaks',
     'dashboard.apps.DashboardConfig',
     'raspeedi.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',
@@ -155,8 +157,9 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
-LOGIN_REDIRECT_URL = '/dashboard/profile/'
+LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
+
 
 # Configuration files for Clarion
 CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/current.py')

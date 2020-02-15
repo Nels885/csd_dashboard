@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-17 17:00+0200\n"
+"POT-Creation-Date: 2020-02-06 15:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,59 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-#: reman/templates/reman/create_form.html:55
-#: reman/templates/reman/form.html:105
+
+#: reman/templates/reman/create_form.html:62
 msgid "Submit"
 msgstr "Soumettre"
 
-#: reman/templates/reman/form.html:7
-msgid "Case reference"
-msgstr ""
-
-#: reman/templates/reman/form.html:14
-msgid "Product"
-msgstr ""
-
-#: reman/templates/reman/form.html:21
-msgid "Front"
-msgstr ""
-
-#: reman/templates/reman/form.html:41
-msgid "Reversing camera"
-msgstr ""
-
-#: reman/templates/reman/form.html:49
-msgid "PEEDI dump"
-msgstr ""
-
-#: reman/templates/reman/form.html:54
-msgid "RENESAS dump"
-msgstr ""
-
-#: reman/templates/reman/form.html:61
-msgid "Version CD"
-msgstr ""
-
-#: reman/templates/reman/form.html:67
-msgid "Media type"
-msgstr ""
-
-#: reman/templates/reman/form.html:74
-msgid "Carto version"
-msgstr ""
-
-#: reman/templates/reman/form.html:80
-msgid "Screens number"
-msgstr ""
-
-#: reman/templates/reman/form.html:89
-msgid "MM reference"
-msgstr ""
-
-#: reman/views.py:15
+#: reman/views.py:27
 msgid "New customer folder"
 msgstr "Nouveau dossier client"
 
-#: reman/views.py:24
+#: reman/views.py:35
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"

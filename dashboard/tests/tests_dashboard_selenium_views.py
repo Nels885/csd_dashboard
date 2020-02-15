@@ -36,7 +36,7 @@ class DashboardSeleniumTestCase(LiveServerTestCase):
         password.send_keys('totopassword')
         login[0].click()
 
-        self.assertEqual(driver.current_url, self.live_server_url + '/dashboard/profile/')
+        self.assertEqual(driver.current_url, self.live_server_url + '/dashboard/charts/')
 
     def test_login_page_is_not_valid(self):
         driver = self.driver

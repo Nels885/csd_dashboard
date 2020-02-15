@@ -47,6 +47,7 @@ class RaspeediSerializer(serializers.ModelSerializer):
     """
     Serializer for the Raspeedi table
     """
+
     class Meta:
         model = Raspeedi
         fields = ('ref_boitier', 'produit', 'facade', 'dump_peedi', 'media', 'dump_renesas',)
@@ -56,16 +57,21 @@ class CorvetSerializer(DynamicFieldsModelSerializer):
     """
     Serializer for the Corvet table with conversion of column names
     """
-    ref_radio = serializers.CharField(source='electronique_14l')
-    cal_radio = serializers.CharField(source='electronique_94l')
-    ref_nav = serializers.CharField(source='electronique_14x')
-    cal_nav = serializers.CharField(source='electronique_94x')
-    no_serie = serializers.CharField(source='electronique_44x')
+    rad_ref = serializers.CharField(source='electronique_14f')
+    rad_cal = serializers.CharField(source='electronique_94f')
+    nav_ref = serializers.CharField(source='electronique_14x')
+    nav_cal = serializers.CharField(source='electronique_94x')
+    cmm_ref = serializers.CharField(source='electronique_14a')
+    cmm_cal = serializers.CharField(source='electronique_94a')
+    bsi_ref = serializers.CharField(source='electronique_14b')
+    bsi_cal = serializers.CharField(source='electronique_94b')
+
     raspeedi = RaspeediSerializer(many=True, read_only=True)
 
     class Meta:
         model = Corvet
-        fields = ('ref_radio', 'cal_radio', 'ref_nav', 'cal_nav', 'no_serie', 'raspeedi')
+        fields = ('vin', 'rad_ref', 'rad_cal', 'nav_ref', 'nav_cal',
+                  'cmm_ref', 'cmm_cal', 'bsi_ref', 'bsi_cal', 'raspeedi')
 
 
 class ProgSerializer(serializers.ModelSerializer):
@@ -90,3 +96,13 @@ class CalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Xelon
         fields = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet')
+
+
+class XelonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Xelon
+        fields = (
+            'id', 'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture',
+            'nom_technicien', 'corvet'
+        )

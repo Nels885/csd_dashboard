@@ -6,103 +6,92 @@
 
 {% block table_content %}
 
-    <div>
-        {% trans "Hide column:" %}
-        <a class="toggle-vis text-primary" data-column="1">V.I.N.</a> -
-        <a class="toggle-vis text-primary" data-column="3">Modèle véhicule</a> -
-        <a class="toggle-vis text-primary" data-column="7">Nom Technicien</a> -
-        <a class="toggle-vis text-primary" data-column="8">Dossier VIP</a> -
-        <a class="toggle-vis text-primary" data-column="9">Express</a>
-    </div>
-    <br>
+    {#    <div>#}
+    {#        {% trans "Hide column:" %}#}
+    {#        <a class="toggle-vis text-primary" data-column="1">V.I.N.</a> -#}
+    {#        <a class="toggle-vis text-primary" data-column="3">Modèle véhicule</a> -#}
+    {#        <a class="toggle-vis text-primary" data-column="7">Nom Technicien</a> -#}
+    {#        <a class="toggle-vis text-primary" data-column="8">Dossier VIP</a> -#}
+    {#        <a class="toggle-vis text-primary" data-column="9">Express</a>#}
+    {#    </div>#}
+    {#    <br>#}
 
     <table class="table table-bordered" id="xelonTable" width="100%" cellspacing="0">
         <thead>
         <tr>
+            <th></th>
+            <th></th>
             <th class="all">Numéro de dossier</th>
             <th>V.I.N.</th>
             <th class="all">Modèle produit</th>
             <th>Modèle véhicule</th>
+            <th>Date Retour</th>
             <th class="all">Type de clôture</th>
-            <th class="all">Date Retour</th>
-            <th>Date clôture</th>
             <th>Nom Technicien</th>
-            <th>Dossier VIP</th>
-            <th>Express</th>
-            <th class="all"></th>
-            <th class="all"></th>
         </tr>
         </thead>
-        <tfoot>
-        <tr>
-            <th>Numéro de dossier</th>
-            <th>V.I.N.</th>
-            <th>Modèle produit</th>
-            <th>Modèle véhicule</th>
-            <th>Type de clôture</th>
-            <th>Date Retour</th>
-            <th>Date clôture</th>
-            <th>Nom Technicien</th>
-            <th>Dossier VIP</th>
-            <th>Express</th>
-            <th></th>
-            <th></th>
-        </tr>
-        </tfoot>
-        <tbody>
-
-        {% for file in files %}
-
-            <tr {% if "PSA" in file.famille_client and "VF" in file.vin and not file.corvet.exists %}class="bg-danger text-light"{% endif %}>
-                <td>{{ file.numero_de_dossier }}</td>
-                <td>{{ file.vin }}</td>
-                <td>{{ file.modele_produit }}</td>
-                <td>{{ file.modele_vehicule }}</td>
-                <td>{{ file.type_de_cloture }}</td>
-                <td>{{ file.date_retour|default:"--" }}</td>
-                <td>{{ file.date_de_cloture|default:"--" }}</td>
-                <td>{{ file.nom_technicien }}</td>
-                <td>{{ file.dossier_vip }}</td>
-                <td>{{ file.express }}</td>
-                <td class="bg-white">
-                    <a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}" title="Modification VIN et Corvet"
-                       class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                </td>
-                <td class="bg-white">
-                    <a href="{% url 'squalaetp:xelon-detail' file_id=file.id %}" title="Détail"
-                       class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
-                </td>
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
     </table>
-
-    <br>
-    <div class="pagination">
-        <span class="step-links">
-            {% if files.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ files.previous_page_number }}">previous</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ files.number }} of {{ files.paginator.num_pages }}.
-            </span>
-
-            {% if files.has_next %}
-                <a href="?page={{ files.next_page_number }}">next</a>
-                <a href="?page={{ files.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
 
 {% endblock %}
 
 {% block tablejs %}
 
     <!-- Page level custom scripts -->
-    <script type="text/javascript" src="{% static 'dashboard/js/xelon-tables.js' %}"></script>
+    <script type="text/javascript" src="{% static 'squalaetp/js/xelon-tables.js' %}"></script>
+
+{% endblock %}
+
+{% block custommodal %}
+
+    <!-- Xelon Edit Modal-->
+    <div class="modal fade" id="xelonEditModal" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="xelonModalLabel"></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="xelonModalBody">
+                    <form>
+
+                        {% csrf_token %}
+
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+
+                                {{ form.vin }}
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            Pour récupérer les données XML, cliquer sur le lien
+                            <a href="https://www.repairnav.com/clarionservice_v2/corvet.xhtml"
+                               target="_blank">CORVET</a>.
+                        </div>
+
+                        <div class="form-group">
+
+                            {{ form.xml_data }}
+
+                        </div>
+
+                        <div id="xelonErrors"></div>
+
+                        <button name="btn_corvet_insert" type="submit"
+                                class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block">
+                            {% trans "Submit" %}
+                        </button>
+                    </form>
+                </div>
+                {#                <div class="modal-footer">#}
+                {#                    <button class="btn btn-secondary" type="button" data-dismiss="modal">{% trans "Cancel" %}</button>#}
+                {#                    <a class="btn btn-primary" href="{% url 'logout' %}">{% trans "Logout" %}</a>#}
+                {#                </div>#}
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

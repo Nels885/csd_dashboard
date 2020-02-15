@@ -1,4 +1,4 @@
-{% extends 'dashboard/layout.html' %}
+{% extends 'dashboard/base/_layout.html' %}
 
 {% load i18n %}
 
@@ -24,7 +24,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard:index' %}">
+                <a class="nav-link" href="{% url 'dashboard:charts' %}">
                     <i class=" fas fa-fw fa-tachometer-alt"></i>
                     <span>{% trans "Dashboard" %}</span></a>
             </li>
@@ -40,16 +40,19 @@
 
                 <!-- Nav Item - login -->
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">
+                    <a class="login-btn nav-link" href="#">
                         <i class="fas fa-fw fa-user"></i>
-                        <span>{% trans "Login" %}</span></a>
+                        <span>{% trans "Login" %}</span>
+                    </a>
                 </li>
 
             {% endif %}
 
-            {% include 'dashboard/nav_csd_atelier.html' %}
+            {% include 'dashboard/base/nav_csd_atelier.html' %}
 
-            {% include 'dashboard/nav_csd_admin.html' %}
+            {% include 'dashboard/base/nav_csd_admin.html' %}
+
+            {% include 'dashboard/base/nav_tools.html' %}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -70,7 +73,22 @@
             <!-- Main Content -->
             <div id="content">
 
-                {% include 'dashboard/top_bar.html' %}
+                <div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div style="border-radius:0;" {% if message.tags %}
+                                 class="alert alert-icon alert-{{ message.tags }} alert-dismissible fade show mb-0"
+                                 role="alert" {% endif %}>
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                {% include 'dashboard/base/top_bar.html' %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -104,5 +122,27 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    {% include 'dashboard/modal_logout.html' %}
+    {% include 'dashboard/base/_modal.html' %}
+
+    {% block custommodal %} {% endblock %}
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        $(function () {
+            // Log in buttons
+            $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
+
+            $(".tag-xelon-multi-btn").modalForm({formURL: "{% url 'tools:tag-xelon-multi' %}"});
+
+            // Hide message
+            $(".alert").fadeTo(5000, 500).slideUp(500, function () {
+                $(".alert").slideUp(500);
+            });
+        })
+        ;
+    </script>
+
 {% endblock %}

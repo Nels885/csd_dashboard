@@ -57,7 +57,7 @@ class ApiTestCase(APITestCase):
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
-    def test_chart_data_is_valid(self):
-        response = self.client.get(reverse('api:data'), format='json')
+    def test_charts_is_valid(self):
+        response = self.client.get(reverse('api:charts'), format='json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data), 4)
