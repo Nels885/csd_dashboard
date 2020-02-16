@@ -1,12 +1,14 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
-from django.contrib import messages
+from django.urls import reverse_lazy
+from bootstrap_modal_forms.generic import BSModalCreateView
 
 from utils.decorators import group_required
-from utils.export import calibre_file
 from dashboard.models import CsdSoftware, User
 from dashboard.forms import SoftwareForm, ParaErrorList
+from .forms import TagXelonMultiForm
 
 
 def soft_list(request):
@@ -73,16 +75,13 @@ def soft_edit(request, soft_id):
     return render(request, 'tools/soft_edit.html', context)
 
 
-@login_required
-@group_required('technician')
-def tag_xelon_multi(request):
-    if request.method == 'POST':
-        xelon = request.POST.get('xelon')
-        comments = request.POST.get('comments')
-        if calibre_file(comments, xelon, request.user.username):
-            messages.success(request, 'Success: Création du fichier CALIBRE avec succès !')
+class TagXelonMultiView(LoginRequiredMixin, BSModalCreateView):
+    template_name = 'tools/modal_form/tag_xelon_multi.html'
+    form_class = TagXelonMultiForm
+    success_message = 'Success: Création du fichier CALIBRE avec succès !'
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
         else:
-            messages.warning(request, 'Warning: Le fichier CALIBRE éxiste !')
-        return redirect(request.META.get('HTTP_REFERER'))
-    else:
-        return render(request, 'tools/modal_form/tag_xelon_multi.html')
+            return reverse_lazy('index')

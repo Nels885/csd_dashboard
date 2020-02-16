@@ -5,10 +5,12 @@ from django.utils.decorators import method_decorator
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
 from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse_lazy
+from django.views.generic import TemplateView
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -209,3 +211,7 @@ class CustomLoginView(BSModalLoginView):
     template_name = 'dashboard/modal_form/login.html'
     success_message = _('Success: You were successfully logged in.')
     success_url = reverse_lazy('charts')
+
+
+class CustomLogoutView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard/modal_form/logout.html'

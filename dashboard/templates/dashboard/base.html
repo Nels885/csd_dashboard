@@ -134,8 +134,9 @@
         $(function () {
             // Log in buttons
             $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
+            $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
 
-            $(".tag-xelon-multi-btn").modalForm({formURL: "{% url 'tools:tag-xelon-multi' %}"});
+            $(".tag-xelon-multi").modalForm({formURL: "{% url 'tools:tag-xelon-multi' %}", modalID: "#create-modal"});
 
             // Hide message
             $(".alert").fadeTo(5000, 500).slideUp(500, function () {

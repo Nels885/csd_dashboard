@@ -14,5 +14,6 @@ urlpatterns = [
     path('config/edit/', views.config_edit, name="config-edit"),
     path('signup/', views.signup, name='signup'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 ]
