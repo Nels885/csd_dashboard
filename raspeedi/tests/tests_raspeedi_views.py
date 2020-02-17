@@ -1,9 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 
-from raspeedi.models import Raspeedi
+from raspeedi.models import Raspeedi, UnlockProduct
+from squalaetp.models import Xelon
+from dashboard.models import UserProfile
 
 
 class RaspeediTestCase(TestCase):
@@ -15,7 +17,9 @@ class RaspeediTestCase(TestCase):
         }
         user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
         user.groups.add(Group.objects.create(name="cellule"))
+        user.user_permissions.add(Permission.objects.get(codename='add_unlockproduct'))
         user.save()
+        UserProfile(user=user).save()
 
     def test_raspeedi_table_page_is_disconnected(self):
         response = self.client.get(reverse('raspeedi:table'))
@@ -71,3 +75,32 @@ class RaspeediTestCase(TestCase):
     def test_raspeedi_detail_page_is_not_found(self):
         response = self.client.get(reverse('raspeedi:detail', kwargs={'ref_case': 1234567890}))
         self.assertEqual(response.status_code, 404)
+
+    def test_unlock_page_is_disconnected(self):
+        response = self.client.get(reverse('raspeedi:unlock-prods'))
+        self.assertRedirects(response, '/accounts/login/?next=/raspeedi/unlock/', status_code=302)
+
+    def test_unlock_page_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
+        response = self.client.get(reverse('raspeedi:unlock-prods'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_unlock_add_page_is_not_valid(self):
+        self.client.login(username='toto', password='totopassword')
+        old_unlock = UnlockProduct.objects.count()
+        for xelon, message in {'azerty': 'Xelon number is invalid', 'A987654321': 'Xelon number no exist'}.items():
+            response = self.client.post(reverse('raspeedi:unlock-prods'), {'unlock': xelon})
+            new_unlock = UnlockProduct.objects.count()
+            self.assertEqual(new_unlock, old_unlock)
+            self.assertFormError(response, 'form', 'unlock', _(message))
+            self.assertEqual(response.status_code, 200)
+
+    def test_unlock_add_page_is_valid(self):
+        self.client.login(username='toto', password='totopassword')
+        Xelon.objects.create(numero_de_dossier='A123456789', vin='VF3ABCDEF12345678', modele_produit='produit',
+                             modele_vehicule='peugeot')
+        old_unlock = UnlockProduct.objects.count()
+        response = self.client.post(reverse('raspeedi:unlock-prods'), {'unlock': 'A123456789'})
+        new_unlock = UnlockProduct.objects.count()
+        self.assertEqual(new_unlock, old_unlock + 1)
+        self.assertEqual(response.status_code, 200)

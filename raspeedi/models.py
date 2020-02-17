@@ -1,7 +1,7 @@
 from django.db import models
 
 from squalaetp.models import Corvet, Xelon
-from dashboard.models import UserProfile
+from dashboard.models import UserProfile, User
 
 
 class Raspeedi(models.Model):

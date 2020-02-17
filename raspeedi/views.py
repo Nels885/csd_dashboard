@@ -47,7 +47,6 @@ def detail(request, ref_case):
 
 
 @login_required
-@group_required('cellule', 'technician', 'operator')
 def unlock_prods(request):
     unlock = UnlockProduct.objects.all().order_by('created_at')
     context = {
@@ -59,10 +58,13 @@ def unlock_prods(request):
         user = UserProfile.objects.get(user_id=request.user.id)
         form = UnlockForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
-            unlock = form.cleaned_data['unlock']
-            product = get_object_or_404(Xelon, numero_de_dossier=unlock)
-            UnlockProduct.objects.create(user=user, unlock=product)
-            messages.success(request, 'Ajout avec succès !')
+            if request.user.has_perm('raspeedi.add_unlockproduct'):
+                unlock = form.cleaned_data['unlock']
+                product = get_object_or_404(Xelon, numero_de_dossier=unlock)
+                UnlockProduct.objects.create(user=user, unlock=product)
+                messages.success(request, _('Adding the Xelon number %(xelon)s successfully') % {'xelon': unlock})
+            else:
+                messages.warning(request, _('You do not have the required permissions'))
         context['errors'] = form.errors.items()
     else:
         form = UnlockForm()

@@ -25,15 +25,12 @@ class UserProfile(models.Model):
         in case of there is no self.image as example
         after a clear action.
         """
-        print(self.image)
         if self.image and self.tracker.has_changed('image'):
-            print(self.tracker.previous('image'))
             # keep the upload image path in order to delete if after
             upload_image = self.image.path
 
             # rename avatar image
             image_name = '{}-{}.jpg'.format(date.today(), self.user.id)
-
             img = Image.open(upload_image)
 
             # convert all picture to jpg
@@ -63,7 +60,6 @@ class UserProfile(models.Model):
                 if self.image and self.tracker.previous('image'):
                     try:
                         old_image = '{}/{}'.format(settings.MEDIA_ROOT, self.tracker.previous('image'))
-                        print(old_image)
                         os.remove(old_image)
                     except FileNotFoundError:
                         pass
