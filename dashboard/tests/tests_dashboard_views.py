@@ -51,7 +51,7 @@ class DashboardTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_search_is_disconnected(self):
-        response = self.client.get(reverse('dashboard:search'), {'query': 'null', 'select': 'xelon'})
+        response = self.client.get('/dashboard/search/?query=null&select=xelon')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/?next=/dashboard/search/%3Fquery%3Dnull%26select%3Dxelon')
 
