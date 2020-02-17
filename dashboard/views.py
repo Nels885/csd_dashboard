@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.translation import ugettext as _
-from django.utils.decorators import method_decorator
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
@@ -23,7 +23,6 @@ import re
 from bootstrap_modal_forms.generic import BSModalLoginView
 
 from utils.analysis import ProductAnalysis
-from utils.decorators import group_required
 from utils.tokens import account_activation_token
 from .models import Post, UserProfile
 from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm
@@ -53,6 +52,7 @@ def charts(request):
     return render(request, 'dashboard/charts.html', context)
 
 
+@login_required
 def search(request):
     """
     View of search page
@@ -112,7 +112,7 @@ def user_profile(request):
 
 
 @login_required
-@group_required('admin')
+@staff_member_required(login_url='login')
 def signup(request):
     context = {
         'title': 'Signup',
@@ -169,7 +169,7 @@ def activate(request, uidb64, token):
 
 
 @login_required
-@group_required('cellule')
+@staff_member_required(login_url='login')
 def config_edit(request):
 
     if request.method == 'POST':
@@ -189,21 +189,6 @@ def config_edit(request):
     }
 
     return render(request, 'dashboard/config.html', context)
-
-
-def class_view_decorator(function_decorator):
-    """Convert a function based decorator into a class based decorator usable
-    on class based Views.
-
-    Can't subclass the `View` as it breaks inheritance (super in particular),
-    so we monkey-patch instead.
-    """
-
-    def simple_decorator(view):
-        view.dispatch = method_decorator(function_decorator)(view.dispatch)
-        return view
-
-    return simple_decorator
 
 
 class CustomLoginView(BSModalLoginView):

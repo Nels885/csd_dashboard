@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load user_tags %}
 
-{% if user.is_authenticated and user|has_group:'cellule' or user.is_superuser %}
+{% if user.is_authenticated and user|has_group:'tools' or user.is_superuser %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">
