@@ -17,13 +17,18 @@ class RaspeediTestCase(TestCase):
         user.groups.add(Group.objects.create(name="cellule"))
         user.save()
 
-    def test_raspeedi_table_page(self):
+    def test_raspeedi_table_page_is_disconnected(self):
+        response = self.client.get(reverse('raspeedi:table'))
+        self.assertRedirects(response, '/accounts/login/?next=/raspeedi/table/', status_code=302)
+
+    def test_raspeedi_table_page_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
         response = self.client.get(reverse('raspeedi:table'))
         self.assertEqual(response.status_code, 200)
 
     def test_raspeedi_insert_page_is_disconnected(self):
         response = self.client.get(reverse('raspeedi:insert'))
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/raspeedi/insert/', status_code=302)
 
     def test_raspeedi_insert_page_is_connected(self):
         self.client.login(username='toto', password='totopassword')

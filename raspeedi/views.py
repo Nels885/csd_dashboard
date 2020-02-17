@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.contrib import messages
 
 from .models import Raspeedi, UnlockProduct, UserProfile
 from .forms import RaspeediForm, UnlockForm
@@ -9,6 +10,7 @@ from squalaetp.models import Xelon
 from utils.decorators import group_required
 
 
+@login_required
 def table(request):
     """
     View of the Raspeedi table page
@@ -60,6 +62,8 @@ def unlock_prods(request):
             unlock = form.cleaned_data['unlock']
             product = get_object_or_404(Xelon, numero_de_dossier=unlock)
             UnlockProduct.objects.create(user=user, unlock=product)
+            messages.success(request, 'Ajout avec succès !')
+        context['errors'] = form.errors.items()
     else:
         form = UnlockForm()
     context['form'] = form

@@ -2,11 +2,9 @@ from django import forms
 from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 
-import re
-
 from utils.export import calibre_file
+from utils.validators import validate_xelon
 
-from squalaetp.models import Xelon
 from .models import TagXelonMulti
 
 
@@ -21,13 +19,9 @@ class TagXelonMultiForm(BSModalForm):
 
     def clean_xelon(self):
         data = self.cleaned_data['xelon']
-        if re.match(r'^[a-zA-Z]\d{9}$', str(data)):
-            try:
-                Xelon.objects.get(numero_de_dossier=data)
-            except Xelon.DoesNotExist:
-                self.add_error('xelon', _('Xelon number no exist'))
-        else:
-            self.add_error('xelon', _('Xelon number is invalid'))
+        message = validate_xelon(data)
+        if message:
+            self.add_error('xelon', _(message))
         return data
 
     def save(self, commit=True):

@@ -14,21 +14,22 @@
             <label for="{{ form.unlock.id_for_label }}" class="mb-2 mr-sm-4">Numéro de dossier</label>
 
             {{ form.unlock }}
-        </div>
 
-        {% if errors %}
-            {% for key, error in errors %}
-                {% autoescape off %}
-                    {{ error }}
-                {% endautoescape %}
-            {% endfor %}
-        {% endif %}
+        </div>
 
         <button type="submit" name="btn_unlock_prods" class="btn btn-primary mb-2">
             {% trans "Submit" %}
         </button>
 
     </form>
+
+    {% if errors %}
+        {% for key, error in errors %}
+            {% autoescape off %}
+                {{ error }}
+            {% endautoescape %}
+        {% endfor %}
+    {% endif %}
 
     <hr>
 

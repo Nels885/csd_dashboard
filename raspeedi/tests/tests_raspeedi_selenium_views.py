@@ -58,5 +58,13 @@ class RaspeediSeleniumTestCase(LiveServerTestCase):
 
     def test_raspeedi_table_page(self):
         driver = self.driver
+
+        # Creating session cookie for to access Raspeedi insert form
+        self.client.login(username='toto', password='totopassword')
+        cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/raspeedi/table/')
+        driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
+        driver.refresh()
+        driver.get(self.live_server_url + '/raspeedi/table/')
+
         self.assertEqual(driver.current_url, self.live_server_url + '/raspeedi/table/')

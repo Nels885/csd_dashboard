@@ -5,12 +5,11 @@ from datetime import datetime
 
 import xml.etree.ElementTree as ET
 
-import re
+from utils.validators import validate_vin
 
 
 class CorvetForm(forms.Form):
     vin = forms.CharField(
-        # validators=[validate_vin],
         max_length=17,
         widget=forms.TextInput(
             attrs={
@@ -33,9 +32,10 @@ class CorvetForm(forms.Form):
 
     def clean_vin(self):
         data = self.cleaned_data['vin']
-        if not re.match(r'^VF[37]\w{14}$', str(data)):
+        message = validate_vin(data)
+        if message:
             raise ValidationError(
-                _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'),
+                _(message),
                 code='invalid',
                 params={'value': data},
             )

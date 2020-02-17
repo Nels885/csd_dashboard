@@ -1,5 +1,7 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
+from django.utils.translation import ugettext as _
 
+from utils.validators import validate_xelon
 from .models import Raspeedi
 
 
@@ -34,3 +36,10 @@ class UnlockForm(Form):
         label='Numéro de dossier', max_length=10,
         widget=TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'})
     )
+
+    def clean_unlock(self):
+        data = self.cleaned_data['unlock']
+        message = validate_xelon(data)
+        if message:
+            self.add_error('unlock', _(message))
+        return data
