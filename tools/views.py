@@ -76,8 +76,8 @@ def soft_edit(request, soft_id):
 
 
 @class_view_decorator(group_required('technician'))
-class TagXelonMultiView(LoginRequiredMixin, BSModalCreateView):
-    template_name = 'tools/modal_form/tag_xelon_multi.html'
+class TagXelonView(LoginRequiredMixin, BSModalCreateView):
+    template_name = 'tools/modal/tag_xelon.html'
     form_class = TagXelonMultiForm
     success_message = 'Success: Création du fichier CALIBRE avec succès !'
 

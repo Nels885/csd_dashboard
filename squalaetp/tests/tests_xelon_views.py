@@ -26,13 +26,18 @@ class XelonTestCase(TestCase):
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
 
-    def test_xelon_table_page(self):
+    def test_xelon_table_page_is_disconnected(self):
+        response = self.client.get(reverse('squalaetp:xelon'))
+        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/', status_code=302)
+
+    def test_xelon_table_page_is_connected(self):
+        self.client.login(username='toto', password='totopassword')
         response = self.client.get(reverse('squalaetp:xelon'))
         self.assertEqual(response.status_code, 200)
 
     def test_xelon_edit_page_is_disconnected(self):
         response = self.client.get(reverse('squalaetp:xelon-edit', kwargs={'file_id': 1}))
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/1/edit/', status_code=302)
 
     def test_xelon_edit_page_is_connected(self):
         self.client.login(username='toto', password='totopassword')

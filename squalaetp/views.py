@@ -4,10 +4,13 @@ import datetime
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.contrib import messages
 from django.http import JsonResponse
+from django.urls import reverse_lazy
+from bootstrap_modal_forms.generic import BSModalCreateView
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm
+from .forms import CorvetForm, CorvetModalForm
 from dashboard.forms import ParaErrorList
 from utils.decorators import group_required
 from utils.export import xml_file
@@ -16,6 +19,7 @@ from utils.export import xml_file
 # from utils.scraping import ScrapingCorvet
 
 
+@login_required
 def xelon_table(request):
     """
     View of Xelon table page
@@ -33,6 +37,7 @@ def xelon_table(request):
     return render(request, 'squalaetp/xelon_table.html', context)
 
 
+@login_required
 def detail(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
     if file.corvet.exists():
@@ -117,9 +122,9 @@ def ajax_xelon(request):
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)
-                    context = {'title': _('Modification done successfully!')}
-                    # return render(request, 'dashboard/done.html', context)
-                    return JsonResponse(context)
+                    context = {'message': _('Modification done successfully!')}
+                    messages.success(request, context['message'])
+                    return JsonResponse(context, status=200)
                 except TypeError:
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
         print(form.errors)
@@ -213,3 +218,20 @@ def export_corvet_csv(request):
         writer.writerow(corvet)
 
     return response
+
+
+class CorvetCreateView(BSModalCreateView):
+    template_name = 'squalaetp/modal/corvet_form.html'
+    form_class = CorvetModalForm
+    success_message = _('Modification done successfully!')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('CORVET integration')
+        return context
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')

@@ -193,10 +193,10 @@ def config_edit(request):
 
 class CustomLoginView(BSModalLoginView):
     authentication_form = CustomAuthenticationForm
-    template_name = 'dashboard/modal_form/login.html'
+    template_name = 'dashboard/modal/login.html'
     success_message = _('Success: You were successfully logged in.')
     success_url = reverse_lazy('charts')
 
 
 class CustomLogoutView(LoginRequiredMixin, TemplateView):
-    template_name = 'dashboard/modal_form/logout.html'
+    template_name = 'dashboard/modal/logout.html'

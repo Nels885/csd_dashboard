@@ -136,7 +136,9 @@
             $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
             $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
 
-            $(".tag-xelon-multi").modalForm({formURL: "{% url 'tools:tag-xelon-multi' %}", modalID: "#create-modal"});
+            $(".tag-xelon-btn").modalForm({formURL: "{% url 'tools:tag-xelon' %}", modalID: "#create-modal"});
+
+            $(".corvet-btn").modalForm({formURL: "{% url 'squalaetp:create-corvet' %}", modalID: "#large-modal"});
 
             // Hide message
             $(".alert").fadeTo(5000, 500).slideUp(500, function () {

@@ -49,7 +49,7 @@ $('#xelonTable tbody').on('click', 'button', function () {
         $('#id_vin').val(data["vin"]);
         $('#id_xml_data').val('');
         $('#xelonEditModal').modal();
-    } else {
+    } else if (class_name === 'btn btn-info btn-circle btn-sm') {
         // Detail button
         location.href = '/squalaetp/' + id + '/detail/'
     }
@@ -69,11 +69,7 @@ $('#xelonModalBody form').on('submit', function (e) {
         },
         dataType: 'json',
         success: function (data) {
-            //get your modal body by class and change its html
-            document.getElementById('xelonModalBody').innerHTML = '<div class="text-center">' + data.title + '</div>';
-            window.setTimeout(function () {
-                window.location.reload()
-            }, 2000);
+            window.location.reload()
         },
         error: function (data) {
             document.getElementById('xelonErrors').innerHTML = '<p class="text-danger">* Les données XML ne sont pas valide</p>';

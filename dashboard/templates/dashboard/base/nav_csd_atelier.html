@@ -28,8 +28,7 @@
                     <div class="collapse-divider"></div>
                     {% if user|has_group:'technician' %}
                         <h6 class="collapse-header">Edition :</h6>
-                        <a class="collapse-item"
-                           href="{% url 'squalaetp:corvet-insert' %}">{% trans "Add Corvet" %}</a>
+                        <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
                     {% endif %}
                 </div>
             </div>

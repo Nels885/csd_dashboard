@@ -28,7 +28,7 @@ class TagXelonMultiForm(BSModalForm):
         xelon = self.cleaned_data['xelon']
         comments = self.cleaned_data['comments']
         calibre_file(comments, xelon, self.request.user.username)
-        tag = super(TagXelonMultiForm, self).save(commit=False)
+        tag = super().save(commit=False)
         tag.created_by = self.request.user
         if commit:
             tag.save()

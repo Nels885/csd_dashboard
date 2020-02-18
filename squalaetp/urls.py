@@ -13,4 +13,5 @@ urlpatterns = [
     path('corvet/export/csv/', views.export_corvet_csv, name='export-corvet-csv'),
     path('ajax/xelon/', views.ajax_xelon, name='ajax-xelon'),
     path('<int:file_id>/detail/', views.detail, name='detail'),
+    path('corvet/create/', views.CorvetCreateView.as_view(), name='create-corvet'),
 ]
