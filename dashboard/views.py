@@ -22,8 +22,8 @@ import re
 
 from bootstrap_modal_forms.generic import BSModalLoginView
 
-from utils.analysis import ProductAnalysis
-from utils.tokens import account_activation_token
+from utils.data.analysis import ProductAnalysis
+from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
 from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm
 from squalaetp.models import Xelon

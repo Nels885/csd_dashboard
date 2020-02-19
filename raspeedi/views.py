@@ -7,7 +7,7 @@ from .models import Raspeedi, UnlockProduct, UserProfile
 from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
 from squalaetp.models import Xelon
-from utils.decorators import group_required
+from utils.django.decorators import group_required
 
 
 @login_required

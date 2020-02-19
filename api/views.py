@@ -8,7 +8,7 @@ from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, Cal
 from api.serializers import XelonSerializer, CorvetSerializer
 from raspeedi.models import Raspeedi
 from squalaetp.models import Xelon, Corvet
-from utils.analysis import ProductAnalysis, DealAnalysis
+from utils.data.analysis import ProductAnalysis, DealAnalysis
 from api.models import query_xelon_by_args, query_corvet_by_args
 
 

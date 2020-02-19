@@ -12,8 +12,8 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 from .models import Xelon, Corvet
 from .forms import CorvetForm, CorvetModalForm
 from dashboard.forms import ParaErrorList
-from utils.decorators import group_required
-from utils.export import xml_file
+from utils.django.decorators import group_required
+from utils.file.export import xml_corvet_file
 
 
 # from utils.scraping import ScrapingCorvet
@@ -85,7 +85,7 @@ def xelon_edit(request, file_id):
             data = form.xml_parser('xml_data')
             if data:
                 try:
-                    xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)
@@ -118,7 +118,7 @@ def ajax_xelon(request):
             data = form.xml_parser('xml_data')
             if data:
                 try:
-                    # xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalCreateView
 
-from utils.decorators import group_required, class_view_decorator
+from utils.django.decorators import group_required, class_view_decorator
 from dashboard.models import CsdSoftware, User
 from dashboard.forms import SoftwareForm, ParaErrorList
 from .forms import TagXelonMultiForm

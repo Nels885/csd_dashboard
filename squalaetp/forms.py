@@ -6,7 +6,7 @@ from bootstrap_modal_forms.forms import BSModalForm
 
 import xml.etree.ElementTree as ET
 
-from utils.validators import validate_vin
+from utils.django.validators import validate_vin
 from .models import Corvet
 
 

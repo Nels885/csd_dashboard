@@ -2,8 +2,8 @@ from django import forms
 from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 
-from utils.export import calibre_file
-from utils.validators import validate_xelon
+from utils.file.export import calibre_file
+from utils.django.validators import validate_xelon
 
 from .models import TagXelonMulti
 

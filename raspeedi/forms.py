@@ -1,7 +1,7 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 from django.utils.translation import ugettext as _
 
-from utils.validators import validate_xelon
+from utils.django.validators import validate_xelon
 from .models import Raspeedi
 
 
