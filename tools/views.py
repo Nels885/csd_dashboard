@@ -6,9 +6,10 @@ from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from utils.django.decorators import group_required, class_view_decorator
+from utils.file.export import calibre_file
 from dashboard.models import CsdSoftware, User
 from dashboard.forms import SoftwareForm, ParaErrorList
-from .forms import TagXelonMultiForm
+from .forms import TagXelonForm
 
 
 def soft_list(request):
@@ -78,7 +79,7 @@ def soft_edit(request, soft_id):
 @class_view_decorator(group_required('technician'))
 class TagXelonView(LoginRequiredMixin, BSModalCreateView):
     template_name = 'tools/modal/tag_xelon.html'
-    form_class = TagXelonMultiForm
+    form_class = TagXelonForm
     success_message = 'Success: Création du fichier CALIBRE avec succès !'
 
     def get_success_url(self):
@@ -86,3 +87,9 @@ class TagXelonView(LoginRequiredMixin, BSModalCreateView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+    def form_valid(self, form):
+        xelon = form.cleaned_data['xelon']
+        comments = form.cleaned_data['comments']
+        calibre_file(comments, xelon, self.request.user.username)
+        return super().form_valid(form)

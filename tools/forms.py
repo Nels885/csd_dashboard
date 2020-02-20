@@ -2,15 +2,14 @@ from django import forms
 from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 
-from utils.file.export import calibre_file
 from utils.django.validators import validate_xelon
 
-from .models import TagXelonMulti
+from .models import TagXelon
 
 
-class TagXelonMultiForm(BSModalForm):
+class TagXelonForm(BSModalForm):
     class Meta:
-        model = TagXelonMulti
+        model = TagXelon
         fields = ['xelon', 'comments']
         widgets = {
             'xelon': forms.TextInput(attrs={'class': 'form-control col-sm-6'}),
@@ -23,13 +22,3 @@ class TagXelonMultiForm(BSModalForm):
         if message:
             self.add_error('xelon', _(message))
         return data
-
-    def save(self, commit=True):
-        xelon = self.cleaned_data['xelon']
-        comments = self.cleaned_data['comments']
-        calibre_file(comments, xelon, self.request.user.username)
-        tag = super().save(commit=False)
-        tag.created_by = self.request.user
-        if commit:
-            tag.save()
-        return tag

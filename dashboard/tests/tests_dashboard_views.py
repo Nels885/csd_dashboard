@@ -3,8 +3,16 @@ from django.utils import translation
 
 from .base import UnitTest, User, reverse
 
+from squalaetp.models import Xelon
+
 
 class DashboardTestCase(UnitTest):
+
+    def setUp(self):
+        super(DashboardTestCase, self).setUp()
+        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
+                                     modele_vehicule='peugeot')
+        self.xelonId = str(xelon.id)
 
     def test_index_page(self):
         response = self.client.get(reverse('index'))

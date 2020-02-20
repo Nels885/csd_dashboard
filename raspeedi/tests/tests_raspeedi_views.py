@@ -1,25 +1,25 @@
-from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User, Group, Permission
 
+from dashboard.tests.base import UnitTest
+
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
-from dashboard.models import UserProfile
 
 
-class RaspeediTestCase(TestCase):
+class RaspeediTestCase(UnitTest):
 
     def setUp(self):
+        super(RaspeediTestCase, self).setUp()
         self.form_data = {
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user = User.objects.get(username='toto')
         user.groups.add(Group.objects.create(name="cellule"))
         user.user_permissions.add(Permission.objects.get(codename='add_unlockproduct'))
         user.save()
-        UserProfile(user=user).save()
 
     def test_raspeedi_table_page_is_disconnected(self):
         response = self.client.get(reverse('raspeedi:table'))

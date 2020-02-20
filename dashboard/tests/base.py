@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 
-from squalaetp.models import Xelon
+from dashboard.models import UserProfile
 
 MAX_WAIT = 10
 
@@ -94,9 +94,7 @@ class UnitTest(TestCase):
         admin.save()
         user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
         user.save()
-        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
-                                     modele_vehicule='peugeot')
-        self.xelonId = str(xelon.id)
+        UserProfile(user=user).save()
         self.redirectUrl = reverse('index')
 
     def login(self, user='user'):
