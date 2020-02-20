@@ -1,7 +1,12 @@
 import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import TestCase
+from django.urls import reverse
+from django.contrib.auth.models import User
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+
+from squalaetp.models import Xelon
 
 MAX_WAIT = 10
 
@@ -77,3 +82,25 @@ class FunctionalTest(StaticLiveServerTestCase):
         for i in range(len(cells_values)):
             if cells_values[i] is not None:
                 self.assertEqual(cells[i].text, cells_values[i])
+
+
+class UnitTest(TestCase):
+
+    def setUp(self):
+        self.vin = 'VF3ABCDEF12345678'
+        self.form_user = {'username': 'test', 'email': 'test@test.com'}
+        admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
+        admin.is_staff = True
+        admin.save()
+        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        user.save()
+        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
+                                     modele_vehicule='peugeot')
+        self.xelonId = str(xelon.id)
+        self.redirectUrl = reverse('index')
+
+    def login(self, user='user'):
+        if user == 'admin':
+            self.client.login(username='admin', password='adminpassword')
+        else:
+            self.client.login(username='toto', password='totopassword')

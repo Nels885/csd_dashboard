@@ -1,14 +1,7 @@
-from django.contrib.auth.models import User
-from django.test import TestCase
+from .base import UnitTest
 
 
-class MixinsTest(TestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username='user',
-            password='test1234'
-        )
+class MixinsTest(UnitTest):
 
     def test_LoginAjaxMixin(self):
         """
@@ -19,7 +12,7 @@ class MixinsTest(TestCase):
         response = self.client.post(
             '/dashboard/login/',
             data={
-                'username': 'user',
+                'username': 'toto',
                 # Wrong value
                 'password': 'wrong_password'
             },
@@ -37,8 +30,8 @@ class MixinsTest(TestCase):
         response = self.client.post(
             '/dashboard/login/',
             data={
-                'username': 'user',
-                'password': 'test1234'
+                'username': 'toto',
+                'password': 'totopassword'
             }
         )
 
