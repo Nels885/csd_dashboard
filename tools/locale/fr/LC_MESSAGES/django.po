@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-06 15:03+0100\n"
+"POT-Creation-Date: 2020-02-20 10:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: tools/templates/tools/modal/tag_xelon.html:37
+msgid "Cancel"
+msgstr "Annuler"
+
+#: tools/templates/tools/modal/tag_xelon.html:38
+#: tools/templates/tools/soft_form.html:55
+msgid "Submit"
+msgstr "Soumettre"
 
 #: tools/templates/tools/soft_form.html:7
 msgid "JIG Name"
@@ -34,27 +43,23 @@ msgstr "Lien de téléchargement"
 msgid "Validation date"
 msgstr "Date de validation"
 
-#: tools/templates/tools/soft_form.html:55
-msgid "Submit"
-msgstr "Soumettre"
-
-#: tools/views.py:17
+#: tools/views.py:21
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:31
+#: tools/views.py:35
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:41
+#: tools/views.py:45
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
-#: tools/views.py:62
+#: tools/views.py:66
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:66
+#: tools/views.py:70
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"

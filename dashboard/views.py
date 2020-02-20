@@ -161,7 +161,6 @@ def activate(request, uidb64, token):
         login(request, user)
         # return redirect('home')
         messages.success(request, _('Thank you for your email confirmation. Now you can login your account.'))
-        # context = {'title': _('Thank you for your email confirmation. Now you can login your account.')}
         return redirect('password_change')
     else:
         context = {'title': _('Activation link is invalid!')}
