@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User, Group
+from django.contrib.messages import get_messages
 
-from .base import UnitTest, reverse
+from .base import UnitTest, reverse, UserProfile
 
+from dashboard.models import Post
 from squalaetp.models import Xelon
 from tools.models import TagXelon
 
@@ -15,12 +17,13 @@ class MixinsTest(UnitTest):
         user = User.objects.get(username='toto')
         user.groups.add(Group.objects.create(name="technician"))
         user.save()
+        self.author = UserProfile.objects.get(user=user)
+        Post.objects.create(title='test', overview='texte', author=self.author)
         self.xelonId = str(xelon.id)
 
     def test_TagXelonAjaxMixin(self):
         """
-        Test if initial request is attached to the form instance through
-        PassRequestMixin and PopRequestMixin.
+        Create TagXelon through BSModalCreateView.
         """
         self.login()
 
@@ -90,7 +93,39 @@ class MixinsTest(UnitTest):
         )
 
         # Redirection
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/dashboard/charts/')
+        self.assertRedirects(response, reverse('dashboard:charts'), status_code=302)
         # User is authenticated
         self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_PostAjaxMixin(self):
+        """
+        Create Post throught BSModalCreateView.
+        """
+        self.login()
+
+        # Update object through BSModalUpdateView
+        post = Post.objects.first()
+        response = self.client.post(
+            reverse('dashboard:update-post', kwargs={'pk': post.pk}),
+            data={
+                'title': 'test2',
+                'overview': 'texte',
+                'author': self.author.id,
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('index'), status_code=302)
+        # Object is updated
+        post = Post.objects.first()
+        self.assertEqual(post.title, 'test2')
+
+    def test_DeleteMessageMixin(self):
+        """
+        Delete object through BSModalDeleteView.
+        """
+        self.login()
+        # Request to delete view passes message to the response
+        post = Post.objects.first()
+        response = self.client.post(reverse('dashboard:delete-post', kwargs={'pk': post.pk}))
+        messages = get_messages(response.wsgi_request)
+        self.assertEqual(len(messages), 1)
