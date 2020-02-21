@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
+from django.contrib import messages
 from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalCreateView
 
@@ -42,8 +43,7 @@ def soft_add(request):
             ref = CsdSoftware.objects.filter(jig=jig)
             if not ref.exists():
                 CsdSoftware.objects.create(**form.cleaned_data, created_by=user)
-                context = {'title': _('Added successfully!')}
-                return render(request, 'dashboard/done.html', context)
+                messages.success(request, _('Added successfully!'))
         context['errors'] = form.errors.items()
     else:
         form = SoftwareForm()
@@ -63,8 +63,7 @@ def soft_edit(request, soft_id):
     form = SoftwareForm(request.POST or None, instance=soft)
     if form.is_valid():
         form.save()
-        context = {'title': _('Modification done successfully!')}
-        return render(request, 'dashboard/done.html', context)
+        messages.success(request, _('Modification done successfully!'))
     context = {
         'title': 'Software',
         'card_title': _('Modification data Software for JIG: {jig}'.format(jig=soft.jig)),

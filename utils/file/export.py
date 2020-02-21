@@ -32,15 +32,16 @@ class Calibre:
         :param xelon: Xelon number
         :param comments: User comment
         """
-        for path in self.paths:
-            file = os.path.join(path, xelon + ".txt")
-            os.makedirs(path, exist_ok=True)
-            if not os.path.isfile(file):
-                with open(file, "w") as f:
-                    f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
-            else:
-                print("{} File exists.".format(xelon))
-                return False
+        if xelon != 'A123456789':
+            for path in self.paths:
+                file = os.path.join(path, xelon + ".txt")
+                os.makedirs(path, exist_ok=True)
+                if not os.path.isfile(file):
+                    with open(file, "w") as f:
+                        f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
+                else:
+                    print("{} File exists.".format(xelon))
+                    return False
         return True
 
     def check(self, xelon):

@@ -13,7 +13,7 @@ class RaspeediForm(ModelForm):
             'cd_version', 'media', 'carto', 'dump_renesas', 'ref_mm', 'connecteur_ecran',
         ]
         widgets = {
-            'ref_boitier': TextInput(attrs={'class': 'form-control'}),
+            'ref_boitier': TextInput(attrs={'class': 'form-control', 'maxlength': 10}),
             'produit': Select(attrs={'class': 'form-control'}),
             'facade': TextInput(attrs={
                 'class': 'form-control', 'pattern': '[A-Z0-9]+', 'style': 'text-transform: uppercase;'

@@ -86,8 +86,7 @@ def insert(request):
             ref = Raspeedi.objects.filter(ref_boitier=ref_case)
             if not ref.exists():
                 Raspeedi.objects.create(**form.cleaned_data)
-                context = {'title': _('Added successfully!')}
-                return render(request, 'dashboard/done.html', context)
+                messages.success(request, _('Added successfully!'))
         context['errors'] = form.errors.items()
     else:
         form = RaspeediForm()
@@ -102,8 +101,7 @@ def edit(request, ref_case):
     form = RaspeediForm(request.POST or None, instance=product)
     if form.is_valid():
         form.save()
-        context = {'title': _('Modification done successfully!')}
-        return render(request, 'dashboard/done.html', context)
+        messages.success(request, _('Modification done successfully!'))
     context = {
         'title': 'Raspeedi',
         'card_title': _('Modification data RASPEEDI for ref case: ') + str(product.ref_boitier),

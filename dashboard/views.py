@@ -104,6 +104,7 @@ def user_profile(request):
         form = UserProfileForm(request.POST or None, request.FILES, instance=user)
         if form.is_valid():
             form.save()
+            messages.success(request, _('Modification done successfully!'))
         context['errors'] = form.errors.items()
     else:
         form = UserProfileForm()
