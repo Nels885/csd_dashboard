@@ -1,4 +1,4 @@
-import os
+from . import os
 
 from squalaetp.models import Corvet
 from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH

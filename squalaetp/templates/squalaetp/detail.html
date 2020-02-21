@@ -13,16 +13,10 @@
                     Info Xelon
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#ihm" role="tab" aria-controls="ihm" aria-selected="false">
-                    {% trans "IHM Extraction" %}
-                </a>
-            </li>
             {% if corvet %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
-                       aria-selected="false">
-                        {% trans "VIN Barcode" %}
+                    <a class="nav-link" href="#ihm" role="tab" aria-controls="ihm" aria-selected="false">
+                        {% trans "IHM Extraction" %}
                     </a>
                 </li>
                 <li class="nav-item">
@@ -30,12 +24,25 @@
                         {% trans "Corvet data" %}
                     </a>
                 </li>
+                {% if log_files %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#logs" role="tab" aria-controls="logs" aria-selected="false">
+                            {% trans "Log Files" %}
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#logs" role="tab" aria-controls="logs" aria-selected="false">
-                        {% trans "Log Files" %}
+                    <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
+                       aria-selected="false">
+                        {% trans "VIN Barcode" %}
                     </a>
                 </li>
             {% endif %}
+            <li class="nav-item">
+                <a class="corvet-btn nav-link" href="#" role="tab" aria-selected="false">
+                    {% trans "CORVET Update" %}
+                </a>
+            </li>
         </ul>
     </div>
 

@@ -14,7 +14,8 @@ from .forms import CorvetForm, CorvetModalForm
 from dashboard.forms import ParaErrorList
 from utils.django.decorators import group_required
 from utils.file.export import xml_corvet_file
-
+from utils.file import list_dir, os
+from utils.conf import CSD_ROOT
 
 # from utils.scraping import ScrapingCorvet
 
@@ -24,9 +25,6 @@ def xelon_table(request):
     """
     View of Xelon table page
     """
-    # files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
-    #     'numero_de_dossier')
-
     form = CorvetForm()
     context = {
         'title': 'Xelon',
@@ -49,7 +47,6 @@ def detail(request, file_id):
         dict_corvet = vars(corvet)
     else:
         corvet = dict_corvet = raspeedi = None
-
     form = CorvetForm()
     form.fields['vin'].initial = file.vin
     context = {
@@ -59,7 +56,8 @@ def detail(request, file_id):
         'raspeedi': raspeedi,
         'dict_corvet': dict_corvet,
         'form': form,
-        'redirect': request.META.get('HTTP_REFERER')
+        'redirect': request.META.get('HTTP_REFERER'),
+        'log_files': list_dir(os.path.join(CSD_ROOT, 'LOGS'), file.numero_de_dossier)
     }
     return render(request, 'squalaetp/detail.html', context)
 

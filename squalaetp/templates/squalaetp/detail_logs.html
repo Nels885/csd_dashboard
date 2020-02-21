@@ -1,5 +1,5 @@
 <div class="list-group">
-  <a href="#" class="list-group-item">Bootstrap</a>
-  <a href="#" class="list-group-item">Foundation</a>
-  <a href="#" class="list-group-item">Knacss</a>
+    {% for log in log_files %}
+        <a href="#" class="list-group-item">{{ log }}</a>
+    {% endfor %}
 </div>
