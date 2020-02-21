@@ -142,6 +142,16 @@
 
             $(".corvet-btn").modalForm({formURL: "{% url 'squalaetp:create-corvet' %}", modalID: "#large-modal"});
 
+            // Update post buttons
+            $(".update-post").each(function () {
+                $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+            });
+
+            // Delete post buttons
+            $(".delete-post").each(function () {
+                $(this).modalForm({formURL: $(this).data('id')});
+            });
+
             // Hide message
             $(".alert").fadeTo(5000, 500).slideUp(500, function () {
                 $(".alert").slideUp(500);

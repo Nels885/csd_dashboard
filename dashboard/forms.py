@@ -3,7 +3,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
 
-from .models import CsdSoftware, UserProfile
+from bootstrap_modal_forms.forms import BSModalForm
+
+from .models import CsdSoftware, UserProfile, Post
 
 
 class ParaErrorList(ErrorList):
@@ -37,6 +39,17 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['image']
+
+
+class PostForm(BSModalForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'overview', 'author']
+        # widgets = {
+        #     'title': forms.TextInput(attrs={'class': 'form-control'}),
+        #     'overview': forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
+        #     'author': forms.Select(attrs={'class': 'form-control'})
+        # }
 
 
 class CustomAuthenticationForm(AuthenticationForm):

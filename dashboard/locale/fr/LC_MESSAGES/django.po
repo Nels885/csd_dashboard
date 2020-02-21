@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 10:12+0100\n"
+"POT-Creation-Date: 2020-02-21 19:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,10 +124,19 @@ msgstr "Invité"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: dashboard/templates/dashboard/done.html:26
+#: dashboard/templates/dashboard/done.html:21
 #: dashboard/templates/registration/password_change_done.html:26
 msgid "Back to Dashboard"
 msgstr "Retour au Tableau de bord"
+
+#: dashboard/templates/dashboard/index.html:42
+msgid "Edit"
+msgstr "Editer"
+
+#: dashboard/templates/dashboard/index.html:46
+#: dashboard/templates/dashboard/modal/post_delete.html:20
+msgid "Delete"
+msgstr "Supprimer"
 
 #: dashboard/templates/dashboard/modal/login.html:10
 #: dashboard/templates/registration/login.html:27
@@ -150,8 +159,28 @@ msgstr ""
 "votre session en cours."
 
 #: dashboard/templates/dashboard/modal/logout.html:13
+#: dashboard/templates/dashboard/modal/post_delete.html:19
+#: dashboard/templates/dashboard/modal/post_update.html:53
 msgid "Cancel"
 msgstr "Annuler"
+
+#: dashboard/templates/dashboard/modal/post_delete.html:7
+msgid "Delete Post"
+msgstr "Supprimer le message"
+
+#: dashboard/templates/dashboard/modal/post_delete.html:14
+#, fuzzy
+#| msgid "Are you sure you want to delete book with title"
+msgid "Are you sure you want to delete post with title"
+msgstr "Voulez-vous vraiment supprimer le message avec le titre"
+
+#: dashboard/templates/dashboard/modal/post_update.html:7
+msgid "Update Post"
+msgstr "Mettre à jour le message"
+
+#: dashboard/templates/dashboard/modal/post_update.html:54
+msgid "Update"
+msgstr "Mise à jour"
 
 #: dashboard/templates/registration/password_change_form.html:31
 msgid "Old password"
@@ -209,6 +238,10 @@ msgstr "Mot de passe"
 msgid "E-mail address"
 msgstr "Adresse E-mail"
 
+#: dashboard/tests/tests_dashboard_views.py:53
+msgid "This field is required."
+msgstr "Ce champ est requis."
+
 #: dashboard/views.py:38
 msgid "Acceuil"
 msgstr "Acceuil"
@@ -221,21 +254,35 @@ msgstr "Avertissement: la recherche n'a pas réussi."
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:144
+#: dashboard/views.py:107
+msgid "Modification done successfully!"
+msgstr "Modification effectuée avec succès !"
+
+#: dashboard/views.py:145
 msgid "Success: Sign up succeeded. You can now Log in."
 msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
 
-#: dashboard/views.py:163
+#: dashboard/views.py:164
 msgid "Thank you for your email confirmation. Now you can login your account."
-msgstr "Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous connecter à votre compte."
+msgstr ""
+"Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous "
+"connecter à votre compte."
 
-#: dashboard/views.py:166
+#: dashboard/views.py:167
 msgid "Activation link is invalid!"
 msgstr "Le lien d'activation n'est pas valide !"
 
-#: dashboard/views.py:196
+#: dashboard/views.py:197
 msgid "Success: You were successfully logged in."
 msgstr "Succès: vous vous êtes connecté avec succès."
+
+#: dashboard/views.py:209
+msgid "Post was updated."
+msgstr "Le message a été mis à jour."
+
+#: dashboard/views.py:216
+msgid "Post was deleted."
+msgstr "Le message a été supprimé."
 
 #~ msgid "Remember Me"
 #~ msgstr "Se souvenir de moi"
@@ -272,9 +319,6 @@ msgstr "Succès: vous vous êtes connecté avec succès."
 
 #~ msgid "Added successfully!"
 #~ msgstr "Ajout réalisé avec succès !"
-
-#~ msgid "Modification done successfully!"
-#~ msgstr "Modification effectuée avec succès !"
 
 #~ msgid "Modification data Software for JIG: {jig}"
 #~ msgstr "Modification des données pour le Software du JIG: {jig}"

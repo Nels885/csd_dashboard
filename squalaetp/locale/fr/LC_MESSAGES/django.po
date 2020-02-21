@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 10:12+0100\n"
+"POT-Creation-Date: 2020-02-21 19:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,8 +45,8 @@ msgstr "Les données XML ne sont pas valide"
 msgid "XML data"
 msgstr "Les données XML ne sont pas valide"
 
-#: squalaetp/forms.py:123 squalaetp/views.py:95 squalaetp/views.py:129
-#: squalaetp/views.py:191
+#: squalaetp/forms.py:123 squalaetp/views.py:93 squalaetp/views.py:127
+#: squalaetp/views.py:189
 msgid "An internal error has occurred. Thank you recommend your request"
 msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
 
@@ -55,28 +55,33 @@ msgid "Previous page"
 msgstr "Page précédente"
 
 #: squalaetp/templates/squalaetp/corvet_insert.html:41
-#: squalaetp/templates/squalaetp/detail_ihm.html:155
 #: squalaetp/templates/squalaetp/modal/corvet_form.html:54
 #: squalaetp/templates/squalaetp/xelon_edit.html:41
 #: squalaetp/templates/squalaetp/xelon_table.html:85
 msgid "Submit"
 msgstr "Soumettre"
 
-#: squalaetp/templates/squalaetp/detail.html:18
+#: squalaetp/templates/squalaetp/detail.html:19
 msgid "IHM Extraction"
 msgstr "Extraction IHM"
 
-#: squalaetp/templates/squalaetp/detail.html:25
-msgid "VIN Barcode"
-msgstr "Code barre VIN"
-
-#: squalaetp/templates/squalaetp/detail.html:30
+#: squalaetp/templates/squalaetp/detail.html:24
 msgid "Corvet data"
 msgstr "Données Corvet"
 
-#: squalaetp/templates/squalaetp/detail.html:35
+#: squalaetp/templates/squalaetp/detail.html:30
 msgid "Log Files"
 msgstr "Fichiers Log"
+
+#: squalaetp/templates/squalaetp/detail.html:37
+msgid "VIN Barcode"
+msgstr "Code barre VIN"
+
+#: squalaetp/templates/squalaetp/detail.html:43
+#, fuzzy
+#| msgid "CORVET table"
+msgid "CORVET Update"
+msgstr "Table CORVET"
 
 #: squalaetp/templates/squalaetp/modal/corvet_form.html:53
 msgid "Cancel"
@@ -93,24 +98,24 @@ msgstr ""
 "Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie des "
 "véhicules PSA"
 
-#: squalaetp/views.py:78
+#: squalaetp/views.py:76
 msgid "Modification data Xelon file: "
 msgstr "Modification données dossier Xelon : "
 
-#: squalaetp/views.py:92 squalaetp/views.py:125 squalaetp/views.py:188
-#: squalaetp/views.py:226
+#: squalaetp/views.py:90 squalaetp/views.py:123 squalaetp/views.py:186
+#: squalaetp/views.py:224
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:143
+#: squalaetp/views.py:141
 msgid "CORVET table"
 msgstr "Table CORVET"
 
-#: squalaetp/views.py:162
+#: squalaetp/views.py:160
 msgid "Detail Corvet data for the VIN: "
 msgstr "Données détaillées de Corvet pour le VIN : "
 
-#: squalaetp/views.py:177 squalaetp/views.py:230
+#: squalaetp/views.py:175 squalaetp/views.py:228
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 

@@ -20,12 +20,12 @@ from django.utils.encoding import force_bytes, force_text
 
 import re
 
-from bootstrap_modal_forms.generic import BSModalLoginView
+from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView
 
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm
+from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm
 from squalaetp.models import Xelon
 
 
@@ -200,3 +200,18 @@ class CustomLoginView(BSModalLoginView):
 
 class CustomLogoutView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/modal/logout.html'
+
+
+class PostUpdateView(LoginRequiredMixin, BSModalUpdateView):
+    model = Post
+    template_name = 'dashboard/modal/post_update.html'
+    form_class = PostForm
+    success_message = _('Post was updated.')
+    success_url = reverse_lazy('index')
+
+
+class PostDeleteView(BSModalDeleteView):
+    model = Post
+    template_name = 'dashboard/modal/post_delete.html'
+    success_message = _('Post was deleted.')
+    success_url = reverse_lazy('index')

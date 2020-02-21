@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 10:12+0100\n"
+"POT-Creation-Date: 2020-02-21 19:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: tools/models.py:19
+msgid "CALIBRE file exists !"
+msgstr ""
 
 #: tools/templates/tools/modal/tag_xelon.html:37
 msgid "Cancel"
@@ -43,15 +47,15 @@ msgstr "Lien de téléchargement"
 msgid "Validation date"
 msgstr "Date de validation"
 
-#: tools/views.py:21
+#: tools/views.py:22
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:35
+#: tools/views.py:36
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:45
+#: tools/views.py:46
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
@@ -59,7 +63,7 @@ msgstr "Ajouté avec succès!"
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:70
+#: tools/views.py:69
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"

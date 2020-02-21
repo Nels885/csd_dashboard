@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-20 10:12+0100\n"
+"POT-Creation-Date: 2020-02-21 19:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,10 +100,10 @@ msgstr "Intégration données RASPEEDI"
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: raspeedi/views.py:105
+#: raspeedi/views.py:104
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: raspeedi/views.py:109
+#: raspeedi/views.py:107
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "

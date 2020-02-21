@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -160,6 +161,22 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
 LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
+
+
+# Configuration CkEditor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'width': 760,
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
+             'JustifyRight', 'JustifyBlock'],
+            ['TextColor', 'BGColor'],
+            ['RemoveFormat', 'Source']
+        ],
+    }
+}
 
 
 # Configuration files for Clarion

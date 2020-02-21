@@ -8,6 +8,7 @@ import os
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
+from ckeditor.fields import RichTextField
 
 
 class UserProfile(models.Model):
@@ -70,7 +71,7 @@ class UserProfile(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
-    overview = models.TextField()
+    overview = RichTextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
