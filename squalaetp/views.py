@@ -4,9 +4,11 @@ import datetime
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from .models import Xelon, Corvet
@@ -218,7 +220,7 @@ def export_corvet_csv(request):
     return response
 
 
-class CorvetCreateView(BSModalCreateView):
+class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
     template_name = 'squalaetp/modal/corvet_form.html'
     form_class = CorvetModalForm
     success_message = _('Modification done successfully!')
@@ -233,3 +235,15 @@ class CorvetCreateView(BSModalCreateView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+class LogFileView(LoginRequiredMixin, TemplateView):
+    template_name = 'squalaetp/modal/log_file.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        file = LogFile(os.path.join(CSD_ROOT, 'LOGS'), context['file'])
+        with open(file.files[0], 'r') as f:
+            text = f.read().replace('\n', '<br>')
+        context['text'] = text
+        return context

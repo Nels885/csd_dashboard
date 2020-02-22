@@ -25,4 +25,4 @@ class LogFile:
         self.calibre = self.log_filter('CALIBRE')
 
     def log_filter(self, dir_name):
-        return [file for file in self.files if dir_name in file]
+        return [file.split('/')[-1] for file in self.files if dir_name in file]
