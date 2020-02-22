@@ -24,7 +24,7 @@
                         {% trans "Corvet data" %}
                     </a>
                 </li>
-                {% if log_files %}
+                {% if log_file.files %}
                     <li class="nav-item">
                         <a class="nav-link" href="#logs" role="tab" aria-controls="logs" aria-selected="false">
                             {% trans "Log Files" %}
@@ -45,6 +45,12 @@
             </li>
         </ul>
     </div>
+
+{% endblock %}
+
+{% block customcss %}
+
+    <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet">
 
 {% endblock %}
 

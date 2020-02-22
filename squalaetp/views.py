@@ -14,7 +14,7 @@ from .forms import CorvetForm, CorvetModalForm
 from dashboard.forms import ParaErrorList
 from utils.django.decorators import group_required
 from utils.file.export import xml_corvet_file
-from utils.file import list_dir, os
+from utils.file import LogFile, os
 from utils.conf import CSD_ROOT
 
 # from utils.scraping import ScrapingCorvet
@@ -57,7 +57,7 @@ def detail(request, file_id):
         'dict_corvet': dict_corvet,
         'form': form,
         'redirect': request.META.get('HTTP_REFERER'),
-        'log_files': list_dir(os.path.join(CSD_ROOT, 'LOGS'), file.numero_de_dossier)
+        'log_file': LogFile(os.path.join(CSD_ROOT, 'LOGS'), file.numero_de_dossier)
     }
     return render(request, 'squalaetp/detail.html', context)
 
