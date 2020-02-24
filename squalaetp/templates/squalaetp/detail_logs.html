@@ -11,10 +11,20 @@
             </div>
         {% endif %}
 
-        {% if log_file.cal %}
+        {% if log_file.calrt6 %}
             <h3 class="mt-5 text-gray-600">CAL :</h3>
             <div class="list-group list-group-flush">
-                {% for log in log_file.cal %}
+                {% for log in log_file.calrt6 %}
+                    <a href="#" class="log-btn list-group-item"
+                       data-id="{% url 'squalaetp:log-detail' log %}">{{ log }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if log_file.calrd45 %}
+            <h3 class="mt-5 text-gray-600">CAL :</h3>
+            <div class="list-group list-group-flush">
+                {% for log in log_file.calrd45 %}
                     <a href="#" class="log-btn list-group-item"
                        data-id="{% url 'squalaetp:log-detail' log %}">{{ log }}</a>
                 {% endfor %}
