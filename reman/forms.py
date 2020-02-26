@@ -1,11 +1,19 @@
 from django.forms import ModelForm, TextInput, Textarea, Select
 
-from .models import Reman
+from bootstrap_modal_forms.forms import BSModalForm
+
+from .models import Batch, Repair
 
 
-class AddRemanForm(ModelForm):
+class AddBatchFrom(BSModalForm):
     class Meta:
-        model = Reman
+        model = Batch
+        fields = ['number', 'quantity']
+
+
+class AddRepairForm(ModelForm):
+    class Meta:
+        model = Repair
         fields = [
             'batch_number', 'identify_number', 'product_model', 'product_reference', 'serial_number', 'remark'
         ]
