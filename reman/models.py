@@ -14,9 +14,9 @@ class Batch(models.Model):
     year = models.CharField("années", max_length=1)
     number = models.IntegerField("numéro de lot", validators=[MaxValueValidator(999), MinValueValidator(1)])
     quantity = models.IntegerField('quantité', validators=[MaxValueValidator(999), MinValueValidator(1)])
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def clean(self):
         date = datetime.datetime.now()
@@ -33,26 +33,40 @@ class Batch(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return "Batch n°{} du {}".format(self.number, self.created_at.strftime("%d-%m-%Y"))
+        number, quantity = str(self.number), str(self.quantity)
+        return self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity
+
+
+class EcuModel(models.Model):
+    name = models.CharField("modèle produit", max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class Repair(models.Model):
-    MODEL_CHOICES = [
-        ('EDC15C2', 'EDC15C2'),
-        ('EDC17', 'EDC17'),
-    ]
-    batch_year = models.ForeignKey(Batch, related_name='batch_year', on_delete=models.CASCADE)
-    batch_number = models.ForeignKey(Batch, related_name='batch_number', on_delete=models.CASCADE)
     identify_number = models.CharField("numéro d'identification", max_length=10, unique=True)
-    product_model = models.CharField("modèle produit", max_length=50, choices=MODEL_CHOICES)
-    product_reference = models.CharField("référence produit", max_length=50)
-    serial_number = models.CharField("numéro de série", max_length=100, blank=True)
+    batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
+    product_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
+    hardware = models.CharField("hardware", max_length=10)
+    software = models.CharField("software", max_length=10)
+    product_number = models.CharField("référence produit", max_length=50)
     remark = models.CharField("remarques", max_length=1000, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and not user.pk:
+            user = None
+        self.created_by = user
+        batch = Batch.objects.get(pk=self.batch.id)
+        number = str(Repair.objects.filter(batch=batch.id).count() + 1)
+        self.identify_number = batch.__str__() + "0" * (3 - len(number)) + number
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.identify_number

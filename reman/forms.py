@@ -15,13 +15,12 @@ class AddRepairForm(ModelForm):
     class Meta:
         model = Repair
         fields = [
-            'batch_number', 'identify_number', 'product_model', 'product_reference', 'serial_number', 'remark'
+            'batch', 'product_model', 'hardware', 'software', 'remark'
         ]
         widgets = {
-            'batch_number': TextInput(attrs={'class': 'form-control'}),
-            'identify_number': TextInput(attrs={'class': 'form-control'}),
+            'batch': Select(attrs={'class': 'form-control'}),
             'product_model': Select(attrs={'class': 'form-control'}),
-            'product_reference': TextInput(attrs={'class': 'form-control'}),
-            'serial_number': TextInput(attrs={'class': 'form-control'}),
+            'hardware': TextInput(attrs={'class': 'form-control'}),
+            'software': TextInput(attrs={'class': 'form-control'}),
             'remark': Textarea(attrs={'class': 'form-control', 'rows': 10}),
         }
