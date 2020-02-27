@@ -58,14 +58,20 @@ class Repair(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def clean(self):
+        if not self.batch.active:
+            raise ValidationError(_('There is no more repair file to create for this lot!'))
+
     def save(self, *args, **kwargs):
         user = get_current_user()
         if user and not user.pk:
             user = None
         self.created_by = user
-        batch = Batch.objects.get(pk=self.batch.id)
-        number = str(Repair.objects.filter(batch=batch.id).count() + 1)
-        self.identify_number = batch.__str__() + "0" * (3 - len(number)) + number
+        number = Repair.objects.filter(batch=self.batch.id).count() + 1
+        if number == self.batch.quantity:
+            self.batch.active = False
+            self.batch.save()
+        self.identify_number = self.batch.__str__() + "0" * (3 - len(str(number))) + str(number)
         super().save(*args, **kwargs)
 
     def __str__(self):

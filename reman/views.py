@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.urls import reverse_lazy
+from django.contrib import messages
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 
@@ -35,8 +36,7 @@ def new_folder(request):
             reman = form.save(commit=False)
             reman.user_id = request.user.id
             reman.save()
-            context = {'title': _('Added successfully!')}
-            return render(request, 'dashboard/done.html', context)
+            messages.success(request, _('Added successfully!'))
         context['errors'] = form.errors.items()
     else:
         form = AddRepairForm()
@@ -47,7 +47,7 @@ def new_folder(request):
 class BatchCreateView(BSModalCreateView):
     template_name = 'reman/modal/create_batch.html'
     form_class = AddBatchFrom
-    success_message = 'Success: Batch was created.'
+    success_message = _('Success: Batch was created.')
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
