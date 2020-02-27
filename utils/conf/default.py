@@ -33,3 +33,8 @@ prod_log_dir = {
 
 tag_log_dir = "LOGS/LOG_CONFIG_PROD"
 tag_dir = "LOGS/CALIBRE"
+
+dict_year = {
+    2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U',
+    2029: 'V', 2030: 'W',
+}

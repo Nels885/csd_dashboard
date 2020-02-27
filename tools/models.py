@@ -26,3 +26,6 @@ class TagXelon(models.Model):
             self.created_by = user
         calibre.file(self.xelon, self.comments, user)
         super(TagXelon, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.xelon

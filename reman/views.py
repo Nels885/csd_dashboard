@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 
-from .models import Batch, Repair
+from .models import Repair
 from .forms import AddBatchFrom, AddRepairForm
 from dashboard.forms import ParaErrorList
 

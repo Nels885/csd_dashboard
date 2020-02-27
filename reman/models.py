@@ -1,23 +1,39 @@
+import datetime
+
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+from crum import get_current_user
 
-from dashboard.models import UserProfile
-
-dict_year = {
-    2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U',
-    2029: 'V', 2030: 'W',
-}
+from utils.conf import DICT_YEAR
 
 
 class Batch(models.Model):
     year = models.CharField("années", max_length=1)
-    number = models.IntegerField("numéro de lot")
-    quantity = models.IntegerField('quantité')
-    created_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    number = models.IntegerField("numéro de lot", validators=[MaxValueValidator(999), MinValueValidator(1)])
+    quantity = models.IntegerField('quantité', validators=[MaxValueValidator(999), MinValueValidator(1)])
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 
+    def clean(self):
+        date = datetime.datetime.now()
+        if date.year in DICT_YEAR.keys():
+            self.year = DICT_YEAR[date.year]
+        else:
+            raise ValidationError(_('Impossible formatting of the year!'))
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and not user.pk:
+            user = None
+        self.created_by = user
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return self.year
+        return "Batch n°{} du {}".format(self.number, self.created_at.strftime("%d-%m-%Y"))
 
 
 class Repair(models.Model):
@@ -32,7 +48,7 @@ class Repair(models.Model):
     product_reference = models.CharField("référence produit", max_length=50)
     serial_number = models.CharField("numéro de série", max_length=100, blank=True)
     remark = models.CharField("remarques", max_length=1000, blank=True)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)

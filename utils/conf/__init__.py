@@ -14,3 +14,5 @@ XML_PATH = os.path.join(CSD_ROOT, config.xml_extract_dir)
 
 TAG_PATH = os.path.join(CSD_ROOT, config.tag_dir)
 TAG_LOG_PATH = os.path.join(CSD_ROOT, config.tag_log_dir)
+
+DICT_YEAR = config.dict_year
