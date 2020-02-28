@@ -48,11 +48,11 @@
 
             {% endif %}
 
-            {% include 'dashboard/base/nav_csd_atelier.html' %}
+            {% include 'dashboard/nav/nav_csd_atelier.html' %}
 
-            {% include 'dashboard/base/nav_csd_admin.html' %}
+            {% include 'dashboard/nav/nav_csd_admin.html' %}
 
-            {% include 'dashboard/base/nav_tools.html' %}
+            {% include 'dashboard/nav/nav_tools.html' %}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -140,7 +140,7 @@
 
             $(".tag-xelon-btn").modalForm({formURL: "{% url 'tools:tag-xelon' %}", modalID: "#create-modal"});
 
-            $(".batch-btn").modalForm({formURL: "{% url 'reman:create-batch' %}"});
+            $(".batch-btn").modalForm({formURL: "{% url 'reman:create-batch' %}", modalID: "#small-modal"});
 
             $(".corvet-btn").modalForm({formURL: "{% url 'squalaetp:create-corvet' %}", modalID: "#large-modal"});
 

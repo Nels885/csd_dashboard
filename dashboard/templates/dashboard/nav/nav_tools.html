@@ -1,7 +1,6 @@
-{% load i18n %}
-{% load user_tags %}
+{% load i18n user_tags %}
 
-{% if user.is_authenticated and user|has_group:'tools' or user.is_superuser %}
+{% if  user|has_groups:'tools' or user.is_superuser %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -14,12 +13,14 @@
     <!-- Nav Item - Software Settings Menu -->
     {% with name="Software" icon="fa-table" %}
 
-        <!-- Nav Item - TAG Xelon Multi -->
-        <li class="nav-item">
-            <a class="tag-xelon-btn nav-link" href="#">
-                <i class="fas fa-fw fa-cog"></i><span>TAG Xelon Multi</span>
-            </a>
-        </li>
+        {% if perms.tools.add_tagxelon %}
+            <!-- Nav Item - TAG Xelon Multi -->
+            <li class="nav-item">
+                <a class="tag-xelon-btn nav-link" href="#">
+                    <i class="fas fa-fw fa-cog"></i><span>TAG Xelon Multi</span>
+                </a>
+            </li>
+        {% endif %}
 
         <!-- Nav Item - Software -->
         <li class="nav-item">

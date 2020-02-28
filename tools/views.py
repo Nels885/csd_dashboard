@@ -74,7 +74,7 @@ def soft_edit(request, soft_id):
     return render(request, 'tools/soft_edit.html', context)
 
 
-@class_view_decorator(group_required('technician'))
+@class_view_decorator(group_required('tools-admin'))
 class TagXelonView(LoginRequiredMixin, BSModalCreateView):
     template_name = 'tools/modal/tag_xelon.html'
     form_class = TagXelonForm

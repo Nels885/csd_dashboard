@@ -22,5 +22,5 @@ class AddRepairForm(ModelForm):
             'product_model': Select(attrs={'class': 'form-control'}),
             'hardware': TextInput(attrs={'class': 'form-control'}),
             'software': TextInput(attrs={'class': 'form-control'}),
-            'remark': Textarea(attrs={'class': 'form-control', 'rows': 10}),
+            'remark': Textarea(attrs={'class': 'form-control', 'rows': 6}),
         }

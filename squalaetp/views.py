@@ -59,7 +59,8 @@ def detail(request, file_id):
         'dict_corvet': dict_corvet,
         'form': form,
         'redirect': request.META.get('HTTP_REFERER'),
-        'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
+        # 'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
+        'log_file': None
     }
     return render(request, 'squalaetp/detail.html', context)
 
