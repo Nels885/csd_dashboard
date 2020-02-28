@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load user_tags %}
 
-{% if user.is_authenticated and user|has_group:'admin' or user.is_superuser %}
+{% if user|has_group:'csd-admin' or user.is_superuser %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">

@@ -1,5 +1,6 @@
 from django.test import LiveServerTestCase
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -17,7 +18,9 @@ class RaspeediSeleniumTestCase(LiveServerTestCase):
         self.driver.implicitly_wait(30)
         super(RaspeediSeleniumTestCase, self).setUp()
         user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
+        content_type = ContentType.objects.get_for_model(Raspeedi)
+        user.user_permissions.add(Permission.objects.get(codename="add_raspeedi", content_type=content_type))
+        user.user_permissions.add(Permission.objects.get(codename="view_raspeedi", content_type=content_type))
         user.save()
 
     def tearDown(self):

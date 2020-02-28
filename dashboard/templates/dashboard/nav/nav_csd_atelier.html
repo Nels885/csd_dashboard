@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load user_tags %}
 
-{% if user.is_authenticated and user|has_group:'operator' or user.is_superuser %}
+{% if perms.squalaetp or perms.reman or perms.raspeedi %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -11,6 +11,9 @@
         CSD Atelier
     </div>
 
+{% endif %}
+
+{% if perms.squalaetp %}
     <!-- Nav Item - Xelon Settings Menu -->
     {% with name="Xelon" icon="fa-table" %}
         <li class="nav-item">
@@ -26,7 +29,7 @@
                     <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
                     <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
                     <div class="collapse-divider"></div>
-                    {% if user|has_group:'technician' %}
+                    {% if perms.squalaetp.add_corvet %}
                         <h6 class="collapse-header">Edition :</h6>
                         <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
                     {% endif %}
@@ -34,34 +37,37 @@
             </div>
         </li>
     {% endwith %}
+{% endif %}
 
-    {% if user|has_group:'reman' %}
+{% if perms.reman %}
 
-        <!-- Nav Item - Reman Settings Menu -->
-        {% with name="Reman" icon="fa-table" %}
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-                   aria-expanded="true" aria-controls="collapse{{ name }}">
-                    <i class="fas fa-fw {{ icon }}"></i>
-                    <span>{{ name }}</span>
-                </a>
-                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Informations :</h6>
-                        <a class="collapse-item"
-                           href="{% url 'reman:reman-table' %}">{% trans "Customer files" %}</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Edition :</h6>
-                        <a class="batch-btn collapse-item" href="#">{% trans "Create Batch" %}</a>
-                        <a class="collapse-item" href="{% url 'reman:new-folder' %}">{% trans "Create file" %}</a>
-                        <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
-                    </div>
+    <!-- Nav Item - Reman Settings Menu -->
+    {% with name="Reman" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Informations :</h6>
+                    <a class="collapse-item"
+                       href="{% url 'reman:reman-table' %}">{% trans "Customer files" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Edition :</h6>
+                    <a class="batch-btn collapse-item" href="#">{% trans "Create Batch" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:new-folder' %}">{% trans "Create file" %}</a>
+                    <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
                 </div>
-            </li>
-        {% endwith %}
+            </div>
+        </li>
+    {% endwith %}
 
-    {% endif %}
+{% endif %}
+
+{% if perms.raspeedi %}
 
     <!-- Nav Item - Raspeedi Settings Menu -->
     {% with name="Raspeedi" icon="fa-table" %}
@@ -77,7 +83,7 @@
                     <h6 class="collapse-header">Informations :</h6>
                     <a class="collapse-item" href="{% url 'raspeedi:unlock-prods' %}">{% trans "Unlock VIN" %}</a>
 
-                    {% if user|has_group:'technician' %}
+                    {% if perms.raspeedi.add_raspeedi %}
 
                         <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
                         <div class="collapse-divider"></div>
@@ -91,35 +97,34 @@
         </li>
     {% endwith %}
 
-    {#    {% else %}#}
-    {##}
-    {#        <!-- Nav Item - Dossiers clients -->#}
-    {#        <li class="nav-item">#}
-    {#            <a class="nav-link" href="{% url 'squalaetp:xelon' %}">#}
-    {#                <i class="fas fa-fw fa-table"></i>#}
-    {#                <span>{% trans "Customer files" %}</span></a>#}
-    {#        </li>#}
-    {##}
-    {#        <!-- Nav Item - Dossiers Reman -->#}
-    {#        <li class="nav-item">#}
-    {#            <a class="nav-link" href="{% url 'squalaetp:xelon' %}">#}
-    {#                <i class="fas fa-fw fa-table"></i>#}
-    {#                <span>{% trans "Reman files" %}</span></a>#}
-    {#        </li>#}
-    {##}
-    {#        <!-- Nav Item - tableau Software -->#}
-    {#        <li class="nav-item">#}
-    {#            <a class="nav-link" href="{% url 'dashboard:soft-list' %}">#}
-    {#                <i class="fas fa-fw fa-table"></i>#}
-    {#                <span>{% trans "Software list" %}</span></a>#}
-    {#        </li>#}
-    {##}
-    {#        <!-- Nav Item - tableau Raspeedi -->#}
-    {#        <li class="nav-item">#}
-    {#            <a class="nav-link" href="{% url 'raspeedi:table' %}">#}
-    {#                <i class="fas fa-fw fa-table"></i>#}
-    {#                <span>{% trans "Raspeedi table" %}</span></a>#}
-    {#        </li>#}
-
-
 {% endif %}
+
+{#    {% else %}#}
+{##}
+{#        <!-- Nav Item - Dossiers clients -->#}
+{#        <li class="nav-item">#}
+{#            <a class="nav-link" href="{% url 'squalaetp:xelon' %}">#}
+{#                <i class="fas fa-fw fa-table"></i>#}
+{#                <span>{% trans "Customer files" %}</span></a>#}
+{#        </li>#}
+{##}
+{#        <!-- Nav Item - Dossiers Reman -->#}
+{#        <li class="nav-item">#}
+{#            <a class="nav-link" href="{% url 'squalaetp:xelon' %}">#}
+{#                <i class="fas fa-fw fa-table"></i>#}
+{#                <span>{% trans "Reman files" %}</span></a>#}
+{#        </li>#}
+{##}
+{#        <!-- Nav Item - tableau Software -->#}
+{#        <li class="nav-item">#}
+{#            <a class="nav-link" href="{% url 'dashboard:soft-list' %}">#}
+{#                <i class="fas fa-fw fa-table"></i>#}
+{#                <span>{% trans "Software list" %}</span></a>#}
+{#        </li>#}
+{##}
+{#        <!-- Nav Item - tableau Raspeedi -->#}
+{#        <li class="nav-item">#}
+{#            <a class="nav-link" href="{% url 'raspeedi:table' %}">#}
+{#                <i class="fas fa-fw fa-table"></i>#}
+{#                <span>{% trans "Raspeedi table" %}</span></a>#}
+{#        </li>#}

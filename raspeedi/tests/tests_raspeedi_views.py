@@ -15,8 +15,8 @@ class RaspeediTestCase(UnitTest):
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
-        self.add_group_user("cellule")
         self.add_perms_user(UnlockProduct, 'add_unlockproduct')
+        self.add_perms_user(Raspeedi, 'add_raspeedi', 'view_raspeedi', 'change_raspeedi')
 
     def test_raspeedi_table_page_is_disconnected(self):
         response = self.client.get(reverse('raspeedi:table'))
@@ -65,11 +65,13 @@ class RaspeediTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_raspeedi_detail_page_is_valid(self):
+        self.login()
         Raspeedi.objects.create(**self.form_data)
         response = self.client.get(reverse('raspeedi:detail', kwargs={'ref_case': 1234567890}))
         self.assertEqual(response.status_code, 200)
 
     def test_raspeedi_detail_page_is_not_found(self):
+        self.login()
         response = self.client.get(reverse('raspeedi:detail', kwargs={'ref_case': 1234567890}))
         self.assertEqual(response.status_code, 404)
 

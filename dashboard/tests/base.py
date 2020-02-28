@@ -104,10 +104,11 @@ class UnitTest(TestCase):
         else:
             self.client.login(username='toto', password='totopassword')
 
-    def add_group_user(self, group):
-        self.user.groups.add(Group.objects.create(name=group))
-        self.user.save()
+    def add_group_user(self, *args):
+        for group in args:
+            self.user.groups.add(Group.objects.create(name=group))
 
-    def add_perms_user(self, model, codename):
+    def add_perms_user(self, model, *args):
         content_type = ContentType.objects.get_for_model(model)
-        self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))
+        for codename in args:
+            self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))

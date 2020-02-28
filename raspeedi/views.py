@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 
@@ -7,10 +7,9 @@ from .models import Raspeedi, UnlockProduct, UserProfile
 from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
 from squalaetp.models import Xelon
-from utils.django.decorators import group_required
 
 
-@login_required
+@permission_required('raspeedi.view_raspeedi')
 def table(request):
     """
     View of the Raspeedi table page
@@ -28,6 +27,7 @@ def table(request):
     return render(request, 'raspeedi/table.html', context)
 
 
+@permission_required('raspeedi.view_raspeedi')
 def detail(request, ref_case):
     """
     detailed view of Raspeedi data for a product
@@ -46,7 +46,7 @@ def detail(request, ref_case):
     return render(request, 'raspeedi/detail.html', context)
 
 
-@login_required
+@permission_required('raspeedi.view_raspeedi')
 def unlock_prods(request):
     unlock = UnlockProduct.objects.all().order_by('created_at')
     context = {
@@ -72,8 +72,7 @@ def unlock_prods(request):
     return render(request, 'raspeedi/unlock_prods.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
+@permission_required('raspeedi.add_raspeedi')
 def insert(request):
     context = {
         'title': 'Raspeedi',
@@ -94,8 +93,7 @@ def insert(request):
     return render(request, 'raspeedi/insert.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
+@permission_required('raspeedi.change_raspeedi')
 def edit(request, ref_case):
     product = get_object_or_404(Raspeedi, ref_boitier=ref_case)
     form = RaspeediForm(request.POST or None, instance=product)
