@@ -1,14 +1,13 @@
-from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
+
+from dashboard.tests.base import UnitTest
 
 
-class RemanTestCase(TestCase):
+class RemanTestCase(UnitTest):
 
     def setUp(self):
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
+        super().setUp()
+        self.add_group_user("cellule")
         self.redirectUrl = reverse('index')
 
     def test_reman_table_page(self):

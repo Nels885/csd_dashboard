@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User, Group
 from django.contrib.messages import get_messages
 
 from .base import UnitTest, reverse, UserProfile
@@ -14,10 +13,9 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                                      modele_vehicule='peugeot')
-        user = User.objects.get(username='toto')
-        user.groups.add(Group.objects.create(name="technician"))
-        user.save()
-        self.author = UserProfile.objects.get(user=user)
+        self.add_perms_user(TagXelon, 'add_tagxelon')
+        self.add_group_user("technician")
+        self.author = UserProfile.objects.get(user=self.user)
         Post.objects.create(title='test', overview='texte', author=self.author)
         self.xelonId = str(xelon.id)
 

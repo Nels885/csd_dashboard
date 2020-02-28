@@ -1,6 +1,5 @@
 from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User, Group, Permission
 
 from dashboard.tests.base import UnitTest
 
@@ -16,17 +15,15 @@ class RaspeediTestCase(UnitTest):
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
-        user = User.objects.get(username='toto')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.user_permissions.add(Permission.objects.get(codename='add_unlockproduct'))
-        user.save()
+        self.add_group_user("cellule")
+        self.add_perms_user(UnlockProduct, 'add_unlockproduct')
 
     def test_raspeedi_table_page_is_disconnected(self):
         response = self.client.get(reverse('raspeedi:table'))
         self.assertRedirects(response, '/accounts/login/?next=/raspeedi/table/', status_code=302)
 
     def test_raspeedi_table_page_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         response = self.client.get(reverse('raspeedi:table'))
         self.assertEqual(response.status_code, 200)
 
@@ -35,12 +32,12 @@ class RaspeediTestCase(UnitTest):
         self.assertRedirects(response, '/accounts/login/?next=/raspeedi/insert/', status_code=302)
 
     def test_raspeedi_insert_page_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         response = self.client.get(reverse('raspeedi:insert'))
         self.assertEqual(response.status_code, 200)
 
     def test_raspeedi_insert_page_is_valid(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         old_raspeedi = Raspeedi.objects.count()
         response = self.client.post(reverse('raspeedi:insert'), self.form_data)
         new_raspeedi = Raspeedi.objects.count()
@@ -48,7 +45,7 @@ class RaspeediTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_raspeedi_insert_page_is_not_valid(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         old_raspeedi = Raspeedi.objects.count()
         response = self.client.post(reverse('raspeedi:insert'))
         new_raspeedi = Raspeedi.objects.count()
@@ -62,7 +59,7 @@ class RaspeediTestCase(UnitTest):
         self.assertEqual(response.status_code, 302)
 
     def test_raspeedi_edit_page_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         Raspeedi.objects.create(**self.form_data)
         response = self.client.get(reverse('raspeedi:edit', kwargs={'ref_case': 1234567890}))
         self.assertEqual(response.status_code, 200)
@@ -81,12 +78,12 @@ class RaspeediTestCase(UnitTest):
         self.assertRedirects(response, '/accounts/login/?next=/raspeedi/unlock/', status_code=302)
 
     def test_unlock_page_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         response = self.client.get(reverse('raspeedi:unlock-prods'))
         self.assertEqual(response.status_code, 200)
 
     def test_unlock_add_page_is_not_valid(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         old_unlock = UnlockProduct.objects.count()
         for xelon, message in {'azerty': 'Xelon number is invalid', 'A987654321': 'Xelon number no exist'}.items():
             response = self.client.post(reverse('raspeedi:unlock-prods'), {'unlock': xelon})
@@ -96,7 +93,7 @@ class RaspeediTestCase(UnitTest):
             self.assertEqual(response.status_code, 200)
 
     def test_unlock_add_page_is_valid(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         Xelon.objects.create(numero_de_dossier='A123456789', vin='VF3ABCDEF12345678', modele_produit='produit',
                              modele_vehicule='peugeot')
         old_unlock = UnlockProduct.objects.count()

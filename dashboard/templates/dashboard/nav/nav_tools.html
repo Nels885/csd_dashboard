@@ -1,6 +1,6 @@
 {% load i18n user_tags %}
 
-{% if  user|has_groups:'tools' or user.is_superuser %}
+{% if  perms.tools %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -10,17 +10,17 @@
         {% trans 'Tools' %}
     </div>
 
+    {% if perms.tools.add_tagxelon %}
+        <!-- Nav Item - TAG Xelon Multi -->
+        <li class="nav-item">
+            <a class="tag-xelon-btn nav-link" href="#">
+                <i class="fas fa-fw fa-cog"></i><span>TAG Xelon Multi</span>
+            </a>
+        </li>
+    {% endif %}
+
     <!-- Nav Item - Software Settings Menu -->
     {% with name="Software" icon="fa-table" %}
-
-        {% if perms.tools.add_tagxelon %}
-            <!-- Nav Item - TAG Xelon Multi -->
-            <li class="nav-item">
-                <a class="tag-xelon-btn nav-link" href="#">
-                    <i class="fas fa-fw fa-cog"></i><span>TAG Xelon Multi</span>
-                </a>
-            </li>
-        {% endif %}
 
         <!-- Nav Item - Software -->
         <li class="nav-item">
@@ -36,7 +36,7 @@
                     <a class="collapse-item"
                        href="{% url 'tools:soft-list' %}">{% trans "Software list" %}</a>
                     <div class="collapse-divider"></div>
-                    {% if user|has_group:'cellule' %}
+                    {% if perms.dashboard.add_csdsoftware %}
                         <h6 class="collapse-header">Edition :</h6>
                         <a class="collapse-item"
                            href="{% url 'tools:soft-add' %}">{% trans "Software Add" %}</a>

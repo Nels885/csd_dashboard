@@ -2,7 +2,8 @@ import time
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 
@@ -92,9 +93,9 @@ class UnitTest(TestCase):
         admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
         admin.is_staff = True
         admin.save()
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.save()
-        UserProfile(user=user).save()
+        self.user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        self.user.save()
+        UserProfile(user=self.user).save()
         self.redirectUrl = reverse('index')
 
     def login(self, user='user'):
@@ -102,3 +103,11 @@ class UnitTest(TestCase):
             self.client.login(username='admin', password='adminpassword')
         else:
             self.client.login(username='toto', password='totopassword')
+
+    def add_group_user(self, group):
+        self.user.groups.add(Group.objects.create(name=group))
+        self.user.save()
+
+    def add_perms_user(self, model, codename):
+        content_type = ContentType.objects.get_for_model(model)
+        self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))

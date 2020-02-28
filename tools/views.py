@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -74,7 +74,7 @@ def soft_edit(request, soft_id):
     return render(request, 'tools/soft_edit.html', context)
 
 
-@class_view_decorator(group_required('tools-admin'))
+@class_view_decorator(permission_required('tools.add_tagxelon'))
 class TagXelonView(LoginRequiredMixin, BSModalCreateView):
     template_name = 'tools/modal/tag_xelon.html'
     form_class = TagXelonForm

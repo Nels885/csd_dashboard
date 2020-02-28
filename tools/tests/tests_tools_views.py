@@ -1,5 +1,4 @@
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
 
 from dashboard.tests.base import UnitTest
 
@@ -13,9 +12,7 @@ class ToolsTestCase(UnitTest):
         self.form_data = {
             'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test',
         }
-        user = User.objects.get(username='toto')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
+        self.add_group_user("cellule")
 
     def test_soft_list_page(self):
         response = self.client.get(reverse('tools:soft-list'))

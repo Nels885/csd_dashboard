@@ -1,13 +1,14 @@
-from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
+
+from dashboard.tests.base import UnitTest
 
 from squalaetp.models import Xelon
 
 
-class XelonTestCase(TestCase):
+class XelonTestCase(UnitTest):
 
     def setUp(self):
+        super().setUp()
         self.data = (
             '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
             '<VEHICULE Existe="O">'
@@ -20,9 +21,7 @@ class XelonTestCase(TestCase):
             '</VEHICULE></MESSAGE>'
         )
         self.vin = 'VF3ABCDEF12345678'
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
+        self.add_group_user("cellule")
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
 
@@ -31,7 +30,7 @@ class XelonTestCase(TestCase):
         self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/', status_code=302)
 
     def test_xelon_table_page_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         response = self.client.get(reverse('squalaetp:xelon'))
         self.assertEqual(response.status_code, 200)
 
@@ -40,7 +39,7 @@ class XelonTestCase(TestCase):
         self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/1/edit/', status_code=302)
 
     def test_xelon_edit_page_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         response = self.client.get(reverse('squalaetp:xelon-edit', kwargs={'file_id': 1}))
         self.assertEqual(response.status_code, 200)
 
