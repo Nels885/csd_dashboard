@@ -3,9 +3,6 @@ from django.contrib.auth.models import User, Group
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.support.ui import Select
-
-from dashboard.models import CsdSoftware
 
 
 class DashboardSeleniumTestCase(LiveServerTestCase):

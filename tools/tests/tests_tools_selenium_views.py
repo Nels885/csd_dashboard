@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
 
-from dashboard.models import CsdSoftware
+from tools.models import CsdSoftware
 
 
 class DashboardSeleniumTestCase(LiveServerTestCase):

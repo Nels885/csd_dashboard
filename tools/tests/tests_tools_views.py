@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from dashboard.tests.base import UnitTest
 
-from dashboard.models import CsdSoftware
+from tools.models import CsdSoftware
 
 
 class ToolsTestCase(UnitTest):

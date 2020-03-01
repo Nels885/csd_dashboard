@@ -15,6 +15,8 @@ class Batch(models.Model):
     number = models.IntegerField("numéro de lot", validators=[MaxValueValidator(999), MinValueValidator(1)])
     quantity = models.IntegerField('quantité', validators=[MaxValueValidator(999), MinValueValidator(1)])
     active = models.BooleanField(default=True)
+    start_date = models.DateField("date de début", null=True)
+    end_date = models.DateField("date de fin", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 

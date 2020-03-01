@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'ckeditor',
+    'tempus_dominus',
 ]
 
 MIDDLEWARE = [
@@ -178,6 +179,9 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+# Configuration Tempus Dominus
+TEMPUS_DOMINUS_LOCALIZE = True
+TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 
 # Configuration files for Clarion
 CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/current.py')

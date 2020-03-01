@@ -1,5 +1,8 @@
 {% load widget_tweaks %}
 
+{# Django Tempus Dominus assets are included in `{{ form.media }}` #}
+{{ form.media }}
+
 <form method="post" action="">
     {% csrf_token %}
 
