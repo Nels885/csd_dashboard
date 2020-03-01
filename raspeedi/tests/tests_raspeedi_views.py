@@ -15,7 +15,7 @@ class RaspeediTestCase(UnitTest):
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
-        self.add_perms_user(UnlockProduct, 'add_unlockproduct')
+        self.add_perms_user(UnlockProduct, 'add_unlockproduct', 'view_unlockproduct')
         self.add_perms_user(Raspeedi, 'add_raspeedi', 'view_raspeedi', 'change_raspeedi')
 
     def test_raspeedi_table_page_is_disconnected(self):

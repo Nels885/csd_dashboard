@@ -46,7 +46,7 @@ def detail(request, ref_case):
     return render(request, 'raspeedi/detail.html', context)
 
 
-@permission_required('raspeedi.view_raspeedi')
+@permission_required('raspeedi.view_unlockproduct')
 def unlock_prods(request):
     unlock = UnlockProduct.objects.all().order_by('created_at')
     context = {
