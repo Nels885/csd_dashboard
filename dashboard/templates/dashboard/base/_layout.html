@@ -66,13 +66,10 @@
 
         $(".corvet-btn").modalForm({formURL: "{% url 'squalaetp:create-corvet' %}", modalID: "#large-modal"});
 
+        $(".create-post").modalForm({formURL: "{% url 'dashboard:create-post' %}", modalID: "#large-modal"});
+
         // Update post buttons
         $(".update-post").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
-        });
-
-        // log file buttons
-        $(".log-btn").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
         });
 
@@ -81,6 +78,10 @@
             $(this).modalForm({formURL: $(this).data('id')});
         });
 
+        // log file buttons
+        $(".log-btn").each(function () {
+            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+        });
 
         $(function () {
             $("#datetimepicker1").datetimepicker({

@@ -29,11 +29,6 @@ class PostForm(BSModalForm):
     class Meta:
         model = Post
         fields = ['title', 'overview', 'author']
-        # widgets = {
-        #     'title': forms.TextInput(attrs={'class': 'form-control'}),
-        #     'overview': forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
-        #     'author': forms.Select(attrs={'class': 'form-control'})
-        # }
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -43,15 +38,16 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class SignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
     password1 = None
     password2 = None
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email', 'group']
+        widgets = {
+            'email': forms.EmailInput(attrs={'required': True})
+        }
 
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
@@ -60,14 +56,3 @@ class SignUpForm(UserCreationForm):
         if commit:
             user.save()
         return user
-
-
-class CustomUserCreationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
-    groups = forms.ModelChoiceField(queryset=Group.objects.all(), required=True)
-
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'groups', 'password1', 'password2']

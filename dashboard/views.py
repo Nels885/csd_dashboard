@@ -20,7 +20,7 @@ from django.utils.encoding import force_bytes, force_text
 
 import re
 
-from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView
+from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
@@ -126,7 +126,8 @@ def signup(request):
             user.set_password(password)
             user.is_active = False
             user.save()
-            # user.groups.add(form.cleaned_data['groups'])
+            if form.cleaned_data['group']:
+                user.groups.add(form.cleaned_data['group'])
             UserProfile(user=user).save()
             current_site = get_current_site(request)
             mail_subject = 'Activate your CSD Dashboard account.'
@@ -200,6 +201,18 @@ class CustomLoginView(BSModalLoginView):
 
 class CustomLogoutView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/modal/logout.html'
+
+
+class PostCreateView(LoginRequiredMixin, BSModalCreateView):
+    template_name = 'dashboard/modal/post_create.html'
+    form_class = PostForm
+    success_message = _('Post was created.')
+    success_url = reverse_lazy('index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'test'
+        return context
 
 
 class PostUpdateView(LoginRequiredMixin, BSModalUpdateView):
