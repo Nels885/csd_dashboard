@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Group
 
 from bootstrap_modal_forms.forms import BSModalForm
 
-from .models import CsdSoftware, UserProfile, Post
+from .models import UserProfile, Post
 
 
 class ParaErrorList(ErrorList):
@@ -17,22 +17,6 @@ class ParaErrorList(ErrorList):
         if not self:
             return ''
         return '<div>%s</div>' % ''.join(['<p class="text-danger">* %s</p>' % e for e in self])
-
-
-class SoftwareForm(forms.ModelForm):
-    class Meta:
-        model = CsdSoftware
-        fields = [
-            'jig', 'new_version', 'old_version', 'link_download', 'status', 'validation_date'
-        ]
-        widgets = {
-            'jig': forms.TextInput(attrs={'class': 'form-control'}),
-            'new_version': forms.TextInput(attrs={'class': 'form-control'}),
-            'old_version': forms.TextInput(attrs={'class': 'form-control'}),
-            'link_download': forms.TextInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-            'validation_date': forms.DateInput(attrs={'class': 'form-control'}),
-        }
 
 
 class UserProfileForm(forms.ModelForm):

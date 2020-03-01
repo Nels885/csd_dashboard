@@ -79,24 +79,24 @@ class Post(models.Model):
         return self.title
 
 
-class CsdSoftware(models.Model):
-
-    STATUS_CHOICES = [
-        ('Validé', 'Validé'),
-        ('En test', 'En test'),
-        ('Etudes', 'Etudes'),
-        ('Abandonné', 'Abandonné'),
-        ('PDI Only', 'PDI Only')
-    ]
-
-    jig = models.CharField(max_length=100)
-    new_version = models.CharField(max_length=20)
-    old_version = models.CharField(max_length=20, null=True, blank=True)
-    link_download = models.CharField(max_length=500)
-    created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
-    validation_date = models.DateField(null=True, blank=True)
-
-    def __str__(self):
-        return self.jig
+# class CsdSoftware(models.Model):
+#
+#     STATUS_CHOICES = [
+#         ('Validé', 'Validé'),
+#         ('En test', 'En test'),
+#         ('Etudes', 'Etudes'),
+#         ('Abandonné', 'Abandonné'),
+#         ('PDI Only', 'PDI Only')
+#     ]
+#
+#     jig = models.CharField(max_length=100)
+#     new_version = models.CharField(max_length=20)
+#     old_version = models.CharField(max_length=20, null=True, blank=True)
+#     link_download = models.CharField(max_length=500)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+#     status = models.CharField(max_length=50, choices=STATUS_CHOICES)
+#     validation_date = models.DateField(null=True, blank=True)
+#
+#     def __str__(self):
+#         return self.jig
