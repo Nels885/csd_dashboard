@@ -1,0 +1,42 @@
+{% load i18n %}
+
+{% if not user.is_authenticated %}
+
+    <div class="sidebar-heading">
+        Interface
+    </div>
+
+    <!-- Nav Item - login -->
+    <li class="nav-item">
+        <a class="login-btn nav-link" href="#">
+            <i class="fas fa-fw fa-user"></i>
+            <span>{% trans "Login" %}</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Sign Up -->
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-sign-in-alt"></i>
+            <span>{% trans "SignUp" %}</span>
+        </a>
+    </li>
+
+{% else %}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-heading">
+        Interface
+    </div>
+
+    <!-- Nav Item - login -->
+    <li class="nav-item">
+        <a class="logout-btn nav-link" href="#">
+            <i class="fas fa-fw fa-sign-out-alt"></i>
+            <span>{% trans "Logout" %}</span>
+        </a>
+    </li>
+
+{% endif %}

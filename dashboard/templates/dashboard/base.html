@@ -1,6 +1,6 @@
 {% extends 'dashboard/base/_layout.html' %}
 
-{% load i18n %}
+{% load i18n tz %}
 
 {% block basecontent %}
 
@@ -29,24 +29,8 @@
                     <span>{% trans "Dashboard" %}</span></a>
             </li>
 
-            {% if user.is_authenticated is not True %}
-
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <div class="sidebar-heading">
-                    Interface
-                </div>
-
-                <!-- Nav Item - login -->
-                <li class="nav-item">
-                    <a class="login-btn nav-link" href="#">
-                        <i class="fas fa-fw fa-user"></i>
-                        <span>{% trans "Login" %}</span>
-                    </a>
-                </li>
-
-            {% endif %}
+            <!-- Divider -->
+            <hr class="sidebar-divider">
 
             {% include 'dashboard/nav/nav_csd_atelier.html' %}
 
@@ -54,10 +38,12 @@
 
             {% include 'dashboard/nav/nav_tools.html' %}
 
+            {% include 'demo/nav_demo.html' %}
+
+            {% include 'dashboard/nav/nav_interface.html' %}
+
             <!-- Divider -->
             <hr class="sidebar-divider">
-
-            {% include 'demo/nav_demo.html' %}
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
