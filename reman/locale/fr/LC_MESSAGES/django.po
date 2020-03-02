@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-21 19:42+0100\n"
+"POT-Creation-Date: 2020-03-02 11:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/templates/reman/create_form.html:62
+#: reman/forms.py:33
+msgid "The batch already exists!"
+msgstr "Le lot existe déjà !"
+
+#: reman/models.py:28
+msgid "Impossible formatting of the year!"
+msgstr "Formatage impossible de l'année !"
+
+#: reman/models.py:65
+msgid "There is no more repair file to create for this lot!"
+msgstr "Il n'y a plus de fichier de réparation à créer pour ce lot !"
+
+#: reman/templates/reman/create_form.html:55
 msgid "Submit"
 msgstr "Soumettre"
 
-#: reman/views.py:27
+#: reman/views.py:31
 msgid "New customer folder"
 msgstr "Nouveau dossier client"
 
-#: reman/views.py:35
+#: reman/views.py:39
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
+
+#: reman/views.py:50
+msgid "Success: Batch was created."
+msgstr "Succès: le lot a été créé."

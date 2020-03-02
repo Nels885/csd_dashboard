@@ -20,3 +20,7 @@ textarea.form-cfg, textarea.form-cfg:focus {
 .td-ihm {
     width: 50%;
 }
+
+.sidebar .nav-item .nav-link {
+    padding: 0.5rem 1rem 0.5rem 1rem !important;
+}
