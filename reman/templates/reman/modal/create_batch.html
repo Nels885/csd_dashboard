@@ -1,4 +1,4 @@
-{% load widget_tweaks %}
+{% load i18n widget_tweaks %}
 
 {# Django Tempus Dominus assets are included in `{{ form.media }}` #}
 {{ form.media }}
@@ -7,7 +7,7 @@
     {% csrf_token %}
 
     <div class="modal-header">
-        <h3 class="modal-title">Create Batch</h3>
+        <h3 class="modal-title">{% trans 'Create Batch' %}</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -38,8 +38,8 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="submit-btn btn btn-primary">Create</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" class="submit-btn btn btn-primary">{% trans 'Create' %}</button>
     </div>
 
 </form>
