@@ -2,9 +2,10 @@
 $(document).ready(function () {
     $('#softTable').DataTable({
         pagingType: "full_numbers",
-        order: [[0, "asc"]],
+        scrollX: true,
+        order: [[1, "asc"]],
         columnDefs: [{
-            targets: 6,
+            targets: 0,
             searchable: false,
             orderable: false,
         }],
@@ -13,5 +14,4 @@ $(document).ready(function () {
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
     });
-
 });
