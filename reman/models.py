@@ -86,3 +86,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.value
+
+
+class SparePart(models.Model):
+    code_magasin = models.CharField('code Magasin', max_length=20)
+    code_produit = models.CharField('code Produit', max_length=100)
+    code_zone = models.CharField('code Zone', max_length=20)
+    code_site = models.IntegerField('code Site')
+    code_emplacement = models.CharField('code Emplacement', max_length=10)
+    cumul_dispo = models.IntegerField('cumul Dispo')
+    repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)
+
+    def __str__(self):
+        return self.code_produit

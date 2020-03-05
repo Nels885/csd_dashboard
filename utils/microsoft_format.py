@@ -109,3 +109,65 @@ class ExcelFormat:
         dataframe.reset_index(drop=True, inplace=True)
         print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
         return dataframe
+
+
+class CsvFormat:
+    """## Base class for formatting CSV files ##"""
+
+    def __init__(self, file, columns, sep=';', encoding='latin-1'):
+        """
+        Initialize CsvFormat class
+        :param file:
+            Csv file path
+        :param columns:
+            Number of the last column to be processed
+        """
+        self.basename = os.path.basename(file[:file.find('.')])
+        df = pd.read_csv(file, sep=sep, encoding=encoding)
+        self.sheet = df.dropna(how='all')
+        self.nrows = self.sheet.shape[0]
+        self.columns = list(self.sheet.columns[:columns])
+
+    def read_all(self):
+        """
+        Formatting data from the csv file
+        :return:
+            list of dictionaries that represents the data in the sheet
+        """
+        data = []
+        sheet = self.sheet.reindex(columns=self.columns)
+        for line in range(self.nrows):
+            row = list(sheet.loc[line])  # get the data in the ith row
+            row_dict = dict(zip(self.columns, row))
+            data.append(row_dict)
+        return data
+
+    def _date_converter(self, columns):
+        """
+        Converting columns to datetime
+        :param columns:
+            list of columns to convert
+        """
+        for col_date, col_format in columns.items():
+            self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', format=col_format, utc=True)
+
+    def _columns_convert(self, digit=True):
+        """
+        Convert the names of the columns to be used by the database
+        :param columns:
+            List of column names
+        :param digit:
+            Remove digits from the column names
+        :return:
+            list of modified column names
+        """
+        new_columns = {}
+        for column in self.columns:
+            name = unicodedata.normalize('NFKD', column).encode('ASCII', 'ignore').decode('utf8').lower()
+            name = re.sub(r"[^\w\s]+", "", name)
+            if not digit:
+                name = ''.join(i for i in name if not i.isdigit())
+            name = re.sub(r"[\s]+", "_", name)
+            new_columns[column] = name
+        self.sheet.rename(columns=new_columns, inplace=True)
+        self.columns = list(self.sheet.columns)

@@ -1,4 +1,4 @@
-from utils.excel_format import ExcelFormat, re, pd
+from utils.microsoft_format import ExcelFormat, re, pd
 
 
 class ExcelSqualaetp(ExcelFormat):

@@ -1,4 +1,4 @@
-from utils.excel_format import ExcelFormat
+from utils.microsoft_format import ExcelFormat
 
 
 class ExcelDelayAnalysis(ExcelFormat):

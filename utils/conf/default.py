@@ -5,6 +5,7 @@ base_dir = "~/Documents/CSD_DATABASE"
 xls_raspeedi_file = "PROG/RASPEEDI/table_boitier_PSA.xlsx"
 xls_squalaetp_file = "EXTS/squalaetp.xls"
 xls_attributs_file = "EXTS/Attributs CORVET.xlsx"
+csv_extraction_file = "EXTS/extraction.csv"
 
 xls_delay_files = [
     "RH/AnalyseRetards/PSA.xls",
