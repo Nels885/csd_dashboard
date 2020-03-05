@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-02 11:45+0100\n"
+"POT-Creation-Date: 2020-03-05 09:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,6 +33,18 @@ msgstr "Il n'y a plus de fichier de réparation à créer pour ce lot !"
 #: reman/templates/reman/create_form.html:55
 msgid "Submit"
 msgstr "Soumettre"
+
+#: reman/templates/reman/modal/create_batch.html:10
+msgid "Create Batch"
+msgstr "Création d'un lot"
+
+#: reman/templates/reman/modal/create_batch.html:41
+msgid "Cancel"
+msgstr "Annuler"
+
+#: reman/templates/reman/modal/create_batch.html:42
+msgid "Create"
+msgstr "Création"
 
 #: reman/views.py:31
 msgid "New customer folder"

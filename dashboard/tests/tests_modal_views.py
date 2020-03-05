@@ -104,7 +104,7 @@ class MixinsTest(UnitTest):
         # Update object through BSModalUpdateView
         post = Post.objects.first()
         response = self.client.post(
-            reverse('dashboard:update-post', kwargs={'pk': post.pk}),
+            reverse('dashboard:update_post', kwargs={'pk': post.pk}),
             data={
                 'title': 'test2',
                 'overview': 'texte',
@@ -124,6 +124,6 @@ class MixinsTest(UnitTest):
         self.login()
         # Request to delete view passes message to the response
         post = Post.objects.first()
-        response = self.client.post(reverse('dashboard:delete-post', kwargs={'pk': post.pk}))
+        response = self.client.post(reverse('dashboard:delete_post', kwargs={'pk': post.pk}))
         messages = get_messages(response.wsgi_request)
         self.assertEqual(len(messages), 1)

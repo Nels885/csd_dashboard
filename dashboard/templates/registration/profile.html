@@ -17,7 +17,7 @@
                                     <h1 class="h4 text-gray-900 mb-4">{% trans "User Profile" %}</h1>
                                 </div>
 
-                                <form class="user" method="post" action="{% url 'dashboard:user-profile' %}"
+                                <form class="user" method="post" action="{% url 'dashboard:user_profile' %}"
                                       enctype="multipart/form-data">
 
                                     {% csrf_token %}

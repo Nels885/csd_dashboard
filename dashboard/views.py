@@ -104,7 +104,7 @@ def user_profile(request):
         form = UserProfileForm(request.POST or None, request.FILES, instance=user)
         if form.is_valid():
             form.save()
-            messages.success(request, _('Modification done successfully!'))
+            messages.success(request, _('Success: Modification done!'))
         context['errors'] = form.errors.items()
     else:
         form = UserProfileForm()
@@ -177,6 +177,7 @@ def config_edit(request):
         query = request.POST.get('config')
         with open(settings.CONF_FILE, 'w+') as file:
             file.write(query)
+        messages.success(request, _('Success: Modification done!'))
 
     with open(settings.CONF_FILE, 'r') as file:
         conf = file.read()
@@ -195,7 +196,7 @@ def config_edit(request):
 class CustomLoginView(BSModalLoginView):
     authentication_form = CustomAuthenticationForm
     template_name = 'dashboard/modal/login.html'
-    success_message = _('Success: You were successfully logged in.')
+    success_message = _('Success: You are logged in.')
     success_url = reverse_lazy('charts')
 
 
@@ -206,7 +207,7 @@ class CustomLogoutView(LoginRequiredMixin, TemplateView):
 class PostCreateView(LoginRequiredMixin, BSModalCreateView):
     template_name = 'dashboard/modal/post_create.html'
     form_class = PostForm
-    success_message = _('Post was created.')
+    success_message = _('Success: Post was created.')
     success_url = reverse_lazy('index')
 
     def get_context_data(self, **kwargs):
@@ -219,12 +220,12 @@ class PostUpdateView(LoginRequiredMixin, BSModalUpdateView):
     model = Post
     template_name = 'dashboard/modal/post_update.html'
     form_class = PostForm
-    success_message = _('Post was updated.')
+    success_message = _('Success: Post was updated.')
     success_url = reverse_lazy('index')
 
 
 class PostDeleteView(BSModalDeleteView):
     model = Post
     template_name = 'dashboard/modal/post_delete.html'
-    success_message = _('Post was deleted.')
+    success_message = _('Success: Post was deleted.')
     success_url = reverse_lazy('index')

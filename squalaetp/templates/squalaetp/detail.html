@@ -31,6 +31,13 @@
                         </a>
                     </li>
                 {% endif %}
+                {% if file.modele_produit == 'NAC' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#nac" role="tab" aria-selected="false">
+                            {% trans "Info NAC" %}
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
                        aria-selected="false">
@@ -70,6 +77,14 @@
 
             {% include 'squalaetp/detail_ihm.html' %}
 
+        </div>
+
+        <!-- Detail NAC -->
+        <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
+            <a class="nav-link" role="tab" aria-selected="false" target="_blank"
+               href="https://www.peugeot.fr/marque-et-technologie/services_connectes/mise-a-jour-cartographie-gps.html">
+                Mise à jour cartographie et système pour les produits NAC
+            </a>
         </div>
 
         <!-- Detail Corvert -->

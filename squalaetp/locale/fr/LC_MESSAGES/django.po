@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-02 11:45+0100\n"
+"POT-Creation-Date: 2020-03-05 09:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,14 +74,16 @@ msgid "Log Files"
 msgstr "Fichiers Log"
 
 #: squalaetp/templates/squalaetp/detail.html:37
+msgid "Info NAC"
+msgstr "Info NAC"
+
+#: squalaetp/templates/squalaetp/detail.html:44
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 
-#: squalaetp/templates/squalaetp/detail.html:43
-#, fuzzy
-#| msgid "CORVET table"
+#: squalaetp/templates/squalaetp/detail.html:50
 msgid "CORVET Update"
-msgstr "Table CORVET"
+msgstr "MAJ CORVET"
 
 #: squalaetp/templates/squalaetp/modal/corvet_form.html:53
 #: squalaetp/templates/squalaetp/modal/log_file.html:13

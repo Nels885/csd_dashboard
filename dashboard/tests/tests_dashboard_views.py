@@ -20,18 +20,18 @@ class DashboardTestCase(UnitTest):
 
     def test_set_language_view_is_valid(self):
         for lang in ['fr', 'en']:
-            response = self.client.get(reverse('dashboard:set-lang', args={'user_language': lang}),
+            response = self.client.get(reverse('dashboard:set_lang', args={'user_language': lang}),
                                        HTTP_REFERER=self.redirectUrl)
             self.assertTrue(translation.check_for_language(lang))
             self.assertRedirects(response, self.redirectUrl, status_code=302)
 
     def test_user_profile_is_disconnected(self):
-        response = self.client.get(reverse('dashboard:user-profile'))
+        response = self.client.get(reverse('dashboard:user_profile'))
         self.assertRedirects(response, '/accounts/login/?next=/dashboard/profile/', status_code=302)
 
     def test_user_profile_is_connected(self):
         self.login()
-        response = self.client.get(reverse('dashboard:user-profile'))
+        response = self.client.get(reverse('dashboard:user_profile'))
         self.assertEqual(response.status_code, 200)
 
     def test_signup_page_is_not_staff(self):
@@ -100,10 +100,10 @@ class DashboardTestCase(UnitTest):
 
     def test_config_edit_page_is_not_staff(self):
         self.login()
-        response = self.client.get(reverse('dashboard:config-edit'))
+        response = self.client.get(reverse('dashboard:config_edit'))
         self.assertRedirects(response, '/accounts/login/?next=/dashboard/config/edit/', status_code=302)
 
     def test_config_edit_page_is_staff(self):
         self.login('admin')
-        response = self.client.get(reverse('dashboard:config-edit'))
+        response = self.client.get(reverse('dashboard:config_edit'))
         self.assertEqual(response.status_code, 200)
