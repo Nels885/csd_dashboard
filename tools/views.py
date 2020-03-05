@@ -1,12 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalCreateView
 
-from utils.django.decorators import group_required, class_view_decorator
+from utils.django.decorators import class_view_decorator
 from .models import CsdSoftware, User
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm
@@ -25,8 +25,7 @@ def soft_list(request):
     return render(request, 'tools/soft_table.html', context)
 
 
-@login_required
-@group_required('cellule')
+@permission_required('tools.add_csdsoftware')
 def soft_add(request):
     """
     View for adding a software in the list
@@ -51,8 +50,7 @@ def soft_add(request):
     return render(request, 'tools/soft_add.html', context)
 
 
-@login_required
-@group_required('cellule')
+@permission_required('tools.change_csdsoftware')
 def soft_edit(request, soft_id):
     """
     View for changing software data

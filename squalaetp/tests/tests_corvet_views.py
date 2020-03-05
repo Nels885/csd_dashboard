@@ -1,7 +1,5 @@
-from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User, Group
 
 from dashboard.tests.base import UnitTest
 
@@ -11,7 +9,7 @@ from squalaetp.models import Corvet
 class CorvetTestCase(UnitTest):
 
     def setUp(self):
-        super().setUp()
+        super(CorvetTestCase, self).setUp()
         self.data = (
             '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
             '<VEHICULE Existe="O">'
@@ -23,7 +21,6 @@ class CorvetTestCase(UnitTest):
             '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
             '</VEHICULE></MESSAGE>'
         )
-        self.vin = 'VF3ABCDEF12345678'
         self.add_group_user("cellule")
 
     def test_corvet_table_page_is_disconnected(self):

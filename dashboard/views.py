@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
@@ -22,6 +22,7 @@ import re
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
+from utils.django.decorators import class_view_decorator
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
@@ -204,6 +205,7 @@ class CustomLogoutView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/modal/logout.html'
 
 
+@class_view_decorator(permission_required('dashboard.add_post'))
 class PostCreateView(LoginRequiredMixin, BSModalCreateView):
     template_name = 'dashboard/modal/post_create.html'
     form_class = PostForm
@@ -216,6 +218,7 @@ class PostCreateView(LoginRequiredMixin, BSModalCreateView):
         return context
 
 
+@class_view_decorator(permission_required('dashboard.change_post'))
 class PostUpdateView(LoginRequiredMixin, BSModalUpdateView):
     model = Post
     template_name = 'dashboard/modal/post_update.html'
@@ -224,7 +227,8 @@ class PostUpdateView(LoginRequiredMixin, BSModalUpdateView):
     success_url = reverse_lazy('index')
 
 
-class PostDeleteView(BSModalDeleteView):
+@class_view_decorator(permission_required('dashboard.delete_post'))
+class PostDeleteView(LoginRequiredMixin, BSModalDeleteView):
     model = Post
     template_name = 'dashboard/modal/post_delete.html'
     success_message = _('Success: Post was deleted.')

@@ -1,23 +1,11 @@
-from django.test import LiveServerTestCase
-from django.contrib.auth.models import User, Group
-
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-
+from dashboard.tests.base import FunctionalTest
 from squalaetp.models import Corvet
 
 
-class CorvetSeleniumTestCase(LiveServerTestCase):
+class CorvetSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        self.driver = webdriver.Firefox(firefox_options=options)
-        self.driver.implicitly_wait(30)
         super(CorvetSeleniumTestCase, self).setUp()
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
         self.data = (
             '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
             '<VEHICULE Existe="O">'
@@ -29,11 +17,7 @@ class CorvetSeleniumTestCase(LiveServerTestCase):
             '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
             '</VEHICULE></MESSAGE>'
         )
-        self.vin = 'VF3ABCDEF12345678'
-
-    def tearDown(self):
-        self.driver.quit()
-        super(CorvetSeleniumTestCase, self).tearDown()
+        self.add_group_user("cellule")
 
     def test_corvet_table_page_is_connected(self):
         driver = self.driver

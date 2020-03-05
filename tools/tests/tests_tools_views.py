@@ -12,7 +12,7 @@ class ToolsTestCase(UnitTest):
         self.form_data = {
             'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test',
         }
-        self.add_group_user("cellule")
+        self.add_perms_user(CsdSoftware, 'add_csdsoftware', 'change_csdsoftware')
 
     def test_soft_list_page(self):
         response = self.client.get(reverse('tools:soft-list'))

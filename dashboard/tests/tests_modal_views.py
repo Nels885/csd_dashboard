@@ -14,12 +14,13 @@ class MixinsTest(UnitTest):
         xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                                      modele_vehicule='peugeot')
         self.add_perms_user(TagXelon, 'add_tagxelon')
+        self.add_perms_user(Post, 'add_post', 'change_post', 'delete_post')
         self.add_group_user("technician")
         self.author = UserProfile.objects.get(user=self.user)
         Post.objects.create(title='test', overview='texte', author=self.author)
         self.xelonId = str(xelon.id)
 
-    def test_TagXelonAjaxMixin(self):
+    def test_Tag_xelon_ajax_mixin(self):
         """
         Create TagXelon through BSModalCreateView.
         """
@@ -58,7 +59,7 @@ class MixinsTest(UnitTest):
         tags = TagXelon.objects.all()
         self.assertEqual(tags.count(), 1)
 
-    def test_LoginAjaxMixin(self):
+    def test_Login_ajax_mixin(self):
         """
         Login user through BSModalLoginView.
         """
@@ -95,9 +96,30 @@ class MixinsTest(UnitTest):
         # User is authenticated
         self.assertTrue(response.wsgi_request.user.is_authenticated)
 
-    def test_PostAjaxMixin(self):
+    def test_create_post_ajax_mixin(self):
         """
         Create Post throught BSModalCreateView.
+        """
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('dashboard:create_post'),
+            data={
+                'title': 'test1',
+                'overview': 'texte',
+                'author': self.author.id,
+            },
+        )
+        # Redirection
+        self.assertRedirects(response, reverse('index'), status_code=302)
+        # Object is created
+        posts = Post.objects.all()
+        self.assertEqual(posts.count(), 2)
+
+    def test_update_post_ajax_mixin(self):
+        """
+        Update Post throught BSModalCreateView.
         """
         self.login()
 
@@ -117,7 +139,7 @@ class MixinsTest(UnitTest):
         post = Post.objects.first()
         self.assertEqual(post.title, 'test2')
 
-    def test_DeleteMessageMixin(self):
+    def test_Delete_post_ajax_mixin(self):
         """
         Delete object through BSModalDeleteView.
         """

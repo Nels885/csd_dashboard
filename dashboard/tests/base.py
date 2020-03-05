@@ -6,27 +6,76 @@ from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.firefox.options import Options
 
 from dashboard.models import UserProfile
 
 MAX_WAIT = 10
 
 
-class FunctionalTest(StaticLiveServerTestCase):
+class BaseTest:
+
+    def __init__(self):
+        self.vin = 'VF3ABCDEF12345678'
+        self.form_user = {'username': 'test', 'email': 'test@test.com'}
+        admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
+        admin.is_staff = True
+        admin.save()
+        self.user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
+        self.user.save()
+        UserProfile(user=self.user).save()
+        self.redirectUrl = reverse('index')
+
+    def add_group_user(self, *args):
+        for group in args:
+            self.user.groups.add(Group.objects.create(name=group))
+
+    def add_perms_user(self, model, *args):
+        content_type = ContentType.objects.get_for_model(model)
+        for codename in args:
+            self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))
+
+
+class UnitTest(TestCase, BaseTest):
+
+    def setUp(self):
+        BaseTest.__init__(self)
+        TestCase.setUp(self)
+
+    def login(self, user='user'):
+        if user == 'admin':
+            self.client.login(username='admin', password='adminpassword')
+        else:
+            self.client.login(username='toto', password='totopassword')
+
+
+class FunctionalTest(StaticLiveServerTestCase, BaseTest):
 
     # Basic setUp & tearDown
     def setUp(self):
-        self.browser = webdriver.Firefox()
+        options = Options()
+        options.add_argument('-headless')
+        self.driver = webdriver.Firefox(firefox_options=options)
+        self.driver.implicitly_wait(30)
+        StaticLiveServerTestCase.setUp(self)
+        BaseTest.__init__(self)
 
     def tearDown(self):
-        self.browser.quit()
+        self.driver.quit()
+        super(FunctionalTest, self).tearDown()
+
+    def login(self, user='user'):
+        if user == 'admin':
+            self.client.login(username='admin', password='adminpassword')
+        else:
+            self.client.login(username='toto', password='totopassword')
 
     def wait_for_text_in_body(self, *args, not_in=None):
         start_time = time.time()
         # Infinite loop
         while True:
             try:
-                body = self.browser.find_element_by_tag_name('body')
+                body = self.driver.find_element_by_tag_name('body')
                 body_text = body.text
                 # Check that text is in body
                 if not not_in:
@@ -49,7 +98,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         # Infinite loop
         while True:
             try:
-                modal = self.browser.find_element_by_id(modalID)
+                modal = self.driver.find_element_by_id(modalID)
                 return modal
             except (AssertionError, WebDriverException) as e:
                 # Return exception if more than 10s pass
@@ -63,7 +112,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         # Infinite loop
         while True:
             try:
-                table = self.browser.find_element_by_tag_name('table')
+                table = self.driver.find_element_by_tag_name('table')
                 tbody = table.find_element_by_tag_name('tbody')
                 # Slice removes tr in thead
                 trs = tbody.find_elements_by_tag_name('tr')
@@ -83,32 +132,3 @@ class FunctionalTest(StaticLiveServerTestCase):
         for i in range(len(cells_values)):
             if cells_values[i] is not None:
                 self.assertEqual(cells[i].text, cells_values[i])
-
-
-class UnitTest(TestCase):
-
-    def setUp(self):
-        self.vin = 'VF3ABCDEF12345678'
-        self.form_user = {'username': 'test', 'email': 'test@test.com'}
-        admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
-        admin.is_staff = True
-        admin.save()
-        self.user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        self.user.save()
-        UserProfile(user=self.user).save()
-        self.redirectUrl = reverse('index')
-
-    def login(self, user='user'):
-        if user == 'admin':
-            self.client.login(username='admin', password='adminpassword')
-        else:
-            self.client.login(username='toto', password='totopassword')
-
-    def add_group_user(self, *args):
-        for group in args:
-            self.user.groups.add(Group.objects.create(name=group))
-
-    def add_perms_user(self, model, *args):
-        content_type = ContentType.objects.get_for_model(model)
-        for codename in args:
-            self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))
