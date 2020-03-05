@@ -1,17 +1,11 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function () {
-    $('#remanTable').DataTable({
+    $('#partTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
-        order: [[2, "asc"]],
-        // Disable sorting for the Tags and Actions columns.
-        columnDefs: [{
-            targets: [0, 1],
-            searchable: false,
-            orderable: false,
-        }],
+        order: [[0, "asc"]],
         initComplete: function () {
-            this.api().columns([2, 3, 4, 5, 6, 7]).every(function () {
+            this.api().columns().every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.footer()).empty())

@@ -51,7 +51,9 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>
                     <a class="collapse-item"
-                       href="{% url 'reman:reman-table' %}">{% trans "Customer files" %}</a>
+                       href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
+                    <a class="collapse-item"
+                       href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">Edition :</h6>
 
@@ -59,7 +61,7 @@
                         <a class="batch-btn collapse-item" href="#">{% trans "Create Batch" %}</a>
                     {% endif %}
 
-                    <a class="collapse-item" href="{% url 'reman:new-folder' %}">{% trans "Create file" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:new_folder' %}">{% trans "Create file" %}</a>
                     <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
                 </div>
             </div>
