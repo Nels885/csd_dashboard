@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import login
 from django.contrib import messages
 from django.conf import settings
@@ -22,7 +22,6 @@ import re
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
-from utils.django.decorators import class_view_decorator
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
@@ -205,8 +204,8 @@ class CustomLogoutView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/modal/logout.html'
 
 
-@class_view_decorator(permission_required('dashboard.add_post'))
-class PostCreateView(LoginRequiredMixin, BSModalCreateView):
+class PostCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'dashboard.add_post'
     template_name = 'dashboard/modal/post_create.html'
     form_class = PostForm
     success_message = _('Success: Post was created.')
@@ -218,18 +217,18 @@ class PostCreateView(LoginRequiredMixin, BSModalCreateView):
         return context
 
 
-@class_view_decorator(permission_required('dashboard.change_post'))
-class PostUpdateView(LoginRequiredMixin, BSModalUpdateView):
+class PostUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Post
+    permission_required = 'dashboard.change_post'
     template_name = 'dashboard/modal/post_update.html'
     form_class = PostForm
     success_message = _('Success: Post was updated.')
     success_url = reverse_lazy('index')
 
 
-@class_view_decorator(permission_required('dashboard.delete_post'))
-class PostDeleteView(LoginRequiredMixin, BSModalDeleteView):
+class PostDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     model = Post
+    permission_required = 'dashboard.delete_post'
     template_name = 'dashboard/modal/post_delete.html'
     success_message = _('Success: Post was deleted.')
     success_url = reverse_lazy('index')
