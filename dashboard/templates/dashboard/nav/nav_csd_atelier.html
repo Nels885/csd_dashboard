@@ -49,20 +49,21 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Informations :</h6>
-                    <a class="collapse-item"
-                       href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
+                    <h6 class="collapse-header">Traitement :</h6>
+                    <a class="collapse-item" href="{% url 'reman:new_folder' %}">{% trans "Create file" %}</a>
+                    <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Information :</h6>
                     <a class="collapse-item"
                        href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
+                    <a class="collapse-item"
+                       href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Edition :</h6>
+                    <h6 class="collapse-header">Administration :</h6>
 
                     {% if perms.reman.add_batch %}
                         <a class="batch-btn collapse-item" href="#">{% trans "Create Batch" %}</a>
                     {% endif %}
-
-                    <a class="collapse-item" href="{% url 'reman:new_folder' %}">{% trans "Create file" %}</a>
-                    <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
                 </div>
             </div>
         </li>

@@ -60,7 +60,7 @@ def new_folder(request):
     return render(request, 'reman/new_folder.html', context)
 
 
-@class_view_decorator(permission_required('tools.add_batch'))
+@class_view_decorator(permission_required('reman.add_batch'))
 class BatchCreateView(BSModalCreateView):
     template_name = 'reman/modal/create_batch.html'
     form_class = AddBatchFrom
