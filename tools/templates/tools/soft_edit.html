@@ -5,7 +5,7 @@
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="{% url 'tools:soft-edit' soft_id=soft.id %}">
+        <form method="post" action="{% url 'tools:soft_edit' soft_id=soft.id %}">
 
             {% include 'tools/soft_form.html' %}
 

@@ -4,7 +4,7 @@ from bootstrap_modal_forms.forms import BSModalForm
 
 from utils.django.validators import validate_xelon
 
-from .models import TagXelon, CsdSoftware
+from .models import TagXelon, CsdSoftware, ThermalChamber
 
 
 class TagXelonForm(BSModalForm):
@@ -37,4 +37,13 @@ class SoftwareForm(forms.ModelForm):
             'link_download': forms.TextInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
             'validation_date': forms.DateInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ThermalFrom(forms.ModelForm):
+    class Meta:
+        model = ThermalChamber
+        fields = ['operating_mode']
+        widgets = {
+            'operating_mode': forms.Select(attrs={'class': 'form-control'}),
         }

@@ -1,15 +1,17 @@
+import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import permission_required
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import permission_required, login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from utils.django.decorators import class_view_decorator
-from .models import CsdSoftware, User
+from .models import CsdSoftware, User, ThermalChamber
 from dashboard.forms import ParaErrorList
-from .forms import TagXelonForm, SoftwareForm
+from .forms import TagXelonForm, SoftwareForm, ThermalFrom
 
 
 def soft_list(request):
@@ -70,6 +72,37 @@ def soft_edit(request, soft_id):
         'form': form,
     }
     return render(request, 'tools/soft_edit.html', context)
+
+
+@login_required
+def thermal_chamber(request):
+    thermals = ThermalChamber.objects.filter(active=True).order_by('created_at')
+    context = {
+        'title': _('Thermal Chamber'),
+        'table_title': _('Use of the thermal chamber'),
+        'thermals': thermals,
+        'now': datetime.datetime.now(),
+        'temp': None
+    }
+    if request.method == 'POST':
+        form = ThermalFrom(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Modification done successfully!'))
+        context['errors'] = form.errors.items()
+    else:
+        form = ThermalFrom()
+    context['form'] = form
+    return render(request, 'tools/thermal_chamber.html', context)
+
+
+@login_required
+def thermal_disable(request, pk):
+    therm = get_object_or_404(ThermalChamber, pk=pk)
+    therm.active = False
+    therm.save()
+    messages.success(request, 'Suppression réalisé avec succès!')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @class_view_decorator(permission_required('tools.add_tagxelon'))

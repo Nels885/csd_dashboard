@@ -51,3 +51,27 @@ class CsdSoftware(models.Model):
 
     def __str__(self):
         return self.jig
+
+
+class ThermalChamber(models.Model):
+    CHOICES = [('FROID', 'FROID'), ('CHAUD', 'CHAUD')]
+
+    operating_mode = models.CharField('mode de fonctionnement', max_length=20, choices=CHOICES)
+    start_time = models.DateTimeField('heure de début', blank=True, null=True)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and not user.pk:
+            user = None
+        self.created_by = user
+        super(ThermalChamber, self).save(*args, **kwargs)
+
+    def __str__(self):
+        first_name, last_name = self.created_by.first_name, self.created_by.last_name
+        if first_name and last_name:
+            return "{} {}".format(self.created_by.last_name, self.created_by.first_name)
+        else:
+            return self.created_by.username

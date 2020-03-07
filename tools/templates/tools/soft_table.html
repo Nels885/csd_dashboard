@@ -25,7 +25,7 @@
                 {% elif soft.status == "En test" %}class="bg-warning text-gray-800"
                 {% elif soft.status == "Etudes" %}class="bg-info text-light"
                 {% else %}class="bg-success text-gray-700"{% endif %}>
-                <td class="bg-white"><a href="{% url 'tools:soft-edit' soft_id=soft.id %}" title="Modification"
+                <td class="bg-white"><a href="{% url 'tools:soft_edit' soft_id=soft.id %}" title="Modification"
                                         class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td>{{ soft.jig }}</td>
@@ -53,7 +53,7 @@
 {% block tablejs %}
 
     <!-- Page level custom scripts -->
-    <script src="{% static 'tools/js/soft-tables.js' %}"></script>
+    <script src="{% static 'tools/js/tools-tables.js' %}"></script>
 
     <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>

@@ -1,0 +1,86 @@
+{% extends 'dashboard/datatables_format.html' %}
+
+{% load i18n %}
+
+{% load static %}
+
+{% block table_content %}
+
+    <h1 class="display-1 text-gray-800 text-center mb-5">Temp : {{ temp|default:'Hors ligne' }}</h1>
+
+    <form class="form-inline" method="post" action="{% url 'tools:thermal' %}">
+
+        {% csrf_token %}
+
+        <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        {% for field in form %}
+            <div class="form-group mx-sm-3 mb-2">
+                <label class="mx-sm-3" for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                {{ field }}
+                <div class="{% if field.errors %} invalid{% endif %}">
+                    {% for error in field.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary mb-2">{% trans "Submit" %}</button>
+
+    </form>
+
+    {% if errors %}
+        {% for key, error in errors %}
+            {% autoescape off %}
+                {{ error }}
+            {% endautoescape %}
+        {% endfor %}
+    {% endif %}
+
+    <hr>
+
+    <table class="table table-bordered" id="thermalTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Utilisateur</th>
+            <th>Date</th>
+            <th>Heure de départ</th>
+            <th>Temps passé dans la chambre</th>
+            <th>Mode de fonctionnement</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for thermal in thermals %}
+
+            <tr>
+                <td class="bg-white"><a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Suppression"
+                                        class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                </td>
+                <td>{{ thermal.created_by }}</td>
+                <td>{{ thermal.created_at }}</td>
+                <td>{{ thermal.start_time|default:'En attente' }}</td>
+                <td>{% now "l d F Y H:i" %}</td>
+                <td>{{ thermal.operating_mode }}</td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'tools/js/tools-tables.js' %}"></script>
+
+{% endblock %}

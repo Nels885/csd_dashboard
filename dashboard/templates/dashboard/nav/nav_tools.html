@@ -34,12 +34,12 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Informations :</h6>
                     <a class="collapse-item"
-                       href="{% url 'tools:soft-list' %}">{% trans "Software list" %}</a>
+                       href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
                     <div class="collapse-divider"></div>
                     {% if perms.dashboard.add_csdsoftware %}
                         <h6 class="collapse-header">Edition :</h6>
                         <a class="collapse-item"
-                           href="{% url 'tools:soft-add' %}">{% trans "Software Add" %}</a>
+                           href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
                     {% endif %}
                 </div>
             </div>

@@ -28,7 +28,7 @@ class MixinsTest(UnitTest):
 
         # First post request = ajax request checking if form in view is valid
         response = self.client.post(
-            reverse('tools:tag-xelon'),
+            reverse('tools:tag_xelon'),
             data={
                 'xelon': 'wrong_xelon',
                 'comments': ''
@@ -46,7 +46,7 @@ class MixinsTest(UnitTest):
 
         # Second post request = non-ajax request creating an object
         response = self.client.post(
-            reverse('tools:tag-xelon'),
+            reverse('tools:tag_xelon'),
             data={
                 'xelon': 'A123456789',
                 'comments': ''
