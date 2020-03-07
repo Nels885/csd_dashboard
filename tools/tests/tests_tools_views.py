@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from dashboard.tests.base import UnitTest
 
-from tools.models import CsdSoftware
+from tools.models import CsdSoftware, ThermalChamber
 
 
 class ToolsTestCase(UnitTest):
@@ -38,3 +38,29 @@ class ToolsTestCase(UnitTest):
     def test_tag_xelon_is_disconnected(self):
         response = self.client.get(reverse('tools:tag_xelon'))
         self.assertRedirects(response, '/accounts/login/?next=/tools/tag-xelon/', status_code=302)
+
+    def test_thermal_chamber_page_is_disconnected(self):
+        response = self.client.get(reverse('tools:thermal'))
+        self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/', status_code=302)
+
+    def test_thermal_chamber_page_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('tools:thermal'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_thermal_chamber_page_is_valid(self):
+        self.login()
+        old_thermal = ThermalChamber.objects.count()
+        response = self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
+        new_thermal = ThermalChamber.objects.count()
+        self.assertEqual(new_thermal, old_thermal + 1)
+        self.assertEqual(response.status_code, 200)
+
+    def test_thermal_disable_view(self):
+        self.login()
+        self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
+        thermal = ThermalChamber.objects.first()
+        response = self.client.post(reverse('tools:thermal_disable', kwargs={'pk': thermal.pk}))
+        new_thermal = ThermalChamber.objects.get(pk=thermal.pk)
+        self.assertEqual(new_thermal.active, False)
+        self.assertEqual(response.status_code, 302)

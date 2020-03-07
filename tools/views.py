@@ -78,7 +78,7 @@ def soft_edit(request, soft_id):
 def thermal_chamber(request):
     thermals = ThermalChamber.objects.filter(active=True).order_by('created_at')
     context = {
-        'title': _('Thermal Chamber'),
+        'title': _('Thermal chamber'),
         'table_title': _('Use of the thermal chamber'),
         'thermals': thermals,
         'now': datetime.datetime.now(),
@@ -102,7 +102,7 @@ def thermal_disable(request, pk):
     therm.active = False
     therm.save()
     messages.success(request, 'Suppression réalisé avec succès!')
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('tools:thermal')
 
 
 @class_view_decorator(permission_required('tools.add_tagxelon'))
