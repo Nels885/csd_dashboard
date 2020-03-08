@@ -6,7 +6,7 @@
 
 {% block table_content %}
 
-    <h1 class="display-1 text-gray-800 text-center mb-5">Temp : {{ temp|default:'Hors ligne' }}</h1>
+    <h1 class="display-1 text-gray-800 text-center mb-5">Temp : <span id="thermal-temp"></span></h1>
 
     <form class="form-inline" method="post" action="{% url 'tools:thermal' %}">
 
@@ -83,4 +83,21 @@
     <!-- Page level custom scripts -->
     <script type="text/javascript" src="{% static 'tools/js/tools-tables.js' %}"></script>
 
+{% endblock %}
+
+{% block customjs %}
+    <script type="text/javascript">
+        async function getTemp() {
+            $.ajax({
+                url: '/api/temp/',
+                dataType: 'json',
+                success: function (data) {
+                    const {temp} = data;
+                    document.getElementById('thermal-temp').textContent = temp;
+                }
+            });
+        }
+        getTemp();
+        setInterval(getTemp, 10000);
+    </script>
 {% endblock %}

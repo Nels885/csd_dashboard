@@ -1,4 +1,4 @@
-function date_time() {
+function clock() {
     date = new Date;
     year = date.getFullYear();
     month = date.getMonth();
@@ -23,8 +23,4 @@ function date_time() {
     }
     resultat = days[day] + ' ' + d + ' ' + months[month] + ' ' + year + ' ' + hour + ':' + minutes + ':' + seconds;
     document.getElementById('datetime').innerHTML = resultat;
-}
-
-function clock() {
-    setInterval(date_time, 1000);
 }

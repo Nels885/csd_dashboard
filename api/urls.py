@@ -13,9 +13,10 @@ app_name = 'api'
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('charts/', views.Charts.as_view(), name="charts"),
+    path('charts/', views.charts, name="charts"),
     path('prog/', views.ProgList.as_view(), name="prog"),
     path('cal/', views.CalList.as_view(), name="cal"),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api-token-auth/', obtain_auth_token, name='token-auth'),
+    path('api-token-auth/', obtain_auth_token, name='token_auth'),
+    path('temp/', views.thermal_temp, name='temp')
 ]

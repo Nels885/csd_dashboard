@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import api_view
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from api.serializers import XelonSerializer, CorvetSerializer
@@ -86,25 +86,21 @@ class CalList(generics.ListAPIView):
         return queryset
 
 
-class Charts(APIView):
+@api_view(['GET'])
+def charts(request):
     """
     API endpoint that allows chart data to be viewed
     """
-
-    def get(self, request, format=None):
-        """
-        Return a dictionnary of data
-        """
-        analysis, deal = ProductAnalysis(), DealAnalysis()
-        prod_labels, prod_nb = analysis.products_count()
-        deal_labels, deal_nb = deal.count()
-        data = {
-            "prodLabels": prod_labels,
-            "prodDefault": prod_nb,
-            "dealLabels": deal_labels,
-            "dealDefault": deal_nb,
-        }
-        return Response(data)
+    analysis, deal = ProductAnalysis(), DealAnalysis()
+    prod_labels, prod_nb = analysis.products_count()
+    deal_labels, deal_nb = deal.count()
+    data = {
+        "prodLabels": prod_labels,
+        "prodDefault": prod_nb,
+        "dealLabels": deal_labels,
+        "dealDefault": deal_nb,
+    }
+    return Response(data, status=status.HTTP_200_OK)
 
 
 class XelonViewSet(viewsets.ModelViewSet):
@@ -143,3 +139,9 @@ class CorvetViewSet(viewsets.ModelViewSet):
             return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+
+
+@api_view(['GET'])
+def thermal_temp(request):
+    data = {'temp': 'Hors ligne'}
+    return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)
