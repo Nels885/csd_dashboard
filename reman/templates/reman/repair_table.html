@@ -11,26 +11,15 @@
         <tr>
             <th></th>
             <th></th>
-            <th class="all">Numéro de lot</th>
+            <th>Numéro de lot</th>
             <th>Numéro d'identification</th>
             <th class="all">Modèle produit</th>
             <th>Référence produit</th>
-            <th class="all">Numéro de série</th>
-            <th class="all">Date de cloture</th>
+            <th>Créé le</th>
+            <th>Ajouté par</th>
+            <th>Date de cloture</th>
         </tr>
         </thead>
-        <tfoot>
-        <tr>
-            <th></th>
-            <th></th>
-            <th class="all">Numéro de lot</th>
-            <th>Numéro d'identification</th>
-            <th class="all">Modèle produit</th>
-            <th>Référence produit</th>
-            <th class="all">Numéro de série</th>
-            <th class="all">Date de cloture</th>
-        </tr>
-        </tfoot>
         <tbody>
 
         {% for file in files %}
@@ -44,11 +33,12 @@
                     <a href="#" title="Détail"
                        class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
-                <td>{{ file.batch_number }}</td>
+                <td>{{ file.batch }}</td>
                 <td>{{ file.identify_number }}</td>
                 <td>{{ file.product_model }}</td>
-                <td>{{ file.product_reference }}</td>
-                <td>{{ file.serial_number }}</td>
+                <td>{{ file.product_number }}</td>
+                <td>{{ file.created_at }}</td>
+                <td>{{ file.created_by }}</td>
                 <td>{{ file.closing_date|default:"--" }}</td>
             </tr>
 
