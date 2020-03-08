@@ -17,7 +17,11 @@ def repair_table(request):
     """
     View of Xelon table page
     """
-    files = Repair.objects.all()
+    query = request.GET.get('filter')
+    if query and query == 'quality':
+        files = Repair.objects.filter(quality_control=False)
+    else:
+        files = Repair.objects.all()
     context = {
         'title': 'Reman',
         'table_title': 'Dossiers Reman',

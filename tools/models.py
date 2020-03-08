@@ -22,7 +22,8 @@ class TagXelon(models.Model):
         user = get_current_user()
         if user and not user.pk:
             user = None
-        self.created_by = user
+        if not self.pk:
+            self.created_by = user
         calibre.file(self.xelon, self.comments, user)
         super(TagXelon, self).save(*args, **kwargs)
 
@@ -66,7 +67,8 @@ class ThermalChamber(models.Model):
         user = get_current_user()
         if user and not user.pk:
             user = None
-        self.created_by = user
+        if not self.pk:
+            self.created_by = user
         super(ThermalChamber, self).save(*args, **kwargs)
 
     def __str__(self):

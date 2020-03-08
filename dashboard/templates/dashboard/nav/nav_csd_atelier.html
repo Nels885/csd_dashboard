@@ -51,7 +51,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Traitement :</h6>
                     <a class="collapse-item" href="{% url 'reman:new_folder' %}">{% trans "Create file" %}</a>
-                    <a class="collapse-item" href="#">{% trans "Current folder" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:repair_table' %}?filter=quality">{% trans "Current folder" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">Information :</h6>
                     <a class="collapse-item"

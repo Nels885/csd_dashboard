@@ -52,13 +52,15 @@ class Repair(models.Model):
     product_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
     hardware = models.CharField("hardware", max_length=10)
     software = models.CharField("software", max_length=10)
-    product_number = models.CharField("référence produit", max_length=50)
+    product_number = models.CharField("référence produit", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=1000, blank=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField('Ajouté le', auto_now_add=True)
+    created_by = models.ForeignKey(User, related_name="created_by", on_delete=models.CASCADE)
+    modified_at = models.DateTimeField('Modifié le', auto_now=True)
+    modified_by = models.ForeignKey(User, related_name="modified_by", on_delete=models.CASCADE, null=True, blank=True)
 
     def clean(self):
         if not self.batch.active:
@@ -68,12 +70,11 @@ class Repair(models.Model):
         user = get_current_user()
         if user and not user.pk:
             user = None
-        self.created_by = user
-        number = Repair.objects.filter(batch=self.batch.id).count() + 1
-        if number == self.batch.quantity:
-            self.batch.active = False
-            self.batch.save()
-        self.identify_number = self.batch.__str__() + "0" * (3 - len(str(number))) + str(number)
+        if not self.pk:
+            self.created_by = user
+            number = Repair.objects.filter(batch=self.batch.id).count() + 1
+            self.identify_number = self.batch.__str__() + "0" * (3 - len(str(number))) + str(number)
+        self.modified_by = user
         super().save(*args, **kwargs)
 
     def __str__(self):
