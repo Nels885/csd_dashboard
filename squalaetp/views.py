@@ -58,6 +58,7 @@ def detail(request, file_id):
         'raspeedi': raspeedi,
         'dict_corvet': dict_corvet,
         'form': form,
+        'select': 'xelon',
         'redirect': request.META.get('HTTP_REFERER'),
         # 'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
         'log_file': None

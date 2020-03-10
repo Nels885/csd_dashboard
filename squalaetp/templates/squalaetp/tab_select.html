@@ -1,0 +1,13 @@
+{% if select == name %}
+    <li class="nav-item active">
+        <a class="nav-link active" href="#{{ name }}" role="tab" aria-controls="{{ name }}" aria-selected="true">
+            {{ tab_title }}
+        </a>
+    </li>
+{% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="#{{ name }}" role="tab" aria-controls="{{ name }}" aria-selected="false">
+            {{ tab_title }}
+        </a>
+    </li>
+{% endif %}

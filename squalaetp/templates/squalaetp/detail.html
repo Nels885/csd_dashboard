@@ -8,17 +8,13 @@
 
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
-            <li class="nav-item active">
-                <a class="nav-link active" href="#xelon" role="tab" aria-controls="xelon" aria-selected="true">
-                    Info Xelon
-                </a>
-            </li>
+
+            {% include 'squalaetp/tab_select.html' with name='xelon' tab_title='Info Xelon' %}
+
             {% if corvet %}
-                <li class="nav-item">
-                    <a class="nav-link" href="#ihm" role="tab" aria-controls="ihm" aria-selected="false">
-                        {% trans "IHM Extraction" %}
-                    </a>
-                </li>
+
+                {% include 'squalaetp/tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="#corvet" role="tab" aria-controls="corvet" aria-selected="false">
                         {% trans "Corvet data" %}
@@ -66,14 +62,14 @@
     <div class="tab-content mt-3">
 
         <!-- Detail Xelon -->
-        <div class="tab-pane active" id="xelon" role="tabpanel" aria-labelledby="xelon-tab">
+        <div class="tab-pane {% if select == 'xelon' %}active{% endif %}" id="xelon" role="tabpanel" aria-labelledby="xelon-tab">
 
             {% include 'squalaetp/detail_xelon.html' %}
 
         </div>
 
         <!-- Detail IHM -->
-        <div class="tab-pane" id="ihm" role="tabpanel" aria-labelledby="ihm-tab">
+        <div class="tab-pane {% if select == 'ihm' %}active{% endif %}" id="ihm" role="tabpanel" aria-labelledby="ihm-tab">
 
             {% include 'squalaetp/detail_ihm.html' %}
 
