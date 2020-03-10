@@ -18,7 +18,7 @@ class ExcelSqualaetp(ExcelFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super().__init__(file, sheet_index, columns)
+        super(ExcelSqualaetp, self).__init__(file, sheet_index, columns)
         self._columns_convert()
         self.sheet.replace({"#": None}, inplace=True)
         self._date_converter(self.COLS_DATE)

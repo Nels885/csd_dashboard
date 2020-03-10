@@ -18,7 +18,7 @@ class ExcelDelayAnalysis(ExcelFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super().__init__(file, sheet_index, columns, skip_rows=8)
+        super(ExcelDelayAnalysis, self).__init__(file, sheet_index, columns, skip_rows=8)
         self._columns_convert(digit=False)
         self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
         self.sheet.drop(columns=self.DROP_COLS, inplace=True)
