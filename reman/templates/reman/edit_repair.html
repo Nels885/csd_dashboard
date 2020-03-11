@@ -19,7 +19,37 @@
                 </div>
             </div>
 
-            {% include 'reman/add_repair_form.html' %}
+            <div class="form-group row">
+
+                <div class="col-sm-4 mb-3 mb-sm-0">
+                    <label for="{{ form.hardware.id_for_label }}">{{ form.hardware.label }} : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.hardware }}
+
+                </div>
+                <div class="col-sm-4">
+                    <label for="{{ form.software.id_for_label }}">{{ form.software.label }} : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.software }}
+
+                </div>
+                <div class="col-sm-4">
+                    <label for="{{ form.product_number.id_for_label }}">{{ form.product_number.label }} :</label>
+
+                    {{ form.product_number }}
+
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12 mb-3 mb-sm-0">
+                    <label for="{{ form.remark.id_for_label }}">{{ form.remark.label }} :</label>
+
+                     {{ form.remark }}
+
+                </div>
+            </div>
 
             <div class="form-group row">
                 <div class="col-sm-6 mb-3 mb-sm-0">

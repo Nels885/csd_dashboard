@@ -1,15 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
-from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.decorators import class_view_decorator
+from utils.django.urls import reverse, reverse_lazy
 
 from .models import Repair, SparePart
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom
-from dashboard.forms import ParaErrorList
 
 
 @permission_required('reman.view_repair')
@@ -44,27 +43,6 @@ def part_table(request):
     return render(request, 'reman/part_table.html', context)
 
 
-@permission_required('reman.add_repair')
-def add_repair(request):
-    context = {
-        'title': 'Reman',
-        'card_title': _('New customer folder'),
-    }
-    if request.method == 'POST':
-        form = AddRepairForm(request.POST, error_class=ParaErrorList)
-        if form.is_valid():
-            repair = form.save(commit=False)
-            repair.user_id = request.user.id
-            repair.save()
-            messages.success(request, _('Added successfully!'))
-            return redirect('reman:edit_repair', pk=repair.pk)
-        context['errors'] = form.errors.items()
-    else:
-        form = AddRepairForm()
-    context['form'] = form
-    return render(request, 'reman/add_repair.html', context)
-
-
 @permission_required('reman.change_repair')
 def edit_repair(request, pk):
     product = get_object_or_404(Repair, pk=pk)
@@ -72,7 +50,7 @@ def edit_repair(request, pk):
     if form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
-        return redirect(reverse('reman:repair_table') + '?filter=quality')
+        return redirect(reverse('reman:repair_table', get={'filter': 'quality'}))
     context = {
         'title': 'Reman',
         'card_title': _('Modification customer folder'),
@@ -100,9 +78,3 @@ class RepairCreateView(BSModalCreateView):
     template_name = 'reman/modal/create_repair.html'
     form_class = AddRepairForm
     success_message = _('Success: Repair was created.')
-
-    # def get_success_url(self):
-    #     if 'HTTP_REFERER' in self.request.META:
-    #         return self.request.META['HTTP_REFERER']
-    #     else:
-    #         return reverse_lazy('index')

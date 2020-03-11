@@ -1,13 +1,13 @@
 import datetime
 
 from django.db import models
-from django.urls import reverse_lazy
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
 
+from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
 
 
@@ -19,7 +19,7 @@ class Batch(models.Model):
     start_date = models.DateField("date de début", null=True)
     end_date = models.DateField("date de fin", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
 
     def clean(self):
         date = datetime.datetime.now()
@@ -30,9 +30,8 @@ class Batch(models.Model):
 
     def save(self, *args, **kwargs):
         user = get_current_user()
-        if user and not user.pk:
-            user = None
-        self.created_by = user
+        if user and user.pk:
+            self.created_by = user
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -59,14 +58,14 @@ class Repair(models.Model):
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
     created_at = models.DateTimeField('Ajouté le', auto_now_add=True)
-    created_by = models.ForeignKey(User, related_name="created_by", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name="repairs_created", editable=False, on_delete=models.CASCADE)
     modified_at = models.DateTimeField('Modifié le', auto_now=True)
-    modified_by = models.ForeignKey(User, related_name="modified_by", on_delete=models.CASCADE, null=True, blank=True)
+    modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True, blank=True)
 
     def get_absolute_url(self):
         if self.pk:
-            return reverse_lazy('reman:edit_repair', args=[str(self.pk)])
-        return reverse_lazy('reman:repair_table') + '?filter=quality'
+            return reverse_lazy('reman:edit_repair', args=[self.pk])
+        return reverse_lazy('reman:repair_table', get={'filter': 'quality'})
 
     def clean(self):
         if not self.batch.active:
@@ -74,13 +73,12 @@ class Repair(models.Model):
 
     def save(self, *args, **kwargs):
         user = get_current_user()
-        if user and not user.pk:
-            user = None
-        if not self.pk:
+        if user and user.pk:
             self.created_by = user
+            self.modified_by = user
+        if not self.pk:
             number = Repair.objects.filter(batch=self.batch.id).count() + 1
             self.identify_number = self.batch.__str__() + "0" * (3 - len(str(number))) + str(number)
-        self.modified_by = user
         super().save(*args, **kwargs)
 
     def __str__(self):

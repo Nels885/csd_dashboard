@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from dashboard.tests.base import UnitTest
 
-from reman.models import Repair, SparePart
+from reman.models import Repair, SparePart, Batch, EcuModel
 
 
 class RemanTestCase(UnitTest):
@@ -10,8 +10,12 @@ class RemanTestCase(UnitTest):
     def setUp(self):
         super().setUp()
         self.redirectUrl = reverse('index')
-        self.add_perms_user(Repair, 'add_repair', 'view_repair')
+        self.add_perms_user(Repair, 'add_repair', 'view_repair', 'change_repair')
         self.add_perms_user(SparePart, 'add_sparepart', 'view_sparepart')
+        batch = Batch.objects.create(number=1, quantity=10, created_by=self.user)
+        ecu = EcuModel.objects.create(name='test')
+        self.repair = Repair.objects.create(batch=batch, product_model=ecu, hardware='0123456789',
+                                            software='0123456789', created_by=self.user)
 
     def test_repair_table_page_is_disconnected(self):
         response = self.client.get(reverse('reman:repair_table'))
@@ -32,10 +36,20 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_repair_create_page_is_disconnected(self):
-        response = self.client.get(reverse('reman:add_repair'))
-        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/add/', status_code=302)
+        response = self.client.get(reverse('reman:create_repair'))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/create/', status_code=302)
 
     def test_repair_create_page_is_connected(self):
         self.login()
-        response = self.client.get(reverse('reman:add_repair'))
+        response = self.client.get(reverse('reman:create_repair'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_repair_edit_page_is_disconnected(self):
+        response = self.client.get(reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/' + str(self.repair.pk) + '/edit/',
+                             status_code=302)
+
+    def test_repair_edit_page_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}))
         self.assertEqual(response.status_code, 200)
