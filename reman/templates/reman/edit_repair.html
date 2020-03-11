@@ -1,0 +1,54 @@
+{% extends 'dashboard/forms_format.html' %}
+
+{% load i18n %}
+
+{% block form_content %}
+
+    <div class="p-2">
+        <form method="post" action="{% url 'reman:edit_repair' pk=prod.pk %}">
+
+            {% csrf_token %}
+
+            <div class="form-group row">
+                <div class="col-sm-3 mb-3 mb-sm-0">
+                    <label for="{{ form.identify_number.id_for_label }}">{{ form.identify_number.label }} : <span
+                            class="text-danger">*</span></label>
+
+                    {{ form.identify_number }}
+
+                </div>
+            </div>
+
+            {% include 'reman/add_repair_form.html' %}
+
+            <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                    <label for="{{ form.spare_parts.id_for_label }}">{{ form.spare_parts.label }} :</label>
+
+                    {{ form.spare_parts }}
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="{{ form.quality_control.id_for_label }}">{{ form.quality_control.label }} :</label>
+
+                    {{ form.quality_control }}
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="{{ form.checkout.id_for_label }}">{{ form.checkout.label }} :</label>
+
+                    {{ form.checkout }}
+
+                </div>
+            </div>
+
+            <br>
+
+            <button type="submit" name="btn_reman_add"
+                    class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-block">
+                {% trans "Submit" %}
+            </button>
+
+        </form>
+
+{% endblock %}

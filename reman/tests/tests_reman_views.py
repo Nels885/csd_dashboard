@@ -32,10 +32,10 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_repair_create_page_is_disconnected(self):
-        response = self.client.get(reverse('reman:new_folder'))
+        response = self.client.get(reverse('reman:add_repair'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/repair/add/', status_code=302)
 
     def test_repair_create_page_is_connected(self):
         self.login()
-        response = self.client.get(reverse('reman:new_folder'))
+        response = self.client.get(reverse('reman:add_repair'))
         self.assertEqual(response.status_code, 200)

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair
+from .models import Batch, Repair, SparePart
 from utils.conf import DICT_YEAR
 
 
@@ -34,7 +34,7 @@ class AddBatchFrom(BSModalForm):
         return data
 
 
-class AddRepairForm(forms.ModelForm):
+class AddRepairForm(BSModalForm):
     class Meta:
         model = Repair
         fields = [
@@ -47,4 +47,27 @@ class AddRepairForm(forms.ModelForm):
             'software': forms.TextInput(attrs={'class': 'form-control'}),
             'product_number': forms.TextInput(attrs={'class': 'form-control'}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
+        }
+
+
+class EditRepairFrom(forms.ModelForm):
+    spare_parts = forms.ModelChoiceField(
+        queryset=SparePart.objects.all(), required=False, label='Pièces détachées',
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+
+    class Meta:
+        model = Repair
+        fields = [
+            'identify_number', 'hardware', 'software', 'product_number', 'remark', 'spare_parts', 'quality_control',
+            'checkout',
+        ]
+        widgets = {
+            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
+            'hardware': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
+            'software': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
+            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': ''}),
+            'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'checkout': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }

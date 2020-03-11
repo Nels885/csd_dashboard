@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.urls import reverse_lazy
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
@@ -61,6 +62,11 @@ class Repair(models.Model):
     created_by = models.ForeignKey(User, related_name="created_by", on_delete=models.CASCADE)
     modified_at = models.DateTimeField('Modifié le', auto_now=True)
     modified_by = models.ForeignKey(User, related_name="modified_by", on_delete=models.CASCADE, null=True, blank=True)
+
+    def get_absolute_url(self):
+        if self.pk:
+            return reverse_lazy('reman:edit_repair', args=[str(self.pk)])
+        return reverse_lazy('reman:repair_table') + '?filter=quality'
 
     def clean(self):
         if not self.batch.active:
