@@ -9,69 +9,106 @@
 
             {% csrf_token %}
 
-            <div class="form-group row">
-                <div class="col-sm-3 mb-3 mb-sm-0">
-                    <label for="{{ form.identify_number.id_for_label }}">{{ form.identify_number.label }} : <span
-                            class="text-danger">*</span></label>
+            <h5 class="text-gray-800">Information Produit :</h5>
+            <hr>
 
+            <div class="form-group row">
+                <label for="{{ form.identify_number.id_for_label }}"
+                       class="col-sm-2 col-form-label">{{ form.identify_number.label }} :</label>
+
+                <div class="col-sm-2">
                     {{ form.identify_number }}
-
+                </div>
+                <label for="product_model" class="col-sm-1 col-form-label">Modèle :</label>
+                <div class="col-sm-2">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.product_model.name }}">
                 </div>
             </div>
 
             <div class="form-group row">
 
-                <div class="col-sm-4 mb-3 mb-sm-0">
-                    <label for="{{ form.hardware.id_for_label }}">{{ form.hardware.label }} : <span
-                            class="text-danger">*</span></label>
+                <label for="{{ form.hardware.id_for_label }}"
+                       class="col-sm-2 col-form-label">{{ form.hardware.label }} :</label>
 
+                <div class="col-sm-2">
                     {{ form.hardware }}
-
                 </div>
-                <div class="col-sm-4">
-                    <label for="{{ form.software.id_for_label }}">{{ form.software.label }} : <span
-                            class="text-danger">*</span></label>
 
+                <label for="{{ form.software.id_for_label }}"
+                       class="col-sm-1 col-form-label">{{ form.software.label }} :</label>
+
+                <div class="col-sm-2">
                     {{ form.software }}
-
                 </div>
-                <div class="col-sm-4">
-                    <label for="{{ form.product_number.id_for_label }}">{{ form.product_number.label }} :</label>
 
+                <label for="{{ form.product_number.id_for_label }}"
+                       class="col-sm-1 col-form-label">{{ form.product_number.label }} :</label>
+
+                <div class="col-sm-2">
                     {{ form.product_number }}
-
                 </div>
+
             </div>
             <div class="form-group row">
-                <div class="col-sm-12 mb-3 mb-sm-0">
-                    <label for="{{ form.remark.id_for_label }}">{{ form.remark.label }} :</label>
+                <label for="{{ form.remark.id_for_label }}"
+                       class="col-sm-2 col-form-label">{{ form.remark.label }} :</label>
 
+                <div class="col-sm-8">
                      {{ form.remark }}
-
                 </div>
+            </div>
+
+            <hr>
+            <br>
+            <h5 class="text-gray-800">Pièces détachées :</h5>
+            <hr>
+
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <div class="form-group row">
+                    <div class="col-sm-1">
+                        <label>{{ form.spare_parts.label }} :</label>
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.spare_parts }}
+                    </div>
+                    <div class="col-sm-1">
+                        <label>{{ form.quantity.label }} :</label>
+                    </div>
+                    <div class="col-sm-1">
+                        {{ form.quantity }}
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-success">+</button>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <hr>
+            <br>
+            <h5 class="text-gray-800">Contrôles :</h5>
+            <hr>
+
+            <div class="form-group row">
+                <label for="{{ form.quality_control.id_for_label }}"
+                       class="col-sm-2 col-form-label">{{ form.quality_control.label }} :</label>
+
+                <div class="col-sm-2">
+                    {{ form.quality_control }}
+                </div>
+
             </div>
 
             <div class="form-group row">
-                <div class="col-sm-6 mb-3 mb-sm-0">
-                    <label for="{{ form.spare_parts.id_for_label }}">{{ form.spare_parts.label }} :</label>
+                <label for="{{ form.checkout.id_for_label }}"
+                       class="col-sm-2 col-form-label">{{ form.checkout.label }} :</label>
 
-                    {{ form.spare_parts }}
-
-                </div>
-                <div class="col-sm-3">
-                    <label for="{{ form.quality_control.id_for_label }}">{{ form.quality_control.label }} :</label>
-
-                    {{ form.quality_control }}
-
-                </div>
-                <div class="col-sm-3">
-                    <label for="{{ form.checkout.id_for_label }}">{{ form.checkout.label }} :</label>
-
+                <div class="col-sm-2">
                     {{ form.checkout }}
-
                 </div>
             </div>
 
+            <hr>
             <br>
 
             <button type="submit" name="btn_reman_add"

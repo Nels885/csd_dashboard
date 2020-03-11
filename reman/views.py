@@ -8,7 +8,7 @@ from utils.django.decorators import class_view_decorator
 from utils.django.urls import reverse, reverse_lazy
 
 from .models import Repair, SparePart
-from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom
+from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset
 
 
 @permission_required('reman.view_repair')
@@ -47,6 +47,7 @@ def part_table(request):
 def edit_repair(request, pk):
     product = get_object_or_404(Repair, pk=pk)
     form = EditRepairFrom(request.POST or None, instance=product)
+    formset = SparePartFormset(request.POST or None)
     if form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
@@ -55,7 +56,8 @@ def edit_repair(request, pk):
         'title': 'Reman',
         'card_title': _('Modification customer folder'),
         'prod': product,
-        'form': form
+        'form': form,
+        'formset': formset
     }
     return render(request, 'reman/edit_repair.html', context)
 

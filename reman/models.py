@@ -52,7 +52,7 @@ class Repair(models.Model):
     product_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
     hardware = models.CharField("hardware", max_length=10)
     software = models.CharField("software", max_length=10)
-    product_number = models.CharField("référence produit", max_length=50, blank=True)
+    product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=1000, blank=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)

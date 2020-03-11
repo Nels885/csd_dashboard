@@ -59,7 +59,7 @@ class EditRepairFrom(forms.ModelForm):
     class Meta:
         model = Repair
         fields = [
-            'identify_number', 'hardware', 'software', 'product_number', 'remark', 'spare_parts', 'quality_control',
+            'identify_number', 'hardware', 'software', 'product_number', 'remark', 'quality_control',
             'checkout',
         ]
         widgets = {
@@ -71,3 +71,14 @@ class EditRepairFrom(forms.ModelForm):
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
             'checkout': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
+
+
+class SparePartForm(forms.Form):
+    spare_parts = forms.ModelChoiceField(
+        queryset=SparePart.objects.all(), required=False, label='Nom',
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+    quantity = forms.CharField(label='Quantité', widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+
+SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
