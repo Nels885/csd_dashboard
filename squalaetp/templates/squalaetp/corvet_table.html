@@ -6,7 +6,9 @@
 
     <div class="text-center">
         <a class="col-sm-2 align-self-center btn btn-primary btn-user"
-           href="{% url 'squalaetp:export-corvet-csv' %}">Export CSV</a>
+           href="{% url 'squalaetp:export-corvet-csv' %}">Export CORVET CSV</a>
+        <a class="col-sm-2 align-self-center btn btn-primary btn-user"
+           href="{% url 'squalaetp:export_ecu_csv' %}">Export ECU CSV</a>
     </div>
 
     <table class="table table-bordered" id="corvetTable" width="100%" cellspacing="0">
