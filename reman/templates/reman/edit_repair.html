@@ -19,7 +19,7 @@
                 <div class="col-sm-2">
                     {{ form.identify_number }}
                 </div>
-                <label for="product_model" class="col-sm-1 col-form-label">Modèle :</label>
+                <label for="product_model" class="col-sm-2 col-form-label">Modèle :</label>
                 <div class="col-sm-2">
                     <input type="text" id="product_model" class="form-control" readonly value="{{ prod.product_model.name }}">
                 </div>
@@ -35,14 +35,14 @@
                 </div>
 
                 <label for="{{ form.software.id_for_label }}"
-                       class="col-sm-1 col-form-label">{{ form.software.label }} :</label>
+                       class="col-sm-2 col-form-label">{{ form.software.label }} :</label>
 
                 <div class="col-sm-2">
                     {{ form.software }}
                 </div>
 
                 <label for="{{ form.product_number.id_for_label }}"
-                       class="col-sm-1 col-form-label">{{ form.product_number.label }} :</label>
+                       class="col-sm-2 col-form-label">{{ form.product_number.label }} :</label>
 
                 <div class="col-sm-2">
                     {{ form.product_number }}
@@ -53,7 +53,7 @@
                 <label for="{{ form.remark.id_for_label }}"
                        class="col-sm-2 col-form-label">{{ form.remark.label }} :</label>
 
-                <div class="col-sm-8">
+                <div class="col-sm-10">
                      {{ form.remark }}
                 </div>
             </div>
@@ -66,15 +66,11 @@
             {{ formset.management_form }}
             {% for form in formset %}
                 <div class="form-group row">
-                    <div class="col-sm-1">
-                        <label>{{ form.spare_parts.label }} :</label>
-                    </div>
+                        <label class="col-sm-1 col-form-label">{{ form.spare_parts.label }} :</label>
                     <div class="col-sm-4">
                         {{ form.spare_parts }}
                     </div>
-                    <div class="col-sm-1">
-                        <label>{{ form.quantity.label }} :</label>
-                    </div>
+                        <label class="col-sm-2 col-form-label">{{ form.quantity.label }} :</label>
                     <div class="col-sm-1">
                         {{ form.quantity }}
                     </div>
