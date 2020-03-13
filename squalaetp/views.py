@@ -207,12 +207,12 @@ def export_corvet_csv(request):
 
     writer = csv.writer(response, delimiter=';')
     writer.writerow(
-        ['vin', 'date_debut_garantie', 'date_entree_montage', 'ligne_de_produit', 'marque_commerciale', 'silhouette',
-         'genre_de_produit', 'ddo', 'dgm', 'dhb', 'dhg', 'djq', 'djy', 'dkx', 'dlx', 'doi', 'dqm', 'dqs', 'drc', 'drt',
-         'dti', 'dun', 'dwl', 'dwt', 'dxj', 'dyb', 'dym', 'dyr', 'dzv', 'gg8', '14f', '14j', '14k', '14l', '14r', '14x',
-         '19z', '44f', '44l', '44x', '54f', '54k', '54l', '84f', '84l', '84x', '94f', '94l', '94x', 'dat', 'dcx', '19h',
-         '49h', '64f', '64x', '69h', '89h', '99h', '14a', '34a', '44a', '54a', '64a', '84a', '94a', 'p4a', 'moteur',
-         'transmission', '10', '14b', '20', '44b', '54b', '64b', '84b', '94b', '16p', '46p', '56p', '66p'])
+        ['V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE', 'SILHOUETTE',
+         'GENRE_DE_PRODUIT', 'DDO', 'DGM', 'DHB', 'DHG', 'DJQ', 'DJY', 'DKX', 'DLX', 'DOI', 'DQM', 'DQS', 'DRC', 'DRT',
+         'DTI', 'DUN', 'DWL', 'DWT', 'DXJ', 'DYB', 'DYM', 'DYR', 'DZV', 'GG8', '14F', '14J', '14K', '14L', '14R', '14X',
+         '19Z', '44F', '44L', '44X', '54F', '54K', '54L', '84F', '84L', '84X', '94F', '94L', '94X', 'DAT', 'DCX', '19H',
+         '49H', '64F', '64X', '69H', '89H', '99H', '14A', '34A', '44A', '54A', '64A', '84A', '94A', 'P4A', 'MOTEUR',
+         'TRANSMISSION', '10', '14B', '20', '44B', '54B', '64B', '84B', '94B', '16P', '46P', '56P', '66P'])
 
     corvets = Corvet.objects.all().values_list()
     for corvet in corvets:
@@ -229,7 +229,7 @@ def export_ecu_csv(request):
     response['Content-Disposition'] = 'attachment; filename="ecu_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
 
     writer = csv.writer(response, delimiter=';')
-    writer.writerow(['Xelon', 'V.I.N.', '14a', '34a', '44a', '54a', '64a', '84a', '94a', 'p4a'])
+    writer.writerow(['Numéro de dossier', 'V.I.N.', '14A', '34A', '44A', '54A', '64A', '84A', '94A', 'P4A'])
 
     ecus = Xelon.objects.filter(corvet__electronique_14a__isnull=False).values_list(
         'numero_de_dossier', 'vin', 'corvet__electronique_14a', 'corvet__electronique_34a', 'corvet__electronique_44a',
