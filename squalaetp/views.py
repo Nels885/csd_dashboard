@@ -9,6 +9,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
+from django.db.models.functions import Cast, TruncSecond
+from django.db.models import DateTimeField, CharField
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from .models import Xelon, Corvet
@@ -229,12 +231,16 @@ def export_ecu_csv(request):
     response['Content-Disposition'] = 'attachment; filename="ecu_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
 
     writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
-    writer.writerow(['Numero de dossier', 'V.I.N.', '14A', '34A', '44A', '54A', '64A', '84A', '94A', 'P4A'])
+    writer.writerow(['Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14A', '34A', '44A', '54A', '64A', '84A',
+                     '94A', 'P4A'])
 
-    ecus = Xelon.objects.filter(corvet__electronique_14a__isnull=False).values_list(
-        'numero_de_dossier', 'vin', 'corvet__electronique_14a', 'corvet__electronique_34a', 'corvet__electronique_44a',
-        'corvet__electronique_54a', 'corvet__electronique_64a', 'corvet__electronique_84a', 'corvet__electronique_94a',
-        'corvet__electronique_p4a'
+    ecus = Xelon.objects.filter(corvet__electronique_14a__isnull=False).annotate(
+        date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
+    )
+    ecus = ecus.values_list(
+        'numero_de_dossier', 'vin', 'date_debut_garantie', 'corvet__electronique_14a',
+        'corvet__electronique_34a', 'corvet__electronique_44a', 'corvet__electronique_54a', 'corvet__electronique_64a',
+        'corvet__electronique_84a', 'corvet__electronique_94a', 'corvet__electronique_p4a'
     )
 
     for ecu in ecus:
@@ -249,7 +255,7 @@ class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
     success_message = _('Modification done successfully!')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(CorvetCreateView, self).get_context_data(**kwargs)
         context['modal_title'] = _('CORVET integration')
         return context
 
@@ -264,7 +270,7 @@ class LogFileView(LoginRequiredMixin, TemplateView):
     template_name = 'squalaetp/modal/log_file.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(LogFileView, self).get_context_data(**kwargs)
         file = LogFile(os.path.join(CSD_ROOT, 'LOGS'), context['file'])
         with open(file.files[0], 'r') as f:
             text = f.read().replace('\n', '<br>')

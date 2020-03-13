@@ -32,7 +32,7 @@ class Batch(models.Model):
         user = get_current_user()
         if user and user.pk:
             self.created_by = user
-        super().save(*args, **kwargs)
+        super(Batch, self).save(*args, **kwargs)
 
     def __str__(self):
         number, quantity = str(self.number), str(self.quantity)
@@ -79,7 +79,7 @@ class Repair(models.Model):
         if not self.pk:
             number = Repair.objects.filter(batch=self.batch.id).count() + 1
             self.identify_number = self.batch.__str__() + "0" * (3 - len(str(number))) + str(number)
-        super().save(*args, **kwargs)
+        super(Repair, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.identify_number

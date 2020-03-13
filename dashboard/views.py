@@ -33,7 +33,7 @@ def index(request):
     """
     View of index page
     """
-    posts = Post.objects.all().order_by('-timestamp')
+    posts = Post.objects.all().order_by('-timestamp')[:5]
     context = {
         'title': _("Acceuil"),
         'posts': posts
