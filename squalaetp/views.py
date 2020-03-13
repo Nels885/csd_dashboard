@@ -205,7 +205,7 @@ def export_corvet_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="corvet_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
 
-    writer = csv.writer(response, delimiter=';')
+    writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
     writer.writerow(
         ['V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE', 'SILHOUETTE',
          'GENRE_DE_PRODUIT', 'DDO', 'DGM', 'DHB', 'DHG', 'DJQ', 'DJY', 'DKX', 'DLX', 'DOI', 'DQM', 'DQS', 'DRC', 'DRT',
@@ -228,8 +228,8 @@ def export_ecu_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="ecu_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
 
-    writer = csv.writer(response, delimiter=';')
-    writer.writerow(['Numéro de dossier', 'V.I.N.', '14A', '34A', '44A', '54A', '64A', '84A', '94A', 'P4A'])
+    writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
+    writer.writerow(['Numero de dossier', 'V.I.N.', '14A', '34A', '44A', '54A', '64A', '84A', '94A', 'P4A'])
 
     ecus = Xelon.objects.filter(corvet__electronique_14a__isnull=False).values_list(
         'numero_de_dossier', 'vin', 'corvet__electronique_14a', 'corvet__electronique_34a', 'corvet__electronique_44a',
