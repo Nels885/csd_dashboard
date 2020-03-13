@@ -1,7 +1,7 @@
 import csv
 import datetime
 
-from django.shortcuts import render, get_object_or_404, HttpResponse
+from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,7 +14,7 @@ from django.db.models import DateTimeField, CharField
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm, CorvetModalForm
+from .forms import CorvetForm, CorvetModalForm, ExportCorvetForm
 from dashboard.forms import ParaErrorList
 from utils.django.decorators import group_required
 from utils.file.export import xml_corvet_file
@@ -141,11 +141,17 @@ def corvet_table(request):
     View of Corvet table page, visible only if authenticated
     """
     # corvets_list = Corvet.objects.all().order_by('vin')
-
+    form = ExportCorvetForm(request.POST or None)
+    if form.is_valid():
+        product = form.cleaned_data['products']
+        if product == 'ecu':
+            return redirect('squalaetp:export_ecu_csv')
+        else:
+            return redirect('squalaetp:export-corvet-csv')
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),
-        # 'corvets': corvets
+        'form': form,
     }
     return render(request, 'squalaetp/corvet_table.html', context)
 

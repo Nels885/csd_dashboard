@@ -114,7 +114,7 @@ class CorvetModalForm(BSModalForm):
     def save(self, commit=True):
         xml_data = self.cleaned_data['xml_data']
         data = self.xml_parser(xml_data)
-        tag = super().save(commit=False)
+        tag = super(CorvetModalForm, self).save(commit=False)
         if data and commit:
             try:
                 tag(**data)
@@ -158,3 +158,17 @@ class CorvetModalForm(BSModalForm):
             self.add_error('xml_data', _('Invalid XML data'))
             data = None
         return data
+
+
+class ExportCorvetForm(forms.Form):
+    PRODUCTS = [('corvet', 'CORVET'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x')]
+    FORMATS = [('csv', 'CSV'), ('excel', 'EXCEL')]
+
+    formats = forms.ChoiceField(
+        label='Formats', required=False, choices=FORMATS,
+        widget=forms.Select(attrs={'class': 'form-control mx-sm-3 mb-2'})
+    )
+    products = forms.ChoiceField(
+        label='Produit', required=False, choices=PRODUCTS,
+        widget=forms.Select(attrs={'class': 'form-control mx-sm-3 mb-2'}),
+    )
