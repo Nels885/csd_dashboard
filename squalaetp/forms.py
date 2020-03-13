@@ -161,7 +161,7 @@ class CorvetModalForm(BSModalForm):
 
 
 class ExportCorvetForm(forms.Form):
-    PRODUCTS = [('corvet', 'CORVET'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x')]
+    PRODUCTS = [('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x')]
     FORMATS = [('csv', 'CSV'), ('excel', 'EXCEL')]
 
     formats = forms.ChoiceField(

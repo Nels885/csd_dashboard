@@ -144,10 +144,8 @@ def corvet_table(request):
     form = ExportCorvetForm(request.POST or None)
     if form.is_valid():
         product = form.cleaned_data['products']
-        if product == 'ecu':
-            return redirect('squalaetp:export_ecu_csv')
-        else:
-            return redirect('squalaetp:export-corvet-csv')
+        if product in ['corvet', 'ecu', 'bsi']:
+            return redirect('squalaetp:export_{}_csv'.format(product))
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),
@@ -251,6 +249,30 @@ def export_ecu_csv(request):
 
     for ecu in ecus:
         writer.writerow(ecu)
+
+    return response
+
+
+@login_required()
+@group_required('cellule', 'technician')
+def export_bsi_csv(request):
+    date = datetime.datetime.now()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="bsi_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
+
+    writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
+    writer.writerow(['Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14B', '94B', '44B', '54B', '64B', '84B'])
+
+    bsis = Xelon.objects.filter(corvet__electronique_14a__isnull=False).annotate(
+        date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
+    )
+    bsis = bsis.values_list(
+        'numero_de_dossier', 'vin', 'date_debut_garantie', 'corvet__electronique_14b', 'corvet__electronique_94b',
+        'corvet__electronique_44b', 'corvet__electronique_54b', 'corvet__electronique_64b', 'corvet__electronique_84b',
+    )
+
+    for bsi in bsis:
+        writer.writerow(bsi)
 
     return response
 
