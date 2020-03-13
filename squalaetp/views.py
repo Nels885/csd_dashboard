@@ -231,16 +231,16 @@ def export_ecu_csv(request):
     response['Content-Disposition'] = 'attachment; filename="ecu_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
 
     writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
-    writer.writerow(['Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14A', '34A', '44A', '54A', '64A', '84A',
-                     '94A', 'P4A'])
+    writer.writerow(['Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14A', '34A', '94A', '44A', '54A', '64A',
+                     '84A', 'P4A'])
 
     ecus = Xelon.objects.filter(corvet__electronique_14a__isnull=False).annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
     ecus = ecus.values_list(
-        'numero_de_dossier', 'vin', 'date_debut_garantie', 'corvet__electronique_14a',
-        'corvet__electronique_34a', 'corvet__electronique_44a', 'corvet__electronique_54a', 'corvet__electronique_64a',
-        'corvet__electronique_84a', 'corvet__electronique_94a', 'corvet__electronique_p4a'
+        'numero_de_dossier', 'vin', 'date_debut_garantie', 'corvet__electronique_14a', 'corvet__electronique_34a',
+        'corvet__electronique_94a', 'corvet__electronique_44a', 'corvet__electronique_54a', 'corvet__electronique_64a',
+        'corvet__electronique_84a', 'corvet__electronique_p4a'
     )
 
     for ecu in ecus:
