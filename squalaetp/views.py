@@ -9,7 +9,8 @@ from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm, CorvetModalForm, ExportCorvetForm
+from .forms import CorvetForm, CorvetModalForm
+from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
 from utils.django.decorators import group_required
 from utils.file.export import xml_corvet_file
@@ -63,7 +64,6 @@ def detail(request, file_id):
     return render(request, 'squalaetp/detail.html', context)
 
 
-@login_required
 @group_required('cellule', 'technician')
 def xelon_edit(request, file_id):
     """
@@ -103,7 +103,6 @@ def xelon_edit(request, file_id):
     return render(request, 'squalaetp/xelon_edit.html', context)
 
 
-@login_required
 @group_required('cellule', 'technician')
 def ajax_xelon(request):
     """
@@ -169,7 +168,6 @@ def corvet_detail(request, vin):
     return render(request, 'squalaetp/corvet_detail.html', context)
 
 
-@login_required
 @group_required('cellule', 'technician')
 def corvet_insert(request):
     """
