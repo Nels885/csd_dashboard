@@ -26,7 +26,8 @@ def export_corvet_csv(request):
 def export_ecu_csv(request):
     filename = 'ecu'
     header = [
-        'Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14A', '34A', '94A', '44A', '54A', '64A', '84A', 'P4A'
+        'Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD', '34A_CMM_SOFT_LIVRE', '94A_CMM_SOFT',
+        '44A_CMM_FOURN.NO.SERIE', '54A_CMM_FOURN.DATE.FAB', '64A_CMM_FOURN.CODE', '84A_CMM_DOTE', 'P4A_CMM_EOBD'
     ]
     ecus = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14a__exact='').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
@@ -43,7 +44,10 @@ def export_ecu_csv(request):
 @group_required('cellule', 'technician')
 def export_bsi_csv(request):
     filename = 'bsi'
-    header = ['Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14B', '94B', '44B', '54B', '64B', '84B']
+    header = [
+        'Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '14B_BSI_HARD', '94B_BSI_SOFT', '44B_BSI_FOURN.NO.SERIE',
+        '54B_BSI_FOURN.DATE.FAB', '64B_BSI_FOURN.CODE', '84B_BSI_DOTE'
+    ]
 
     bsis = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14b__exact='').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
@@ -59,7 +63,10 @@ def export_bsi_csv(request):
 @group_required('cellule', 'technician')
 def export_com_csv(request):
     filename = 'com200x'
-    header = ['Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '16P', '46P', '56P', '66P']
+    header = [
+        'Numero de dossier', 'V.I.N.', 'DATE_DEBUT_GARANTIE', '16P_HDC_HARD', '46P_HDC_FOURN.NO.SERIE',
+        '56P_HDC_FOURN.DATE.FAB', '66P_HDC_FOURN.CODE'
+    ]
 
     bsis = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_16p__exact='').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
