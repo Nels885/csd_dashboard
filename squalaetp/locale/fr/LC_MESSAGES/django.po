@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-15 14:20+0100\n"
+"POT-Creation-Date: 2020-03-15 19:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,10 +40,8 @@ msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
 #: squalaetp/forms.py:92
-#, fuzzy
-#| msgid "Invalid XML data"
 msgid "XML data"
-msgstr "Les données XML ne sont pas valide"
+msgstr "Données XML"
 
 #: squalaetp/forms.py:123 squalaetp/views.py:94 squalaetp/views.py:127
 #: squalaetp/views.py:192
