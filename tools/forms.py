@@ -45,5 +45,5 @@ class ThermalFrom(forms.ModelForm):
         model = ThermalChamber
         fields = ['operating_mode']
         widgets = {
-            'operating_mode': forms.Select(attrs={'class': 'form-control'}),
+            'operating_mode': forms.Select(attrs={'class': 'custom-select form-control'}),
         }
