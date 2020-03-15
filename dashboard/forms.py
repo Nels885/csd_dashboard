@@ -28,7 +28,7 @@ class UserProfileForm(forms.ModelForm):
 class PostForm(BSModalForm):
     class Meta:
         model = Post
-        fields = ['title', 'overview', 'author']
+        fields = ['title', 'overview']
 
 
 class CustomAuthenticationForm(AuthenticationForm):

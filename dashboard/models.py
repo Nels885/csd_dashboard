@@ -9,6 +9,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
+from crum import get_current_user
 
 
 class UserProfile(models.Model):
@@ -74,6 +75,12 @@ class Post(models.Model):
     overview = RichTextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and user.pk:
+            self.author = UserProfile.objects.get(user=user)
+        super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
