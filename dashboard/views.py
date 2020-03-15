@@ -53,6 +53,17 @@ def charts(request):
 
 
 @login_required
+def late_product(request):
+    prods = ProductAnalysis()
+    prods = prods.pendingQueries.filter(delai_au_en_jours_calendaires__gt=3, type_de_cloture='')[:100]
+    context = {
+        'title': _("Late Product"),
+        'prods': prods
+    }
+    return render(request, 'dashboard/late_product.html', context)
+
+
+@login_required
 def search(request):
     """
     View of search page

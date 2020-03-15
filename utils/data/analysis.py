@@ -8,7 +8,7 @@ import datetime
 
 
 class ProductAnalysis:
-    LABELS = ["RT6/RNEG2", "SMEG", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN', "AUTRES"]
+    LABELS = ["RT6/RNEG2", "SMEG", "NAC", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN', "AUTRES"]
 
     def __init__(self):
         """
