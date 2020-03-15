@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-05 09:43+0100\n"
+"POT-Creation-Date: 2020-03-15 14:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,48 +31,48 @@ msgstr "Chambre thermique"
 msgid "Search Xelon or VIN..."
 msgstr "Rechercher Xelon ou VIN..."
 
-#: dashboard/templates/dashboard/base/top_bar.html:82
+#: dashboard/templates/dashboard/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
-#: dashboard/templates/dashboard/base/top_bar.html:91
+#: dashboard/templates/dashboard/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: dashboard/templates/dashboard/base/top_bar.html:114
+#: dashboard/templates/dashboard/base/top_bar.html:120
 msgid "Profile"
 msgstr "Mon Profil"
 
-#: dashboard/templates/dashboard/base/top_bar.html:118
+#: dashboard/templates/dashboard/base/top_bar.html:124
 #: dashboard/templates/registration/profile.html:56
 msgid "Change password"
 msgstr "Changer le mot de passe"
 
-#: dashboard/templates/dashboard/base/top_bar.html:123
+#: dashboard/templates/dashboard/base/top_bar.html:129
 msgid "Administration"
 msgstr "Administration"
 
-#: dashboard/templates/dashboard/base/top_bar.html:129
+#: dashboard/templates/dashboard/base/top_bar.html:135
 #: dashboard/templates/dashboard/modal/signup.html:7
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: dashboard/templates/dashboard/base/top_bar.html:138
+#: dashboard/templates/dashboard/base/top_bar.html:144
 msgid "Activity Log"
 msgstr "Journal d'activité"
 
-#: dashboard/templates/dashboard/base/top_bar.html:143
+#: dashboard/templates/dashboard/base/top_bar.html:149
 #: dashboard/templates/dashboard/modal/logout.html:14
 #: dashboard/templates/dashboard/nav/nav_interface.html:38
 #: dashboard/templates/registration/profile.html:72
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: dashboard/templates/dashboard/base/top_bar.html:150
+#: dashboard/templates/dashboard/base/top_bar.html:156
 msgid "Guest"
 msgstr "Invité"
 
-#: dashboard/templates/dashboard/base/top_bar.html:159
+#: dashboard/templates/dashboard/base/top_bar.html:165
 #: dashboard/templates/dashboard/modal/login.html:39
 #: dashboard/templates/dashboard/nav/nav_interface.html:13
 #: dashboard/templates/registration/login.html:48
@@ -151,7 +151,7 @@ msgid "Update"
 msgstr "Mise à jour"
 
 #: dashboard/templates/dashboard/nav/nav_csd_atelier.html:26
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:54
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:61
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -163,27 +163,31 @@ msgstr "Tableau Corvet"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:59
-msgid "Create Batch"
-msgstr "Création lot"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:62
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:53
 msgid "Create file"
 msgstr "Création dossier"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:63
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:55
 msgid "Current folder"
 msgstr "Dossiers en cours"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:85
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:59
+msgid "Spare Parts"
+msgstr "Pièces détachées"
+
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:66
+msgid "Create Batch"
+msgstr "Création lot"
+
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:89
 msgid "Unlock VIN"
 msgstr "Déverrouillage VIN"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:88
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:92
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:94
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:98
 msgid "Add product"
 msgstr "Ajout produit"
 
@@ -230,6 +234,54 @@ msgstr "Le nouveau mot de passe est invalide"
 #: dashboard/templates/registration/password_change_form.html:73
 msgid "Validate the change"
 msgstr "Valider le changement"
+
+#: dashboard/templates/registration/password_reset_complete.html:17
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: dashboard/templates/registration/password_reset_complete.html:23
+msgid "Log in"
+msgstr ""
+
+#: dashboard/templates/registration/password_reset_confirm.html:19
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: dashboard/templates/registration/password_reset_confirm.html:42
+#| msgid "Change password"
+msgid "Change my password"
+msgstr "Changer le mot de passe"
+
+#: dashboard/templates/registration/password_reset_confirm.html:48
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: dashboard/templates/registration/password_reset_done.html:17
+msgid ""
+"We’ve emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: dashboard/templates/registration/password_reset_done.html:19
+msgid ""
+"If you don’t receive an email, please make sure you’ve entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
+#: dashboard/templates/registration/password_reset_form.html:17
+msgid ""
+"Forgotten your password? Enter your email address below, and we’ll email "
+"instructions for setting a new one."
+msgstr ""
+
+#: dashboard/templates/registration/password_reset_form.html:38
+#| msgid "New password"
+msgid "Reset my password"
+msgstr "Nouveau mot de passe"
 
 #: dashboard/templates/registration/profile.html:17
 msgid "User Profile"
@@ -301,14 +353,14 @@ msgstr "Le lien d'activation n'est pas valide !"
 msgid "Success: You are logged in."
 msgstr "Succès: vous êtes connecté."
 
-#: dashboard/views.py:210
+#: dashboard/views.py:211
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:223
+#: dashboard/views.py:225
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:230
+#: dashboard/views.py:233
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."

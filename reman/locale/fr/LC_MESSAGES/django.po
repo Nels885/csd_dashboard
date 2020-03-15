@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-05 09:43+0100\n"
+"POT-Creation-Date: 2020-03-15 14:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,15 +22,15 @@ msgstr ""
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/models.py:28
+#: reman/models.py:29
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
-#: reman/models.py:65
+#: reman/models.py:72
 msgid "There is no more repair file to create for this lot!"
 msgstr "Il n'y a plus de fichier de réparation à créer pour ce lot !"
 
-#: reman/templates/reman/create_form.html:55
+#: reman/templates/reman/edit_repair.html:112
 msgid "Submit"
 msgstr "Soumettre"
 
@@ -39,21 +39,31 @@ msgid "Create Batch"
 msgstr "Création d'un lot"
 
 #: reman/templates/reman/modal/create_batch.html:41
+#: reman/templates/reman/modal/create_repair.html:38
 msgid "Cancel"
 msgstr "Annuler"
 
 #: reman/templates/reman/modal/create_batch.html:42
+#: reman/templates/reman/modal/create_repair.html:39
 msgid "Create"
 msgstr "Création"
 
-#: reman/views.py:31
-msgid "New customer folder"
-msgstr "Nouveau dossier client"
+#: reman/templates/reman/modal/create_repair.html:7
+msgid "Create Repair"
+msgstr "Création d'un lot"
 
-#: reman/views.py:39
-msgid "Added successfully!"
-msgstr "Ajout réalisé avec succès !"
+#: reman/views.py:53
+msgid "Modification done successfully!"
+msgstr "Modification réalisée avec succès !"
 
-#: reman/views.py:50
+#: reman/views.py:57
+msgid "Modification customer folder"
+msgstr "Modification dossier client"
+
+#: reman/views.py:69
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
+
+#: reman/views.py:82
+msgid "Success: Repair was created."
+msgstr "Succès: le dossier a été créé."
