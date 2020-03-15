@@ -1,4 +1,8 @@
+import csv
+import datetime
 from . import os
+
+from django.shortcuts import HttpResponse
 
 from squalaetp.models import Corvet
 from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
@@ -56,3 +60,23 @@ class Calibre:
 
 
 calibre = Calibre(TAG_PATH, TAG_LOG_PATH)
+
+
+def export_csv(queryset, filename, header, values_list=None):
+    date = datetime.datetime.now()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(filename,
+                                                                                date.strftime("%y-%m-%d_%H-%M"))
+
+    writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
+    writer.writerow(header)
+
+    if values_list:
+        queryset = queryset.values_list(*values_list)
+    else:
+        queryset = queryset.values_list()
+
+    for query in queryset:
+        writer.writerow(query)
+
+    return response
