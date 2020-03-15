@@ -171,11 +171,11 @@ CKEDITOR_CONFIGS = {
         'toolbar': 'Custom',
         'width': 760,
         'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
+            ['Bold', 'Italic', 'Underline', 'Strike', '-', 'CopyFormatting', 'RemoveFormat'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
              'JustifyRight', 'JustifyBlock'],
-            ['TextColor', 'BGColor'],
-            ['RemoveFormat', 'Source']
+            ['TextColor', 'BGColor', '-', 'Link', 'Unlink', 'Anchor'],
+            ['Scayt', '-', 'Source']
         ],
     }
 }

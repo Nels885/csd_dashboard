@@ -69,8 +69,7 @@ class Command(BaseCommand):
                     log.info(row)
                     product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
                     if product:
-                        del row["numero_de_dossier"]
-                        product.update(**row)
+                        product.update_or_create(**row)
                         nb_prod_update += 1
                     else:
                         m = model(**row)
@@ -89,6 +88,8 @@ class Command(BaseCommand):
         for file in XLS_DELAY_FILES:
             excels.append(ExcelDelayAnalysis(file))
         nb_prod_before = model.objects.count()
+        model.objects.exclude(
+            type_de_cloture__in=['Réparé', 'Rebut'], date_retour__isnull=True).update(type_de_cloture='Réparé')
         for excel in excels:
             for row in excel.table():
                 try:
@@ -96,11 +97,9 @@ class Command(BaseCommand):
                         product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
                         if product:
                             del row["numero_de_dossier"]
+                            product.update(type_de_cloture='')
                             product.update(**row)
                             nb_prod_update += 1
-                        # else:
-                        #     m = model(**row)
-                        #     m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:
