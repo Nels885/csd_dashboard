@@ -46,7 +46,8 @@ class ProductAnalysis:
         :return:
             result
         """
-        return self.pendingQueries.filter(delai_au_en_jours_ouvres__gt=3).exclude(type_de_cloture='Réparé')
+        return self.pendingQueries.filter(
+            delai_au_en_jours_ouvres__gt=3).exclude(type_de_cloture__in=['Réparé', 'Admin'])
 
     def products_count(self):
         """
