@@ -55,8 +55,7 @@ def charts(request):
 @login_required
 def late_products(request):
     prods = ProductAnalysis()
-    prods = prods.pendingQueries.filter(
-        delai_au_en_jours_ouvres__gt=3, type_de_cloture='').order_by('-delai_au_en_jours_ouvres')[:300]
+    prods = prods.late_products().order_by('-delai_au_en_jours_ouvres')[:300]
     context = {
         'title': _("Late Products"),
         'prods': prods
