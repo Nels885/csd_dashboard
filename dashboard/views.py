@@ -55,7 +55,8 @@ def charts(request):
 @login_required
 def late_products(request):
     prods = ProductAnalysis()
-    prods = prods.pendingQueries.filter(delai_au_en_jours_calendaires__gt=3, type_de_cloture='')[:100]
+    prods = prods.pendingQueries.filter(
+        delai_au_en_jours_ouvres__gt=3, type_de_cloture='').order_by('-delai_au_en_jours_ouvres')[:300]
     context = {
         'title': _("Late Products"),
         'prods': prods
@@ -151,7 +152,7 @@ def signup(request):
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
-                        mail_subject, message, to=[to_email]
+                mail_subject, message, to=[to_email]
             )
             email.send()
             messages.success(request, _('Success: Sign up succeeded. You can now Log in.'))
@@ -183,7 +184,6 @@ def activate(request, uidb64, token):
 @login_required
 @staff_member_required(login_url='login')
 def config_edit(request):
-
     if request.method == 'POST':
         query = request.POST.get('config')
         with open(settings.CONF_FILE, 'w+') as file:
