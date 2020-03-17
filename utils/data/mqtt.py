@@ -20,7 +20,7 @@ def on_message(client, userdata, message):
         payload = {'temp': temp}
 
 
-client = mqtt_client.Client(client_id="client002")
+client = mqtt_client.Client(client_id=settings.MQTT_CLIENT)
 
 # Assignation des fonctions de rappel
 client.on_message = on_message
