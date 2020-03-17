@@ -16,6 +16,10 @@ class TagXelonForm(BSModalForm):
             'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
         }
 
+    def __init__(self, *args, **kwargs):
+        super(TagXelonForm, self).__init__(*args, **kwargs)
+        self.fields['comments'].initial = 'RAS OK'
+
     def clean_xelon(self):
         data = self.cleaned_data['xelon']
         message = validate_xelon(data)

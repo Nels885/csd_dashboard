@@ -17,3 +17,5 @@ TAG_PATH = os.path.join(CSD_ROOT, config.tag_dir)
 TAG_LOG_PATH = os.path.join(CSD_ROOT, config.tag_log_dir)
 
 DICT_YEAR = config.dict_year
+
+TEMP_ADJ = int(config.temp_adj)

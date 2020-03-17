@@ -11,6 +11,8 @@ from squalaetp.models import Xelon, Corvet
 from utils.data.analysis import ProductAnalysis, DealAnalysis
 from api.models import query_xelon_by_args, query_corvet_by_args
 
+from utils.data import mqtt
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -143,5 +145,6 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def thermal_temp(request):
-    data = {'temp': 'Hors ligne'}
+    mqtt.client.loop_start()
+    data = mqtt.payload
     return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)
