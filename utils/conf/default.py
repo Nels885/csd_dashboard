@@ -40,6 +40,10 @@ dict_year = {
     2029: 'V', 2030: 'W',
 }
 
+#####################
+# MQTT configuration
+#####################
+
 MQTT_TEMP_ADJ = 4
 MQTT_CLIENT = None
 MQTT_USER = None

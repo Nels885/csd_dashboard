@@ -24,7 +24,6 @@ client = mqtt_client.Client(client_id=config.MQTT_CLIENT)
 # Assignation des fonctions de rappel
 client.on_message = on_message
 client.on_connect = on_connect
-# client.on_log = on_log
 
 # Connexion broker
 client.username_pw_set(username=config.MQTT_USER, password=config.MQTT_PSWD)
