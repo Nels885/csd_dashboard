@@ -28,10 +28,3 @@ DATABASES = {
 INTERNAL_IPS = '127.0.0.1'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-MQTT_CLIENT = 'dev'
-MQTT_USER = "quality"
-MQTT_PSWD = "Clarion54"
-MQTT_BROKER = '10.115.141.188'
-MQTT_PORT = 1883
-KEEP_ALIVE = 45

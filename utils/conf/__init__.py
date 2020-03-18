@@ -18,4 +18,10 @@ TAG_LOG_PATH = os.path.join(CSD_ROOT, config.tag_log_dir)
 
 DICT_YEAR = config.dict_year
 
-TEMP_ADJ = int(config.temp_adj)
+TEMP_ADJ = int(config.MQTT_TEMP_ADJ)
+MQTT_CLIENT = config.MQTT_CLIENT
+MQTT_USER = config.MQTT_USER
+MQTT_PSWD = config.MQTT_PSWD
+MQTT_BROKER = config.MQTT_BROKER
+MQTT_PORT = config.MQTT_PORT
+KEEP_ALIVE = config.KEEP_ALIVE

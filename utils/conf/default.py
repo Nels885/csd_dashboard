@@ -40,4 +40,10 @@ dict_year = {
     2029: 'V', 2030: 'W',
 }
 
-temp_adj = 4
+MQTT_TEMP_ADJ = 4
+MQTT_CLIENT = None
+MQTT_USER = None
+MQTT_PSWD = None
+MQTT_BROKER = 'test.mosquitto.org'
+MQTT_PORT = 1883
+KEEP_ALIVE = 45
