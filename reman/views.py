@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 
 from bootstrap_modal_forms.generic import BSModalCreateView
-from utils.django.decorators import class_view_decorator
 from utils.django.urls import reverse, reverse_lazy
 
 from .models import Repair, SparePart
@@ -62,8 +62,8 @@ def edit_repair(request, pk):
     return render(request, 'reman/edit_repair.html', context)
 
 
-@class_view_decorator(permission_required('reman.add_batch'))
-class BatchCreateView(BSModalCreateView):
+class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'reman.add_batch'
     template_name = 'reman/modal/create_batch.html'
     form_class = AddBatchFrom
     success_message = _('Success: Batch was created.')
@@ -75,8 +75,8 @@ class BatchCreateView(BSModalCreateView):
             return reverse_lazy('index')
 
 
-@class_view_decorator(permission_required('reman.add_repair'))
-class RepairCreateView(BSModalCreateView):
+class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'reman.add_repair'
     template_name = 'reman/modal/create_repair.html'
     form_class = AddRepairForm
     success_message = _('Success: Repair was created.')

@@ -1,6 +1,6 @@
 import datetime
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
@@ -8,7 +8,6 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalCreateView
 
-from utils.django.decorators import class_view_decorator
 from .models import CsdSoftware, User, ThermalChamber
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom
@@ -105,8 +104,8 @@ def thermal_disable(request, pk):
     return redirect('tools:thermal')
 
 
-@class_view_decorator(permission_required('tools.add_tagxelon'))
-class TagXelonView(LoginRequiredMixin, BSModalCreateView):
+class TagXelonView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'tools.add_tagxelon'
     template_name = 'tools/modal/tag_xelon.html'
     form_class = TagXelonForm
     success_message = 'Success: Création du fichier CALIBRE avec succès !'

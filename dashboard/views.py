@@ -123,7 +123,6 @@ def user_profile(request):
     return render(request, 'registration/profile.html', context)
 
 
-@login_required
 @staff_member_required(login_url='login')
 def signup(request):
     context = {
@@ -180,7 +179,6 @@ def activate(request, uidb64, token):
     return render(request, 'dashboard/done.html', context)
 
 
-@login_required
 @staff_member_required(login_url='login')
 def config_edit(request):
     if request.method == 'POST':
