@@ -6,7 +6,9 @@
 
 {% block table_content %}
 
-    <h1 class="display-1 text-gray-800 text-center mb-5">Temp : <span id="thermal-temp"></span></h1>
+    <h1 class="display-1 text-gray-800 text-center mb-5 font-weight-bold">Temp :
+        <span id="thermal-temp"></span>
+    </h1>
 
     <form class="form-inline" method="post" action="{% url 'tools:thermal' %}">
 
@@ -96,7 +98,16 @@
                 dataType: 'json',
                 success: function (data) {
                     const {temp} = data;
-                    document.getElementById('thermal-temp').textContent = temp;
+                    const thermalTemp = document.getElementById('thermal-temp');
+                    thermalTemp.textContent = temp;
+                    thermalTemp.className = "";
+                    if (parseInt(temp, 10) >= 40) {
+                        thermalTemp.classList.add('text-danger');
+                    } else if (parseInt(temp, 10) >= 25) {
+                        thermalTemp.classList.add('text-warning');
+                    } else if (parseInt(temp, 10) <= 25) {
+                        thermalTemp.classList.add('text-primary');
+                    }
                 }
             });
         }
