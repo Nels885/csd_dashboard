@@ -76,19 +76,19 @@ class RaspeediTestCase(UnitTest):
         self.assertEqual(response.status_code, 404)
 
     def test_unlock_page_is_disconnected(self):
-        response = self.client.get(reverse('raspeedi:unlock-prods'))
+        response = self.client.get(reverse('raspeedi:unlock_prods'))
         self.assertRedirects(response, '/accounts/login/?next=/raspeedi/unlock/', status_code=302)
 
     def test_unlock_page_is_connected(self):
         self.login()
-        response = self.client.get(reverse('raspeedi:unlock-prods'))
+        response = self.client.get(reverse('raspeedi:unlock_prods'))
         self.assertEqual(response.status_code, 200)
 
     def test_unlock_add_page_is_not_valid(self):
         self.login()
         old_unlock = UnlockProduct.objects.count()
         for xelon, message in {'azerty': 'Xelon number is invalid', 'A987654321': 'Xelon number no exist'}.items():
-            response = self.client.post(reverse('raspeedi:unlock-prods'), {'unlock': xelon})
+            response = self.client.post(reverse('raspeedi:unlock_prods'), {'unlock': xelon})
             new_unlock = UnlockProduct.objects.count()
             self.assertEqual(new_unlock, old_unlock)
             self.assertFormError(response, 'form', 'unlock', _(message))
@@ -99,7 +99,7 @@ class RaspeediTestCase(UnitTest):
         Xelon.objects.create(numero_de_dossier='A123456789', vin='VF3ABCDEF12345678', modele_produit='produit',
                              modele_vehicule='peugeot')
         old_unlock = UnlockProduct.objects.count()
-        response = self.client.post(reverse('raspeedi:unlock-prods'), {'unlock': 'A123456789'})
+        response = self.client.post(reverse('raspeedi:unlock_prods'), {'unlock': 'A123456789'})
         new_unlock = UnlockProduct.objects.count()
         self.assertEqual(new_unlock, old_unlock + 1)
         self.assertEqual(response.status_code, 200)
