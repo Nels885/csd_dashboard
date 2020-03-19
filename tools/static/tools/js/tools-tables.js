@@ -1,7 +1,7 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function () {
     $('#softTable').DataTable({
-        pagingType: "full_numbers",
+        paging: false,
         scrollX: true,
         order: [[1, "asc"]],
         columnDefs: [{

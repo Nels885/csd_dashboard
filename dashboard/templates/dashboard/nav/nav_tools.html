@@ -1,6 +1,6 @@
 {% load i18n user_tags %}
 
-{% if  perms.tools %}
+{% if perms.tools %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -19,31 +19,34 @@
         </li>
     {% endif %}
 
-    <!-- Nav Item - Software Settings Menu -->
-    {% with name="Software" icon="fa-table" %}
+    {% if perms.tools.view_csdsoftware %}
+        <!-- Nav Item - Software Settings Menu -->
+        {% with name="Software" icon="fa-table" %}
 
-        <!-- Nav Item - Software -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-               aria-expanded="true" aria-controls="collapse{{ name }}">
-                <i class="fas fa-fw {{ icon }}"></i>
-                <span>{{ name }}</span>
-            </a>
-            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Informations :</h6>
-                    <a class="collapse-item"
-                       href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
-                    <div class="collapse-divider"></div>
-                    {% if perms.dashboard.add_csdsoftware %}
-                        <h6 class="collapse-header">Edition :</h6>
+            <!-- Nav Item - Software -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>{{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Informations :</h6>
                         <a class="collapse-item"
-                           href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
-                    {% endif %}
+                           href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
+                        <div class="collapse-divider"></div>
+                        {% if perms.dashboard.add_csdsoftware %}
+                            <h6 class="collapse-header">Edition :</h6>
+                            <a class="collapse-item"
+                               href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-        </li>
-    {% endwith %}
+            </li>
+        {% endwith %}
+
+    {% endif %}
 
 {% endif %}
