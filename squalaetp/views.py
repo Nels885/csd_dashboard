@@ -137,9 +137,11 @@ def corvet_table(request):
     # corvets_list = Corvet.objects.all().order_by('vin')
     form = ExportCorvetForm(request.POST or None)
     if form.is_valid():
-        product = form.cleaned_data['products']
-        if product in ['corvet', 'ecu', 'bsi', 'com']:
-            return redirect('import_export:export_{}_csv'.format(product))
+        if request.user.has_perm('squalaetp.change_corvet'):
+            product = form.cleaned_data['products']
+            if product in ['corvet', 'ecu', 'bsi', 'com']:
+                return redirect('import_export:export_{}_csv'.format(product))
+        messages.warning(request, _('You do not have the required permissions'))
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),

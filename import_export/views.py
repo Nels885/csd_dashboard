@@ -1,12 +1,12 @@
+from django.contrib.auth.decorators import permission_required
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 
 from squalaetp.models import Xelon, Corvet
-from utils.django.decorators import group_required
 from utils.file.export import export_csv
 
 
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.change_corvet')
 def export_corvet_csv(request):
     filename = 'corvet'
     header = [
@@ -22,7 +22,7 @@ def export_corvet_csv(request):
     return export_csv(queryset=corvets, filename=filename, header=header)
 
 
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.change_corvet')
 def export_ecu_csv(request):
     filename = 'ecu'
     header = [
@@ -41,7 +41,7 @@ def export_ecu_csv(request):
     return export_csv(queryset=ecus, filename=filename, header=header, values_list=values_list)
 
 
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.change_corvet')
 def export_bsi_csv(request):
     filename = 'bsi'
     header = [
@@ -60,7 +60,7 @@ def export_bsi_csv(request):
     return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
 
 
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.change_corvet')
 def export_com_csv(request):
     filename = 'com200x'
     header = [
