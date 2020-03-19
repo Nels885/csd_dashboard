@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -12,7 +12,6 @@ from .models import Xelon, Corvet
 from .forms import CorvetForm, CorvetModalForm
 from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
-from utils.django.decorators import group_required
 from utils.file.export import xml_corvet_file
 from utils.file import LogFile, os
 from utils.conf import CSD_ROOT
@@ -64,7 +63,7 @@ def detail(request, file_id):
     return render(request, 'squalaetp/detail.html', context)
 
 
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.view_xelon')
 def xelon_edit(request, file_id):
     """
     View for changing Xelon data
@@ -103,7 +102,7 @@ def xelon_edit(request, file_id):
     return render(request, 'squalaetp/xelon_edit.html', context)
 
 
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.view_xelon')
 def ajax_xelon(request):
     """
     View for changing Xelon data
@@ -129,7 +128,7 @@ def ajax_xelon(request):
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 
 
-@login_required
+@permission_required('squalaetp.view_corvet')
 def corvet_table(request):
     """
     View of Corvet table page, visible only if authenticated
@@ -150,7 +149,7 @@ def corvet_table(request):
     return render(request, 'squalaetp/corvet_table.html', context)
 
 
-@login_required
+@permission_required('squalaetp.view_corvet')
 def corvet_detail(request, vin):
     """
     detailed view of Corvet data for a file
@@ -170,7 +169,7 @@ def corvet_detail(request, vin):
     return render(request, 'squalaetp/corvet_detail.html', context)
 
 
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.add_corvet')
 def corvet_insert(request):
     """
     View of Corvet insert page, visible only if authenticated

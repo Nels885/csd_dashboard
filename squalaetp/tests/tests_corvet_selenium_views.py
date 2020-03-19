@@ -17,13 +17,13 @@ class CorvetSeleniumTestCase(FunctionalTest):
             '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
             '</VEHICULE></MESSAGE>'
         )
-        self.add_group_user("cellule")
+        self.add_perms_user(Corvet, "view_corvet", "add_corvet")
 
     def test_corvet_table_page_is_connected(self):
         driver = self.driver
 
         # Creating session cookie for to access Raspeedi insert form
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/squalaetp/corvet/')
         driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
@@ -37,7 +37,7 @@ class CorvetSeleniumTestCase(FunctionalTest):
         old_corvet = Corvet.objects.count()
 
         # Creating session cookie for to access Raspeedi insert form
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/squalaetp/corvet/insert/')
         driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})

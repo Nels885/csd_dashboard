@@ -21,7 +21,7 @@ class XelonTestCase(UnitTest):
             '</VEHICULE></MESSAGE>'
         )
         self.vin = 'VF3ABCDEF12345678'
-        self.add_group_user("cellule")
+        self.add_perms_user(Xelon, "view_xelon")
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
 

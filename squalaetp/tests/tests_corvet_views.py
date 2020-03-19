@@ -21,7 +21,7 @@ class CorvetTestCase(UnitTest):
             '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
             '</VEHICULE></MESSAGE>'
         )
-        self.add_group_user("cellule")
+        self.add_perms_user(Corvet, "add_corvet", "view_corvet", "change_corvet")
 
     def test_corvet_table_page_is_disconnected(self):
         response = self.client.get(reverse('squalaetp:corvet'))
