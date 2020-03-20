@@ -145,6 +145,7 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def thermal_temp(request):
-    mqtt.client.loop_start()
+    if not mqtt.error:
+        mqtt.client.loop_start()
     data = mqtt.payload
     return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)

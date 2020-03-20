@@ -1,8 +1,9 @@
-import paho.mqtt.client as mqtt_client
+import paho.mqtt.client as mqtt
 
 from utils import conf as config
 
 payload = {'temp': 'Hors ligne'}
+error = False
 
 
 def on_connect(client, userdata, rc):
@@ -19,13 +20,18 @@ def on_message(client, userdata, message):
         payload = {'temp': temp}
 
 
-client = mqtt_client.Client(client_id=config.MQTT_CLIENT)
+try:
+    client = mqtt.Client(client_id=config.MQTT_CLIENT)
 
-# Assignation des fonctions de rappel
-client.on_message = on_message
-client.on_connect = on_connect
+    # Assignment of callback functions
+    client.on_message = on_message
+    client.on_connect = on_connect
 
-# Connexion broker
-client.username_pw_set(username=config.MQTT_USER, password=config.MQTT_PSWD)
-client.connect(host=config.MQTT_BROKER, port=config.MQTT_PORT, keepalive=config.KEEP_ALIVE)
-client.subscribe("TEMP/#")
+    # Broker connection
+    client.username_pw_set(username=config.MQTT_USER, password=config.MQTT_PSWD)
+    client.connect(host=config.MQTT_BROKER, port=config.MQTT_PORT, keepalive=config.KEEP_ALIVE)
+    client.subscribe("TEMP/#")
+except Exception as err:
+    print("Exception: {}".format(err))
+    payload = {'temp': 'Hors ligne'}
+    error = True
