@@ -106,41 +106,43 @@ def charts(request):
 
 
 class XelonViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Xelon.objects.all()
     serializer_class = XelonSerializer
 
     def list(self, request, **kwargs):
         try:
             xelon = query_xelon_by_args(**request.query_params)
-            serializer = XelonSerializer(xelon['items'], many=True)
-            result = {
-                'data': serializer.data,
-                'draw': xelon['draw'],
-                'recordsTotal': xelon['total'],
-                'recordsFiltered': xelon['count']
+            serializer = XelonSerializer(xelon["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": xelon["draw"],
+                "recordsTotal": xelon["total"],
+                "recordsFiltered": xelon["count"],
             }
-            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+            return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 class CorvetViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Corvet.objects.all()
     serializer_class = CorvetSerializer
 
     def list(self, request, **kwargs):
         try:
             corvet = query_corvet_by_args(**request.query_params)
-            serializer = CorvetSerializer(corvet['items'], many=True)
-            result = {
-                'data': serializer.data,
-                'draw': corvet['draw'],
-                'recordsTotal': corvet['total'],
-                'recordsFiltered': corvet['count']
+            serializer = CorvetSerializer(corvet["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": corvet["draw"],
+                "recordsTotal": corvet["total"],
+                "recordsFiltered": corvet["count"]
             }
-            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+            return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET'])
