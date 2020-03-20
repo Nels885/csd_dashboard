@@ -17,7 +17,18 @@ class BaseTest:
 
     def __init__(self):
         self.vin = 'VF3ABCDEF12345678'
-        self.form_user = {'username': 'test', 'email': 'test@test.com'}
+        self.xmlData = (
+            '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
+            '<VEHICULE Existe="O">'
+            '<DONNEES_VEHICULE><WMI>VF3</WMI><VDS>ABCDEF</VDS><VIS>12345678</VIS>'
+            '<TRANSMISSION>0R</TRANSMISSION></DONNEES_VEHICULE>'
+            '<LISTE_ATTRIBUTS><ATTRIBUT>DAT24</ATTRIBUT><ATTRIBUT>GG805</ATTRIBUT></LISTE_ATTRIBUTS>'
+            '<LISTE_ORGANES><ORGANE>10JBCJ3028478</ORGANE><ORGANE>20DS850837512</ORGANE></LISTE_ORGANES>'
+            '<LISTE_ELECTRONIQUES><ELECTRONIQUE>14A9666571380</ELECTRONIQUE>'
+            '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
+            '</VEHICULE></MESSAGE>'
+        )
+        self.formUser = {'username': 'test', 'email': 'test@test.com'}
         admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
         admin.is_staff = True
         admin.save()

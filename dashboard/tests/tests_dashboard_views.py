@@ -56,7 +56,7 @@ class DashboardTestCase(UnitTest):
     def test_signup_page_is_valid(self):
         self.login('admin')
         old_user = User.objects.count()
-        response = self.client.post(reverse('dashboard:signup'), self.form_user)
+        response = self.client.post(reverse('dashboard:signup'), self.formUser)
         new_user = User.objects.count()
         self.assertEqual(new_user, old_user + 1)
         self.assertEqual(response.status_code, 200)

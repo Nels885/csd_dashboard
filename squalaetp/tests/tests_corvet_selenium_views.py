@@ -6,17 +6,6 @@ class CorvetSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
         super(CorvetSeleniumTestCase, self).setUp()
-        self.data = (
-            '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
-            '<VEHICULE Existe="O">'
-            '<DONNEES_VEHICULE><WMI>VF3</WMI><VDS>ABCDEF</VDS><VIS>12345678</VIS>'
-            '<TRANSMISSION>0R</TRANSMISSION></DONNEES_VEHICULE>'
-            '<LISTE_ATTRIBUTS><ATTRIBUT>DAT24</ATTRIBUT><ATTRIBUT>GG805</ATTRIBUT></LISTE_ATTRIBUTS>'
-            '<LISTE_ORGANES><ORGANE>10JBCJ3028478</ORGANE><ORGANE>20DS850837512</ORGANE></LISTE_ORGANES>'
-            '<LISTE_ELECTRONIQUES><ELECTRONIQUE>14A9666571380</ELECTRONIQUE>'
-            '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
-            '</VEHICULE></MESSAGE>'
-        )
         self.add_perms_user(Corvet, "view_corvet", "add_corvet")
 
     def test_corvet_table_page_is_connected(self):
@@ -49,7 +38,7 @@ class CorvetSeleniumTestCase(FunctionalTest):
         xml_data = driver.find_element_by_name('xml_data')
         submit = driver.find_element_by_name('btn_corvet_insert')
         vin.send_keys(self.vin)
-        xml_data.send_keys(self.data)
+        xml_data.send_keys(self.xmlData)
         submit.click()
 
         new_corvet = Corvet.objects.count()
