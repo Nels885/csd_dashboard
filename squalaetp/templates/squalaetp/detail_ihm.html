@@ -30,30 +30,14 @@
                 <h3 class="text-gray-800">RASPEEDI :</h3>
             </caption>
             <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Façade</td>
-                <td>{{ raspeedi.facade }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Type</td>
-                <td>{{ raspeedi.type }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Option DAB</td>
-                <td>{{ raspeedi.dab }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Option Caméra</td>
-                <td>{{ raspeedi.cam }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Support Cartographie</td>
-                <td>{{ raspeedi.media }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Version Cartographie</td>
-                <td>{{ raspeedi.carto }}</td>
-            </tr>
+            {% for field, value in raspeedi %}
+                {% if value %}
+                    <tr>
+                        <td class="text-dark td-ihm-40">{{ field }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
             </tbody>
         </table>
     </section>
@@ -87,10 +71,6 @@
                 <h5 class="text-gray-500">Audio</h5>
             </caption>
             <tbody>
-            <tr>
-                <td class="text-dark td-ihm">CAL RAD</td>
-                <td>{{ corvet.electronique_94f }}</td>
-            </tr>
             <tr>
                 <td class="text-dark td-ihm">Réf HW RAD</td>
                 <td>{{ corvet.electronique_14f }}</td>

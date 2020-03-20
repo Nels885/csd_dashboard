@@ -41,7 +41,7 @@ def detail(request, ref_case):
     context = {
         'title': 'Raspeedi',
         'card_title': _('Detail raspeedi data for the ref case of Product: ') + str(product.ref_boitier),
-        'dict_prod': dict_prod,
+        'prod': product,
     }
     return render(request, 'raspeedi/detail.html', context)
 
