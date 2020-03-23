@@ -10,6 +10,7 @@ XLS_SQUALAETP_FILE = os.path.join(CSD_ROOT, config.xls_squalaetp_file)
 XLS_ATTRIBUTS_FILE = os.path.join(CSD_ROOT, config.xls_attributs_file)
 XLS_DELAY_FILES = [os.path.join(CSD_ROOT, file) for file in config.xls_delay_files]
 CSV_EXTRACTION_FILE = os.path.join(CSD_ROOT, config.csv_extraction_file)
+XLS_ECU_CROSS_REFERENCE = os.path.join(CSD_ROOT, config.xls_ecu_cross_reference)
 
 XML_PATH = os.path.join(CSD_ROOT, config.xml_extract_dir)
 

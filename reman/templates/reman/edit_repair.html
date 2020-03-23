@@ -21,24 +21,20 @@
                 </div>
                 <label for="product_model" class="col-sm-2 col-form-label">Modèle :</label>
                 <div class="col-sm-2">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.product_model.name }}">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.product_model.technical_data }}">
                 </div>
             </div>
 
             <div class="form-group row">
 
-                <label for="{{ form.hardware.id_for_label }}"
-                       class="col-sm-2 col-form-label">{{ form.hardware.label }} :</label>
-
+                <label for="product_model" class="col-sm-2 col-form-label">HW référence :</label>
                 <div class="col-sm-2">
-                    {{ form.hardware }}
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.product_model.hw_reference }}">
                 </div>
 
-                <label for="{{ form.software.id_for_label }}"
-                       class="col-sm-2 col-form-label">{{ form.software.label }} :</label>
-
+                <label for="product_model" class="col-sm-2 col-form-label">SW référence :</label>
                 <div class="col-sm-2">
-                    {{ form.software }}
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.product_model.sw_reference }}">
                 </div>
 
                 <label for="{{ form.product_number.id_for_label }}"

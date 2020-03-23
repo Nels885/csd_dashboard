@@ -35,16 +35,15 @@ class AddBatchFrom(BSModalForm):
 
 
 class AddRepairForm(BSModalForm):
+
     class Meta:
         model = Repair
         fields = [
-            'batch', 'product_model', 'hardware', 'software', 'product_number', 'remark'
+            'batch', 'product_model', 'product_number', 'remark'
         ]
         widgets = {
             'batch': forms.Select(attrs={'class': 'form-control'}),
             'product_model': forms.Select(attrs={'class': 'form-control'}),
-            'hardware': forms.TextInput(attrs={'class': 'form-control'}),
-            'software': forms.TextInput(attrs={'class': 'form-control'}),
             'product_number': forms.TextInput(attrs={'class': 'form-control'}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
         }
@@ -55,17 +54,23 @@ class EditRepairFrom(forms.ModelForm):
         queryset=SparePart.objects.all(), required=False, label='Pièces détachées',
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
+    hardware = forms.CharField(
+        initial='test', label='HW référence',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': ''})
+    )
+    software = forms.CharField(
+        label='SW référence',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': ''})
+    )
 
     class Meta:
         model = Repair
         fields = [
-            'identify_number', 'hardware', 'software', 'product_number', 'remark', 'quality_control',
+            'identify_number', 'product_number', 'remark', 'quality_control', 'hardware', 'software',
             'checkout',
         ]
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
-            'hardware': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
-            'software': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': ''}),
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),

@@ -49,7 +49,7 @@ class BaseFormat:
 class ExcelFormat(BaseFormat):
     """## Base class for formatting Excel files ##"""
 
-    def __init__(self, file, sheet_index, columns, skip_rows=None):
+    def __init__(self, file, sheet_index, columns, skip_rows=None, dtype=None):
         """
         Initialize ExcelFormat class
         :param file:
@@ -63,9 +63,9 @@ class ExcelFormat(BaseFormat):
         """
         self.basename = os.path.basename(file[:file.find('.')])
         try:
-            df = pd.read_excel(file, sheet_index, skiprows=skip_rows)
+            df = pd.read_excel(file, sheet_index, skiprows=skip_rows, dtype=dtype)
         except XLRDError:
-            df = self._excel_decode(file, skip_rows)
+            df = self._excel_decode(file, skip_rows, dtype)
         super(ExcelFormat, self).__init__(df, columns)
 
     def read_all(self):
@@ -83,7 +83,7 @@ class ExcelFormat(BaseFormat):
             self.sheet.row_values()
         return data
 
-    def _excel_decode(self, file, skip_rows):
+    def _excel_decode(self, file, skip_rows, dtype):
         """
         Fix badly formatted excel files
         :param filename:
@@ -110,7 +110,8 @@ class ExcelFormat(BaseFormat):
 
         # Saving the file as an excel file
         xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
-        df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skip_rows)
+        df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skip_rows,
+                           dtype=dtype)
         dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
         dataframe.reset_index(drop=True, inplace=True)
         print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))

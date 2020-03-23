@@ -50,7 +50,7 @@ msgstr "Création"
 
 #: reman/templates/reman/modal/create_repair.html:7
 msgid "Create Repair"
-msgstr "Création d'un lot"
+msgstr "Création d'un dossier"
 
 #: reman/views.py:53
 msgid "Modification done successfully!"

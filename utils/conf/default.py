@@ -6,6 +6,7 @@ xls_raspeedi_file = "PROG/RASPEEDI/table_boitier_PSA.xlsx"
 xls_squalaetp_file = "EXTS/squalaetp.xls"
 xls_attributs_file = "EXTS/Attributs CORVET.xlsx"
 csv_extraction_file = "EXTS/extraction.csv"
+xls_ecu_cross_reference = "ETUDES/CALCULATEUR/CALCULATEUR MOTEUR/_REMAN_ECU/ECU_Cross_reference_list 20200312.xlsx"
 
 xls_delay_files = [
     "RH/AnalyseRetards/PSA.xls",

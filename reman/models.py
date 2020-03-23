@@ -40,18 +40,25 @@ class Batch(models.Model):
 
 
 class EcuModel(models.Model):
-    name = models.CharField("modèle produit", max_length=50)
+    es_reference = models.CharField("référence EMS", max_length=10, unique=True)
+    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
+    oe_reference = models.CharField("référence OEM", max_length=10)
+    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
+    sw_reference = models.CharField("software", max_length=10, blank=True)
+    hw_reference = models.CharField("hardware", max_length=10, blank=True)
+    former_oe_reference = models.CharField("ancienne référence OEM", max_length=10, blank=True)
+    technical_data = models.CharField("modèle produit", max_length=50, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    supplier_es = models.CharField("service après vente", max_length=50, blank=True)
 
     def __str__(self):
-        return self.name
+        return "{} {}".format(self.hw_reference, self.technical_data)
 
 
 class Repair(models.Model):
     identify_number = models.CharField("numéro d'identification", max_length=10, unique=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
     product_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
-    hardware = models.CharField("hardware", max_length=10)
-    software = models.CharField("software", max_length=10)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=1000, blank=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
