@@ -11,6 +11,22 @@ from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
 
 
+class EcuModel(models.Model):
+    es_reference = models.CharField("référence EMS", max_length=10, unique=True)
+    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
+    oe_reference = models.CharField("référence OEM", max_length=10)
+    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
+    sw_reference = models.CharField("software", max_length=10, blank=True)
+    hw_reference = models.CharField("hardware", max_length=10, blank=True)
+    former_oe_reference = models.CharField("ancienne référence OEM", max_length=10, blank=True)
+    technical_data = models.CharField("modèle produit", max_length=50, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    supplier_es = models.CharField("service après vente", max_length=50, blank=True)
+
+    def __str__(self):
+        return "{} {}".format(self.hw_reference, self.technical_data)
+
+
 class Batch(models.Model):
     year = models.CharField("années", max_length=1)
     number = models.IntegerField("numéro de lot", validators=[MaxValueValidator(999), MinValueValidator(1)])
@@ -20,6 +36,7 @@ class Batch(models.Model):
     end_date = models.DateField("date de fin", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
+    ecu_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
 
     def clean(self):
         date = datetime.datetime.now()
@@ -39,26 +56,8 @@ class Batch(models.Model):
         return self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity
 
 
-class EcuModel(models.Model):
-    es_reference = models.CharField("référence EMS", max_length=10, unique=True)
-    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
-    oe_reference = models.CharField("référence OEM", max_length=10)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
-    sw_reference = models.CharField("software", max_length=10, blank=True)
-    hw_reference = models.CharField("hardware", max_length=10, blank=True)
-    former_oe_reference = models.CharField("ancienne référence OEM", max_length=10, blank=True)
-    technical_data = models.CharField("modèle produit", max_length=50, blank=True)
-    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
-    supplier_es = models.CharField("service après vente", max_length=50, blank=True)
-
-    def __str__(self):
-        return "{} {}".format(self.hw_reference, self.technical_data)
-
-
 class Repair(models.Model):
     identify_number = models.CharField("numéro d'identification", max_length=10, unique=True)
-    batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
-    product_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=1000, blank=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
@@ -68,21 +67,21 @@ class Repair(models.Model):
     created_by = models.ForeignKey(User, related_name="repairs_created", editable=False, on_delete=models.CASCADE)
     modified_at = models.DateTimeField('Modifié le', auto_now=True)
     modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True, blank=True)
+    batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         if self.pk:
             return reverse_lazy('reman:edit_repair', args=[self.pk])
         return reverse_lazy('reman:repair_table', get={'filter': 'quality'})
 
-    def clean(self):
-        if not self.batch.active:
-            raise ValidationError(_('There is no more repair file to create for this lot!'))
+    # def clean(self):
+    #     if not self.batch.active:
+    #         raise ValidationError(_('There is no more repair file to create for this lot!'))
 
     def save(self, *args, **kwargs):
         user = get_current_user()
         if user and user.pk:
-            self.created_by = user
-            self.modified_by = user
+            self.created_by = self.modified_by = user
         if not self.pk:
             number = Repair.objects.filter(batch=self.batch.id).count() + 1
             self.identify_number = self.batch.__str__() + "0" * (3 - len(str(number))) + str(number)

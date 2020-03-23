@@ -12,7 +12,7 @@ from utils.conf import DICT_YEAR
 class AddBatchFrom(BSModalForm):
     class Meta:
         model = Batch
-        fields = ['number', 'quantity', 'start_date', 'end_date']
+        fields = ['number', 'quantity', 'start_date', 'end_date', 'ecu_model']
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
             'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
@@ -23,7 +23,8 @@ class AddBatchFrom(BSModalForm):
             'end_date': DatePicker(attrs={
                 'append': 'fa fa-calendar',
                 'icon_toggle': True,
-            })
+            }),
+            'ecu_model': forms.Select(),
         }
 
     def clean_number(self):
@@ -35,18 +36,35 @@ class AddBatchFrom(BSModalForm):
 
 
 class AddRepairForm(BSModalForm):
+    ref_psa = forms.CharField(label='Réf. PSA', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    ref_supplier = forms.CharField(label='Réf. SUP', required=False,
+                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Repair
-        fields = [
-            'batch', 'product_model', 'product_number', 'remark'
-        ]
+        fields = ['ref_psa', 'ref_supplier', 'product_number', 'remark']
         widgets = {
             'batch': forms.Select(attrs={'class': 'form-control'}),
             'product_model': forms.Select(attrs={'class': 'form-control'}),
             'product_number': forms.TextInput(attrs={'class': 'form-control'}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
         }
+
+    def clean_ref_psa(self):
+        data = self.cleaned_data["ref_psa"]
+        if not Batch.objects.filter(active=True):
+            self.add_error('ref_psa', 'Pas de lot disponible')
+        elif not Batch.objects.filter(ecu_model__hw_reference__exact=data):
+            self.add_error('ref_psa', 'Pas de lot associé')
+        return data
+
+    def save(self, commit=True):
+        repair = super(AddRepairForm, self).save(commit=False)
+        ref_psa = self.cleaned_data["ref_psa"]
+        repair.batch = Batch.objects.get(ecu_model__hw_reference__exact=ref_psa)
+        if commit:
+            repair.save()
+        return repair
 
 
 class EditRepairFrom(forms.ModelForm):
