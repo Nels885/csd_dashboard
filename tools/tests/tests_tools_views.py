@@ -64,3 +64,7 @@ class ToolsTestCase(UnitTest):
         new_thermal = ThermalChamber.objects.get(pk=thermal.pk)
         self.assertEqual(new_thermal.active, False)
         self.assertEqual(response.status_code, 302)
+
+    def test_thermal_chamber_full_page(self):
+        response = self.client.get(reverse('tools:thermal_full'))
+        self.assertEqual(response.status_code, 200)

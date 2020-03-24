@@ -95,6 +95,10 @@ def thermal_chamber(request):
     return render(request, 'tools/thermal_chamber.html', context)
 
 
+def thermal_fullscreen(request):
+    return render(request, 'tools/thermal_chamber_fullscreen.html')
+
+
 @login_required
 def thermal_disable(request, pk):
     therm = get_object_or_404(ThermalChamber, pk=pk)
