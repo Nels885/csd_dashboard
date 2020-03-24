@@ -16,14 +16,14 @@ class AddBatchFrom(BSModalForm):
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
             'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
-            'start_date': DatePicker(attrs={
-                'append': 'fa fa-calendar',
-                'icon_toggle': True,
-            }),
-            'end_date': DatePicker(attrs={
-                'append': 'fa fa-calendar',
-                'icon_toggle': True,
-            }),
+            'start_date': DatePicker(
+                attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
+                options={'format': 'DD/MM/YYYY'}
+            ),
+            'end_date': DatePicker(
+                attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
+                options={'format': 'DD/MM/YYYY'}
+            ),
             'ecu_model': forms.Select(),
         }
 
@@ -33,6 +33,13 @@ class AddBatchFrom(BSModalForm):
         if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
             self.add_error('number', _('The batch already exists!'))
         return data
+
+    def clean_end_date(self):
+        end_date = self.cleaned_data['end_date']
+        start_date = self.cleaned_data['start_date']
+        if end_date < start_date:
+            self.add_error('end_date', _('Date is not valid'))
+        return end_date
 
 
 class AddRepairForm(BSModalForm):

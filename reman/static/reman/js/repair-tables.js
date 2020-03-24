@@ -6,7 +6,7 @@ $(document).ready(function () {
         order: [[2, "asc"]],
         // Disable sorting for the Tags and Actions columns.
         columnDefs: [{
-            targets: [0, 1],
+            targets: 0,
             searchable: false,
             orderable: false,
         }],
