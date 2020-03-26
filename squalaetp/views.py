@@ -21,17 +21,22 @@ from utils.conf import CSD_ROOT
 
 @login_required
 def xelon_table(request):
-    """
-    View of Xelon table page
-    """
-    form = CorvetForm()
     context = {
         'title': 'Xelon',
-        'table_title': 'Dossiers Clients',
-        # 'files': files
-        'form': form
+        'form': CorvetForm()
     }
-    return render(request, 'squalaetp/xelon_table.html', context)
+    query = request.GET.get('filter')
+    if query and query == "pending":
+        files = Xelon.objects.exclude(type_de_cloture__exact='Réparé').filter(
+            date_retour__isnull=False, delai_au_en_jours_ouvres__lt=30).order_by('-date_retour')
+        context.update({
+            'table_title': 'Dossiers en cours',
+            'files': files
+        })
+        return render(request, 'squalaetp/xelon_table.html', context)
+    else:
+        context['table_title'] = 'Dossiers Clients'
+        return render(request, 'squalaetp/all_xelon_table.html', context)
 
 
 @login_required
