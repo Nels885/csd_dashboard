@@ -11,11 +11,12 @@
         <tr>
             <th>Numéro de lot</th>
             <th>Quantité</th>
+            <th>Réf. REMAN</th>
             <th>Date de début</th>
             <th>Date de fin</th>
+            <th>Status</th>
             <th>Ajouté par</th>
             <th>Ajouté le</th>
-            <th>Status</th>
         </tr>
         </thead>
         <tbody>
@@ -25,11 +26,13 @@
             <tr>
                 <td>{{ batch }}</td>
                 <td>{{ batch.quantity }}</td>
+                <td>{{ batch.ecu_model.es_reference }}</td>
                 <td>{{ batch.start_date }}</td>
                 <td>{{ batch.end_date }}</td>
+                <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
                 <td>{{ batch.created_by }}</td>
                 <td>{{ batch.created_at }}</td>
-                <td>{{ batch.active }}</td>
+
             </tr>
 
         {% endfor %}

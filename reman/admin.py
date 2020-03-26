@@ -4,7 +4,7 @@ from .models import Batch, EcuModel, Repair, SparePart
 
 
 class BatchAdmin(admin.ModelAdmin):
-    list_display = ('year', 'number', 'quantity', 'created_by', 'created_at', 'active')
+    list_display = (str, 'quantity', 'created_by', 'created_at', 'active')
 
 
 class SparePartAdmin(admin.ModelAdmin):
