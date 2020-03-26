@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 10:22+0100\n"
+"POT-Creation-Date: 2020-03-26 14:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "Le lot existe déjà !"
 
 #: reman/forms.py:41
 msgid "Date is not valid"
-msgstr ""
+msgstr "La date n'est pas valide"
 
 #: reman/models.py:46
 msgid "Impossible formatting of the year!"
@@ -52,19 +52,19 @@ msgstr "Création"
 msgid "Create Repair"
 msgstr "Création d'un dossier"
 
-#: reman/views.py:53
+#: reman/views.py:70
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views.py:57
+#: reman/views.py:73
 msgid "Modification customer folder"
 msgstr "Modification dossier client"
 
-#: reman/views.py:69
+#: reman/views.py:85
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
-#: reman/views.py:82
+#: reman/views.py:98
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 

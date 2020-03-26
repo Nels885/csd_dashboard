@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 10:22+0100\n"
+"POT-Creation-Date: 2020-03-26 14:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,7 +74,7 @@ msgstr "Ajouter"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: raspeedi/views.py:24
+#: raspeedi/views.py:25
 msgid "Table Products Telematics PSA"
 msgstr "Table produits télématique PSA"
 
@@ -82,31 +82,31 @@ msgstr "Table produits télématique PSA"
 msgid "Detail raspeedi data for the ref case of Product: "
 msgstr "Détail des données raspeedi pour le cas de référence du produit: "
 
-#: raspeedi/views.py:54
+#: raspeedi/views.py:53
 msgid "Unlocking product for programming"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: raspeedi/views.py:65
+#: raspeedi/views.py:64
 #, python-format
 msgid "Adding the Xelon number %(xelon)s successfully"
 msgstr "Ajout du dossier Xelon %(xelon)s avec succès"
 
-#: raspeedi/views.py:67
+#: raspeedi/views.py:66
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: raspeedi/views.py:79
+#: raspeedi/views.py:77
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: raspeedi/views.py:88
+#: raspeedi/views.py:86
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: raspeedi/views.py:102
+#: raspeedi/views.py:100
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: raspeedi/views.py:105
+#: raspeedi/views.py:102
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "

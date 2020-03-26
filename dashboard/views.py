@@ -108,7 +108,7 @@ def activity_log(request):
 @login_required
 def user_profile(request):
     context = {
-        'title': 'Profile',
+        'title': _("User Profile"),
     }
     if request.method == 'POST':
         user = get_object_or_404(UserProfile, user=request.user.id)
@@ -126,7 +126,7 @@ def user_profile(request):
 @staff_member_required(login_url='login')
 def signup(request):
     context = {
-        'title': 'Signup',
+        'title': _("SignUp"),
     }
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -218,11 +218,6 @@ class PostCreateView(PermissionRequiredMixin, BSModalCreateView):
     form_class = PostForm
     success_message = _('Success: Post was created.')
     success_url = reverse_lazy('index')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'test'
-        return context
 
 
 class PostUpdateView(PermissionRequiredMixin, BSModalUpdateView):

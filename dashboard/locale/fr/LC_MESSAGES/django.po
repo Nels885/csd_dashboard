@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 10:22+0100\n"
+"POT-Creation-Date: 2020-03-26 14:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -184,19 +184,24 @@ msgstr "Pièces détachées"
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:93
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:71
+msgid "batch list"
+msgstr "Liste des lots"
+
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:94
 msgid "Unlock VIN"
 msgstr "Déverrouillage VIN"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:98
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:99
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:104
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:105
 msgid "Add product"
 msgstr "Ajout produit"
 
 #: dashboard/templates/dashboard/nav/nav_interface.html:21
+#: dashboard/views.py:129
 msgid "SignUp"
 msgstr "S'inscrire"
 
@@ -286,10 +291,6 @@ msgstr ""
 msgid "Reset my password"
 msgstr "Nouveau mot de passe"
 
-#: dashboard/templates/registration/profile.html:17
-msgid "User Profile"
-msgstr "Mon Profil"
-
 #: dashboard/templates/registration/profile.html:29
 msgid "Profile picture"
 msgstr "Image de profile"
@@ -338,6 +339,10 @@ msgstr "Avertissement: la recherche n'a pas réussi."
 msgid "Activity log"
 msgstr "Journal d'activité"
 
+#: dashboard/views.py:111
+msgid "User Profile"
+msgstr "Mon Profil"
+
 #: dashboard/views.py:118 dashboard/views.py:188
 msgid "Success: Modification done!"
 msgstr "Succès: Modification effectuée !"
@@ -364,10 +369,10 @@ msgstr "Succès: vous êtes connecté."
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:233
+#: dashboard/views.py:228
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:241
+#: dashboard/views.py:236
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."

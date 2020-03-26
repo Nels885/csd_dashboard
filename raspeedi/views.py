@@ -8,6 +8,8 @@ from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
 from squalaetp.models import Xelon
 
+context = {'title': 'Raspeedi'}
+
 
 @permission_required('raspeedi.view_raspeedi')
 def table(request):
@@ -19,11 +21,10 @@ def table(request):
         Raspeedi table page
     """
     products = Raspeedi.objects.all().order_by('ref_boitier')
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'table_title': _('Table Products Telematics PSA'),
         'products': products
-    }
+    })
     return render(request, 'raspeedi/table.html', context)
 
 
@@ -38,22 +39,20 @@ def detail(request, ref_case):
     dict_prod = vars(product)
     for key in ["_state"]:
         del dict_prod[key]
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'card_title': _('Detail raspeedi data for the ref case of Product: ') + str(product.ref_boitier),
         'prod': product,
-    }
+    })
     return render(request, 'raspeedi/detail.html', context)
 
 
 @permission_required('raspeedi.view_unlockproduct')
 def unlock_prods(request):
     unlock = UnlockProduct.objects.all().order_by('created_at')
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'table_title': _('Unlocking product for programming'),
         'products': unlock
-    }
+    })
     if request.method == 'POST':
         user = UserProfile.objects.get(user_id=request.user.id)
         form = UnlockForm(request.POST, error_class=ParaErrorList)
@@ -74,10 +73,9 @@ def unlock_prods(request):
 
 @permission_required('raspeedi.add_raspeedi')
 def insert(request):
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'card_title': _('RASPEEDI integration'),
-    }
+    })
     if request.method == 'POST':
         form = RaspeediForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
@@ -100,11 +98,10 @@ def edit(request, ref_case):
     if form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'card_title': _('Modification data RASPEEDI for ref case: ') + str(product.ref_boitier),
         'url': 'raspeedi:edit',
         'prod': product,
         'form': form,
-    }
+    })
     return render(request, 'raspeedi/edit.html', context)
