@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-15 19:04+0100\n"
+"POT-Creation-Date: 2020-03-26 10:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
 #: squalaetp/forms.py:78 squalaetp/forms.py:158
-#: squalaetp/tests/tests_corvet_views.py:84
+#: squalaetp/tests/tests_corvet_views.py:73
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
@@ -43,8 +43,8 @@ msgstr "Les données XML ne sont pas valide"
 msgid "XML data"
 msgstr "Données XML"
 
-#: squalaetp/forms.py:123 squalaetp/views.py:94 squalaetp/views.py:127
-#: squalaetp/views.py:192
+#: squalaetp/forms.py:123 squalaetp/views.py:93 squalaetp/views.py:126
+#: squalaetp/views.py:193
 msgid "An internal error has occurred. Thank you recommend your request"
 msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
 
@@ -55,7 +55,7 @@ msgstr "Page précédente"
 #: squalaetp/templates/squalaetp/corvet_insert.html:41
 #: squalaetp/templates/squalaetp/modal/corvet_form.html:54
 #: squalaetp/templates/squalaetp/xelon_edit.html:41
-#: squalaetp/templates/squalaetp/xelon_table.html:85
+#: squalaetp/templates/squalaetp/xelon_table.html:75
 msgid "Submit"
 msgstr "Soumettre"
 
@@ -88,34 +88,38 @@ msgstr "MAJ CORVET"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: squalaetp/tests/tests_corvet_views.py:59
+#: squalaetp/tests/tests_corvet_views.py:48
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: squalaetp/tests/tests_corvet_views.py:71
+#: squalaetp/tests/tests_corvet_views.py:60
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie des "
 "véhicules PSA"
 
-#: squalaetp/views.py:77
+#: squalaetp/views.py:76
 msgid "Modification data Xelon file: "
 msgstr "Modification données dossier Xelon : "
 
-#: squalaetp/views.py:91 squalaetp/views.py:123 squalaetp/views.py:189
-#: squalaetp/views.py:203
+#: squalaetp/views.py:90 squalaetp/views.py:122 squalaetp/views.py:190
+#: squalaetp/views.py:204
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:145
+#: squalaetp/views.py:143
+msgid "You do not have the required permissions"
+msgstr ""
+
+#: squalaetp/views.py:146
 msgid "CORVET table"
 msgstr "Table CORVET"
 
-#: squalaetp/views.py:164
+#: squalaetp/views.py:165
 msgid "Detail Corvet data for the VIN: "
 msgstr "Données détaillées de Corvet pour le VIN : "
 
-#: squalaetp/views.py:178 squalaetp/views.py:207
+#: squalaetp/views.py:179 squalaetp/views.py:208
 msgid "CORVET integration"
 msgstr "Intégration CORVET"

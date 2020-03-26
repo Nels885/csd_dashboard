@@ -1,15 +1,15 @@
 {% extends 'dashboard/base/_layout.html' %}
 
-{% load i18n tz %}
+{% load static i18n tz %}
 
 {% block basecontent %}
 
     <div class="container-fluid">
 
         <!-- Header of the page -->
-        <header class="row fixed-top bg-dark">
-            <div class="col-lg-12 text-gray-200 text-center my-auto">
-                <h1>Température Chambre Thermique</h1>
+        <header class="row fixed-top bg-gradient-primary">
+            <div class="col-lg-12 text-center my-auto">
+                <h1 class="text-uppercase text-white mt-2">{% trans 'Thermal Chamber Temperature' %}</h1>
             </div>
         </header>
 
@@ -22,7 +22,7 @@
 
         <!-- Footer -->
         <footer class="sticky-footer fixed-bottom bg-dark">
-            <div class="copyright text-center text-gray-200 my-auto">
+            <div class="copyright text-center text-white my-auto">
                         <span>Copyright &copy; <a class="text-warning" href="https://github.com/Nels885/csd_dashboard"
                                                   target="_blank">Lionel VOIRIN</a>
                             for Faurecia Clarion Electronic</span>
@@ -35,33 +35,11 @@
 {% endblock %}
 
 {% block customjs %}
-    <script type="text/javascript">
-        async function getTemp() {
-            $.ajax({
-                url: '/api/temp/',
-                dataType: 'json',
-                success: function (data) {
-                    const {temp} = data;
-                    const thermalTemp = document.getElementById('thermal-temp');
-                    const bgThermal = document.getElementById('bg-thermal');
-                    thermalTemp.textContent = temp;
-                    thermalTemp.className = "";
-                    bgThermal.className = "row justify-content-center my-auto min-vh-100";
-                    if (parseInt(temp, 10) >= 40) {
-                        thermalTemp.classList.add('text-gray-200');
-                        bgThermal.classList.add('bg-danger');
-                    } else if (parseInt(temp, 10) >= 25) {
-                        thermalTemp.classList.add('text-gray-800');
-                        bgThermal.classList.add('bg-warning');
-                    } else if (parseInt(temp, 10) <= 25) {
-                        thermalTemp.classList.add('text-gray-200');
-                        bgThermal.classList.add('bg-primary');
-                    }
-                }
-            });
-        }
 
-        getTemp();
-        setInterval(getTemp, 30000);
+    <script type="text/javascript" src="{% static 'tools/js/thermal-chamber.js' %}"></script>
+    <script type="text/javascript">
+        getTempFull();
+        setInterval(getTempFull, 30000);
     </script>
+
 {% endblock %}

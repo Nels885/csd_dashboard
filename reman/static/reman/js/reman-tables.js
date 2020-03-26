@@ -12,3 +12,11 @@ $(document).ready(function () {
         }],
     });
 });
+
+$(document).ready(function () {
+    $('#batchTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
+        order: [[0, "asc"]],
+    });
+});

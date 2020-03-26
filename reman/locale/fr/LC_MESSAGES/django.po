@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-15 19:04+0100\n"
+"POT-Creation-Date: 2020-03-26 10:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/forms.py:33
+#: reman/forms.py:34
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/models.py:29
+#: reman/forms.py:41
+msgid "Date is not valid"
+msgstr ""
+
+#: reman/models.py:46
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
-#: reman/models.py:72
-msgid "There is no more repair file to create for this lot!"
-msgstr "Il n'y a plus de fichier de réparation à créer pour ce lot !"
-
-#: reman/templates/reman/edit_repair.html:112
+#: reman/templates/reman/edit_repair.html:108
 msgid "Submit"
 msgstr "Soumettre"
 
@@ -67,3 +67,6 @@ msgstr "Succès: le lot a été créé."
 #: reman/views.py:82
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
+
+#~ msgid "There is no more repair file to create for this lot!"
+#~ msgstr "Il n'y a plus de fichier de réparation à créer pour ce lot !"

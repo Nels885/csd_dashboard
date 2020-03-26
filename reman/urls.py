@@ -9,5 +9,6 @@ urlpatterns = [
     path('repair/create/', views.RepairCreateView.as_view(), name='create_repair'),
     path('repair/<int:pk>/edit/', views.edit_repair, name='edit_repair'),
     path('part/table/', views.part_table, name='part_table'),
+    path('batch/table/', views.batch_table, name='batch_table'),
     path('batch/create/', views.BatchCreateView.as_view(), name='create_batch'),
 ]

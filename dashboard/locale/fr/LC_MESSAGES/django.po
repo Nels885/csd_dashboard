@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-15 19:04+0100\n"
+"POT-Creation-Date: 2020-03-26 10:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,44 +150,49 @@ msgstr "Mettre à jour le Post"
 msgid "Update"
 msgstr "Mise à jour"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:26
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:61
-msgid "Customer files"
-msgstr "Dossiers clients"
-
 #: dashboard/templates/dashboard/nav/nav_csd_atelier.html:27
-msgid "Corvet table"
-msgstr "Tableau Corvet"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:31
-msgid "Add Corvet"
-msgstr "Ajout Corvet"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:53
-msgid "Create file"
-msgstr "Création dossier"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:55
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:61
 msgid "Current folder"
 msgstr "Dossiers en cours"
 
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:28
+msgid "Late products"
+msgstr "Produits en retard"
+
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:31
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:65
+msgid "Customer files"
+msgstr "Dossiers clients"
+
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:32
+msgid "Corvet table"
+msgstr "Tableau Corvet"
+
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:37
+msgid "Add Corvet"
+msgstr "Ajout Corvet"
+
 #: dashboard/templates/dashboard/nav/nav_csd_atelier.html:59
+msgid "Create file"
+msgstr "Création dossier"
+
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:64
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:66
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:70
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:89
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:93
 msgid "Unlock VIN"
 msgstr "Déverrouillage VIN"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:92
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:98
 msgid "Products table"
 msgstr "Table produits"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:98
+#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:104
 msgid "Add product"
 msgstr "Ajout produit"
 
@@ -199,11 +204,11 @@ msgstr "S'inscrire"
 msgid "Tools"
 msgstr "Outils"
 
-#: dashboard/templates/dashboard/nav/nav_tools.html:37
+#: dashboard/templates/dashboard/nav/nav_tools.html:38
 msgid "Software list"
 msgstr "Liste Logiciels"
 
-#: dashboard/templates/dashboard/nav/nav_tools.html:42
+#: dashboard/templates/dashboard/nav/nav_tools.html:43
 msgid "Software Add"
 msgstr "Ajout Logiciel"
 
@@ -333,36 +338,36 @@ msgstr "Avertissement: la recherche n'a pas réussi."
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:118 dashboard/views.py:191
+#: dashboard/views.py:118 dashboard/views.py:188
 msgid "Success: Modification done!"
 msgstr "Succès: Modification effectuée !"
 
-#: dashboard/views.py:157
+#: dashboard/views.py:156
 msgid "Success: Sign up succeeded. You can now Log in."
 msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
 
-#: dashboard/views.py:176
+#: dashboard/views.py:175
 msgid "Thank you for your email confirmation. Now you can login your account."
 msgstr ""
 "Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous "
 "connecter à votre compte."
 
-#: dashboard/views.py:179
+#: dashboard/views.py:178
 msgid "Activation link is invalid!"
 msgstr "Le lien d'activation n'est pas valide !"
 
-#: dashboard/views.py:210
+#: dashboard/views.py:207
 msgid "Success: You are logged in."
 msgstr "Succès: vous êtes connecté."
 
-#: dashboard/views.py:222
+#: dashboard/views.py:219
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:236
+#: dashboard/views.py:233
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:244
+#: dashboard/views.py:241
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."

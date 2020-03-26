@@ -1,8 +1,6 @@
 {% extends 'dashboard/format/datatables_format.html' %}
 
-{% load i18n %}
-
-{% load static %}
+{% load static i18n %}
 
 {% block table_content %}
 
@@ -91,27 +89,11 @@
 {% endblock %}
 
 {% block customjs %}
+
+    <script type="text/javascript" src="{% static 'tools/js/thermal-chamber.js' %}"></script>
     <script type="text/javascript">
-        async function getTemp() {
-            $.ajax({
-                url: '/api/temp/',
-                dataType: 'json',
-                success: function (data) {
-                    const {temp} = data;
-                    const thermalTemp = document.getElementById('thermal-temp');
-                    thermalTemp.textContent = temp;
-                    thermalTemp.className = "";
-                    if (parseInt(temp, 10) >= 40) {
-                        thermalTemp.classList.add('text-danger');
-                    } else if (parseInt(temp, 10) >= 25) {
-                        thermalTemp.classList.add('text-warning');
-                    } else if (parseInt(temp, 10) <= 25) {
-                        thermalTemp.classList.add('text-primary');
-                    }
-                }
-            });
-        }
         getTemp();
         setInterval(getTemp, 30000);
     </script>
+
 {% endblock %}
