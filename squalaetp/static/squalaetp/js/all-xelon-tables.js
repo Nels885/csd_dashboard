@@ -4,18 +4,12 @@ let table = $('#xelonTable').DataTable({
     scrollX: true,
     order: [[6, 'desc']],
     ajax: {
-        url: "/api/xelon/",
+        url: URL_AJAX,
         type: "GET",
     },
     columns: [
-        {
-            data: null,
-            defaultContent: '<button type="button" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>'
-        },
-        {
-            data: null,
-            defaultContent: '<button type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>'
-        },
+        {data: null},
+        {data: null},
         {data: "numero_de_dossier"},
         {data: "vin"},
         {data: "modele_produit"},
@@ -30,11 +24,21 @@ let table = $('#xelonTable').DataTable({
         }
     },
     // Disable sorting for the Tags and Actions columns.
-    columnDefs: [{
-        targets: [0, 1],
-        searchable: false,
-        orderable: false,
-    }],
+    columnDefs: [
+        {
+            targets: [0, 1],
+            searchable: false,
+            orderable: false,
+        },
+        {
+            defaultContent: '<button type="button" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>',
+            targets: 0
+        },
+        {
+            defaultContent: '<button type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
+            targets: 1
+        }
+    ],
 });
 
 let id = 0;

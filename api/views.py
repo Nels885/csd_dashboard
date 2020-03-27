@@ -9,7 +9,9 @@ from api.serializers import XelonSerializer, CorvetSerializer
 from raspeedi.models import Raspeedi
 from squalaetp.models import Xelon, Corvet
 from utils.data.analysis import ProductAnalysis, DealAnalysis
-from api.models import query_xelon_by_args, query_corvet_by_args
+from api.models import (query_table_by_args,
+                        ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
+                        xelon_filter, corvet_filter)
 
 from utils.data import mqtt
 
@@ -107,12 +109,15 @@ def charts(request):
 
 class XelonViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.all()
+    queryset = Xelon.objects.filter(date_retour__isnull=False)
     serializer_class = XelonSerializer
 
     def list(self, request, **kwargs):
         try:
-            xelon = query_xelon_by_args(**request.query_params)
+            folder = self.request.query_params.get('folder', None)
+            if folder and folder == 'pending':
+                self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
+            xelon = query_table_by_args(xelon_filter, self.queryset, ORDER_XELON_COLUMN_CHOICES, **request.query_params)
             serializer = XelonSerializer(xelon["items"], many=True)
             data = {
                 "data": serializer.data,
@@ -132,7 +137,8 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
-            corvet = query_corvet_by_args(**request.query_params)
+            corvet = query_table_by_args(corvet_filter, self.queryset, ORDER_CORVET_COLUMN_CHOICES,
+                                         **request.query_params)
             serializer = CorvetSerializer(corvet["items"], many=True)
             data = {
                 "data": serializer.data,

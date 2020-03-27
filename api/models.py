@@ -26,7 +26,7 @@ ORDER_CORVET_COLUMN_CHOICES = Choices(
 )
 
 
-def query_xelon_by_args(**kwargs):
+def query_table_by_args(filter, queryset, order_choices, **kwargs):
     draw = int(kwargs.get('draw', None)[0])
     length = int(kwargs.get('length', None)[0])
     start = int(kwargs.get('start', None)[0])
@@ -34,22 +34,15 @@ def query_xelon_by_args(**kwargs):
     order_column = kwargs.get('order[0][column]', None)[0]
     order = kwargs.get('order[0][dir]', None)[0]
 
-    order_column = ORDER_XELON_COLUMN_CHOICES[order_column]
+    order_column = order_choices[order_column]
     # django orm '-' -> desc
     if order == 'desc':
         order_column = '-' + order_column
 
-    queryset = Xelon.objects.filter(date_retour__isnull=False)
     total = queryset.count()
 
     if search_value:
-        queryset = queryset.filter(Q(numero_de_dossier__icontains=search_value) |
-                                   Q(vin__icontains=search_value) |
-                                   Q(modele_produit__icontains=search_value) |
-                                   Q(modele_vehicule__icontains=search_value) |
-                                   Q(date_retour__icontains=search_value) |
-                                   Q(type_de_cloture__icontains=search_value) |
-                                   Q(nom_technicien__icontains=search_value))
+        queryset = filter(queryset, search_value)
 
     count = queryset.count()
     queryset = queryset.order_by(order_column)[start:start + length]
@@ -61,39 +54,26 @@ def query_xelon_by_args(**kwargs):
     }
 
 
-def query_corvet_by_args(**kwargs):
-    draw = int(kwargs.get('draw', None)[0])
-    length = int(kwargs.get('length', None)[0])
-    start = int(kwargs.get('start', None)[0])
-    search_value = kwargs.get('search[value]', None)[0]
-    order_column = kwargs.get('order[0][column]', None)[0]
-    order = kwargs.get('order[0][dir]', None)[0]
+def xelon_filter(queryset, search_value):
+    queryset = queryset.filter(Q(numero_de_dossier__icontains=search_value) |
+                               Q(vin__icontains=search_value) |
+                               Q(modele_produit__icontains=search_value) |
+                               Q(modele_vehicule__icontains=search_value) |
+                               Q(date_retour__icontains=search_value) |
+                               Q(type_de_cloture__icontains=search_value) |
+                               Q(nom_technicien__icontains=search_value))
+    return queryset
 
-    order_column = ORDER_CORVET_COLUMN_CHOICES[order_column]
-    # django orm '-' -> desc
-    if order == 'desc':
-        order_column = '-' + order_column
 
-    queryset = Corvet.objects.all()
-    total = queryset.count()
-
-    if search_value:
-        queryset = queryset.filter(Q(vin__icontains=search_value) |
-                                   Q(electronique_14f__icontains=search_value) |
-                                   Q(electronique_94f__icontains=search_value) |
-                                   Q(electronique_94x__icontains=search_value) |
-                                   Q(electronique_14x__icontains=search_value) |
-                                   Q(electronique_14a__icontains=search_value) |
-                                   Q(electronique_14a__icontains=search_value) |
-                                   Q(electronique_94a__icontains=search_value) |
-                                   Q(electronique_14b__icontains=search_value) |
-                                   Q(electronique_94b__icontains=search_value))
-
-    count = queryset.count()
-    queryset = queryset.order_by(order_column)[start:start + length]
-    return {
-        'items': queryset,
-        'count': count,
-        'total': total,
-        'draw': draw
-    }
+def corvet_filter(queryset, search_value):
+    queryset = queryset.filter(Q(vin__icontains=search_value) |
+                               Q(electronique_14f__icontains=search_value) |
+                               Q(electronique_94f__icontains=search_value) |
+                               Q(electronique_94x__icontains=search_value) |
+                               Q(electronique_14x__icontains=search_value) |
+                               Q(electronique_14a__icontains=search_value) |
+                               Q(electronique_14a__icontains=search_value) |
+                               Q(electronique_94a__icontains=search_value) |
+                               Q(electronique_14b__icontains=search_value) |
+                               Q(electronique_94b__icontains=search_value))
+    return queryset
