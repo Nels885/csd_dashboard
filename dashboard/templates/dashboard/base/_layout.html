@@ -15,6 +15,8 @@
 
     <!-- Bootstrap CSS -->
     <link href="{% static 'dashboard/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'dashboard/vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet"
+          type="text/css">
 
     <!-- Custom fonts for this template-->
     <link href="{% static 'dashboard/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -22,11 +24,11 @@
           rel="stylesheet">
 
 
-
     {% block customcss %} {% endblock %}
 
     <!-- Custom styles for this template-->
     <link href="{% static 'dashboard/css/sb-admin-2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -41,14 +43,58 @@
 
 <!-- Core plugin JavaScript-->
 <script src="{% static 'dashboard/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'dashboard/vendor/moment.min.js' %}"></script>
+<script src="{% static 'dashboard/vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 <script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
 
 <!-- Custom scripts for all pages-->
 <script src="{% static 'dashboard/js/sb-admin-2.min.js' %}"></script>
+<script src="{% static 'dashboard/js/custom.js' %}"></script>
 
 {% block customjs %} {% endblock %}
 
 {% block extrascripts %} {% endblock %}
+
+<script type="text/javascript">
+    $(function () {
+        // Log in buttons
+        $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
+        $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
+
+        $(".tag-xelon-btn").modalForm({formURL: "{% url 'tools:tag_xelon' %}", modalID: "#create-modal"});
+
+        $(".batch-btn").modalForm({formURL: "{% url 'reman:create_batch' %}"});
+
+        $(".repair-btn").modalForm({formURL: "{% url 'reman:create_repair' %}"});
+
+        $(".corvet-btn").modalForm({formURL: "{% url 'squalaetp:create-corvet' %}", modalID: "#large-modal"});
+
+        $(".create-post").modalForm({formURL: "{% url 'dashboard:create_post' %}", modalID: "#large-modal"});
+
+        // Update post buttons
+        $(".update-post").each(function () {
+            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+        });
+
+        // Delete post buttons
+        $(".delete-post").each(function () {
+            $(this).modalForm({formURL: $(this).data('id')});
+        });
+
+        // log file buttons
+        $(".log-btn").each(function () {
+            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+        });
+
+        // Hide message
+        $(".alert").fadeTo(5000, 500).slideUp(500, function () {
+            $(".alert").slideUp(500);
+        });
+    });
+
+    clock();
+    setInterval(clock, 1000);
+</script>
 
 </body>
 

@@ -1,0 +1,55 @@
+{% extends 'dashboard/format/datatables_format.html' %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% block table_content %}
+
+    <table class="table table-bordered" id="partTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th class="all">Code produit</th>
+            <th>Code zone</th>
+            <th>Code Emplacement</th>
+            <th>Cumul Dispo</th>
+            <th>Code magasin</th>
+            <th>Code site</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <th class="all">Code produit</th>
+            <th>Code zone</th>
+            <th>Code Emplacement</th>
+            <th>Cumul Dispo</th>
+            <th>Code magasin</th>
+            <th>Code site</th>
+        </tr>
+        </tfoot>
+        <tbody>
+
+        {% for file in files %}
+
+            <tr>
+                <td>{{ file.code_produit }}</td>
+                <td>{{ file.code_zone }}</td>
+                <td>{{ file.code_emplacement }}</td>
+                <td>{{ file.cumul_dispo }}</td>
+                <td>{{ file.code_magasin }}</td>
+                <td>{{ file.code_site }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/part-tables.js' %}"></script>
+
+{% endblock %}

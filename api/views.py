@@ -1,15 +1,19 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import api_view
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from api.serializers import XelonSerializer, CorvetSerializer
 from raspeedi.models import Raspeedi
 from squalaetp.models import Xelon, Corvet
-from utils.analysis import ProductAnalysis, DealAnalysis
-from api.models import query_xelon_by_args, query_corvet_by_args
+from utils.data.analysis import ProductAnalysis, DealAnalysis
+from api.models import (query_table_by_args,
+                        ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
+                        xelon_filter, corvet_filter)
+
+from utils.data import mqtt
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -86,60 +90,70 @@ class CalList(generics.ListAPIView):
         return queryset
 
 
-class Charts(APIView):
+@api_view(['GET'])
+def charts(request):
     """
     API endpoint that allows chart data to be viewed
     """
-
-    def get(self, request, format=None):
-        """
-        Return a dictionnary of data
-        """
-        analysis, deal = ProductAnalysis(), DealAnalysis()
-        prod_labels, prod_nb = analysis.products_count()
-        deal_labels, deal_nb = deal.count()
-        data = {
-            "prodLabels": prod_labels,
-            "prodDefault": prod_nb,
-            "dealLabels": deal_labels,
-            "dealDefault": deal_nb,
-        }
-        return Response(data)
+    analysis, deal = ProductAnalysis(), DealAnalysis()
+    prod_labels, prod_nb = analysis.products_count()
+    deal_labels, deal_nb = deal.count()
+    data = {
+        "prodLabels": prod_labels,
+        "prodDefault": prod_nb,
+        "dealLabels": deal_labels,
+        "dealDefault": deal_nb,
+    }
+    return Response(data, status=status.HTTP_200_OK)
 
 
 class XelonViewSet(viewsets.ModelViewSet):
-    queryset = Xelon.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Xelon.objects.filter(date_retour__isnull=False)
     serializer_class = XelonSerializer
 
     def list(self, request, **kwargs):
         try:
-            xelon = query_xelon_by_args(**request.query_params)
-            serializer = XelonSerializer(xelon['items'], many=True)
-            result = {
-                'data': serializer.data,
-                'draw': xelon['draw'],
-                'recordsTotal': xelon['total'],
-                'recordsFiltered': xelon['count']
+            folder = self.request.query_params.get('folder', None)
+            if folder and folder == 'pending':
+                self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
+            xelon = query_table_by_args(xelon_filter, self.queryset, ORDER_XELON_COLUMN_CHOICES, **request.query_params)
+            serializer = XelonSerializer(xelon["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": xelon["draw"],
+                "recordsTotal": xelon["total"],
+                "recordsFiltered": xelon["count"],
             }
-            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+            return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 class CorvetViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Corvet.objects.all()
     serializer_class = CorvetSerializer
 
     def list(self, request, **kwargs):
         try:
-            corvet = query_corvet_by_args(**request.query_params)
-            serializer = CorvetSerializer(corvet['items'], many=True)
-            result = {
-                'data': serializer.data,
-                'draw': corvet['draw'],
-                'recordsTotal': corvet['total'],
-                'recordsFiltered': corvet['count']
+            corvet = query_table_by_args(corvet_filter, self.queryset, ORDER_CORVET_COLUMN_CHOICES,
+                                         **request.query_params)
+            serializer = CorvetSerializer(corvet["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": corvet["draw"],
+                "recordsTotal": corvet["total"],
+                "recordsFiltered": corvet["count"]
             }
-            return Response(result, status=status.HTTP_200_OK, template_name=None, content_type=None)
+            return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND, template_name=None, content_type=None)
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def thermal_temp(request):
+    if not mqtt.error:
+        mqtt.client.loop_start()
+    data = mqtt.payload
+    return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)

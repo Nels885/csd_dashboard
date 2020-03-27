@@ -1,45 +1,18 @@
-from django.test import LiveServerTestCase
-from django.contrib.auth.models import User, Group
-
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-
+from dashboard.tests.base import FunctionalTest
 from squalaetp.models import Corvet
 
 
-class CorvetSeleniumTestCase(LiveServerTestCase):
+class CorvetSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        self.driver = webdriver.Firefox(firefox_options=options)
-        self.driver.implicitly_wait(30)
         super(CorvetSeleniumTestCase, self).setUp()
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
-        self.data = (
-            '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
-            '<VEHICULE Existe="O">'
-            '<DONNEES_VEHICULE><WMI>VF3</WMI><VDS>ABCDEF</VDS><VIS>12345678</VIS>'
-            '<TRANSMISSION>0R</TRANSMISSION></DONNEES_VEHICULE>'
-            '<LISTE_ATTRIBUTS><ATTRIBUT>DAT24</ATTRIBUT><ATTRIBUT>GG805</ATTRIBUT></LISTE_ATTRIBUTS>'
-            '<LISTE_ORGANES><ORGANE>10JBCJ3028478</ORGANE><ORGANE>20DS850837512</ORGANE></LISTE_ORGANES>'
-            '<LISTE_ELECTRONIQUES><ELECTRONIQUE>14A9666571380</ELECTRONIQUE>'
-            '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
-            '</VEHICULE></MESSAGE>'
-        )
-        self.vin = 'VF3ABCDEF12345678'
-
-    def tearDown(self):
-        self.driver.quit()
-        super(CorvetSeleniumTestCase, self).tearDown()
+        self.add_perms_user(Corvet, "view_corvet", "add_corvet")
 
     def test_corvet_table_page_is_connected(self):
         driver = self.driver
 
         # Creating session cookie for to access Raspeedi insert form
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/squalaetp/corvet/')
         driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
@@ -53,7 +26,7 @@ class CorvetSeleniumTestCase(LiveServerTestCase):
         old_corvet = Corvet.objects.count()
 
         # Creating session cookie for to access Raspeedi insert form
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/squalaetp/corvet/insert/')
         driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
@@ -65,7 +38,7 @@ class CorvetSeleniumTestCase(LiveServerTestCase):
         xml_data = driver.find_element_by_name('xml_data')
         submit = driver.find_element_by_name('btn_corvet_insert')
         vin.send_keys(self.vin)
-        xml_data.send_keys(self.data)
+        xml_data.send_keys(self.xmlData)
         submit.click()
 
         new_corvet = Corvet.objects.count()

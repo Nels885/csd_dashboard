@@ -1,14 +1,17 @@
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
+from django.contrib import messages
 
 from .models import Raspeedi, UnlockProduct, UserProfile
 from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
 from squalaetp.models import Xelon
-from utils.decorators import group_required
+
+context = {'title': 'Raspeedi'}
 
 
+@permission_required('raspeedi.view_raspeedi')
 def table(request):
     """
     View of the Raspeedi table page
@@ -18,14 +21,14 @@ def table(request):
         Raspeedi table page
     """
     products = Raspeedi.objects.all().order_by('ref_boitier')
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'table_title': _('Table Products Telematics PSA'),
         'products': products
-    }
+    })
     return render(request, 'raspeedi/table.html', context)
 
 
+@permission_required('raspeedi.view_raspeedi')
 def detail(request, ref_case):
     """
     detailed view of Raspeedi data for a product
@@ -36,43 +39,43 @@ def detail(request, ref_case):
     dict_prod = vars(product)
     for key in ["_state"]:
         del dict_prod[key]
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'card_title': _('Detail raspeedi data for the ref case of Product: ') + str(product.ref_boitier),
-        'dict_prod': dict_prod,
-    }
+        'prod': product,
+    })
     return render(request, 'raspeedi/detail.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician', 'operator')
+@permission_required('raspeedi.view_unlockproduct')
 def unlock_prods(request):
     unlock = UnlockProduct.objects.all().order_by('created_at')
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'table_title': _('Unlocking product for programming'),
         'products': unlock
-    }
+    })
     if request.method == 'POST':
         user = UserProfile.objects.get(user_id=request.user.id)
         form = UnlockForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
-            unlock = form.cleaned_data['unlock']
-            product = get_object_or_404(Xelon, numero_de_dossier=unlock)
-            UnlockProduct.objects.create(user=user, unlock=product)
+            if request.user.has_perm('raspeedi.add_unlockproduct'):
+                unlock = form.cleaned_data['unlock']
+                product = get_object_or_404(Xelon, numero_de_dossier=unlock)
+                UnlockProduct.objects.create(user=user, unlock=product)
+                messages.success(request, _('Adding the Xelon number %(xelon)s successfully') % {'xelon': unlock})
+            else:
+                messages.warning(request, _('You do not have the required permissions'))
+        context['errors'] = form.errors.items()
     else:
         form = UnlockForm()
     context['form'] = form
     return render(request, 'raspeedi/unlock_prods.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
+@permission_required('raspeedi.add_raspeedi')
 def insert(request):
-    context = {
-        'title': 'Raspeedi',
+    context.update({
         'card_title': _('RASPEEDI integration'),
-    }
+    })
     if request.method == 'POST':
         form = RaspeediForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
@@ -80,8 +83,7 @@ def insert(request):
             ref = Raspeedi.objects.filter(ref_boitier=ref_case)
             if not ref.exists():
                 Raspeedi.objects.create(**form.cleaned_data)
-                context = {'title': _('Added successfully!')}
-                return render(request, 'dashboard/done.html', context)
+                messages.success(request, _('Added successfully!'))
         context['errors'] = form.errors.items()
     else:
         form = RaspeediForm()
@@ -89,20 +91,17 @@ def insert(request):
     return render(request, 'raspeedi/insert.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
+@permission_required('raspeedi.change_raspeedi')
 def edit(request, ref_case):
     product = get_object_or_404(Raspeedi, ref_boitier=ref_case)
     form = RaspeediForm(request.POST or None, instance=product)
     if form.is_valid():
         form.save()
-        context = {'title': _('Modification done successfully!')}
-        return render(request, 'dashboard/done.html', context)
-    context = {
-        'title': 'Raspeedi',
+        messages.success(request, _('Modification done successfully!'))
+    context.update({
         'card_title': _('Modification data RASPEEDI for ref case: ') + str(product.ref_boitier),
         'url': 'raspeedi:edit',
         'prod': product,
         'form': form,
-    }
+    })
     return render(request, 'raspeedi/edit.html', context)

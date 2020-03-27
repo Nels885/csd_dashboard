@@ -1,38 +1,45 @@
-import csv
-import datetime
-
-from django.shortcuts import render, get_object_or_404, HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView
+from bootstrap_modal_forms.generic import BSModalCreateView
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm
+from .forms import CorvetForm, CorvetModalForm
+from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
-from utils.decorators import group_required
-from utils.export import xml_file
-
+from utils.file.export import xml_corvet_file
+from utils.file import LogFile, os
+from utils.conf import CSD_ROOT
 
 # from utils.scraping import ScrapingCorvet
 
 
+@login_required
 def xelon_table(request):
-    """
-    View of Xelon table page
-    """
-    # files = Xelon.objects.filter(date_retour__isnull=False, type_de_cloture__in=['', 'Sauvée']).order_by(
-    #     'numero_de_dossier')
-
-    form = CorvetForm()
     context = {
         'title': 'Xelon',
-        'table_title': 'Dossiers Clients',
-        # 'files': files
-        'form': form
+        'form': CorvetForm()
     }
-    return render(request, 'squalaetp/xelon_table.html', context)
+    query = request.GET.get('filter')
+    if query and query == "pending":
+        files = Xelon.objects.exclude(type_de_cloture__exact='Réparé').filter(
+            date_retour__isnull=False, delai_au_en_jours_ouvres__lt=30).order_by('-date_retour')
+        context.update({
+            'table_title': 'Dossiers en cours',
+            'files': files
+        })
+        return render(request, 'squalaetp/xelon_table.html', context)
+    else:
+        context['table_title'] = 'Dossiers Clients'
+        return render(request, 'squalaetp/all_xelon_table.html', context)
 
 
+@login_required
 def detail(request, file_id):
     file = get_object_or_404(Xelon, pk=file_id)
     if file.corvet.exists():
@@ -44,7 +51,6 @@ def detail(request, file_id):
         dict_corvet = vars(corvet)
     else:
         corvet = dict_corvet = raspeedi = None
-
     form = CorvetForm()
     form.fields['vin'].initial = file.vin
     context = {
@@ -54,13 +60,15 @@ def detail(request, file_id):
         'raspeedi': raspeedi,
         'dict_corvet': dict_corvet,
         'form': form,
-        'redirect': request.META.get('HTTP_REFERER')
+        'select': 'xelon',
+        'redirect': request.META.get('HTTP_REFERER'),
+        # 'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
+        'log_file': None
     }
     return render(request, 'squalaetp/detail.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.view_xelon')
 def xelon_edit(request, file_id):
     """
     View for changing Xelon data
@@ -80,7 +88,7 @@ def xelon_edit(request, file_id):
             data = form.xml_parser('xml_data')
             if data:
                 try:
-                    xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)
@@ -99,8 +107,7 @@ def xelon_edit(request, file_id):
     return render(request, 'squalaetp/xelon_edit.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.view_xelon')
 def ajax_xelon(request):
     """
     View for changing Xelon data
@@ -113,35 +120,41 @@ def ajax_xelon(request):
             data = form.xml_parser('xml_data')
             if data:
                 try:
-                    # xml_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+                    xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
                     m = Corvet(**data)
                     m.save()
                     m.xelons.add(file)
-                    context = {'title': _('Modification done successfully!')}
-                    # return render(request, 'dashboard/done.html', context)
-                    return JsonResponse(context)
+                    context = {'message': _('Modification done successfully!')}
+                    messages.success(request, context['message'])
+                    return JsonResponse(context, status=200)
                 except TypeError:
                     form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
         print(form.errors)
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 
 
-@login_required
+@permission_required('squalaetp.view_corvet')
 def corvet_table(request):
     """
     View of Corvet table page, visible only if authenticated
     """
     # corvets_list = Corvet.objects.all().order_by('vin')
-
+    form = ExportCorvetForm(request.POST or None)
+    if form.is_valid():
+        if request.user.has_perm('squalaetp.change_corvet'):
+            product = form.cleaned_data['products']
+            if product in ['corvet', 'ecu', 'bsi', 'com']:
+                return redirect('import_export:export_{}_csv'.format(product))
+        messages.warning(request, _('You do not have the required permissions'))
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),
-        # 'corvets': corvets
+        'form': form,
     }
     return render(request, 'squalaetp/corvet_table.html', context)
 
 
-@login_required
+@permission_required('squalaetp.view_corvet')
 def corvet_detail(request, vin):
     """
     detailed view of Corvet data for a file
@@ -161,8 +174,7 @@ def corvet_detail(request, vin):
     return render(request, 'squalaetp/corvet_detail.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
+@permission_required('squalaetp.add_corvet')
 def corvet_insert(request):
     """
     View of Corvet insert page, visible only if authenticated
@@ -191,25 +203,30 @@ def corvet_insert(request):
     return render(request, 'squalaetp/corvet_insert.html', context)
 
 
-@login_required
-@group_required('cellule', 'technician')
-def export_corvet_csv(request):
-    date = datetime.datetime.now()
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="corvet_{}.csv"'.format(date.strftime("%y-%m-%d_%H-%M"))
+class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
+    template_name = 'squalaetp/modal/corvet_form.html'
+    form_class = CorvetModalForm
+    success_message = _('Modification done successfully!')
 
-    writer = csv.writer(response)
-    writer.writerow(
-        ['vin', 'date_debut_garantie', 'date_entree_montage', 'ligne_de_produit', 'marque_commerciale', 'silhouette',
-         'genre_de_produit', 'ddo', 'dgm', 'dhb', 'dhg', 'djq', 'djy', 'dkx', 'dlx', 'doi', 'dqm', 'dqs', 'drc', 'drt',
-         'dti', 'dun', 'dwl', 'dwt', 'dxj', 'dyb', 'dym', 'dyr', 'dzv', 'gg8', '14f', '14j', '14k', '14l', '14r', '14x',
-         '19z', '44f', '44l', '44x', '54f', '54k', '54l', '84f', '84l', '84x', '94f', '94l', '94x', 'dat', 'dcx', '19h',
-         '49h', '64f', '64x', '69h', '89h', '99h', '14a', '34a', '44a', '54a', '64a', '84a', '94a', 'p4a', 'moteur',
-         'transmission', '10', '14b', '20', '44b', '54b', '64b', '84b', '94b', '16p', '46p', '56p', '66p'])
+    def get_context_data(self, **kwargs):
+        context = super(CorvetCreateView, self).get_context_data(**kwargs)
+        context['modal_title'] = _('CORVET integration')
+        return context
 
-    corvets = Corvet.objects.all().values_list()
-    for corvet in corvets:
-        print(corvet)
-        writer.writerow(corvet)
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
 
-    return response
+
+class LogFileView(LoginRequiredMixin, TemplateView):
+    template_name = 'squalaetp/modal/log_file.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(LogFileView, self).get_context_data(**kwargs)
+        file = LogFile(os.path.join(CSD_ROOT, 'LOGS'), context['file'])
+        with open(file.files[0], 'r') as f:
+            text = f.read().replace('\n', '<br>')
+        context['text'] = text
+        return context

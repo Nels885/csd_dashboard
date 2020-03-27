@@ -1,35 +1,21 @@
-from django.test import LiveServerTestCase
-from django.contrib.auth.models import User, Group
-
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
 
+from dashboard.tests.base import FunctionalTest
 from raspeedi.models import Raspeedi
 
 
-class RaspeediSeleniumTestCase(LiveServerTestCase):
+class RaspeediSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        self.driver = webdriver.Firefox(firefox_options=options)
-        self.driver.implicitly_wait(30)
         super(RaspeediSeleniumTestCase, self).setUp()
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
-
-    def tearDown(self):
-        self.driver.quit()
-        super(RaspeediSeleniumTestCase, self).tearDown()
+        self.add_perms_user(Raspeedi, "view_raspeedi", "add_raspeedi")
 
     def test_raspeedi_insert_is_valid(self):
         driver = self.driver
         old_raspeedi = Raspeedi.objects.count()
 
         # Creating session cookie for to access Raspeedi insert form
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/raspeedi/insert/')
         driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
@@ -58,5 +44,13 @@ class RaspeediSeleniumTestCase(LiveServerTestCase):
 
     def test_raspeedi_table_page(self):
         driver = self.driver
+
+        # Creating session cookie for to access Raspeedi insert form
+        self.login()
+        cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/raspeedi/table/')
+        driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
+        driver.refresh()
+        driver.get(self.live_server_url + '/raspeedi/table/')
+
         self.assertEqual(driver.current_url, self.live_server_url + '/raspeedi/table/')

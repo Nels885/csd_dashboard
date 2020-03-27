@@ -1,4 +1,4 @@
-{% extends 'dashboard/datatables_format.html' %}
+{% extends 'dashboard/format/datatables_format.html' %}
 
 {% load static %}
 
@@ -7,13 +7,14 @@
     <table class="table table-bordered" id="softTable" width="100%" cellspacing="0">
         <thead>
         <tr>
-            <th class="all">JIG</th>
+            <th></th>
+            <th>JIG</th>
             <th>New Version</th>
             <th>Old Version</th>
-            <th class="all">Lien téléchargement</th>
-            <th class="all">Status</th>
-            <th class="all">Date de validation</th>
-            <th class="all"></th>
+            <th>Lien téléchargement</th>
+            <th>Status</th>
+            <th>Date de validation</th>
+
         </tr>
         </thead>
         <tbody>
@@ -24,15 +25,15 @@
                 {% elif soft.status == "En test" %}class="bg-warning text-gray-800"
                 {% elif soft.status == "Etudes" %}class="bg-info text-light"
                 {% else %}class="bg-success text-gray-700"{% endif %}>
+                <td class="bg-white"><a href="{% url 'tools:soft_edit' soft_id=soft.id %}" title="Modification"
+                                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                </td>
                 <td>{{ soft.jig }}</td>
                 <td>{{ soft.new_version }}</td>
                 <td>{{ soft.old_version|default:"--" }}</td>
                 <td>{{ soft.link_download }}</td>
                 <td>{{ soft.status }}</td>
                 <td>{{ soft.validation_date|default:"--" }}</td>
-                <td class="bg-white"><a href="{% url 'tools:soft-edit' soft_id=soft.id %}" title="Modification"
-                                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                </td>
             </tr>
 
         {% endfor %}
@@ -52,7 +53,7 @@
 {% block tablejs %}
 
     <!-- Page level custom scripts -->
-    <script src="{% static 'dashboard/js/datatables.js' %}"></script>
+    <script src="{% static 'tools/js/tools-tables.js' %}"></script>
 
     <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'dashboard/vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>

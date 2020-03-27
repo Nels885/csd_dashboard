@@ -1,35 +1,21 @@
-from django.test import LiveServerTestCase
-from django.contrib.auth.models import User, Group
-
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
 
-from dashboard.models import CsdSoftware
+from dashboard.tests.base import FunctionalTest
+from tools.models import CsdSoftware
 
 
-class DashboardSeleniumTestCase(LiveServerTestCase):
+class DashboardSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        self.driver = webdriver.Firefox(firefox_options=options)
-        self.driver.implicitly_wait(30)
         super(DashboardSeleniumTestCase, self).setUp()
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
-
-    def tearDown(self):
-        self.driver.quit()
-        super(DashboardSeleniumTestCase, self).tearDown()
+        self.add_perms_user(CsdSoftware, 'add_csdsoftware')
 
     def test_soft_add_is_valid(self):
         driver = self.driver
         old_soft = CsdSoftware.objects.count()
 
         # Creating session cookie for to access Software add form
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/tools/soft/add/')
         driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})

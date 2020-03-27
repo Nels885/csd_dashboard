@@ -11,13 +11,19 @@ class ApiTestCase(APITestCase):
         User.objects.create_superuser(username='admin', password='adminpassword', email='admin@test.com')
         self.authError = {"detail": "Informations d'authentification non fournies."}
 
+    def login(self, user='user'):
+        if user == 'admin':
+            self.client.login(username='admin', password='adminpassword')
+        else:
+            self.client.login(username='toto', password='totopassword')
+
     def test_user_view_set_is_disconnected(self):
         response = self.client.get(reverse('api:user-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
     def test_user_view_set_is_connected(self):
-        self.client.login(username='admin', password='adminpassword')
+        self.login('admin')
         response = self.client.get(reverse('api:user-list'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
@@ -28,7 +34,7 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, self.authError)
 
     def test_group_view_set_is_connected(self):
-        self.client.login(username='admin', password='adminpassword')
+        self.login('admin')
         response = self.client.get(reverse('api:group-list'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
@@ -39,7 +45,7 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, self.authError)
 
     def test_prog_list_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         response = self.client.get(reverse('api:prog'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
@@ -51,7 +57,7 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, self.authError)
 
     def test_cal_list_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
+        self.login()
         response = self.client.get(reverse('api:cal'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)

@@ -63,6 +63,12 @@
         {% include 'dashboard/top_bar_items.html' %}
         {% endcomment %}
 
+        <li class="nav-item dropdown no-arrow mx-5 d-none d-xl-block">
+            <div class="nav-link dropdown-item-text text-gray-600">
+                <span id="datetime"></span>
+            </div>
+        </li>
+
         <!-- Nav Item - Languages -->
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
@@ -73,7 +79,7 @@
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="searchDropdown">
                 <a class="dropdown-item d-flex align-items-center"
-                   href="{% url "dashboard:set-lang" user_language="en" %}">
+                   href="{% url "dashboard:set_lang" user_language="en" %}">
                     <div class="dropdown-list-image mr-3">
                         <img class="rounded-circle" src="{% static 'dashboard/img/united-kingdom.png' %}" alt="">
                     </div>
@@ -82,7 +88,7 @@
                     </div>
                 </a>
                 <a class="dropdown-item d-flex align-items-center"
-                   href="{% url "dashboard:set-lang" user_language="fr" %}">
+                   href="{% url "dashboard:set_lang" user_language="fr" %}">
                     <div class="dropdown-list-image mr-3">
                         <img class="rounded-circle" src="{% static 'dashboard/img/france.png' %}" alt="">
                     </div>
@@ -108,7 +114,7 @@
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                      aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="{% url 'dashboard:user-profile' %}">
+                    <a class="dropdown-item" href="{% url 'dashboard:user_profile' %}">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Profile" %}
                     </a>
@@ -116,26 +122,28 @@
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Change password" %}
                     </a>
-                    {% if user.is_staff %}
+                    {% if user.is_superuser %}
                         <a class="dropdown-item" href="{% url 'admin:index' %}">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "Administration" %}</strong>
                         </a>
+                    {% endif %}
+                    {% if user.is_staff %}
                         <a class="dropdown-item" href="{% url 'dashboard:signup' %}">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "New user" %}</strong>
                         </a>
-                        <a class="dropdown-item" href="{% url 'dashboard:config-edit' %}">
+                        <a class="dropdown-item" href="{% url 'dashboard:config_edit' %}">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">Configuration</strong>
                         </a>
                     {% endif %}
-                    <a class="dropdown-item" href="{% url 'dashboard:activity-log' %}">
+                    <a class="dropdown-item" href="{% url 'dashboard:activity_log' %}">
                         <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Activity Log" %}
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                    <a class="logout-btn dropdown-item" href="#">
                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Logout" %}
                     </a>

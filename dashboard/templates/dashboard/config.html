@@ -1,4 +1,4 @@
-{% extends 'dashboard/forms_format.html' %}
+{% extends 'dashboard/format/forms_format.html' %}
 
 {% load i18n %}
 
@@ -7,7 +7,7 @@
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="{% url 'dashboard:config-edit' %}">
+        <form method="post" action="{% url 'dashboard:config_edit' %}">
 
             {% csrf_token %}
 
@@ -25,11 +25,5 @@
         </form>
 
     </div>
-
-{% endblock %}
-
-{% block customcss %}
-
-    <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet">
 
 {% endblock %}

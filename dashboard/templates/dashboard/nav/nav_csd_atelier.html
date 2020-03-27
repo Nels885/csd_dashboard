@@ -1,0 +1,113 @@
+{% load i18n %}
+{% load user_tags %}
+
+{% if perms.squalaetp or perms.reman or perms.raspeedi %}
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        CSD Atelier
+    </div>
+
+{% endif %}
+
+{% if perms.squalaetp %}
+    <!-- Nav Item - Xelon Settings Menu -->
+    {% with name="Xelon" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Traitements :</h6>
+                    <a class="collapse-item"
+                       href="{% url 'squalaetp:xelon' %}?filter=pending">{% trans "Current folder" %}</a>
+                    <a class="collapse-item" href="{% url 'dashboard:late_prod' %}">{% trans "Late products" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Informations :</h6>
+                    <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
+                    <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
+
+                    {% if perms.squalaetp.add_corvet %}
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+{% endif %}
+
+{% if perms.reman %}
+
+    <!-- Nav Item - Reman Settings Menu -->
+    {% with name="Reman" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Traitements :</h6>
+                    <a class="repair-btn collapse-item" href="#">{% trans "Create file" %}</a>
+                    <a class="collapse-item"
+                       href="{% url 'reman:repair_table' %}?filter=quality">{% trans "Current folder" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Informations :</h6>
+                    <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
+
+                    {% if perms.reman.add_batch %}
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Administration :</h6>
+                        <a class="batch-btn collapse-item" href="#">{% trans "Create Batch" %}</a>
+                        <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "batch list" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+{% endif %}
+
+{% if perms.raspeedi %}
+
+    <!-- Nav Item - Raspeedi Settings Menu -->
+    {% with name="Raspeedi" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Traitements :</h6>
+                    <a class="collapse-item" href="{% url 'raspeedi:unlock_prods' %}">{% trans "Unlock VIN" %}</a>
+
+                    {% if perms.raspeedi.view_raspeedi %}
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Informations :</h6>
+                        <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
+                    {% endif %}
+
+                    {% if perms.raspeedi.add_raspeedi %}
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+{% endif %}

@@ -1,0 +1,50 @@
+{% extends 'dashboard/format/datatables_format.html' %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% block table_content %}
+
+    <table class="table table-bordered" id="batchTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Numéro de lot</th>
+            <th>Quantité</th>
+            <th>Réf. REMAN</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+            <th>Status</th>
+            <th>Ajouté par</th>
+            <th>Ajouté le</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for batch in batchs %}
+
+            <tr>
+                <td>{{ batch }}</td>
+                <td>{{ batch.quantity }}</td>
+                <td>{{ batch.ecu_model.es_reference }}</td>
+                <td>{{ batch.start_date }}</td>
+                <td>{{ batch.end_date }}</td>
+                <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
+                <td>{{ batch.created_by }}</td>
+                <td>{{ batch.created_at }}</td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
+
+{% endblock %}

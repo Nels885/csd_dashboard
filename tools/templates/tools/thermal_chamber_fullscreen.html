@@ -1,0 +1,45 @@
+{% extends 'dashboard/base/_layout.html' %}
+
+{% load static i18n tz %}
+
+{% block basecontent %}
+
+    <div class="container-fluid">
+
+        <!-- Header of the page -->
+        <header class="row fixed-top bg-gradient-primary">
+            <div class="col-lg-12 text-center my-auto">
+                <h1 class="text-uppercase text-white mt-2">{% trans 'Thermal Chamber Temperature' %}</h1>
+            </div>
+        </header>
+
+        <!-- Begin Page Content -->
+        <div id="bg-thermal" class="row justify-content-center min-vh-100 mx-auto">
+            <h1 class="font-weight-bold my-auto">
+                <span id="thermal-temp" style="font-size: 380px"></span>
+            </h1>
+        </div>
+
+        <!-- Footer -->
+        <footer class="sticky-footer fixed-bottom bg-dark">
+            <div class="copyright text-center text-white my-auto">
+                        <span>Copyright &copy; <a class="text-warning" href="https://github.com/Nels885/csd_dashboard"
+                                                  target="_blank">Lionel VOIRIN</a>
+                            for Faurecia Clarion Electronic</span>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+
+{% endblock %}
+
+{% block customjs %}
+
+    <script type="text/javascript" src="{% static 'tools/js/thermal-chamber.js' %}"></script>
+    <script type="text/javascript">
+        getTempFull();
+        setInterval(getTempFull, 30000);
+    </script>
+
+{% endblock %}

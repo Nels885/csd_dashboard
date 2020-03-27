@@ -1,5 +1,7 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
+from django.utils.translation import ugettext as _
 
+from utils.django.validators import validate_xelon
 from .models import Raspeedi
 
 
@@ -11,7 +13,7 @@ class RaspeediForm(ModelForm):
             'cd_version', 'media', 'carto', 'dump_renesas', 'ref_mm', 'connecteur_ecran',
         ]
         widgets = {
-            'ref_boitier': TextInput(attrs={'class': 'form-control'}),
+            'ref_boitier': TextInput(attrs={'class': 'form-control', 'maxlength': 10}),
             'produit': Select(attrs={'class': 'form-control'}),
             'facade': TextInput(attrs={
                 'class': 'form-control', 'pattern': '[A-Z0-9]+', 'style': 'text-transform: uppercase;'
@@ -34,3 +36,10 @@ class UnlockForm(Form):
         label='Numéro de dossier', max_length=10,
         widget=TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'})
     )
+
+    def clean_unlock(self):
+        data = self.cleaned_data['unlock']
+        message = validate_xelon(data)
+        if message:
+            self.add_error('unlock', _(message))
+        return data

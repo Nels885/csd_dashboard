@@ -30,6 +30,12 @@ class Command(BaseCommand):
             help='Update Xelon table',
         )
         parser.add_argument(
+            '--fix_update',
+            action='store_true',
+            dest='fix_update',
+            help='Fix Update Xelon table',
+        )
+        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -38,7 +44,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if options['update']:
+        if options['update'] or options['fix_update']:
             if options['filename'] is not None:
                 squalaetp = ExcelSqualaetp(options['filename'])
             else:
@@ -48,7 +54,10 @@ class Command(BaseCommand):
             self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
 
             self._squalaetp_file(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
-            self._delay_files(Xelon)
+            if options['update']:
+                self._delay_files(Xelon)
+            else:
+                self._fix_delay_files(Xelon)
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -69,8 +78,7 @@ class Command(BaseCommand):
                     log.info(row)
                     product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
                     if product:
-                        del row["numero_de_dossier"]
-                        product.update(**row)
+                        product.update_or_create(**row)
                         nb_prod_update += 1
                     else:
                         m = model(**row)
@@ -98,9 +106,34 @@ class Command(BaseCommand):
                             del row["numero_de_dossier"]
                             product.update(**row)
                             nb_prod_update += 1
-                        # else:
-                        #     m = model(**row)
-                        #     m.save()
+                except IntegrityError as err:
+                    log.warning("IntegrityError:{}".format(err))
+                except DataError as err:
+                    self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
+                except FieldDoesNotExist as err:
+                    self.stdout.write("FieldDoesNotExist row {} : {}".format(row, err))
+        nb_prod_after = model.objects.count()
+        self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
+        self.stdout.write("[DELAY] Nombre de produits mis à jour : {}".format(nb_prod_update))
+        self.stdout.write("[DELAY] Nombre de produits total :      {}".format(nb_prod_after))
+
+    def _fix_delay_files(self, model):
+        excels, nb_prod_update = [], 0
+        for file in XLS_DELAY_FILES:
+            excels.append(ExcelDelayAnalysis(file))
+        nb_prod_before = model.objects.count()
+        model.objects.exclude(
+            type_de_cloture__in=['Réparé', 'Rebut'], date_retour__isnull=True).update(type_de_cloture='Réparé')
+        for excel in excels:
+            for row in excel.table():
+                try:
+                    if len(row):
+                        product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
+                        if product:
+                            del row["numero_de_dossier"]
+                            product.update(type_de_cloture='')
+                            product.update(**row)
+                            nb_prod_update += 1
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:

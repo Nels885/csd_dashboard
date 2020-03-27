@@ -1,11 +1,8 @@
 {% extends 'dashboard/base.html' %}
 
-{% block content %}
+{% load i18n %}
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
-    </div>
+{% block content %}
 
     <div class="row justify-content-center">
         <div class="col-xl-8 col-lg-10 col-md-9">
@@ -17,29 +14,11 @@
                         <div class="col-lg-12">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{% trans 'Create an Account!' %}</h1>
                                 </div>
-                                <form class="user" method="POST">
 
-                                    {% csrf_token %}
+                                {% include 'registration/register_form.html' %}
 
-                                    {% for field in form %}
-                                        <p>
-                                            {{ field.label_tag }}<br>
-                                            {{ field }}
-                                            {% if field.help_text %}
-                                                <small style="color: grey">{{ field.help_text }}</small>
-                                            {% endif %}
-                                            {% for error in field.errors %}
-                                                <p style="color: red">{{ error }}</p>
-                                            {% endfor %}
-                                        </p>
-                                    {% endfor %}
-                                    <br>
-                                    <button class="col-sm-6 offset-sm-3 btn btn-primary btn-user btn-block"
-                                            type="submit">Register Account
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     </div>

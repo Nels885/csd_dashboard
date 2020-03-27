@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.translation import ugettext as _
-from django.utils.decorators import method_decorator
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import login
 from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse_lazy
+from django.views.generic import TemplateView
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -18,13 +20,12 @@ from django.utils.encoding import force_bytes, force_text
 
 import re
 
-from bootstrap_modal_forms.generic import BSModalLoginView
+from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
-from utils.analysis import ProductAnalysis
-from utils.decorators import group_required
-from utils.tokens import account_activation_token
+from utils.data.analysis import ProductAnalysis
+from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm
+from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm
 from squalaetp.models import Xelon
 
 
@@ -32,7 +33,7 @@ def index(request):
     """
     View of index page
     """
-    posts = Post.objects.all().order_by('-timestamp')
+    posts = Post.objects.all().order_by('-timestamp')[:5]
     context = {
         'title': _("Acceuil"),
         'posts': posts
@@ -51,6 +52,18 @@ def charts(request):
     return render(request, 'dashboard/charts.html', context)
 
 
+@login_required
+def late_products(request):
+    prods = ProductAnalysis()
+    prods = prods.late_products().order_by('-delai_au_en_jours_ouvres')[:300]
+    context = {
+        'title': _("Late Products"),
+        'prods': prods
+    }
+    return render(request, 'dashboard/late_products.html', context)
+
+
+@login_required
 def search(request):
     """
     View of search page
@@ -95,13 +108,14 @@ def activity_log(request):
 @login_required
 def user_profile(request):
     context = {
-        'title': 'Profile',
+        'title': _("User Profile"),
     }
     if request.method == 'POST':
         user = get_object_or_404(UserProfile, user=request.user.id)
         form = UserProfileForm(request.POST or None, request.FILES, instance=user)
         if form.is_valid():
             form.save()
+            messages.success(request, _('Success: Modification done!'))
         context['errors'] = form.errors.items()
     else:
         form = UserProfileForm()
@@ -109,11 +123,10 @@ def user_profile(request):
     return render(request, 'registration/profile.html', context)
 
 
-@login_required
-@group_required('admin')
+@staff_member_required(login_url='login')
 def signup(request):
     context = {
-        'title': 'Signup',
+        'title': _("SignUp"),
     }
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -123,7 +136,8 @@ def signup(request):
             user.set_password(password)
             user.is_active = False
             user.save()
-            # user.groups.add(form.cleaned_data['groups'])
+            if form.cleaned_data['group']:
+                user.groups.add(form.cleaned_data['group'])
             UserProfile(user=user).save()
             current_site = get_current_site(request)
             mail_subject = 'Activate your CSD Dashboard account.'
@@ -136,7 +150,7 @@ def signup(request):
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
-                        mail_subject, message, to=[to_email]
+                mail_subject, message, to=[to_email]
             )
             email.send()
             messages.success(request, _('Success: Sign up succeeded. You can now Log in.'))
@@ -159,21 +173,19 @@ def activate(request, uidb64, token):
         login(request, user)
         # return redirect('home')
         messages.success(request, _('Thank you for your email confirmation. Now you can login your account.'))
-        # context = {'title': _('Thank you for your email confirmation. Now you can login your account.')}
         return redirect('password_change')
     else:
         context = {'title': _('Activation link is invalid!')}
     return render(request, 'dashboard/done.html', context)
 
 
-@login_required
-@group_required('cellule')
+@staff_member_required(login_url='login')
 def config_edit(request):
-
     if request.method == 'POST':
         query = request.POST.get('config')
         with open(settings.CONF_FILE, 'w+') as file:
             file.write(query)
+        messages.success(request, _('Success: Modification done!'))
 
     with open(settings.CONF_FILE, 'r') as file:
         conf = file.read()
@@ -189,23 +201,37 @@ def config_edit(request):
     return render(request, 'dashboard/config.html', context)
 
 
-def class_view_decorator(function_decorator):
-    """Convert a function based decorator into a class based decorator usable
-    on class based Views.
-
-    Can't subclass the `View` as it breaks inheritance (super in particular),
-    so we monkey-patch instead.
-    """
-
-    def simple_decorator(view):
-        view.dispatch = method_decorator(function_decorator)(view.dispatch)
-        return view
-
-    return simple_decorator
-
-
 class CustomLoginView(BSModalLoginView):
     authentication_form = CustomAuthenticationForm
-    template_name = 'dashboard/modal_form/login.html'
-    success_message = _('Success: You were successfully logged in.')
+    template_name = 'dashboard/modal/login.html'
+    success_message = _('Success: You are logged in.')
     success_url = reverse_lazy('charts')
+
+
+class CustomLogoutView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard/modal/logout.html'
+
+
+class PostCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'dashboard.add_post'
+    template_name = 'dashboard/modal/post_create.html'
+    form_class = PostForm
+    success_message = _('Success: Post was created.')
+    success_url = reverse_lazy('index')
+
+
+class PostUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    model = Post
+    permission_required = 'dashboard.change_post'
+    template_name = 'dashboard/modal/post_update.html'
+    form_class = PostForm
+    success_message = _('Success: Post was updated.')
+    success_url = reverse_lazy('index')
+
+
+class PostDeleteView(PermissionRequiredMixin, BSModalDeleteView):
+    model = Post
+    permission_required = 'dashboard.delete_post'
+    template_name = 'dashboard/modal/post_delete.html'
+    success_message = _('Success: Post was deleted.')
+    success_url = reverse_lazy('index')

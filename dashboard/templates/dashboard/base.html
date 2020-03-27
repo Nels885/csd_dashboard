@@ -1,6 +1,6 @@
 {% extends 'dashboard/base/_layout.html' %}
 
-{% load i18n %}
+{% load i18n tz %}
 
 {% block basecontent %}
 
@@ -29,35 +29,28 @@
                     <span>{% trans "Dashboard" %}</span></a>
             </li>
 
-            {% if user.is_authenticated is not True %}
-
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <div class="sidebar-heading">
-                    Interface
-                </div>
-
-                <!-- Nav Item - login -->
-                <li class="nav-item">
-                    <a class="login-btn nav-link" href="#">
-                        <i class="fas fa-fw fa-user"></i>
-                        <span>{% trans "Login" %}</span>
-                    </a>
-                </li>
-
-            {% endif %}
-
-            {% include 'dashboard/base/nav_csd_atelier.html' %}
-
-            {% include 'dashboard/base/nav_csd_admin.html' %}
-
-            {% include 'dashboard/base/nav_tools.html' %}
+            <!-- Nav Item - thermal chamber -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tools:thermal' %}">
+                    <i class=" fas fa-fw fa-thermometer"></i>
+                    <span>{% trans "Thermal chamber" %}</span></a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
+            {% include 'dashboard/nav/nav_csd_atelier.html' %}
+
+            {% include 'dashboard/nav/nav_csd_admin.html' %}
+
+            {% include 'dashboard/nav/nav_tools.html' %}
+
             {% include 'demo/nav_demo.html' %}
+
+            {% include 'dashboard/nav/nav_interface.html' %}
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
@@ -93,6 +86,8 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    {% include 'dashboard/base/_header.html' %}
+
                     {% block content %} {% endblock %}
 
                 </div>
@@ -125,24 +120,5 @@
     {% include 'dashboard/base/_modal.html' %}
 
     {% block custommodal %} {% endblock %}
-
-{% endblock %}
-
-{% block extrascripts %}
-
-    <script type="text/javascript">
-        $(function () {
-            // Log in buttons
-            $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
-
-            $(".tag-xelon-multi-btn").modalForm({formURL: "{% url 'tools:tag-xelon-multi' %}"});
-
-            // Hide message
-            $(".alert").fadeTo(5000, 500).slideUp(500, function () {
-                $(".alert").slideUp(500);
-            });
-        })
-        ;
-    </script>
 
 {% endblock %}

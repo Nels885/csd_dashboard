@@ -4,154 +4,129 @@
     <section class="col-sm-6">
         <table class="table table-bordered table-striped">
             <caption style="caption-side: top;">
-                <h3>Données Xelon :</h3>
+                <h3 class="text-gray-800">XELON :</h3>
             </caption>
             <tbody>
             <tr>
-                <td class="text-dark">Numéro de dossier</td>
+                <td class="text-dark td-ihm">Numéro de dossier</td>
                 <td>{{ file.numero_de_dossier }}</td>
             </tr>
             <tr>
-                <td class="text-dark">V.I.N.</td>
+                <td class="text-dark td-ihm">V.I.N.</td>
                 <td>{{ file.vin }}</td>
             </tr>
             <tr>
-                <td class="text-dark">Modèle produit</td>
+                <td class="text-dark td-ihm">Modèle produit</td>
                 <td>{{ file.modele_produit }}</td>
             </tr>
             <tr>
-                <td class="text-dark">Modèle véhicule</td>
+                <td class="text-dark td-ihm">Modèle véhicule</td>
                 <td>{{ file.modele_vehicule }}</td>
             </tr>
             </tbody>
         </table>
         <table class="table table-bordered table-striped">
             <caption style="caption-side: top;">
-                <h3>Données Raspeedi :</h3>
+                <h3 class="text-gray-800">RASPEEDI :</h3>
             </caption>
             <tbody>
-            <tr>
-                <td class="text-dark">Façade</td>
-                <td>{{ raspeedi.facade }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark">Type</td>
-                <td>{{ raspeedi.type }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark">Option DAB</td>
-                <td>{{ raspeedi.dab }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark">Option Caméra</td>
-                <td>{{ raspeedi.cam }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark">Support Cartographie</td>
-                <td>{{ raspeedi.media }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark">Version Cartographie</td>
-                <td>{{ raspeedi.carto }}</td>
-            </tr>
+            {% for field, value in raspeedi %}
+                {% if value %}
+                    <tr>
+                        <td class="text-dark td-ihm-40">{{ field }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
             </tbody>
         </table>
     </section>
     <section class="col-sm-6">
+        <h3 class="text-gray-800">CORVET :</h3>
         <table class="table table-bordered table-striped">
             <caption style="caption-side: top;">
-                <h3>Données Corvet :</h3>
+                <h5 class="text-gray-500">Affichage</h5>
             </caption>
             <tbody>
             <tr>
-                <td class="text-dark">Réf HW RAD</td>
+                <td class="text-dark td-ihm">Réf HW TDB</td>
+                <td>{{ corvet.electronique_14k }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Réf HW EMF</td>
+                <td>{{ corvet.electronique_14l }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">SOFT EMF</td>
+                <td>{{ corvet.electronique_94l }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">N° série EMF</td>
+                <td>{{ corvet.electronique_54l }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h5 class="text-gray-500">Audio</h5>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">Réf HW RAD</td>
                 <td>{{ corvet.electronique_14f }}</td>
             </tr>
             <tr>
-                <td class="text-dark">CAL RAD</td>
+                <td class="text-dark td-ihm">CAL RAD</td>
                 <td>{{ corvet.electronique_94f }}</td>
             </tr>
             <tr>
-                <td class="text-dark">N° série RAD</td>
+                <td class="text-dark td-ihm">N° série RAD</td>
                 <td>{{ corvet.electronique_44f }}</td>
             </tr>
             <tr>
-                <td class="text-dark">Réf HW NAV</td>
+                <td class="text-dark td-ihm">Réf HW NAV</td>
                 <td>{{ corvet.electronique_14x }}</td>
             </tr>
             <tr>
-                <td class="text-dark">CAL NAV</td>
+                <td class="text-dark td-ihm">CAL NAV</td>
                 <td>{{ corvet.electronique_94x }}</td>
             </tr>
             <tr>
-                <td class="text-dark">N° série NAV</td>
+                <td class="text-dark td-ihm">N° série NAV</td>
                 <td>{{ corvet.electronique_44x }}</td>
             </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h5 class="text-gray-500">Calculateur</h5>
+            </caption>
+            <tbody>
             <tr>
-                <td class="text-dark">Réf HW ECU moteur</td>
+                <td class="text-dark td-ihm">Réf HW ECU moteur</td>
                 <td>{{ corvet.electronique_14a }}</td>
             </tr>
             <tr>
-                <td class="text-dark">CAL ECU moteur</td>
+                <td class="text-dark td-ihm">CAL ECU moteur</td>
                 <td>{{ corvet.electronique_94a }}</td>
             </tr>
             <tr>
-                <td class="text-dark">N° série ECU moteur</td>
+                <td class="text-dark td-ihm">N° série ECU moteur</td>
                 <td>{{ corvet.electronique_44a }}</td>
             </tr>
             <tr>
-                <td class="text-dark">Réf HW BSI</td>
+                <td class="text-dark td-ihm">Réf HW BSI</td>
                 <td>{{ corvet.electronique_14b }}</td>
             </tr>
             <tr>
-                <td class="text-dark">CAL BSI</td>
+                <td class="text-dark td-ihm">CAL BSI</td>
                 <td>{{ corvet.electronique_94b }}</td>
             </tr>
             <tr>
-                <td class="text-dark">N° série BSI</td>
+                <td class="text-dark td-ihm">N° série BSI</td>
                 <td>{{ corvet.electronique_44b }}</td>
             </tr>
             </tbody>
         </table>
     </section>
 </div>
-
-<hr>
-<h3 class="h3 mb-4 text-gray-800">Modification des données :</h3>
-
-<form method="post" action="{% url 'squalaetp:xelon-edit' file_id=file.id %}">
-
-    {% csrf_token %}
-
-    <div class="form-group row">
-        <div class="col-sm-4 mb-3 mb-sm-0">
-
-            {{ form.vin }}
-
-        </div>
-    </div>
-
-    <div class="form-group">
-        Pour récupérer les données XML, cliquer sur le lien
-        <a href="https://www.repairnav.com/clarionservice_v2/corvet.xhtml" target="_blank">CORVET</a>.
-    </div>
-
-    <div class="form-group">
-
-        {{ form.xml_data }}
-
-    </div>
-
-    {% if errors %}
-        {% for key, error in errors %}
-            {% autoescape off %}
-                {{ error }}
-            {% endautoescape %}
-        {% endfor %}
-    {% endif %}
-
-    <button name="btn_corvet_insert" type="submit"
-            class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block">
-        {% trans "Submit" %}
-    </button>
-</form>

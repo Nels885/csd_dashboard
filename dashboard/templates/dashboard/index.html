@@ -1,17 +1,8 @@
 {% extends "dashboard/base.html" %}
 
-{% load i18n %}
-
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
-
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-    </div>
 
     <!-- Content Row -->
 
@@ -21,6 +12,13 @@
         <div class="col-lg-8 mb-6">
 
             <div class="row">
+
+                {% if perms.dashboard.add_post %}
+                    <div class="col-lg-12 mb-2">
+                        <a href="#" class="create-post btn btn-sm btn-primary">
+                            <i class="fas fa-envelope fa-sm text-white-50"></i> {% trans 'Create Post' %}</a>
+                    </div>
+                {% endif %}
 
                 <div class="col-lg-12">
 
@@ -46,11 +44,14 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                              aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
+                                            <a class="update-post dropdown-item"
+                                               href="#" data-id="{% url 'dashboard:update_post' post.pk %}">
+                                                <i class="fas fa-edit mr-2 text-gray-400"></i>{% trans 'Edit' %}
+                                            </a>
+                                            <a class="delete-post dropdown-item text-danger"
+                                               href="#" data-id="{% url 'dashboard:delete_post' post.pk %}">
+                                                <i class="fas fa-trash-alt mr-2 text-gray-400"></i>{% trans 'Delete' %}
+                                            </a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -103,12 +104,6 @@
 
     </div>
 
-
-{% endblock %}
-
-{% block customcss %}
-
-    <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet">
 
 {% endblock %}
 

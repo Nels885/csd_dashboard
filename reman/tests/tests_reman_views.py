@@ -1,26 +1,65 @@
-from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
+
+from dashboard.tests.base import UnitTest
+
+from reman.models import Repair, SparePart, Batch, EcuModel
 
 
-class RemanTestCase(TestCase):
+class RemanTestCase(UnitTest):
 
     def setUp(self):
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
-        user.save()
+        super().setUp()
         self.redirectUrl = reverse('index')
+        self.add_perms_user(Repair, 'add_repair', 'view_repair', 'change_repair')
+        self.add_perms_user(SparePart, 'add_sparepart', 'view_sparepart')
+        self.add_perms_user(Batch, 'view_batch')
+        ecu = EcuModel.objects.create(es_reference='1234567890', oe_reference='160000000',
+                                      oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test')
+        batch = Batch.objects.create(number=1, quantity=10, created_by=self.user, ecu_model=ecu)
+        self.repair = Repair.objects.create(batch=batch, created_by=self.user)
 
-    def test_reman_table_page(self):
-        response = self.client.get(reverse('reman:reman-table'))
+    def test_repair_table_page_is_disconnected(self):
+        response = self.client.get(reverse('reman:repair_table'))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/table/', status_code=302)
+
+    def test_repair_table_page_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('reman:repair_table'))
         self.assertEqual(response.status_code, 200)
 
-    def test_reman_create_page_is_disconnected(self):
-        response = self.client.get(reverse('reman:new-folder'))
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/?next=/reman/add/')
+    def test_spare_part_table_page_is_disconnected(self):
+        response = self.client.get(reverse('reman:part_table'))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/part/table/', status_code=302)
 
-    def test_reman_create_page_is_connected(self):
-        self.client.login(username='toto', password='totopassword')
-        response = self.client.get(reverse('reman:new-folder'))
+    def test_spare_part_table_page_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('reman:part_table'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_repair_create_page_is_disconnected(self):
+        response = self.client.get(reverse('reman:create_repair'))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/create/', status_code=302)
+
+    def test_repair_create_page_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('reman:create_repair'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_repair_edit_page_is_disconnected(self):
+        response = self.client.get(reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/' + str(self.repair.pk) + '/edit/',
+                             status_code=302)
+
+    def test_repair_edit_page_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_batch_table_is_disconnected(self):
+        response = self.client.get(reverse('reman:batch_table'))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/batch/table/', status_code=302)
+
+    def test_batch_table_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('reman:batch_table'))
         self.assertEqual(response.status_code, 200)

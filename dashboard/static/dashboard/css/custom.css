@@ -16,3 +16,15 @@ textarea.form-cfg, textarea.form-cfg:focus {
     background: #2B2B2B;
     font-size: 15px;
 }
+
+.td-ihm {
+    width: 50%;
+}
+
+.td-ihm-40 {
+    width: 40%;
+}
+
+.sidebar .nav-item .nav-link {
+    padding: 0.5rem 1rem 0.5rem 1rem !important;
+}

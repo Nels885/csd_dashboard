@@ -1,11 +1,11 @@
-{% extends 'dashboard/forms_format.html' %}
+{% extends 'dashboard/format/forms_format.html' %}
 
 {% load i18n %}
 
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="{% url 'tools:soft-add' %}">
+        <form method="post" action="{% url 'tools:soft_add' %}">
 
             {% include 'tools/soft_form.html' %}
 
