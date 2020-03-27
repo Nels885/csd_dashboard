@@ -220,8 +220,9 @@ class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
             return reverse_lazy('index')
 
 
-class SqualaetpUpdateView(BSModalUpdateView):
+class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
+    permission_required = ['squalaetp.change_xelon', 'squalaetp.change_corvet']
     template_name = 'squalaetp/modal/corvet_form.html'
     form_class = SqualaetpModalForm
     success_message = _('Success: Squalaetp data was updated.')
