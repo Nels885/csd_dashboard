@@ -1,15 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm, CorvetModalForm
+from .forms import CorvetForm, CorvetModalForm, SqualaetpModalForm
 from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
 from utils.file.export import xml_corvet_file
@@ -211,6 +211,25 @@ class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
     def get_context_data(self, **kwargs):
         context = super(CorvetCreateView, self).get_context_data(**kwargs)
         context['modal_title'] = _('CORVET integration')
+        return context
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class SqualaetpUpdateView(BSModalUpdateView):
+    model = Xelon
+    template_name = 'squalaetp/modal/corvet_form.html'
+    form_class = SqualaetpModalForm
+    success_message = _('Success: Squalaetp data was updated.')
+
+    def get_context_data(self, **kwargs):
+        context = super(SqualaetpUpdateView, self).get_context_data(**kwargs)
+        file = self.object.numero_de_dossier
+        context['modal_title'] = _('CORVET update for {}'.format(file))
         return context
 
     def get_success_url(self):

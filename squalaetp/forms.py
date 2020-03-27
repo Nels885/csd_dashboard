@@ -7,7 +7,7 @@ from bootstrap_modal_forms.forms import BSModalForm
 import xml.etree.ElementTree as ET
 
 from utils.django.validators import validate_vin
-from .models import Corvet
+from .models import Corvet, Xelon
 
 
 class CorvetForm(forms.Form):
@@ -157,4 +157,36 @@ class CorvetModalForm(BSModalForm):
         except (ET.ParseError, KeyError):
             self.add_error('xml_data', _('Invalid XML data'))
             data = None
+        return data
+
+
+class SqualaetpModalForm(BSModalForm):
+    xml_data = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _("Data in XML format available on the RepairNAV site during CORVET extraction..."),
+                'rows': 10,
+            }
+        ),
+        label=_('XML data'),
+        required=True
+    )
+
+    class Meta:
+        model = Xelon
+        fields = ['vin', 'xml_data']
+        widgets = {
+            'vin': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number")}),
+        }
+
+    def clean_vin(self):
+        data = self.cleaned_data['vin']
+        message = validate_vin(data)
+        if message:
+            raise ValidationError(
+                _(message),
+                code='invalid',
+                params={'value': data},
+            )
         return data

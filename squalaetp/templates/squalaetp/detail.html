@@ -42,7 +42,8 @@
                 </li>
             {% endif %}
             <li class="nav-item">
-                <a class="corvet-btn nav-link" href="#" role="tab" aria-selected="false">
+                <a class="update-corvet nav-link" href="#" data-id="{% url 'squalaetp:corvet_edit' file.pk %}"
+                   role="tab" aria-selected="false">
                     {% trans "CORVET Update" %}
                 </a>
             </li>
@@ -62,14 +63,16 @@
     <div class="tab-content mt-3">
 
         <!-- Detail Xelon -->
-        <div class="tab-pane {% if select == 'xelon' %}active{% endif %}" id="xelon" role="tabpanel" aria-labelledby="xelon-tab">
+        <div class="tab-pane {% if select == 'xelon' %}active{% endif %}" id="xelon" role="tabpanel"
+             aria-labelledby="xelon-tab">
 
             {% include 'squalaetp/detail_xelon.html' %}
 
         </div>
 
         <!-- Detail IHM -->
-        <div class="tab-pane {% if select == 'ihm' %}active{% endif %}" id="ihm" role="tabpanel" aria-labelledby="ihm-tab">
+        <div class="tab-pane {% if select == 'ihm' %}active{% endif %}" id="ihm" role="tabpanel"
+             aria-labelledby="ihm-tab">
 
             {% include 'squalaetp/detail_ihm.html' %}
 

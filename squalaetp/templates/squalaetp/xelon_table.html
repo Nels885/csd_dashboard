@@ -42,8 +42,8 @@
                 <td>{{ file.date_retour|default:"--" }}</td>
                 <td>{{ file.type_de_cloture }}</td>
                 <td>{{ file.nom_technicien }}</td>
-                <td>{{ file.dossier_vip }}</td>
-                <td>{{ file.express }}</td>
+                <td>{% if file.dossier_vip %}OUI{% endif %}</td>
+                <td>{% if file.express %}OUI{% endif %}</td>
             </tr>
 
         {% endfor %}

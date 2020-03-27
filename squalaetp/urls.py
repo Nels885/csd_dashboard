@@ -11,6 +11,7 @@ urlpatterns = [
     path('corvet/insert/', views.corvet_insert, name='corvet-insert'),
     path('corvet/<str:vin>/detail/', views.corvet_detail, name='corvet-detail'),
     path('corvet/create/', views.CorvetCreateView.as_view(), name='create-corvet'),
+    path('corvet/<int:pk>/edit/', views.SqualaetpUpdateView.as_view(), name='corvet_edit'),
     path('<int:file_id>/detail/', views.detail, name='detail'),
     path('log/<str:file>/detail/', views.LogFileView.as_view(), name='log-detail'),
     path('ajax/xelon/', views.ajax_xelon, name='ajax-xelon'),
