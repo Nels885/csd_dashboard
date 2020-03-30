@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
 from .models import Xelon, Corvet
-from .forms import CorvetForm, CorvetModalForm, SqualaetpModalForm
+from .forms import CorvetForm, CorvetModalForm
 from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
 from utils.file.export import xml_corvet_file
@@ -187,15 +187,9 @@ def corvet_insert(request):
     if request.method == 'POST':
         form = CorvetForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
-            data = form.xml_parser('xml_data')
-            if data:
-                try:
-                    m = Corvet(**data)
-                    m.save()
-                    context = {'title': _('Modification done successfully!')}
-                    return render(request, 'dashboard/done.html', context)
-                except TypeError:
-                    form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
+            form.save()
+            context = {'title': _('Modification done successfully!')}
+            return render(request, 'dashboard/done.html', context)
         context['errors'] = form.errors.items()
     else:
         form = CorvetForm()
@@ -203,7 +197,8 @@ def corvet_insert(request):
     return render(request, 'squalaetp/corvet_insert.html', context)
 
 
-class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
+class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = ['squalaetp.add_corvet']
     template_name = 'squalaetp/modal/corvet_form.html'
     form_class = CorvetModalForm
     success_message = _('Modification done successfully!')
@@ -224,7 +219,7 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
     permission_required = ['squalaetp.change_xelon', 'squalaetp.change_corvet']
     template_name = 'squalaetp/modal/corvet_form.html'
-    form_class = SqualaetpModalForm
+    form_class = CorvetModalForm
     success_message = _('Success: Squalaetp data was updated.')
 
     def get_context_data(self, **kwargs):

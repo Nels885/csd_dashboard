@@ -1,4 +1,7 @@
 import re
+import xml.etree.ElementTree as ET
+
+from datetime import datetime
 
 from squalaetp.models import Xelon
 
@@ -32,3 +35,36 @@ def validate_xelon(value):
             return 'Xelon number no exist'
     else:
         return 'Xelon number is invalid'
+
+
+def xml_parser(value):
+    data = {"vin": ""}
+    try:
+        tree = ET.XML(value)
+        root = tree.getchildren()
+        for list in root[1]:
+            if list.tag == "DONNEES_VEHICULE":
+                for child in list:
+                    if child.tag in ["WMI", "VDS", "VIS"]:
+                        data['vin'] += child.text
+                    elif child.tag in ["DATE_DEBUT_GARANTIE", "DATE_ENTREE_MONTAGE"]:
+                        key, value = "DONNEE_{}".format(child.tag), child.text
+                        if value:
+                            data[key.lower()] = datetime.strptime(value, "%d/%m/%Y %H:%M:%S")
+                    else:
+                        key, value = "DONNEE_{}".format(child.tag), child.text
+                        # print("{} : {}".format(key, value))
+                        data[key.lower()] = value
+            elif list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
+                for child in list:
+                    key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
+                    # print("{} : {}".format(key, value))
+                    data[key.lower()] = value
+            elif list.tag == "LISTE_ORGANES":
+                for child in list:
+                    key, value = "{}s_{}".format(child.tag, child.text[:2]), child.text[2:]
+                    # print("{} : {}".format(key, value))
+                    data[key.lower()] = value
+    except (ET.ParseError, KeyError):
+        data = None
+    return data
