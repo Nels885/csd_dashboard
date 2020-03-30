@@ -11,14 +11,13 @@ from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
+from django.db.models import Q
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
-
-import re
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
@@ -72,14 +71,11 @@ def search(request):
     if query:
         query = query.upper()
         # select = request.GET.get('select')
-        if re.match(r'^\w{17}$', str(query)):
-            file = get_object_or_404(Xelon, vin=query)
-        elif re.match(r'^[A-Z]\d{9}$', str(query)):
-            file = get_object_or_404(Xelon, numero_de_dossier=query)
-        else:
-            messages.warning(request, _('Warning: The research was not successful.'))
-            return redirect(request.META.get('HTTP_REFERER'))
-        return redirect('squalaetp:detail', file_id=file.id)
+        xelon = Xelon.objects.filter(Q(numero_de_dossier=query) |
+                                     Q(vin=query)).first()
+        if xelon:
+            return redirect('squalaetp:detail', file_id=xelon.id)
+        messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
 
