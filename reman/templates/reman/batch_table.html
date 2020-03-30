@@ -12,6 +12,8 @@
             <th>Numéro de lot</th>
             <th>Quantité</th>
             <th>Réf. REMAN</th>
+            <th>Type ECU</th>
+            <th>Fabriquant</th>
             <th>Date de début</th>
             <th>Date de fin</th>
             <th>Status</th>
@@ -27,6 +29,8 @@
                 <td>{{ batch }}</td>
                 <td>{{ batch.quantity }}</td>
                 <td>{{ batch.ecu_model.es_reference }}</td>
+                <td>{{ batch.ecu_model.technical_data }}</td>
+                <td>{{ batch.ecu_model.supplier_oe }}</td>
                 <td>{{ batch.start_date }}</td>
                 <td>{{ batch.end_date }}</td>
                 <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
