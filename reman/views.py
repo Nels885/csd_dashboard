@@ -76,14 +76,20 @@ def part_table(request):
     return render(request, 'reman/part_table.html', context)
 
 
-@permission_required('squalaetp.add_corvet', 'reman.change_ecu_reference')
-def import_export(request):
+def ecu_model_table(request):
     ecus = EcuModel.objects.all()
-    form = ExportCorvetForm()
     context.update({
         'table_title': 'Liste des ECU Cross Référence',
-        'form': form,
         'ecus': ecus
+    })
+    return render(request, 'reman/ecu_model_table.html', context)
+
+
+@permission_required('squalaetp.add_corvet', 'reman.change_ecu_reference')
+def import_export(request):
+    context.update({
+        'table_title': 'Import Export',
+        'form': ExportCorvetForm(),
     })
     if request.method == 'POST':
         try:
@@ -92,13 +98,14 @@ def import_export(request):
                 file_url = handle_uploaded_file(my_file)
                 call_command("ecu_reference", "--file", file_url)
                 messages.success(request, 'Upload terminé !')
+                return redirect('reman:ecu_table')
         except MultiValueDictKeyError:
             messages.warning(request, 'Le fichier est absent !')
         except UnicodeDecodeError:
             messages.warning(request, 'Format de fichier incorrect !')
         except KeyError:
             messages.warning(request, "Le fichier n'est pas correctement formaté")
-    return render(request, 'reman/ecu_model_table.html', context)
+    return render(request, 'reman/import_export.html', context)
 
 
 @permission_required('reman.change_repair')
