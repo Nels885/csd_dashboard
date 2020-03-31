@@ -43,18 +43,6 @@ def repair_table(request):
 
 @permission_required('reman.view_batch')
 def batch_table(request):
-    try:
-        if request.method == 'POST' and request.FILES["myfile"]:
-            my_file = request.FILES["myfile"]
-            file_url = handle_uploaded_file(my_file)
-            call_command("ecu_reference", "--file", file_url)
-            messages.success(request, 'Upload terminé !')
-    except MultiValueDictKeyError:
-        messages.warning(request, 'Le fichier est absent !')
-    except UnicodeDecodeError:
-        messages.warning(request, 'Format de fichier incorrect !')
-    except KeyError:
-        messages.warning(request, "Le fichier n'est pas correctement formaté")
     batchs = Batch.objects.all()
     context.update({
         'table_title': 'Liste des lots REMAN ajoutés',
