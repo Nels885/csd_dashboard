@@ -10,8 +10,9 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
 from utils.file import handle_uploaded_file
 
-from .models import Repair, SparePart, Batch
+from .models import Repair, SparePart, Batch, EcuModel
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset
+from import_export.forms import ExportCorvetForm
 
 context = {
     'title': 'Reman'
@@ -49,7 +50,11 @@ def batch_table(request):
             call_command("ecu_reference", "--file", file_url)
             messages.success(request, 'Upload terminé !')
     except MultiValueDictKeyError:
-        messages.error(request, 'Le fichier est absent !')
+        messages.warning(request, 'Le fichier est absent !')
+    except UnicodeDecodeError:
+        messages.warning(request, 'Format de fichier incorrect !')
+    except KeyError:
+        messages.warning(request, "Le fichier n'est pas correctement formaté")
     batchs = Batch.objects.all()
     context.update({
         'table_title': 'Liste des lots REMAN ajoutés',
@@ -69,6 +74,31 @@ def part_table(request):
         'files': files
     })
     return render(request, 'reman/part_table.html', context)
+
+
+@permission_required('squalaetp.add_corvet', 'reman.change_ecu_reference')
+def import_export(request):
+    ecus = EcuModel.objects.all()
+    form = ExportCorvetForm()
+    context.update({
+        'table_title': 'Liste des ECU Cross Référence',
+        'form': form,
+        'ecus': ecus
+    })
+    if request.method == 'POST':
+        try:
+            if request.FILES["myfile"]:
+                my_file = request.FILES["myfile"]
+                file_url = handle_uploaded_file(my_file)
+                call_command("ecu_reference", "--file", file_url)
+                messages.success(request, 'Upload terminé !')
+        except MultiValueDictKeyError:
+            messages.warning(request, 'Le fichier est absent !')
+        except UnicodeDecodeError:
+            messages.warning(request, 'Format de fichier incorrect !')
+        except KeyError:
+            messages.warning(request, "Le fichier n'est pas correctement formaté")
+    return render(request, 'reman/ecu_model_table.html', context)
 
 
 @permission_required('reman.change_repair')

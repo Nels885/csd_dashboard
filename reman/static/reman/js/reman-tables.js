@@ -11,10 +11,14 @@ $(document).ready(function () {
             orderable: false,
         }],
     });
-});
 
-$(document).ready(function () {
     $('#batchTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
+        order: [[0, "asc"]],
+    });
+
+    $('#ecuModelTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
         order: [[0, "asc"]],

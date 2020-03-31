@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -139,17 +139,10 @@ def corvet_table(request):
     View of Corvet table page, visible only if authenticated
     """
     # corvets_list = Corvet.objects.all().order_by('vin')
-    form = ExportCorvetForm(request.POST or None)
-    if form.is_valid():
-        if request.user.has_perm('squalaetp.change_corvet'):
-            product = form.cleaned_data['products']
-            if product in ['corvet', 'ecu', 'bsi', 'com']:
-                return redirect('import_export:export_{}_csv'.format(product))
-        messages.warning(request, _('You do not have the required permissions'))
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),
-        'form': form,
+        'form': ExportCorvetForm(),
     }
     return render(request, 'squalaetp/corvet_table.html', context)
 

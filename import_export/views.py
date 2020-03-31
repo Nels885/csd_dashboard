@@ -1,9 +1,24 @@
+from django.shortcuts import redirect
 from django.contrib.auth.decorators import permission_required
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 
 from squalaetp.models import Xelon, Corvet
+from .forms import ExportCorvetForm
 from utils.file.export import export_csv
+
+
+def export_corvet(request):
+    form = ExportCorvetForm(request.POST or None)
+    if form.is_valid():
+        if request.user.has_perm('squalaetp.change_corvet'):
+            product = form.cleaned_data['products']
+            if product in ['corvet', 'ecu', 'bsi', 'com']:
+                return redirect('import_export:export_{}_csv'.format(product))
+        messages.warning(request, _('You do not have the required permissions'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @permission_required('squalaetp.change_corvet')
