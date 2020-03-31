@@ -30,3 +30,11 @@ class LogFile:
     def log_filter(self, dir_name):
         files = list_dir(os.path.join(self.path, dir_name), self.name)
         return [file.split('/')[-1] for file in files if dir_name in file]
+
+
+def handle_uploaded_file(f):
+    file_url = "/tmp/{}".format(f)
+    with open(file_url, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return file_url

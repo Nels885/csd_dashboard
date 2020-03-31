@@ -1,11 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required
+from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.core.management import call_command
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
+from utils.file import handle_uploaded_file
 
 from .models import Repair, SparePart, Batch
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset
@@ -39,6 +42,14 @@ def repair_table(request):
 
 @permission_required('reman.view_batch')
 def batch_table(request):
+    try:
+        if request.method == 'POST' and request.FILES["myfile"]:
+            my_file = request.FILES["myfile"]
+            file_url = handle_uploaded_file(my_file)
+            call_command("ecu_reference", "--file", file_url)
+            messages.success(request, 'Upload terminé !')
+    except MultiValueDictKeyError:
+        messages.error(request, 'Le fichier est absent !')
     batchs = Batch.objects.all()
     context.update({
         'table_title': 'Liste des lots REMAN ajoutés',

@@ -95,6 +95,11 @@
         $(".alert").fadeTo(5000, 500).slideUp(500, function () {
             $(".alert").slideUp(500);
         });
+
+        $("input[type=file]").change(function (e) {
+            $(this).next('.custom-file-label').text(e.target.files[0].name);
+        });
+
     });
 
     clock();
