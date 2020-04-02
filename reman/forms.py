@@ -75,31 +75,14 @@ class AddRepairForm(BSModalForm):
 
 
 class EditRepairFrom(forms.ModelForm):
-    spare_parts = forms.ModelChoiceField(
-        queryset=SparePart.objects.all(), required=False, label='Pièces détachées',
-        widget=forms.Select(attrs={'class': 'form-control'}),
-    )
-    hardware = forms.CharField(
-        initial='test', label='HW référence',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': ''})
-    )
-    software = forms.CharField(
-        label='SW référence',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': ''})
-    )
-
     class Meta:
         model = Repair
-        fields = [
-            'identify_number', 'product_number', 'remark', 'quality_control', 'hardware', 'software',
-            'checkout',
-        ]
+        fields = ['identify_number', 'product_number', 'remark', 'quality_control']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': ''}),
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'checkout': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
 
 
