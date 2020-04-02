@@ -73,7 +73,7 @@ def ecu_model_table(request):
     return render(request, 'reman/ecu_model_table.html', context)
 
 
-@permission_required('squalaetp.add_corvet', 'reman.change_ecu_reference')
+@permission_required('squalaetp.add_corvet', 'reman.add_ecumodel', 'reman.change_ecumodel')
 def import_export(request):
     context.update({
         'table_title': 'Import Export',
@@ -84,7 +84,7 @@ def import_export(request):
             if request.FILES["myfile"]:
                 my_file = request.FILES["myfile"]
                 file_url = handle_uploaded_file(my_file)
-                call_command("ecu_reference", "--file", file_url)
+                call_command("ecureference", "--file", file_url)
                 messages.success(request, 'Upload terminé !')
                 return redirect('reman:ecu_table')
         except MultiValueDictKeyError:

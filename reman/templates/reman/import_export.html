@@ -68,7 +68,7 @@
         </button>
     </form>
 
-    <form class="form-inline" method="post" enctype="multipart/form-data">
+    <form class="form-inline" method="post" enctype="multipart/form-data" action="{% url 'import_export:import_part' %}">
 
         {% csrf_token %}
 

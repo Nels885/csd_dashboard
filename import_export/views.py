@@ -4,10 +4,14 @@ from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.utils.datastructures import MultiValueDictKeyError
+from django.core.management import call_command
 
 from squalaetp.models import Xelon, Corvet
 from .forms import ExportCorvetForm
 from utils.file.export import export_csv
+from utils.file import handle_uploaded_file
+from pandas.errors import ParserError
 
 
 def export_corvet(request):
@@ -92,3 +96,22 @@ def export_com_csv(request):
     )
 
     return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+
+
+@permission_required('squalaetp.add_sparepart', 'reman.change_sparepart')
+def import_sparepart(request):
+    if request.method == 'POST':
+        try:
+            if request.FILES["myfile"]:
+                my_file = request.FILES["myfile"]
+                file_url = handle_uploaded_file(my_file)
+                call_command("spareparts", "--file", file_url)
+                messages.success(request, 'Upload terminé !')
+                return redirect('reman:part_table')
+        except MultiValueDictKeyError:
+            messages.warning(request, 'Le fichier est absent !')
+        except (UnicodeDecodeError, ParserError):
+            messages.warning(request, 'Format de fichier incorrect !')
+        except KeyError:
+            messages.warning(request, "Le fichier n'est pas correctement formaté")
+    return redirect('reman:import_export')
