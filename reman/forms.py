@@ -43,9 +43,9 @@ class AddBatchFrom(BSModalForm):
 
 
 class AddRepairForm(BSModalForm):
-    ref_psa = forms.CharField(label='Réf. PSA', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    ref_psa = forms.CharField(label='Réf. PSA', widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=10)
     ref_supplier = forms.CharField(label='Réf. SUP', required=False,
-                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
+                                   widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=10)
 
     class Meta:
         model = Repair
@@ -68,7 +68,7 @@ class AddRepairForm(BSModalForm):
     def save(self, commit=True):
         repair = super(AddRepairForm, self).save(commit=False)
         ref_psa = self.cleaned_data["ref_psa"]
-        repair.batch = Batch.objects.get(ecu_model__hw_reference__exact=ref_psa)
+        repair.batch = Batch.objects.filter(ecu_model__hw_reference__exact=ref_psa, active=True).first()
         if commit:
             repair.save()
         return repair

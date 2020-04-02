@@ -119,12 +119,13 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/create_batch.html'
     form_class = AddBatchFrom
     success_message = _('Success: Batch was created.')
+    success_url = reverse_lazy('reman:batch_table')
 
-    def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+    # def get_success_url(self):
+    #     if 'HTTP_REFERER' in self.request.META:
+    #         return self.request.META['HTTP_REFERER']
+    #     else:
+    #         return reverse_lazy('index')
 
 
 class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
