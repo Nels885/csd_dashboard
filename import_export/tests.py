@@ -14,7 +14,7 @@ class ImportExportTestCase(UnitTest):
 
     def test_export_corvet_csv(self):
         self.login()
-        response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': self.xmlData})
+        response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
         self.assertEqual(response.status_code, 200)
         response = self.client.get(reverse('import_export:export_corvet_csv'))
         self.assertEqual(response.status_code, 200)

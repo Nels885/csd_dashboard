@@ -22,18 +22,18 @@ class CorvetTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_is_disconnected(self):
-        response = self.client.get(reverse('squalaetp:corvet-insert'))
+        response = self.client.get(reverse('squalaetp:corvet_insert'))
         self.assertEqual(response.status_code, 302)
 
     def test_corvet_insert_page_is_connected(self):
         self.login()
-        response = self.client.get(reverse('squalaetp:corvet-insert'))
+        response = self.client.get(reverse('squalaetp:corvet_insert'))
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_is_valid(self):
         self.login()
         old_corvets = Corvet.objects.count()
-        response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': self.xmlData})
+        response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
         new_corvets = Corvet.objects.count()
         self.assertEqual(new_corvets, old_corvets + 1)
         self.assertEqual(response.status_code, 200)
@@ -42,7 +42,7 @@ class CorvetTestCase(UnitTest):
         self.login()
         old_corvets = Corvet.objects.count()
         vin = ''
-        response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': vin, 'xml_data': self.xmlData})
+        response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': vin, 'xml_data': self.xmlData})
         new_corvets = Corvet.objects.count()
         self.assertEqual(new_corvets, old_corvets)
         self.assertFormError(response, 'form', 'vin', _('This field is required.'))
@@ -52,7 +52,7 @@ class CorvetTestCase(UnitTest):
         self.login()
         old_corvets = Corvet.objects.count()
         for vin in ['123456789', 'VF4ABCDEF12345678']:
-            response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': vin, 'xml_data': self.xmlData})
+            response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': vin, 'xml_data': self.xmlData})
             new_corvets = Corvet.objects.count()
             self.assertEqual(new_corvets, old_corvets)
             self.assertFormError(
@@ -65,7 +65,7 @@ class CorvetTestCase(UnitTest):
         self.login()
         old_corvets = Corvet.objects.count()
         for xml_data in ['abcdefgh', '<?xml version="1.0" encoding="UTF-8"?>']:
-            response = self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': xml_data})
+            response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': xml_data})
             new_corvets = Corvet.objects.count()
             self.assertEqual(new_corvets, old_corvets)
             self.assertFormError(
@@ -75,16 +75,16 @@ class CorvetTestCase(UnitTest):
             self.assertEqual(response.status_code, 200)
 
     def test_corvet_detail_page_is_disconnected(self):
-        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': self.vin}))
+        response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': self.vin}))
         self.assertEqual(response.status_code, 302)
 
     def test_corvet_detail_page_is_connected(self):
         self.login()
-        self.client.post(reverse('squalaetp:corvet-insert'), {'vin': self.vin, 'xml_data': self.xmlData})
-        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': self.vin}))
+        self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
+        response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': self.vin}))
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_detail_page_is_not_found(self):
         self.login()
-        response = self.client.get(reverse('squalaetp:corvet-detail', kwargs={'vin': "123456789"}))
+        response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': "123456789"}))
         self.assertEqual(response.status_code, 404)

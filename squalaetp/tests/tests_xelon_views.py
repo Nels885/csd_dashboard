@@ -35,14 +35,14 @@ class XelonTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_xelon_edit_page_is_disconnected(self):
-        response = self.client.get(reverse('squalaetp:xelon-edit', kwargs={'file_id': 1}))
+        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': 1}))
         self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/1/edit/', status_code=302)
 
     def test_xelon_edit_page_is_connected(self):
         self.login()
-        response = self.client.get(reverse('squalaetp:xelon-edit', kwargs={'file_id': 1}))
+        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': 1}))
         self.assertEqual(response.status_code, 200)
 
     # def test_xelon_detail_page_is_not_found(self):
-    #     response = self.client.get(reverse('squalaetp:xelon-detail', kwargs={'file_id': 2}))
+    #     response = self.client.get(reverse('squalaetp:xelon_detail', kwargs={'file_id': 2}))
     #     self.assertEqual(response.status_code, 404)

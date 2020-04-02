@@ -18,6 +18,19 @@ class DashboardTestCase(UnitTest):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
 
+    def test_charts_page(self):
+        response = self.client.get(reverse('dashboard:charts'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_late_products_is_disconnected(self):
+        response = self.client.get(reverse('dashboard:late_prod'))
+        self.assertRedirects(response, '/accounts/login/?next=/dashboard/late-prod/', status_code=302)
+
+    def test_late_products_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('dashboard:late_prod'))
+        self.assertEqual(response.status_code, 200)
+
     def test_set_language_view_is_valid(self):
         for lang in ['fr', 'en']:
             response = self.client.get(reverse('dashboard:set_lang', args={'user_language': lang}),
