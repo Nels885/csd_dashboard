@@ -115,3 +115,9 @@ class UnlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnlockProduct
         fields = ('id', 'xelon', 'vin')
+
+
+class UnlockUpdateSerializer(UnlockSerializer):
+    class Meta:
+        model = UnlockProduct
+        fields = UnlockSerializer.Meta.fields + ('active',)

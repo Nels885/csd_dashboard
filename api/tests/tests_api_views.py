@@ -40,25 +40,25 @@ class ApiTestCase(APITestCase):
         self.assertEqual(len(response.data), 4)
 
     def test_prog_list_is_disconnected(self):
-        response = self.client.get(reverse('api:prog'), format='json')
+        response = self.client.get(reverse('api:prog-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
     def test_prog_list_is_connected(self):
         self.login()
-        response = self.client.get(reverse('api:prog'), format='json')
+        response = self.client.get(reverse('api:prog-list'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
     def test_cal_list_is_disconnected(self):
-        response = self.client.get(reverse('api:cal'), format='json')
+        response = self.client.get(reverse('api:cal-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
     def test_cal_list_is_connected(self):
         self.login()
-        response = self.client.get(reverse('api:cal'), format='json')
+        response = self.client.get(reverse('api:cal-list'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
@@ -88,4 +88,3 @@ class ApiTestCase(APITestCase):
         response = self.client.get(reverse('api:temp'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {"temp": "Hors ligne"})
-

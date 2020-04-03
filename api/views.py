@@ -1,12 +1,10 @@
 from django.contrib.auth.models import User, Group
-from rest_framework import generics
-from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer
+from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon, Corvet
 from utils.data.analysis import ProductAnalysis, DealAnalysis
@@ -30,8 +28,8 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = Group.objects.all()
     permission_classes = (permissions.IsAdminUser,)
+    queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
@@ -39,8 +37,9 @@ class UnlockViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = UnlockProduct.objects.filter(active=True)
-    serializer_class = UnlockSerializer
+    http_method_names = ['get', 'put']
 
     def get_queryset(self):
         customer_file = self.request.query_params.get('xelon', None)
@@ -49,13 +48,21 @@ class UnlockViewSet(viewsets.ModelViewSet):
             queryset = UnlockProduct.objects.filter(unlock__numero_de_dossier=customer_file)
         return queryset
 
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return UnlockUpdateSerializer
+        else:
+            return UnlockSerializer
 
-class ProgList(generics.ListAPIView):
+
+class ProgViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows prog list to be viewed
     """
     permission_classes = (permissions.IsAuthenticated,)
+    queryset = Xelon.objects.all().prefetch_related('corvet')
     serializer_class = ProgSerializer
+    http_method_names = ['get']
 
     def get_queryset(self):
         """
@@ -80,12 +87,14 @@ class ProgList(generics.ListAPIView):
         return queryset
 
 
-class CalList(generics.ListAPIView):
+class CalViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows prog list to be viewed
     """
     permission_classes = (permissions.IsAuthenticated,)
+    queryset = Xelon.objects.all().prefetch_related('corvet')
     serializer_class = CalSerializer
+    http_method_names = ['get']
 
     def get_queryset(self):
         """
