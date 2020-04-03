@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = [
+    # My apps
     'dashboard.apps.DashboardConfig',
     'raspeedi.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'tools.apps.ToolsConfig',
     'api.apps.ApiConfig',
     'import_export.apps.ImportExportConfig',
+
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -118,12 +121,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://www.django-rest-framework.org
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated',
     # ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
@@ -163,7 +167,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
 LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
-
 
 # Configuration CkEditor
 CKEDITOR_CONFIGS = {
