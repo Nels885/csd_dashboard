@@ -59,9 +59,11 @@ class AddReference(models.Model):
 
 
 class UnlockProduct(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    unlock = models.ForeignKey(Xelon, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(UserProfile, editable=False, on_delete=models.CASCADE)
+    unlock = models.ForeignKey(Xelon, editable=False, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
+    modified_at = models.DateTimeField('modifié le', auto_now=True)
 
     def __str__(self):
         return self.unlock.numero_de_dossier

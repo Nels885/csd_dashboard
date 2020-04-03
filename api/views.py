@@ -1,12 +1,13 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
+from rest_framework import views
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from api.serializers import XelonSerializer, CorvetSerializer
-from raspeedi.models import Raspeedi
+from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer
+from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon, Corvet
 from utils.data.analysis import ProductAnalysis, DealAnalysis
 from api.models import (query_table_by_args,
@@ -32,6 +33,21 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     permission_classes = (permissions.IsAdminUser,)
     serializer_class = GroupSerializer
+
+
+class UnlockViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = UnlockProduct.objects.filter(active=True)
+    serializer_class = UnlockSerializer
+
+    def get_queryset(self):
+        customer_file = self.request.query_params.get('xelon', None)
+        queryset = self.queryset
+        if customer_file:
+            queryset = UnlockProduct.objects.filter(unlock__numero_de_dossier=customer_file)
+        return queryset
 
 
 class ProgList(generics.ListAPIView):

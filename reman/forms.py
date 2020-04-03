@@ -51,7 +51,6 @@ class AddRepairForm(BSModalForm):
         model = Repair
         fields = ['ref_psa', 'ref_supplier', 'product_number', 'remark']
         widgets = {
-            'batch': forms.Select(attrs={'class': 'form-control'}),
             'product_model': forms.Select(attrs={'class': 'form-control'}),
             'product_number': forms.TextInput(attrs={'class': 'form-control'}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),

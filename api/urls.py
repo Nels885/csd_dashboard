@@ -8,6 +8,7 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'xelon', views.XelonViewSet)
 router.register(r'corvet', views.CorvetViewSet)
+router.register(r'unlock', views.UnlockViewSet)
 
 app_name = 'api'
 

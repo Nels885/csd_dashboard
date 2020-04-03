@@ -34,7 +34,7 @@ class Batch(models.Model):
     active = models.BooleanField(default=True)
     start_date = models.DateField("date de début", null=True)
     end_date = models.DateField("date de fin", null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
     ecu_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
 
@@ -63,9 +63,9 @@ class Repair(models.Model):
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
-    created_at = models.DateTimeField('Ajouté le', auto_now_add=True)
+    created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, related_name="repairs_created", editable=False, on_delete=models.CASCADE)
-    modified_at = models.DateTimeField('Modifié le', auto_now=True)
+    modified_at = models.DateTimeField('modifié le', auto_now=True)
     modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True, blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
 

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
 from squalaetp.models import Xelon, Corvet
-from raspeedi.models import Raspeedi
+from raspeedi.models import Raspeedi, UnlockProduct
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -91,7 +91,7 @@ class CalSerializer(serializers.ModelSerializer):
     Serializer of the calibration data that will be used by the calibration tool
     """
     corvet = CorvetSerializer(many=True, read_only=True,
-                              fields=('ref_radio', 'cal_radio', 'ref_nav', 'cal_nav', 'no_serie'))
+                              fields=('rad_ref', 'rad_cal', 'nav_ref', 'nav_cal'))
 
     class Meta:
         model = Xelon
@@ -106,3 +106,12 @@ class XelonSerializer(serializers.ModelSerializer):
             'id', 'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture',
             'nom_technicien', 'corvet'
         )
+
+
+class UnlockSerializer(serializers.ModelSerializer):
+    xelon = serializers.CharField(source='unlock.numero_de_dossier', read_only=True)
+    vin = serializers.CharField(source='unlock.vin', read_only=True)
+
+    class Meta:
+        model = UnlockProduct
+        fields = ('id', 'xelon', 'vin')
