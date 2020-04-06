@@ -31,6 +31,7 @@ class Batch(models.Model):
     year = models.CharField("années", max_length=1)
     number = models.IntegerField("numéro de lot", validators=[MaxValueValidator(999), MinValueValidator(1)])
     quantity = models.IntegerField('quantité', validators=[MaxValueValidator(999), MinValueValidator(1)])
+    batch_number = models.CharField("numéro de lot", max_length=10, blank=True, unique=True)
     active = models.BooleanField(default=True)
     start_date = models.DateField("date de début", null=True)
     end_date = models.DateField("date de fin", null=True)
@@ -49,11 +50,14 @@ class Batch(models.Model):
         user = get_current_user()
         if user and user.pk:
             self.created_by = user
+        number, quantity = str(self.number), str(self.quantity)
+        self.batch_number = self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity + "000"
         super(Batch, self).save(*args, **kwargs)
 
     def __str__(self):
-        number, quantity = str(self.number), str(self.quantity)
-        return self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity
+        return self.batch_number
+        # number, quantity = str(self.number), str(self.quantity)
+        # return self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity
 
 
 class Repair(models.Model):
@@ -84,7 +88,7 @@ class Repair(models.Model):
             self.created_by = self.modified_by = user
         if not self.pk:
             number = Repair.objects.filter(batch=self.batch.id).count() + 1
-            self.identify_number = self.batch.__str__() + "0" * (3 - len(str(number))) + str(number)
+            self.identify_number = self.batch.__str__()[:-3] + "0" * (3 - len(str(number))) + str(number)
         super(Repair, self).save(*args, **kwargs)
 
     def __str__(self):

@@ -8,7 +8,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 
 from squalaetp.models import Xelon, Corvet
-from reman.models import Batch
+from reman.models import Batch, Repair
 from .forms import ExportCorvetForm, ExportRemanForm
 from utils.file.export import export_csv
 from utils.file import handle_uploaded_file
@@ -31,7 +31,7 @@ def export_reman(request):
     if form.is_valid():
         if request.user.has_perm('reman.view_batch'):
             table = form.cleaned_data['tables']
-            if table in ['batch']:
+            if table in ['batch', 'repair']:
                 return redirect('import_export:export_{}_csv'.format(table))
         messages.warning(request, _('You do not have the required permissions'))
     return redirect(request.META.get('HTTP_REFERER'))
@@ -117,12 +117,28 @@ def export_batch_csv(request):
         'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
         'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
     ]
-    batch = Batch.objects.all()
+    batch = Batch.objects.all().order_by('batch_number')
     values_list = (
-        'quantity', 'ecu_model__es_reference', 'ecu_model__technical_data', 'ecu_model__hw_reference',
+        'batch_number', 'quantity', 'ecu_model__es_reference', 'ecu_model__technical_data', 'ecu_model__hw_reference',
         'ecu_model__supplier_oe', 'start_date', 'end_date', 'active', 'created_by__username', 'created_at'
     )
-    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list, string=True)
+    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
+
+
+@permission_required('reman.view_repair')
+def export_repair_csv(request):
+    filename = 'repair_reman'
+    header = [
+        'Numero_identification', 'Numero_lot', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'SW_Reference', 'Fabriquant',
+        'Remarque', 'Cree_le', 'Modifie_par', 'Date_de_cloture'
+    ]
+    batch = Repair.objects.all().order_by('identify_number')
+    values_list = (
+        'identify_number', 'batch__batch_number', 'batch__ecu_model__es_reference', 'batch__ecu_model__technical_data',
+        'batch__ecu_model__hw_reference', 'batch__ecu_model__sw_reference', 'batch__ecu_model__supplier_oe',
+        'remark', 'created_at', 'modified_by__username', 'closing_date'
+    )
+    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
 
 
 @permission_required('squalaetp.add_sparepart', 'reman.change_sparepart')

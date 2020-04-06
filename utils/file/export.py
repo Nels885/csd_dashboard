@@ -62,7 +62,7 @@ class Calibre:
 calibre = Calibre(TAG_PATH, TAG_LOG_PATH)
 
 
-def export_csv(queryset, filename, header, values_list=None, string=False):
+def export_csv(queryset, filename, header, values_list=None):
     date = datetime.datetime.now()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(filename,
@@ -77,9 +77,7 @@ def export_csv(queryset, filename, header, values_list=None, string=False):
         valueset = queryset.values_list()
 
     for i, query in enumerate(valueset):
-        if string:
-            query = (queryset[i].__str__(),) + query
-        query = tuple([_.strftime("%d-%m-%Y %H:%M") if isinstance(_, datetime.date) else _ for _ in query])
+        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
         writer.writerow(query)
 
     return response
