@@ -48,7 +48,7 @@ def detail(request, ref_case):
 
 @permission_required('raspeedi.view_unlockproduct')
 def unlock_prods(request):
-    unlock = UnlockProduct.objects.all().order_by('created_at')
+    unlock = UnlockProduct.objects.filter(active=True).order_by('created_at')
     context.update({
         'table_title': _('Unlocking product for programming'),
         'products': unlock

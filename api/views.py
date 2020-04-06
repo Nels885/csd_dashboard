@@ -14,13 +14,14 @@ from api.models import (query_table_by_args,
                         xelon_filter, corvet_filter)
 
 from utils.data import mqtt
+from .utils import TokenAuthSupportQueryString
 
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAdminUser,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -30,7 +31,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAdminUser,)
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
@@ -40,7 +41,7 @@ class UnlockViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = UnlockProduct.objects.filter(active=True)
     http_method_names = ['get', 'put']
@@ -63,7 +64,7 @@ class ProgViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows prog list to be viewed
     """
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Xelon.objects.all().prefetch_related('corvet')
     serializer_class = ProgSerializer
@@ -98,7 +99,7 @@ class CalViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows prog list to be viewed
     """
-    authentication_classes = (authentication.TokenAuthentication,)
+    authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Xelon.objects.all().prefetch_related('corvet')
     serializer_class = CalSerializer

@@ -21,22 +21,22 @@ class ApiTestCase(APITestCase):
 
     def test_user_view_set_is_disconnected(self):
         response = self.client.get(reverse('api:user-list'), format='json')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
     def test_user_view_set_is_connected(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.login('admin')
         response = self.client.get(reverse('api:user-list'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
 
     def test_group_view_set_is_disconnected(self):
         response = self.client.get(reverse('api:group-list'), format='json')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
     def test_group_view_set_is_connected(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.login('admin')
         response = self.client.get(reverse('api:group-list'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
@@ -47,8 +47,7 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, self.authError)
 
     def test_prog_list_is_connected(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.client.get(reverse('api:prog-list'), format='json')
+        response = self.client.get('/api/prog/?auth_token={}'.format(self.token), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
@@ -59,8 +58,7 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, self.authError)
 
     def test_cal_list_is_connected(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        response = self.client.get(reverse('api:cal-list'), format='json')
+        response = self.client.get('/api/cal/?auth_token={}'.format(self.token), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
