@@ -8,7 +8,8 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 
 from squalaetp.models import Xelon, Corvet
-from .forms import ExportCorvetForm
+from reman.models import Batch
+from .forms import ExportCorvetForm, ExportRemanForm
 from utils.file.export import export_csv
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
@@ -21,6 +22,17 @@ def export_corvet(request):
             product = form.cleaned_data['products']
             if product in ['corvet', 'ecu', 'bsi', 'com']:
                 return redirect('import_export:export_{}_csv'.format(product))
+        messages.warning(request, _('You do not have the required permissions'))
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+def export_reman(request):
+    form = ExportRemanForm(request.POST or None)
+    if form.is_valid():
+        if request.user.has_perm('reman.view_batch'):
+            table = form.cleaned_data['tables']
+            if table in ['batch']:
+                return redirect('import_export:export_{}_csv'.format(table))
         messages.warning(request, _('You do not have the required permissions'))
     return redirect(request.META.get('HTTP_REFERER'))
 
@@ -96,6 +108,21 @@ def export_com_csv(request):
     )
 
     return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+
+
+@permission_required('reman.view_batch')
+def export_batch_csv(request):
+    filename = 'batch_reman'
+    header = [
+        'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
+        'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
+    ]
+    batch = Batch.objects.all()
+    values_list = (
+        'quantity', 'ecu_model__es_reference', 'ecu_model__technical_data', 'ecu_model__hw_reference',
+        'ecu_model__supplier_oe', 'start_date', 'end_date', 'active', 'created_by__username', 'created_at'
+    )
+    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list, string=True)
 
 
 @permission_required('squalaetp.add_sparepart', 'reman.change_sparepart')

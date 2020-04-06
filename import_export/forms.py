@@ -13,3 +13,17 @@ class ExportCorvetForm(forms.Form):
         label='Produit', required=False, choices=PRODUCTS,
         widget=forms.Select(attrs={'class': 'custom-select form-control mx-sm-3 mb-2'}),
     )
+
+
+class ExportRemanForm(forms.Form):
+    TABLES = [('batch', 'BATCH')]
+    FORMATS = [('csv', 'CSV')]
+
+    formats = forms.ChoiceField(
+        label='Formats', required=False, choices=FORMATS,
+        widget=forms.Select(attrs={'class': 'custom-select form-control mx-sm-3 mb-2'})
+    )
+    tables = forms.ChoiceField(
+        label='Tableaux', required=False, choices=TABLES,
+        widget=forms.Select(attrs={'class': 'custom-select form-control mx-sm-3 mb-2'}),
+    )

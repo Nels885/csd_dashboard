@@ -12,7 +12,7 @@ from utils.file import handle_uploaded_file
 
 from .models import Repair, SparePart, Batch, EcuModel
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset
-from import_export.forms import ExportCorvetForm
+from import_export.forms import ExportCorvetForm, ExportRemanForm
 
 context = {
     'title': 'Reman'
@@ -77,7 +77,8 @@ def ecu_model_table(request):
 def import_export(request):
     context.update({
         'table_title': 'Import Export',
-        'form': ExportCorvetForm(),
+        'form_corvet': ExportCorvetForm(),
+        'form_reman': ExportRemanForm(),
     })
     if request.method == 'POST':
         try:
