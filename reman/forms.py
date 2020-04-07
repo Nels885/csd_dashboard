@@ -62,15 +62,11 @@ class AddRepairForm(BSModalForm):
             self.add_error('ref_psa', 'Pas de lot disponible')
         elif not Batch.objects.filter(ecu_model__hw_reference__exact=data):
             self.add_error('ref_psa', 'Pas de lot associé')
+        else:
+            repair = super(AddRepairForm, self).save(commit=False)
+            repair.batch = Batch.objects.filter(
+                ecu_model__hw_reference__exact=data, active=True).order_by('end_date').first()
         return data
-
-    def save(self, commit=True):
-        repair = super(AddRepairForm, self).save(commit=False)
-        ref_psa = self.cleaned_data["ref_psa"]
-        repair.batch = Batch.objects.filter(ecu_model__hw_reference__exact=ref_psa, active=True).first()
-        if commit:
-            repair.save()
-        return repair
 
 
 class EditRepairFrom(forms.ModelForm):
