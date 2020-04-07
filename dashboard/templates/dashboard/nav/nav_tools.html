@@ -1,6 +1,6 @@
 {% load i18n user_tags %}
 
-{% if perms.tools %}
+{% if perms.tools or perms.raspeedi %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -10,11 +10,15 @@
         {% trans 'Tools' %}
     </div>
 
+{% endif %}
+
+{% if perms.tools %}
+
     {% if perms.tools.add_tagxelon %}
         <!-- Nav Item - TAG Xelon Multi -->
         <li class="nav-item">
             <a class="tag-xelon-btn nav-link" href="#">
-                <i class="fas fa-fw fa-cog"></i><span>TAG Xelon Multi</span>
+                <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
             </a>
         </li>
     {% endif %}
@@ -48,5 +52,40 @@
         {% endwith %}
 
     {% endif %}
+
+{% endif %}
+
+{% if perms.raspeedi %}
+
+    <!-- Nav Item - Raspeedi Settings Menu -->
+    {% with name="Raspeedi" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Traitements :</h6>
+                    <a class="collapse-item" href="{% url 'raspeedi:unlock_prods' %}">{% trans "Unlock VIN" %}</a>
+
+                    {% if perms.raspeedi.view_raspeedi %}
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Informations :</h6>
+                        <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
+                    {% endif %}
+
+                    {% if perms.raspeedi.add_raspeedi %}
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Edition :</h6>
+                        <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </li>
+    {% endwith %}
 
 {% endif %}

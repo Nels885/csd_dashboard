@@ -78,37 +78,9 @@
 
 {% endif %}
 
-{% if perms.raspeedi %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
+        <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
 
-    <!-- Nav Item - Raspeedi Settings Menu -->
-    {% with name="Raspeedi" icon="fa-table" %}
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-               aria-expanded="true" aria-controls="collapse{{ name }}">
-                <i class="fas fa-fw {{ icon }}"></i>
-                <span>{{ name }}</span>
-            </a>
-            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Traitements :</h6>
-                    <a class="collapse-item" href="{% url 'raspeedi:unlock_prods' %}">{% trans "Unlock VIN" %}</a>
-
-                    {% if perms.raspeedi.view_raspeedi %}
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Informations :</h6>
-                        <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
-                    {% endif %}
-
-                    {% if perms.raspeedi.add_raspeedi %}
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Edition :</h6>
-                        <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
-                    {% endif %}
-
-                </div>
-            </div>
-        </li>
-    {% endwith %}
-
-{% endif %}
+    </a>
+</li>
