@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status, authentication
 from rest_framework.decorators import api_view
@@ -15,6 +16,17 @@ from api.models import (query_table_by_args,
 
 from utils.data import mqtt
 from .utils import TokenAuthSupportQueryString
+
+
+def documentation(request):
+    """
+    View of API Documentation page
+    """
+    context = {
+        'title': "API",
+        'card_title': 'Documentation'
+    }
+    return render(request, 'api/api_documentation.html', context)
 
 
 class UserViewSet(viewsets.ModelViewSet):

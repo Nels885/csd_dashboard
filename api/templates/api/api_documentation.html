@@ -1,0 +1,105 @@
+{% extends 'dashboard/format/doc_format.html' %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% block detail_content %}
+
+    <h5>Visualisation des données pour la Calibration :</h5>
+    <div class="p-4">
+        <p>Request: GET</p>
+        <p>Headers:</p>
+        <div class="code-card">
+            <code>Authorization: Token &lt;token&gt;</code>
+        </div>
+        <br>
+        <p>Url:</p>
+        <div class="code-card">
+            <code>https://127.0.0.1/api/cal?search=&lt;xelon ou vin&gt;</code>
+        </div>
+        <br>
+        <p>Success Response:</p>
+        <div class="code-card">
+            <code>
+                {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"numero_de_dossier": "A000883174",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"vin": "VF7LC9HZH74904321",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"modele_produit": "RT5",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"modele_vehicule": "C4",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"corvet": [<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"rad_ref": "",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"rad_cal": "",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"nav_ref": "9665568377",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"nav_cal": "9665319680"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                }
+            </code>
+        </div>
+    </div>
+    <br>
+    <h5>Visualisation des données pour le RASPEEDI :</h5>
+    <div class="p-4">
+        <p>Request: GET</p>
+        <p>Headers:</p>
+        <div class="code-card">
+            <code>Authorization: Token &lt;token&gt;</code>
+        </div>
+        <br>
+        <p>Url:</p>
+        <div class="code-card">
+            <code>https://127.0.0.1/api/prog?search=&lt;xelon ou vin&gt;</code>
+        </div>
+        <br>
+        <p>Success Response:</p>
+        <div class="code-card">
+            <code>
+                {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"numero_de_dossier": "A000882972",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"vin": "VF38E9HR8BL040962",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"modele_produit": "RT6/RNEG2",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"modele_vehicule": "508",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"corvet": [<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"vin": "VF38E9HR8BL040962",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"rad_ref": "",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"rad_cal": "",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"nav_ref": "9678276480",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"nav_cal": "9677941080",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cmm_ref": "9666681180",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cmm_cal": "9678826180",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bsi_ref": "9664992380",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bsi_cal": "9678891380",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"raspeedi": [<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ref_boitier": 9678276480,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"produit": "RT6",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"facade": "BB",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"dump_peedi": "RT6_96.782.764.80",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"media": "4Go",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"dump_renesas": ""<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                }
+            </code>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block customcss %}
+
+    <style type="text/css">
+        .code-card {
+            padding: 5px 10px;
+            border-radius: 10px;
+            background-color: #f2f2f2;
+            border: 1px solid #BEBEBE;
+        }
+    </style>
+
+{% endblock %}
