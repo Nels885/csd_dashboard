@@ -28,7 +28,7 @@ class MixinsTest(UnitTest):
                 'quantity': '20',
                 'start_date': '02/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_model': self.ecuId
+                'ref_reman': ''
             },
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
@@ -49,7 +49,7 @@ class MixinsTest(UnitTest):
                 'quantity': '20',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_model': self.ecuId
+                'ref_reman': '1234567890'
             },
         )
 

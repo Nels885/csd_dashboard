@@ -5,14 +5,16 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart
+from .models import Batch, Repair, SparePart, EcuModel
 from utils.conf import DICT_YEAR
 
 
 class AddBatchFrom(BSModalForm):
+    ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
+
     class Meta:
         model = Batch
-        fields = ['number', 'quantity', 'start_date', 'end_date', 'ecu_model']
+        fields = ['number', 'quantity', 'start_date', 'end_date', 'ref_reman']
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
             'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
@@ -40,6 +42,15 @@ class AddBatchFrom(BSModalForm):
         if end_date < start_date:
             self.add_error('end_date', _('Date is not valid'))
         return end_date
+
+    def clean_ref_reman(self):
+        data = self.cleaned_data['ref_reman']
+        if not EcuModel.objects.filter(es_reference__exact=data):
+            self.add_error('ref_reman', 'reference non valide')
+        else:
+            batch = super(AddBatchFrom, self).save(commit=False)
+            batch.ecu_model = EcuModel.objects.filter(es_reference__exact=data).first()
+        return data
 
 
 class AddRepairForm(BSModalForm):
