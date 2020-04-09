@@ -9,9 +9,9 @@ async function getTemp() {
             thermalTemp.className = "";
             if (parseInt(temp, 10) >= 40) {
                 thermalTemp.classList.add('text-danger');
-            } else if (parseInt(temp, 10) >= 25) {
+            } else if (parseInt(temp, 10) > 0) {
                 thermalTemp.classList.add('text-warning');
-            } else if (parseInt(temp, 10) <= 25) {
+            } else if (parseInt(temp, 10) <= 0) {
                 thermalTemp.classList.add('text-primary');
             }
         }
@@ -32,10 +32,10 @@ async function getTempFull() {
             if (parseInt(temp, 10) >= 40) {
                 thermalTemp.classList.add('text-gray-200');
                 bgThermal.classList.add('bg-danger');
-            } else if (parseInt(temp, 10) >= 25) {
+            } else if (parseInt(temp, 10) > 0) {
                 thermalTemp.classList.add('text-gray-800');
                 bgThermal.classList.add('bg-warning');
-            } else if (parseInt(temp, 10) <= 25) {
+            } else if (parseInt(temp, 10) <= 0) {
                 thermalTemp.classList.add('text-gray-200');
                 bgThermal.classList.add('bg-primary');
             }
