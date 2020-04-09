@@ -1,0 +1,25 @@
+<h4 class="font-weight-bold">Programmation RASPEEDI :</h4>
+<div class="p-4">
+    <p>Pour commencer, il faut installer le packet suivant pour Python.</p>
+    <div class="code-card">
+        <code>$ pip install requests</code>
+    </div>
+    <br>
+    <p>Example :</p>
+    <div class="code-card">
+        <code>
+            >>> import Requests<br>
+            <br>
+            >>> payload = {'search': '&lt;xelon ou vin&gt;', 'auth_token': '&lt;token&gt;'}<br>
+            >>> response = requests.get('http://https://127.0.0.1/api/prog/', params=payload)<br>
+        </code>
+    </div>
+    <br>
+    <p>Success Response:</p>
+    <div class="code-card">
+        <code>
+            >>> response.json()<br>
+            {"count":1,"next":null,"previous":null,"results":[{"numero_de_dossier":"A000900166","vin":"VF3XSRHKHBZ059845","modele_produit":"RD4","modele_vehicule":"EXPERT","corvet":[{"rad_ref":"9676651877","rad_cal":"","nav_ref":"","nav_cal":""}]}]}
+        </code>
+    </div>
+</div>

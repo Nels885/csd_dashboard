@@ -26,7 +26,7 @@ def documentation(request):
         'title': "Documentation API",
         'card_title': 'Documentation'
     }
-    return render(request, 'api/api_documentation.html', context)
+    return render(request, 'api/doc.html', context)
 
 
 class UserViewSet(viewsets.ModelViewSet):
