@@ -1,14 +1,25 @@
 {% extends 'dashboard/format/doc_format.html' %}
 
-{% load static %}
+{% load static i18n %}
 
-{% load i18n %}
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
+
+            {% include 'api/tab_select.html' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
 
 {% block detail_content %}
 
-    <h5>Visualisation des données pour la Calibration :</h5>
+    <h4 class="font-weight-bold">Visualisation des données pour la Calibration :</h4>
     <div class="p-4">
         <p>Request: GET</p>
+        <h5 class="p-2 text-gray-800">1. Méthode avec l'en-tête HTTP :</h5>
         <p>Headers:</p>
         <div class="code-card">
             <code>Authorization: Token &lt;token&gt;</code>
@@ -17,6 +28,12 @@
         <p>Url:</p>
         <div class="code-card">
             <code>https://127.0.0.1/api/cal?search=&lt;xelon ou vin&gt;</code>
+        </div>
+        <br>
+        <h5 class="p-2 text-gray-800">2. Méthode avec query string :</h5>
+        <p>Url:</p>
+        <div class="code-card">
+            <code>https://127.0.0.1/api/cal?search=&lt;xelon ou vin&gt;&auth_token=&lt;token&gt;</code>
         </div>
         <br>
         <p>Success Response:</p>
@@ -40,9 +57,10 @@
         </div>
     </div>
     <br>
-    <h5>Visualisation des données pour le RASPEEDI :</h5>
+    <h4 class="font-weight-bold">Visualisation des données pour le RASPEEDI :</h4>
     <div class="p-4">
         <p>Request: GET</p>
+        <h5 class="p-2 text-gray-800">1. Méthode avec l'en-tête HTTP :</h5>
         <p>Headers:</p>
         <div class="code-card">
             <code>Authorization: Token &lt;token&gt;</code>
@@ -51,6 +69,12 @@
         <p>Url:</p>
         <div class="code-card">
             <code>https://127.0.0.1/api/prog?search=&lt;xelon ou vin&gt;</code>
+        </div>
+        <br>
+        <h5 class="p-2 text-gray-800">2. Méthode avec query string :</h5>
+        <p>Url:</p>
+        <div class="code-card">
+            <code>https://127.0.0.1/api/prog?search=&lt;xelon ou vin&gt;&auth_token=&lt;token&gt;</code>
         </div>
         <br>
         <p>Success Response:</p>
@@ -74,17 +98,53 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bsi_cal": "9678891380",<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"raspeedi": [<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ref_boitier": 9678276480,<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"produit": "RT6",<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"facade": "BB",<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"dump_peedi": "RT6_96.782.764.80",<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"media": "4Go",<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"dump_renesas": ""<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ref_boitier":
+                9678276480,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"produit":
+                "RT6",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"facade":
+                "BB",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"dump_peedi":
+                "RT6_96.782.764.80",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"media":
+                "4Go",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"dump_renesas":
+                ""<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
                 }
+            </code>
+        </div>
+    </div>
+
+    <h4 class="font-weight-bold">Visualisation des données de déverrouillage VIN :</h4>
+    <div class="p-5">
+        <p>Request: GET</p>
+        <p>Url:</p>
+        <div class="code-card">
+            <code>https://127.0.0.1/api/unlock?auth_token=&lt;token&gt;</code>
+        </div>
+        <br>
+        <p>Success Response:</p>
+        <div class="code-card">
+            <code>
+                {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"id": 1,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"xelon": "A000943384",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"vin": "VF7NXRHH8AY584145"<br>
+                },<br>
+                {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"id": 2,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"xelon": "A000943182",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"vin": "VF3CC9HP0DT070871"<br>
+                },<br>
+                {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"id": 3,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"xelon": "Q000942639",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"vin": "VF3LHAHWWES300834"<br>
+                }<br>
             </code>
         </div>
     </div>

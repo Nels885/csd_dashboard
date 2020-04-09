@@ -23,7 +23,7 @@ def documentation(request):
     View of API Documentation page
     """
     context = {
-        'title': "API",
+        'title': "Documentation API",
         'card_title': 'Documentation'
     }
     return render(request, 'api/api_documentation.html', context)
