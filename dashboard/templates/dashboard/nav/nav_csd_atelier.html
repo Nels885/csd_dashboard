@@ -45,12 +45,12 @@
 {% if perms.reman %}
 
     <!-- Nav Item - Reman Settings Menu -->
-    {% with name="Reman" icon="fa-table" %}
+    {% with name="RemanAtelier" icon="fa-table" %}
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                aria-expanded="true" aria-controls="collapse{{ name }}">
                 <i class="fas fa-fw {{ icon }}"></i>
-                <span>{{ name }}</span>
+                <span>Reman</span>
             </a>
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
@@ -63,14 +63,6 @@
                     <h6 class="collapse-header">Informations :</h6>
                     <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
                     <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
-
-                    {% if perms.reman.add_batch %}
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Administration :</h6>
-                        <a class="batch-btn collapse-item" href="#">{% trans "Create Batch" %}</a>
-                        <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "batch list" %}</a>
-                        <a class="collapse-item" href="{% url 'reman:import_export' %}">{% trans "Import-Export" %}</a>
-                    {% endif %}
                 </div>
             </div>
         </li>
