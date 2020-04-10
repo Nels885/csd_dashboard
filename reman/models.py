@@ -82,6 +82,9 @@ class Repair(models.Model):
         if user and user.pk:
             self.created_by = self.modified_by = user
         if not self.pk:
+            batch_number = self.identify_number[:-3] + "000"
+            self.batch = Batch.objects.get(batch_number__exact=batch_number)
+        elif self.pk and self.quality_control:
             prod_ok = Repair.objects.filter(batch=self.batch, quality_control=True).count()
             if self.batch.quantity <= prod_ok:
                 self.batch.active = False

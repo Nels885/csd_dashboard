@@ -15,8 +15,8 @@ class RemanTestCase(UnitTest):
         self.add_perms_user(Batch, 'view_batch')
         ecu = EcuModel.objects.create(es_reference='1234567890', oe_reference='160000000',
                                       oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test')
-        batch = Batch.objects.create(number=1, quantity=10, created_by=self.user, ecu_model=ecu)
-        self.repair = Repair.objects.create(batch=batch, created_by=self.user)
+        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_model=ecu)
+        self.repair = Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
 
     def test_repair_table_page_is_disconnected(self):
         response = self.client.get(reverse('reman:repair_table'))
