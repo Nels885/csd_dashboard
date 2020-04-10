@@ -1,1 +1,46 @@
 <h4 class="text-center">En construction...</h4>
+
+<div class="p-4">
+    <p>Vous trouverez ci-dessous un exemple de requête GET en VB.net récupéré sur le site <a target="_blank" href="https://www.example-code.com/">Chilkat Example Code</a>.</p>
+    <p>Request: GET</p>
+    <p>Link: <a target="_blank" href="https://www.example-code.com/vbnet/rest_simple_get.asp">REST Simple GET</a></p>
+    <p>Example:</p>
+    <div class="code-card">
+        <pre>
+<span id="cmt">'  This example requires the Chilkat API to have been previously unlocked.</span>
+<span id="cmt">'  See <a target="_blank" href="https://www.example-code.com/vbnet/global_unlock.asp">Global Unlock Sample</a> for sample code.</span>
+
+<span id="keyw">Dim</span> rest <span id="keyw">As New</span> <span id="dtyp"><a target="_blank" href="http://www.chilkatsoft.com/refdoc/vbnetRestRef.html">Chilkat.Rest</a></span>
+
+<span id="cmt">'  Connect to the REST server.</span>
+<span id="keyw">Dim</span> bTls <span id="keyw">As Boolean</span> = <span id="lit">True</span>
+<span id="keyw">Dim</span> port <span id="keyw">As Integer</span> = <span id="lit">443</span>
+<span id="keyw">Dim</span> bAutoReconnect <span id="keyw">As Boolean</span> = <span id="lit">True</span>
+<span id="keyw">Dim</span> success <span id="keyw">As Boolean</span> = rest.<span id="dtyp">Connect</span>(<span id="lit">&quot;my-store.com&quot;</span>,port,bTls,bAutoReconnect)
+
+<span id="keyw">Dim</span> responseJson <span id="keyw">As String</span> = rest.<span id="dtyp">FullRequestNoBody</span>(<span id="lit">&quot;GET&quot;</span>,<span id="lit">&quot;/wp-json/wc/v1/products?consumer_key=YOUR_CONSUMER_KEY&amp;consumer_secret=YOUR_CONSUMER_SECRET&quot;</span>)
+<span id="keyw">If</span> (rest.<span id="dtyp">LastMethodSuccess</span> &lt;&gt; <span id="lit">True</span>) <span id="keyw">Then</span>
+    Console.WriteLine(rest.<span id="dtyp">LastErrorText</span>)
+    <span id="keyw">Exit Sub</span>
+<span id="keyw">End If</span>
+
+
+Console.WriteLine(responseJson)
+Console.WriteLine(<span id="lit">&quot;----&quot;</span>)
+
+<span id="cmt">'  We can alternatively do this:</span>
+rest.<span id="dtyp">ClearAllQueryParams</span>()
+rest.<span id="dtyp">AddQueryParam</span>(<span id="lit">&quot;consumer_key&quot;</span>,<span id="lit">&quot;YOUR_CONSUMER_KEY&quot;</span>)
+rest.<span id="dtyp">AddQueryParam</span>(<span id="lit">&quot;consumer_secret&quot;</span>,<span id="lit">&quot;YOUR_CONSUMER_SECRET&quot;</span>)
+responseJson = rest.<span id="dtyp">FullRequestNoBody</span>(<span id="lit">&quot;GET&quot;</span>,<span id="lit">&quot;/wp-json/wc/v1/products&quot;</span>)
+<span id="keyw">If</span> (rest.<span id="dtyp">LastMethodSuccess</span> &lt;&gt; <span id="lit">True</span>) <span id="keyw">Then</span>
+    Console.WriteLine(rest.<span id="dtyp">LastErrorText</span>)
+    <span id="keyw">Exit Sub</span>
+<span id="keyw">End If</span>
+
+
+Console.WriteLine(responseJson)
+        </pre>
+    </div>
+
+</div>
