@@ -54,14 +54,16 @@ class AddBatchFrom(BSModalForm):
 
 
 class AddRepairForm(BSModalForm):
-    ref_psa = forms.CharField(label='Réf. PSA', widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=10)
+    ref_psa = forms.CharField(label='Réf. PSA', max_length=10,
+                              widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
     ref_supplier = forms.CharField(label='Réf. SUP', required=False,
                                    widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=10)
 
     class Meta:
         model = Repair
-        fields = ['ref_psa', 'ref_supplier', 'product_number', 'remark']
+        fields = ['ref_psa', 'identify_number', 'ref_supplier', 'product_number', 'remark']
         widgets = {
+            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}),
             'product_model': forms.Select(attrs={'class': 'form-control'}),
             'product_number': forms.TextInput(attrs={'class': 'form-control'}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
@@ -69,15 +71,30 @@ class AddRepairForm(BSModalForm):
 
     def clean_ref_psa(self):
         data = self.cleaned_data["ref_psa"]
-        if not Batch.objects.filter(active=True):
-            self.add_error('ref_psa', 'Pas de lot disponible')
-        elif not Batch.objects.filter(ecu_model__hw_reference__exact=data):
+        if not Batch.objects.filter(ecu_model__hw_reference__exact=data, active=True):
             self.add_error('ref_psa', 'Pas de lot associé')
-        else:
+        elif data:
             repair = super(AddRepairForm, self).save(commit=False)
             repair.batch = Batch.objects.filter(
                 ecu_model__hw_reference__exact=data, active=True).order_by('end_date').first()
         return data
+
+    def clean_identify_number(self):
+        data = self.cleaned_data["identify_number"]
+        batch_number = data[:-3] + "000"
+        if Repair.objects.filter(identify_number__exact=data):
+            self.add_error('identify_number', 'Ce numéro éxiste')
+        elif not Batch.objects.filter(batch_number__exact=batch_number):
+            self.add_error('identify_number', 'Pas de lot associé')
+        return data
+
+    def clean(self):
+        cleaned_data = super().clean()
+        identify_number = cleaned_data.get("identify_number")
+        if identify_number:
+            batch_number = identify_number[:-3] + "000"
+            if not Batch.objects.filter(batch_number=batch_number, active=True):
+                raise forms.ValidationError("Ce lot n'est plus actif")
 
 
 class EditRepairFrom(forms.ModelForm):

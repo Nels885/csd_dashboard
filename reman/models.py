@@ -56,12 +56,10 @@ class Batch(models.Model):
 
     def __str__(self):
         return self.batch_number
-        # number, quantity = str(self.number), str(self.quantity)
-        # return self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity
 
 
 class Repair(models.Model):
-    identify_number = models.CharField("numéro d'identification", max_length=10, unique=True)
+    identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=1000, blank=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
@@ -70,7 +68,8 @@ class Repair(models.Model):
     created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, related_name="repairs_created", editable=False, on_delete=models.CASCADE)
     modified_at = models.DateTimeField('modifié le', auto_now=True)
-    modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True, blank=True)
+    modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True,
+                                    blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
 
     def get_absolute_url(self):
@@ -78,17 +77,15 @@ class Repair(models.Model):
             return reverse_lazy('reman:edit_repair', args=[self.pk])
         return reverse_lazy('reman:repair_table', get={'filter': 'quality'})
 
-    # def clean(self):
-    #     if not self.batch.active:
-    #         raise ValidationError(_('There is no more repair file to create for this lot!'))
-
     def save(self, *args, **kwargs):
         user = get_current_user()
         if user and user.pk:
             self.created_by = self.modified_by = user
         if not self.pk:
-            number = Repair.objects.filter(batch=self.batch.id).count() + 1
-            self.identify_number = self.batch.__str__()[:-3] + "0" * (3 - len(str(number))) + str(number)
+            prod_ok = Repair.objects.filter(batch=self.batch, quality_control=True).count()
+            if self.batch.quantity <= prod_ok:
+                self.batch.active = False
+                self.batch.save()
         super(Repair, self).save(*args, **kwargs)
 
     def __str__(self):
