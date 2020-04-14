@@ -62,6 +62,9 @@ class Breakdown(models.Model):
     code = models.CharField("code defaut", max_length=10, unique=True)
     description = models.CharField("libellé", max_length=200)
 
+    def __str__(self):
+        return "{} - {}".format(self.code, self.description)
+
 
 class Repair(models.Model):
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
@@ -76,7 +79,7 @@ class Repair(models.Model):
     modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True,
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
-    Breakdown = models.ForeignKey(Breakdown, related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
+    breakdown = models.ForeignKey(Breakdown, related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
 
     def get_absolute_url(self):
         if self.pk:

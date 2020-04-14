@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, EcuModel
+from .models import Batch, Repair, SparePart, EcuModel, Breakdown
 from utils.conf import DICT_YEAR
 
 
@@ -25,8 +25,7 @@ class AddBatchFrom(BSModalForm):
             'end_date': DatePicker(
                 attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
                 options={'format': 'DD/MM/YYYY'}
-            ),
-            'ecu_model': forms.Select(),
+            )
         }
 
     def clean_number(self):
@@ -103,9 +102,12 @@ class AddRepairForm(BSModalForm):
 
 
 class EditRepairFrom(forms.ModelForm):
+    breakdown = forms.ModelChoiceField(queryset=Breakdown.objects.all(), required=True, label="Panne",
+                                       widget=forms.Select(attrs={'class': 'form-control'}))
+
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'quality_control']
+        fields = ['identify_number', 'product_number', 'remark', 'breakdown', 'quality_control']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
