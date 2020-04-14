@@ -11,7 +11,7 @@ from utils.django.urls import reverse, reverse_lazy
 from utils.file import handle_uploaded_file
 
 from .models import Repair, SparePart, Batch, EcuModel
-from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset
+from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm
 from import_export.forms import ExportCorvetForm, ExportRemanForm
 
 context = {
@@ -41,6 +41,20 @@ def repair_table(request):
     return render(request, 'reman/repair_table.html', context)
 
 
+@permission_required('reman.change_repair')
+def out_table(request):
+    """
+    View of Reman Out Repair table page
+    """
+    files = Repair.objects.filter(quality_control=True, checkout=False)
+    context.update({
+        'table_title': 'Reman Out',
+        'files': files,
+        'form': CloseRepairForm()
+    })
+    return render(request, 'reman/out_table.html', context)
+
+
 @permission_required('reman.view_batch')
 def batch_table(request):
     batchs = Batch.objects.all()
@@ -54,7 +68,7 @@ def batch_table(request):
 @permission_required('reman.view_sparepart')
 def part_table(request):
     """
-    View of Xelon table page
+    View of SparePart table page
     """
     files = SparePart.objects.all()
     context.update({

@@ -63,3 +63,12 @@ class RemanTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('reman:batch_table'))
         self.assertEqual(response.status_code, 200)
+
+    def test_out_table_is_disconnected(self):
+        response = self.client.get(reverse('reman:out_table'))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/out/table/', status_code=302)
+
+    def test_out_table_is_connected(self):
+        self.login()
+        response = self.client.get(reverse('reman:out_table'))
+        self.assertEqual(response.status_code, 200)

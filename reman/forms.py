@@ -116,6 +116,11 @@ class EditRepairFrom(forms.ModelForm):
         }
 
 
+class CloseRepairForm(forms.Form):
+    identify_number = forms.CharField(label="N° d'identification", max_length=10,
+                                      widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'}))
+
+
 class SparePartForm(forms.Form):
     spare_parts = forms.ModelChoiceField(
         queryset=SparePart.objects.all(), required=False, label='Nom',
