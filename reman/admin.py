@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Batch, EcuModel, Repair, SparePart
+from .models import Batch, EcuModel, Repair, SparePart, Breakdown
 
 
 class BatchAdmin(admin.ModelAdmin):
@@ -27,3 +27,4 @@ admin.site.register(Batch, BatchAdmin)
 admin.site.register(EcuModel, EcuModelAdmin)
 admin.site.register(Repair)
 admin.site.register(SparePart, SparePartAdmin)
+admin.site.register(Breakdown)

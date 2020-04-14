@@ -58,6 +58,11 @@ class Batch(models.Model):
         return self.batch_number
 
 
+class Breakdown(models.Model):
+    code = models.CharField("code defaut", max_length=10, unique=True)
+    description = models.CharField("libellé", max_length=200)
+
+
 class Repair(models.Model):
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
@@ -71,6 +76,7 @@ class Repair(models.Model):
     modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True,
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
+    Breakdown = models.ForeignKey(Breakdown, related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
 
     def get_absolute_url(self):
         if self.pk:
