@@ -13,5 +13,5 @@ urlpatterns = [
     path('export/csv/com200x/', views.export_com_csv, name='export_com_csv'),
     path('export/csv/batch/', views.export_batch_csv, name='export_batch_csv'),
     path('export/csv/repair/', views.export_repair_csv, name='export_repair_csv'),
-    path('import/part', views.import_sparepart, name='import_part'),
+    path('import/part/', views.import_sparepart, name='import_part'),
 ]

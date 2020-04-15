@@ -141,7 +141,7 @@ def export_repair_csv(request):
     return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
 
 
-@permission_required('squalaetp.add_sparepart', 'reman.change_sparepart')
+@permission_required('reman.add_sparepart', 'reman.change_sparepart')
 def import_sparepart(request):
     if request.method == 'POST':
         try:

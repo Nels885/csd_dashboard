@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from dashboard.tests.base import UnitTest
 from squalaetp.models import Corvet
-from reman.models import Batch, Repair
+from reman.models import Batch, Repair, SparePart
 
 
 class ImportExportTestCase(UnitTest):
@@ -57,3 +57,9 @@ class ImportExportTestCase(UnitTest):
             headers = body.pop(0)
             self.assertEqual(len(body), 0)
             self.assertEqual(len(headers), 1)
+
+    def test_import_part(self):
+        self.add_perms_user(SparePart, 'add_sparepart', 'change_sparepart')
+        self.login()
+        response = self.client.get(reverse('import_export:import_part'))
+        self.assertRedirects(response, '/reman/import-export/', status_code=302)
