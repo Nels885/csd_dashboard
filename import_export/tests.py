@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from dashboard.tests.base import UnitTest
 from squalaetp.models import Corvet
+from reman.models import Batch, Repair
 
 
 class ImportExportTestCase(UnitTest):
@@ -11,6 +12,11 @@ class ImportExportTestCase(UnitTest):
     def setUp(self):
         super(ImportExportTestCase, self).setUp()
         self.add_perms_user(Corvet, 'change_corvet', 'add_corvet')
+        self.add_perms_user(Batch, 'view_batch')
+        self.add_perms_user(Repair, 'view_repair')
+
+    def export_csv(self, name):
+        return self.client.get(reverse('import_export:export_{}_csv'.format(name)))
 
     def test_export_corvet_csv(self):
         self.login()
@@ -20,8 +26,8 @@ class ImportExportTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
         content = response.content.decode('utf-8')
-        cvs_reader = csv.reader(io.StringIO(content))
-        body = list(cvs_reader)
+        csv_reader = csv.reader(io.StringIO(content))
+        body = list(csv_reader)
         headers = body.pop(0)
         self.assertEqual(len(body), 1)
         self.assertEqual(len(headers), 1)
@@ -29,12 +35,25 @@ class ImportExportTestCase(UnitTest):
     def test_export_product_csv(self):
         self.login()
         for prod in ['bsi', 'ecu', 'com']:
-            response = self.client.get(reverse('import_export:export_{}_csv'.format(prod)))
+            response = self.export_csv(prod)
             self.assertEqual(response.status_code, 200)
 
             content = response.content.decode('utf-8')
-            cvs_reader = csv.reader(io.StringIO(content))
-            body = list(cvs_reader)
+            csv_reader = csv.reader(io.StringIO(content))
+            body = list(csv_reader)
+            headers = body.pop(0)
+            self.assertEqual(len(body), 0)
+            self.assertEqual(len(headers), 1)
+
+    def test_export_reman_csv(self):
+        self.login()
+        for table in ['batch', 'repair']:
+            response = self.export_csv(table)
+            self.assertEqual(response.status_code, 200)
+
+            content = response.content.decode('utf-8')
+            csv_reader = csv.reader(io.StringIO(content))
+            body = list(csv_reader)
             headers = body.pop(0)
             self.assertEqual(len(body), 0)
             self.assertEqual(len(headers), 1)
