@@ -18,17 +18,14 @@ class ToolsTestCase(UnitTest):
         response = self.client.get(reverse('tools:soft_list'))
         self.assertEqual(response.status_code, 200)
 
-    def test_soft_add_page_is_disconnected(self):
+    def test_soft_add_page(self):
         response = self.client.get(reverse('tools:soft_add'))
         self.assertRedirects(response, '/accounts/login/?next=/tools/soft/add/', status_code=302)
-
-    def test_soft_add_page_is_connected(self):
         self.login()
         response = self.client.get(reverse('tools:soft_add'))
         self.assertEqual(response.status_code, 200)
 
-    def test_soft_add_page_is_valid(self):
-        self.login()
+        # Adding Software is valid
         old_soft = CsdSoftware.objects.count()
         response = self.client.post(reverse('tools:soft_add'), self.form_data)
         new_soft = CsdSoftware.objects.count()
@@ -39,17 +36,14 @@ class ToolsTestCase(UnitTest):
         response = self.client.get(reverse('tools:tag_xelon'))
         self.assertRedirects(response, '/accounts/login/?next=/tools/tag-xelon/', status_code=302)
 
-    def test_thermal_chamber_page_is_disconnected(self):
+    def test_thermal_chamber_page(self):
         response = self.client.get(reverse('tools:thermal'))
         self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/', status_code=302)
-
-    def test_thermal_chamber_page_is_connected(self):
         self.login()
         response = self.client.get(reverse('tools:thermal'))
         self.assertEqual(response.status_code, 200)
 
-    def test_thermal_chamber_page_is_valid(self):
-        self.login()
+        # Adding user for thermal chamber
         old_thermal = ThermalChamber.objects.count()
         response = self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
         new_thermal = ThermalChamber.objects.count()

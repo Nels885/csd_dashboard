@@ -22,27 +22,34 @@ class XelonTestCase(UnitTest):
         )
         self.vin = 'VF3ABCDEF12345678'
         self.add_perms_user(Xelon, "view_xelon")
-        Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
-                             modele_vehicule='peugeot')
+        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
+                                     modele_vehicule='peugeot')
+        self.xelonId = str(xelon.id)
 
-    def test_xelon_table_page_is_disconnected(self):
+    def test_xelon_table_page(self):
         response = self.client.get(reverse('squalaetp:xelon'))
         self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/', status_code=302)
-
-    def test_xelon_table_page_is_connected(self):
         self.login()
         response = self.client.get(reverse('squalaetp:xelon'))
         self.assertEqual(response.status_code, 200)
 
-    def test_xelon_edit_page_is_disconnected(self):
-        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': 1}))
-        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/1/edit/', status_code=302)
-
-    def test_xelon_edit_page_is_connected(self):
+    def test_xelon_edit_page(self):
+        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': self.xelonId}))
+        self.assertRedirects(
+            response, '/accounts/login/?next=/squalaetp/xelon/' + self.xelonId + '/edit/', status_code=302)
         self.login()
-        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': 1}))
+        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'file_id': self.xelonId}))
         self.assertEqual(response.status_code, 200)
 
-    # def test_xelon_detail_page_is_not_found(self):
-    #     response = self.client.get(reverse('squalaetp:xelon_detail', kwargs={'file_id': 2}))
-    #     self.assertEqual(response.status_code, 404)
+    def test_xelon_detail_page(self):
+        response = self.client.get(reverse('squalaetp:detail', kwargs={'file_id': self.xelonId}))
+        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/' + self.xelonId + '/detail/', status_code=302)
+
+        # Detail is not found
+        self.login()
+        response = self.client.get(reverse('squalaetp:detail', kwargs={'file_id': 2}))
+        self.assertEqual(response.status_code, 404)
+
+        # Detail is valid
+        response = self.client.get(reverse('squalaetp:detail', kwargs={'file_id': self.xelonId}))
+        self.assertEqual(response.status_code, 200)

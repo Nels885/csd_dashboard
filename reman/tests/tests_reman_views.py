@@ -16,72 +16,66 @@ class RemanTestCase(UnitTest):
         batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_model=ecu)
         self.repair = Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
 
-    def test_repair_table_page_is_disconnected(self):
+    def test_repair_table_page(self):
         response = self.client.get(reverse('reman:repair_table'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/repair/table/', status_code=302)
 
-    def test_repair_table_page_is_connected(self):
+        # Test if connected with permissions
         self.add_perms_user(Repair, 'view_repair')
         self.login()
         response = self.client.get(reverse('reman:repair_table'))
         self.assertEqual(response.status_code, 200)
 
-    def test_spare_part_table_page_is_disconnected(self):
+    def test_spare_part_table_page(self):
         response = self.client.get(reverse('reman:part_table'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/part/table/', status_code=302)
 
-    def test_spare_part_table_page_is_connected(self):
         self.add_perms_user(SparePart, 'view_sparepart')
         self.login()
         response = self.client.get(reverse('reman:part_table'))
         self.assertEqual(response.status_code, 200)
 
-    def test_repair_create_page_is_disconnected(self):
+    def test_repair_create_page(self):
         response = self.client.get(reverse('reman:create_repair'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/repair/create/', status_code=302)
 
-    def test_repair_create_page_is_connected(self):
         self.add_perms_user(Repair, 'add_repair')
         self.login()
         response = self.client.get(reverse('reman:create_repair'))
         self.assertEqual(response.status_code, 200)
 
-    def test_repair_edit_page_is_disconnected(self):
+    def test_repair_edit_page(self):
         response = self.client.get(reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}))
         self.assertRedirects(response, '/accounts/login/?next=/reman/repair/' + str(self.repair.pk) + '/edit/',
                              status_code=302)
 
-    def test_repair_edit_page_is_connected(self):
         self.add_perms_user(Repair, 'change_repair')
         self.login()
         response = self.client.get(reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}))
         self.assertEqual(response.status_code, 200)
 
-    def test_batch_table_is_disconnected(self):
+    def test_batch_table(self):
         response = self.client.get(reverse('reman:batch_table'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/batch/table/', status_code=302)
 
-    def test_batch_table_is_connected(self):
         self.add_perms_user(Batch, 'view_batch')
         self.login()
         response = self.client.get(reverse('reman:batch_table'))
         self.assertEqual(response.status_code, 200)
 
-    def test_out_table_is_disconnected(self):
+    def test_out_table(self):
         response = self.client.get(reverse('reman:out_table'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/repair/out/table/', status_code=302)
 
-    def test_out_table_is_connected(self):
         self.add_perms_user(Repair, 'change_repair')
         self.login()
         response = self.client.get(reverse('reman:out_table'))
         self.assertEqual(response.status_code, 200)
 
-    def test_import_export_page_is_disconnected(self):
+    def test_import_export_page(self):
         response = self.client.get(reverse('reman:import_export'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/import-export/', status_code=302)
 
-    def test_import_export_page_is_connected(self):
         self.add_perms_user(EcuModel, 'add_ecumodel', 'change_ecumodel')
         self.add_perms_user(Corvet, 'add_corvet')
         self.login()

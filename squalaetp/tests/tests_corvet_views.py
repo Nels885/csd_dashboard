@@ -12,20 +12,16 @@ class CorvetTestCase(UnitTest):
         super(CorvetTestCase, self).setUp()
         self.add_perms_user(Corvet, "add_corvet", "view_corvet", "change_corvet")
 
-    def test_corvet_table_page_is_disconnected(self):
+    def test_corvet_table_page(self):
         response = self.client.get(reverse('squalaetp:corvet'))
         self.assertEqual(response.status_code, 302)
-
-    def test_corvet_table_page_is_connected(self):
         self.login()
         response = self.client.get(reverse('squalaetp:corvet'))
         self.assertEqual(response.status_code, 200)
 
-    def test_corvet_insert_page_is_disconnected(self):
+    def test_corvet_insert_page(self):
         response = self.client.get(reverse('squalaetp:corvet_insert'))
         self.assertEqual(response.status_code, 302)
-
-    def test_corvet_insert_page_is_connected(self):
         self.login()
         response = self.client.get(reverse('squalaetp:corvet_insert'))
         self.assertEqual(response.status_code, 200)
@@ -74,17 +70,20 @@ class CorvetTestCase(UnitTest):
             )
             self.assertEqual(response.status_code, 200)
 
-    def test_corvet_detail_page_is_disconnected(self):
+    def test_corvet_detail_page(self):
+        # Detail page is disconnected
         response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': self.vin}))
         self.assertEqual(response.status_code, 302)
 
-    def test_corvet_detail_page_is_connected(self):
+        # Detail is not found
         self.login()
+        response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': "123456789"}))
+        self.assertEqual(response.status_code, 404)
+
+        # Detail is valid
         self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
         response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': self.vin}))
         self.assertEqual(response.status_code, 200)
 
-    def test_corvet_detail_page_is_not_found(self):
-        self.login()
-        response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': "123456789"}))
-        self.assertEqual(response.status_code, 404)
+
+
