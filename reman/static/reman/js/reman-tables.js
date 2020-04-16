@@ -23,4 +23,10 @@ $(document).ready(function () {
         scrollX: true,
         order: [[0, "asc"]],
     });
+
+    $('#outTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
+        order: [[0, "asc"]],
+    });
 });

@@ -10,6 +10,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
 from utils.file import handle_uploaded_file
 
+from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm
 from import_export.forms import ExportCorvetForm, ExportRemanForm
@@ -52,6 +53,14 @@ def out_table(request):
         'files': files,
         'form': CloseRepairForm()
     })
+    if request.method == "POST":
+        form = CloseRepairForm(request.POST, error_class=ParaErrorList)
+        if form.is_valid():
+            repair = form.save()
+            messages.success(request, _('Adding Repair n°%(repair)s to lot n°%(batch)s successfully') % {
+                'repair': repair.identify_number,
+                'batch': repair.batch})
+        context['errors'] = form.errors.items()
     return render(request, 'reman/out_table.html', context)
 
 
@@ -136,12 +145,6 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     form_class = AddBatchFrom
     success_message = _('Success: Batch was created.')
     success_url = reverse_lazy('reman:batch_table')
-
-    # def get_success_url(self):
-    #     if 'HTTP_REFERER' in self.request.META:
-    #         return self.request.META['HTTP_REFERER']
-    #     else:
-    #         return reverse_lazy('index')
 
 
 class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):

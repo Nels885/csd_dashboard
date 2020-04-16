@@ -120,6 +120,21 @@ class CloseRepairForm(forms.Form):
     identify_number = forms.CharField(label="N° d'identification", max_length=10,
                                       widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'}))
 
+    def clean_identify_number(self):
+        data = self.cleaned_data["identify_number"]
+        repair = Repair.objects.filter(quality_control=True, checkout=False)
+        if not repair.filter(identify_number=data):
+            self.add_error('identify_number', "N° d'identification invalide")
+        return data
+
+    def save(self, commit=True):
+        repair = Repair.objects.get(identify_number=self.cleaned_data["identify_number"])
+        repair.closing_date = datetime.datetime.now()
+        repair.checkout = True
+        if commit:
+            repair.save()
+        return repair
+
 
 class SparePartForm(forms.Form):
     spare_parts = forms.ModelChoiceField(
