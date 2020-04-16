@@ -78,6 +78,7 @@ def part_table(request):
     return render(request, 'reman/part_table.html', context)
 
 
+@permission_required('reman.view_ecumodel')
 def ecu_model_table(request):
     ecus = EcuModel.objects.all()
     context.update({
@@ -87,7 +88,7 @@ def ecu_model_table(request):
     return render(request, 'reman/ecu_model_table.html', context)
 
 
-@permission_required('squalaetp.add_corvet', 'reman.add_ecumodel', 'reman.change_ecumodel')
+@permission_required(['squalaetp.add_corvet', 'reman.add_ecumodel', 'reman.change_ecumodel'])
 def import_export(request):
     context.update({
         'table_title': 'Import Export',

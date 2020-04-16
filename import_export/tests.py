@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from dashboard.tests.base import UnitTest
 from squalaetp.models import Corvet
-from reman.models import Batch, Repair, SparePart
+from reman.models import Batch, Repair, SparePart, EcuModel
 
 
 class ImportExportTestCase(UnitTest):
@@ -12,6 +12,7 @@ class ImportExportTestCase(UnitTest):
     def setUp(self):
         super(ImportExportTestCase, self).setUp()
         self.add_perms_user(Corvet, 'change_corvet', 'add_corvet')
+        self.add_perms_user(EcuModel, 'add_ecumodel', 'change_ecumodel')
         self.add_perms_user(Batch, 'view_batch')
         self.add_perms_user(Repair, 'view_repair')
 
