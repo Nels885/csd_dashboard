@@ -1,7 +1,6 @@
-import datetime
-
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -40,7 +39,7 @@ class Batch(models.Model):
     ecu_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
 
     def clean(self):
-        date = datetime.datetime.now()
+        date = timezone.now()
         if date.year in DICT_YEAR.keys():
             self.year = DICT_YEAR[date.year]
         else:

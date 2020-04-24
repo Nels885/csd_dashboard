@@ -1,6 +1,5 @@
-import datetime
-
 from django import forms
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
@@ -30,7 +29,7 @@ class AddBatchFrom(BSModalForm):
 
     def clean_number(self):
         data = self.cleaned_data['number']
-        date = datetime.datetime.now()
+        date = timezone.now()
         if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
             self.add_error('number', _('The batch already exists!'))
         return data
@@ -129,7 +128,7 @@ class CloseRepairForm(forms.Form):
 
     def save(self, commit=True):
         repair = Repair.objects.get(identify_number=self.cleaned_data["identify_number"])
-        repair.closing_date = datetime.datetime.now()
+        repair.closing_date = timezone.now()
         repair.checkout = True
         if commit:
             repair.save()
