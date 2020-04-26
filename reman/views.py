@@ -53,14 +53,13 @@ def out_table(request):
         'files': files,
         'form': CloseRepairForm()
     })
-    if request.method == "POST":
-        form = CloseRepairForm(request.POST, error_class=ParaErrorList)
-        if form.is_valid():
-            repair = form.save()
-            messages.success(request, _('Adding Repair n°%(repair)s to lot n°%(batch)s successfully') % {
-                'repair': repair.identify_number,
-                'batch': repair.batch})
-        context['errors'] = form.errors.items()
+    form = CloseRepairForm(request.POST or None, error_class=ParaErrorList)
+    if form.is_valid():
+        repair = form.save()
+        messages.success(request, _('Adding Repair n°%(repair)s to lot n°%(batch)s successfully') % {
+            'repair': repair.identify_number,
+            'batch': repair.batch})
+    context['errors'] = form.errors.items()
     return render(request, 'reman/out_table.html', context)
 
 

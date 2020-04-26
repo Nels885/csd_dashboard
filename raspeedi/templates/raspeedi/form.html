@@ -92,8 +92,8 @@
     </div>
 </div>
 
-{% if errors %}
-    {% for key, error in errors %}
+{% if form.errors %}
+    {% for key, error in form.errors.items %}
         {% autoescape off %}
             {{ error }}
         {% endautoescape %}
