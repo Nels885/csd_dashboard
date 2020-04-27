@@ -1,4 +1,6 @@
-{% extends 'dashboard/base.html' %}
+{% extends 'base.html' %}
+
+{% load i18n %}
 
 {% block content %}
 
@@ -6,7 +8,7 @@
 
         <div class="col-lg-10">
 
-            <!-- DataTales Example -->
+            <!-- detail card format -->
             <div class="card shadow mb-4">
 
                 {% block card_header %}
@@ -19,7 +21,7 @@
 
                 <div class="card-body">
 
-                    {% block form_content %} {% endblock %}
+                    {% block detail_content %} {% endblock %}
 
                 </div>
             </div>

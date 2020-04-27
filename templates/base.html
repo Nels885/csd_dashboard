@@ -1,4 +1,4 @@
-{% extends 'dashboard/base/_layout.html' %}
+{% extends 'base/_layout.html' %}
 
 {% load i18n tz %}
 
@@ -39,19 +39,19 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            {% include 'dashboard/nav/nav_csd_atelier.html' %}
+            {% include 'nav/nav_csd_atelier.html' %}
 
-            {% include 'dashboard/nav/nav_in_out.html' %}
+            {% include 'nav/nav_in_out.html' %}
 
-            {% include 'dashboard/nav/nav_csd_admin.html' %}
+            {% include 'nav/nav_csd_admin.html' %}
 
-            {% include 'dashboard/nav/nav_tools.html' %}
+            {% include 'nav/nav_tools.html' %}
 
-            {% include 'dashboard/nav/nav_gestion.html' %}
+            {% include 'nav/nav_gestion.html' %}
 
 {#            {% include 'demo/nav_demo.html' %}#}
 
-            {% include 'dashboard/nav/nav_interface.html' %}
+            {% include 'nav/nav_interface.html' %}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -85,12 +85,12 @@
                     {% endif %}
                 </div>
 
-                {% include 'dashboard/base/top_bar.html' %}
+                {% include 'base/top_bar.html' %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    {% include 'dashboard/base/_header.html' %}
+                    {% include 'base/_header.html' %}
 
                     {% block content %} {% endblock %}
 
