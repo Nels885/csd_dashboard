@@ -24,3 +24,8 @@ function clock() {
     resultat = days[day] + ' ' + d + ' ' + months[month] + ' ' + year + ' ' + hour + ':' + minutes + ':' + seconds;
     document.getElementById('datetime').innerHTML = resultat;
 }
+
+$('#detail-list a').on('click', function (e) {
+  e.preventDefault();
+  $(this).tab('show')
+});
