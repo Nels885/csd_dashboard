@@ -1,0 +1,57 @@
+{% extends 'format/doc_format.html' %}
+
+{% load static %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
+            <li class="nav-item active">
+                <a class="nav-link active" href="#intro" role="tab" aria-controls="intro" aria-selected="True">
+                    Introduction
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#python" role="tab" aria-controls="python" aria-selected="false">
+                    Python
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#vbnet" role="tab" aria-controls="vbnet" aria-selected="false">
+                    VB.net
+                </a>
+            </li>
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block detail_content %}
+
+    <div class="tab-content mt-3">
+
+    <!-- Introduction -->
+    <div class="tab-pane active" id="intro" role="tabpanel"
+         aria-labelledby="intro-tab">
+
+        {% include 'api/doc_introduction.html' %}
+
+    </div>
+
+    <!-- Python Example -->
+    <div class="tab-pane" id="python" role="tabpanel"
+         aria-labelledby="python-tab">
+
+        {% include 'api/doc_python.html' %}
+
+    </div>
+
+    <!-- VB.net Example -->
+    <div class="tab-pane" id="vbnet" role="tabpanel" aria-labelledby="vbnet-tab">
+
+        {% include 'api/doc_vbnet.html' %}
+
+    </div>
+
+{% endblock %}

@@ -1,10 +1,10 @@
-{% extends 'dashboard/format/datatables_format.html' %}
+{% extends 'format/datatables_format.html' %}
 
 {% load static i18n %}
 
 {% block table_content %}
 
-    <form class="form-inline" method="post" action="{% url 'squalaetp:corvet' %}">
+    <form class="form-inline" method="post" action="{% url 'import_export:corvet' %}">
 
         {% csrf_token %}
 

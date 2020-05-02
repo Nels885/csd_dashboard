@@ -1,0 +1,76 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block table_content %}
+
+    <form class="form-inline" method="post" action="{% url 'reman:out_table' %}">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.identify_number.id_for_label }}"
+                   class="mb-2 mr-sm-4">{{ form.identify_number.label }}</label>
+
+            {{ form.identify_number }}
+
+        </div>
+
+        <button type="submit" class="btn btn-success btn-icon-split mb-2">
+            <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+            <span class="text">{% trans "Add" %}</span>
+        </button>
+
+    </form>
+
+    {% if errors %}
+        {% for key, error in errors %}
+            {% autoescape off %}
+                {{ error }}
+            {% endautoescape %}
+        {% endfor %}
+    {% endif %}
+
+    <hr>
+
+    <table class="table table-bordered" id="outTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Numéro d'identification</th>
+            <th>Numéro de lot</th>
+            <th>Modèle produit</th>
+            <th>Fabriquant</th>
+            <th>Réf. Hardware</th>
+            <th>Réf. Software</th>
+            <th>Créé le</th>
+            <th>Modifié par</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for file in files %}
+
+            <tr>
+                <td>{{ file.identify_number }}</td>
+                <td>{{ file.batch }}</td>
+                <td>{{ file.batch.ecu_model.technical_data }}</td>
+                <td>{{ file.batch.ecu_model.supplier_oe }}</td>
+                <td>{{ file.batch.ecu_model.hw_reference }}</td>
+                <td>{{ file.batch.ecu_model.sw_reference }}</td>
+                <td>{{ file.created_at }}</td>
+                <td>{{ file.modified_by }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
+
+{% endblock %}

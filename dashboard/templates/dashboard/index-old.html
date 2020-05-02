@@ -1,4 +1,4 @@
-{% extends "dashboard/base.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
@@ -241,14 +241,14 @@
 
 {% block customcss %}
 
-    <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
 
 {% endblock %}
 
 {% block customjs %}
 
     <!-- Page level plugins -->
-    <script src="{% static 'dashboard/vendor/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 
     <!-- Page level custom scripts -->
     <script src="{% static 'dashboard/js/chart-pie.js' %}"></script>

@@ -9,7 +9,7 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         ecu = EcuModel.objects.create(es_reference='1234567890', oe_reference='160000000',
                                       oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test')
-        batch = Batch.objects.create(number=1, quantity=10, created_by=self.user, ecu_model=ecu)
+        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_model=ecu)
         self.add_perms_user(Batch, 'add_batch')
         self.add_perms_user(Repair, 'add_repair')
         self.ecuId = ecu.id
@@ -28,7 +28,7 @@ class MixinsTest(UnitTest):
                 'quantity': '20',
                 'start_date': '02/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_model': self.ecuId
+                'ref_reman': ''
             },
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
@@ -49,7 +49,7 @@ class MixinsTest(UnitTest):
                 'quantity': '20',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_model': self.ecuId
+                'ref_reman': '1234567890'
             },
         )
 
@@ -70,6 +70,7 @@ class MixinsTest(UnitTest):
             reverse('reman:create_repair'),
             data={
                 'ref_psa': '',
+                'identify_number': '',
                 'ref_supplier': '1234567890',
                 'product_number': '1234567890',
                 'remark': 'test',
@@ -90,6 +91,7 @@ class MixinsTest(UnitTest):
             reverse('reman:create_repair'),
             data={
                 'ref_psa': '9876543210',
+                'identify_number': 'C001010001',
                 'ref_supplier': '1234567890',
                 'product_number': '1234567890',
                 'remark': 'test',

@@ -72,11 +72,12 @@ def export_csv(queryset, filename, header, values_list=None):
     writer.writerow(header)
 
     if values_list:
-        queryset = queryset.values_list(*values_list)
+        valueset = queryset.values_list(*values_list)
     else:
-        queryset = queryset.values_list()
+        valueset = queryset.values_list()
 
-    for query in queryset:
+    for i, query in enumerate(valueset):
+        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
         writer.writerow(query)
 
     return response

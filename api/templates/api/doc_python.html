@@ -1,0 +1,65 @@
+<h4 class="text-center">En construction...</h4>
+
+<div class="p-4">
+    <p>
+        Pour commencer, il faut installer le packet suivant pour Python.<br>
+        La docummentation est disponible à cette adresse : <a target="_blank" href="https://requests.readthedocs.io/en/master/">https://requests.readthedocs.io/en/master/</a>.
+    </p>
+    <div class="code-card">
+        <code>$ pip install requests</code>
+    </div>
+</div>
+<br>
+
+<h4 class="font-weight-bold">Programmation RASPEEDI :</h4>
+<div class="p-4">
+    <p>Request: GET</p>
+    <p>
+        Après l'installation du module, Vous pouvez faire le test dans l'interpréteur Python à l'aide de l'exemple
+        ci-dessous.
+    </p>
+    <p>Example :</p>
+    <div class="code-card">
+        <pre>
+>>> import Requests
+
+>>> payload = {<span id="str">'search'</span>: <span id="str">'&lt;XELON_OR_VIN&gt;'</span>, <span id="str">'auth_token'</span>: <span id="str">'&lt;TOKEN&gt;'</span>}
+>>> response = requests.get(<span id="str">'http://https://127.0.0.1/api/prog/'</span>, params=payload)
+        </pre>
+    </div>
+    <br>
+    <p>Success Response:</p>
+    <div class="code-card">
+        <pre>
+>>> response.json()
+<span id="res">{"count":1,"next":null,"previous":null,"results":[{"numero_de_dossier":"A000900166","vin":"VF3XSRHKHBZ059845","modele_produit":"RD4","modele_vehicule":"EXPERT","corvet":[{"rad_ref":"9676651877","rad_cal":"","nav_ref":"","nav_cal":""}]}]}</span>
+        </pre>
+    </div>
+</div>
+<br>
+
+<h4 class="font-weight-bold">Visualisation des données de déverrouillage VIN :</h4>
+<div class="p-4">
+    <p>Request: GET</p>
+    <p>
+        Après l'installation du module, Vous pouvez faire le test dans l'interpréteur Python à l'aide de l'exemple
+        ci-dessous.
+    </p>
+    <p>Example :</p>
+    <div class="code-card">
+        <pre>
+>>> import Requests
+
+>>> payload = {<span id="str">'auth_token'</span>: <span id="str">'&lt;TOKEN&gt;'</span>}
+>>> response = requests.get(<span id="str">'http://https://127.0.0.1/api/unlock/'</span>, params=payload)
+        </pre>
+    </div>
+    <br>
+    <p>Success Response:</p>
+    <div class="code-card">
+        <pre>
+>>> response.json()
+<span id="res">{"count":1,"next":null,"previous":null,"results":[{"numero_de_dossier":"A000900166","vin":"VF3XSRHKHBZ059845","modele_produit":"RD4","modele_vehicule":"EXPERT","corvet":[{"rad_ref":"9676651877","rad_cal":"","nav_ref":"","nav_cal":""}]}]}</span>
+        </pre>
+    </div>
+</div>

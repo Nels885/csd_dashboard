@@ -1,0 +1,120 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'reman/tab_select.html' with select='import' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <h3 class="mb-4 mt-3 text-gray-800">Exportation des données CORVET :</h3>
+
+    <form class="form-inline ml-sm-3" method="post" action="{% url 'import_export:corvet' %}">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form_corvet.formats.id_for_label }}" class="mb-2">Format :</label>
+
+            {{ form_corvet.formats }}
+
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form_corvet.products.id_for_label }}" class="mb-2">Produit :</label>
+
+            {{ form_corvet.products }}
+
+        </div>
+
+        <button type="submit" class="btn btn-success btn-icon-split mb-2">
+            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span>
+            <span class="text">{% trans "Data Export" %}</span>
+        </button>
+
+    </form>
+
+    <hr>
+
+    <h3 class="mb-4 mt-3 text-gray-800">Exportation des données REMAN :</h3>
+
+    <form class="form-inline ml-sm-3" method="post" action="{% url 'import_export:reman' %}">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form_reman.formats.id_for_label }}" class="mb-2">Format :</label>
+
+            {{ form_reman.formats }}
+
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form_reman.tables.id_for_label }}" class="mb-2">Tableau :</label>
+
+            {{ form_reman.tables }}
+
+        </div>
+
+        <button type="submit" class="btn btn-success btn-icon-split mb-2">
+            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span>
+            <span class="text">{% trans "Data Export" %}</span>
+        </button>
+
+    </form>
+
+    <hr>
+
+    <h3 class="text-gray-800 mb-4 mt-5">Importation des données REMAN :</h3>
+
+    <form class="form-inline mb-4" method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="input-group col-sm-5">
+            <div class="input-group-prepend mb-2">
+                <span class="input-group-text">ECU Cross Référence</span>
+            </div>
+            <div class="custom-file mb-2">
+                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
+                <label class="custom-file-label" for="inputMyFile">Choose file</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
+            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span>
+            <span class="text">{% trans "Excel Import" %}</span>
+        </button>
+    </form>
+
+    <form class="form-inline" method="post" enctype="multipart/form-data"
+          action="{% url 'import_export:import_part' %}">
+
+        {% csrf_token %}
+
+        <div class="input-group col-sm-5">
+            <div class="input-group-prepend mb-2">
+                <span class="input-group-text">Pièces Détachées</span>
+            </div>
+            <div class="custom-file mb-2">
+                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
+                <label class="custom-file-label" for="inputMyFile">Choose file</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
+            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span>
+            <span class="text">{% trans "Excel Import" %}</span>
+        </button>
+    </form>
+
+    <hr>
+
+{% endblock %}

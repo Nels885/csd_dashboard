@@ -6,7 +6,7 @@
             <div class="list-group list-group-flush">
                 {% for log in log_file.calibre %}
                     <a href="#" class="log-btn list-group-item"
-                       data-id="{% url 'squalaetp:log-detail' log %}">{{ log }}</a>
+                       data-id="{% url 'squalaetp:log_detail' log %}">{{ log }}</a>
                 {% endfor %}
             </div>
         {% endif %}
@@ -16,7 +16,7 @@
             <div class="list-group list-group-flush">
                 {% for log in log_file.calrt6 %}
                     <a href="#" class="log-btn list-group-item"
-                       data-id="{% url 'squalaetp:log-detail' log %}">{{ log }}</a>
+                       data-id="{% url 'squalaetp:log_detail' log %}">{{ log }}</a>
                 {% endfor %}
             </div>
         {% endif %}
@@ -26,7 +26,7 @@
             <div class="list-group list-group-flush">
                 {% for log in log_file.calrd45 %}
                     <a href="#" class="log-btn list-group-item"
-                       data-id="{% url 'squalaetp:log-detail' log %}">{{ log }}</a>
+                       data-id="{% url 'squalaetp:log_detail' log %}">{{ log }}</a>
                 {% endfor %}
             </div>
         {% endif %}
@@ -36,7 +36,7 @@
             <div class="list-group list-group-flush">
                 {% for log in log_file.raspeedi %}
                     <a href="#" class="log-btn list-group-item"
-                       data-id="{% url 'squalaetp:log-detail' log %}">{{ log }}</a>
+                       data-id="{% url 'squalaetp:log_detail' log %}">{{ log }}</a>
                 {% endfor %}
             </div>
         {% endif %}
@@ -46,7 +46,7 @@
             <div class="list-group list-group-flush">
                 {% for log in log_file.rasprog %}
                     <a href="#" class="log-btn list-group-item"
-                       data-id="{% url 'squalaetp:log-detail' log %}">{{ log }}</a>
+                       data-id="{% url 'squalaetp:log_detail' log %}">{{ log }}</a>
                 {% endfor %}
             </div>
         {% endif %}

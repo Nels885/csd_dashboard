@@ -1,8 +1,18 @@
-{% extends 'dashboard/format/datatables_format.html' %}
+{% extends 'format/datatables_format.html' %}
 
-{% load static %}
+{% load static i18n %}
 
-{% load i18n %}
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'reman/tab_select.html' with select='part' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
 
 {% block table_content %}
 
@@ -17,16 +27,6 @@
             <th>Code site</th>
         </tr>
         </thead>
-        <tfoot>
-        <tr>
-            <th class="all">Code produit</th>
-            <th>Code zone</th>
-            <th>Code Emplacement</th>
-            <th>Cumul Dispo</th>
-            <th>Code magasin</th>
-            <th>Code site</th>
-        </tr>
-        </tfoot>
         <tbody>
 
         {% for file in files %}

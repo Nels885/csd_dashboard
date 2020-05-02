@@ -1,12 +1,12 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
 from .models import Xelon, Corvet
 from .forms import CorvetForm, CorvetModalForm
@@ -139,17 +139,10 @@ def corvet_table(request):
     View of Corvet table page, visible only if authenticated
     """
     # corvets_list = Corvet.objects.all().order_by('vin')
-    form = ExportCorvetForm(request.POST or None)
-    if form.is_valid():
-        if request.user.has_perm('squalaetp.change_corvet'):
-            product = form.cleaned_data['products']
-            if product in ['corvet', 'ecu', 'bsi', 'com']:
-                return redirect('import_export:export_{}_csv'.format(product))
-        messages.warning(request, _('You do not have the required permissions'))
     context = {
         'title': 'Corvet',
         'table_title': _('CORVET table'),
-        'form': form,
+        'form': ExportCorvetForm(),
     }
     return render(request, 'squalaetp/corvet_table.html', context)
 
@@ -187,15 +180,9 @@ def corvet_insert(request):
     if request.method == 'POST':
         form = CorvetForm(request.POST, error_class=ParaErrorList)
         if form.is_valid():
-            data = form.xml_parser('xml_data')
-            if data:
-                try:
-                    m = Corvet(**data)
-                    m.save()
-                    context = {'title': _('Modification done successfully!')}
-                    return render(request, 'dashboard/done.html', context)
-                except TypeError:
-                    form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
+            form.save()
+            context = {'title': _('Modification done successfully!')}
+            return render(request, 'dashboard/done.html', context)
         context['errors'] = form.errors.items()
     else:
         form = CorvetForm()
@@ -203,7 +190,8 @@ def corvet_insert(request):
     return render(request, 'squalaetp/corvet_insert.html', context)
 
 
-class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
+class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = ['squalaetp.add_corvet']
     template_name = 'squalaetp/modal/corvet_form.html'
     form_class = CorvetModalForm
     success_message = _('Modification done successfully!')
@@ -211,6 +199,26 @@ class CorvetCreateView(LoginRequiredMixin, BSModalCreateView):
     def get_context_data(self, **kwargs):
         context = super(CorvetCreateView, self).get_context_data(**kwargs)
         context['modal_title'] = _('CORVET integration')
+        return context
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    model = Xelon
+    permission_required = ['squalaetp.change_xelon', 'squalaetp.change_corvet']
+    template_name = 'squalaetp/modal/corvet_form.html'
+    form_class = CorvetModalForm
+    success_message = _('Success: Squalaetp data was updated.')
+
+    def get_context_data(self, **kwargs):
+        context = super(SqualaetpUpdateView, self).get_context_data(**kwargs)
+        file = self.object.numero_de_dossier
+        context['modal_title'] = _('CORVET update for {}'.format(file))
         return context
 
     def get_success_url(self):

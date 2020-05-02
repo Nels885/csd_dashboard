@@ -1,0 +1,65 @@
+@font-face {
+    font-family: fira-code;
+    src: url("fira-code/FiraCode-Regular.otf") format("otf");
+}
+
+.fb-page,
+.fb-page span,
+.fb-page span iframe[style] {
+    max-width: 100% !important;
+}
+
+div.container {
+    max-width: 1200px;
+}
+
+textarea.form-cfg, textarea.form-cfg:focus {
+    font-family: fira-code, sans-serif;
+    background: #2B2B2B;
+    font-size: 15px;
+}
+
+.td-ihm {
+    width: 50%;
+}
+
+.td-ihm-40 {
+    width: 40%;
+}
+
+.sidebar .nav-item .nav-link {
+    padding: 0.5rem 1rem 0.5rem 1rem !important;
+}
+
+.code-card {
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: #f2f2f2;
+    border: 1px solid #BEBEBE;
+}
+
+/* VB.net Color */
+span#cmt {
+    color: #008000;
+}
+
+span#dtyp {
+    color: #2B91AF;
+}
+
+span#keyw {
+    color: #0000FF;
+}
+
+span#lit {
+    color: #A31515;
+}
+
+/* Python Color */
+span#str {
+    color: #729C17;
+}
+
+span#res {
+    color: #8A8C98;
+}

@@ -30,14 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = [
-    'dashboard.apps.DashboardConfig',
-    'raspeedi.apps.RaspeediConfig',
-    'squalaetp.apps.SqualaetpConfig',
-    'reman.apps.RemanConfig',
-    'demo.apps.DemoConfig',
-    'tools.apps.ToolsConfig',
-    'api.apps.ApiConfig',
-    'import_export.apps.ImportExportConfig',
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +43,16 @@ INSTALLED_APPS = [
     'tempus_dominus',
     'bootstrap_modal_forms',
     'widget_tweaks',
+
+    # My apps
+    'dashboard.apps.DashboardConfig',
+    'raspeedi.apps.RaspeediConfig',
+    'squalaetp.apps.SqualaetpConfig',
+    'reman.apps.RemanConfig',
+    'demo.apps.DemoConfig',
+    'tools.apps.ToolsConfig',
+    'api.apps.ApiConfig',
+    'import_export.apps.ImportExportConfig',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +72,9 @@ ROOT_URLCONF = 'sbadmin.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(os.path.dirname(BASE_DIR), 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,12 +123,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://www.django-rest-framework.org
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'api.utils.TokenAuthSupportQueryString',
+    ),
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated',
     # ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
@@ -156,6 +162,10 @@ LOCALE_PATHS = [
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(os.path.dirname(BASE_DIR), "static"),
+)
+
 MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -163,7 +173,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
 LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
-
 
 # Configuration CkEditor
 CKEDITOR_CONFIGS = {

@@ -1,14 +1,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required
+from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.core.management import call_command
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
+from utils.file import handle_uploaded_file
 
-from .models import Repair, SparePart, Batch
-from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset
+from dashboard.forms import ParaErrorList
+from .models import Repair, SparePart, Batch, EcuModel
+from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm
+from import_export.forms import ExportCorvetForm, ExportRemanForm
 
 context = {
     'title': 'Reman'
@@ -37,6 +42,27 @@ def repair_table(request):
     return render(request, 'reman/repair_table.html', context)
 
 
+@permission_required('reman.change_repair')
+def out_table(request):
+    """
+    View of Reman Out Repair table page
+    """
+    files = Repair.objects.filter(quality_control=True, checkout=False)
+    context.update({
+        'table_title': 'Reman Out',
+        'files': files,
+        'form': CloseRepairForm()
+    })
+    form = CloseRepairForm(request.POST or None, error_class=ParaErrorList)
+    if form.is_valid():
+        repair = form.save()
+        messages.success(request, _('Adding Repair n°%(repair)s to lot n°%(batch)s successfully') % {
+            'repair': repair.identify_number,
+            'batch': repair.batch})
+    context['errors'] = form.errors.items()
+    return render(request, 'reman/out_table.html', context)
+
+
 @permission_required('reman.view_batch')
 def batch_table(request):
     batchs = Batch.objects.all()
@@ -50,7 +76,7 @@ def batch_table(request):
 @permission_required('reman.view_sparepart')
 def part_table(request):
     """
-    View of Xelon table page
+    View of SparePart table page
     """
     files = SparePart.objects.all()
     context.update({
@@ -58,6 +84,40 @@ def part_table(request):
         'files': files
     })
     return render(request, 'reman/part_table.html', context)
+
+
+@permission_required('reman.view_ecumodel')
+def ecu_model_table(request):
+    ecus = EcuModel.objects.all()
+    context.update({
+        'table_title': 'Liste des ECU Cross Référence',
+        'ecus': ecus
+    })
+    return render(request, 'reman/ecu_model_table.html', context)
+
+
+@permission_required(['squalaetp.add_corvet', 'reman.add_ecumodel', 'reman.change_ecumodel'])
+def import_export(request):
+    context.update({
+        'table_title': 'Import Export',
+        'form_corvet': ExportCorvetForm(),
+        'form_reman': ExportRemanForm(),
+    })
+    if request.method == 'POST':
+        try:
+            if request.FILES["myfile"]:
+                my_file = request.FILES["myfile"]
+                file_url = handle_uploaded_file(my_file)
+                call_command("ecureference", "--file", file_url)
+                messages.success(request, 'Upload terminé !')
+                return redirect('reman:ecu_table')
+        except MultiValueDictKeyError:
+            messages.warning(request, 'Le fichier est absent !')
+        except UnicodeDecodeError:
+            messages.warning(request, 'Format de fichier incorrect !')
+        except KeyError:
+            messages.warning(request, "Le fichier n'est pas correctement formaté")
+    return render(request, 'reman/import_export.html', context)
 
 
 @permission_required('reman.change_repair')
@@ -83,12 +143,7 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/create_batch.html'
     form_class = AddBatchFrom
     success_message = _('Success: Batch was created.')
-
-    def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+    success_url = reverse_lazy('reman:batch_table')
 
 
 class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):

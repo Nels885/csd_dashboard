@@ -1,4 +1,4 @@
-{% extends 'dashboard/format/datatables_format.html' %}
+{% extends 'format/datatables_format.html' %}
 
 {% load static %}
 
@@ -28,7 +28,7 @@
 
             <tr {% if "PSA" in file.famille_client and "VF3" in file.vin and "VF7" in file.vin and not file.corvet.exists %}class="bg-danger text-light"{% endif %}>
                 <td class="bg-white">
-                    <a href="{% url 'squalaetp:xelon-edit' file_id=file.id %}" title="Modification VIN et Corvet"
+                    <a href="{% url 'squalaetp:xelon_edit' file_id=file.id %}" title="Modification VIN et Corvet"
                        class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="bg-white">
@@ -42,8 +42,8 @@
                 <td>{{ file.date_retour|default:"--" }}</td>
                 <td>{{ file.type_de_cloture }}</td>
                 <td>{{ file.nom_technicien }}</td>
-                <td>{{ file.dossier_vip }}</td>
-                <td>{{ file.express }}</td>
+                <td>{% if file.dossier_vip %}OUI{% endif %}</td>
+                <td>{% if file.express %}OUI{% endif %}</td>
             </tr>
 
         {% endfor %}

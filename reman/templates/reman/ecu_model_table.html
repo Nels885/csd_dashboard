@@ -1,0 +1,57 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tab" role="tablist">
+
+            {% include 'reman/tab_select.html' with select='ecu' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <table class="table table-bordered" id="ecuModelTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Référence EMS</th>
+            <th>Référence OEM</th>
+            <th>Référence OEM Brute</th>
+            <th>Hardware</th>
+            <th>Software</th>
+            <th>Modèle Produit</th>
+            <th>Fabriquant</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for ecu in ecus %}
+
+            <tr>
+                <td>{{ ecu.es_reference }}</td>
+                <td>{{ ecu.oe_reference }}</td>
+                <td>{{ ecu.oe_raw_reference }}</td>
+                <td>{{ ecu.hw_reference }}</td>
+                <td>{{ ecu.sw_reference }}</td>
+                <td>{{ ecu.technical_data }}</td>
+                <td>{{ ecu.supplier_oe }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
+
+{% endblock %}

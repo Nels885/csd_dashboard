@@ -1,0 +1,119 @@
+{% extends 'base/_layout.html' %}
+
+{% load i18n tz %}
+
+{% block basecontent %}
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center"
+               href="{% url 'dashboard:index' %}">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">CSD Board</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard:charts' %}">
+                    <i class=" fas fa-fw fa-tachometer-alt"></i>
+                    <span>{% trans "Dashboard" %}</span></a>
+            </li>
+
+            <!-- Nav Item - thermal chamber -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tools:thermal' %}">
+                    <i class=" fas fa-fw fa-thermometer"></i>
+                    <span>{% trans "Thermal chamber" %}</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            {% include 'nav/nav_csd_atelier.html' %}
+
+            {% include 'nav/nav_in_out.html' %}
+
+            {% include 'nav/nav_csd_admin.html' %}
+
+            {% include 'nav/nav_tools.html' %}
+
+            {% include 'nav/nav_gestion.html' %}
+
+{#            {% include 'demo/nav_demo.html' %}#}
+
+            {% include 'nav/nav_interface.html' %}
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div style="border-radius:0;" {% if message.tags %}
+                                 class="alert alert-icon alert-{{ message.tags }} alert-dismissible fade show mb-0"
+                                 role="alert" {% endif %}>
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                {% include 'base/top_bar.html' %}
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    {% include 'base/_header.html' %}
+
+                    {% block content %} {% endblock %}
+
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; <a href="https://github.com/Nels885/csd_dashboard" target="_blank">Lionel VOIRIN</a>
+                            for Faurecia Clarion Electronic</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+{% endblock %}
