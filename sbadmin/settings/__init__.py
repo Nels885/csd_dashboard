@@ -30,16 +30,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = [
-    # My apps
-    'dashboard.apps.DashboardConfig',
-    'raspeedi.apps.RaspeediConfig',
-    'squalaetp.apps.SqualaetpConfig',
-    'reman.apps.RemanConfig',
-    'demo.apps.DemoConfig',
-    'tools.apps.ToolsConfig',
-    'api.apps.ApiConfig',
-    'import_export.apps.ImportExportConfig',
-
     # django apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,6 +43,16 @@ INSTALLED_APPS = [
     'tempus_dominus',
     'bootstrap_modal_forms',
     'widget_tweaks',
+
+    # My apps
+    'dashboard.apps.DashboardConfig',
+    'raspeedi.apps.RaspeediConfig',
+    'squalaetp.apps.SqualaetpConfig',
+    'reman.apps.RemanConfig',
+    'demo.apps.DemoConfig',
+    'tools.apps.ToolsConfig',
+    'api.apps.ApiConfig',
+    'import_export.apps.ImportExportConfig',
 ]
 
 MIDDLEWARE = [

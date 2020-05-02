@@ -116,7 +116,7 @@ def user_profile(request):
     else:
         form = UserProfileForm()
     context['form'] = form
-    return render(request, 'registration/profile.html', context)
+    return render(request, 'dashboard/profile.html', context)
 
 
 @staff_member_required(login_url='login')
@@ -154,7 +154,7 @@ def signup(request):
     else:
         form = SignUpForm()
     context['form'] = form
-    return render(request, 'registration/register.html', context)
+    return render(request, 'dashboard/register.html', context)
 
 
 def activate(request, uidb64, token):
