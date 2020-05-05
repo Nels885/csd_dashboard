@@ -14,8 +14,7 @@ class ProductAnalysis:
         """
         Initialization of the ProductAnalysis class
         """
-        self.pendingQueries = Xelon.objects.filter(
-            delai_au_en_jours_ouvres__lt=30).exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
+        self.pendingQueries = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
         self.pending = self.pendingQueries.filter(type_de_cloture__in=['', 'Sauvée']).count()
         self.late = self.late_products().count()
         self.percent = int(self._percent_of_late_products())

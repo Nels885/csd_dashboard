@@ -28,7 +28,7 @@ def xelon_table(request):
     query = request.GET.get('filter')
     if query and query == "pending":
         files = Xelon.objects.exclude(type_de_cloture__exact='Réparé').filter(
-            date_retour__isnull=False, delai_au_en_jours_ouvres__lt=30).order_by('-date_retour')
+            date_retour__isnull=False).order_by('-date_retour')
         context.update({
             'table_title': 'Dossiers en cours',
             'files': files
