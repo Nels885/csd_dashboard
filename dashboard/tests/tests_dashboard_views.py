@@ -56,7 +56,7 @@ class DashboardTestCase(UnitTest):
 
         # Signup is not valid
         old_user = User.objects.count()
-        response = self.client.post(reverse('dashboard:signup'))
+        response = self.client.post(reverse('dashboard:signup'), {'username': '', 'email': 'test@test.com'})
         new_user = User.objects.count()
         self.assertEqual(new_user, old_user)
         self.assertFormError(response, 'form', 'username', _('This field is required.'))
@@ -71,7 +71,7 @@ class DashboardTestCase(UnitTest):
 
         # Signup is user exists
         old_user = User.objects.count()
-        response = self.client.post(reverse('dashboard:signup'), {'username': 'toto', 'email': 'totopassword'})
+        response = self.client.post(reverse('dashboard:signup'), {'username': 'toto', 'email': 'test@test.com'})
         new_user = User.objects.count()
         self.assertEqual(new_user, old_user)
         self.assertEqual(response.status_code, 200)
