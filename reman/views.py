@@ -22,9 +22,7 @@ context = {
 
 @permission_required('reman.view_repair')
 def repair_table(request):
-    """
-    View of Reman Repair table page
-    """
+    """ View of Reman Repair table page """
     query = request.GET.get('filter')
     if query and query == 'quality':
         files = Repair.objects.filter(quality_control=False)
@@ -44,65 +42,54 @@ def repair_table(request):
 
 @permission_required('reman.change_repair')
 def out_table(request):
-    """
-    View of Reman Out Repair table page
-    """
+    """ View of Reman Out Repair table page """
+    table_title = 'Reman Out'
     files = Repair.objects.filter(quality_control=True, checkout=False)
-    context.update({
-        'table_title': 'Reman Out',
-        'files': files,
-        'form': CloseRepairForm()
-    })
     form = CloseRepairForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
         repair = form.save()
         messages.success(request, _('Adding Repair n°%(repair)s to lot n°%(batch)s successfully') % {
             'repair': repair.identify_number,
             'batch': repair.batch})
-    context['errors'] = form.errors.items()
+    errors = form.errors.items()
+    context.update(locals())
     return render(request, 'reman/out_table.html', context)
 
 
 @permission_required('reman.view_batch')
 def batch_table(request):
+    """ View of batch table page """
+    table_title = 'Liste des lots REMAN ajoutés'
     batchs = Batch.objects.all()
-    context.update({
-        'table_title': 'Liste des lots REMAN ajoutés',
-        'batchs': batchs
-    })
+    context.update(locals())
     return render(request, 'reman/batch_table.html', context)
 
 
 @permission_required('reman.view_sparepart')
 def part_table(request):
-    """
-    View of SparePart table page
-    """
+    """ View of SparePart table page """
+    table_title = 'Pièces détachées'
     files = SparePart.objects.all()
-    context.update({
-        'table_title': 'Pièces détachées',
-        'files': files
-    })
+    context.update(locals())
     return render(request, 'reman/part_table.html', context)
 
 
 @permission_required('reman.view_ecumodel')
 def ecu_model_table(request):
+    """ View of ECU Cross Reference table page """
+    table_title = 'Liste des ECU Cross Référence'
     ecus = EcuModel.objects.all()
-    context.update({
-        'table_title': 'Liste des ECU Cross Référence',
-        'ecus': ecus
-    })
+    context.update(locals())
     return render(request, 'reman/ecu_model_table.html', context)
 
 
 @permission_required(['squalaetp.add_corvet', 'reman.add_ecumodel', 'reman.change_ecumodel'])
 def import_export(request):
-    context.update({
-        'table_title': 'Import Export',
-        'form_corvet': ExportCorvetForm(),
-        'form_reman': ExportRemanForm(),
-    })
+    """ View of import/export files page """
+    table_title = 'Import Export'
+    form_corvet = ExportCorvetForm()
+    form_reman = ExportRemanForm()
+    context.update(locals())
     if request.method == 'POST':
         try:
             if request.FILES["myfile"]:
@@ -122,19 +109,16 @@ def import_export(request):
 
 @permission_required('reman.change_repair')
 def edit_repair(request, pk):
-    product = get_object_or_404(Repair, pk=pk)
-    form = EditRepairFrom(request.POST or None, instance=product)
+    """ View of edit repair page """
+    card_title = _('Modification customer folder')
+    prod = get_object_or_404(Repair, pk=pk)
+    form = EditRepairFrom(request.POST or None, instance=prod)
     formset = SparePartFormset(request.POST or None)
     if form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
         return redirect(reverse('reman:repair_table', get={'filter': 'quality'}))
-    context.update({
-        'card_title': _('Modification customer folder'),
-        'prod': product,
-        'form': form,
-        'formset': formset
-    })
+    context.update(locals())
     return render(request, 'reman/edit_repair.html', context)
 
 
