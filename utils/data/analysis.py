@@ -1,10 +1,9 @@
+import datetime
+# import itertools
+
 from django.db.models.aggregates import Count
 
 from squalaetp.models import Xelon, Corvet
-import datetime
-
-
-# import itertools
 
 
 class ProductAnalysis:
@@ -67,7 +66,7 @@ class ProductAnalysis:
                 prod_nb.append(pending_prod.filter(modele_produit__startswith=prod).count())
         labels_nb = sum(prod_nb)
         prod_nb.append(pending_prod.count() - labels_nb)
-        return self.LABELS, prod_nb
+        return {"prodLabels": self.LABELS, "prodDefault": prod_nb}
 
     def corvet_count(self):
         """
@@ -79,26 +78,23 @@ class ProductAnalysis:
 
 
 class DealAnalysis:
-    # LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    LAST_60_DAYS = datetime.datetime.today() - datetime.timedelta(60)
 
     def __init__(self):
         """
         Initialization of the ProductAnalysis class
         """
         self.queries = Xelon.objects.filter(date_retour__isnull=False)
+        last_query = self.queries.order_by('-date_retour').first()
+        if last_query:
+            self.LAST_60_DAYS = last_query.date_retour - datetime.timedelta(60)
+        else:
+            self.LAST_60_DAYS = datetime.datetime.today() - datetime.timedelta(60)
 
     def count(self):
         labels, deals_nb = [], []
-        deals = Xelon.objects.filter(date_retour__gte=self.LAST_60_DAYS).extra(
+        deals = self.queries.filter(date_retour__gte=self.LAST_60_DAYS).extra(
             {"day": "date_trunc('day', date_retour)"}).values("day").order_by('date_retour').annotate(count=Count("id"))
         for nb in range(len(deals)):
             labels.append(deals[nb]["day"].strftime("%d/%m/%Y"))
             deals_nb.append(deals[nb]['count'])
-        # deals = Xelon.objects.filter(date_retour__gte=self.LAST_60_DAYS).order_by('date_retour')
-        # grouped = itertools.groupby(deals, lambda record: record.get('date_retour').strftime("%d/%m/%Y"))
-        # deals_by_day = [{'x': day, 'y': len(list(deals_this_day))} for day, deals_this_day in grouped]
-        # for day, value in grouped:
-        #     labels.append(day)
-        #     deals_nb.append(len(list(value)))
-        return labels, deals_nb
+        return {"dealLabels": labels, "dealDefault": deals_nb}

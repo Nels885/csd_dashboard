@@ -18,7 +18,7 @@ $.ajax({
                 labels: labels,
                 datasets: [{
                     data: defaultData,
-                    label: "Pdts en cours",
+                    label: "Pdts en IN",
                     lineTension: 0.3,
                     backgroundColor: "rgba(78, 115, 223, 0.05)",
                     borderColor: "rgba(78, 115, 223, 1)",
