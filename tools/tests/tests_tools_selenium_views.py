@@ -36,7 +36,7 @@ class DashboardSeleniumTestCase(FunctionalTest):
 
         new_soft = CsdSoftware.objects.count()
         self.assertEqual(new_soft, old_soft + 1)
-        self.assertEqual(driver.current_url, self.live_server_url + '/tools/soft/add/')
+        self.assertEqual(driver.current_url, self.live_server_url + '/tools/soft/')
 
     def test_soft_list_page(self):
         driver = self.driver
