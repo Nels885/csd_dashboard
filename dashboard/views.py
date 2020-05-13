@@ -26,6 +26,7 @@ from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
 from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm
 from squalaetp.models import Xelon
+from tools.models import EtudeProject
 
 
 def index(request):
@@ -39,6 +40,7 @@ def charts(request):
     """ View of charts page """
     title = _("Dashboard")
     prods = ProductAnalysis()
+    projects = EtudeProject.objects.all()
     return render(request, 'dashboard/charts.html', locals())
 
 

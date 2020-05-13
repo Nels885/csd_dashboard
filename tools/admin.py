@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import TagXelon, CsdSoftware
+from .models import TagXelon, CsdSoftware, EtudeProject
 
 
 class TagXelonAdmin(admin.ModelAdmin):
@@ -9,3 +9,4 @@ class TagXelonAdmin(admin.ModelAdmin):
 
 admin.site.register(TagXelon, TagXelonAdmin)
 admin.site.register(CsdSoftware)
+admin.site.register(EtudeProject)
