@@ -9,7 +9,7 @@ from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, Cal
 from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon, Corvet
-from utils.data.analysis import ProductAnalysis, DealAnalysis
+from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
 from api.models import (query_table_by_args,
                         ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
                         xelon_filter, corvet_filter)
@@ -103,9 +103,9 @@ def charts(request):
     """
     API endpoint that allows chart data to be viewed
     """
-    analysis, deal = ProductAnalysis(), DealAnalysis()
+    analysis, indicator = ProductAnalysis(), IndicatorAnalysis()
     data = analysis.products_count()
-    data.update(deal.count())
+    data.update(indicator.result())
     return Response(data, status=status.HTTP_200_OK)
 
 

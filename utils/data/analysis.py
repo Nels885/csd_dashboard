@@ -2,6 +2,7 @@ import datetime
 # import itertools
 
 from django.db.models.aggregates import Count
+from django.db.models import Q
 
 from squalaetp.models import Xelon, Corvet
 
@@ -77,7 +78,7 @@ class ProductAnalysis:
         return Corvet.objects.all().count()
 
 
-class DealAnalysis:
+class IndicatorAnalysis:
 
     def __init__(self):
         """
@@ -90,11 +91,14 @@ class DealAnalysis:
         else:
             self.LAST_60_DAYS = datetime.datetime.today() - datetime.timedelta(60)
 
-    def count(self):
-        labels, deals_nb = [], []
-        deals = self.queries.filter(date_retour__gte=self.LAST_60_DAYS).extra(
-            {"day": "date_trunc('day', date_retour)"}).values("day").order_by('date_retour').annotate(count=Count("id"))
-        for nb in range(len(deals)):
-            labels.append(deals[nb]["day"].strftime("%d/%m/%Y"))
-            deals_nb.append(deals[nb]['count'])
-        return {"dealLabels": labels, "dealDefault": deals_nb}
+    def result(self):
+        labels, prods_in_nb, prods_ext_nb = [], [], []
+        prods_in = self.queries.filter(date_retour__gte=self.LAST_60_DAYS).extra(
+            {"day": "date_trunc('day', date_retour)"}).values("day").order_by('date_retour')
+        prods_in = prods_in.annotate(count=Count("id"))
+        prods_in = prods_in.annotate(exp=Count("express", filter=Q(express=True)))
+        for nb in range(len(prods_in)):
+            labels.append(prods_in[nb]["day"].strftime("%d/%m/%Y"))
+            prods_in_nb.append(prods_in[nb]["count"])
+            prods_ext_nb.append(prods_in[nb]["exp"])
+        return {"areaLabels": labels, "prodsInValue": prods_in_nb, "prodsExpValue": prods_ext_nb}
