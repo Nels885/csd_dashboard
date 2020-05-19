@@ -44,7 +44,7 @@ class CorvetForm(forms.ModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(CorvetForm, self).clean()
         data = cleaned_data.get("xml_data")
         vin = cleaned_data.get("vin")
         if data and data['vin'] != vin:
@@ -105,7 +105,7 @@ class CorvetModalForm(BSModalForm):
         return data
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(CorvetModalForm, self).clean()
         data = cleaned_data.get("xml_data")
         vin = cleaned_data.get("vin")
         if data and data['vin'] != vin:

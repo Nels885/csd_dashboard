@@ -112,6 +112,26 @@ def export_com_csv(request):
     return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
 
 
+@permission_required('squalaetp.change_corvet')
+def export_bsm_csv(request):
+    filename = 'BSM'
+    header = [
+        'Numero de dossier', 'V.I.N.', 'Modele produit', 'DATE_DEBUT_GARANTIE', '16B_BSM_HARD',
+        '46B_BSM_FOURN.NO.SERIE', '56B_BSM_FOURN.DATE.FAB', '66B_BSM_FOURN.CODE', '86B_BSM_DOTE', '96B_BSM_SOFT'
+    ]
+
+    bsis = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_16p__exact='').annotate(
+        date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
+    )
+    values_list = (
+        'numero_de_dossier', 'vin', 'modele_produit', 'date_debut_garantie', 'corvet__electronique_16b',
+        'corvet__electronique_46b', 'corvet__electronique_56b', 'corvet__electronique_66b', 'corvet__electronique_86b',
+        'corvet__electronique_96b'
+    )
+
+    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+
+
 @permission_required('reman.view_batch')
 def export_batch_csv(request):
     filename = 'batch_reman'
