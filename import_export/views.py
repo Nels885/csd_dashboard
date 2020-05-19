@@ -20,7 +20,7 @@ def export_corvet(request):
     if form.is_valid():
         if request.user.has_perm('squalaetp.change_corvet'):
             product = form.cleaned_data['products']
-            if product in ['corvet', 'ecu', 'bsi', 'com']:
+            if product in ['corvet', 'ecu', 'bsi', 'com', 'bsm']:
                 return redirect('import_export:export_{}_csv'.format(product))
         messages.warning(request, _('You do not have the required permissions'))
     return redirect(request.META.get('HTTP_REFERER'))

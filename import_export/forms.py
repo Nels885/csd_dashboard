@@ -2,7 +2,7 @@ from django import forms
 
 
 class ExportCorvetForm(forms.Form):
-    PRODUCTS = [('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com', 'COM200x')]
+    PRODUCTS = [('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com', 'COM200x'), ('bsm', 'BSM')]
     FORMATS = [('csv', 'CSV')]
 
     formats = forms.ChoiceField(
