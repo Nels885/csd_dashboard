@@ -106,7 +106,6 @@ def charts(request):
     analysis, indicator = ProductAnalysis(), IndicatorAnalysis()
     data = analysis.products_count()
     data.update(indicator.result())
-    print(data)
     return Response(data, status=status.HTTP_200_OK)
 
 

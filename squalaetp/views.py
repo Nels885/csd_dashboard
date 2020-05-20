@@ -66,23 +66,11 @@ def xelon_edit(request, file_id):
     corvet = Corvet.objects.filter(vin=file.vin).first()
     card_title = _('Modification data Xelon file: ') + file.numero_de_dossier
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
-    # form.fields['vin'].initial = file.vin
     if form.is_valid():
+        xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
         form.save()
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
-        # data = form.xml_parser('xml_data')
-        # if data:
-        #     try:
-        #         # xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
-        #         # m = Corvet(**data)
-        #         # m.save()
-        #         # m.xelons.add(file)
-        #
-        #         context = {'title': _('Modification done successfully!')}
-        #         return render(request, 'dashboard/done.html', context)
-        #     except TypeError:
-        #         form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
     errors = form.errors.items()
     # corvet = ScrapingCorvet()
     # form.fields['xml_data'].initial = corvet.result(file.vin)
@@ -95,22 +83,16 @@ def ajax_xelon(request):
     """
     View for changing Xelon data
     """
-    form = CorvetForm(request.POST or None, error_class=ParaErrorList)
+    file_id = request.POST.get('file_id')
+    file = get_object_or_404(Xelon, pk=file_id)
+    corvet = Corvet.objects.filter(vin=file.vin).first()
+    form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
     if form.is_valid():
-        file_id = request.POST.get('file_id')
-        file = get_object_or_404(Xelon, pk=file_id)
-        data = form.xml_parser('xml_data')
-        if data:
-            try:
-                xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
-                m = Corvet(**data)
-                m.save()
-                m.xelons.add(file)
-                context = {'message': _('Modification done successfully!')}
-                messages.success(request, context['message'])
-                return JsonResponse(context, status=200)
-            except TypeError:
-                form.add_error('internal', _('An internal error has occurred. Thank you recommend your request'))
+        xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+        form.save()
+        context = {'message': _('Modification done successfully!')}
+        messages.success(request, context['message'])
+        return JsonResponse(context, status=200)
     print(form.errors)
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 

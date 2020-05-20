@@ -57,7 +57,12 @@ class CorvetForm(forms.ModelForm):
         corvet = super(CorvetForm, self).save(commit=False)
         if data and commit:
             try:
-                Corvet.objects.update_or_create(**data)
+                querysets = Corvet.objects.filter(vin=data["vin"])
+                if querysets:
+                    del data["vin"]
+                    querysets.update(**data)
+                else:
+                    Corvet.objects.update_or_create(**data)
             except TypeError:
                 raise forms.ValidationError(_('An internal error has occurred. Thank you recommend your request'))
         return corvet
