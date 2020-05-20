@@ -31,7 +31,7 @@ try:
     client.username_pw_set(username=config.MQTT_USER, password=config.MQTT_PSWD)
     client.connect(host=config.MQTT_BROKER, port=config.MQTT_PORT, keepalive=config.KEEP_ALIVE)
     client.subscribe("TEMP/#")
-except Exception as err:
-    print("Exception: {}".format(err))
+except OSError:
+    print("*** MQTT Server no found ***")
     payload = {'temp': 'Hors ligne'}
     error = True
