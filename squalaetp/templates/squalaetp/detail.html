@@ -33,20 +33,18 @@
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
-                       aria-selected="false">
+                    <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal" aria-selected="false">
                         {% trans "VIN Barcode" %}
                     </a>
                 </li>
             {% endif %}
             {% if perms.squalaetp.change_xelon and perms.squalaetp.change_corvet %}
-            <li class="nav-item">
-                <a class="update-corvet nav-link" href="#" data-id="{% url 'squalaetp:corvet_edit' xelon.pk %}"
-                   role="tab" aria-selected="false">
-                    {% trans "CORVET Update" %}
-                </a>
-            </li>
-        {% endif %}
+                <li class="nav-item">
+                    <a class="update-corvet nav-link" href="#" data-id="{% url 'squalaetp:corvet_edit' xelon.pk %}" role="tab" aria-selected="false">
+                        {% trans "CORVET Update" %}
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 
@@ -63,16 +61,14 @@
     <div class="tab-content mt-3">
 
         <!-- Detail Xelon -->
-        <div class="tab-pane {% if select == 'xelon' %}active{% endif %}" id="xelon" role="tabpanel"
-             aria-labelledby="xelon-tab">
+        <div class="tab-pane {% if select == 'xelon' %}active{% endif %}" id="xelon" role="tabpanel" aria-labelledby="xelon-tab">
 
             {% include 'squalaetp/detail_xelon.html' %}
 
         </div>
 
         <!-- Detail IHM -->
-        <div class="tab-pane {% if select == 'ihm' %}active{% endif %}" id="ihm" role="tabpanel"
-             aria-labelledby="ihm-tab">
+        <div class="tab-pane {% if select == 'ihm' %}active{% endif %}" id="ihm" role="tabpanel" aria-labelledby="ihm-tab">
 
             {% include 'squalaetp/detail_ihm.html' %}
 
@@ -80,8 +76,7 @@
 
         <!-- Detail NAC -->
         <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
-            <a class="nav-link" role="tab" aria-selected="false" target="_blank"
-               href="https://www.peugeot.fr/marque-et-technologie/services_connectes/mise-a-jour-cartographie-gps.html">
+            <a class="nav-link" role="tab" aria-selected="false" target="_blank" href="https://www.peugeot.fr/marque-et-technologie/services_connectes/mise-a-jour-cartographie-gps.html">
                 Mise à jour cartographie et système pour les produits NAC
             </a>
         </div>
@@ -128,13 +123,11 @@
                     </button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src='https://barcode.tec-it.com/barcode.ashx?data={{ xelon.vin }}%0A&code=&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&qunit=Mm&quiet=0'
-                         alt='{{ xelon.vin }}'/>
+                    <img src='https://barcode.tec-it.com/barcode.ashx?data={{ xelon.vin }}%0A&code=&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&qunit=Mm&quiet=0' alt='{{ xelon.vin }}'/>
                     <hr>
                     <div class="text-center" style='padding:10px; font-size:15px; font-family:Arial,Helvetica;'>
                         <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>
-                            <img src='https://www.tec-it.com/pics/banner/web/TEC-IT_Banner_120x42.gif'
-                                 alt='Barcode Software by TEC-IT'/>
+                            <img src='https://www.tec-it.com/pics/banner/web/TEC-IT_Banner_120x42.gif' alt='Barcode Software by TEC-IT'/>
                         </a>
                         <br/>
                         <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT'>Barcode Software</a>

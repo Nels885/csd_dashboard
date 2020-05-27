@@ -25,8 +25,7 @@
 
             <tr>
                 <td class="bg-white">
-                    <a href="{% url 'reman:edit_repair' pk=file.pk %}" title="Modification dossier"
-                       class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'reman:edit_repair' pk=file.pk %}" title="Modification dossier" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td>{{ file.batch }}</td>
                 <td>{{ file.identify_number }}</td>

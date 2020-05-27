@@ -4,15 +4,14 @@
 
 <div class="form-group row">
     <div class="col-sm-6 mb-3 mb-sm-0">
-        <label for="{{ form.ref_boitier.id_for_label }}">{% trans "Case reference" %} : <span
-                class="text-danger">*</span></label>
+        <label for="{{ form.ref_boitier.id_for_label }}">{% trans "Case reference" %} :
+            <span class="text-danger">*</span></label>
 
         {{ form.ref_boitier }}
 
     </div>
     <div class="col-sm-3">
-        <label for="{{ form.produit.id_for_label }}">{% trans "Product" %} : <span
-                class="text-danger">*</span></label>
+        <label for="{{ form.produit.id_for_label }}">{% trans "Product" %} : <span class="text-danger">*</span></label>
 
         {{ form.produit }}
 
@@ -64,8 +63,7 @@
 
     </div>
     <div class="col-sm-3">
-        <label for="{{ form.media.id_for_label }}">{% trans "Media type" %} : <span
-                class="text-danger">*</span></label>
+        <label for="{{ form.media.id_for_label }}">{% trans "Media type" %} : <span class="text-danger">*</span></label>
 
         {{ form.media }}
 
@@ -77,8 +75,8 @@
 
     </div>
     <div class="col-sm-3">
-        <label for="{{ form.connecteur_ecran.id_for_label }}">{% trans "Screens number" %} : <span
-                class="text-danger">*</span></label>
+        <label for="{{ form.connecteur_ecran.id_for_label }}">{% trans "Screens number" %} :
+            <span class="text-danger">*</span></label>
 
         {{ form.connecteur_ecran }}
 
@@ -100,7 +98,6 @@
     {% endfor %}
 {% endif %}
 
-<button type="submit" name="btn_raspeedi_insert"
-        class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-block">
+<button type="submit" name="btn_raspeedi_insert" class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-block">
     {% trans "Submit" %}
 </button>

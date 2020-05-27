@@ -28,12 +28,10 @@
 
             <tr {% if "PSA" in file.famille_client and "VF3" in file.vin and "VF7" in file.vin and not file.corvet.exists %}class="bg-danger text-light"{% endif %}>
                 <td class="bg-white">
-                    <a href="{% url 'squalaetp:xelon_edit' file_id=file.id %}" title="Modification VIN et Corvet"
-                       class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'squalaetp:xelon_edit' file_id=file.id %}" title="Modification VIN et Corvet" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="bg-white">
-                    <a href="{% url 'squalaetp:detail' file_id=file.id %}" title="Détail"
-                       class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                    <a href="{% url 'squalaetp:detail' file_id=file.id %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
                 <td>{{ file.numero_de_dossier }}</td>
                 <td>{{ file.vin }}</td>
