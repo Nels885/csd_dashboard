@@ -11,8 +11,8 @@ from utils.conf import DICT_YEAR
 
 
 class EcuModel(models.Model):
-    es_reference = models.CharField("référence EMS", max_length=10, unique=True)
-    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
+    es_reference = models.CharField("référence EMS", max_length=10, unique=True, blank=True)
+    es_raw_reference = models.CharField("référence EMS brute", max_length=10)
     oe_reference = models.CharField("référence OEM", max_length=10)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
     sw_reference = models.CharField("software", max_length=10, blank=True)

@@ -180,3 +180,22 @@ def import_sparepart(request):
         except KeyError:
             messages.warning(request, "Le fichier n'est pas correctement formaté")
     return redirect('reman:import_export')
+
+
+@permission_required('reman.add_ecumodel', 'reman.change_ecumodel')
+def import_ecureference(request):
+    if request.method == 'POST':
+        try:
+            if request.FILES["myfile"]:
+                my_file = request.FILES["myfile"]
+                file_url = handle_uploaded_file(my_file)
+                call_command("ecureference", "--file", file_url)
+                messages.success(request, 'Upload terminé !')
+                return redirect('reman:ecu_table')
+        except MultiValueDictKeyError:
+            messages.warning(request, 'Le fichier est absent !')
+        except UnicodeDecodeError:
+            messages.warning(request, 'Format de fichier incorrect !')
+        except KeyError:
+            messages.warning(request, "Le fichier n'est pas correctement formaté")
+    return redirect('reman:import_export')

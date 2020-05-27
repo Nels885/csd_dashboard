@@ -76,7 +76,8 @@
 
     <h3 class="text-gray-800 mb-4 mt-5">Importation des données REMAN :</h3>
 
-    <form class="form-inline mb-4" method="post" enctype="multipart/form-data">
+    <form class="form-inline mb-4" method="post" enctype="multipart/form-data"
+          action="{% url 'import_export:import_ecu' %}">
 
         {% csrf_token %}
 

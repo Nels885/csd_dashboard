@@ -48,7 +48,7 @@ class ExcelSqualaetp(ExcelFormat):
         for line in range(self.nrows):
             df_corvet = self.sheet.drop(self.CORVET_DROP_COLS, axis='columns')
             row = df_corvet.loc[line]  # get the data in the ith row
-            if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[1] is not None:
+            if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[2] != '':
                 data.append(dict(row.dropna()))
         return data
 

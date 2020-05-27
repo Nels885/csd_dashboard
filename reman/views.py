@@ -1,14 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required
-from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.core.management import call_command
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
-from utils.file import handle_uploaded_file
 
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
@@ -83,27 +80,13 @@ def ecu_model_table(request):
     return render(request, 'reman/ecu_model_table.html', context)
 
 
-@permission_required(['squalaetp.add_corvet', 'reman.add_ecumodel', 'reman.change_ecumodel'])
+@permission_required(['squalaetp.add_corvet'])
 def import_export(request):
     """ View of import/export files page """
     table_title = 'Import Export'
     form_corvet = ExportCorvetForm()
     form_reman = ExportRemanForm()
     context.update(locals())
-    if request.method == 'POST':
-        try:
-            if request.FILES["myfile"]:
-                my_file = request.FILES["myfile"]
-                file_url = handle_uploaded_file(my_file)
-                call_command("ecureference", "--file", file_url)
-                messages.success(request, 'Upload terminé !')
-                return redirect('reman:ecu_table')
-        except MultiValueDictKeyError:
-            messages.warning(request, 'Le fichier est absent !')
-        except UnicodeDecodeError:
-            messages.warning(request, 'Format de fichier incorrect !')
-        except KeyError:
-            messages.warning(request, "Le fichier n'est pas correctement formaté")
     return render(request, 'reman/import_export.html', context)
 
 
