@@ -1,5 +1,5 @@
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import permission_required
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 from django.contrib import messages
@@ -13,6 +13,20 @@ from .forms import ExportCorvetForm, ExportRemanForm
 from utils.file.export import export_csv
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
+
+context = {
+    'title': 'Import / Export'
+}
+
+
+@login_required()
+def import_export(request):
+    """ View of import/export files page """
+    table_title = 'Import Export'
+    form_corvet = ExportCorvetForm()
+    form_reman = ExportRemanForm()
+    context.update(locals())
+    return render(request, 'import_export/import_export.html', context)
 
 
 def export_corvet(request):
@@ -179,7 +193,7 @@ def import_sparepart(request):
             messages.warning(request, 'Format de fichier incorrect !')
         except KeyError:
             messages.warning(request, "Le fichier n'est pas correctement formaté")
-    return redirect('reman:import_export')
+    return redirect('import_export:detail')
 
 
 @permission_required('reman.add_ecumodel', 'reman.change_ecumodel')
@@ -198,4 +212,4 @@ def import_ecureference(request):
             messages.warning(request, 'Format de fichier incorrect !')
         except KeyError:
             messages.warning(request, "Le fichier n'est pas correctement formaté")
-    return redirect('reman:import_export')
+    return redirect('import_export:detail')

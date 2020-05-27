@@ -13,5 +13,4 @@ urlpatterns = [
     path('batch/table/', views.batch_table, name='batch_table'),
     path('batch/create/', views.BatchCreateView.as_view(), name='create_batch'),
     path('ecu/table/', views.ecu_model_table, name='ecu_table'),
-    path('import-export/', views.import_export, name='import_export'),
 ]

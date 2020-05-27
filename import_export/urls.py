@@ -5,6 +5,7 @@ from . import views
 app_name = 'import_export'
 
 urlpatterns = [
+    path('detail/', views.import_export, name='detail'),
     path('export/corvet/', views.export_corvet, name='corvet'),
     path('export/reman/', views.export_reman, name='reman'),
     path('export/csv/corvet/', views.export_corvet_csv, name='export_corvet_csv'),

@@ -63,4 +63,14 @@ class ImportExportTestCase(UnitTest):
         self.add_perms_user(SparePart, 'add_sparepart', 'change_sparepart')
         self.login()
         response = self.client.get(reverse('import_export:import_part'))
-        self.assertRedirects(response, '/reman/import-export/', status_code=302)
+        self.assertRedirects(response, '/import-export/detail/', status_code=302)
+
+    def test_import_export_page(self):
+        response = self.client.get(reverse('import_export:detail'))
+        self.assertRedirects(response, '/accounts/login/?next=/import-export/detail/', status_code=302)
+
+        self.add_perms_user(EcuModel, 'add_ecumodel', 'change_ecumodel')
+        self.add_perms_user(Corvet, 'add_corvet')
+        self.login()
+        response = self.client.get(reverse('import_export:detail'))
+        self.assertEqual(response.status_code, 200)
