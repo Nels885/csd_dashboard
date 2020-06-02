@@ -123,7 +123,7 @@ class Command(BaseCommand):
             excels.append(ExcelDelayAnalysis(file))
         nb_prod_before = model.objects.count()
         model.objects.exclude(
-            type_de_cloture__in=['Réparé', 'Rebut'], date_retour__isnull=True).update(type_de_cloture='Réparé')
+            type_de_cloture='Rebut', date_retour__isnull=True).update(type_de_cloture='Réparé')
         for excel in excels:
             for row in excel.table():
                 try:
