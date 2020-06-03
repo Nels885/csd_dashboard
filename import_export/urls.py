@@ -17,4 +17,5 @@ urlpatterns = [
     path('export/csv/repair/', views.export_repair_csv, name='export_repair_csv'),
     path('import/part/', views.import_sparepart, name='import_part'),
     path('import/ecu/', views.import_ecureference, name='import_ecu'),
+    path('import/ecu-base/', views.import_ecurefbase, name='import_ecu_base'),
 ]

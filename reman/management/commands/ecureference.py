@@ -5,7 +5,7 @@ from django.db import connection
 from reman.models import EcuModel
 from utils.conf import XLS_ECU_CROSS_REFERENCE
 
-from ._excel_ecu_cross_reference import ExcelEcuCrossReference
+from ._excel_reman import ExcelEcuCrossReference
 
 import logging as log
 

@@ -35,7 +35,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.DANGER("Suppression des données de la table SparePart terminée!"))
+            self.stdout.write(self.style.WARNING("Suppression des données de la table SparePart terminée!"))
         else:
             if options['filename'] is not None:
                 extraction = CsvSparePart(options['filename'])
@@ -46,13 +46,9 @@ class Command(BaseCommand):
             nb_part_update = 0
             for row in extraction.read():
                 log.info(row)
-                spare_parts = SparePart.objects.filter(code_produit=row["code_produit"])
-                if spare_parts:
-                    spare_parts.update(**row)
+                obj, created = SparePart.objects.update_or_create(**row)
+                if not created:
                     nb_part_update += 1
-                else:
-                    m = SparePart(**row)
-                    m.save()
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
