@@ -10,7 +10,6 @@ from utils.django.urls import reverse, reverse_lazy
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm
-from import_export.forms import ExportCorvetForm, ExportRemanForm
 
 context = {
     'title': 'Reman'
@@ -71,23 +70,13 @@ def part_table(request):
     return render(request, 'reman/part_table.html', context)
 
 
-@permission_required('reman.view_ecumodel')
-def ecu_model_table(request):
+@permission_required('reman.view_ecurefbase')
+def ecu_ref_table(request):
     """ View of ECU Cross Reference table page """
     table_title = 'Liste des ECU Cross Référence'
     ecus = EcuModel.objects.all()
     context.update(locals())
-    return render(request, 'reman/ecu_model_table.html', context)
-
-
-@permission_required(['squalaetp.add_corvet'])
-def import_export(request):
-    """ View of import/export files page """
-    table_title = 'Import Export'
-    form_corvet = ExportCorvetForm()
-    form_reman = ExportRemanForm()
-    context.update(locals())
-    return render(request, 'reman/import_export.html', context)
+    return render(request, 'reman/ecu_ref_table.html', context)
 
 
 @permission_required('reman.change_repair')
