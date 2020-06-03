@@ -1,3 +1,5 @@
+from io import StringIO
+
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models.functions import Cast, TruncSecond
@@ -184,8 +186,10 @@ def import_sparepart(request):
             if request.FILES["myfile"]:
                 my_file = request.FILES["myfile"]
                 file_url = handle_uploaded_file(my_file)
-                call_command("spareparts", "--file", file_url)
-                messages.success(request, 'Upload terminé !')
+                out = StringIO()
+                call_command("spareparts", "--file", file_url, stdout=out)
+                messages.success(request, out.getvalue())
+                # messages.success(request, 'Upload terminé !')
                 return redirect('reman:part_table')
         except MultiValueDictKeyError:
             messages.warning(request, 'Le fichier est absent !')
@@ -203,8 +207,10 @@ def import_ecureference(request):
             if request.FILES["myfile"]:
                 my_file = request.FILES["myfile"]
                 file_url = handle_uploaded_file(my_file)
-                call_command("ecureference", "--file", file_url)
-                messages.success(request, 'Upload terminé !')
+                out = StringIO()
+                call_command("ecureference", "--file", file_url, stdout=out)
+                messages.success(request, out.getvalue())
+                # messages.success(request, 'Upload terminé !')
                 return redirect('reman:ecu_table')
         except MultiValueDictKeyError:
             messages.warning(request, 'Le fichier est absent !')

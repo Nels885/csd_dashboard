@@ -26,6 +26,16 @@ class EcuModel(models.Model):
         return "{} {}".format(self.hw_reference, self.technical_data)
 
 
+class EcuRefBase(models.Model):
+    reman_reference = models.CharField("référence REMAN", max_length=10)
+    psa_barcode = models.CharField("code barre PSA", max_length=10)
+    ecu_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
+    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, blank=True)
+
+    def __str__(self):
+        return self.psa_barcode
+
+
 class Batch(models.Model):
     year = models.CharField("années", max_length=1)
     number = models.IntegerField("numéro de lot", validators=[MaxValueValidator(999), MinValueValidator(1)])
@@ -122,12 +132,3 @@ class SparePart(models.Model):
 
     def __str__(self):
         return self.code_produit
-
-
-class EcuRefBase(models.Model):
-    psa_barcode = models.CharField("code barre PSA", max_length=10, blank=True)
-    ecu_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
-    spare_part = models.ForeignKey(SparePart, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.psa_barcode
