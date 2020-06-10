@@ -8,7 +8,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
 
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel
+from .models import Repair, SparePart, Batch, EcuModel, EcuRefBase
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm, CheckPartForm
 
 context = {
@@ -98,12 +98,12 @@ def check_parts(request):
     card_title = "Check Spare Parts"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
-        ecu_model = EcuModel.objects.filter(psa_barcode__exact=form.cleaned_data['psa_barcode'])
-        if ecu_model:
-            messages.success(request, 'OK')
-            messages.success(request, 'test OK')
+        msg_list = EcuRefBase.part_list(form.cleaned_data['psa_barcode'])
+        if msg_list:
+            for msg in msg_list:
+                messages.success(request, msg)
         else:
-            messages.warning(request, 'ERROR')
+            messages.warning(request, "Ce code barre PSA n'éxiste pas dans la base de données")
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
 

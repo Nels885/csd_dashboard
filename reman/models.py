@@ -15,10 +15,10 @@ class EcuModel(models.Model):
     es_reference = models.CharField("référence EMS", max_length=10, blank=True)
     es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
+    oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
     hw_reference = models.CharField("hardware", max_length=10)
-    former_oe_reference = models.CharField("ancienne référence OEM", max_length=10, blank=True)
+    former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
@@ -34,6 +34,23 @@ class EcuRefBase(models.Model):
 
     def save(self, *args, **kwargs):
         super(EcuRefBase, self).save(*args, **kwargs)
+
+    @staticmethod
+    def part_list(psa_barcode):
+        ecu_models = EcuModel.objects.filter(psa_barcode__exact=psa_barcode)
+        msg_list = []
+        if ecu_models:
+            for ecu_model in ecu_models:
+                bases = ecu_model.ecu_ref_base.all()
+                reman_refs = ', '.join([base.reman_reference for base in bases])
+                xelon_refs = ', '.join(
+                    [base.spare_part.code_produit for base in bases if base.spare_part])
+                location = ', '.join([base.spare_part.code_emplacement for base in bases if base.spare_part])
+                msg_list.append(
+                    'Réf. REMAN : {}  -  Réf. XELON : {}  -  EMPLACEMENT : {}'.format(reman_refs, xelon_refs, location))
+            return msg_list
+        else:
+            return None
 
     def __str__(self):
         return self.reman_reference
@@ -128,7 +145,7 @@ class SparePart(models.Model):
     code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
     code_produit = models.CharField('code Produit', max_length=100)
     code_zone = models.CharField('code Zone', max_length=20, blank=True)
-    code_site = models.IntegerField('code Site', blank=True)
+    code_site = models.IntegerField('code Site', null=True, blank=True)
     code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
     repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)

@@ -3,7 +3,7 @@ from django.core.management.color import no_style
 from django.db import connection
 from django.db.utils import DataError
 
-from reman.models import EcuRefBase, EcuModel
+from reman.models import EcuRefBase, EcuModel, SparePart
 from utils.conf import XLS_ECU_REF_BASE
 
 from ._excel_reman import ExcelEcuRefBase
@@ -47,12 +47,19 @@ class Command(BaseCommand):
                 extraction = ExcelEcuRefBase(XLS_ECU_REF_BASE)
 
             nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
-            nb_base_update, nb_ecu_update = 0, 0
+            nb_base_update, nb_ecu_update, nb_part_update = 0, 0, 0
             for row in extraction.read():
                 log.info(row)
                 reman_reference = row["reman_reference"]
-                del row['reman_reference']
+                code_produit = row["code_produit"]
+                del row["reman_reference"]
+                del row["code_produit"]
                 try:
+                    # Update or Create SpareParts
+                    part_obj, part_created = SparePart.objects.update_or_create(code_produit=code_produit)
+                    if not part_created:
+                        nb_part_update += 1
+
                     # Update or Create EcurefBase
                     base_obj, base_created = EcuRefBase.objects.update_or_create(reman_reference=reman_reference)
                     if not base_created:
@@ -65,6 +72,8 @@ class Command(BaseCommand):
 
                     if base_obj:
                         base_obj.ecu_models.add(ecu_obj)
+                        base_obj.spare_part = part_obj
+                        base_obj.save()
                 except DataError as err:
                     print("DataError: {} - {}".format(reman_reference, err))
             nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
