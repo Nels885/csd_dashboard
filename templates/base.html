@@ -60,16 +60,16 @@
             <!-- Main Content -->
             <div id="content">
 
+                {% include 'base/top_bar.html' %}
+
                 {% block messages %}
 
                     {% include 'base/_messages.html' %}
 
                 {% endblock %}
 
-                {% include 'base/top_bar.html' %}
-
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid mt-4">
 
                     {% include 'base/_header.html' %}
 

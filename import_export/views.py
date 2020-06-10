@@ -188,7 +188,8 @@ def import_sparepart(request):
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
                 call_command("spareparts", "--file", file_url, stdout=out)
-                messages.success(request, out.getvalue())
+                for msg in out.getvalue().split("\n"):
+                    messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')
                 return redirect('reman:part_table')
         except MultiValueDictKeyError:
@@ -209,7 +210,8 @@ def import_ecureference(request):
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
                 call_command("ecureference", "--file", file_url, stdout=out)
-                messages.success(request, out.getvalue())
+                for msg in out.getvalue().split("\n"):
+                    messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')
                 return redirect('reman:ecu_table')
         except MultiValueDictKeyError:
@@ -230,7 +232,8 @@ def import_ecurefbase(request):
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
                 call_command("ecurefbase", "--file", file_url, stdout=out)
-                messages.success(request, out.getvalue())
+                for msg in out.getvalue().split("\n"):
+                    messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')
                 return redirect('reman:ecu_table')
         except MultiValueDictKeyError:

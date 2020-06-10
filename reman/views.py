@@ -101,6 +101,7 @@ def check_parts(request):
         ecu_model = EcuModel.objects.filter(psa_barcode__exact=form.cleaned_data['psa_barcode'])
         if ecu_model:
             messages.success(request, 'OK')
+            messages.success(request, 'test OK')
         else:
             messages.warning(request, 'ERROR')
     context.update(locals())
