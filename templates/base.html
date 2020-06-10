@@ -22,19 +22,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard:charts' %}">
-                    <i class=" fas fa-fw fa-tachometer-alt"></i>
-                    <span>{% trans "Dashboard" %}</span></a>
-            </li>
-
-            <!-- Nav Item - thermal chamber -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'tools:thermal' %}">
-                    <i class=" fas fa-fw fa-thermometer"></i>
-                    <span>{% trans "Thermal chamber" %}</span></a>
-            </li>
+            {% include 'nav/nav_general.html' %}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -43,13 +31,15 @@
 
             {% include 'nav/nav_in_out.html' %}
 
+            {% include 'nav/nav_spare_parts.html' %}
+
             {% include 'nav/nav_csd_admin.html' %}
 
             {% include 'nav/nav_tools.html' %}
 
             {% include 'nav/nav_gestion.html' %}
 
-{#            {% include 'demo/nav_demo.html' %}#}
+            {#            {% include 'demo/nav_demo.html' %}#}
 
             {% include 'nav/nav_interface.html' %}
 
@@ -70,20 +60,11 @@
             <!-- Main Content -->
             <div id="content">
 
-                <div>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div style="border-radius:0;" {% if message.tags %}
-                                 class="alert alert-icon alert-{{ message.tags }} alert-dismissible fade show mb-0"
-                                 role="alert" {% endif %}>
-                                {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
+                {% block messages %}
+
+                    {% include 'base/_messages.html' %}
+
+                {% endblock %}
 
                 {% include 'base/top_bar.html' %}
 

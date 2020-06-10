@@ -8,7 +8,7 @@ class ExcelDelayAnalysis(ExcelFormat):
                  'date_daccord_de_la_demande', 'delai_prevu_sp', 'nom_equipe', 'n_commande_de_travaux']
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S"}
 
-    def __init__(self, file, sheet_index=0, columns=None):
+    def __init__(self, file, sheet_name=0, columns=None):
         """
         Initialize ExcelDelayAnalysis class
         :param file:
@@ -18,7 +18,7 @@ class ExcelDelayAnalysis(ExcelFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super(ExcelDelayAnalysis, self).__init__(file, sheet_index, columns, skip_rows=8)
+        super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8)
         self._columns_convert(digit=False)
         self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
         self.sheet.drop(columns=self.DROP_COLS, inplace=True)

@@ -44,7 +44,7 @@ class CorvetForm(forms.ModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(CorvetForm, self).clean()
         data = cleaned_data.get("xml_data")
         vin = cleaned_data.get("vin")
         if data and data['vin'] != vin:
@@ -57,7 +57,12 @@ class CorvetForm(forms.ModelForm):
         corvet = super(CorvetForm, self).save(commit=False)
         if data and commit:
             try:
-                Corvet.objects.update_or_create(**data)
+                querysets = Corvet.objects.filter(vin=data["vin"])
+                if querysets:
+                    del data["vin"]
+                    querysets.update(**data)
+                else:
+                    Corvet.objects.update_or_create(**data)
             except TypeError:
                 raise forms.ValidationError(_('An internal error has occurred. Thank you recommend your request'))
         return corvet
@@ -105,7 +110,7 @@ class CorvetModalForm(BSModalForm):
         return data
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(CorvetModalForm, self).clean()
         data = cleaned_data.get("xml_data")
         vin = cleaned_data.get("vin")
         if data and data['vin'] != vin:

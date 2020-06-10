@@ -9,7 +9,7 @@ from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, Cal
 from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon, Corvet
-from utils.data.analysis import ProductAnalysis, DealAnalysis
+from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
 from api.models import (query_table_by_args,
                         ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
                         xelon_filter, corvet_filter)
@@ -19,20 +19,14 @@ from .utils import TokenAuthSupportQueryString
 
 
 def documentation(request):
-    """
-    View of API Documentation page
-    """
-    context = {
-        'title': "Documentation API",
-        'card_title': 'Documentation'
-    }
-    return render(request, 'api/doc.html', context)
+    """ View of API Documentation page """
+    title = "Documentation API"
+    card_title = "Documentation"
+    return render(request, 'api/doc.html', locals())
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
+    """ API endpoint that allows users to be viewed or edited. """
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAdminUser,)
     queryset = User.objects.all().order_by('-date_joined')
@@ -40,9 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
+    """ API endpoint that allows groups to be viewed or edited. """
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAdminUser,)
     queryset = Group.objects.all()
@@ -50,9 +42,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class UnlockViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
+    """ API endpoint that allows groups to be viewed or edited. """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = UnlockProduct.objects.filter(active=True)
@@ -73,9 +63,7 @@ class UnlockViewSet(viewsets.ModelViewSet):
 
 
 class ProgViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows prog list to be viewed
-    """
+    """ API endpoint that allows prog list to be viewed """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Xelon.objects.all().prefetch_related('corvet')
@@ -90,15 +78,7 @@ class ProgViewSet(viewsets.ModelViewSet):
         :return:
             Serialized data
         """
-        # customer_file = self.request.query_params.get('xelon', None)
-        # vin = self.request.query_params.get('vin', None)
         ref_case = self.request.query_params.get('ref', None)
-        # if customer_file and vin:
-        #     queryset = Xelon.objects.filter(numero_de_dossier=customer_file, vin=vin).prefetch_related('corvet')
-        # elif customer_file:
-        #     queryset = Xelon.objects.filter(numero_de_dossier=customer_file).prefetch_related('corvet')
-        # elif vin:
-        #     queryset = Xelon.objects.filter(vin=vin).prefetch_related('corvet')
         if ref_case:
             self.serializer_class = RaspeediSerializer
             queryset = Raspeedi.objects.filter(ref_boitier=ref_case)
@@ -108,32 +88,14 @@ class ProgViewSet(viewsets.ModelViewSet):
 
 
 class CalViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows prog list to be viewed
-    """
+    """ API endpoint that allows prog list to be viewed """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Xelon.objects.all().prefetch_related('corvet')
     serializer_class = CalSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['numero_de_dossier', 'vin']
     http_method_names = ['get']
-
-    def get_queryset(self):
-        """
-        Provides the list of desired data
-        :return:
-            Serialized data
-        """
-        customer_file = self.request.query_params.get('xelon', None)
-        vin = self.request.query_params.get('vin', None)
-        if customer_file and vin:
-            queryset = Xelon.objects.filter(numero_de_dossier=customer_file, vin=vin).prefetch_related('corvet')
-        elif customer_file:
-            queryset = Xelon.objects.filter(numero_de_dossier=customer_file).prefetch_related('corvet')
-        elif vin:
-            queryset = Xelon.objects.filter(vin=vin).prefetch_related('corvet')
-        else:
-            queryset = Xelon.objects.all().prefetch_related('corvet')
-        return queryset
 
 
 @api_view(['GET'])
@@ -141,15 +103,9 @@ def charts(request):
     """
     API endpoint that allows chart data to be viewed
     """
-    analysis, deal = ProductAnalysis(), DealAnalysis()
-    prod_labels, prod_nb = analysis.products_count()
-    deal_labels, deal_nb = deal.count()
-    data = {
-        "prodLabels": prod_labels,
-        "prodDefault": prod_nb,
-        "dealLabels": deal_labels,
-        "dealDefault": deal_nb,
-    }
+    analysis, indicator = ProductAnalysis(), IndicatorAnalysis()
+    data = analysis.products_count()
+    data.update(indicator.result())
     return Response(data, status=status.HTTP_200_OK)
 
 

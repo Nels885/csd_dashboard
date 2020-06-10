@@ -5,7 +5,7 @@ from django.db import connection
 from reman.models import EcuModel
 from utils.conf import XLS_ECU_CROSS_REFERENCE
 
-from ._excel_ecu_cross_reference import ExcelEcuCrossReference
+from ._excel_reman import ExcelEcuCrossReference
 
 import logging as log
 
@@ -35,14 +35,12 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write("Suppression des données de la table EcuModel terminée!")
+            self.stdout.write(self.style.WARNING("Suppression des données de la table EcuModel terminée!"))
         else:
             if options['filename'] is not None:
                 extraction = ExcelEcuCrossReference(options['filename'])
             else:
                 extraction = ExcelEcuCrossReference(XLS_ECU_CROSS_REFERENCE)
-            self.stdout.write("Nombre de ligne dans Csv:    {}".format(extraction.nrows))
-            self.stdout.write("Noms des colonnes:           {}".format(extraction.columns))
 
             nb_part_before = EcuModel.objects.count()
             nb_part_update = 0
@@ -56,6 +54,10 @@ class Command(BaseCommand):
                     m = EcuModel(**row)
                     m.save()
             nb_part_after = EcuModel.objects.count()
-            self.stdout.write("Nombre de pièces ajoutés :     {}".format(nb_part_after - nb_part_before))
-            self.stdout.write("Nombre de pièces mise à jour:  {}".format(nb_part_update))
-            self.stdout.write("Nombre de pièces total :       {}".format(nb_part_after))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "EcuModel data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
+                    )
+                )
+            )

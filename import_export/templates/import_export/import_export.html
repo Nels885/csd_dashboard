@@ -2,17 +2,17 @@
 
 {% load static i18n %}
 
-{% block card_header %}
-
-    <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs" role="tablist">
-
-            {% include 'reman/tab_select.html' with select='import' %}
-
-        </ul>
-    </div>
-
-{% endblock %}
+{#{% block card_header %}#}
+{##}
+{#    <div class="card-header">#}
+{#        <ul class="nav nav-tabs card-header-tabs" role="tablist">#}
+{##}
+{#            {% include 'reman/tab_select.html' with select='import' %}#}
+{##}
+{#        </ul>#}
+{#    </div>#}
+{##}
+{#{% endblock %}#}
 
 {% block table_content %}
 
@@ -37,8 +37,7 @@
         </div>
 
         <button type="submit" class="btn btn-success btn-icon-split mb-2">
-            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span>
-            <span class="text">{% trans "Data Export" %}</span>
+            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
         </button>
 
     </form>
@@ -66,8 +65,7 @@
         </div>
 
         <button type="submit" class="btn btn-success btn-icon-split mb-2">
-            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span>
-            <span class="text">{% trans "Data Export" %}</span>
+            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
         </button>
 
     </form>
@@ -76,7 +74,8 @@
 
     <h3 class="text-gray-800 mb-4 mt-5">Importation des données REMAN :</h3>
 
-    <form class="form-inline mb-4" method="post" enctype="multipart/form-data">
+    <form class="form-inline mb-4" method="post" enctype="multipart/form-data"
+          action="{% url 'import_export:import_ecu' %}">
 
         {% csrf_token %}
 
@@ -90,12 +89,11 @@
             </div>
         </div>
         <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
-            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span>
-            <span class="text">{% trans "Excel Import" %}</span>
+            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Excel Import" %}</span>
         </button>
     </form>
 
-    <form class="form-inline" method="post" enctype="multipart/form-data"
+    <form class="form-inline mb-4" method="post" enctype="multipart/form-data"
           action="{% url 'import_export:import_part' %}">
 
         {% csrf_token %}
@@ -110,8 +108,26 @@
             </div>
         </div>
         <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
-            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span>
-            <span class="text">{% trans "Excel Import" %}</span>
+            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Csv Import" %}</span>
+        </button>
+    </form>
+
+    <form class="form-inline" method="post" enctype="multipart/form-data"
+          action="{% url 'import_export:import_ecu_base' %}">
+
+        {% csrf_token %}
+
+        <div class="input-group col-sm-5">
+            <div class="input-group-prepend mb-2">
+                <span class="input-group-text">Base Réf ECU</span>
+            </div>
+            <div class="custom-file mb-2">
+                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
+                <label class="custom-file-label" for="inputMyFile">Choose file</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
+            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Excel Import" %}</span>
         </button>
     </form>
 

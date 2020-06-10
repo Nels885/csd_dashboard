@@ -1,5 +1,7 @@
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import permission_required
+from io import StringIO
+
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 from django.contrib import messages
@@ -14,13 +16,27 @@ from utils.file.export import export_csv
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 
+context = {
+    'title': 'Import / Export'
+}
+
+
+@login_required()
+def import_export(request):
+    """ View of import/export files page """
+    table_title = 'Import Export'
+    form_corvet = ExportCorvetForm()
+    form_reman = ExportRemanForm()
+    context.update(locals())
+    return render(request, 'import_export/import_export.html', context)
+
 
 def export_corvet(request):
     form = ExportCorvetForm(request.POST or None)
     if form.is_valid():
         if request.user.has_perm('squalaetp.change_corvet'):
             product = form.cleaned_data['products']
-            if product in ['corvet', 'ecu', 'bsi', 'com']:
+            if product in ['corvet', 'ecu', 'bsi', 'com', 'bsm']:
                 return redirect('import_export:export_{}_csv'.format(product))
         messages.warning(request, _('You do not have the required permissions'))
     return redirect(request.META.get('HTTP_REFERER'))
@@ -112,6 +128,26 @@ def export_com_csv(request):
     return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
 
 
+@permission_required('squalaetp.change_corvet')
+def export_bsm_csv(request):
+    filename = 'BSM'
+    header = [
+        'Numero de dossier', 'V.I.N.', 'Modele produit', 'DATE_DEBUT_GARANTIE', '16B_BSM_HARD',
+        '46B_BSM_FOURN.NO.SERIE', '56B_BSM_FOURN.DATE.FAB', '66B_BSM_FOURN.CODE', '86B_BSM_DOTE', '96B_BSM_SOFT'
+    ]
+
+    bsis = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_16p__exact='').annotate(
+        date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
+    )
+    values_list = (
+        'numero_de_dossier', 'vin', 'modele_produit', 'date_debut_garantie', 'corvet__electronique_16b',
+        'corvet__electronique_46b', 'corvet__electronique_56b', 'corvet__electronique_66b', 'corvet__electronique_86b',
+        'corvet__electronique_96b'
+    )
+
+    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+
+
 @permission_required('reman.view_batch')
 def export_batch_csv(request):
     filename = 'batch_reman'
@@ -150,8 +186,10 @@ def import_sparepart(request):
             if request.FILES["myfile"]:
                 my_file = request.FILES["myfile"]
                 file_url = handle_uploaded_file(my_file)
-                call_command("spareparts", "--file", file_url)
-                messages.success(request, 'Upload terminé !')
+                out = StringIO()
+                call_command("spareparts", "--file", file_url, stdout=out)
+                messages.success(request, out.getvalue())
+                # messages.success(request, 'Upload terminé !')
                 return redirect('reman:part_table')
         except MultiValueDictKeyError:
             messages.warning(request, 'Le fichier est absent !')
@@ -159,4 +197,46 @@ def import_sparepart(request):
             messages.warning(request, 'Format de fichier incorrect !')
         except KeyError:
             messages.warning(request, "Le fichier n'est pas correctement formaté")
-    return redirect('reman:import_export')
+    return redirect('import_export:detail')
+
+
+@permission_required('reman.add_ecumodel', 'reman.change_ecumodel')
+def import_ecureference(request):
+    if request.method == 'POST':
+        try:
+            if request.FILES["myfile"]:
+                my_file = request.FILES["myfile"]
+                file_url = handle_uploaded_file(my_file)
+                out = StringIO()
+                call_command("ecureference", "--file", file_url, stdout=out)
+                messages.success(request, out.getvalue())
+                # messages.success(request, 'Upload terminé !')
+                return redirect('reman:ecu_table')
+        except MultiValueDictKeyError:
+            messages.warning(request, 'Le fichier est absent !')
+        except UnicodeDecodeError:
+            messages.warning(request, 'Format de fichier incorrect !')
+        except KeyError:
+            messages.warning(request, "Le fichier n'est pas correctement formaté")
+    return redirect('import_export:detail')
+
+
+@permission_required('reman.add_ecurefbase', 'reman.change_ecurefbase')
+def import_ecurefbase(request):
+    if request.method == 'POST':
+        try:
+            if request.FILES["myfile"]:
+                my_file = request.FILES["myfile"]
+                file_url = handle_uploaded_file(my_file)
+                out = StringIO()
+                call_command("ecurefbase", "--file", file_url, stdout=out)
+                messages.success(request, out.getvalue())
+                # messages.success(request, 'Upload terminé !')
+                return redirect('reman:ecu_table')
+        except MultiValueDictKeyError:
+            messages.warning(request, 'Le fichier est absent !')
+        except UnicodeDecodeError:
+            messages.warning(request, 'Format de fichier incorrect !')
+        except KeyError:
+            messages.warning(request, "Le fichier n'est pas correctement formaté")
+    return redirect('import_export:detail')

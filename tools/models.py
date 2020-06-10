@@ -2,6 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
 
 from squalaetp.models import Xelon
@@ -77,3 +78,11 @@ class ThermalChamber(models.Model):
             return "{} {}".format(self.created_by.last_name, self.created_by.first_name)
         else:
             return self.created_by.username
+
+
+class EtudeProject(models.Model):
+    name = models.CharField('projet', max_length=200)
+    progress = models.PositiveIntegerField('avancée en %', validators=[MaxValueValidator(100), MinValueValidator(0)])
+
+    def __str__(self):
+        return self.name

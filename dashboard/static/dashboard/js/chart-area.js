@@ -7,30 +7,49 @@ $.ajax({
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
         console.log(data);
-        let labels = data.dealLabels;
-        let defaultData = data.dealDefault;
+        const {areaLabels} = data;
+        const {prodsInValue} = data;
+        const {prodsExpValue} = data;
+        const {prodsLateValue} = data;
 
         // Area Chart Example
         var ctx = document.getElementById("dealAreaChart");
         var repairLineChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
-                datasets: [{
-                    data: defaultData,
-                    label: "Pdts en cours",
-                    lineTension: 0.3,
-                    backgroundColor: "rgba(78, 115, 223, 0.05)",
-                    borderColor: "rgba(78, 115, 223, 1)",
-                    pointRadius: 3,
-                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHoverRadius: 3,
-                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                    pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                }],
+                labels: areaLabels,
+                datasets: [
+                    {
+                        data: prodsInValue,
+                        label: "Pdts en IN",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBorderColor: "rgba(78, 115, 223, 1)",
+                    },
+                    {
+                        data: prodsExpValue,
+                        label: "Pdts en Exp",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(240, 132, 40, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(240, 132, 40, 1)",
+                        pointBorderColor: "rgba(240, 132, 40, 1)",
+                    },
+                    {
+                        data: prodsLateValue,
+                        label: "Pdts en Retard",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(214, 54, 33, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(214, 54, 33, 1)",
+                        pointBorderColor: "rgba(214, 54, 33, 1)",
+                    }
+                ],
             },
             options: {
                 maintainAspectRatio: false,

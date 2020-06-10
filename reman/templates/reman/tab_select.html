@@ -1,10 +1,5 @@
 {% load i18n %}
 
-<li class="nav-item {% if select == 'import' %}active{% endif %}">
-    <a class="nav-link {% if select == 'import' %}active{% endif %}" href="{% url 'reman:import_export' %}">
-        {% trans "Import-Export" %}
-    </a>
-</li>
 <li class="nav-item {% if select == 'batch' %}active{% endif %}">
     <a class="nav-link {% if select == 'batch' %}active{% endif %}" href="{% url 'reman:batch_table' %}">
         {% trans "batch list" %}
@@ -17,7 +12,7 @@
 {#</li>#}
 <li class="nav-item {% if select == 'ecu' %}active{% endif %}">
     <a class="nav-link {% if select == 'ecu' %}active{% endif %}" href="{% url 'reman:ecu_table' %}">
-        {% trans 'Ecu Cross Reference' %}
+        {% trans 'Ecu Reman Reference' %}
     </a>
 </li>
 

@@ -8,7 +8,7 @@ class ExcelSqualaetp(ExcelFormat):
     XELON_COLS = CORVET_DROP_COLS + ['vin']
     COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
-    def __init__(self, file, sheet_index=0, columns=None):
+    def __init__(self, file, sheet_name=0, columns=None):
         """
         Initialize ExcelSqualaetp class
         :param file:
@@ -18,7 +18,7 @@ class ExcelSqualaetp(ExcelFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super(ExcelSqualaetp, self).__init__(file, sheet_index, columns)
+        super(ExcelSqualaetp, self).__init__(file, sheet_name, columns)
         self._columns_convert()
         self.sheet.replace({"#": None}, inplace=True)
         self._date_converter(self.COLS_DATE)
@@ -48,7 +48,7 @@ class ExcelSqualaetp(ExcelFormat):
         for line in range(self.nrows):
             df_corvet = self.sheet.drop(self.CORVET_DROP_COLS, axis='columns')
             row = df_corvet.loc[line]  # get the data in the ith row
-            if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[1] is not None:
+            if re.match(r'^VF[37]\w{14}$', str(row[0])) and row[2] != '':
                 data.append(dict(row.dropna()))
         return data
 

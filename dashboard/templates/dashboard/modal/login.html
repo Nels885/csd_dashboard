@@ -35,14 +35,12 @@
 
         <!-- Hidden input field for custom redirection after successful login -->
         <input type="hidden" name="next" value="{{ success_url }}">
-        <button type="button" class="col-sm-6 offset-sm-3 btn btn-primary btn-user btn-block submit-btn"
-                formnovalidate="formnovalidate">{% trans "Login" %}
+        <button type="button" class="col-sm-6 offset-sm-3 btn btn-primary btn-user btn-block submit-btn" formnovalidate="formnovalidate">
+            {% trans "Login" %}
         </button>
         <hr>
         <div class="text-center">
-            <a class="small" href="{% url 'password_reset' %}">
-                {% trans "Forgot Password?" %}
-            </a>
+            <a class="small" href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}</a>
         </div>
     </div>
 </form>

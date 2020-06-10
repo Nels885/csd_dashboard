@@ -22,12 +22,6 @@ class Command(BaseCommand):
             help='Specify import Excel file',
         )
         parser.add_argument(
-            '--insert',
-            action='store_true',
-            dest='insert',
-            help='Insert Raspeedi table',
-        )
-        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -36,28 +30,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if options['insert']:
-            if options['filename'] is not None:
-                excel = ExcelRaspeedi(options['filename'])
-            else:
-                excel = ExcelRaspeedi(XLS_RASPEEDI_FILE)
-            self.stdout.write("Nombre de ligne dans Excel:    {}".format(excel.nrows))
-            self.stdout.write("Noms des colonnes:             {}".format(excel.columns))
-
-            nb_prod_before = Raspeedi.objects.count()
-            for row in excel.read():
-                log.info(row)
-                if row["ref_boitier"]:
-                    try:
-                        m = Raspeedi(**row)
-                        m.save()
-                    except IntegrityError as err:
-                        self.stderr.write("IntegrityError: {}".format(err))
-            nb_prod_after = Raspeedi.objects.count()
-            self.stdout.write("Nombre de produits ajoutés :   {}".format(nb_prod_after - nb_prod_before))
-            self.stdout.write("Nombre de produits total :     {}".format(nb_prod_after))
-
-        elif options['delete']:
+        if options['delete']:
             Raspeedi.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Raspeedi, ])
@@ -65,3 +38,35 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             self.stdout.write("Suppression des données de la table Raspeedi terminée!")
+
+        else:
+            if options['filename'] is not None:
+                excel = ExcelRaspeedi(options['filename'])
+            else:
+                excel = ExcelRaspeedi(XLS_RASPEEDI_FILE)
+            self.stdout.write("Nombre de ligne dans Excel:    {}".format(excel.nrows))
+            # self.stdout.write("Noms des colonnes:             {}".format(excel.columns))
+
+            nb_before = Raspeedi.objects.count()
+            nb_update = 0
+            for row in excel.read():
+                log.info(row)
+                # obj, created = Raspeedi.objects.get_or_create(**row)
+                # if not created:
+                #     nb_update += 1
+                if row["ref_boitier"]:
+                    try:
+                        m = Raspeedi(**row)
+                        m.save()
+                    except IntegrityError as err:
+                        self.stderr.write("IntegrityError: {}".format(err))
+            nb_after = Raspeedi.objects.count()
+            # self.stdout.write("Nombre de produits ajoutés :   {}".format(nb_after - nb_before))
+            # self.stdout.write("Nombre de produits total :     {}".format(nb_after))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Raspeedi data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        excel.nrows, nb_after - nb_before, nb_update, nb_after
+                    )
+                )
+            )

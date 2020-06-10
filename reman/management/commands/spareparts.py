@@ -35,27 +35,25 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write("Suppression des données de la table SparePart terminée!")
+            self.stdout.write(self.style.WARNING("Suppression des données de la table SparePart terminée!"))
         else:
             if options['filename'] is not None:
                 extraction = CsvSparePart(options['filename'])
             else:
                 extraction = CsvSparePart(CSV_EXTRACTION_FILE)
-            self.stdout.write("Nombre de ligne dans Csv:    {}".format(extraction.nrows))
-            self.stdout.write("Noms des colonnes:           {}".format(extraction.columns))
 
             nb_part_before = SparePart.objects.count()
             nb_part_update = 0
             for row in extraction.read():
                 log.info(row)
-                spare_parts = SparePart.objects.filter(code_produit=row["code_produit"])
-                if spare_parts:
-                    spare_parts.update(**row)
+                obj, created = SparePart.objects.update_or_create(**row)
+                if not created:
                     nb_part_update += 1
-                else:
-                    m = SparePart(**row)
-                    m.save()
             nb_part_after = SparePart.objects.count()
-            self.stdout.write("Nombre de pièces ajoutés :     {}".format(nb_part_after - nb_part_before))
-            self.stdout.write("Nombre de pièces mise à jour:  {}".format(nb_part_update))
-            self.stdout.write("Nombre de pièces total :       {}".format(nb_part_after))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "SpareParts data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
+                    )
+                )
+            )

@@ -11,12 +11,13 @@ from utils.conf import DICT_YEAR
 
 
 class EcuModel(models.Model):
-    es_reference = models.CharField("référence EMS", max_length=10, unique=True)
+    psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
+    es_reference = models.CharField("référence EMS", max_length=10, blank=True)
     es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
-    oe_reference = models.CharField("référence OEM", max_length=10)
+    oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
     sw_reference = models.CharField("software", max_length=10, blank=True)
-    hw_reference = models.CharField("hardware", max_length=10, blank=True)
+    hw_reference = models.CharField("hardware", max_length=10)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=10, blank=True)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
@@ -24,6 +25,18 @@ class EcuModel(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.hw_reference, self.technical_data)
+
+
+class EcuRefBase(models.Model):
+    reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
+    ecu_models = models.ManyToManyField(EcuModel, related_name='ecu_ref_base', blank=True)
+    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super(EcuRefBase, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.reman_reference
 
 
 class Batch(models.Model):
@@ -112,12 +125,12 @@ class Comment(models.Model):
 
 
 class SparePart(models.Model):
-    code_magasin = models.CharField('code Magasin', max_length=20)
+    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
     code_produit = models.CharField('code Produit', max_length=100)
-    code_zone = models.CharField('code Zone', max_length=20)
-    code_site = models.IntegerField('code Site')
-    code_emplacement = models.CharField('code Emplacement', max_length=10)
-    cumul_dispo = models.IntegerField('cumul Dispo')
+    code_zone = models.CharField('code Zone', max_length=20, blank=True)
+    code_site = models.IntegerField('code Site', blank=True)
+    code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)
+    cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
     repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)
 
     def __str__(self):
