@@ -30,9 +30,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['delete']:
+            EcuRefBase.ecu_models.through.objects.all().delete()
             EcuRefBase.objects.all().delete()
+            EcuModel.objects.all().delete()
 
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [EcuRefBase, ])
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(),
+                                                             [EcuRefBase.ecu_models.through, EcuRefBase, EcuModel])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
@@ -43,24 +46,39 @@ class Command(BaseCommand):
             else:
                 extraction = ExcelEcuRefBase(XLS_ECU_REF_BASE)
 
-            nb_before = EcuRefBase.objects.count()
-            nb_update = 0
+            nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
+            nb_base_update, nb_ecu_update = 0, 0
             for row in extraction.read():
                 log.info(row)
+                reman_reference = row["reman_reference"]
+                del row['reman_reference']
                 try:
-                    ecu_models = EcuModel.objects.filter(hw_reference=row["hw_reference"])
-                    obj, created = EcuRefBase.objects.update_or_create(reman_reference=row["reman_reference"])
-                    if not created:
-                        nb_update += 1
-                    for ecu_model in ecu_models:
-                        obj.ecu_models.add(ecu_model)
+                    # Update or Create EcurefBase
+                    base_obj, base_created = EcuRefBase.objects.update_or_create(reman_reference=reman_reference)
+                    if not base_created:
+                        nb_base_update += 1
+
+                    # Update or Create Ecumodel
+                    ecu_obj, ecu_created = EcuModel.objects.update_or_create(**row)
+                    if not ecu_created:
+                        nb_ecu_update += 1
+
+                    if base_obj:
+                        base_obj.ecu_models.add(ecu_obj)
                 except DataError as err:
-                    print("DataError: {} - {}".format(row['reman_reference'], err))
-            nb_after = EcuRefBase.objects.count()
+                    print("DataError: {} - {}".format(reman_reference, err))
+            nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
                     "EcuRefBase data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                        extraction.nrows, nb_after - nb_before, nb_update, nb_after
+                        extraction.nrows, nb_base_after - nb_base_before, nb_base_update, nb_base_after
+                    )
+                )
+            )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "EcuModel data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        extraction.nrows, nb_ecu_after - nb_ecu_before, nb_ecu_update, nb_ecu_after
                     )
                 )
             )

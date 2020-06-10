@@ -144,3 +144,8 @@ class SparePartForm(forms.Form):
 
 
 SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
+
+
+class CheckPartForm(forms.Form):
+    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=10,
+                                  widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'}))

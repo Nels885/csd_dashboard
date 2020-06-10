@@ -53,7 +53,7 @@ class ExcelEcuRefBase(ExcelFormat):
         data = []
         for line in range(self.nrows):
             row = self.sheet.loc[line]
-            if row["reman_reference"] != "":
+            if row["reman_reference"] != "" and row["psa_barcode"] != "":
                 data.append(dict(row))
         return data
 

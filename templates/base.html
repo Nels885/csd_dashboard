@@ -31,13 +31,15 @@
 
             {% include 'nav/nav_in_out.html' %}
 
+            {% include 'nav/nav_spare_parts.html' %}
+
             {% include 'nav/nav_csd_admin.html' %}
 
             {% include 'nav/nav_tools.html' %}
 
             {% include 'nav/nav_gestion.html' %}
 
-{#            {% include 'demo/nav_demo.html' %}#}
+            {#            {% include 'demo/nav_demo.html' %}#}
 
             {% include 'nav/nav_interface.html' %}
 
@@ -58,7 +60,11 @@
             <!-- Main Content -->
             <div id="content">
 
-                {% include 'base/_messages.html' %}
+                {% block messages %}
+
+                    {% include 'base/_messages.html' %}
+
+                {% endblock %}
 
                 {% include 'base/top_bar.html' %}
 

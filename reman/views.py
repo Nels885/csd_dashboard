@@ -9,7 +9,7 @@ from utils.django.urls import reverse, reverse_lazy
 
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
-from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm
+from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm, CheckPartForm
 
 context = {
     'title': 'Reman'
@@ -92,6 +92,19 @@ def edit_repair(request, pk):
         return redirect(reverse('reman:repair_table', get={'filter': 'quality'}))
     context.update(locals())
     return render(request, 'reman/edit_repair.html', context)
+
+
+def check_parts(request):
+    card_title = "Check Spare Parts"
+    form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
+    if form.is_valid():
+        ecu_model = EcuModel.objects.filter(psa_barcode__exact=form.cleaned_data['psa_barcode'])
+        if ecu_model:
+            messages.success(request, 'OK')
+        else:
+            messages.warning(request, 'ERROR')
+    context.update(locals())
+    return render(request, 'reman/check_parts.html', context)
 
 
 class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):

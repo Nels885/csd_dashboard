@@ -22,6 +22,7 @@
             <th>Référence REMAN</th>
             <th>Référence OEM</th>
             <th>Référence OEM Brute</th>
+            <th>Code Barre PSA</th>
             <th>Hardware</th>
             <th>Software</th>
             <th>Modèle Produit</th>
@@ -36,6 +37,7 @@
                 <td>{{ ecu.ecu_ref_base.all|join:", " }}</td>
                 <td>{{ ecu.oe_reference }}</td>
                 <td>{{ ecu.oe_raw_reference }}</td>
+                <td>{{ ecu.psa_barcode }}</td>
                 <td>{{ ecu.hw_reference }}</td>
                 <td>{{ ecu.sw_reference }}</td>
                 <td>{{ ecu.technical_data }}</td>
