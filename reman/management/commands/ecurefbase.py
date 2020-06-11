@@ -15,6 +15,9 @@ class Command(BaseCommand):
     help = 'Interact with the EcuRefBase table in the database'
 
     def add_arguments(self, parser):
+        # Positional arguments
+        parser.add_argument('sheet_id', type=int)
+
         parser.add_argument(
             '-f',
             '--file',
@@ -42,9 +45,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("Suppression des données de la table EcuRefBase terminée!"))
         else:
             if options['filename'] is not None:
-                extraction = ExcelEcuRefBase(options['filename'])
+                extraction = ExcelEcuRefBase(options['filename'], sheet_name=options['sheet_id'])
             else:
-                extraction = ExcelEcuRefBase(XLS_ECU_REF_BASE)
+                extraction = ExcelEcuRefBase(XLS_ECU_REF_BASE, sheet_name=options['sheet_id'])
 
             nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
             nb_base_update, nb_ecu_update, nb_part_update = 0, 0, 0
