@@ -12,28 +12,21 @@ from utils.conf import DICT_YEAR
 
 class EcuModel(models.Model):
     psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
-    es_reference = models.CharField("référence EMS", max_length=10, blank=True)
-    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
+    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
+    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
+    es_reference = models.CharField("référence EMS", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
     hw_reference = models.CharField("hardware", max_length=10)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
+    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
+    ecu_ref_base = models.ForeignKey("EcuRefBase", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return "{} {}".format(self.hw_reference, self.technical_data)
-
-
-class EcuRefBase(models.Model):
-    reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
-    ecu_models = models.ManyToManyField(EcuModel, related_name='ecu_ref_base', blank=True)
-    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        super(EcuRefBase, self).save(*args, **kwargs)
+        return "{} {} {}".format(self.oe_raw_reference, self.psa_barcode, self.technical_data)
 
     @staticmethod
     def part_list(psa_barcode):
@@ -41,16 +34,18 @@ class EcuRefBase(models.Model):
         msg_list = []
         if ecu_models:
             for ecu_model in ecu_models:
-                bases = ecu_model.ecu_ref_base.all()
-                reman_refs = ', '.join([base.reman_reference for base in bases])
-                xelon_refs = ', '.join(
-                    [base.spare_part.code_produit for base in bases if base.spare_part])
-                location = ', '.join([base.spare_part.code_emplacement for base in bases if base.spare_part])
+                reman_refs = ecu_model.ecu_ref_base.reman_reference
+                xelon_refs = ecu_model.spare_part.code_produit
+                location = ecu_model.spare_part.code_emplacement
                 msg_list.append(
                     'Réf. REMAN : {}  -  Réf. XELON : {}  -  EMPLACEMENT : {}'.format(reman_refs, xelon_refs, location))
             return msg_list
         else:
             return None
+
+
+class EcuRefBase(models.Model):
+    reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
 
     def __str__(self):
         return self.reman_reference

@@ -69,14 +69,14 @@ class Command(BaseCommand):
                         nb_base_update += 1
 
                     # Update or Create Ecumodel
-                    ecu_obj, ecu_created = EcuModel.objects.update_or_create(**row)
+                    ecu_obj, ecu_created = EcuModel.objects.update_or_create(spare_part=part_obj, ecu_ref_base=base_obj, **row)
+                    # if part_obj:
+                    #     ecu_obj.spare_part = part_obj
+                    # if base_obj:
+                    #     ecu_obj.ecu_ref_base = base_obj
                     if not ecu_created:
                         nb_ecu_update += 1
-
-                    if base_obj:
-                        base_obj.ecu_models.add(ecu_obj)
-                        base_obj.spare_part = part_obj
-                        base_obj.save()
+                    # ecu_obj.save()
                 except DataError as err:
                     print("DataError: {} - {}".format(reman_reference, err))
             nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()

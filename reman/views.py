@@ -8,7 +8,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
 
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel, EcuRefBase
+from .models import Repair, SparePart, Batch, EcuModel
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm, CheckPartForm
 
 context = {
@@ -72,11 +72,11 @@ def part_table(request):
 
 @permission_required('reman.view_ecurefbase')
 def ecu_ref_table(request):
-    """ View of ECU Cross Reference table page """
-    table_title = 'Liste des ECU Cross Référence'
+    """ View of EcuRefBase table page """
+    table_title = 'Base ECU Reman'
     ecus = EcuModel.objects.all()
     context.update(locals())
-    return render(request, 'reman/ecu_ref_table.html', context)
+    return render(request, 'reman/ecu_ref_base_table.html', context)
 
 
 @permission_required('reman.change_repair')
@@ -98,7 +98,7 @@ def check_parts(request):
     card_title = "Check Spare Parts"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
-        msg_list = EcuRefBase.part_list(form.cleaned_data['psa_barcode'])
+        msg_list = EcuModel.part_list(form.cleaned_data['psa_barcode'])
         if msg_list:
             for msg in msg_list:
                 messages.success(request, msg)
