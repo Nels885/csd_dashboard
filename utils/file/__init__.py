@@ -1,6 +1,7 @@
 import os
 import re
 import glob
+import pandas as pd
 
 
 def list_dir(path, name=None):
@@ -55,6 +56,47 @@ class LogFile:
             for cal in cal_list:
                 f.writelines(cal)
         return len(cal_list)
+
+    def export_cal_xelon(self, file_name):
+        cal_list = []
+        path = os.path.join(self.path, 'LOG_ECU_IN')
+        df = self._dataframe(path)
+        data = df.pivot_table(index=['cal'], aggfunc='size')
+        for key, value in data.items():
+            if int(value) >= 3:
+                rows = df[df['cal'] == key]
+                cal_list.append(str(key) + ';' + ';'.join(rows['xelon'][:3]) + '\n')
+
+        # Descending order for CAL numbers
+        cal_list.sort(reverse=True)
+
+        # Creation of the CAL list file
+        with open(os.path.join(path, file_name), "w") as f:
+            for cal in cal_list:
+                f.writelines(cal)
+        return len(cal_list)
+
+    def _dataframe(self, path):
+        data = {"xelon": [], "cal": []}
+        for file in self.ecu:
+            with open(os.path.join(path, file), "r") as f:
+                try:
+                    xelon = cal = None
+                    for line in f.readlines():
+                        if "NumXelon=" in line:
+                            xelon = line.split("=")[1].strip()
+                            if not re.match(r'^[A_Z]00\d{7}$', xelon):
+                                xelon = None
+                        if "TxtCALPSA=" in line:
+                            cal = line.split("=")[1].strip()
+                            if not re.match(r'^9[68]\d{8}$', cal):
+                                cal = None
+                    if xelon and cal:
+                        data["xelon"].append(xelon)
+                        data["cal"].append(cal)
+                except UnicodeDecodeError:
+                    pass
+        return pd.DataFrame(data)
 
 
 def handle_uploaded_file(f):

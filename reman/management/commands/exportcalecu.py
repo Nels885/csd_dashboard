@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         log_file = LogFile(CSD_ROOT)
         file_name = "liste_CAL_PSA.txt"
-        nb_cal = log_file.export_cal(file_name)
+        nb_cal = log_file.export_cal_xelon(file_name)
         self.stdout.write(
             self.style.SUCCESS("export ECU CAL completed: NB_CAL = {} | FILE = {}".format(nb_cal, file_name))
         )
