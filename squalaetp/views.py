@@ -122,7 +122,7 @@ def corvet_detail(request, vin):
     dict_corvet = vars(corvet)
     for key in ["_state"]:
         del dict_corvet[key]
-    redirect = request.META.get('HTTP_REFERER')
+    # redirect = request.META.get('HTTP_REFERER')
     return render(request, 'squalaetp/corvet_detail.html', locals())
 
 

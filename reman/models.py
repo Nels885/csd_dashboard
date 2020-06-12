@@ -25,9 +25,6 @@ class EcuModel(models.Model):
     spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
     ecu_ref_base = models.ForeignKey("EcuRefBase", on_delete=models.CASCADE, null=True, blank=True)
 
-    def __str__(self):
-        return "{} {} {}".format(self.oe_raw_reference, self.psa_barcode, self.technical_data)
-
     @staticmethod
     def part_list(psa_barcode):
         ecu_models = EcuModel.objects.filter(psa_barcode__exact=psa_barcode)
@@ -42,6 +39,13 @@ class EcuModel(models.Model):
             return msg_list
         else:
             return None
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return "{} {} {}".format(self.oe_raw_reference, self.psa_barcode, self.technical_data)
 
 
 class EcuRefBase(models.Model):

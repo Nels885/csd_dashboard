@@ -1,0 +1,36 @@
+{% extends 'format/forms_format.html' %}
+
+{% load i18n %}
+
+{% block form_content %}
+
+    <div class="p-2">
+
+        <table class="table table-striped table-condensed mb-5">
+
+            <tbody>
+
+            <tr>
+                <td class="text-dark">Référence REMAN</td>
+                <td>{{ ecu.ecu_ref_base.reman_reference|default:"---" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Code produit XELON</td>
+                <td>{{ ecu.spare_part.code_produit|default:"---" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark">Emplacement</td>
+                <td>{{ ecu.spare_part.code_emplacement|default:"---" }}</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="text-center">
+            <a class="col-sm-2 align-self-center btn btn-primary btn-user"
+               href="{{ request.META.HTTP_REFERER }}">{% trans "Previous page" %}</a>
+        </div>
+
+    </div>
+
+{% endblock %}
