@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 14:31+0100\n"
+"POT-Creation-Date: 2020-06-12 12:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,66 +18,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/base.html:29 dashboard/views.py:49
-#: dashboard/views.py:101
-msgid "Dashboard"
-msgstr "Tableau de bord"
+#: dashboard/templates/dashboard/charts.html:163
+#: dashboard/templates/dashboard/index.html:49
+msgid "Edit"
+msgstr "Editer"
 
-#: dashboard/templates/dashboard/base.html:36
-msgid "Thermal chamber"
-msgstr "Chambre thermique"
-
-#: dashboard/templates/dashboard/base/top_bar.html:24
-msgid "Search Xelon or VIN..."
-msgstr "Rechercher Xelon ou VIN..."
-
-#: dashboard/templates/dashboard/base/top_bar.html:88
-msgid "English"
-msgstr "Anglais"
-
-#: dashboard/templates/dashboard/base/top_bar.html:97
-msgid "French"
-msgstr "Français"
-
-#: dashboard/templates/dashboard/base/top_bar.html:120
-msgid "Profile"
-msgstr "Mon Profil"
-
-#: dashboard/templates/dashboard/base/top_bar.html:124
-#: dashboard/templates/registration/profile.html:56
-msgid "Change password"
-msgstr "Changer le mot de passe"
-
-#: dashboard/templates/dashboard/base/top_bar.html:129
-msgid "Administration"
-msgstr "Administration"
-
-#: dashboard/templates/dashboard/base/top_bar.html:135
-#: dashboard/templates/dashboard/modal/signup.html:7
-msgid "New user"
-msgstr "Nouveau utilisateur"
-
-#: dashboard/templates/dashboard/base/top_bar.html:144
-msgid "Activity Log"
-msgstr "Journal d'activité"
-
-#: dashboard/templates/dashboard/base/top_bar.html:149
-#: dashboard/templates/dashboard/modal/logout.html:14
-#: dashboard/templates/dashboard/nav/nav_interface.html:38
-#: dashboard/templates/registration/profile.html:72
-msgid "Logout"
-msgstr "Déconnexion"
-
-#: dashboard/templates/dashboard/base/top_bar.html:156
-msgid "Guest"
-msgstr "Invité"
-
-#: dashboard/templates/dashboard/base/top_bar.html:165
-#: dashboard/templates/dashboard/modal/login.html:39
-#: dashboard/templates/dashboard/nav/nav_interface.html:13
-#: dashboard/templates/registration/login.html:48
-msgid "Login"
-msgstr "Connexion"
+#: dashboard/templates/dashboard/charts.html:166
+#: dashboard/templates/dashboard/index.html:53
+#: dashboard/templates/dashboard/modal/post_delete.html:19
+msgid "Delete"
+msgstr "Supprimer"
 
 #: dashboard/templates/dashboard/config.html:22
 #: dashboard/templates/dashboard/modal/signup.html:35
@@ -85,7 +35,6 @@ msgid "Submit"
 msgstr "Soumettre"
 
 #: dashboard/templates/dashboard/done.html:21
-#: dashboard/templates/registration/password_change_done.html:21
 msgid "Back to Dashboard"
 msgstr "Retour au Tableau de bord"
 
@@ -94,22 +43,15 @@ msgstr "Retour au Tableau de bord"
 msgid "Create Post"
 msgstr "Ajout d'un Post"
 
-#: dashboard/templates/dashboard/index.html:49
-msgid "Edit"
-msgstr "Editer"
-
-#: dashboard/templates/dashboard/index.html:53
-#: dashboard/templates/dashboard/modal/post_delete.html:20
-msgid "Delete"
-msgstr "Supprimer"
-
 #: dashboard/templates/dashboard/modal/login.html:10
-#: dashboard/templates/registration/login.html:22
 msgid "Welcome Back!"
 msgstr "Vous avez un compte ?"
 
-#: dashboard/templates/dashboard/modal/login.html:44
-#: dashboard/templates/registration/login.html:54
+#: dashboard/templates/dashboard/modal/login.html:39
+msgid "Login"
+msgstr "Connexion"
+
+#: dashboard/templates/dashboard/modal/login.html:43
 msgid "Forgot Password?"
 msgstr "Mot de passe oublié ?"
 
@@ -125,10 +67,15 @@ msgstr ""
 
 #: dashboard/templates/dashboard/modal/logout.html:13
 #: dashboard/templates/dashboard/modal/post_create.html:53
-#: dashboard/templates/dashboard/modal/post_delete.html:19
+#: dashboard/templates/dashboard/modal/post_delete.html:18
 #: dashboard/templates/dashboard/modal/post_update.html:53
 msgid "Cancel"
 msgstr "Annuler"
+
+#: dashboard/templates/dashboard/modal/logout.html:14
+#: dashboard/templates/dashboard/profile.html:72
+msgid "Logout"
+msgstr "Déconnexion"
 
 #: dashboard/templates/dashboard/modal/post_create.html:54
 msgid "Create"
@@ -150,229 +97,203 @@ msgstr "Mettre à jour le Post"
 msgid "Update"
 msgstr "Mise à jour"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:27
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:61
-msgid "Current folder"
-msgstr "Dossiers en cours"
+#: dashboard/templates/dashboard/modal/signup.html:7
+msgid "New user"
+msgstr "Nouveau utilisateur"
 
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:28
-msgid "Late products"
-msgstr "Produits en retard"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:31
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:65
-msgid "Customer files"
-msgstr "Dossiers clients"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:32
-msgid "Corvet table"
-msgstr "Tableau Corvet"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:37
-msgid "Add Corvet"
-msgstr "Ajout Corvet"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:59
-msgid "Create file"
-msgstr "Création dossier"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:64
-msgid "Spare Parts"
-msgstr "Pièces détachées"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:70
-msgid "Create Batch"
-msgstr "Création lot"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:71
-msgid "batch list"
-msgstr "Liste des lots"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:94
-msgid "Unlock VIN"
-msgstr "Déverrouillage VIN"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:99
-msgid "Products table"
-msgstr "Table produits"
-
-#: dashboard/templates/dashboard/nav/nav_csd_atelier.html:105
-msgid "Add product"
-msgstr "Ajout produit"
-
-#: dashboard/templates/dashboard/nav/nav_interface.html:21
-#: dashboard/views.py:129
-msgid "SignUp"
-msgstr "S'inscrire"
-
-#: dashboard/templates/dashboard/nav/nav_tools.html:10
-msgid "Tools"
-msgstr "Outils"
-
-#: dashboard/templates/dashboard/nav/nav_tools.html:38
-msgid "Software list"
-msgstr "Liste Logiciels"
-
-#: dashboard/templates/dashboard/nav/nav_tools.html:43
-msgid "Software Add"
-msgstr "Ajout Logiciel"
-
-#: dashboard/templates/registration/password_change_form.html:26
-msgid "Old password"
-msgstr "Ancien mot de passe"
-
-#: dashboard/templates/registration/password_change_form.html:31
-msgid "New password"
-msgstr "Nouveau mot de passe"
-
-#: dashboard/templates/registration/password_change_form.html:43
-msgid "Confirmation of the new password"
-msgstr "Confirmation du nouveau mot de passe"
-
-#: dashboard/templates/registration/password_change_form.html:51
-msgid "You must fill all the fields"
-msgstr "Vous devez remplir tout les champs"
-
-#: dashboard/templates/registration/password_change_form.html:57
-msgid "Old password does not match your account"
-msgstr "L'ancien mot de passe ne correspond pas à celui de votre compte"
-
-#: dashboard/templates/registration/password_change_form.html:63
-msgid "The new password is invalid"
-msgstr "Le nouveau mot de passe est invalide"
-
-#: dashboard/templates/registration/password_change_form.html:73
-msgid "Validate the change"
-msgstr "Valider le changement"
-
-#: dashboard/templates/registration/password_reset_complete.html:17
-msgid "Your password has been set.  You may go ahead and log in now."
-msgstr ""
-
-#: dashboard/templates/registration/password_reset_complete.html:23
-msgid "Log in"
-msgstr ""
-
-#: dashboard/templates/registration/password_reset_confirm.html:19
-msgid ""
-"Please enter your new password twice so we can verify you typed it in "
-"correctly."
-msgstr ""
-
-#: dashboard/templates/registration/password_reset_confirm.html:42
-msgid "Change my password"
-msgstr "Changer le mot de passe"
-
-#: dashboard/templates/registration/password_reset_confirm.html:48
-msgid ""
-"The password reset link was invalid, possibly because it has already been "
-"used.  Please request a new password reset."
-msgstr ""
-
-#: dashboard/templates/registration/password_reset_done.html:17
-msgid ""
-"We’ve emailed you instructions for setting your password, if an account "
-"exists with the email you entered. You should receive them shortly."
-msgstr ""
-
-#: dashboard/templates/registration/password_reset_done.html:19
-msgid ""
-"If you don’t receive an email, please make sure you’ve entered the address "
-"you registered with, and check your spam folder."
-msgstr ""
-
-#: dashboard/templates/registration/password_reset_form.html:17
-msgid ""
-"Forgotten your password? Enter your email address below, and we’ll email "
-"instructions for setting a new one."
-msgstr ""
-
-#: dashboard/templates/registration/password_reset_form.html:38
-msgid "Reset my password"
-msgstr "Nouveau mot de passe"
-
-#: dashboard/templates/registration/profile.html:29
+#: dashboard/templates/dashboard/profile.html:29
 msgid "Profile picture"
 msgstr "Image de profile"
 
-#: dashboard/templates/registration/profile.html:41
+#: dashboard/templates/dashboard/profile.html:41
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: dashboard/templates/registration/profile.html:45
+#: dashboard/templates/dashboard/profile.html:45
 msgid "Last name"
 msgstr "Nom de famille"
 
-#: dashboard/templates/registration/profile.html:49
+#: dashboard/templates/dashboard/profile.html:49
 msgid "First name"
 msgstr "Prénom"
 
-#: dashboard/templates/registration/profile.html:53
+#: dashboard/templates/dashboard/profile.html:53
 msgid "Password"
 msgstr "Mot de passe"
 
-#: dashboard/templates/registration/profile.html:60
+#: dashboard/templates/dashboard/profile.html:56
+msgid "Change password"
+msgstr "Changer le mot de passe"
+
+#: dashboard/templates/dashboard/profile.html:60
 msgid "E-mail address"
 msgstr "Adresse E-mail"
 
-#: dashboard/templates/registration/register.html:17
+#: dashboard/templates/dashboard/register.html:17
 msgid "Create an Account!"
 msgstr "Création d'un compte !"
 
-#: dashboard/tests/tests_dashboard_views.py:53
+#: dashboard/tests/tests_dashboard_views.py:62
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: dashboard/views.py:38
-msgid "Acceuil"
+#: dashboard/views.py:34
+msgid "Home"
 msgstr "Acceuil"
 
-#: dashboard/views.py:60
+#: dashboard/views.py:41 dashboard/views.py:85
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: dashboard/views.py:50
 msgid "Late Products"
 msgstr "Produits en retard"
 
-#: dashboard/views.py:80
+#: dashboard/views.py:67
 msgid "Warning: The research was not successful."
 msgstr "Avertissement: la recherche n'a pas réussi."
 
-#: dashboard/views.py:102
+#: dashboard/views.py:86
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:111
+#: dashboard/views.py:94
 msgid "User Profile"
 msgstr "Mon Profil"
 
-#: dashboard/views.py:118 dashboard/views.py:188
+#: dashboard/views.py:99 dashboard/views.py:164
 msgid "Success: Modification done!"
 msgstr "Succès: Modification effectuée !"
 
-#: dashboard/views.py:156
+#: dashboard/views.py:107
+msgid "SignUp"
+msgstr "S'inscrire"
+
+#: dashboard/views.py:132
 msgid "Success: Sign up succeeded. You can now Log in."
 msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
 
-#: dashboard/views.py:175
+#: dashboard/views.py:148
 msgid "Thank you for your email confirmation. Now you can login your account."
 msgstr ""
 "Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous "
 "connecter à votre compte."
 
-#: dashboard/views.py:178
+#: dashboard/views.py:151
 msgid "Activation link is invalid!"
 msgstr "Le lien d'activation n'est pas valide !"
 
-#: dashboard/views.py:207
+#: dashboard/views.py:176
 msgid "Success: You are logged in."
 msgstr "Succès: vous êtes connecté."
 
-#: dashboard/views.py:219
+#: dashboard/views.py:190
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:228
+#: dashboard/views.py:200
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:236
+#: dashboard/views.py:209
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."
+
+#~ msgid "Thermal chamber"
+#~ msgstr "Chambre thermique"
+
+#~ msgid "Search Xelon or VIN..."
+#~ msgstr "Rechercher Xelon ou VIN..."
+
+#~ msgid "English"
+#~ msgstr "Anglais"
+
+#~ msgid "French"
+#~ msgstr "Français"
+
+#~ msgid "Profile"
+#~ msgstr "Mon Profil"
+
+#~ msgid "Administration"
+#~ msgstr "Administration"
+
+#~ msgid "Activity Log"
+#~ msgstr "Journal d'activité"
+
+#~ msgid "Guest"
+#~ msgstr "Invité"
+
+#~ msgid "Current folder"
+#~ msgstr "Dossiers en cours"
+
+#~ msgid "Late products"
+#~ msgstr "Produits en retard"
+
+#~ msgid "Customer files"
+#~ msgstr "Dossiers clients"
+
+#~ msgid "Corvet table"
+#~ msgstr "Tableau Corvet"
+
+#~ msgid "Add Corvet"
+#~ msgstr "Ajout Corvet"
+
+#~ msgid "Create file"
+#~ msgstr "Création dossier"
+
+#~ msgid "Spare Parts"
+#~ msgstr "Pièces détachées"
+
+#~ msgid "Create Batch"
+#~ msgstr "Création lot"
+
+#~ msgid "batch list"
+#~ msgstr "Liste des lots"
+
+#~ msgid "Unlock VIN"
+#~ msgstr "Déverrouillage VIN"
+
+#~ msgid "Products table"
+#~ msgstr "Table produits"
+
+#~ msgid "Add product"
+#~ msgstr "Ajout produit"
+
+#~ msgid "Tools"
+#~ msgstr "Outils"
+
+#~ msgid "Software list"
+#~ msgstr "Liste Logiciels"
+
+#~ msgid "Software Add"
+#~ msgstr "Ajout Logiciel"
+
+#~ msgid "Old password"
+#~ msgstr "Ancien mot de passe"
+
+#~ msgid "New password"
+#~ msgstr "Nouveau mot de passe"
+
+#~ msgid "Confirmation of the new password"
+#~ msgstr "Confirmation du nouveau mot de passe"
+
+#~ msgid "You must fill all the fields"
+#~ msgstr "Vous devez remplir tout les champs"
+
+#~ msgid "Old password does not match your account"
+#~ msgstr "L'ancien mot de passe ne correspond pas à celui de votre compte"
+
+#~ msgid "The new password is invalid"
+#~ msgstr "Le nouveau mot de passe est invalide"
+
+#~ msgid "Validate the change"
+#~ msgstr "Valider le changement"
+
+#~ msgid "Change my password"
+#~ msgstr "Changer le mot de passe"
+
+#~ msgid "Reset my password"
+#~ msgstr "Nouveau mot de passe"
+
+#~ msgid "Acceuil"
+#~ msgstr "Acceuil"

@@ -94,6 +94,7 @@ def edit_repair(request, pk):
     return render(request, 'reman/edit_repair.html', context)
 
 
+@permission_required('reman.view_ecumodel')
 def check_parts(request):
     card_title = "Check Spare Parts"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)

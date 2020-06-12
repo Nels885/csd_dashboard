@@ -1,0 +1,55 @@
+{% load i18n user_tags %}
+
+{% if perms.reman %}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        REMAN
+    </div>
+
+    <!-- Nav Item - Reman Settings Menu -->
+    {% with name="RemanAtelier" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{% trans "Repairs" %}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Traitements :</h6>
+                    <a class="repair-btn collapse-item" href="#">{% trans "Create file" %}</a>
+                    <a class="collapse-item"
+                       href="{% url 'reman:repair_table' %}?filter=quality">{% trans "Current folder" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Informations :</h6>
+                    <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+    {% if perms.reman.change_repair %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'reman:out_table' %}">
+                <i class="fas fa-fw fa-truck"></i><span>{% trans "Shipment" %}</span>
+
+            </a>
+        </li>
+    {% endif %}
+
+    {% if perms.reman.view_ecumodel %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'reman:part_check' %}">
+                <i class="fas fa-fw fa-puzzle-piece"></i><span>{% trans "check part" %}</span>
+
+            </a>
+        </li>
+    {% endif %}
+
+{% endif %}
