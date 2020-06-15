@@ -1,6 +1,6 @@
 {% load i18n user_tags %}
 
-{% if perms.squalaetp or perms.raspeedi %}
+{% if perms.squalaetp or perms.raspeedi.view_unlockproduct %}
 
     <!-- Heading -->
     <div class="sidebar-heading">
@@ -34,7 +34,7 @@
         </li>
     {% endwith %}
 
-        <!-- Nav Item - Info PSA Settings Menu -->
+    <!-- Nav Item - Info PSA Settings Menu -->
     {% with name="PSA" icon="fa-table" %}
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
@@ -60,9 +60,13 @@
 
 {% endif %}
 
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
-        <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
+{% if perms.raspeedi.view_unlockproduct %}
 
-    </a>
-</li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
+            <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
+
+        </a>
+    </li>
+
+{% endif %}
