@@ -6,6 +6,7 @@ from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, EcuModel, Breakdown
 from utils.conf import DICT_YEAR
+from utils.django.validators import validate_psa_barcode
 
 
 class AddBatchFrom(BSModalForm):
@@ -68,7 +69,7 @@ class AddRepairForm(BSModalForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(AddRepairForm, self).__init__(*args, **kwargs)
         self.batchNumber = None
 
     def clean_identify_number(self):
@@ -90,7 +91,7 @@ class AddRepairForm(BSModalForm):
         return data
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(AddRepairForm, self).clean()
         ref_psa = cleaned_data.get("ref_psa")
         if ref_psa:
             batch = Batch.objects.filter(batch_number__exact=self.batchNumber, ecu_model__hw_reference=ref_psa).first()
@@ -149,3 +150,14 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 class CheckPartForm(forms.Form):
     psa_barcode = forms.CharField(label="Code Barre PSA", max_length=10,
                                   widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'}))
+
+    def clean_psa_barcode(self):
+        data = self.cleaned_data['psa_barcode']
+        message = validate_psa_barcode(data)
+        if message:
+            raise forms.ValidationError(
+                _(message),
+                code='invalid',
+                params={'value': data},
+            )
+        return data

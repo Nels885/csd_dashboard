@@ -71,3 +71,12 @@ class RemanTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('reman:out_table'))
         self.assertEqual(response.status_code, 200)
+
+    def test_check_part(self):
+        response = self.client.get(reverse('reman:part_check'))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/part/check/', status_code=302)
+
+        self.add_perms_user(EcuModel, 'view_ecumodel')
+        self.login()
+        response = self.client.get(reverse('reman:part_check'))
+        self.assertEqual(response.status_code, 200)

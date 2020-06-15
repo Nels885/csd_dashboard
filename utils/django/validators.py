@@ -37,6 +37,19 @@ def validate_xelon(value):
         return 'Xelon number is invalid'
 
 
+def validate_psa_barcode(value):
+    """
+    Function for the Xelon validation
+    :param value:
+        Xelon value
+    :return:
+        Error message if not valid
+    """
+    if not re.match(r'^9[68]\d{8}$', str(value)):
+        return 'PSA barcode is invalid'
+    return None
+
+
 def xml_parser(value):
     data = {"vin": ""}
     try:

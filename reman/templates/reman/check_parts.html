@@ -29,7 +29,8 @@
             {% csrf_token %}
 
             <div class="form-group">
-                <label for="{{ form.psa_barcode.id_for_label }}" class="mb-2 mr-sm-4">{{ form.psa_barcode.label }}</label>
+                <label for="{{ form.psa_barcode.id_for_label }}"
+                       class="mb-2 mr-sm-4">{{ form.psa_barcode.label }}</label>
 
                 {{ form.psa_barcode }}
 
@@ -41,6 +42,14 @@
             </button>
 
         </form>
+
+        {% if errors %}
+            {% for key, error in errors %}
+                {% autoescape off %}
+                    {{ error }}
+                {% endautoescape %}
+            {% endfor %}
+        {% endif %}
 
     </div>
 
