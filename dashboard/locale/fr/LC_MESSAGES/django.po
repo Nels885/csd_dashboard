@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-12 12:36+0200\n"
+"POT-Creation-Date: 2020-06-15 12:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -198,102 +198,3 @@ msgstr "Succès: Le message a été mis à jour."
 #: dashboard/views.py:209
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."
-
-#~ msgid "Thermal chamber"
-#~ msgstr "Chambre thermique"
-
-#~ msgid "Search Xelon or VIN..."
-#~ msgstr "Rechercher Xelon ou VIN..."
-
-#~ msgid "English"
-#~ msgstr "Anglais"
-
-#~ msgid "French"
-#~ msgstr "Français"
-
-#~ msgid "Profile"
-#~ msgstr "Mon Profil"
-
-#~ msgid "Administration"
-#~ msgstr "Administration"
-
-#~ msgid "Activity Log"
-#~ msgstr "Journal d'activité"
-
-#~ msgid "Guest"
-#~ msgstr "Invité"
-
-#~ msgid "Current folder"
-#~ msgstr "Dossiers en cours"
-
-#~ msgid "Late products"
-#~ msgstr "Produits en retard"
-
-#~ msgid "Customer files"
-#~ msgstr "Dossiers clients"
-
-#~ msgid "Corvet table"
-#~ msgstr "Tableau Corvet"
-
-#~ msgid "Add Corvet"
-#~ msgstr "Ajout Corvet"
-
-#~ msgid "Create file"
-#~ msgstr "Création dossier"
-
-#~ msgid "Spare Parts"
-#~ msgstr "Pièces détachées"
-
-#~ msgid "Create Batch"
-#~ msgstr "Création lot"
-
-#~ msgid "batch list"
-#~ msgstr "Liste des lots"
-
-#~ msgid "Unlock VIN"
-#~ msgstr "Déverrouillage VIN"
-
-#~ msgid "Products table"
-#~ msgstr "Table produits"
-
-#~ msgid "Add product"
-#~ msgstr "Ajout produit"
-
-#~ msgid "Tools"
-#~ msgstr "Outils"
-
-#~ msgid "Software list"
-#~ msgstr "Liste Logiciels"
-
-#~ msgid "Software Add"
-#~ msgstr "Ajout Logiciel"
-
-#~ msgid "Old password"
-#~ msgstr "Ancien mot de passe"
-
-#~ msgid "New password"
-#~ msgstr "Nouveau mot de passe"
-
-#~ msgid "Confirmation of the new password"
-#~ msgstr "Confirmation du nouveau mot de passe"
-
-#~ msgid "You must fill all the fields"
-#~ msgstr "Vous devez remplir tout les champs"
-
-#~ msgid "Old password does not match your account"
-#~ msgstr "L'ancien mot de passe ne correspond pas à celui de votre compte"
-
-#~ msgid "The new password is invalid"
-#~ msgstr "Le nouveau mot de passe est invalide"
-
-#~ msgid "Validate the change"
-#~ msgstr "Valider le changement"
-
-#~ msgid "Change my password"
-#~ msgstr "Changer le mot de passe"
-
-#~ msgid "Reset my password"
-#~ msgstr "Nouveau mot de passe"
-
-#~ msgid "Acceuil"
-#~ msgstr "Acceuil"

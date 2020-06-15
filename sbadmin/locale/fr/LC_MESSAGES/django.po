@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-12 12:36+0200\n"
+"POT-Creation-Date: 2020-06-15 12:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr "Recherche Xelon ou VIN..."
 
 #: templates/base/top_bar.html:120
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: templates/base/top_bar.html:124
 msgid "Change password"
@@ -62,30 +62,46 @@ msgstr ""
 
 #: templates/base/top_bar.html:135
 msgid "New user"
-msgstr ""
+msgstr "Nouveau utilisateur"
 
 #: templates/base/top_bar.html:144
 msgid "API Documentation"
-msgstr ""
+msgstr "Documentation API"
 
 #: templates/base/top_bar.html:148
 msgid "Activity Log"
-msgstr ""
+msgstr "log d'activité"
 
 #: templates/base/top_bar.html:153 templates/nav/nav_interface.html:38
 msgid "Logout"
-msgstr ""
+msgstr "Se déconnecter"
 
 #: templates/base/top_bar.html:160
 msgid "Guest"
-msgstr ""
+msgstr "Invité"
 
 #: templates/base/top_bar.html:169 templates/nav/nav_interface.html:13
 #: templates/registration/login.html:46
 msgid "Login"
+msgstr "S'identifier"
+
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:30
+#: templates/nav/nav_csd_atelier.html:48 templates/nav/nav_tools.html:40
+#: templates/nav/nav_tools.html:76
+msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:27
+#: templates/nav/nav_csd_admin.html:27 templates/nav/nav_csd_atelier.html:53
+#: templates/nav/nav_tools.html:45 templates/nav/nav_tools.html:82
+msgid "Editing"
+msgstr "Edition"
+
+#: templates/nav/nav_csd_atelier.html:25 templates/nav/nav_reman.html:35
+#: templates/nav/nav_tools.html:71
+msgid "Treatments"
+msgstr "traitements"
+
+#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:42
 msgid "Current folder"
 msgstr "Dossier en cours"
 
@@ -93,19 +109,19 @@ msgstr "Dossier en cours"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:31 templates/nav/nav_reman.html:31
+#: templates/nav/nav_csd_atelier.html:31 templates/nav/nav_reman.html:60
 msgid "Customer files"
 msgstr "Dossiers clients"
 
 #: templates/nav/nav_csd_atelier.html:49
 msgid "Corvet table"
-msgstr ""
+msgstr "Tableau Corvet"
 
 #: templates/nav/nav_csd_atelier.html:54
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:65 templates/nav/nav_tools.html:72
+#: templates/nav/nav_csd_atelier.html:67 templates/nav/nav_tools.html:72
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -121,35 +137,39 @@ msgstr "Chambre thermique"
 msgid "Import / Export"
 msgstr ""
 
-#: templates/nav/nav_gestion.html:26
+#: templates/nav/nav_interface.html:21
+msgid "SignUp"
+msgstr "S'inscrire"
+
+#: templates/nav/nav_reman.html:17
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_gestion.html:27
-msgid "REMAN tables"
-msgstr "Tableaux REMAN"
-
-#: templates/nav/nav_interface.html:21
-msgid "SignUp"
-msgstr ""
-
-#: templates/nav/nav_reman.html:19
+#: templates/nav/nav_reman.html:30 templates/nav/nav_reman.html:59
 msgid "Repairs"
 msgstr "Réparations"
 
-#: templates/nav/nav_reman.html:25
+#: templates/nav/nav_reman.html:38
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:30
+#: templates/nav/nav_reman.html:61
+msgid "Batch list"
+msgstr "Liste des lots"
+
+#: templates/nav/nav_reman.html:63 templates/nav/nav_reman.html:64
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:40
+#: templates/nav/nav_reman.html:65
+msgid "ECU ref Base"
+msgstr ""
+
+#: templates/nav/nav_reman.html:74
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:49
+#: templates/nav/nav_reman.html:83
 msgid "check part"
 msgstr "Vérification pièce"
 
@@ -167,15 +187,15 @@ msgstr "Ajout logiciel"
 
 #: templates/nav/nav_tools.html:77
 msgid "Products table"
-msgstr ""
+msgstr "Tableau produits"
 
 #: templates/nav/nav_tools.html:83
 msgid "Add product"
-msgstr ""
+msgstr "Ajout produit"
 
 #: templates/registration/login.html:20
 msgid "Welcome Back!"
-msgstr ""
+msgstr "Bon retour parmi nous"
 
 #: templates/registration/login.html:52
 msgid "Forgot Password?"

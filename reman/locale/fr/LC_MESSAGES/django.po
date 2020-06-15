@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-12 12:36+0200\n"
+"POT-Creation-Date: 2020-06-15 12:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/forms.py:34
+#: reman/forms.py:35
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:41
+#: reman/forms.py:42
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/models.py:71
+#: reman/models.py:75
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
-#: reman/templates/reman/check_parts.html:40
+#: reman/templates/reman/check_parts.html:41
 #: reman/templates/reman/edit_repair.html:100
 msgid "Submit"
 msgstr "Soumettre"
@@ -57,13 +57,17 @@ msgstr "Création d'un dossier"
 msgid "Add"
 msgstr "Ajout"
 
+#: reman/templates/reman/part_detail.html:31
+msgid "Previous page"
+msgstr "Page précédente"
+
 #: reman/templates/reman/tab_select.html:5
 msgid "batch list"
 msgstr "Liste des lots"
 
 #: reman/templates/reman/tab_select.html:15
 msgid "Base ECU Reman"
-msgstr ""
+msgstr "ECU Référence de base"
 
 #: reman/templates/reman/tab_select.html:21
 msgid "Spare Parts"
@@ -82,13 +86,10 @@ msgstr "Modification dossier client"
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views.py:116
+#: reman/views.py:117
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
-#: reman/views.py:124
+#: reman/views.py:125
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
-
-#~ msgid "There is no more repair file to create for this lot!"
-#~ msgstr "Il n'y a plus de fichier de réparation à créer pour ce lot !"

@@ -22,12 +22,12 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Traitements :</h6>
+                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
                     <a class="collapse-item"
                        href="{% url 'squalaetp:xelon' %}?filter=pending">{% trans "Current folder" %}</a>
                     <a class="collapse-item" href="{% url 'dashboard:late_prod' %}">{% trans "Late products" %}</a>
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Informations :</h6>
+                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                     <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
                 </div>
             </div>
@@ -45,12 +45,12 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Informations :</h6>
+                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                     <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
 
                     {% if perms.squalaetp.add_corvet %}
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Edition :</h6>
+                        <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                         <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
                     {% endif %}
                 </div>

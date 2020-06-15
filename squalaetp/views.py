@@ -16,6 +16,7 @@ from utils.file.export import xml_corvet_file
 from utils.file import LogFile, os
 from utils.conf import CSD_ROOT
 
+
 # from utils.scraping import ScrapingCorvet
 
 
@@ -170,7 +171,7 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     def get_context_data(self, **kwargs):
         context = super(SqualaetpUpdateView, self).get_context_data(**kwargs)
         file = self.object.numero_de_dossier
-        context['modal_title'] = _('CORVET update for {}'.format(file))
+        context['modal_title'] = _('CORVET update for %(file)s' % {'file': file})
         return context
 
     def get_success_url(self):
