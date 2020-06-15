@@ -45,7 +45,7 @@ def export_corvet(request):
 def export_reman(request):
     form = ExportRemanForm(request.POST or None)
     if form.is_valid():
-        if request.user.has_perms('reman.view_batch', 'reman.view_repair'):
+        if request.user.has_perms(['reman.view_batch', 'reman.view_repair']):
             table = form.cleaned_data['tables']
             if table in ['batch', 'repair']:
                 return redirect('import_export:export_{}_csv'.format(table))
