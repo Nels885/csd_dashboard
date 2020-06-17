@@ -44,11 +44,13 @@ class AddBatchFrom(BSModalForm):
 
     def clean_ref_reman(self):
         data = self.cleaned_data['ref_reman']
-        if not EcuRefBase.objects.filter(reman_reference__exact=data):
+        try:
+            ecu = EcuRefBase.objects.get(reman_reference__exact=data)
+            if not self.errors:
+                batch = super(AddBatchFrom, self).save(commit=False)
+                batch.ecu_ref_base = ecu
+        except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
-        else:
-            batch = super(AddBatchFrom, self).save(commit=False)
-            batch.ecu_ref_base = EcuRefBase.objects.filter(reman_reference__exact=data).first()
         return data
 
 
