@@ -53,14 +53,14 @@ class AddBatchFrom(BSModalForm):
 
 
 class AddRepairForm(BSModalForm):
-    ref_psa = forms.CharField(label='Réf. PSA', max_length=10,
-                              widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
+    psa_barcode = forms.CharField(label='Code barre PSA', max_length=10,
+                                  widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
     ref_supplier = forms.CharField(label='Réf. SUP', required=False,
                                    widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=10)
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'ref_psa', 'ref_supplier', 'product_number', 'remark']
+        fields = ['identify_number', 'psa_barcode', 'ref_supplier', 'product_number', 'remark']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}),
             'product_model': forms.Select(attrs={'class': 'form-control'}),
@@ -83,11 +83,12 @@ class AddRepairForm(BSModalForm):
             self.add_error('identify_number', 'Pas de lot associé')
         return data
 
-    def clean_ref_psa(self):
-        data = self.cleaned_data["ref_psa"]
-        batch = Batch.objects.filter(batch_number__exact=self.batchNumber, ecu_model__hw_reference=data).first()
+    def clean_psa_barcode(self):
+        data = self.cleaned_data["psa_barcode"]
+        batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
+                                     ecu_ref_base__ecumodel__psa_barcode=data).first()
         if not batch:
-            self.add_error('ref_psa', "Référence incorrecte")
+            self.add_error('psa_barcode', "Code barre PSA incorrecte")
         return data
 
     def clean(self):
