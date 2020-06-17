@@ -23,6 +23,7 @@
             <th>Quantité</th>
             <th>Réf. REMAN</th>
             <th>Type ECU</th>
+            <th>Codes barre PSA</th>
             <th>Réf. Hardware</th>
             <th>Fabriquant</th>
             <th>Date de début</th>
@@ -41,6 +42,11 @@
                 <td>{{ batch.quantity }}</td>
                 <td>{{ batch.ecu_ref_base.reman_reference }}</td>
                 <td>{{ batch.ecu_ref_base.ecumodel_set.first.technical_data }}</td>
+                <td>
+                    {% for ecus in batch.ecu_ref_base.ecumodel_set.all %}
+                        {{ ecus.psa_barcode }}<br>
+                    {% endfor %}
+                </td>
                 <td>{{ batch.ecu_ref_base.ecumodel_set.first.hw_reference }}</td>
                 <td>{{ batch.ecu_ref_base.ecumodel_set.first.supplier_oe }}</td>
                 <td>{{ batch.start_date }}</td>
