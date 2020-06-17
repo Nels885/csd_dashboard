@@ -99,12 +99,14 @@ def check_parts(request):
     card_title = "Check Spare Parts"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
+        psa_barcode = form.cleaned_data['psa_barcode']
         try:
-            ecu = EcuModel.objects.get(psa_barcode=form.cleaned_data['psa_barcode'])
-            context.update(locals())
-            return render(request, 'reman/part_detail.html', context)
+            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
         except EcuModel.DoesNotExist:
-            messages.warning(request, "Ce code barre PSA n'éxiste pas dans la base de données")
+            ecu = None
+            # messages.warning(request, "Ce code barre PSA n'éxiste pas dans la base de données")
+        context.update(locals())
+        return render(request, 'reman/part_detail.html', context)
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
