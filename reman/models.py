@@ -14,8 +14,6 @@ class EcuModel(models.Model):
     psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
-    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
-    es_reference = models.CharField("référence EMS", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
     hw_reference = models.CharField("hardware", max_length=10)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
@@ -65,7 +63,7 @@ class Batch(models.Model):
     end_date = models.DateField("date de fin", null=True)
     created_at = models.DateTimeField(editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
-    ecu_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
+    ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.CASCADE)
 
     def clean(self):
         date = timezone.now()

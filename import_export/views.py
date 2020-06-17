@@ -157,8 +157,9 @@ def export_batch_csv(request):
     ]
     batch = Batch.objects.all().order_by('batch_number')
     values_list = (
-        'batch_number', 'quantity', 'ecu_model__es_reference', 'ecu_model__technical_data', 'ecu_model__hw_reference',
-        'ecu_model__supplier_oe', 'start_date', 'end_date', 'active', 'created_by__username', 'created_at'
+        'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecumodel__technical_data',
+        'ecu_ref_base__ecumodel__hw_reference', 'ecu_ref_base__ecumodel__supplier_oe', 'start_date', 'end_date',
+        'active', 'created_by__username', 'created_at'
     )
     return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
 
@@ -172,9 +173,10 @@ def export_repair_csv(request):
     ]
     batch = Repair.objects.all().order_by('identify_number')
     values_list = (
-        'identify_number', 'batch__batch_number', 'batch__ecu_model__es_reference', 'batch__ecu_model__technical_data',
-        'batch__ecu_model__hw_reference', 'batch__ecu_model__sw_reference', 'batch__ecu_model__supplier_oe',
-        'remark', 'created_at', 'modified_by__username', 'closing_date'
+        'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__reman_reference',
+        'batch__ecu_ref_base__ecumodel__technical_data', 'batch__ecu_ref_base__ecumodel__hw_reference',
+        'batch__ecu_ref_base__ecumodel__sw_reference', 'batch__ecu_ref_base__ecumodel__supplier_oe', 'remark',
+        'created_at', 'modified_by__username', 'closing_date'
     )
     return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
 

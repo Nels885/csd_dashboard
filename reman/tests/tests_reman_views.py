@@ -3,7 +3,7 @@ from django.urls import reverse
 from dashboard.tests.base import UnitTest
 
 from squalaetp.models import Corvet
-from reman.models import Repair, SparePart, Batch, EcuModel
+from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase
 
 
 class RemanTestCase(UnitTest):
@@ -11,9 +11,10 @@ class RemanTestCase(UnitTest):
     def setUp(self):
         super().setUp()
         self.redirectUrl = reverse('index')
-        ecu = EcuModel.objects.create(es_reference='1234567890', oe_reference='160000000',
-                                      oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test')
-        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_model=ecu)
+        ref_base = EcuRefBase.objects.create(reman_reference='1234567890')
+        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test',
+                                      ecu_ref_base=ref_base)
+        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         self.repair = Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
 
     def test_repair_table_page(self):

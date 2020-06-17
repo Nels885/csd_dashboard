@@ -33,12 +33,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['delete']:
-            EcuRefBase.ecu_models.through.objects.all().delete()
             EcuRefBase.objects.all().delete()
             EcuModel.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(),
-                                                             [EcuRefBase.ecu_models.through, EcuRefBase, EcuModel])
+                                                             [EcuRefBase, EcuModel])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
@@ -70,13 +69,8 @@ class Command(BaseCommand):
 
                     # Update or Create Ecumodel
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(spare_part=part_obj, ecu_ref_base=base_obj, **row)
-                    # if part_obj:
-                    #     ecu_obj.spare_part = part_obj
-                    # if base_obj:
-                    #     ecu_obj.ecu_ref_base = base_obj
                     if not ecu_created:
                         nb_ecu_update += 1
-                    # ecu_obj.save()
                 except DataError as err:
                     print("DataError: {} - {}".format(reman_reference, err))
             nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()

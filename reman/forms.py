@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, EcuModel, Breakdown
+from .models import Batch, Repair, SparePart, Breakdown, EcuRefBase
 from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
@@ -44,11 +44,11 @@ class AddBatchFrom(BSModalForm):
 
     def clean_ref_reman(self):
         data = self.cleaned_data['ref_reman']
-        if not EcuModel.objects.filter(es_reference__exact=data):
+        if not EcuRefBase.objects.filter(reman_reference__exact=data):
             self.add_error('ref_reman', 'reference non valide')
         else:
             batch = super(AddBatchFrom, self).save(commit=False)
-            batch.ecu_model = EcuModel.objects.filter(es_reference__exact=data).first()
+            batch.ecu_ref_base = EcuRefBase.objects.filter(reman_reference__exact=data).first()
         return data
 
 
@@ -138,7 +138,7 @@ class CloseRepairForm(forms.Form):
 
 class SparePartForm(forms.Form):
     spare_parts = forms.ModelChoiceField(
-        queryset=SparePart.objects.all(), required=False, label='Nom',
+        queryset=SparePart.objects.exclude(code_zone="CAL MOTEUR"), required=False, label='Nom',
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
     quantity = forms.CharField(label='Quantité', widget=forms.TextInput(attrs={'class': 'form-control'}))
