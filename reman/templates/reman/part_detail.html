@@ -52,7 +52,7 @@
             <div class="text-center">
                 <a class="align-self-center btn btn-secondary btn-user"
                    href="{{ request.META.HTTP_REFERER }}">{% trans "Previous page" %}</a>
-                <button class="btn btn-primary ml-4" type="button" data-dismiss="modal">{% trans "Send email" %}</button>
+                <a class="btn btn-primary ml-4" href="{% url 'reman:part_email' psa_barcode %}">{% trans "Send email" %}</a>
             </div>
 
         {% endif %}

@@ -11,6 +11,7 @@ urlpatterns = [
     path('repair/out/table/', views.out_table, name='out_table'),
     path('part/table/', views.part_table, name='part_table'),
     path('part/check/', views.check_parts, name='part_check'),
+    path('part/<str:psa_barcode>/email/', views.new_part_email, name='part_email'),
     path('batch/table/', views.batch_table, name='batch_table'),
     path('batch/create/', views.BatchCreateView.as_view(), name='create_batch'),
     path('ecu/table/', views.ecu_ref_table, name='ecu_table'),

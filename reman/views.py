@@ -3,6 +3,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
@@ -110,6 +112,21 @@ def check_parts(request):
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
+
+
+@permission_required('reman.view_ecumodel')
+def new_part_email(request, psa_barcode):
+    mail_subject = '[REMAN] Nouveau code barre PSA'
+    message = render_to_string('reman/new_psa_barcode_email.html', {
+        'psa_barcode': psa_barcode,
+    })
+    to_email = 'lionel.voirin@faurecia.com'
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
+    messages.success(request, _('Success: The email has been sent.'))
+    return redirect("reman:part_check")
 
 
 class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
