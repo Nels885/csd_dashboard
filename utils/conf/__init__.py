@@ -27,3 +27,5 @@ MQTT_PSWD = config.MQTT_PSWD
 MQTT_BROKER = config.MQTT_BROKER
 MQTT_PORT = config.MQTT_PORT
 KEEP_ALIVE = config.KEEP_ALIVE
+
+ECU_EMAIl_LIST = config.ecu_email_list

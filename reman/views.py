@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 
 from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
+from utils.conf import ECU_EMAIl_LIST
 
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
@@ -120,9 +121,8 @@ def new_part_email(request, psa_barcode):
     message = render_to_string('reman/new_psa_barcode_email.html', {
         'psa_barcode': psa_barcode,
     })
-    to_email = 'lionel.voirin@faurecia.com'
     email = EmailMessage(
-        mail_subject, message, to=[to_email]
+        mail_subject, message, to=ECU_EMAIl_LIST
     )
     email.send()
     messages.success(request, _('Success: The email has been sent.'))
