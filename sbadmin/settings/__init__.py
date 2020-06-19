@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'tempus_dominus',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'constance.backends.database',
+    'constance',
 
     # My apps
     'dashboard.apps.DashboardConfig',
@@ -193,9 +195,25 @@ CKEDITOR_CONFIGS = {
 TEMPUS_DOMINUS_LOCALIZE = True
 TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 
+
 # Configuration files for Clarion
 CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/current.py')
 CONF_DEFAULT_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/default.py')
 
 if not os.path.exists(CONF_FILE):
     shutil.copyfile(CONF_DEFAULT_FILE, CONF_FILE)
+
+
+# Configuration DJANGO-CONSTANCE
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    'SITE_NAME': ('CSD Dashboard', 'Website title'),
+    'SITE_DESCRIPTION': ('', 'Website description'),
+    'EMAIL_LIST': ('test1@test.com;test2@test.com', 'REMAN email list'),
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION'),
+    'REMAN Options': ('EMAIL_LIST',),
+}

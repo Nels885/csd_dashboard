@@ -26,3 +26,4 @@ django-crum = "*"
 django-ckeditor = "*"
 django-tempus-dominus = "*"
 paho-mqtt = "*"
+django-constance = {extras = ["database"],version = "*"}
