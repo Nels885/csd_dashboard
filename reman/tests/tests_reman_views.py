@@ -1,4 +1,6 @@
 from django.urls import reverse
+from django.contrib.messages import get_messages
+from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
@@ -11,9 +13,10 @@ class RemanTestCase(UnitTest):
     def setUp(self):
         super().setUp()
         self.redirectUrl = reverse('index')
+        self.psaBarcode = '9612345678'
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890')
         ecu = EcuModel.objects.create(oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test',
-                                      ecu_ref_base=ref_base)
+                                      ecu_ref_base=ref_base, psa_barcode=self.psaBarcode)
         batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         self.repair = Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
 
@@ -81,3 +84,28 @@ class RemanTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('reman:part_check'))
         self.assertEqual(response.status_code, 200)
+
+        # Invalid form
+        response = self.client.post(reverse('reman:part_check'), {'psa_barcode': ''})
+        self.assertFormError(response, 'form', 'psa_barcode', _('This field is required.'))
+        response = self.client.post(reverse('reman:part_check'), {'psa_barcode': '1234567890'})
+        self.assertFormError(response, 'form', 'psa_barcode', _('PSA barcode is invalid'))
+
+        # Valid form
+        response = self.client.post(reverse('reman:part_check'), {'psa_barcode': '9600000000'})
+        self.assertContains(response, "Le code barre PSA ci-dessous n'éxiste pas dans la base de données REMAN.")
+        response = self.client.post(reverse('reman:part_check'), {'psa_barcode': self.psaBarcode})
+        ecu = EcuModel.objects.get(psa_barcode=self.psaBarcode)
+        self.assertEquals(response.context['ecu'], ecu)
+
+    def test_new_part_email(self):
+        response = self.client.get(reverse('reman:part_email', kwargs={'psa_barcode': self.psaBarcode}))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/part/9612345678/email/', status_code=302)
+
+        self.add_perms_user(EcuModel, 'view_ecumodel')
+        self.login()
+        response = self.client.get(reverse('reman:part_email', kwargs={'psa_barcode': self.psaBarcode}))
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), _('Success: The email has been sent.'))
+        self.assertRedirects(response, reverse('reman:part_check'), status_code=302)
