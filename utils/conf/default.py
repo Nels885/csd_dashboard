@@ -53,5 +53,3 @@ MQTT_PSWD = None
 MQTT_BROKER = 'test.mosquitto.org'
 MQTT_PORT = 1883
 KEEP_ALIVE = 45
-
-ecu_email_list = ['test@test.com']

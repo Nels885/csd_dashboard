@@ -10,6 +10,7 @@ from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView
 from utils.django.urls import reverse, reverse_lazy
 
+from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
 from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm, CheckPartForm
@@ -122,7 +123,8 @@ def new_part_email(request, psa_barcode):
         'psa_barcode': psa_barcode,
     })
     email = EmailMessage(
-        mail_subject, message, to=config.EMAIL_LIST.split(';')
+        mail_subject, message, to=string_to_list(",|;", config.ECU_TO_EMAIL_LIST),
+        cc=string_to_list(",|;", config.ECU_CC_EMAIL_LIST)
     )
     email.send()
     messages.success(request, _('Success: The email has been sent.'))

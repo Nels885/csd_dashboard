@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
+from constance import config
 
-from utils import conf as config
 
 payload = {'temp': 'Hors ligne'}
 error = False

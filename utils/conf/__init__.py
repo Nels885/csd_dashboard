@@ -1,9 +1,11 @@
 import os
+import re
+from constance import config as conf
 
 from . import current as config
 
 
-CSD_ROOT = os.path.abspath(os.path.expanduser(config.base_dir[0]) + config.base_dir[1:])
+CSD_ROOT = os.path.abspath(os.path.expanduser(conf.BASE_DIR[0]) + conf.BASE_DIR[1:])
 
 XLS_RASPEEDI_FILE = os.path.join(CSD_ROOT, config.xls_raspeedi_file)
 XLS_SQUALAETP_FILE = os.path.join(CSD_ROOT, config.xls_squalaetp_file)
@@ -20,12 +22,7 @@ TAG_LOG_PATH = os.path.join(CSD_ROOT, config.tag_log_dir)
 
 DICT_YEAR = config.dict_year
 
-TEMP_ADJ = int(config.MQTT_TEMP_ADJ)
-MQTT_CLIENT = config.MQTT_CLIENT
-MQTT_USER = config.MQTT_USER
-MQTT_PSWD = config.MQTT_PSWD
-MQTT_BROKER = config.MQTT_BROKER
-MQTT_PORT = config.MQTT_PORT
-KEEP_ALIVE = config.KEEP_ALIVE
 
-ECU_EMAIl_LIST = config.ecu_email_list
+def string_to_list(separators, string):
+    """ format a character string into a list """
+    return [value.strip() for value in re.split(separators, string)]
