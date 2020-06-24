@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, Breakdown, EcuRefBase
+from .models import Batch, Repair, SparePart, Default, EcuRefBase
 from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
@@ -105,12 +105,12 @@ class AddRepairForm(BSModalForm):
 
 
 class EditRepairFrom(forms.ModelForm):
-    breakdown = forms.ModelChoiceField(queryset=Breakdown.objects.all(), required=True, label="Panne",
-                                       widget=forms.Select(attrs={'class': 'form-control'}))
+    default = forms.ModelChoiceField(queryset=Default.objects.all(), required=True, label="Panne",
+                                     widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'breakdown', 'quality_control']
+        fields = ['identify_number', 'product_number', 'remark', 'default', 'quality_control']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),

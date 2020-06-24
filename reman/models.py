@@ -10,6 +10,13 @@ from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
 
 
+# class EcuType(models.Model):
+#     hw_reference = models.CharField("hardware", max_length=10)
+#     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
+#     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+#     spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
+
+
 class EcuModel(models.Model):
     psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
@@ -43,7 +50,7 @@ class EcuModel(models.Model):
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return "{} {} {}".format(self.oe_raw_reference, self.psa_barcode, self.technical_data)
+        return "PSA_{} - HW_{} - {}".format(self.psa_barcode, self.hw_reference, self.technical_data)
 
 
 class EcuRefBase(models.Model):
@@ -84,9 +91,10 @@ class Batch(models.Model):
         return self.batch_number
 
 
-class Breakdown(models.Model):
+class Default(models.Model):
     code = models.CharField("code defaut", max_length=10, unique=True)
     description = models.CharField("libellé", max_length=200)
+    ecu_models = models.ManyToManyField("EcuModel", related_name="defaults", blank=True)
 
     def __str__(self):
         return "{} - {}".format(self.code, self.description)
@@ -105,7 +113,7 @@ class Repair(models.Model):
     modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True,
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
-    breakdown = models.ForeignKey(Breakdown, related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
+    default = models.ForeignKey("Default", related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
 
     def get_absolute_url(self):
         if self.pk:

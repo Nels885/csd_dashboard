@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
             nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
             nb_base_update, nb_ecu_update, nb_part_update = 0, 0, 0
-            for row in extraction.read():
+            for row in extraction.read_all():
                 log.info(row)
                 reman_reference = row["reman_reference"]
                 code_produit = row["code_produit"]
@@ -58,7 +58,9 @@ class Command(BaseCommand):
                 del row["code_produit"]
                 try:
                     # Update or Create SpareParts
-                    part_obj, part_created = SparePart.objects.update_or_create(code_produit=code_produit)
+                    part_obj, part_created = SparePart.objects.update_or_create(
+                        code_zone="REMAN PSA", code_produit=code_produit
+                    )
                     if not part_created:
                         nb_part_update += 1
 
@@ -68,7 +70,9 @@ class Command(BaseCommand):
                         nb_base_update += 1
 
                     # Update or Create Ecumodel
-                    ecu_obj, ecu_created = EcuModel.objects.update_or_create(spare_part=part_obj, ecu_ref_base=base_obj, **row)
+                    ecu_obj, ecu_created = EcuModel.objects.update_or_create(
+                        spare_part=part_obj, ecu_ref_base=base_obj, **row
+                    )
                     if not ecu_created:
                         nb_ecu_update += 1
                 except DataError as err:
