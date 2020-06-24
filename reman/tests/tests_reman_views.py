@@ -4,7 +4,6 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from squalaetp.models import Corvet
 from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase
 
 
@@ -88,12 +87,15 @@ class RemanTestCase(UnitTest):
         # Invalid form
         response = self.client.post(reverse('reman:part_check'), {'psa_barcode': ''})
         self.assertFormError(response, 'form', 'psa_barcode', _('This field is required.'))
-        response = self.client.post(reverse('reman:part_check'), {'psa_barcode': '1234567890'})
-        self.assertFormError(response, 'form', 'psa_barcode', _('PSA barcode is invalid'))
+        for barcode in ['123456789', 'abcdefghij', '96123', '981234567']:
+            response = self.client.post(reverse('reman:part_check'), {'psa_barcode': barcode})
+            self.assertFormError(response, 'form', 'psa_barcode', _('PSA barcode is invalid'))
 
         # Valid form
-        response = self.client.post(reverse('reman:part_check'), {'psa_barcode': '9600000000'})
-        self.assertContains(response, "Le code barre PSA ci-dessous n'éxiste pas dans la base de données REMAN.")
+        for barcode in ['9600000000', '9687654321', '9800000000', '9887654321']:
+            response = self.client.post(reverse('reman:part_check'), {'psa_barcode': barcode})
+            self.assertContains(response, "Le code barre PSA ci-dessous n'éxiste pas dans la base de données REMAN.")
+            self.assertContains(response, barcode)
         response = self.client.post(reverse('reman:part_check'), {'psa_barcode': self.psaBarcode})
         ecu = EcuModel.objects.get(psa_barcode=self.psaBarcode)
         self.assertEquals(response.context['ecu'], ecu)
