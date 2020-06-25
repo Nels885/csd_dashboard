@@ -141,7 +141,7 @@ class CloseRepairForm(forms.Form):
 
 class SparePartForm(forms.Form):
     spare_parts = forms.ModelChoiceField(
-        queryset=SparePart.objects.exclude(code_zone="CAL MOTEUR"), required=False, label='Nom',
+        queryset=SparePart.objects.filter(code_zone="REMAN PSA"), required=False, label='Nom',
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
     quantity = forms.CharField(label='Quantité', widget=forms.TextInput(attrs={'class': 'form-control'}))
