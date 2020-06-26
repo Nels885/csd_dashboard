@@ -18,7 +18,7 @@
                 </tr>
                 <tr>
                     <td class="text-dark">Code Produit</td>
-                    <td>{{ ecu.spare_part.code_produit|default:"---" }}</td>
+                    <td><span class="bg-warning text-gray-800 font-weight-bold">{{ ecu.spare_part.code_produit|default:"---" }}</span></td>
                 </tr>
                 <tr>
                     <td class="text-dark">Code Zone</td>
@@ -44,7 +44,9 @@
         {% else %}
 
             <p class="mb-4">Le code barre PSA ci-dessous n'éxiste pas dans la base de données REMAN.</p>
-            <p class="display-4 text-gray-800 text-center mb-4 font-weight-bold">{{ psa_barcode }}</p>
+            <p class="display-4 text-center mb-4 ">
+                <span class="bg-warning text-gray-800 font-weight-bold">{{ psa_barcode }}</span>
+            </p>
             <p class="mb-5">Veuillez transmettre ce produit au technicien ECU pour qu'il soit ajouté.<br>Cliquez sur le bouton
                 <span class="font-weight-bold">Send email</span>, si vous souhaitez envoyer un email automatique à toute la liste ECU.
             </p>
