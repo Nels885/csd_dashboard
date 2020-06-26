@@ -220,7 +220,7 @@ CONSTANCE_CONFIG = {
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
     'XLS_ATTRIBUTS_FILE': ('EXTS/Attributs CORVET.xlsx', 'xls attributs file'),
     'CSV_EXTRACTION_FILE': ('EXTS/extraction.csv', 'csv extraction file'),
-    'XLS_ECU_REF_BASE': ('Base réf ECU.xlsx', 'xls_ECU ref base'),
+    'XLS_ECU_REF_BASE': ('REMAN/PSA/Base réf REMAN.xlsx', 'xls ECU ref base'),
     'XLS_DELAY_PATH': ('RH/AnalyseRetards', 'Path of xls delay files'),
     'XLS_DELAY_FILES': (
         'PSA.xls, ILOTAUTRE.xls, LaboQual.xls, DEFAUT.xls, CLARION.xls', 'List of xls delay file'

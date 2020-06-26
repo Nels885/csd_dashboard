@@ -114,7 +114,6 @@ def signup(request):
         user.save()
         if form.cleaned_data['group']:
             user.groups.add(form.cleaned_data['group'])
-        UserProfile(user=user).save()
         current_site = get_current_site(request)
         mail_subject = 'Activate your CSD Dashboard account.'
         message = render_to_string('dashboard/acc_active_email.html', {
