@@ -24,7 +24,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm
+from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList
 from squalaetp.models import Xelon
 from tools.models import EtudeProject
 
@@ -93,11 +93,14 @@ def user_profile(request):
     """ View of User profile page """
     title = _("User Profile")
     profil = get_object_or_404(UserProfile, user=request.user.id)
-    form = UserProfileForm(request.POST or None, request.FILES, instance=profil)
-    if form.is_valid():
-        form.save()
-        messages.success(request, _('Success: Modification done!'))
-    errors = form.errors.items()
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=profil, error_class=ParaErrorList)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Success: Modification done!'))
+        errors = form.errors.items()
+    else:
+        form = UserProfileForm(error_class=ParaErrorList)
     return render(request, 'dashboard/profile.html', locals())
 
 

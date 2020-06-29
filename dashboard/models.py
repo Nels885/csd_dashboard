@@ -24,7 +24,7 @@ class UserProfile(models.Model):
     tracker = FieldTracker()
 
     def save(self, *args, **kwargs):
-        super().save()
+        super(UserProfile, self).save()
 
         """
         We get here the self avatar condition
