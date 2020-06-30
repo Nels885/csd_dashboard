@@ -13,7 +13,7 @@ from utils.django.urls import reverse, reverse_lazy
 from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
-from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm, CheckPartForm
+from .forms import AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm
 
 context = {
     'title': 'Reman'
@@ -88,7 +88,7 @@ def edit_repair(request, pk):
     """ View of edit repair page """
     card_title = _('Modification customer folder')
     prod = get_object_or_404(Repair, pk=pk)
-    form = EditRepairFrom(request.POST or None, instance=prod)
+    form = EditRepairForm(request.POST or None, instance=prod)
     formset = SparePartFormset(request.POST or None)
     if form.is_valid():
         form.save()
@@ -134,7 +134,7 @@ def new_part_email(request, psa_barcode):
 class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'reman.add_batch'
     template_name = 'reman/modal/create_batch.html'
-    form_class = AddBatchFrom
+    form_class = AddBatchForm
     success_message = _('Success: Batch was created.')
     success_url = reverse_lazy('reman:batch_table')
 

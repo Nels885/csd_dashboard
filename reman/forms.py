@@ -9,7 +9,7 @@ from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
 
-class AddBatchFrom(BSModalForm):
+class AddBatchForm(BSModalForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
 
     class Meta:
@@ -47,7 +47,7 @@ class AddBatchFrom(BSModalForm):
         try:
             ecu = EcuRefBase.objects.get(reman_reference__exact=data)
             if not self.errors:
-                batch = super(AddBatchFrom, self).save(commit=False)
+                batch = super(AddBatchForm, self).save(commit=False)
                 batch.ecu_ref_base = ecu
         except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
@@ -104,7 +104,7 @@ class AddRepairForm(BSModalForm):
                 raise forms.ValidationError("Ce lot n'est plus actif")
 
 
-class EditRepairFrom(forms.ModelForm):
+class EditRepairForm(forms.ModelForm):
     default = forms.ModelChoiceField(queryset=Default.objects.all(), required=True, label="Panne",
                                      widget=forms.Select(attrs={'class': 'form-control'}))
 
