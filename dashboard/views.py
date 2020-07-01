@@ -114,7 +114,7 @@ def signup(request):
         user = form.save(commit=False)
         user.set_password(password)
         user.is_active = False
-        user.save()
+        form.save()
         if form.cleaned_data['group']:
             user.groups.add(form.cleaned_data['group'])
         current_site = get_current_site(request)

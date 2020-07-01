@@ -32,7 +32,7 @@ class UserProfileForm(forms.ModelForm):
             w, h = get_image_dimensions(avatar)
 
             # validate dimensions
-            max_width = max_height = 200
+            max_width = max_height = 150
             if w > max_width or h > max_height:
                 raise forms.ValidationError(
                     'Please use an image that is %s x %s pixels or smaller.' % (max_width, max_height)
