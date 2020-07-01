@@ -1,9 +1,8 @@
-import os
 from django.core.management.base import BaseCommand
 
 from reman.models import Batch
 
-from utils.file.export import ExportCsv
+from utils.file.export import ExportCsv, os
 from utils.conf import CSD_ROOT
 
 
