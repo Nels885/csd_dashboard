@@ -5,7 +5,7 @@ from utils.conf import CSD_ROOT
 
 
 class Command(BaseCommand):
-    help = 'Interact with the SparePart table in the database'
+    help = 'Export PSA ECU CAL list for REMAN'
 
     def handle(self, *args, **options):
         log_file = LogFile(CSD_ROOT)

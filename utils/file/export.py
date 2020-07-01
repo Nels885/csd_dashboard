@@ -62,22 +62,39 @@ class Calibre:
 calibre = Calibre(TAG_PATH, TAG_LOG_PATH)
 
 
-def export_csv(queryset, filename, header, values_list=None):
-    date = datetime.datetime.now()
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(filename,
-                                                                                date.strftime("%y-%m-%d_%H-%M"))
+class ExportCsv:
 
-    writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
-    writer.writerow(header)
+    def __init__(self, queryset, filename, header, values_list=None):
+        self.date = datetime.datetime.now()
+        self.queryset = queryset
+        self.filename = filename
+        self.header = header
+        if values_list:
+            self.valueSet = self.queryset.values_list(*values_list).distinct()
+        else:
+            self.valueSet = self.queryset.values_list().distinct()
 
-    if values_list:
-        valueset = queryset.values_list(*values_list).distinct()
-    else:
-        valueset = queryset.values_list().distinct()
+    def http_response(self):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(
+            self.filename, self.date.strftime("%y-%m-%d_%H-%M")
+        )
 
-    for i, query in enumerate(valueset):
-        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
-        writer.writerow(query)
+        writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
+        writer.writerow(self.header)
 
-    return response
+        for i, query in enumerate(self.valueSet):
+            query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+            writer.writerow(query)
+
+        return response
+
+    def file(self, path):
+        file = os.path.join(path, "{}.csv".format(self.filename))
+        with open(file, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile, delimiter=';', lineterminator=';\r\n')
+            writer.writerow(self.header)
+
+            for i, query in enumerate(self.valueSet):
+                query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+                writer.writerow(query)

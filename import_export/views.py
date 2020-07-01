@@ -12,7 +12,7 @@ from django.core.management import call_command
 from squalaetp.models import Xelon, Corvet
 from reman.models import Batch, Repair
 from .forms import ExportCorvetForm, ExportRemanForm
-from utils.file.export import export_csv
+from utils.file.export import ExportCsv
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 
@@ -66,7 +66,7 @@ def export_corvet_csv(request):
     ]
     corvets = Corvet.objects.all()
 
-    return export_csv(queryset=corvets, filename=filename, header=header)
+    return ExportCsv(queryset=corvets, filename=filename, header=header).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -86,7 +86,7 @@ def export_ecu_csv(request):
         'corvet__electronique_64a', 'corvet__electronique_84a', 'corvet__electronique_p4a'
     )
 
-    return export_csv(queryset=ecus, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=ecus, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -106,7 +106,7 @@ def export_bsi_csv(request):
         'corvet__electronique_84b',
     )
 
-    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -125,7 +125,7 @@ def export_com_csv(request):
         'corvet__electronique_46p', 'corvet__electronique_56p', 'corvet__electronique_66p'
     )
 
-    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -145,7 +145,7 @@ def export_bsm_csv(request):
         'corvet__electronique_96b'
     )
 
-    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.view_batch')
@@ -161,7 +161,7 @@ def export_batch_csv(request):
         'ecu_ref_base__ecumodel__hw_reference', 'ecu_ref_base__ecumodel__supplier_oe', 'start_date', 'end_date',
         'active', 'created_by__username', 'created_at'
     )
-    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.view_repair')
@@ -178,7 +178,7 @@ def export_repair_csv(request):
         'batch__ecu_ref_base__ecumodel__sw_reference', 'batch__ecu_ref_base__ecumodel__supplier_oe', 'remark',
         'created_at', 'modified_by__username', 'closing_date'
     )
-    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.add_sparepart', 'reman.change_sparepart')
