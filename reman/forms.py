@@ -108,13 +108,19 @@ class EditRepairForm(forms.ModelForm):
     default = forms.ModelChoiceField(queryset=Default.objects.all(), required=True, label="Panne",
                                      widget=forms.Select(attrs={'class': 'form-control'}))
 
+    def __init__(self, *args, **kwargs):
+        super(EditRepairForm, self).__init__(*args, **kwargs)
+        if self.instance.batch.ecu_ref_base:
+            technical_data = self.instance.batch.ecu_ref_base.ecu_type.technical_data
+            self.fields['default'].queryset = Default.objects.filter(ecu_type__technical_data=technical_data)
+
     class Meta:
         model = Repair
         fields = ['identify_number', 'product_number', 'remark', 'default', 'quality_control']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
-            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': ''}),
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
 
@@ -141,7 +147,7 @@ class CloseRepairForm(forms.Form):
 
 class SparePartForm(forms.Form):
     spare_parts = forms.ModelChoiceField(
-        queryset=SparePart.objects.filter(code_zone="REMAN PSA"), required=False, label='Nom',
+        queryset=SparePart.objects.filter(code_zone="REMAN PSA").order_by('code_produit'), required=False, label='Nom',
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
     quantity = forms.CharField(label='Quantité', widget=forms.TextInput(attrs={'class': 'form-control'}))

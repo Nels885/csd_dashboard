@@ -1,15 +1,15 @@
 from dashboard.tests.base import UnitTest, reverse
 
-from reman.models import EcuModel, Batch, Repair, EcuRefBase
+from reman.models import EcuModel, Batch, Repair, EcuRefBase, EcuType
 
 
 class MixinsTest(UnitTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        ref_base = EcuRefBase.objects.create(reman_reference='1234567890')
-        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test',
-                                      psa_barcode='9876543210', ecu_ref_base=ref_base)
+        ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
+        ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
+        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', psa_barcode='9876543210', ecu_ref_base=ref_base)
         batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         self.add_perms_user(Batch, 'add_batch')
         self.add_perms_user(Repair, 'add_repair')

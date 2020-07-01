@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase
+from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase, EcuType
 
 
 class RemanTestCase(UnitTest):
@@ -13,9 +13,9 @@ class RemanTestCase(UnitTest):
         super().setUp()
         self.redirectUrl = reverse('index')
         self.psaBarcode = '9612345678'
-        ref_base = EcuRefBase.objects.create(reman_reference='1234567890')
-        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test',
-                                      ecu_ref_base=ref_base, psa_barcode=self.psaBarcode)
+        ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
+        ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
+        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_ref_base=ref_base, psa_barcode=self.psaBarcode)
         batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         self.repair = Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
 

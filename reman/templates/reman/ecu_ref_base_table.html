@@ -36,12 +36,12 @@
             <tr>
                 <td>{{ ecu.oe_raw_reference }}</td>
                 <td>{{ ecu.ecu_ref_base }}</td>
-                <td>{{ ecu.technical_data }}</td>
-                <td>{{ ecu.hw_reference }}</td>
-                <td>{{ ecu.supplier_oe }}</td>
+                <td>{{ ecu.ecu_ref_base.ecu_type.technical_data }}</td>
+                <td>{{ ecu.ecu_ref_base.ecu_type.hw_reference }}</td>
+                <td>{{ ecu.ecu_ref_base.ecu_type.supplier_oe }}</td>
                 <td>{{ ecu.psa_barcode }}</td>
                 <td>{{ ecu.former_oe_reference }}</td>
-                <td>{{ ecu.spare_part.code_produit }}</td>
+                <td>{{ ecu.ecu_ref_base.ecu_type.spare_part.code_produit }}</td>
             </tr>
 
         {% endfor %}

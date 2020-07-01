@@ -3,7 +3,7 @@ from django.core.management.color import no_style
 from django.db import connection
 from django.db.utils import DataError
 
-from reman.models import EcuRefBase, EcuModel, SparePart
+from reman.models import EcuRefBase, EcuModel, SparePart, EcuType
 from utils.conf import XLS_ECU_REF_BASE
 
 from ._excel_reman import ExcelEcuRefBase
@@ -54,8 +54,12 @@ class Command(BaseCommand):
                 log.info(row)
                 reman_reference = row["reman_reference"]
                 code_produit = row["code_produit"]
-                del row["reman_reference"]
-                del row["code_produit"]
+                hw_reference = row["hw_reference"]
+                technical_data = row["technical_data"]
+                supplier_oe = row["supplier_oe"]
+
+                for key in ["reman_reference", "code_produit", "hw_reference", "technical_data", "supplier_oe"]:
+                    del row[key]
                 try:
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
@@ -64,14 +68,26 @@ class Command(BaseCommand):
                     if not part_created:
                         nb_part_update += 1
 
+                    # Update or Create EcuType
+                    type_obj, type_created = EcuType.objects.update_or_create(
+                        hw_reference=hw_reference, technical_data=technical_data, supplier_oe=supplier_oe
+                    )
+                    if not part_created:
+                        nb_part_update += 1
+                    type_obj.spare_part = part_obj
+                    type_obj.save()
+
                     # Update or Create EcurefBase
-                    base_obj, base_created = EcuRefBase.objects.update_or_create(reman_reference=reman_reference)
+                    base_obj, base_created = EcuRefBase.objects.update_or_create(
+                        reman_reference=reman_reference)
                     if not base_created:
                         nb_base_update += 1
+                    base_obj.ecu_type = type_obj
+                    base_obj.save()
 
                     # Update or Create Ecumodel
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(
-                        spare_part=part_obj, ecu_ref_base=base_obj, **row
+                        ecu_ref_base=base_obj, **row
                     )
                     if not ecu_created:
                         nb_ecu_update += 1

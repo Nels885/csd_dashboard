@@ -18,8 +18,8 @@ class Command(BaseCommand):
         ]
         batch = Batch.objects.all().order_by('batch_number')
         values_list = (
-            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecumodel__technical_data',
-            'ecu_ref_base__ecumodel__hw_reference', 'ecu_ref_base__ecumodel__supplier_oe', 'start_date', 'end_date',
+            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
+            'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
             'active', 'created_by__username', 'created_at'
         )
         ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).file(path)

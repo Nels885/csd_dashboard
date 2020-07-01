@@ -10,11 +10,14 @@ from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
 
 
-# class EcuType(models.Model):
-#     hw_reference = models.CharField("hardware", max_length=10)
-#     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
-#     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
-#     spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
+class EcuType(models.Model):
+    hw_reference = models.CharField("hardware", max_length=10, unique=True)
+    technical_data = models.CharField("modèle produit", max_length=50, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return "HW_{} - TYPE_{}".format(self.hw_reference, self.technical_data)
 
 
 class EcuModel(models.Model):
@@ -22,12 +25,8 @@ class EcuModel(models.Model):
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
-    hw_reference = models.CharField("hardware", max_length=10)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
-    technical_data = models.CharField("modèle produit", max_length=50, blank=True)
-    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
-    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
     ecu_ref_base = models.ForeignKey("EcuRefBase", on_delete=models.CASCADE, null=True, blank=True)
 
     @staticmethod
@@ -37,8 +36,8 @@ class EcuModel(models.Model):
         if ecu_models:
             for ecu_model in ecu_models:
                 reman_refs = ecu_model.ecu_ref_base.reman_reference
-                xelon_refs = ecu_model.spare_part.code_produit
-                location = ecu_model.spare_part.code_emplacement
+                xelon_refs = ecu_model.ecu_ref_base.ecu_type.spare_part.code_produit
+                location = ecu_model.ecu_ref_base.ecu_type.spare_part.code_emplacement
                 msg_list.append(
                     'Réf. REMAN : {}  -  Réf. XELON : {}  -  EMPLACEMENT : {}'.format(reman_refs, xelon_refs, location))
             return msg_list
@@ -50,11 +49,12 @@ class EcuModel(models.Model):
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return "PSA_{} - HW_{} - {}".format(self.psa_barcode, self.hw_reference, self.technical_data)
+        return "PSA_barcode_{}".format(self.psa_barcode)
 
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
+    ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.reman_reference
@@ -94,7 +94,7 @@ class Batch(models.Model):
 class Default(models.Model):
     code = models.CharField("code defaut", max_length=10, unique=True)
     description = models.CharField("libellé", max_length=200)
-    ecu_models = models.ManyToManyField("EcuModel", related_name="defaults", blank=True)
+    ecu_type = models.ManyToManyField("EcuType", related_name="defaults", blank=True)
 
     def __str__(self):
         return "{} - {}".format(self.code, self.description)

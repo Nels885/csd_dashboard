@@ -41,14 +41,14 @@
                 <td>{{ batch }}</td>
                 <td>{{ batch.quantity }}</td>
                 <td>{{ batch.ecu_ref_base.reman_reference }}</td>
-                <td>{{ batch.ecu_ref_base.ecumodel_set.first.technical_data }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
                 <td>
                     {% for ecus in batch.ecu_ref_base.ecumodel_set.all %}
                         {{ ecus.psa_barcode }}<br>
                     {% endfor %}
                 </td>
-                <td>{{ batch.ecu_ref_base.ecumodel_set.first.hw_reference }}</td>
-                <td>{{ batch.ecu_ref_base.ecumodel_set.first.supplier_oe }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.hw_reference }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
                 <td>{{ batch.start_date }}</td>
                 <td>{{ batch.end_date }}</td>
                 <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>

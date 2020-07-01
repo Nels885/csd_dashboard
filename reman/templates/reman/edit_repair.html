@@ -19,7 +19,7 @@
 
                 <label for="product_model" class="col-sm-2 col-form-label">Modèle :</label>
                 <div class="col-sm-4">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecumodel_set.first.technical_data }}">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.technical_data }}">
                 </div>
             </div>
 
@@ -27,12 +27,12 @@
 
                 <label for="product_model" class="col-sm-2 col-form-label">HW référence :</label>
                 <div class="col-sm-2">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecumodel_set.first.hw_reference }}">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.hw_reference }}">
                 </div>
 
                 <label for="product_model" class="col-sm-2 col-form-label">SW référence :</label>
                 <div class="col-sm-2">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecumodel_set.first.sw_reference }}">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.sw_reference }}">
                 </div>
 
                 <label for="{{ form.product_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.product_number.label }} :</label>

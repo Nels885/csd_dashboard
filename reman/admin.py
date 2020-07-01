@@ -18,8 +18,7 @@ class SparePartAdmin(admin.ModelAdmin):
 
 class EcuModelAdmin(admin.ModelAdmin):
     list_display = (
-        'psa_barcode', 'oe_raw_reference', 'hw_reference', 'sw_reference', 'technical_data',
-        'supplier_oe'
+        'psa_barcode', 'oe_raw_reference', 'sw_reference'
     )
 
 
