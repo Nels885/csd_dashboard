@@ -107,5 +107,5 @@ class ExportCsv:
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         if os.path.isfile(file):
             file_date = datetime.datetime.fromtimestamp(os.path.getmtime(file)).date()
-            if file_date == yesterday:
+            if file_date >= yesterday:
                 shutil.copyfile(file, os.path.join(path, "{}J-1.csv".format(self.filename)))
