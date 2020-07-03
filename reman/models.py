@@ -11,7 +11,7 @@ from utils.conf import DICT_YEAR
 
 
 class EcuType(models.Model):
-    hw_reference = models.CharField("hardware", max_length=10, unique=True)
+    hw_reference = models.CharField("hardware", max_length=10)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
@@ -21,7 +21,7 @@ class EcuType(models.Model):
 
 
 class EcuModel(models.Model):
-    psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
+    psa_barcode = models.CharField("code barre PSA", max_length=10)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
@@ -147,8 +147,8 @@ class Comment(models.Model):
 
 
 class SparePart(models.Model):
-    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
     code_produit = models.CharField('code Produit', max_length=100)
+    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
     code_zone = models.CharField('code Zone', max_length=20, blank=True)
     code_site = models.IntegerField('code Site', null=True, blank=True)
     code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)

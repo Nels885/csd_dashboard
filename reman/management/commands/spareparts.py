@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
+from django.db.utils import IntegrityError
 
 from reman.models import SparePart
 from utils.conf import CSV_EXTRACTION_FILE
@@ -46,9 +47,12 @@ class Command(BaseCommand):
             nb_part_update = 0
             for row in extraction.read():
                 log.info(row)
-                obj, created = SparePart.objects.update_or_create(**row)
-                if not created:
-                    nb_part_update += 1
+                try:
+                    obj, created = SparePart.objects.update_or_create(**row)
+                    if not created:
+                        nb_part_update += 1
+                except IntegrityError as err:
+                    print("IntegrityError: {} - {}".format(row["code_produit"], err))
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(

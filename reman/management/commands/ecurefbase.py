@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
-from django.db.utils import DataError
+from django.db.utils import DataError, IntegrityError
 
 from reman.models import EcuRefBase, EcuModel, SparePart, EcuType
 from utils.conf import XLS_ECU_REF_BASE
@@ -63,27 +63,24 @@ class Command(BaseCommand):
                 try:
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
-                        code_zone="REMAN PSA", code_produit=code_produit
+                        code_produit=code_produit, code_zone="REMAN PSA"
                     )
                     if not part_created:
                         nb_part_update += 1
 
                     # Update or Create EcuType
                     type_obj, type_created = EcuType.objects.update_or_create(
-                        hw_reference=hw_reference, technical_data=technical_data, supplier_oe=supplier_oe
+                        hw_reference=hw_reference, technical_data=technical_data, supplier_oe=supplier_oe,
+                        spare_part=part_obj
                     )
                     if not part_created:
                         nb_part_update += 1
-                    type_obj.spare_part = part_obj
-                    type_obj.save()
 
                     # Update or Create EcurefBase
                     base_obj, base_created = EcuRefBase.objects.update_or_create(
-                        reman_reference=reman_reference)
+                        reman_reference=reman_reference, ecu_type=type_obj)
                     if not base_created:
                         nb_base_update += 1
-                    base_obj.ecu_type = type_obj
-                    base_obj.save()
 
                     # Update or Create Ecumodel
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(
@@ -93,6 +90,9 @@ class Command(BaseCommand):
                         nb_ecu_update += 1
                 except DataError as err:
                     print("DataError: {} - {}".format(reman_reference, err))
+                except IntegrityError as err:
+                    print("IntegrityError: {} - {}".format(reman_reference, err))
+
             nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
