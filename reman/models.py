@@ -11,7 +11,7 @@ from utils.conf import DICT_YEAR
 
 
 class EcuType(models.Model):
-    hw_reference = models.CharField("hardware", max_length=10)
+    hw_reference = models.CharField("hardware", max_length=10, unique=True)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
@@ -21,7 +21,7 @@ class EcuType(models.Model):
 
 
 class EcuModel(models.Model):
-    psa_barcode = models.CharField("code barre PSA", max_length=10)
+    psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)

@@ -35,9 +35,10 @@ class Command(BaseCommand):
         if options['delete']:
             EcuRefBase.objects.all().delete()
             EcuModel.objects.all().delete()
+            EcuType.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(),
-                                                             [EcuRefBase, EcuModel])
+                                                             [EcuRefBase, EcuModel, EcuType])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
@@ -49,42 +50,45 @@ class Command(BaseCommand):
                 extraction = ExcelEcuRefBase(XLS_ECU_REF_BASE, sheet_name=options['sheet_id'])
 
             nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
-            nb_base_update, nb_ecu_update, nb_part_update = 0, 0, 0
+            nb_base_update, nb_ecu_update, nb_part_update, nb_type_update = 0, 0, 0, 0
             for row in extraction.read_all():
                 log.info(row)
                 reman_reference = row["reman_reference"]
                 code_produit = row["code_produit"]
                 hw_reference = row["hw_reference"]
-                technical_data = row["technical_data"]
-                supplier_oe = row["supplier_oe"]
-
-                for key in ["reman_reference", "code_produit", "hw_reference", "technical_data", "supplier_oe"]:
+                psa_barcode = row["psa_barcode"]
+                type_values = dict(
+                    (key, value) for key, value in row.items() if key in ["technical_data", "supplier_oe"]
+                )
+                for key in ["reman_reference", "code_produit", "hw_reference", "technical_data", "supplier_oe",
+                            "psa_barcode"]:
                     del row[key]
                 try:
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
-                        code_produit=code_produit, code_zone="REMAN PSA"
+                        code_produit=code_produit, defaults={"code_zone": "REMAN PSA"}
                     )
                     if not part_created:
                         nb_part_update += 1
 
                     # Update or Create EcuType
+                    type_values['spare_part'] = part_obj
                     type_obj, type_created = EcuType.objects.update_or_create(
-                        hw_reference=hw_reference, technical_data=technical_data, supplier_oe=supplier_oe,
-                        spare_part=part_obj
+                        hw_reference=hw_reference, defaults=type_values
                     )
-                    if not part_created:
-                        nb_part_update += 1
+                    if not type_created:
+                        nb_type_update += 1
 
                     # Update or Create EcurefBase
                     base_obj, base_created = EcuRefBase.objects.update_or_create(
-                        reman_reference=reman_reference, ecu_type=type_obj)
+                        reman_reference=reman_reference, defaults={"ecu_type": type_obj})
                     if not base_created:
                         nb_base_update += 1
 
                     # Update or Create Ecumodel
+                    row['ecu_ref_base'] = base_obj
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(
-                        ecu_ref_base=base_obj, **row
+                        psa_barcode=psa_barcode, defaults=row
                     )
                     if not ecu_created:
                         nb_ecu_update += 1
