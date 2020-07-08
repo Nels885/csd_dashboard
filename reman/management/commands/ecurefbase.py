@@ -62,7 +62,9 @@ class Command(BaseCommand):
                 try:
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
-                        code_produit=row.pop("code_produit"), defaults={"code_zone": "REMAN PSA"}
+                        code_produit=row.pop("code_produit"), defaults={
+                            "code_zone": "REMAN PSA", "code_magasin": "MAGREM PSA"
+                        }
                     )
                     if not part_created:
                         nb_part_update += 1
