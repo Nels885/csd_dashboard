@@ -170,3 +170,9 @@ class CheckPartForm(forms.Form):
                 params={'value': data},
             )
         return data
+
+
+class DefaultForm(forms.Form):
+
+    class Meta:
+        model = Default
