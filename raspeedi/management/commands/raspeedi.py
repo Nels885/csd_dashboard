@@ -51,18 +51,13 @@ class Command(BaseCommand):
             nb_update = 0
             for row in excel.read():
                 log.info(row)
-                # obj, created = Raspeedi.objects.get_or_create(**row)
-                # if not created:
-                #     nb_update += 1
-                if row["ref_boitier"]:
-                    try:
-                        m = Raspeedi(**row)
-                        m.save()
-                    except IntegrityError as err:
-                        self.stderr.write("IntegrityError: {}".format(err))
+                try:
+                    obj, created = Raspeedi.objects.get_or_create(ref_boitier=row.pop("ref_boitier"), defaults=row)
+                    if not created:
+                        nb_update += 1
+                except IntegrityError as err:
+                    self.stderr.write("IntegrityError: {}".format(err))
             nb_after = Raspeedi.objects.count()
-            # self.stdout.write("Nombre de produits ajoutés :   {}".format(nb_after - nb_before))
-            # self.stdout.write("Nombre de produits total :     {}".format(nb_after))
             self.stdout.write(
                 self.style.SUCCESS(
                     "Raspeedi data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(

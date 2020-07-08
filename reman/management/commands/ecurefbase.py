@@ -53,20 +53,16 @@ class Command(BaseCommand):
             nb_base_update, nb_ecu_update, nb_part_update, nb_type_update = 0, 0, 0, 0
             for row in extraction.read_all():
                 log.info(row)
-                reman_reference = row["reman_reference"]
-                code_produit = row["code_produit"]
-                hw_reference = row["hw_reference"]
-                psa_barcode = row["psa_barcode"]
+                reman_reference = row.pop("reman_reference")
                 type_values = dict(
                     (key, value) for key, value in row.items() if key in ["technical_data", "supplier_oe"]
                 )
-                for key in ["reman_reference", "code_produit", "hw_reference", "technical_data", "supplier_oe",
-                            "psa_barcode"]:
+                for key in ["technical_data", "supplier_oe"]:
                     del row[key]
                 try:
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
-                        code_produit=code_produit, defaults={"code_zone": "REMAN PSA"}
+                        code_produit=row.pop("code_produit"), defaults={"code_zone": "REMAN PSA"}
                     )
                     if not part_created:
                         nb_part_update += 1
@@ -74,7 +70,7 @@ class Command(BaseCommand):
                     # Update or Create EcuType
                     type_values['spare_part'] = part_obj
                     type_obj, type_created = EcuType.objects.update_or_create(
-                        hw_reference=hw_reference, defaults=type_values
+                        hw_reference=row.pop("hw_reference"), defaults=type_values
                     )
                     if not type_created:
                         nb_type_update += 1
@@ -88,7 +84,7 @@ class Command(BaseCommand):
                     # Update or Create Ecumodel
                     row['ecu_ref_base'] = base_obj
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(
-                        psa_barcode=psa_barcode, defaults=row
+                        psa_barcode=row.pop("psa_barcode"), defaults=row
                     )
                     if not ecu_created:
                         nb_ecu_update += 1

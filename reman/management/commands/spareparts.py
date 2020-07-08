@@ -48,7 +48,9 @@ class Command(BaseCommand):
             for row in extraction.read():
                 log.info(row)
                 try:
-                    obj, created = SparePart.objects.update_or_create(**row)
+                    obj, created = SparePart.objects.update_or_create(
+                        code_produit=row.pop("code_produit"), defaults=row
+                    )
                     if not created:
                         nb_part_update += 1
                 except IntegrityError as err:
