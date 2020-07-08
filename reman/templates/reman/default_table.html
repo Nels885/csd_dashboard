@@ -1,0 +1,53 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'reman/tab_select.html' with select='default' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <table class="table table-bordered" id="defaultTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th class="all"></th>
+            <th class="all">Code défaut</th>
+            <th>Libellé</th>
+            <th>ECU associés</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for default in defaults %}
+
+            <tr>
+                <td class="bg-white">
+                    <a href="#" title="Modification" class="update-default btn btn-success btn-circle btn-sm" data-id="{% url 'reman:update_default' default.pk %}"><i class="fas fa-edit"></i></a>
+                </td>
+                <td>{{ default.code }}</td>
+                <td>{{ default.description }}</td>
+                <td>{% for type in default.ecu_type.all %}{{ type }}<br>{% endfor %}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/default-table.js' %}"></script>
+
+{% endblock %}

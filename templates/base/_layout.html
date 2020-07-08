@@ -96,6 +96,11 @@
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
         });
 
+        // Update default buttons
+        $(".update-default").each(function () {
+            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+        });
+
         // log file buttons
         $(".log-btn").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});

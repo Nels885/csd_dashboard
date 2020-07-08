@@ -7,12 +7,12 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 
 from constance import config
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from utils.django.urls import reverse, reverse_lazy
 
 from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel
+from .models import Repair, SparePart, Batch, EcuModel, Default
 from .forms import (
     AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm
 )
@@ -85,6 +85,14 @@ def ecu_ref_table(request):
     return render(request, 'reman/ecu_ref_base_table.html', context)
 
 
+@permission_required('reman.view_default')
+def default_table(request):
+    table_title = 'Liste de panne'
+    defaults = Default.objects.all()
+    context.update(locals())
+    return render(request, 'reman/default_table.html', context)
+
+
 @permission_required('reman.change_repair')
 def edit_repair(request, pk):
     """ View of edit repair page """
@@ -149,13 +157,19 @@ class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
 
 
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
+    """ View of modal default create """
     permission_required = 'reman.add_default'
     template_name = 'reman/modal/create_default.html'
     form_class = DefaultForm
     success_message = _('Success: Reman Default was created.')
+    success_url = reverse_lazy('reman:default_table')
 
-    def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+
+class DefaultUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal default update """
+    model = Default
+    permission_required = 'reman.change_default'
+    template_name = 'reman/modal/update_default.html'
+    form_class = DefaultForm
+    success_message = _('Success: Reman Default was updated.')
+    success_url = reverse_lazy('reman:default_table')

@@ -21,3 +21,11 @@
         {% trans "Spare Parts" %}
     </a>
 </li>
+
+{% if perms.reman.view_default %}
+    <li class="nav-item {% if select == 'default' %}active{% endif %}">
+        <a class="nav-link {% if select == 'default' %}active{% endif %}" href="{% url 'reman:default_table' %}">
+            {% trans "Default list" %}
+        </a>
+    </li>
+{% endif %}
