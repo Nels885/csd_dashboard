@@ -172,7 +172,8 @@ class CheckPartForm(forms.Form):
         return data
 
 
-class DefaultForm(forms.Form):
+class DefaultForm(BSModalForm):
 
     class Meta:
         model = Default
+        fields = '__all__'

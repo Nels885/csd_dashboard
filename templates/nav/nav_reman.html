@@ -21,6 +21,17 @@
 
     {% endif %}
 
+    {% if perms.reman.add_default %}
+
+        <li class="nav-item">
+            <a class="default-btn nav-link" href="#">
+                <i class="fas fa-fw fa-wrench"></i><span>{% trans "Create Default" %}</span>
+
+            </a>
+        </li>
+
+    {% endif %}
+
     <!-- Nav Item - Reman Repair Menu -->
     {% with name="RemanAtelier" icon="fa-table" %}
         <li class="nav-item">

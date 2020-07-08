@@ -13,7 +13,9 @@ from utils.django.urls import reverse, reverse_lazy
 from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel
-from .forms import AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm
+from .forms import (
+    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm
+)
 
 context = {
     'title': 'Reman'
@@ -144,3 +146,16 @@ class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/create_repair.html'
     form_class = AddRepairForm
     success_message = _('Success: Repair was created.')
+
+
+class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'reman.add_default'
+    template_name = 'reman/modal/create_default.html'
+    form_class = DefaultForm
+    success_message = _('Success: Reman Default was created.')
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')

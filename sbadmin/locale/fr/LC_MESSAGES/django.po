@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-15 12:28+0200\n"
+"POT-Creation-Date: 2020-07-08 11:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,16 +19,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: import_export/templates/import_export/import_export.html:40
-#: import_export/templates/import_export/import_export.html:68
+#: import_export/templates/import_export/import_export.html:70
 msgid "Data Export"
 msgstr "Exportation de données"
 
-#: import_export/templates/import_export/import_export.html:92
-#: import_export/templates/import_export/import_export.html:130
+#: import_export/templates/import_export/import_export.html:94
+#: import_export/templates/import_export/import_export.html:132
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/templates/import_export/import_export.html:111
+#: import_export/templates/import_export/import_export.html:113
 msgid "Csv Import"
 msgstr "Importation CSV"
 
@@ -36,11 +36,11 @@ msgstr "Importation CSV"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:153 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:155 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:154 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:156 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -96,12 +96,12 @@ msgstr ""
 msgid "Editing"
 msgstr "Edition"
 
-#: templates/nav/nav_csd_atelier.html:25 templates/nav/nav_reman.html:35
+#: templates/nav/nav_csd_atelier.html:25 templates/nav/nav_reman.html:46
 #: templates/nav/nav_tools.html:71
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:42
+#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:53
 msgid "Current folder"
 msgstr "Dossier en cours"
 
@@ -109,7 +109,7 @@ msgstr "Dossier en cours"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:31 templates/nav/nav_reman.html:60
+#: templates/nav/nav_csd_atelier.html:31 templates/nav/nav_reman.html:71
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -145,31 +145,37 @@ msgstr "S'inscrire"
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:30 templates/nav/nav_reman.html:59
+#: templates/nav/nav_reman.html:28
+#, fuzzy
+#| msgid "Create file"
+msgid "Create Default"
+msgstr "Création dossier"
+
+#: templates/nav/nav_reman.html:41 templates/nav/nav_reman.html:70
 msgid "Repairs"
 msgstr "Réparations"
 
-#: templates/nav/nav_reman.html:38
+#: templates/nav/nav_reman.html:49
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:61
+#: templates/nav/nav_reman.html:72
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:63 templates/nav/nav_reman.html:64
+#: templates/nav/nav_reman.html:74 templates/nav/nav_reman.html:75
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:65
+#: templates/nav/nav_reman.html:76
 msgid "ECU ref Base"
 msgstr ""
 
-#: templates/nav/nav_reman.html:74
+#: templates/nav/nav_reman.html:85
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:83
+#: templates/nav/nav_reman.html:94
 msgid "check part"
 msgstr "Vérification pièce"
 
