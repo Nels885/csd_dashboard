@@ -31,7 +31,7 @@ class ExcelEcuCrossReference(ExcelFormat):
 
 class ExcelEcuRefBase(ExcelFormat):
     COLS = {'A': 'oe_raw_reference', 'B': 'reman_reference', 'C': 'technical_data', 'D': 'hw_reference',
-            'E': 'supplier_oe', 'F': 'psa_barcode', 'G': 'former_oe_reference', 'H': 'code_produit'}
+            'E': 'supplier_oe', 'F': 'psa_barcode', 'G': 'former_oe_reference', 'I': 'code_produit'}
 
     def __init__(self, file, sheet_name=0, columns=None, skiprows=None):
         """
@@ -42,6 +42,7 @@ class ExcelEcuRefBase(ExcelFormat):
         cols = ",".join(self.COLS.keys())
         super(ExcelEcuRefBase, self).__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
         self._columns_rename()
+        self.sheet.replace({"#": None}, inplace=True)
         self.sheet.fillna('', inplace=True)
         self.data = self._data_update()
 
