@@ -16,6 +16,7 @@ urlpatterns = [
     path('batch/create/', views.BatchCreateView.as_view(), name='create_batch'),
     path('ecu/table/', views.ecu_ref_table, name='ecu_table'),
     path('ecu/<str:psa_barcode>/model/create/', views.ecu_model_create, name='create_ecu_model'),
+    path('ecu/<str:hw_reference>/type/create/', views.ecu_type_create, name='create_ecu_type'),
     path('default/create/', views.DefaultCreateView.as_view(), name='create_default'),
     path('default/<int:pk>/edit/', views.DefaultUpdateView.as_view(), name='update_default'),
     path('default/table/', views.default_table, name='default_table'),

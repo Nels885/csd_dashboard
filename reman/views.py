@@ -12,10 +12,10 @@ from utils.django.urls import reverse, reverse_lazy
 
 from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel, Default
+from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
     AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm,
-    PartEcuModelForm
+    PartEcuModelForm, PartEcuTypeForm
 )
 
 context = {
@@ -130,9 +130,25 @@ def ecu_model_create(request, psa_barcode):
     form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
     form.initial['psa_barcode'] = psa_barcode
     if form.is_valid():
-        pass
+        hw_reference = form.cleaned_data['hw_reference']
+        return redirect(reverse('reman:create_ecu_type', kwargs={'hw_reference': hw_reference}))
     context.update(locals())
     return render(request, 'reman/part_detail.html', context)
+
+
+def ecu_type_create(request, hw_reference):
+    card_title = "Ajout Type ECU"
+    try:
+        ecu = EcuType.objects.get(hw_reference=hw_reference)
+        form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu)
+    except EcuType.DoesNotExist:
+        ecu = None
+        form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
+        form.initial['psa_barcode'] = hw_reference
+    if form.is_valid():
+        pass
+    context.update(locals())
+    return render(request, 'reman/ecu_type_form.html', context)
 
 
 @permission_required('reman.view_ecumodel')

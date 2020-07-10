@@ -183,6 +183,13 @@ class PartEcuModelForm(forms.ModelForm):
         }
 
 
+class PartEcuTypeForm(forms.ModelForm):
+
+    class Meta:
+        model = EcuType
+        fields = ['hw_reference', 'technical_data', 'supplier_oe', 'spare_part']
+
+
 class DefaultForm(BSModalForm):
 
     class Meta:
