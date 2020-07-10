@@ -14,7 +14,8 @@ from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default
 from .forms import (
-    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm
+    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm,
+    PartEcuModelForm
 )
 
 context = {
@@ -114,16 +115,24 @@ def check_parts(request):
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
         psa_barcode = form.cleaned_data['psa_barcode']
-        try:
-            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
-        except EcuModel.DoesNotExist:
-            ecu = None
-            # messages.warning(request, "Ce code barre PSA n'éxiste pas dans la base de données")
-        context.update(locals())
-        return render(request, 'reman/part_detail.html', context)
+        return redirect(reverse('reman:create_ecu_model', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
+
+
+def ecu_model_create(request, psa_barcode):
+    card_title = "Ajout Modèle ECU"
+    try:
+        ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
+    except EcuModel.DoesNotExist:
+        ecu = None
+    form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
+    form.initial['psa_barcode'] = psa_barcode
+    if form.is_valid():
+        pass
+    context.update(locals())
+    return render(request, 'reman/part_detail.html', context)
 
 
 @permission_required('reman.view_ecumodel')

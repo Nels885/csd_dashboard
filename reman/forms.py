@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, Default, EcuRefBase
+from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel
 from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
@@ -170,6 +170,17 @@ class CheckPartForm(forms.Form):
                 params={'value': data},
             )
         return data
+
+
+class PartEcuModelForm(forms.ModelForm):
+    hw_reference = forms.CharField(label="HW référence", max_length=10, required=True)
+
+    class Meta:
+        model = EcuModel
+        fields = ['psa_barcode', 'hw_reference', 'oe_raw_reference', 'former_oe_reference']
+        widgets = {
+            'psa_barcode': forms.TextInput(attrs={'readonly': None})
+        }
 
 
 class DefaultForm(BSModalForm):
