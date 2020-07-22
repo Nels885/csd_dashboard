@@ -29,15 +29,11 @@
 
             {% include 'nav/nav_csd_atelier.html' %}
 
-            {% include 'nav/nav_in_out.html' %}
-
-            {% include 'nav/nav_spare_parts.html' %}
+            {% include 'nav/nav_reman.html' %}
 
             {% include 'nav/nav_csd_admin.html' %}
 
             {% include 'nav/nav_tools.html' %}
-
-            {% include 'nav/nav_gestion.html' %}
 
             {#            {% include 'demo/nav_demo.html' %}#}
 
@@ -60,16 +56,16 @@
             <!-- Main Content -->
             <div id="content">
 
+                {% include 'base/top_bar.html' %}
+
                 {% block messages %}
 
                     {% include 'base/_messages.html' %}
 
                 {% endblock %}
 
-                {% include 'base/top_bar.html' %}
-
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid mt-4">
 
                     {% include 'base/_header.html' %}
 

@@ -12,7 +12,7 @@
 {#</li>#}
 <li class="nav-item {% if select == 'ecu' %}active{% endif %}">
     <a class="nav-link {% if select == 'ecu' %}active{% endif %}" href="{% url 'reman:ecu_table' %}">
-        {% trans 'Ecu Reman Reference' %}
+        {% trans 'Base ECU Reman' %}
     </a>
 </li>
 
@@ -21,3 +21,11 @@
         {% trans "Spare Parts" %}
     </a>
 </li>
+
+{% if perms.reman.view_default %}
+    <li class="nav-item {% if select == 'default' %}active{% endif %}">
+        <a class="nav-link {% if select == 'default' %}active{% endif %}" href="{% url 'reman:default_table' %}">
+            {% trans "Default list" %}
+        </a>
+    </li>
+{% endif %}

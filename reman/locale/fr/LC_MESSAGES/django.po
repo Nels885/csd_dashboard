@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 14:31+0100\n"
+"POT-Creation-Date: 2020-07-08 14:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/forms.py:34
+#: reman/forms.py:35
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:41
+#: reman/forms.py:42
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/models.py:46
+#: reman/models.py:80
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
-#: reman/templates/reman/edit_repair.html:108
+#: reman/templates/reman/check_parts.html:22
+#: reman/templates/reman/edit_repair.html:100
 msgid "Submit"
 msgstr "Soumettre"
 
@@ -39,34 +40,100 @@ msgid "Create Batch"
 msgstr "Création d'un lot"
 
 #: reman/templates/reman/modal/create_batch.html:41
+#: reman/templates/reman/modal/create_default.html:43
 #: reman/templates/reman/modal/create_repair.html:38
+#: reman/templates/reman/modal/update_default.html:43
 msgid "Cancel"
 msgstr "Annuler"
 
 #: reman/templates/reman/modal/create_batch.html:42
+#: reman/templates/reman/modal/create_default.html:44
 #: reman/templates/reman/modal/create_repair.html:39
 msgid "Create"
 msgstr "Création"
+
+#: reman/templates/reman/modal/create_default.html:7
+msgid "Create Default"
+msgstr "Ajout panne"
 
 #: reman/templates/reman/modal/create_repair.html:7
 msgid "Create Repair"
 msgstr "Création d'un dossier"
 
-#: reman/views.py:70
-msgid "Modification done successfully!"
-msgstr "Modification réalisée avec succès !"
+#: reman/templates/reman/modal/update_default.html:7
+msgid "Update Default"
+msgstr "Mise à jour panne"
 
-#: reman/views.py:73
+#: reman/templates/reman/modal/update_default.html:44
+msgid "Update"
+msgstr "Mise à jour"
+
+#: reman/templates/reman/out_table.html:20
+msgid "Add"
+msgstr "Ajout"
+
+#: reman/templates/reman/part_detail.html:47
+#: reman/templates/reman/part_detail.html:62
+msgid "Previous page"
+msgstr "Page précédente"
+
+#: reman/templates/reman/part_detail.html:63
+msgid "Send email"
+msgstr "Envoi email"
+
+#: reman/templates/reman/tab_select.html:5
+msgid "batch list"
+msgstr "Liste des lots"
+
+#: reman/templates/reman/tab_select.html:15
+msgid "Base ECU Reman"
+msgstr "ECU Référence de base"
+
+#: reman/templates/reman/tab_select.html:21
+msgid "Spare Parts"
+msgstr "Pièces détachées"
+
+#: reman/templates/reman/tab_select.html:28
+msgid "Default list"
+msgstr "Liste des pannes"
+
+#: reman/tests/tests_reman_views.py:89
+msgid "This field is required."
+msgstr "Ce champ est requis."
+
+#: reman/tests/tests_reman_views.py:92
+msgid "PSA barcode is invalid"
+msgstr "Code barre PSA n'est pas valide"
+
+#: reman/tests/tests_reman_views.py:112 reman/views.py:140
+msgid "Success: The email has been sent."
+msgstr "Succès: L'email a été envoyé."
+
+#: reman/views.py:53
+#, python-format
+msgid "Adding Repair n°%(repair)s to lot n°%(batch)s successfully"
+msgstr "Ajout réussi de la réparation n°%(repair)s du lot n°%(batch)s"
+
+#: reman/views.py:99
 msgid "Modification customer folder"
 msgstr "Modification dossier client"
 
-#: reman/views.py:85
+#: reman/views.py:105
+msgid "Modification done successfully!"
+msgstr "Modification réalisée avec succès !"
+
+#: reman/views.py:148
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
-#: reman/views.py:98
+#: reman/views.py:156
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#~ msgid "There is no more repair file to create for this lot!"
-#~ msgstr "Il n'y a plus de fichier de réparation à créer pour ce lot !"
+#: reman/views.py:164
+msgid "Success: Reman Default was created."
+msgstr "Succès: La panne REMAN a été créé."
+
+#: reman/views.py:174
+msgid "Success: Reman Default was updated."
+msgstr "Succès: La panne REMAN a été mise à jour."

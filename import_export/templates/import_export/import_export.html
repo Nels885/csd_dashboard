@@ -1,136 +1,50 @@
-{% extends 'format/datatables_format.html' %}
+{% extends 'format/detail_format.html' %}
 
 {% load static i18n %}
 
-{#{% block card_header %}#}
-{##}
-{#    <div class="card-header">#}
-{#        <ul class="nav nav-tabs card-header-tabs" role="tablist">#}
-{##}
-{#            {% include 'reman/tab_select.html' with select='import' %}#}
-{##}
-{#        </ul>#}
-{#    </div>#}
-{##}
-{#{% endblock %}#}
+{% block card_header %}
 
-{% block table_content %}
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
 
-    <h3 class="mb-4 mt-3 text-gray-800">Exportation des données CORVET :</h3>
+            <li class="nav-item active">
+                <a class="nav-link active" href="#csd" role="tab" aria-controls="csd" aria-selected="true">
+                    CSD Atelier
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#reman" role="tab" aria-controls="reman" aria-selected="false">
+                    REMAN
+                </a>
+            </li>
+        </ul>
+    </div>
 
-    <form class="form-inline ml-sm-3" method="post" action="{% url 'import_export:corvet' %}">
+{% endblock %}
 
-        {% csrf_token %}
+{% block customcss %}
 
-        <div class="form-group">
-            <label for="{{ form_corvet.formats.id_for_label }}" class="mb-2">Format :</label>
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
 
-            {{ form_corvet.formats }}
+{% endblock %}
 
-        </div>
+{% block detail_content %}
 
-        <div class="form-group">
-            <label for="{{ form_corvet.products.id_for_label }}" class="mb-2">Produit :</label>
+    <div class="tab-content mt-3">
 
-            {{ form_corvet.products }}
+        <!-- Detail CSD Workshop -->
+        <div class="tab-pane active" id="csd" role="tabpanel" aria-labelledby="csd-tab">
 
-        </div>
-
-        <button type="submit" class="btn btn-success btn-icon-split mb-2">
-            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
-        </button>
-
-    </form>
-
-    <hr>
-
-    <h3 class="mb-4 mt-3 text-gray-800">Exportation des données REMAN :</h3>
-
-    <form class="form-inline ml-sm-3" method="post" action="{% url 'import_export:reman' %}">
-
-        {% csrf_token %}
-
-        <div class="form-group">
-            <label for="{{ form_reman.formats.id_for_label }}" class="mb-2">Format :</label>
-
-            {{ form_reman.formats }}
+            {% include 'import_export/detail_csd.html' %}
 
         </div>
 
-        <div class="form-group">
-            <label for="{{ form_reman.tables.id_for_label }}" class="mb-2">Tableau :</label>
+        <!-- Detail REMAN -->
+        <div class="tab-pane" id="reman" role="tabpanel" aria-labelledby="reman-tab">
 
-            {{ form_reman.tables }}
+            {% include 'import_export/detail_reman.html' %}
 
         </div>
-
-        <button type="submit" class="btn btn-success btn-icon-split mb-2">
-            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
-        </button>
-
-    </form>
-
-    <hr>
-
-    <h3 class="text-gray-800 mb-4 mt-5">Importation des données REMAN :</h3>
-
-    <form class="form-inline mb-4" method="post" enctype="multipart/form-data"
-          action="{% url 'import_export:import_ecu' %}">
-
-        {% csrf_token %}
-
-        <div class="input-group col-sm-5">
-            <div class="input-group-prepend mb-2">
-                <span class="input-group-text">ECU Cross Référence</span>
-            </div>
-            <div class="custom-file mb-2">
-                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
-                <label class="custom-file-label" for="inputMyFile">Choose file</label>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
-            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Excel Import" %}</span>
-        </button>
-    </form>
-
-    <form class="form-inline mb-4" method="post" enctype="multipart/form-data"
-          action="{% url 'import_export:import_part' %}">
-
-        {% csrf_token %}
-
-        <div class="input-group col-sm-5">
-            <div class="input-group-prepend mb-2">
-                <span class="input-group-text">Pièces Détachées</span>
-            </div>
-            <div class="custom-file mb-2">
-                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
-                <label class="custom-file-label" for="inputMyFile">Choose file</label>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
-            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Csv Import" %}</span>
-        </button>
-    </form>
-
-    <form class="form-inline" method="post" enctype="multipart/form-data"
-          action="{% url 'import_export:import_ecu_base' %}">
-
-        {% csrf_token %}
-
-        <div class="input-group col-sm-5">
-            <div class="input-group-prepend mb-2">
-                <span class="input-group-text">Base Réf ECU</span>
-            </div>
-            <div class="custom-file mb-2">
-                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
-                <label class="custom-file-label" for="inputMyFile">Choose file</label>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-success btn-icon-split mb-2 ml-sm-2">
-            <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Excel Import" %}</span>
-        </button>
-    </form>
-
-    <hr>
+    </div>
 
 {% endblock %}

@@ -1,0 +1,100 @@
+{% load i18n user_tags %}
+
+{% if perms.reman %}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        REMAN
+    </div>
+
+    {% if perms.reman.add_batch %}
+
+        <li class="nav-item">
+            <a class="batch-btn nav-link" href="#">
+                <i class="fas fa-fw fa-box"></i><span>{% trans "Create Batch" %}</span>
+
+            </a>
+        </li>
+
+    {% endif %}
+
+    {% if perms.reman.add_default %}
+
+        <li class="nav-item">
+            <a class="default-btn nav-link" href="#">
+                <i class="fas fa-fw fa-wrench"></i><span>{% trans "Create Default" %}</span>
+
+            </a>
+        </li>
+
+    {% endif %}
+
+    <!-- Nav Item - Reman Repair Menu -->
+    {% with name="RemanAtelier" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{% trans "Repairs" %}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+
+                    {% if perms.reman.add_repair %}
+                        <a class="repair-btn collapse-item" href="#">{% trans "Create file" %}</a>
+                    {% endif %}
+
+                    <a class="collapse-item"
+                       href="{% url 'reman:repair_table' %}?filter=quality">{% trans "Current folder" %}</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+    <!-- Nav Item - Reman Consultation Menu -->
+    {% with name="remanConsult" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>Consultation</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Repairs" %} :</h6>
+                    <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "Batch list" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans "Spare Parts" %} :</h6>
+                    <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:ecu_table' %}">{% trans "ECU ref Base" %}</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+    {% if perms.reman.change_repair %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'reman:out_table' %}">
+                <i class="fas fa-fw fa-truck"></i><span>{% trans "Shipment" %}</span>
+
+            </a>
+        </li>
+    {% endif %}
+
+    {% if perms.reman.view_ecumodel %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'reman:part_check' %}">
+                <i class="fas fa-fw fa-puzzle-piece"></i><span>{% trans "check part" %}</span>
+
+            </a>
+        </li>
+    {% endif %}
+
+{% endif %}

@@ -1,23 +1,24 @@
 from dashboard.tests.base import UnitTest, reverse
 
-from reman.models import EcuModel, Batch, Repair
+from reman.models import EcuModel, Batch, Repair, EcuRefBase, EcuType, Default
 
 
 class MixinsTest(UnitTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        ecu = EcuModel.objects.create(es_reference='1234567890', oe_reference='160000000',
-                                      oe_raw_reference='1699999999', hw_reference='9876543210', technical_data='test')
-        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_model=ecu)
-        self.add_perms_user(Batch, 'add_batch')
-        self.add_perms_user(Repair, 'add_repair')
+        ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
+        ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
+        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', psa_barcode='9876543210', ecu_ref_base=ref_base)
+        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
+        Default.objects.create(code='TEST1', description='Ceci est le test 1')
         self.ecuId = ecu.id
 
     def test_create_batch_ajax_mixin(self):
         """
         Create Batch through BSModalCreateView.
         """
+        self.add_perms_user(Batch, 'add_batch')
         self.login()
 
         # First post request = ajax request checking if form in view is valid
@@ -63,13 +64,14 @@ class MixinsTest(UnitTest):
         """
         Create Repair through BSModalCreateView.
         """
+        self.add_perms_user(Repair, 'add_repair')
         self.login()
 
         # First post request = ajax request checking if form in view is valid
         response = self.client.post(
             reverse('reman:create_repair'),
             data={
-                'ref_psa': '',
+                'psa_barcode': '',
                 'identify_number': '',
                 'ref_supplier': '1234567890',
                 'product_number': '1234567890',
@@ -90,7 +92,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_repair'),
             data={
-                'ref_psa': '9876543210',
+                'psa_barcode': '9876543210',
                 'identify_number': 'C001010001',
                 'ref_supplier': '1234567890',
                 'product_number': '1234567890',
@@ -103,3 +105,65 @@ class MixinsTest(UnitTest):
         # Object is not created
         repairs = Repair.objects.all()
         self.assertEqual(repairs.count(), 1)
+
+    def test_create_default_ajax_mixin(self):
+        """
+        Create Default through BSModalCreateView.
+        """
+        self.add_perms_user(Default, 'add_default')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('reman:create_default'),
+            data={
+                'code': '',
+                'description': '',
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        defaults = Default.objects.all()
+        self.assertEqual(defaults.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:create_default'),
+            data={
+                'code': 'TEST2',
+                'description': 'Ceci est le test 2',
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        defaults = Default.objects.all()
+        self.assertEqual(defaults.count(), 2)
+
+    def test_update_default_ajax_mixin(self):
+        """
+        Update Post throught BSModalCreateView.
+        """
+        self.add_perms_user(Default, 'change_default')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        default = Default.objects.first()
+        response = self.client.post(
+            reverse('reman:update_default', kwargs={'pk': default.pk}),
+            data={
+                'code': 'TEST3',
+                'description': 'Ceci est le test 3',
+            }
+        )
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is updated
+        default = Default.objects.first()
+        self.assertEqual(default.code, 'TEST3')

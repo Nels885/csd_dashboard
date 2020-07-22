@@ -24,7 +24,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
 from .models import Post, UserProfile
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm
+from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList
 from squalaetp.models import Xelon
 from tools.models import EtudeProject
 
@@ -93,11 +93,14 @@ def user_profile(request):
     """ View of User profile page """
     title = _("User Profile")
     profil = get_object_or_404(UserProfile, user=request.user.id)
-    form = UserProfileForm(request.POST or None, request.FILES, instance=profil)
-    if form.is_valid():
-        form.save()
-        messages.success(request, _('Success: Modification done!'))
-    errors = form.errors.items()
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=profil, error_class=ParaErrorList)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Success: Modification done!'))
+        errors = form.errors.items()
+    else:
+        form = UserProfileForm(error_class=ParaErrorList)
     return render(request, 'dashboard/profile.html', locals())
 
 
@@ -111,10 +114,9 @@ def signup(request):
         user = form.save(commit=False)
         user.set_password(password)
         user.is_active = False
-        user.save()
+        form.save()
         if form.cleaned_data['group']:
             user.groups.add(form.cleaned_data['group'])
-        UserProfile(user=user).save()
         current_site = get_current_site(request)
         mail_subject = 'Activate your CSD Dashboard account.'
         message = render_to_string('dashboard/acc_active_email.html', {

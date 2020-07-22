@@ -17,53 +17,61 @@
                                     <h1 class="h4 text-gray-900 mb-4">{{ title }}</h1>
                                 </div>
 
-                                <form class="user" method="post" action="{% url 'dashboard:user_profile' %}"
-                                      enctype="multipart/form-data">
+                                <table class="table table-striped table-condensed">
 
-                                    {% csrf_token %}
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-dark">{% trans "Profile picture" %} :</td>
+                                        <td align="center"><img width="200" src="{{ user.userprofile.image.url }}"
+                                                                alt=""></td>
+                                        <td class="align-middle">
 
-                                    <table class="table table-striped table-condensed">
+                                            <form class="user" method="post" action="{% url 'dashboard:user_profile' %}"
+                                                  enctype="multipart/form-data">
 
-                                        <tbody>
-                                        <tr>
-                                            <td class="text-dark">{% trans "Profile picture" %} :</td>
-                                            <td align="center"><img width="200" src="{{ user.userprofile.image.url }}"
-                                                                    alt=""></td>
-                                            <td class="align-middle">
+                                                {% csrf_token %}
 
                                                 {{ form.image }}
 
                                                 <button type="submit" value="Submit" name="_save">Upload</button>
 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-dark">{% trans "Username" %} :</td>
-                                            <td colspan="2">{{ user.username }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-dark">{% trans "Last name" %} :</td>
-                                            <td colspan="2">{{ user.last_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-dark">{% trans "First name" %} :</td>
-                                            <td colspan="2">{{ user.first_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-dark">{% trans "Password" %} :</td>
-                                            <td colspan="2">
-                                                <a class="small"
-                                                   href="{% url 'password_change' %}">{% trans "Change password" %}</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-dark">{% trans "E-mail address" %} :</td>
-                                            <td colspan="2">{{ user.email }}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                            </form>
 
-                                </form>
+                                            {% if errors %}
+                                                {% for key, error in errors %}
+                                                    {% autoescape off %}
+                                                        {{ error }}
+                                                    {% endautoescape %}
+                                                {% endfor %}
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-dark">{% trans "Username" %} :</td>
+                                        <td colspan="2">{{ user.username }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-dark">{% trans "Last name" %} :</td>
+                                        <td colspan="2">{{ user.last_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-dark">{% trans "First name" %} :</td>
+                                        <td colspan="2">{{ user.first_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-dark">{% trans "Password" %} :</td>
+                                        <td colspan="2">
+                                            <a class="small"
+                                               href="{% url 'password_change' %}">{% trans "Change password" %}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-dark">{% trans "E-mail address" %} :</td>
+                                        <td colspan="2">{{ user.email }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
 
                                 <hr>
                                 <div class="text-center">

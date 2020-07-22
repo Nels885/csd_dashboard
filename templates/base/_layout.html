@@ -73,6 +73,8 @@
 
         $(".batch-btn").modalForm({formURL: "{% url 'reman:create_batch' %}"});
 
+        $(".default-btn").modalForm({formURL: "{% url 'reman:create_default' %}", modalID: "#create-large-modal"});
+
         $(".repair-btn").modalForm({formURL: "{% url 'reman:create_repair' %}"});
 
         $(".corvet-btn").modalForm({formURL: "{% url 'squalaetp:create_corvet' %}", modalID: "#large-modal"});
@@ -91,6 +93,11 @@
 
         // Delete post buttons
         $(".update-corvet").each(function () {
+            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+        });
+
+        // Update default buttons
+        $(".update-default").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
         });
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 14:31+0100\n"
+"POT-Creation-Date: 2020-07-08 14:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,87 +26,83 @@ msgstr "Référence Boîtier"
 msgid "Product"
 msgstr "Produit"
 
-#: raspeedi/templates/raspeedi/form.html:21
+#: raspeedi/templates/raspeedi/form.html:20
 msgid "Front"
 msgstr "Façade"
 
-#: raspeedi/templates/raspeedi/form.html:41
+#: raspeedi/templates/raspeedi/form.html:40
 msgid "Reversing camera"
 msgstr "Caméra de recul"
 
-#: raspeedi/templates/raspeedi/form.html:49
+#: raspeedi/templates/raspeedi/form.html:48
 msgid "PEEDI dump"
 msgstr "Dump PEEDI"
 
-#: raspeedi/templates/raspeedi/form.html:54
+#: raspeedi/templates/raspeedi/form.html:53
 msgid "RENESAS dump"
 msgstr "Dump RENESAS"
 
-#: raspeedi/templates/raspeedi/form.html:61
+#: raspeedi/templates/raspeedi/form.html:60
 msgid "Version CD"
 msgstr "Version CD"
 
-#: raspeedi/templates/raspeedi/form.html:67
+#: raspeedi/templates/raspeedi/form.html:66
 msgid "Media type"
 msgstr "Type Media"
 
-#: raspeedi/templates/raspeedi/form.html:74
+#: raspeedi/templates/raspeedi/form.html:72
 msgid "Carto version"
 msgstr "Version Carto"
 
-#: raspeedi/templates/raspeedi/form.html:80
+#: raspeedi/templates/raspeedi/form.html:78
 msgid "Screens number"
 msgstr "Nombre d'écran"
 
-#: raspeedi/templates/raspeedi/form.html:89
+#: raspeedi/templates/raspeedi/form.html:87
 msgid "MM reference"
 msgstr "Référence MM"
 
-#: raspeedi/templates/raspeedi/form.html:105
+#: raspeedi/templates/raspeedi/form.html:102
 msgid "Submit"
 msgstr "Soumettre"
 
-#: raspeedi/templates/raspeedi/unlock_prods.html:22
+#: raspeedi/templates/raspeedi/unlock_prods.html:21
 msgid "Add"
 msgstr "Ajouter"
 
-#: raspeedi/tests/tests_raspeedi_views.py:53
-msgid "This field is required."
-msgstr "Ce champ est requis."
-
-#: raspeedi/views.py:25
+#: raspeedi/views.py:23
 msgid "Table Products Telematics PSA"
 msgstr "Table produits télématique PSA"
 
-#: raspeedi/views.py:43
+#: raspeedi/views.py:37
 msgid "Detail raspeedi data for the ref case of Product: "
 msgstr "Détail des données raspeedi pour le cas de référence du produit: "
 
-#: raspeedi/views.py:53
+#: raspeedi/views.py:45
 msgid "Unlocking product for programming"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: raspeedi/views.py:64
+#: raspeedi/views.py:52
 #, python-format
 msgid "Adding the Xelon number %(xelon)s successfully"
 msgstr "Ajout du dossier Xelon %(xelon)s avec succès"
 
-#: raspeedi/views.py:66
+#: raspeedi/views.py:54
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: raspeedi/views.py:77
+#: raspeedi/views.py:62
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: raspeedi/views.py:86
+#: raspeedi/views.py:69
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: raspeedi/views.py:100
-msgid "Modification done successfully!"
-msgstr "Modification effectuée avec succès !"
-
-#: raspeedi/views.py:102
+#: raspeedi/views.py:78
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "
+
+#: raspeedi/views.py:83
+msgid "Modification done successfully!"
+msgstr "Modification effectuée avec succès !"

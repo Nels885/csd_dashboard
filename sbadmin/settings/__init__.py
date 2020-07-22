@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'tempus_dominus',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'constance.backends.database',
+    'constance',
 
     # My apps
     'dashboard.apps.DashboardConfig',
@@ -199,3 +201,49 @@ CONF_DEFAULT_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/default.
 
 if not os.path.exists(CONF_FILE):
     shutil.copyfile(CONF_DEFAULT_FILE, CONF_FILE)
+
+# Configuration DJANGO-CONSTANCE
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    # General Options
+    'SITE_NAME': ('CSD Dashboard', 'Website title'),
+    'SITE_DESCRIPTION': ('', 'Website description'),
+
+    # REMAN Options
+    'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
+    'ECU_CC_EMAIL_LIST': ('', 'REMAN Cc email list'),
+
+    # Network Options
+    'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
+    'XLS_RASPEEDI_FILE': ('PROG/RASPEEDI/table_boitier_PSA.xlsx', 'xls raspeedi file'),
+    'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
+    'XLS_ATTRIBUTS_FILE': ('EXTS/Attributs CORVET.xlsx', 'xls attributs file'),
+    'CSV_EXTRACTION_FILE': ('EXTS/extraction.csv', 'csv extraction file'),
+    'XLS_ECU_REF_BASE': ('REMAN/PSA/Base réf REMAN.xlsx', 'xls ECU ref base'),
+    'XLS_DELAY_PATH': ('RH/AnalyseRetards', 'Path of xls delay files'),
+    'XLS_DELAY_FILES': (
+        'PSA.xls, ILOTAUTRE.xls, LaboQual.xls, DEFAUT.xls, CLARION.xls', 'List of xls delay file'
+    ),
+
+    # MQTT Options
+    'MQTT_TEMP_ADJ': (4, 'Temp adjust', int),
+    'MQTT_CLIENT': ('', 'Client name'),
+    'MQTT_USER': ('', 'Login'),
+    'MQTT_PSWD': ('', 'Password'),
+    'MQTT_BROKER': ('test.mosquitto.org', 'Server address'),
+    'MQTT_PORT': (1883, 'Server port', int),
+    'KEEP_ALIVE': (45, 'Keep alive', int),
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION'),
+    'REMAN Options': ('ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST'),
+    'Network Options': (
+        'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
+        'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'
+    ),
+    'MQTT Options': (
+        'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
+    ),
+}

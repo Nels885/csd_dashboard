@@ -19,7 +19,7 @@
 
                 <label for="product_model" class="col-sm-2 col-form-label">Modèle :</label>
                 <div class="col-sm-4">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_model.technical_data }}">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.technical_data }}">
                 </div>
             </div>
 
@@ -27,12 +27,12 @@
 
                 <label for="product_model" class="col-sm-2 col-form-label">HW référence :</label>
                 <div class="col-sm-2">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_model.hw_reference }}">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.hw_reference }}">
                 </div>
 
-                <label for="product_model" class="col-sm-2 col-form-label">SW référence :</label>
+                <label for="product_model" class="col-sm-2 col-form-label">Fabriquant :</label>
                 <div class="col-sm-2">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_model.sw_reference }}">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.supplier_oe }}">
                 </div>
 
                 <label for="{{ form.product_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.product_number.label }} :</label>
@@ -50,8 +50,8 @@
             <hr>
 
             <div class="form-group row">
-                <label for="{{ form.breakdown.id_for_label }}" class="col-sm-2 col-form-label">{{ form.breakdown.label }} :</label>
-                <div class="col-sm-6">{{ form.breakdown }}</div>
+                <label for="{{ form.default.id_for_label }}" class="col-sm-2 col-form-label">{{ form.default.label }} :</label>
+                <div class="col-sm-6">{{ form.default }}</div>
             </div>
 
             <hr>

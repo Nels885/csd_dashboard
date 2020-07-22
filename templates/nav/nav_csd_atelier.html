@@ -1,6 +1,6 @@
 {% load i18n user_tags %}
 
-{% if perms.squalaetp or perms.reman or perms.raspeedi %}
+{% if perms.squalaetp or perms.raspeedi.view_unlockproduct %}
 
     <!-- Heading -->
     <div class="sidebar-heading">
@@ -10,6 +10,7 @@
 {% endif %}
 
 {% if perms.squalaetp %}
+
     <!-- Nav Item - Xelon Settings Menu -->
     {% with name="Xelon" icon="fa-table" %}
         <li class="nav-item">
@@ -21,57 +22,51 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Traitements :</h6>
+                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
                     <a class="collapse-item"
                        href="{% url 'squalaetp:xelon' %}?filter=pending">{% trans "Current folder" %}</a>
                     <a class="collapse-item" href="{% url 'dashboard:late_prod' %}">{% trans "Late products" %}</a>
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Informations :</h6>
+                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                     <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+    <!-- Nav Item - Info PSA Settings Menu -->
+    {% with name="PSA" icon="fa-table" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>Info {{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                     <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
 
                     {% if perms.squalaetp.add_corvet %}
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Edition :</h6>
+                        <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                         <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
                     {% endif %}
                 </div>
             </div>
         </li>
     {% endwith %}
-{% endif %}
-
-{% if perms.reman %}
-
-    <!-- Nav Item - Reman Settings Menu -->
-    {% with name="RemanAtelier" icon="fa-table" %}
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-               aria-expanded="true" aria-controls="collapse{{ name }}">
-                <i class="fas fa-fw {{ icon }}"></i>
-                <span>Reman</span>
-            </a>
-            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Traitements :</h6>
-                    <a class="repair-btn collapse-item" href="#">{% trans "Create file" %}</a>
-                    <a class="collapse-item"
-                       href="{% url 'reman:repair_table' %}?filter=quality">{% trans "Current folder" %}</a>
-                    <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Informations :</h6>
-                    <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
-                    <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
-                </div>
-            </div>
-        </li>
-    {% endwith %}
 
 {% endif %}
 
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
-        <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
+{% if perms.raspeedi.view_unlockproduct %}
 
-    </a>
-</li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
+            <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
+
+        </a>
+    </li>
+
+{% endif %}

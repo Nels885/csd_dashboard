@@ -31,9 +31,9 @@ class ExcelEcuCrossReference(ExcelFormat):
 
 class ExcelEcuRefBase(ExcelFormat):
     COLS = {'A': 'oe_raw_reference', 'B': 'reman_reference', 'C': 'technical_data', 'D': 'hw_reference',
-            'E': 'supplier_oe', 'F': 'psa_barcode', 'G': 'former_oe_reference'}
+            'E': 'supplier_oe', 'F': 'psa_barcode', 'G': 'former_oe_reference', 'I': 'code_produit'}
 
-    def __init__(self, file, sheet_name=1, columns=None, skiprows=None):
+    def __init__(self, file, sheet_name=0, columns=None, skiprows=None):
         """
         Initialize ExcelRaspeedi class
         :param file:
@@ -42,14 +42,39 @@ class ExcelEcuRefBase(ExcelFormat):
         cols = ",".join(self.COLS.keys())
         super(ExcelEcuRefBase, self).__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
         self._columns_rename()
+        self.sheet.replace({"#": None}, inplace=True)
         self.sheet.fillna('', inplace=True)
+        self.data = self._data_update()
 
-    def read(self):
+    def read_all(self):
         """
         Formatting data from the Raspeedi excel file
         :return:
             list of dictionnaries that represents the data in the sheet
         """
+        return self.data
+
+    def part_base_model(self):
+        data = []
+        part_list = ['code_produit']
+        base_list = ['reman_reference']
+        model_list = [
+            'psa_barcode', 'oe_raw_reference', 'technical_data', 'hw_reference', 'supplier_oe', 'former_oe_reference'
+        ]
+        for row in self.data:
+            part_dict = self._dict(row, part_list)
+            base_dict = self._dict(row, base_list)
+            model_dict = self._dict(row, model_list)
+            data.append({'part': part_dict, 'base': base_dict, 'model': model_dict})
+        return data
+
+    def _dict(self, row, keys):
+        data_dict = {}
+        for key in list(keys):
+            data_dict.update({key: row[key]})
+        return data_dict
+
+    def _data_update(self):
         data = []
         for line in range(self.nrows):
             row = self.sheet.loc[line]

@@ -3,13 +3,19 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 
-from bootstrap_modal_forms.generic import BSModalCreateView
+from constance import config
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from utils.django.urls import reverse, reverse_lazy
 
+from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel
-from .forms import AddBatchFrom, AddRepairForm, EditRepairFrom, SparePartFormset, CloseRepairForm, CheckPartForm
+from .models import Repair, SparePart, Batch, EcuModel, Default
+from .forms import (
+    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm
+)
 
 context = {
     'title': 'Reman'
@@ -72,11 +78,19 @@ def part_table(request):
 
 @permission_required('reman.view_ecurefbase')
 def ecu_ref_table(request):
-    """ View of ECU Cross Reference table page """
-    table_title = 'Liste des ECU Cross Référence'
+    """ View of EcuRefBase table page """
+    table_title = 'Base ECU Reman'
     ecus = EcuModel.objects.all()
     context.update(locals())
-    return render(request, 'reman/ecu_ref_table.html', context)
+    return render(request, 'reman/ecu_ref_base_table.html', context)
+
+
+@permission_required('reman.view_default')
+def default_table(request):
+    table_title = 'Liste de panne'
+    defaults = Default.objects.all()
+    context.update(locals())
+    return render(request, 'reman/default_table.html', context)
 
 
 @permission_required('reman.change_repair')
@@ -84,7 +98,7 @@ def edit_repair(request, pk):
     """ View of edit repair page """
     card_title = _('Modification customer folder')
     prod = get_object_or_404(Repair, pk=pk)
-    form = EditRepairFrom(request.POST or None, instance=prod)
+    form = EditRepairForm(request.POST or None, instance=prod)
     formset = SparePartFormset(request.POST or None)
     if form.is_valid():
         form.save()
@@ -94,23 +108,43 @@ def edit_repair(request, pk):
     return render(request, 'reman/edit_repair.html', context)
 
 
+@permission_required('reman.view_ecumodel')
 def check_parts(request):
     card_title = "Check Spare Parts"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
-        ecu_model = EcuModel.objects.filter(psa_barcode__exact=form.cleaned_data['psa_barcode'])
-        if ecu_model:
-            messages.success(request, 'OK')
-        else:
-            messages.warning(request, 'ERROR')
+        psa_barcode = form.cleaned_data['psa_barcode']
+        try:
+            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
+        except EcuModel.DoesNotExist:
+            ecu = None
+            # messages.warning(request, "Ce code barre PSA n'éxiste pas dans la base de données")
+        context.update(locals())
+        return render(request, 'reman/part_detail.html', context)
+    errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
+
+
+@permission_required('reman.view_ecumodel')
+def new_part_email(request, psa_barcode):
+    mail_subject = '[REMAN] Nouveau code barre PSA'
+    message = render_to_string('reman/new_psa_barcode_email.html', {
+        'psa_barcode': psa_barcode,
+    })
+    email = EmailMessage(
+        mail_subject, message, to=string_to_list(",|;", config.ECU_TO_EMAIL_LIST),
+        cc=string_to_list(",|;", config.ECU_CC_EMAIL_LIST)
+    )
+    email.send()
+    messages.success(request, _('Success: The email has been sent.'))
+    return redirect("reman:part_check")
 
 
 class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'reman.add_batch'
     template_name = 'reman/modal/create_batch.html'
-    form_class = AddBatchFrom
+    form_class = AddBatchForm
     success_message = _('Success: Batch was created.')
     success_url = reverse_lazy('reman:batch_table')
 
@@ -120,3 +154,22 @@ class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/create_repair.html'
     form_class = AddRepairForm
     success_message = _('Success: Repair was created.')
+
+
+class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
+    """ View of modal default create """
+    permission_required = 'reman.add_default'
+    template_name = 'reman/modal/create_default.html'
+    form_class = DefaultForm
+    success_message = _('Success: Reman Default was created.')
+    success_url = reverse_lazy('reman:default_table')
+
+
+class DefaultUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal default update """
+    model = Default
+    permission_required = 'reman.change_default'
+    template_name = 'reman/modal/update_default.html'
+    form_class = DefaultForm
+    success_message = _('Success: Reman Default was updated.')
+    success_url = reverse_lazy('reman:default_table')

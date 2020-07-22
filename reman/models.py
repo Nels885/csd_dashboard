@@ -10,30 +10,51 @@ from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
 
 
-class EcuModel(models.Model):
-    psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
-    es_reference = models.CharField("référence EMS", max_length=10, blank=True)
-    es_raw_reference = models.CharField("référence EMS brute", max_length=10, blank=True)
-    oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
-    sw_reference = models.CharField("software", max_length=10, blank=True)
-    hw_reference = models.CharField("hardware", max_length=10)
-    former_oe_reference = models.CharField("ancienne référence OEM", max_length=10, blank=True)
+class EcuType(models.Model):
+    hw_reference = models.CharField("hardware", max_length=10, unique=True)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
-    supplier_es = models.CharField("service après vente", max_length=50, blank=True)
+    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return "{} {}".format(self.hw_reference, self.technical_data)
+        return "HW_{} - TYPE_{}".format(self.hw_reference, self.technical_data)
+
+
+class EcuModel(models.Model):
+    psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
+    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
+    oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
+    sw_reference = models.CharField("software", max_length=10, blank=True)
+    former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
+    supplier_es = models.CharField("service après vente", max_length=50, blank=True)
+    ecu_ref_base = models.ForeignKey("EcuRefBase", on_delete=models.CASCADE, null=True, blank=True)
+
+    @staticmethod
+    def part_list(psa_barcode):
+        ecu_models = EcuModel.objects.filter(psa_barcode__exact=psa_barcode)
+        msg_list = []
+        if ecu_models:
+            for ecu_model in ecu_models:
+                reman_refs = ecu_model.ecu_ref_base.reman_reference
+                xelon_refs = ecu_model.ecu_ref_base.ecu_type.spare_part.code_produit
+                location = ecu_model.ecu_ref_base.ecu_type.spare_part.code_emplacement
+                msg_list.append(
+                    'Réf. REMAN : {}  -  Réf. XELON : {}  -  EMPLACEMENT : {}'.format(reman_refs, xelon_refs, location))
+            return msg_list
+        else:
+            return None
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return "PSA_barcode_{}".format(self.psa_barcode)
 
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
-    ecu_models = models.ManyToManyField(EcuModel, related_name='ecu_ref_base', blank=True)
-    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        super(EcuRefBase, self).save(*args, **kwargs)
+    ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.reman_reference
@@ -49,7 +70,7 @@ class Batch(models.Model):
     end_date = models.DateField("date de fin", null=True)
     created_at = models.DateTimeField(editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
-    ecu_model = models.ForeignKey(EcuModel, on_delete=models.CASCADE)
+    ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.CASCADE)
 
     def clean(self):
         date = timezone.now()
@@ -70,9 +91,10 @@ class Batch(models.Model):
         return self.batch_number
 
 
-class Breakdown(models.Model):
+class Default(models.Model):
     code = models.CharField("code defaut", max_length=10, unique=True)
     description = models.CharField("libellé", max_length=200)
+    ecu_type = models.ManyToManyField("EcuType", related_name="defaults", blank=True)
 
     def __str__(self):
         return "{} - {}".format(self.code, self.description)
@@ -91,7 +113,7 @@ class Repair(models.Model):
     modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True,
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
-    breakdown = models.ForeignKey(Breakdown, related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
+    default = models.ForeignKey("Default", related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
 
     def get_absolute_url(self):
         if self.pk:
@@ -125,10 +147,10 @@ class Comment(models.Model):
 
 
 class SparePart(models.Model):
-    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
     code_produit = models.CharField('code Produit', max_length=100)
+    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
     code_zone = models.CharField('code Zone', max_length=20, blank=True)
-    code_site = models.IntegerField('code Site', blank=True)
+    code_site = models.IntegerField('code Site', null=True, blank=True)
     code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
     repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)

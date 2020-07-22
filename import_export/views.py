@@ -12,7 +12,7 @@ from django.core.management import call_command
 from squalaetp.models import Xelon, Corvet
 from reman.models import Batch, Repair
 from .forms import ExportCorvetForm, ExportRemanForm
-from utils.file.export import export_csv
+from utils.file.export import ExportCsv
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 
@@ -45,7 +45,7 @@ def export_corvet(request):
 def export_reman(request):
     form = ExportRemanForm(request.POST or None)
     if form.is_valid():
-        if request.user.has_perms('reman.view_batch', 'reman.view_repair'):
+        if request.user.has_perms(['reman.view_batch', 'reman.view_repair']):
             table = form.cleaned_data['tables']
             if table in ['batch', 'repair']:
                 return redirect('import_export:export_{}_csv'.format(table))
@@ -66,7 +66,7 @@ def export_corvet_csv(request):
     ]
     corvets = Corvet.objects.all()
 
-    return export_csv(queryset=corvets, filename=filename, header=header)
+    return ExportCsv(queryset=corvets, filename=filename, header=header).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -86,7 +86,7 @@ def export_ecu_csv(request):
         'corvet__electronique_64a', 'corvet__electronique_84a', 'corvet__electronique_p4a'
     )
 
-    return export_csv(queryset=ecus, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=ecus, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -106,7 +106,7 @@ def export_bsi_csv(request):
         'corvet__electronique_84b',
     )
 
-    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -125,7 +125,7 @@ def export_com_csv(request):
         'corvet__electronique_46p', 'corvet__electronique_56p', 'corvet__electronique_66p'
     )
 
-    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -145,7 +145,7 @@ def export_bsm_csv(request):
         'corvet__electronique_96b'
     )
 
-    return export_csv(queryset=bsis, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.view_batch')
@@ -157,10 +157,11 @@ def export_batch_csv(request):
     ]
     batch = Batch.objects.all().order_by('batch_number')
     values_list = (
-        'batch_number', 'quantity', 'ecu_model__es_reference', 'ecu_model__technical_data', 'ecu_model__hw_reference',
-        'ecu_model__supplier_oe', 'start_date', 'end_date', 'active', 'created_by__username', 'created_at'
+        'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
+        'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
+        'active', 'created_by__username', 'created_at'
     )
-    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.view_repair')
@@ -172,11 +173,12 @@ def export_repair_csv(request):
     ]
     batch = Repair.objects.all().order_by('identify_number')
     values_list = (
-        'identify_number', 'batch__batch_number', 'batch__ecu_model__es_reference', 'batch__ecu_model__technical_data',
-        'batch__ecu_model__hw_reference', 'batch__ecu_model__sw_reference', 'batch__ecu_model__supplier_oe',
-        'remark', 'created_at', 'modified_by__username', 'closing_date'
+        'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__reman_reference',
+        'batch__ecu_ref_base__ecu_type__technical_data', 'batch__ecu_ref_base__ecu_type__hw_reference',
+        'batch__ecu_ref_base__ecumodel__sw_reference', 'batch__ecu_ref_base__ecu_type__supplier_oe', 'remark',
+        'created_at', 'modified_by__username', 'closing_date'
     )
-    return export_csv(queryset=batch, filename=filename, header=header, values_list=values_list)
+    return ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.add_sparepart', 'reman.change_sparepart')
@@ -188,7 +190,8 @@ def import_sparepart(request):
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
                 call_command("spareparts", "--file", file_url, stdout=out)
-                messages.success(request, out.getvalue())
+                for msg in out.getvalue().split("\n"):
+                    messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')
                 return redirect('reman:part_table')
         except MultiValueDictKeyError:
@@ -209,7 +212,8 @@ def import_ecureference(request):
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
                 call_command("ecureference", "--file", file_url, stdout=out)
-                messages.success(request, out.getvalue())
+                for msg in out.getvalue().split("\n"):
+                    messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')
                 return redirect('reman:ecu_table')
         except MultiValueDictKeyError:
@@ -229,8 +233,9 @@ def import_ecurefbase(request):
                 my_file = request.FILES["myfile"]
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
-                call_command("ecurefbase", "--file", file_url, stdout=out)
-                messages.success(request, out.getvalue())
+                call_command("ecurefbase", "1", "--file", file_url, stdout=out)
+                for msg in out.getvalue().split("\n"):
+                    messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')
                 return redirect('reman:ecu_table')
         except MultiValueDictKeyError:

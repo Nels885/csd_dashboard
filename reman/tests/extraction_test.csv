@@ -1,0 +1,3 @@
+code Magasin;Code Produit;indice Produit;Code Zone;Code site;cumul Affect�;Code Emplacement;Cumul r�serv� client;Cumul r�serv� fabrication;Cumul au contr�le;Cumul Dispo;Cumul en cours approvisionnement;cumul r�ception;Cumul en cours routier exp�dition;Cumul encours routier r�ception;Statut
+MAGTEST;produit1;;ZONE TEST;1;0.00000000;A1/1;0.00000000;0.00000000;0.00000000;1.00000000;0.00000000;0.00000000;0.00000000;0.00000000;0
+MAGTEST;produit2;;ZONE TEST;1;0.00000000;A1/2;0.00000000;0.00000000;0.00000000;1.00000000;0.00000000;0.00000000;0.00000000;0.00000000;0

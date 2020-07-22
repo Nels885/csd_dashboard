@@ -37,12 +37,12 @@
                 <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Informations :</h6>
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                         <a class="collapse-item"
                            href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
                         <div class="collapse-divider"></div>
                         {% if perms.dashboard.add_csdsoftware %}
-                            <h6 class="collapse-header">Edition :</h6>
+                            <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                             <a class="collapse-item"
                                href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
                         {% endif %}
@@ -68,18 +68,18 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Traitements :</h6>
+                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
                     <a class="collapse-item" href="{% url 'raspeedi:unlock_prods' %}">{% trans "Unlock VIN" %}</a>
 
                     {% if perms.raspeedi.view_raspeedi %}
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Informations :</h6>
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                         <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
                     {% endif %}
 
                     {% if perms.raspeedi.add_raspeedi %}
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Edition :</h6>
+                        <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                         <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
                     {% endif %}
 

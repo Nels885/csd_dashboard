@@ -4,11 +4,12 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, EcuModel, Breakdown
+from .models import Batch, Repair, SparePart, Default, EcuRefBase
 from utils.conf import DICT_YEAR
+from utils.django.validators import validate_psa_barcode
 
 
-class AddBatchFrom(BSModalForm):
+class AddBatchForm(BSModalForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
 
     class Meta:
@@ -43,23 +44,25 @@ class AddBatchFrom(BSModalForm):
 
     def clean_ref_reman(self):
         data = self.cleaned_data['ref_reman']
-        if not EcuModel.objects.filter(es_reference__exact=data):
+        try:
+            ecu = EcuRefBase.objects.get(reman_reference__exact=data)
+            if not self.errors:
+                batch = super(AddBatchForm, self).save(commit=False)
+                batch.ecu_ref_base = ecu
+        except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
-        else:
-            batch = super(AddBatchFrom, self).save(commit=False)
-            batch.ecu_model = EcuModel.objects.filter(es_reference__exact=data).first()
         return data
 
 
 class AddRepairForm(BSModalForm):
-    ref_psa = forms.CharField(label='Réf. PSA', max_length=10,
-                              widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
+    psa_barcode = forms.CharField(label='Code barre PSA', max_length=10,
+                                  widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
     ref_supplier = forms.CharField(label='Réf. SUP', required=False,
                                    widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=10)
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'ref_psa', 'ref_supplier', 'product_number', 'remark']
+        fields = ['identify_number', 'psa_barcode', 'ref_supplier', 'product_number', 'remark']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}),
             'product_model': forms.Select(attrs={'class': 'form-control'}),
@@ -68,7 +71,7 @@ class AddRepairForm(BSModalForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(AddRepairForm, self).__init__(*args, **kwargs)
         self.batchNumber = None
 
     def clean_identify_number(self):
@@ -82,15 +85,16 @@ class AddRepairForm(BSModalForm):
             self.add_error('identify_number', 'Pas de lot associé')
         return data
 
-    def clean_ref_psa(self):
-        data = self.cleaned_data["ref_psa"]
-        batch = Batch.objects.filter(batch_number__exact=self.batchNumber, ecu_model__hw_reference=data).first()
+    def clean_psa_barcode(self):
+        data = self.cleaned_data["psa_barcode"]
+        batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
+                                     ecu_ref_base__ecumodel__psa_barcode=data).first()
         if not batch:
-            self.add_error('ref_psa', "Référence incorrecte")
+            self.add_error('psa_barcode', "Code barre PSA incorrecte")
         return data
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(AddRepairForm, self).clean()
         ref_psa = cleaned_data.get("ref_psa")
         if ref_psa:
             batch = Batch.objects.filter(batch_number__exact=self.batchNumber, ecu_model__hw_reference=ref_psa).first()
@@ -100,17 +104,23 @@ class AddRepairForm(BSModalForm):
                 raise forms.ValidationError("Ce lot n'est plus actif")
 
 
-class EditRepairFrom(forms.ModelForm):
-    breakdown = forms.ModelChoiceField(queryset=Breakdown.objects.all(), required=True, label="Panne",
-                                       widget=forms.Select(attrs={'class': 'form-control'}))
+class EditRepairForm(forms.ModelForm):
+    default = forms.ModelChoiceField(queryset=Default.objects.all(), required=True, label="Panne",
+                                     widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super(EditRepairForm, self).__init__(*args, **kwargs)
+        if self.instance.batch.ecu_ref_base:
+            technical_data = self.instance.batch.ecu_ref_base.ecu_type.technical_data
+            self.fields['default'].queryset = Default.objects.filter(ecu_type__technical_data=technical_data)
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'breakdown', 'quality_control']
+        fields = ['identify_number', 'product_number', 'remark', 'default', 'quality_control']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
-            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': ''}),
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
 
@@ -137,7 +147,7 @@ class CloseRepairForm(forms.Form):
 
 class SparePartForm(forms.Form):
     spare_parts = forms.ModelChoiceField(
-        queryset=SparePart.objects.all(), required=False, label='Nom',
+        queryset=SparePart.objects.filter(code_zone="REMAN PSA").order_by('code_produit'), required=False, label='Nom',
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
     quantity = forms.CharField(label='Quantité', widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -148,4 +158,22 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 class CheckPartForm(forms.Form):
     psa_barcode = forms.CharField(label="Code Barre PSA", max_length=10,
-                                  widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'}))
+                                  widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''}))
+
+    def clean_psa_barcode(self):
+        data = self.cleaned_data['psa_barcode']
+        message = validate_psa_barcode(data)
+        if message:
+            raise forms.ValidationError(
+                _(message),
+                code='invalid',
+                params={'value': data},
+            )
+        return data
+
+
+class DefaultForm(BSModalForm):
+
+    class Meta:
+        model = Default
+        fields = '__all__'

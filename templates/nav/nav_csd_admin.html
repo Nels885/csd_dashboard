@@ -1,5 +1,4 @@
-{% load i18n %}
-{% load user_tags %}
+{% load i18n user_tags %}
 
 {% if user|has_group:'csd-admin' or user.is_superuser %}
 
@@ -22,10 +21,10 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Informations :</h6>
+                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                     <a class="collapse-item" href="#">Hotline</a>
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Edition :</h6>
+                    <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                     <a class="collapse-item" href="#">Ajout</a>
                     <a class="collapse-item" href="#">Modification</a>
                 </div>

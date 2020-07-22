@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 14:31+0100\n"
+"POT-Creation-Date: 2020-07-08 14:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: tools/models.py:19
+#: tools/models.py:20
 msgid "CALIBRE file exists !"
 msgstr "Le fichier CALIBRE existe !"
 
@@ -55,31 +55,31 @@ msgstr "Ajouter"
 msgid "Thermal Chamber Temperature"
 msgstr "Température Chambre Thermique"
 
-#: tools/views.py:23
+#: tools/views.py:19
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:36
+#: tools/views.py:28
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:46
+#: tools/views.py:35
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
-#: tools/views.py:65 tools/views.py:90
-msgid "Modification done successfully!"
-msgstr "Modification effectuée avec succès!"
-
-#: tools/views.py:68
+#: tools/views.py:50
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"
 
-#: tools/views.py:80
+#: tools/views.py:54 tools/views.py:69
+msgid "Modification done successfully!"
+msgstr "Modification effectuée avec succès!"
+
+#: tools/views.py:61
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: tools/views.py:81
+#: tools/views.py:62
 msgid "Use of the thermal chamber"
 msgstr "Utilisation de la chambre thermique"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 14:31+0100\n"
+"POT-Creation-Date: 2020-07-08 14:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,10 +18,269 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: sbadmin/settings/__init__.py:147
+#: import_export/templates/import_export/import_export.html:40
+#: import_export/templates/import_export/import_export.html:70
+msgid "Data Export"
+msgstr "Exportation de données"
+
+#: import_export/templates/import_export/import_export.html:94
+#: import_export/templates/import_export/import_export.html:132
+msgid "Excel Import"
+msgstr "Importation Excel"
+
+#: import_export/templates/import_export/import_export.html:113
+msgid "Csv Import"
+msgstr "Importation CSV"
+
+#: import_export/views.py:41 import_export/views.py:52
+msgid "You do not have the required permissions"
+msgstr "Vous ne disposez pas des autorisations requises"
+
+#: sbadmin/settings/__init__.py:155 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:148
+#: sbadmin/settings/__init__.py:156 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
+
+#: templates/base/top_bar.html:24
+msgid "Search Xelon or VIN..."
+msgstr "Recherche Xelon ou VIN..."
+
+#: templates/base/top_bar.html:120
+msgid "Profile"
+msgstr "Profil"
+
+#: templates/base/top_bar.html:124
+msgid "Change password"
+msgstr ""
+
+#: templates/base/top_bar.html:129
+msgid "Administration"
+msgstr ""
+
+#: templates/base/top_bar.html:135
+msgid "New user"
+msgstr "Nouveau utilisateur"
+
+#: templates/base/top_bar.html:144
+msgid "API Documentation"
+msgstr "Documentation API"
+
+#: templates/base/top_bar.html:148
+msgid "Activity Log"
+msgstr "log d'activité"
+
+#: templates/base/top_bar.html:153 templates/nav/nav_interface.html:38
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: templates/base/top_bar.html:160
+msgid "Guest"
+msgstr "Invité"
+
+#: templates/base/top_bar.html:169 templates/nav/nav_interface.html:13
+#: templates/registration/login.html:46
+msgid "Login"
+msgstr "S'identifier"
+
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:30
+#: templates/nav/nav_csd_atelier.html:48 templates/nav/nav_tools.html:40
+#: templates/nav/nav_tools.html:76
+msgid "Informations"
+msgstr ""
+
+#: templates/nav/nav_csd_admin.html:27 templates/nav/nav_csd_atelier.html:53
+#: templates/nav/nav_tools.html:45 templates/nav/nav_tools.html:82
+msgid "Editing"
+msgstr "Edition"
+
+#: templates/nav/nav_csd_atelier.html:25 templates/nav/nav_reman.html:46
+#: templates/nav/nav_tools.html:71
+msgid "Treatments"
+msgstr "traitements"
+
+#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:53
+msgid "Current folder"
+msgstr "Dossier en cours"
+
+#: templates/nav/nav_csd_atelier.html:28
+msgid "Late products"
+msgstr "produits en retard"
+
+#: templates/nav/nav_csd_atelier.html:31 templates/nav/nav_reman.html:71
+msgid "Customer files"
+msgstr "Dossiers clients"
+
+#: templates/nav/nav_csd_atelier.html:49
+msgid "Corvet table"
+msgstr "Tableau Corvet"
+
+#: templates/nav/nav_csd_atelier.html:54
+msgid "Add Corvet"
+msgstr "Ajout Corvet"
+
+#: templates/nav/nav_csd_atelier.html:67 templates/nav/nav_tools.html:72
+msgid "Unlock VIN"
+msgstr "Déverrouiller VIN"
+
+#: templates/nav/nav_general.html:5
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: templates/nav/nav_general.html:10
+msgid "Thermal chamber"
+msgstr "Chambre thermique"
+
+#: templates/nav/nav_general.html:15
+msgid "Import / Export"
+msgstr ""
+
+#: templates/nav/nav_interface.html:21
+msgid "SignUp"
+msgstr "S'inscrire"
+
+#: templates/nav/nav_reman.html:17
+msgid "Create Batch"
+msgstr "Création lot"
+
+#: templates/nav/nav_reman.html:28
+#, fuzzy
+#| msgid "Create file"
+msgid "Create Default"
+msgstr "Création dossier"
+
+#: templates/nav/nav_reman.html:41 templates/nav/nav_reman.html:70
+msgid "Repairs"
+msgstr "Réparations"
+
+#: templates/nav/nav_reman.html:49
+msgid "Create file"
+msgstr "Création dossier"
+
+#: templates/nav/nav_reman.html:72
+msgid "Batch list"
+msgstr "Liste des lots"
+
+#: templates/nav/nav_reman.html:74 templates/nav/nav_reman.html:75
+msgid "Spare Parts"
+msgstr "Pièces détachées"
+
+#: templates/nav/nav_reman.html:76
+msgid "ECU ref Base"
+msgstr ""
+
+#: templates/nav/nav_reman.html:85
+msgid "Shipment"
+msgstr "Expédition"
+
+#: templates/nav/nav_reman.html:94
+msgid "check part"
+msgstr "Vérification pièce"
+
+#: templates/nav/nav_tools.html:10
+msgid "Tools"
+msgstr "Outils"
+
+#: templates/nav/nav_tools.html:42
+msgid "Software list"
+msgstr "Liste logiciel"
+
+#: templates/nav/nav_tools.html:47
+msgid "Software Add"
+msgstr "Ajout logiciel"
+
+#: templates/nav/nav_tools.html:77
+msgid "Products table"
+msgstr "Tableau produits"
+
+#: templates/nav/nav_tools.html:83
+msgid "Add product"
+msgstr "Ajout produit"
+
+#: templates/registration/login.html:20
+msgid "Welcome Back!"
+msgstr "Bon retour parmi nous"
+
+#: templates/registration/login.html:52
+msgid "Forgot Password?"
+msgstr ""
+
+#: templates/registration/password_change_done.html:21
+msgid "Back to Dashboard"
+msgstr ""
+
+#: templates/registration/password_change_form.html:26
+msgid "Old password"
+msgstr ""
+
+#: templates/registration/password_change_form.html:31
+msgid "New password"
+msgstr ""
+
+#: templates/registration/password_change_form.html:43
+msgid "Confirmation of the new password"
+msgstr ""
+
+#: templates/registration/password_change_form.html:51
+msgid "You must fill all the fields"
+msgstr ""
+
+#: templates/registration/password_change_form.html:57
+msgid "Old password does not match your account"
+msgstr ""
+
+#: templates/registration/password_change_form.html:63
+msgid "The new password is invalid"
+msgstr ""
+
+#: templates/registration/password_change_form.html:73
+msgid "Validate the change"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:17
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:23
+msgid "Log in"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:19
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:42
+msgid "Change my password"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:48
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: templates/registration/password_reset_done.html:17
+msgid ""
+"We’ve emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: templates/registration/password_reset_done.html:19
+msgid ""
+"If you don’t receive an email, please make sure you’ve entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
+#: templates/registration/password_reset_form.html:17
+msgid ""
+"Forgotten your password? Enter your email address below, and we’ll email "
+"instructions for setting a new one."
+msgstr ""
+
+#: templates/registration/password_reset_form.html:38
+msgid "Reset my password"
+msgstr ""
