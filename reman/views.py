@@ -12,9 +12,10 @@ from utils.django.urls import reverse, reverse_lazy
 
 from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel, Default
+from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
-    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm
+    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm,
+    PartEcuModelForm, PartEcuTypeForm, PartSparePartForm
 )
 
 context = {
@@ -114,23 +115,69 @@ def check_parts(request):
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
         psa_barcode = form.cleaned_data['psa_barcode']
-        try:
-            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
-        except EcuModel.DoesNotExist:
-            ecu = None
-            # messages.warning(request, "Ce code barre PSA n'éxiste pas dans la base de données")
-        context.update(locals())
-        return render(request, 'reman/part_detail.html', context)
+        return redirect(reverse('reman:create_ecu_model', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
 
 
 @permission_required('reman.view_ecumodel')
+def ecu_model_create(request, psa_barcode):
+    card_title = "Ajout Modèle ECU"
+    try:
+        ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
+    except EcuModel.DoesNotExist:
+        ecu = None
+    form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
+    form.initial['psa_barcode'] = psa_barcode
+    if form.is_valid():
+        form.save()
+        return redirect(reverse('reman:create_ecu_type', kwargs={'psa_barcode': psa_barcode}))
+    context.update(locals())
+    return render(request, 'reman/part_detail.html', context)
+
+
+@permission_required('reman.view_ecumodel')
+def ecu_type_create(request, psa_barcode):
+    card_title = "Ajout Type ECU"
+    try:
+        ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
+        form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
+    except EcuType.DoesNotExist:
+        form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
+    if form.is_valid():
+        form.save()
+        return redirect(reverse('reman:create_spare_part', kwargs={'psa_barcode': psa_barcode}))
+    context.update(locals())
+    return render(request, 'reman/part_create_form.html', context)
+
+
+@permission_required('reman.view_ecumodel')
+def spare_part_create(request, psa_barcode):
+    card_title = "Ajout Pièce détachée"
+    ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
+    try:
+        part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
+        form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
+    except SparePart.DoesNotExist:
+        form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
+        form.initial['code_produit'] = ecu_type.technical_data + " HW" + ecu_type.hw_reference
+    if form.is_valid():
+        part_obj = form.save()
+        ecu_type.spare_part = part_obj
+        ecu_type.save()
+        ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+        context.update(locals())
+        return render(request, 'reman/part_send_email.html', context)
+    context.update(locals())
+    return render(request, 'reman/part_create_form.html', context)
+
+
+@permission_required('reman.view_ecumodel')
 def new_part_email(request, psa_barcode):
     mail_subject = '[REMAN] Nouveau code barre PSA'
     message = render_to_string('reman/new_psa_barcode_email.html', {
-        'psa_barcode': psa_barcode,
+        'ecu': get_object_or_404(EcuModel, psa_barcode=psa_barcode),
     })
     email = EmailMessage(
         mail_subject, message, to=string_to_list(",|;", config.ECU_TO_EMAIL_LIST),

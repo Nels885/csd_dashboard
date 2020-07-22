@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, Default, EcuRefBase
+from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel
 from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
@@ -88,7 +88,7 @@ class AddRepairForm(BSModalForm):
     def clean_psa_barcode(self):
         data = self.cleaned_data["psa_barcode"]
         batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
-                                     ecu_ref_base__ecumodel__psa_barcode=data).first()
+                                     ecu_ref_base__ecu_type__ecumodel__psa_barcode=data).first()
         if not batch:
             self.add_error('psa_barcode', "Code barre PSA incorrecte")
         return data
@@ -97,7 +97,8 @@ class AddRepairForm(BSModalForm):
         cleaned_data = super(AddRepairForm, self).clean()
         ref_psa = cleaned_data.get("ref_psa")
         if ref_psa:
-            batch = Batch.objects.filter(batch_number__exact=self.batchNumber, ecu_model__hw_reference=ref_psa).first()
+            batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
+                                         ecu_ref_base__ecu_type__ecumodel__psa_barcode=ref_psa).first()
             if not batch:
                 raise forms.ValidationError("Pas de lot associé")
             elif not batch.active:
@@ -170,6 +171,58 @@ class CheckPartForm(forms.Form):
                 params={'value': data},
             )
         return data
+
+
+class PartEcuModelForm(forms.ModelForm):
+    hw_reference = forms.CharField(label="HW référence", max_length=10, required=True)
+
+    class Meta:
+        model = EcuModel
+        fields = ['psa_barcode', 'hw_reference', 'oe_raw_reference', 'former_oe_reference']
+        widgets = {
+            'psa_barcode': forms.TextInput(attrs={'readonly': None})
+        }
+
+    def save(self, commit=True):
+        instance = super(PartEcuModelForm, self).save(commit=False)
+        type_obj, type_created = EcuType.objects.update_or_create(hw_reference=self.cleaned_data["hw_reference"])
+        instance.ecu_type = type_obj
+        if commit:
+            instance.save()
+        return instance
+
+
+class PartEcuTypeForm(forms.ModelForm):
+
+    class Meta:
+        model = EcuType
+        fields = ['hw_reference', 'technical_data', 'supplier_oe']
+
+    def __init__(self, *args, **kwargs):
+        super(PartEcuTypeForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.technical_data:
+            self.fields['technical_data'].widget.attrs['readonly'] = True
+        if instance and instance.supplier_oe:
+            self.fields['supplier_oe'].widget.attrs['readonly'] = True
+        self.fields['hw_reference'].widget.attrs['readonly'] = True
+
+
+class PartSparePartForm(forms.ModelForm):
+
+    class Meta:
+        model = SparePart
+        fields = ['code_produit', 'code_emplacement']
+
+    def __init__(self, *args, **kwargs):
+        super(PartSparePartForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.code_emplacement:
+            for field in self.fields:
+                self.fields[field].widget.attrs['readonly'] = True
+        else:
+            self.fields['code_produit'].widget.attrs['readonly'] = True
+        self.fields['code_emplacement'].required = True
 
 
 class DefaultForm(BSModalForm):
