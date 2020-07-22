@@ -175,7 +175,7 @@ def export_repair_csv(request):
     values_list = (
         'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__reman_reference',
         'batch__ecu_ref_base__ecu_type__technical_data', 'batch__ecu_ref_base__ecu_type__hw_reference',
-        'batch__ecu_ref_base__ecumodel__sw_reference', 'batch__ecu_ref_base__ecu_type__supplier_oe', 'remark',
+        'batch__ecu_ref_base__ecu_type__ecumodel__sw_reference', 'batch__ecu_ref_base__ecu_type__supplier_oe', 'remark',
         'created_at', 'modified_by__username', 'closing_date'
     )
     return ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()

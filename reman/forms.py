@@ -88,7 +88,7 @@ class AddRepairForm(BSModalForm):
     def clean_psa_barcode(self):
         data = self.cleaned_data["psa_barcode"]
         batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
-                                     ecu_ref_base__ecumodel__psa_barcode=data).first()
+                                     ecu_ref_base__ecu_type__ecumodel__psa_barcode=data).first()
         if not batch:
             self.add_error('psa_barcode', "Code barre PSA incorrecte")
         return data
@@ -97,7 +97,8 @@ class AddRepairForm(BSModalForm):
         cleaned_data = super(AddRepairForm, self).clean()
         ref_psa = cleaned_data.get("ref_psa")
         if ref_psa:
-            batch = Batch.objects.filter(batch_number__exact=self.batchNumber, ecu_model__hw_reference=ref_psa).first()
+            batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
+                                         ecu_ref_base__ecu_type__ecumodel__psa_barcode=ref_psa).first()
             if not batch:
                 raise forms.ValidationError("Pas de lot associé")
             elif not batch.active:

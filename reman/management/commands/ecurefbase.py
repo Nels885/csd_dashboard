@@ -84,7 +84,7 @@ class Command(BaseCommand):
                         nb_base_update += 1
 
                     # Update or Create Ecumodel
-                    row['ecu_ref_base'] = base_obj
+                    row['ecu_type'] = type_obj
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(
                         psa_barcode=row.pop("psa_barcode"), defaults=row
                     )
