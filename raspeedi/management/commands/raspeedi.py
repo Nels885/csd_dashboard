@@ -52,7 +52,7 @@ class Command(BaseCommand):
             for row in excel.read():
                 log.info(row)
                 try:
-                    obj, created = Raspeedi.objects.get_or_create(ref_boitier=row.pop("ref_boitier"), defaults=row)
+                    obj, created = Raspeedi.objects.update_or_create(ref_boitier=row.pop("ref_boitier"), defaults=row)
                     if not created:
                         nb_update += 1
                 except IntegrityError as err:
