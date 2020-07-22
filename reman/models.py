@@ -22,7 +22,7 @@ class EcuType(models.Model):
 
 class EcuModel(models.Model):
     psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
+    oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
