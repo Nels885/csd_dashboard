@@ -1,4 +1,5 @@
 import csv
+import xlwt
 import datetime
 from . import os
 import shutil
@@ -63,10 +64,10 @@ class Calibre:
 calibre = Calibre(TAG_PATH, TAG_LOG_PATH)
 
 
-class ExportCsv:
+class ExportExcel:
     """ class for exporting data in CSV format """
 
-    def __init__(self, queryset, filename, header, values_list=None):
+    def __init__(self, queryset, filename, header, values_list=None, excel_type="csv"):
         self.date = datetime.datetime.now()
         self.queryset = queryset
         self.filename = filename
@@ -75,32 +76,68 @@ class ExportCsv:
             self.valueSet = self.queryset.values_list(*values_list).distinct()
         else:
             self.valueSet = self.queryset.values_list().distinct()
+        self.excelType = excel_type
 
     def http_response(self):
         """ Creation http response """
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(
-            self.filename, self.date.strftime("%y-%m-%d_%H-%M")
-        )
-
-        self._csv_writer(response)
+        if self.excelType == "csv":
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M")
+            )
+            self._csv_writer(response)
+        else:
+            response = HttpResponse(content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachement; filename="{}_{}.xls'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M")
+            )
+            self._xls_writer(response)
         return response
 
     def file(self, path):
         """ Creation file """
-        file = os.path.join(path, "{}.csv".format(self.filename))
+        file = os.path.join(path, "{}.{}".format(self.filename, self.excelType))
         self._file_yesterday(path, file)
-        with open(file, 'w', newline='') as csv_file:
-            self._csv_writer(csv_file)
+        with open(file, 'w', newline='') as f:
+            if self.excelType == "csv":
+                self._csv_writer(f)
+            else:
+                self._xls_writer(f)
 
-    def _csv_writer(self, csv_file):
+    def _csv_writer(self, response):
         """ Formatting data in CSV format """
-        writer = csv.writer(csv_file, delimiter=';', lineterminator=';\r\n')
+        writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
         writer.writerow(self.header)
 
         for i, query in enumerate(self.valueSet):
             query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
             writer.writerow(query)
+
+    def _xls_writer(self, response):
+        """ Fromatting data in Excel format """
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('base')
+
+        # Sheet header, first row
+        row_num = 0
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        for col_num in range(len(self.header)):
+            ws.write(row_num, col_num, self.header[col_num], font_style)
+
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+
+        for i, query in enumerate(self.valueSet):
+            query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+            row_num += 1
+            for col_num in range(len(query)):
+                ws.write(row_num, col_num, query[col_num], font_style)
+
+        wb.save(response)
+        return response
 
     def _file_yesterday(self, path, file):
         """ Creation of the backup file d-1 """

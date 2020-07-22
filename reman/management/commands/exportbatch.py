@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 
 from reman.models import Batch
 
-from utils.file.export import ExportCsv, os
+from utils.file.export import ExportExcel, os
 from utils.conf import CSD_ROOT
 
 
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
             'active', 'created_by__username', 'created_at'
         )
-        ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).file(path)
+        ExportExcel(queryset=batch, filename=filename, header=header, values_list=values_list).file(path)
         self.stdout.write(
             self.style.SUCCESS("export BATCH completed: NB_BATCH = {} | FILE = {}.csv".format(batch.count(), filename))
         )

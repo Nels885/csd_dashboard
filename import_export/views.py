@@ -10,9 +10,9 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 
 from squalaetp.models import Xelon, Corvet
-from reman.models import Batch, Repair
+from reman.models import Batch, Repair, EcuModel
 from .forms import ExportCorvetForm, ExportRemanForm
-from utils.file.export import ExportCsv
+from utils.file.export import ExportExcel
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 
@@ -45,9 +45,9 @@ def export_corvet(request):
 def export_reman(request):
     form = ExportRemanForm(request.POST or None)
     if form.is_valid():
-        if request.user.has_perms(['reman.view_batch', 'reman.view_repair']):
+        if request.user.has_perms(['reman.view_batch', 'reman.view_repair', 'reman.view_ecumodel']):
             table = form.cleaned_data['tables']
-            if table in ['batch', 'repair']:
+            if table in ['batch', 'repair', 'base_ref']:
                 return redirect('import_export:export_{}_csv'.format(table))
         messages.warning(request, _('You do not have the required permissions'))
     return redirect(request.META.get('HTTP_REFERER'))
@@ -66,7 +66,7 @@ def export_corvet_csv(request):
     ]
     corvets = Corvet.objects.all()
 
-    return ExportCsv(queryset=corvets, filename=filename, header=header).http_response()
+    return ExportExcel(queryset=corvets, filename=filename, header=header).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -86,7 +86,7 @@ def export_ecu_csv(request):
         'corvet__electronique_64a', 'corvet__electronique_84a', 'corvet__electronique_p4a'
     )
 
-    return ExportCsv(queryset=ecus, filename=filename, header=header, values_list=values_list).http_response()
+    return ExportExcel(queryset=ecus, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -106,7 +106,7 @@ def export_bsi_csv(request):
         'corvet__electronique_84b',
     )
 
-    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
+    return ExportExcel(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -125,7 +125,7 @@ def export_com_csv(request):
         'corvet__electronique_46p', 'corvet__electronique_56p', 'corvet__electronique_66p'
     )
 
-    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
+    return ExportExcel(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('squalaetp.change_corvet')
@@ -145,7 +145,7 @@ def export_bsm_csv(request):
         'corvet__electronique_96b'
     )
 
-    return ExportCsv(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
+    return ExportExcel(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.view_batch')
@@ -161,7 +161,7 @@ def export_batch_csv(request):
         'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
         'active', 'created_by__username', 'created_at'
     )
-    return ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
+    return ExportExcel(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
 
 
 @permission_required('reman.view_repair')
@@ -178,7 +178,24 @@ def export_repair_csv(request):
         'batch__ecu_ref_base__ecu_type__ecumodel__sw_reference', 'batch__ecu_ref_base__ecu_type__supplier_oe', 'remark',
         'created_at', 'modified_by__username', 'closing_date'
     )
-    return ExportCsv(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
+    return ExportExcel(queryset=batch, filename=filename, header=header, values_list=values_list).http_response()
+
+
+@permission_required('reman.view_ecumodel')
+def export_base_ref_csv(request):
+    filename = 'base_ref_reman_new'
+    header = [
+        'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR', 'REF CAL',
+        'REF à créer '
+    ]
+    ecus = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
+    values_list = (
+        'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
+        'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference', 'sw_reference',
+        'ecu_type__spare_part__code_produit'
+    )
+    return ExportExcel(
+        queryset=ecus, filename=filename, header=header, values_list=values_list, excel_type='xls').http_response()
 
 
 @permission_required('reman.add_sparepart', 'reman.change_sparepart')
