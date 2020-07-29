@@ -44,6 +44,8 @@ class MQTTClass(mqtt.Client):
                 self.loop_start()
         except OSError:
             print("*** MQTT Server no found ***")
+            self.PAYLOAD = {'temp': 'Hors ligne'}
+            self.cntMessage = 0
 
 
 MQTT_CLIENT = MQTTClass()
