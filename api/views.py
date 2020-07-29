@@ -14,7 +14,7 @@ from api.models import (query_table_by_args,
                         ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
                         xelon_filter, corvet_filter)
 
-from utils.data import mqtt
+from utils.data.mqtt import MQTT_CLIENT
 from .utils import TokenAuthSupportQueryString
 
 
@@ -155,7 +155,5 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def thermal_temp(request):
-    if not mqtt.error:
-        mqtt.client.loop_start()
-    data = mqtt.payload
+    data = MQTT_CLIENT.result()
     return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)

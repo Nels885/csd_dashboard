@@ -2,36 +2,48 @@ import paho.mqtt.client as mqtt
 from constance import config
 
 
-payload = {'temp': 'Hors ligne'}
-error = False
+class MQTTClass(mqtt.Client):
+    PAYLOAD = {'temp': 'Hors ligne'}
 
+    def __init__(self):
+        super(MQTTClass, self).__init__(client_id=config.MQTT_CLIENT)
+        self.username_pw_set(username=config.MQTT_USER, password=config.MQTT_PSWD)
+        self.cntMessage = 0
 
-def on_connect(client, userdata, rc):
-    print("Connection: return code = {}".format(rc))
-    print("Connection: Status = {}".format("OK" if rc == 0 else "fail"))
+    def on_connect(self, client, userdata, flags, rc):
+        print("Connection: return code = {} | status = {}".format(rc, "OK" if rc == 0 else "fail"))
+        if rc != 0:
+            self.PAYLOAD = {'temp': 'Hors ligne'}
+            self.loop_stop()
 
-
-def on_message(client, userdata, message):
-    global payload
-    if message.topic == "TEMP/TC-01":
+    def on_message(self, client, userdata, message):
+        # print(message.topic + " " + str(message.qos) + " " + (message.payload.decode("utf8")))
         temp_val = int(message.payload.decode("utf8"))
         volts = temp_val / 1023
-        temp = "{:.1f}°C".format(((volts - 0.5) * 100) + config.TEMP_ADJ)
-        payload = {'temp': temp}
+        temp = "{:.1f}°C".format(((volts - 0.5) * 100) + config.MQTT_TEMP_ADJ)
+        self.cntMessage = 0
+        self.PAYLOAD = {'temp': temp}
+
+    def on_subscribe(self, client, userdata, mid, granted_qos):
+        print("Subscribed: "+str(mid)+" "+str(granted_qos))
+
+    def result(self):
+        self.run()
+        self.cntMessage += 1
+        print("no result: {}".format(self.cntMessage))
+        if self.cntMessage >= 10:
+            self.PAYLOAD = {'temp': 'Hors ligne'}
+            self.cntMessage = 0
+        return self.PAYLOAD
+
+    def run(self):
+        try:
+            if not self.is_connected():
+                self.connect(host=config.MQTT_BROKER, port=config.MQTT_PORT, keepalive=config.KEEP_ALIVE)
+                self.subscribe(config.MQTT_TOPIC, 0)
+                self.loop_start()
+        except OSError:
+            print("*** MQTT Server no found ***")
 
 
-try:
-    client = mqtt.Client(client_id=config.MQTT_CLIENT)
-
-    # Assignment of callback functions
-    client.on_message = on_message
-    client.on_connect = on_connect
-
-    # Broker connection
-    client.username_pw_set(username=config.MQTT_USER, password=config.MQTT_PSWD)
-    client.connect(host=config.MQTT_BROKER, port=config.MQTT_PORT, keepalive=config.KEEP_ALIVE)
-    client.subscribe("TEMP/#")
-except OSError:
-    print("*** MQTT Server no found ***")
-    payload = {'temp': 'Hors ligne'}
-    error = True
+MQTT_CLIENT = MQTTClass()

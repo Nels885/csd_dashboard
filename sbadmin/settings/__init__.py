@@ -227,6 +227,7 @@ CONSTANCE_CONFIG = {
     ),
 
     # MQTT Options
+    "MQTT_TOPIC": ('TEMP/TC-01', 'Topic subcribe'),
     'MQTT_TEMP_ADJ': (4, 'Temp adjust', int),
     'MQTT_CLIENT': ('', 'Client name'),
     'MQTT_USER': ('', 'Login'),
@@ -244,6 +245,6 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'
     ),
     'MQTT Options': (
-        'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
+        'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
     ),
 }
