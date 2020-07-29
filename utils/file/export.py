@@ -114,7 +114,7 @@ class ExportExcel:
             writer.writerow(query)
 
     def _xls_writer(self, response):
-        """ Fromatting data in Excel format """
+        """ Formatting data in Excel format """
         wb = xlwt.Workbook(encoding='utf-8')
         ws = wb.add_sheet('base')
 

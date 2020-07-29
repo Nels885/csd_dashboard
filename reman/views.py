@@ -15,7 +15,7 @@ from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
     AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm,
-    PartEcuModelForm, PartEcuTypeForm, PartSparePartForm
+    PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm
 )
 
 context = {
@@ -186,6 +186,15 @@ def new_part_email(request, psa_barcode):
     email.send()
     messages.success(request, _('Success: The email has been sent.'))
     return redirect("reman:part_check")
+
+
+def edit_ecu_ref_base(request, psa_barcode):
+    card_title = "Edit Modèle ECU"
+    next_form = request.GET.get('next')
+    ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+    form = EcuModelForm(request.POST or None, error_class=ParaErrorList, instance=ecu)
+    context.update(locals())
+    return render(request, 'reman/edit_ecu_ref_base.html', context)
 
 
 class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):

@@ -173,6 +173,13 @@ class CheckPartForm(forms.Form):
         return data
 
 
+class EcuModelForm(forms.ModelForm):
+
+    class Meta:
+        model = EcuModel
+        fields = '__all__'
+
+
 class PartEcuModelForm(forms.ModelForm):
     hw_reference = forms.CharField(label="HW référence", max_length=10, required=True)
 
