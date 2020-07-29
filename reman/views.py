@@ -95,7 +95,7 @@ def default_table(request):
 
 
 @permission_required('reman.change_repair')
-def edit_repair(request, pk):
+def repair_edit(request, pk):
     """ View of edit repair page """
     card_title = _('Modification customer folder')
     prod = get_object_or_404(Repair, pk=pk)
@@ -115,62 +115,15 @@ def check_parts(request):
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
         psa_barcode = form.cleaned_data['psa_barcode']
-        return redirect(reverse('reman:create_ecu_model', kwargs={'psa_barcode': psa_barcode}))
+        try:
+            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
+            context.update(locals())
+            return render(request, 'reman/part_detail.html', context)
+        except EcuModel.DoesNotExist:
+            return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
-
-
-@permission_required('reman.view_ecumodel')
-def ecu_model_create(request, psa_barcode):
-    card_title = "Ajout Modèle ECU"
-    try:
-        ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
-    except EcuModel.DoesNotExist:
-        ecu = None
-    form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
-    form.initial['psa_barcode'] = psa_barcode
-    if form.is_valid():
-        form.save()
-        return redirect(reverse('reman:create_ecu_type', kwargs={'psa_barcode': psa_barcode}))
-    context.update(locals())
-    return render(request, 'reman/part_detail.html', context)
-
-
-@permission_required('reman.view_ecumodel')
-def ecu_type_create(request, psa_barcode):
-    card_title = "Ajout Type ECU"
-    try:
-        ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
-        form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
-    except EcuType.DoesNotExist:
-        form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
-    if form.is_valid():
-        form.save()
-        return redirect(reverse('reman:create_spare_part', kwargs={'psa_barcode': psa_barcode}))
-    context.update(locals())
-    return render(request, 'reman/part_create_form.html', context)
-
-
-@permission_required('reman.view_ecumodel')
-def spare_part_create(request, psa_barcode):
-    card_title = "Ajout Pièce détachée"
-    ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
-    try:
-        part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
-        form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
-    except SparePart.DoesNotExist:
-        form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
-        form.initial['code_produit'] = ecu_type.technical_data + " HW" + ecu_type.hw_reference
-    if form.is_valid():
-        part_obj = form.save()
-        ecu_type.spare_part = part_obj
-        ecu_type.save()
-        ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
-        context.update(locals())
-        return render(request, 'reman/part_send_email.html', context)
-    context.update(locals())
-    return render(request, 'reman/part_create_form.html', context)
 
 
 @permission_required('reman.view_ecumodel')
@@ -188,11 +141,79 @@ def new_part_email(request, psa_barcode):
     return redirect("reman:part_check")
 
 
-def edit_ecu_ref_base(request, psa_barcode):
-    card_title = "Edit Modèle ECU"
-    next_form = request.GET.get('next')
-    ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
-    form = EcuModelForm(request.POST or None, error_class=ParaErrorList, instance=ecu)
+@permission_required('reman.add_ecumodel')
+def ref_base_create(request, psa_barcode):
+    next_form = int(request.GET.get('next', 0))
+    if next_form == 1:
+        card_title = "Ajout Type ECU"
+        try:
+            ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
+            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
+        except EcuType.DoesNotExist:
+            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
+    elif next_form == 2:
+        card_title = "Ajout Pièce détachée"
+        ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
+        try:
+            part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
+            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
+        except SparePart.DoesNotExist:
+            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
+            form.initial['code_produit'] = ecu_type.technical_data + " HW" + ecu_type.hw_reference
+        if form.is_valid():
+            part_obj = form.save()
+            ecu_type.spare_part = part_obj
+            ecu_type.save()
+            ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+            context.update(locals())
+            return render(request, 'reman/part_send_email.html', context)
+    else:
+        card_title = "Ajout Modèle ECU"
+        form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
+        form.initial['psa_barcode'] = psa_barcode
+    if request.POST and form.is_valid():
+        form.save()
+        next_form += 1
+        return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
+    context.update(locals())
+    return render(request, 'reman/part_create_form.html', context)
+
+
+@permission_required('reman.change_ecumodel')
+def ref_base_edit(request, psa_barcode):
+    next_form = int(request.GET.get('next', 0))
+    if next_form == 1:
+        card_title = "Edit Type ECU"
+        try:
+            ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
+            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
+        except EcuType.DoesNotExist:
+            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
+    elif next_form == 2:
+        card_title = "Edit Pièce détachée"
+        ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
+        try:
+            part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
+            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
+        except SparePart.DoesNotExist:
+            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
+            form.initial['code_produit'] = ecu_type.part_name()
+        if form.is_valid():
+            part_obj = form.save()
+            ecu_type.spare_part = part_obj
+            ecu_type.save()
+            ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+            context.update(locals())
+            return render(request, 'reman/part_send_email.html', context)
+    else:
+        card_title = "Edit Modèle ECU"
+        model = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+        form = EcuModelForm(request.POST or None, error_class=ParaErrorList, instance=model)
+        form.initial['hw_reference'] = model.ecu_type.hw_reference
+    if request.POST and form.is_valid():
+        form.save()
+        next_form += 1
+        return redirect(reverse('reman:edit_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
     context.update(locals())
     return render(request, 'reman/edit_ecu_ref_base.html', context)
 

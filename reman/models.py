@@ -16,6 +16,9 @@ class EcuType(models.Model):
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
 
+    def part_name(self):
+        return self.technical_data + " HW" + self.hw_reference
+
     def __str__(self):
         return "HW_{} - TYPE_{}".format(self.hw_reference, self.technical_data)
 
