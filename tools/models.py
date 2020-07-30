@@ -59,6 +59,7 @@ class ThermalChamber(models.Model):
     CHOICES = [('FROID', 'FROID'), ('CHAUD', 'CHAUD')]
 
     operating_mode = models.CharField('mode de fonctionnement', max_length=20, choices=CHOICES)
+    xelon_number = models.CharField('N° Xelon', max_length=10, blank=True)
     start_time = models.DateTimeField('heure de début', blank=True, null=True)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -75,9 +76,9 @@ class ThermalChamber(models.Model):
     def __str__(self):
         first_name, last_name = self.created_by.first_name, self.created_by.last_name
         if first_name and last_name:
-            return "{} {}".format(self.created_by.last_name, self.created_by.first_name)
+            return "{} {} - {}".format(self.created_by.last_name, self.created_by.first_name, self.xelon_number)
         else:
-            return self.created_by.username
+            return "{} - {}".format(self.created_by.username, self.xelon_number)
 
 
 class EtudeProject(models.Model):

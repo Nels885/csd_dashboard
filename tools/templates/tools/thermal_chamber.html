@@ -52,6 +52,7 @@
         <tr>
             <th></th>
             <th>Utilisateur</th>
+            <th>N° Xelon</th>
             <th>Date</th>
             <th>Heure de départ</th>
             <th>Temps passé dans la chambre</th>
@@ -67,6 +68,7 @@
                                         class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
                 </td>
                 <td>{{ thermal.created_by }}</td>
+                <td>{{ thermal.xelon_number|default:'---' }}</td>
                 <td>{{ thermal.created_at }}</td>
                 <td>{{ thermal.start_time|default:'En attente' }}</td>
                 <td>---</td>

@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
 from bootstrap_modal_forms.generic import BSModalCreateView
+from django.utils import timezone
 
 from .models import CsdSoftware, ThermalChamber
 from dashboard.forms import ParaErrorList
@@ -60,6 +61,7 @@ def soft_edit(request, soft_id):
 def thermal_chamber(request):
     title = _('Thermal chamber')
     table_title = _('Use of the thermal chamber')
+    ThermalChamber.objects.filter(created_at__lte=timezone.now() - timezone.timedelta(days=1)).update(active=False)
     thermals = ThermalChamber.objects.filter(active=True).order_by('created_at')
     now = datetime.datetime.now()
     temp = None
