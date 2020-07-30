@@ -4,20 +4,20 @@ from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status, authentication
 from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter, OrderingFilter
-from django.utils import timezone
 
 from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon, Corvet
-from tools.models import ThermalChamber
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
 from api.models import (query_table_by_args,
                         ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
                         xelon_filter, corvet_filter)
 
-from utils.data.mqtt import MQTT_CLIENT
+from utils.data.mqtt import MQTTClass
 from .utils import TokenAuthSupportQueryString
+
+MQTT_CLIENT = MQTTClass()
 
 
 def documentation(request):
@@ -158,12 +158,4 @@ class CorvetViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def thermal_temp(request):
     data = MQTT_CLIENT.result()
-    now = timezone.now()
-    if "Hors ligne" not in data["temp"]:
-        if float(data['temp'][:-2]) < -10:
-            thermals = ThermalChamber.objects.filter(operating_mode='FROID', active=True, start_time__isnull=True)
-            thermals.update(start_time=now)
-        elif float(data['temp'][:-2]) > 40:
-            thermals = ThermalChamber.objects.filter(operating_mode='CHAUD', active=True, start_time__isnull=True)
-            thermals.update(start_time=now)
     return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)

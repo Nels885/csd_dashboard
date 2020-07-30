@@ -1,14 +1,17 @@
 import paho.mqtt.client as mqtt
 from constance import config
 
+from api.utils import thermal_chamber_use
+
 
 class MQTTClass(mqtt.Client):
     PAYLOAD = {'temp': 'Hors ligne'}
 
-    def __init__(self):
+    def __init__(self, function=None):
         super(MQTTClass, self).__init__(client_id=config.MQTT_CLIENT)
         self.username_pw_set(username=config.MQTT_USER, password=config.MQTT_PSWD)
         self.cntMessage = 0
+        self.function = function
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connection: return code = {} | status = {}".format(rc, "OK" if rc == 0 else "fail"))
@@ -22,6 +25,8 @@ class MQTTClass(mqtt.Client):
         volts = temp_val / 1023
         temp = "{:.1f}°C".format(((volts - 0.5) * 100) + config.MQTT_TEMP_ADJ)
         self.cntMessage = 0
+        thermal_chamber_use(temp)
+        print("on_message : {}".format(temp))
         self.PAYLOAD = {'temp': temp}
 
     def on_subscribe(self, client, userdata, mid, granted_qos):
@@ -46,6 +51,3 @@ class MQTTClass(mqtt.Client):
             print("*** MQTT Server no found ***")
             self.PAYLOAD = {'temp': 'Hors ligne'}
             self.cntMessage = 0
-
-
-MQTT_CLIENT = MQTTClass()
