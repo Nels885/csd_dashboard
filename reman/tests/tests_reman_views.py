@@ -10,7 +10,7 @@ from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase, EcuType
 class RemanTestCase(UnitTest):
 
     def setUp(self):
-        super().setUp()
+        super(RemanTestCase, self).setUp()
         self.redirectUrl = reverse('index')
         self.psaBarcode = '9612345678'
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
@@ -74,6 +74,13 @@ class RemanTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('reman:out_table'))
         self.assertEqual(response.status_code, 200)
+
+        # Invalid form
+        response = self.client.post(reverse('reman:out_table'), {'identify_number': ''})
+        self.assertFormError(response, 'form', 'identify_number', _('This field is required.'))
+        for identify_number in ['C001010001', 'C001010001R']:
+            response = self.client.post(reverse('reman:out_table'), {'identify_number': identify_number})
+            self.assertFormError(response, 'form', 'identify_number', "N° d'identification invalide")
 
     def test_check_part(self):
         response = self.client.get(reverse('reman:part_check'))
