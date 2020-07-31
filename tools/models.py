@@ -51,6 +51,14 @@ class CsdSoftware(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and not user.pk:
+            user = None
+        if not self.pk:
+            self.created_by = user
+        super(CsdSoftware, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.jig
 

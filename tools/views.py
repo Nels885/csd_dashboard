@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -32,7 +30,7 @@ def soft_add(request):
         jig = form.cleaned_data['jig']
         ref = CsdSoftware.objects.filter(jig=jig)
         if not ref.exists():
-            CsdSoftware.objects.create(**form.cleaned_data, created_by=request.user)
+            CsdSoftware.objects.create(**form.cleaned_data)
             messages.success(request, _('Added successfully!'))
             return redirect("tools:soft_list")
     errors = form.errors.items()
@@ -61,9 +59,9 @@ def soft_edit(request, soft_id):
 def thermal_chamber(request):
     title = _('Thermal chamber')
     table_title = _('Use of the thermal chamber')
-    ThermalChamber.objects.filter(created_at__lte=timezone.now() - timezone.timedelta(days=1)).update(active=False)
+    now = timezone.now()
+    ThermalChamber.objects.filter(created_at__lt=now.date(), active=True).update(active=False)
     thermals = ThermalChamber.objects.filter(active=True).order_by('created_at')
-    now = datetime.datetime.now()
     temp = None
     form = ThermalFrom(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
