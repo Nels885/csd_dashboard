@@ -78,7 +78,7 @@ def thermal_fullscreen(request):
 @login_required
 def thermal_disable(request, pk):
     therm = get_object_or_404(ThermalChamber, pk=pk, active=True)
-    if therm.start_time:
+    if therm.start_time and not therm.stop_time:
         therm.stop_time = timezone.now()
     therm.active = False
     therm.save()

@@ -78,7 +78,7 @@ class ThermalChamber(models.Model):
         user = get_current_user()
         if user and not user.pk:
             user = None
-        if not self.pk:
+        if not self.pk and user:
             self.created_by = user
         super(ThermalChamber, self).save(*args, **kwargs)
 

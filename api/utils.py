@@ -29,4 +29,4 @@ def thermal_chamber_use(temp):
         thermals.update(start_time=now)
     elif temp:
         thermals = ThermalChamber.objects.filter(active=True, start_time__isnull=False)
-        thermals.update(stop_time=now)
+        thermals.update(stop_time=now, active=False)

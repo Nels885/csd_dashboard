@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.utils import timezone
 
 from dashboard.tests.base import UnitTest
 
@@ -52,11 +53,21 @@ class ToolsTestCase(UnitTest):
 
     def test_thermal_disable_view(self):
         self.login()
-        self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
-        thermal = ThermalChamber.objects.first()
+        self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD', 'xelon_number': 'A123456789'})
+        thermal = ThermalChamber.objects.get(xelon_number='A123456789')
         response = self.client.post(reverse('tools:thermal_disable', kwargs={'pk': thermal.pk}))
         new_thermal = ThermalChamber.objects.get(pk=thermal.pk)
         self.assertEqual(new_thermal.active, False)
+        self.assertEqual(new_thermal.stop_time, None)
+        self.assertEqual(response.status_code, 302)
+
+        self.client.post(reverse('tools:thermal'), {'operating_mode': 'FROID', 'xelon_number': 'A987654321'})
+        ThermalChamber.objects.filter(xelon_number='A987654321').update(start_time=timezone.now())
+        thermal = ThermalChamber.objects.filter(xelon_number="A987654321").first()
+        response = self.client.post(reverse('tools:thermal_disable', kwargs={'pk': thermal.pk}))
+        new_thermal = ThermalChamber.objects.get(pk=thermal.pk)
+        self.assertEqual(new_thermal.active, False)
+        self.assertNotEqual(new_thermal.stop_time, None)
         self.assertEqual(response.status_code, 302)
 
     def test_thermal_chamber_full_page(self):
