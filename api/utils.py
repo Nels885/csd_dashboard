@@ -21,9 +21,12 @@ class TokenAuthSupportQueryString(TokenAuthentication):
 def thermal_chamber_use(temp):
     now = timezone.now()
     ThermalChamber.objects.filter(created_at__lt=now.date(), active=True).update(active=False)
-    if temp and float(temp[:-2]) < -10:
+    if temp and float(temp[:-2]) < 0:
         thermals = ThermalChamber.objects.filter(operating_mode='FROID', active=True, start_time__isnull=True)
         thermals.update(start_time=now)
     elif temp and float(temp[:-2]) > 40:
         thermals = ThermalChamber.objects.filter(operating_mode='CHAUD', active=True, start_time__isnull=True)
         thermals.update(start_time=now)
+    elif temp:
+        thermals = ThermalChamber.objects.filter(active=True, start_time__isnull=False)
+        thermals.update(stop_time=now)
