@@ -1,6 +1,6 @@
 {% load i18n user_tags %}
 
-{% if perms.tools or perms.raspeedi %}
+{% if user.is_authenticated %}
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -9,6 +9,13 @@
     <div class="sidebar-heading">
         {% trans 'Tools' %}
     </div>
+
+    <!-- Nav Item - Ultimaker Streaming -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'tools:ultimaker_stream' %}">
+            <i class="fas fa-fw fa-print"></i><span>Ultimaker stream</span>
+        </a>
+    </li>
 
 {% endif %}
 
@@ -22,13 +29,6 @@
             </a>
         </li>
     {% endif %}
-
-    <!-- Nav Item - Ultimaker Streaming -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'tools:ultimaker_stream' %}">
-            <i class="fas fa-fw fa-print"></i><span>Ultimaker stream</span>
-        </a>
-    </li>
 
     {% if perms.tools.view_csdsoftware %}
         <!-- Nav Item - Software Settings Menu -->

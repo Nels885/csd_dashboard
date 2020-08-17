@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
@@ -100,8 +100,7 @@ class TagXelonView(PermissionRequiredMixin, BSModalCreateView):
             return reverse_lazy('index')
 
 
-class UltimakerStreamView(PermissionRequiredMixin, TemplateView):
-    permission_required = 'tools'
+class UltimakerStreamView(LoginRequiredMixin, TemplateView):
     template_name = "tools/ultimaker_stream.html"
 
     def get_context_data(self, **kwargs):
