@@ -15,7 +15,7 @@ $(document).ready(function () {
         ],
     });
 
-    $('#thermalTable').DataTable({
+    $('#thermalActiveTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
         columnDefs: [{
@@ -24,5 +24,10 @@ $(document).ready(function () {
             orderable: false,
         }],
         order: [[2, "desc"]],
+    });
+
+    $('#thermalTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
     });
 });

@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.utils import timezone
 
@@ -72,8 +72,20 @@ def thermal_chamber(request):
     return render(request, 'tools/thermal_chamber.html', locals())
 
 
-def thermal_fullscreen(request):
-    return render(request, 'tools/thermal_chamber_fullscreen.html')
+class ThermalFullScreenView(TemplateView):
+    template_name = 'tools/thermal_chamber_fullscreen.html'
+
+
+class ThermalChamberList(ListView):
+    queryset = ThermalChamber.objects.all().order_by('-created_at')
+    context_object_name = 'thermal_list'
+    template_name = 'tools/thermal_chamber_table.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ThermalChamberList, self).get_context_data(**kwargs)
+        context['title'] = _('Thermal chamber')
+        context['table_title'] = _('Thermal chamber list')
+        return context
 
 
 @login_required

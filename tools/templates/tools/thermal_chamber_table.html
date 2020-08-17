@@ -1,0 +1,46 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static %}
+
+{% block table_content %}
+
+    <table class="table table-bordered" id="thermalTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Utilisateur</th>
+            <th>N° Xelon</th>
+            <th>Heure de départ</th>
+            <th>Temps passé dans la chambre</th>
+            <th>Mode de fonctionnement</th>
+            <th>Actif</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for thermal in thermal_list %}
+
+            <tr>
+                <td>{{ thermal.created_at }}</td>
+                <td>{{ thermal.created_by }}</td>
+                <td>{{ thermal.xelon_number|default:'---' }}</td>
+                <td>{{ thermal.start_time|default:'---' }}</td>
+                <td>{{ thermal.stop_time|default:'---' }}</td>
+                <td>{{ thermal.operating_mode }}</td>
+                <td>{{ thermal.active }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'tools/js/tools-tables.js' %}"></script>
+
+{% endblock %}

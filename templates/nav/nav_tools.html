@@ -96,3 +96,20 @@
     {% endwith %}
 
 {% endif %}
+
+<!-- Nav Item - Tools Consultation Menu -->
+{% with name="toolsConsult" icon="fa-table" %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+           aria-expanded="true" aria-controls="collapse{{ name }}">
+            <i class="fas fa-fw {{ icon }}"></i>
+            <span>Consultation</span>
+        </a>
+        <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{% url 'tools:thermal_list' %}">{% trans "Thermal chamber" %}</a>
+            </div>
+        </div>
+    </li>
+{% endwith %}
