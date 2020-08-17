@@ -64,9 +64,16 @@
         {% for thermal in thermals %}
 
             <tr>
-                <td class="bg-white"><a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Suppression"
-                                        class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
-                </td>
+                {% if user == thermal.created_by %}
+                    <td class="bg-white">
+                        <a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Suppression"
+                           class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                {% else %}
+                    <td class="bg-white">
+                        <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                {% endif %}
                 <td>{{ thermal.created_by }}</td>
                 <td>{{ thermal.xelon_number|default:'---' }}</td>
                 <td>{{ thermal.created_at }}</td>
