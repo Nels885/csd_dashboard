@@ -11,5 +11,6 @@ urlpatterns = [
     path('tag-xelon/', views.TagXelonView.as_view(), name="tag_xelon"),
     path('thermal/', views.thermal_chamber, name="thermal"),
     path('thermal/full/', views.thermal_fullscreen, name="thermal_full"),
-    path('thermal/<int:pk>/disable/', views.thermal_disable, name="thermal_disable")
+    path('thermal/<int:pk>/disable/', views.thermal_disable, name="thermal_disable"),
+    path('3d-printer/ultimaker/stream/', views.UltimakerStreamView.as_view(), name="ultimaker_stream")
 ]

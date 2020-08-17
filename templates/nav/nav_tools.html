@@ -23,6 +23,13 @@
         </li>
     {% endif %}
 
+    <!-- Nav Item - Ultimaker Streaming -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'tools:ultimaker_stream' %}">
+            <i class="fas fa-fw fa-print"></i><span>Ultimaker stream</span>
+        </a>
+    </li>
+
     {% if perms.tools.view_csdsoftware %}
         <!-- Nav Item - Software Settings Menu -->
         {% with name="Software" icon="fa-table" %}

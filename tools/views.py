@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.utils import timezone
 
@@ -97,3 +98,14 @@ class TagXelonView(PermissionRequiredMixin, BSModalCreateView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+class UltimakerStreamView(PermissionRequiredMixin, TemplateView):
+    permission_required = 'tools'
+    template_name = "tools/ultimaker_stream.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(UltimakerStreamView, self).get_context_data(**kwargs)
+        context['title'] = "Imprimante 3D"
+        context['card_title'] = "Ultimaker Streaming"
+        return context
