@@ -51,6 +51,7 @@
         <thead>
         <tr>
             <th></th>
+            <th></th>
             <th>Utilisateur</th>
             <th>N° Xelon</th>
             <th>Date</th>
@@ -65,13 +66,26 @@
 
             <tr>
                 {% if user == thermal.created_by %}
+                    {% if not thermal.start_time %}
+                        <td>
+                            <a href="#" data-id="{% url 'tools:thermal_delete' thermal.pk %}" title="Suppression"
+                               class="delete-thermal btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    {% else %}
+                        <td>
+                            <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    {% endif %}
                     <td>
-                        <a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Suppression"
-                           class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                        <a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Stop"
+                           class="btn btn-success btn-circle btn-sm"><i class="fas fa-check"></i></a>
                     </td>
                 {% else %}
                     <td>
                         <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-check"></i></a>
                     </td>
                 {% endif %}
                 <td>{{ thermal.created_by }}</td>

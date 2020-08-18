@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-08 14:19+0200\n"
+"POT-Creation-Date: 2020-08-18 14:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: import_export/templates/import_export/import_export.html:40
-#: import_export/templates/import_export/import_export.html:70
+#: import_export/templates/import_export/detail_csd.html:24
+#: import_export/templates/import_export/detail_reman.html:26
+#: import_export/templates/import_export/import_export_old.html:40
+#: import_export/templates/import_export/import_export_old.html:70
 msgid "Data Export"
 msgstr "Exportation de données"
 
-#: import_export/templates/import_export/import_export.html:94
-#: import_export/templates/import_export/import_export.html:132
+#: import_export/templates/import_export/detail_reman.html:50
+#: import_export/templates/import_export/detail_reman.html:88
+#: import_export/templates/import_export/import_export_old.html:94
+#: import_export/templates/import_export/import_export_old.html:132
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/templates/import_export/import_export.html:113
+#: import_export/templates/import_export/detail_reman.html:69
+#: import_export/templates/import_export/import_export_old.html:113
 msgid "Csv Import"
 msgstr "Importation CSV"
 
@@ -86,18 +91,18 @@ msgid "Login"
 msgstr "S'identifier"
 
 #: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:30
-#: templates/nav/nav_csd_atelier.html:48 templates/nav/nav_tools.html:40
-#: templates/nav/nav_tools.html:76
+#: templates/nav/nav_csd_atelier.html:48 templates/nav/nav_tools.html:47
+#: templates/nav/nav_tools.html:83
 msgid "Informations"
 msgstr ""
 
 #: templates/nav/nav_csd_admin.html:27 templates/nav/nav_csd_atelier.html:53
-#: templates/nav/nav_tools.html:45 templates/nav/nav_tools.html:82
+#: templates/nav/nav_tools.html:52 templates/nav/nav_tools.html:89
 msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:25 templates/nav/nav_reman.html:46
-#: templates/nav/nav_tools.html:71
+#: templates/nav/nav_tools.html:78
 msgid "Treatments"
 msgstr "traitements"
 
@@ -121,7 +126,7 @@ msgstr "Tableau Corvet"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:67 templates/nav/nav_tools.html:72
+#: templates/nav/nav_csd_atelier.html:67 templates/nav/nav_tools.html:79
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -129,7 +134,7 @@ msgstr "Déverrouiller VIN"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: templates/nav/nav_general.html:10
+#: templates/nav/nav_general.html:10 templates/nav/nav_tools.html:111
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
@@ -183,19 +188,19 @@ msgstr "Vérification pièce"
 msgid "Tools"
 msgstr "Outils"
 
-#: templates/nav/nav_tools.html:42
+#: templates/nav/nav_tools.html:49
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:47
+#: templates/nav/nav_tools.html:54
 msgid "Software Add"
 msgstr "Ajout logiciel"
 
-#: templates/nav/nav_tools.html:77
+#: templates/nav/nav_tools.html:84
 msgid "Products table"
 msgstr "Tableau produits"
 
-#: templates/nav/nav_tools.html:83
+#: templates/nav/nav_tools.html:90
 msgid "Add product"
 msgstr "Ajout produit"
 

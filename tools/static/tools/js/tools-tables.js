@@ -23,7 +23,7 @@ $(document).ready(function () {
             searchable: false,
             orderable: false,
         }],
-        order: [[3, "desc"]],
+        order: [[4, "desc"]],
     });
 
     $('#thermalTable').DataTable({

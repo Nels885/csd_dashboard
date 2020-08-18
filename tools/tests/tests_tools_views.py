@@ -73,3 +73,11 @@ class ToolsTestCase(UnitTest):
     def test_thermal_chamber_full_page(self):
         response = self.client.get(reverse('tools:thermal_full'))
         self.assertEqual(response.status_code, 200)
+
+    def test_thermal_chamber_table(self):
+        response = self.client.get(reverse('tools:thermal_list'))
+        self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/table/', status_code=302)
+        self.login()
+        response = self.client.get(reverse('tools:thermal_list'))
+        self.assertEqual(response.status_code, 200)
+

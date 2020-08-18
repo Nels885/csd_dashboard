@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 
 from .models import CsdSoftware, ThermalChamber
@@ -76,7 +76,7 @@ class ThermalFullScreenView(TemplateView):
     template_name = 'tools/thermal_chamber_fullscreen.html'
 
 
-class ThermalChamberList(ListView):
+class ThermalChamberList(LoginRequiredMixin, ListView):
     queryset = ThermalChamber.objects.all().order_by('-created_at')
     context_object_name = 'thermal_list'
     template_name = 'tools/thermal_chamber_table.html'
@@ -120,3 +120,11 @@ class UltimakerStreamView(LoginRequiredMixin, TemplateView):
         context['title'] = "Imprimante 3D"
         context['card_title'] = "Ultimaker Streaming"
         return context
+
+
+class ThermalDeleteView(LoginRequiredMixin, BSModalDeleteView):
+    """ View of modal post delete """
+    model = ThermalChamber
+    template_name = 'tools/modal/thermal_delete.html'
+    success_message = _('Success: Input was deleted.')
+    success_url = reverse_lazy('tools:thermal')
