@@ -23,11 +23,12 @@ $(document).ready(function () {
             searchable: false,
             orderable: false,
         }],
-        order: [[2, "desc"]],
+        order: [[3, "desc"]],
     });
 
     $('#thermalTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
+        order: []
     });
 });

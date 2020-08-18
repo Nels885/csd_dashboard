@@ -17,7 +17,7 @@ class MQTTClass(mqtt.Client):
         print("Connection: return code = {} | status = {}".format(rc, "OK" if rc == 0 else "fail"))
         if rc != 0:
             self.PAYLOAD = {'temp': 'Hors ligne'}
-            self.loop_stop()
+            self.stop()
 
     def on_message(self, client, userdata, message):
         # print(message.topic + " " + str(message.qos) + " " + (message.payload.decode("utf8")))
@@ -35,9 +35,10 @@ class MQTTClass(mqtt.Client):
     def result(self):
         self.run()
         self.cntMessage += 1
-        print("no result: {}".format(self.cntMessage))
+        print("no result: {} - connected: {}".format(self.cntMessage, self.is_connected()))
         if self.cntMessage >= 10:
             self.PAYLOAD = {'temp': 'Hors ligne'}
+            self.stop()
             self.cntMessage = 0
         return self.PAYLOAD
 
@@ -51,3 +52,7 @@ class MQTTClass(mqtt.Client):
             print("*** MQTT Server no found ***")
             self.PAYLOAD = {'temp': 'Hors ligne'}
             self.cntMessage = 0
+
+    def stop(self):
+        self.loop_stop()
+        self.disconnect()

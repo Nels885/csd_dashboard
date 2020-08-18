@@ -65,12 +65,12 @@
 
             <tr>
                 {% if user == thermal.created_by %}
-                    <td class="bg-white">
+                    <td>
                         <a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Suppression"
                            class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
                     </td>
                 {% else %}
-                    <td class="bg-white">
+                    <td>
                         <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
                     </td>
                 {% endif %}
@@ -97,7 +97,7 @@
 
 {% endblock %}
 
-{% block customjs %}
+{% block extrascripts %}
 
     <script type="text/javascript" src="{% static 'tools/js/thermal-chamber.js' %}"></script>
     <script type="text/javascript">
