@@ -3,6 +3,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 
 from utils.django.validators import validate_vin, xml_parser
+from utils.file.export import xml_corvet_file
 from .models import Corvet
 
 
@@ -36,33 +37,24 @@ class CorvetForm(forms.ModelForm):
             )
         return data
 
-    def clean_xml_data(self):
-        xml_data = self.cleaned_data['xml_data']
-        data = xml_parser(xml_data)
-        if not data:
-            self.add_error('xml_data', _('Invalid XML data'))
-        return data
-
     def clean(self):
         cleaned_data = super(CorvetForm, self).clean()
-        data = cleaned_data.get("xml_data")
+        data = xml_parser(cleaned_data.get("xml_data"))
         vin = cleaned_data.get("vin")
-        if data and data['vin'] != vin:
+        if not data:
+            self.add_error('xml_data', _('Invalid XML data'))
+        elif data['vin'] != vin:
             raise forms.ValidationError(
                 _('XML data does not match VIN')
             )
 
     def save(self, commit=True):
-        data = self.cleaned_data['xml_data']
+        data = xml_parser(self.cleaned_data['xml_data'])
         corvet = super(CorvetForm, self).save(commit=False)
         if data and commit:
             try:
-                querysets = Corvet.objects.filter(vin=data["vin"])
-                if querysets:
-                    del data["vin"]
-                    querysets.update(**data)
-                else:
-                    Corvet.objects.update_or_create(**data)
+                Corvet.objects.update_or_create(vin=data.pop("vin"), defaults=data)
+                xml_corvet_file(self.cleaned_data['xml_data'], self.cleaned_data['vin'])
             except TypeError:
                 raise forms.ValidationError(_('An internal error has occurred. Thank you recommend your request'))
         return corvet
@@ -107,13 +99,16 @@ class CorvetModalForm(BSModalForm):
                 self.cleaned_data[field] = value
         else:
             self.add_error('xml_data', _('Invalid XML data'))
-        return data
+        return xml_data
 
     def clean(self):
         cleaned_data = super(CorvetModalForm, self).clean()
-        data = cleaned_data.get("xml_data")
+        xml_data = cleaned_data.get("xml_data")
+        data = xml_parser(xml_data)
         vin = cleaned_data.get("vin")
         if data and data['vin'] != vin:
             raise forms.ValidationError(
                 _('XML data does not match VIN')
             )
+        else:
+            xml_corvet_file(xml_data, vin)

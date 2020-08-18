@@ -68,7 +68,6 @@ def xelon_edit(request, file_id):
     card_title = _('Modification data Xelon file: ') + file.numero_de_dossier
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
     if form.is_valid():
-        xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
         form.save()
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
