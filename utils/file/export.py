@@ -11,17 +11,20 @@ from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
 
 
 def xml_corvet_file(data, vin):
-    xelons = Corvet.objects.get(vin=vin).xelons.all()
+    try:
+        xelons = Corvet.objects.get(vin=vin).xelons.all()
 
-    for queryset in xelons:
-        xelon_nb = queryset.numero_de_dossier
-        os.makedirs(XML_PATH, exist_ok=True)
-        file = os.path.join(XML_PATH, xelon_nb + ".xml")
-        if not os.path.isfile(file):
-            with open(file, "w") as f:
-                f.write(str(data))
-        else:
-            print("{} File exists.".format(xelon_nb))
+        for queryset in xelons:
+            xelon_nb = queryset.numero_de_dossier
+            os.makedirs(XML_PATH, exist_ok=True)
+            file = os.path.join(XML_PATH, xelon_nb + ".xml")
+            if not os.path.isfile(file):
+                with open(file, "w") as f:
+                    f.write(str(data))
+            else:
+                print("{} File exists.".format(xelon_nb))
+    except Corvet.DoesNotExist:
+        print("Xelon number not found")
 
 
 class Calibre:

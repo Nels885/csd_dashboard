@@ -1,10 +1,10 @@
 {% load i18n %}
 
-{% if not user.is_authenticated %}
+<div class="sidebar-heading">
+    Interface
+</div>
 
-    <div class="sidebar-heading">
-        Interface
-    </div>
+{% if not user.is_authenticated %}
 
     <!-- Nav Item - login -->
     <li class="nav-item">
@@ -23,13 +23,6 @@
     </li>
 
 {% else %}
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <div class="sidebar-heading">
-        Interface
-    </div>
 
     <!-- Nav Item - login -->
     <li class="nav-item">

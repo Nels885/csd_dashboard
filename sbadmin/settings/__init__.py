@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'tools.apps.ToolsConfig',
     'api.apps.ApiConfig',
     'import_export.apps.ImportExportConfig',
+    'psa.apps.PsaConfig',
 ]
 
 MIDDLEWARE = [

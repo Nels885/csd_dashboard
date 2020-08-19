@@ -10,7 +10,12 @@
     <a class="nav-link" href="{% url 'tools:thermal' %}"><i class=" fas fa-fw fa-thermometer"></i><span>{% trans "Thermal chamber" %}</span></a>
 </li>
 
-<!-- Nav Item - Import Export -->
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'import_export:detail' %}"><i class=" fas fa-fw fa-sync-alt"></i><span>{% trans "Import / Export" %}</span></a>
-</li>
+{% if user.is_authenticated %}
+    <!-- Nav Item - Import Export -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'import_export:detail' %}"><i class=" fas fa-fw fa-sync-alt"></i><span>{% trans "Import / Export" %}</span></a>
+    </li>
+{% endif %}
+
+<!-- Divider -->
+<hr class="sidebar-divider">

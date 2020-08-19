@@ -29,6 +29,7 @@ urlpatterns = [
     path('reman/', include('reman.urls')),
     path('tools/', include('tools.urls')),
     path('import-export/', include('import_export.urls')),
+    path('psa/', include('psa.urls')),
     path('demo/', include('demo.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),

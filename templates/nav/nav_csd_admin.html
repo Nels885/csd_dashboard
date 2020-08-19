@@ -2,9 +2,6 @@
 
 {% if user|has_group:'csd-admin' or user.is_superuser %}
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
     <!-- Heading -->
     <div class="sidebar-heading">
         CSD Admin
@@ -31,5 +28,8 @@
             </div>
         </li>
     {% endwith %}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
 {% endif %}

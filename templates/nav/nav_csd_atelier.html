@@ -1,13 +1,9 @@
 {% load i18n user_tags %}
 
-{% if perms.squalaetp or perms.raspeedi.view_unlockproduct %}
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        CSD Atelier
-    </div>
-
-{% endif %}
+<!-- Heading -->
+<div class="sidebar-heading">
+    CSD Atelier
+</div>
 
 {% if perms.squalaetp %}
 
@@ -34,31 +30,34 @@
         </li>
     {% endwith %}
 
-    <!-- Nav Item - Info PSA Settings Menu -->
-    {% with name="PSA" icon="fa-table" %}
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-               aria-expanded="true" aria-controls="collapse{{ name }}">
-                <i class="fas fa-fw {{ icon }}"></i>
-                <span>Info {{ name }}</span>
-            </a>
-            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                    <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
-
-                    {% if perms.squalaetp.add_corvet %}
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                        <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
-                    {% endif %}
-                </div>
-            </div>
-        </li>
-    {% endwith %}
-
 {% endif %}
+
+<!-- Nav Item - Info PSA Settings Menu -->
+{% with name="PSA" icon="fa-table" %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+           aria-expanded="true" aria-controls="collapse{{ name }}">
+            <i class="fas fa-fw {{ icon }}"></i>
+            <span>Info {{ name }}</span>
+        </a>
+        <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                {% if perms.squalaetp %}
+                    <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
+                {% endif %}
+                <a class="collapse-item" href="{% url 'psa:nac_tools' %}">{% trans "NAC tools" %}</a>
+
+                {% if perms.squalaetp.add_corvet %}
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                    <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+{% endwith %}
 
 {% if perms.raspeedi.view_unlockproduct %}
 
@@ -70,3 +69,6 @@
     </li>
 
 {% endif %}
+
+<!-- Divider -->
+<hr class="sidebar-divider">
