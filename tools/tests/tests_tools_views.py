@@ -1,5 +1,7 @@
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.messages import get_messages
+from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
@@ -39,13 +41,21 @@ class ToolsTestCase(UnitTest):
 
     def test_thermal_chamber_page(self):
         response = self.client.get(reverse('tools:thermal'))
-        self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/', status_code=302)
-        self.login()
-        response = self.client.get(reverse('tools:thermal'))
+        self.assertEqual(response.status_code, 200)
+        old_thermal = ThermalChamber.objects.count()
+
+        # Warning adding user for thermal chamber if not authenticated
+        old_thermal = ThermalChamber.objects.count()
+        response = self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
+        new_thermal = ThermalChamber.objects.count()
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), _('You do not have the required permissions'))
+        self.assertEqual(new_thermal, old_thermal)
         self.assertEqual(response.status_code, 200)
 
+        self.login()
         # Adding user for thermal chamber
-        old_thermal = ThermalChamber.objects.count()
         response = self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
         new_thermal = ThermalChamber.objects.count()
         self.assertEqual(new_thermal, old_thermal + 1)

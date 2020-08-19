@@ -7,56 +7,6 @@
         {% trans 'Tools' %}
     </div>
 
-    <!-- Nav Item - Ultimaker Streaming -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'tools:ultimaker_stream' %}">
-            <i class="fas fa-fw fa-print"></i><span>Ultimaker stream</span>
-        </a>
-    </li>
-
-    {% if perms.tools %}
-
-        {% if perms.tools.add_tagxelon %}
-            <!-- Nav Item - TAG Xelon Multi -->
-            <li class="nav-item">
-                <a class="tag-xelon-btn nav-link" href="#">
-                    <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
-                </a>
-            </li>
-        {% endif %}
-
-        {% if perms.tools.view_csdsoftware %}
-            <!-- Nav Item - Software Settings Menu -->
-            {% with name="Software" icon="fa-table" %}
-
-                <!-- Nav Item - Software -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-                       aria-expanded="true" aria-controls="collapse{{ name }}">
-                        <i class="fas fa-fw {{ icon }}"></i>
-                        <span>{{ name }}</span>
-                    </a>
-                    <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                         data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                            <a class="collapse-item"
-                               href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
-                            <div class="collapse-divider"></div>
-                            {% if perms.dashboard.add_csdsoftware %}
-                                <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                                <a class="collapse-item"
-                                   href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </li>
-            {% endwith %}
-
-        {% endif %}
-
-    {% endif %}
-
     {% if perms.raspeedi %}
 
         <!-- Nav Item - Raspeedi Settings Menu -->
@@ -108,6 +58,56 @@
             </div>
         </li>
     {% endwith %}
+
+    {% if perms.tools %}
+
+        {% if perms.tools.view_csdsoftware %}
+            <!-- Nav Item - Software Settings Menu -->
+            {% with name="Software" icon="fa-table" %}
+
+                <!-- Nav Item - Software -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                       aria-expanded="true" aria-controls="collapse{{ name }}">
+                        <i class="fas fa-fw {{ icon }}"></i>
+                        <span>{{ name }}</span>
+                    </a>
+                    <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                         data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                            <a class="collapse-item"
+                               href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
+                            <div class="collapse-divider"></div>
+                            {% if perms.dashboard.add_csdsoftware %}
+                                <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                                <a class="collapse-item"
+                                   href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endwith %}
+
+        {% endif %}
+
+        {% if perms.tools.add_tagxelon %}
+            <!-- Nav Item - TAG Xelon Multi -->
+            <li class="nav-item">
+                <a class="tag-xelon-btn nav-link" href="#">
+                    <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
+                </a>
+            </li>
+        {% endif %}
+
+    {% endif %}
+
+    <!-- Nav Item - Ultimaker Streaming -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'tools:ultimaker_stream' %}">
+            <i class="fas fa-fw fa-print"></i><span>Ultimaker stream</span>
+        </a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider">

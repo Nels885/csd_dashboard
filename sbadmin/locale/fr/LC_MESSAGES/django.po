@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-18 14:04+0200\n"
+"POT-Creation-Date: 2020-08-19 15:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,11 +41,11 @@ msgstr "Importation CSV"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:155 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:156 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:156 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:157 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -77,7 +77,7 @@ msgstr "Documentation API"
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:153 templates/nav/nav_interface.html:38
+#: templates/base/top_bar.html:153 templates/nav/nav_interface.html:31
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -90,43 +90,47 @@ msgstr "Invité"
 msgid "Login"
 msgstr "S'identifier"
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:30
-#: templates/nav/nav_csd_atelier.html:48 templates/nav/nav_tools.html:47
-#: templates/nav/nav_tools.html:83
+#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:26
+#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_tools.html:42
+#: templates/nav/nav_tools.html:78
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:27 templates/nav/nav_csd_atelier.html:53
-#: templates/nav/nav_tools.html:52 templates/nav/nav_tools.html:89
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:54
+#: templates/nav/nav_tools.html:47 templates/nav/nav_tools.html:84
 msgid "Editing"
 msgstr "Edition"
 
-#: templates/nav/nav_csd_atelier.html:25 templates/nav/nav_reman.html:46
-#: templates/nav/nav_tools.html:78
+#: templates/nav/nav_csd_atelier.html:21 templates/nav/nav_reman.html:43
+#: templates/nav/nav_tools.html:73
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:53
+#: templates/nav/nav_csd_atelier.html:23 templates/nav/nav_reman.html:50
 msgid "Current folder"
 msgstr "Dossier en cours"
 
-#: templates/nav/nav_csd_atelier.html:28
+#: templates/nav/nav_csd_atelier.html:24
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:31 templates/nav/nav_reman.html:71
+#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:68
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: templates/nav/nav_csd_atelier.html:49
+#: templates/nav/nav_csd_atelier.html:48
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:54
+#: templates/nav/nav_csd_atelier.html:50
+msgid "NAC tools"
+msgstr "Outils NAC"
+
+#: templates/nav/nav_csd_atelier.html:55
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:67 templates/nav/nav_tools.html:79
+#: templates/nav/nav_csd_atelier.html:66 templates/nav/nav_tools.html:74
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -134,11 +138,11 @@ msgstr "Déverrouiller VIN"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: templates/nav/nav_general.html:10 templates/nav/nav_tools.html:111
+#: templates/nav/nav_general.html:10 templates/nav/nav_tools.html:106
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: templates/nav/nav_general.html:15
+#: templates/nav/nav_general.html:16
 msgid "Import / Export"
 msgstr ""
 
@@ -146,61 +150,61 @@ msgstr ""
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: templates/nav/nav_reman.html:17
+#: templates/nav/nav_reman.html:14
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:28
+#: templates/nav/nav_reman.html:25
 #, fuzzy
 #| msgid "Create file"
 msgid "Create Default"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:41 templates/nav/nav_reman.html:70
+#: templates/nav/nav_reman.html:38 templates/nav/nav_reman.html:67
 msgid "Repairs"
 msgstr "Réparations"
 
-#: templates/nav/nav_reman.html:49
+#: templates/nav/nav_reman.html:46
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:72
+#: templates/nav/nav_reman.html:69
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:74 templates/nav/nav_reman.html:75
+#: templates/nav/nav_reman.html:71 templates/nav/nav_reman.html:72
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:76
+#: templates/nav/nav_reman.html:73
 msgid "ECU ref Base"
 msgstr ""
 
-#: templates/nav/nav_reman.html:85
+#: templates/nav/nav_reman.html:82
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:94
+#: templates/nav/nav_reman.html:91
 msgid "check part"
 msgstr "Vérification pièce"
 
-#: templates/nav/nav_tools.html:10
+#: templates/nav/nav_tools.html:7
 msgid "Tools"
 msgstr "Outils"
 
-#: templates/nav/nav_tools.html:49
+#: templates/nav/nav_tools.html:44
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:54
+#: templates/nav/nav_tools.html:49
 msgid "Software Add"
 msgstr "Ajout logiciel"
 
-#: templates/nav/nav_tools.html:84
+#: templates/nav/nav_tools.html:79
 msgid "Products table"
 msgstr "Tableau produits"
 
-#: templates/nav/nav_tools.html:90
+#: templates/nav/nav_tools.html:85
 msgid "Add product"
 msgstr "Ajout produit"
 

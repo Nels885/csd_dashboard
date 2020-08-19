@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-18 14:04+0200\n"
+"POT-Creation-Date: 2020-08-19 15:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,6 @@ msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
 #: reman/templates/reman/check_parts.html:22
-#: reman/templates/reman/edit_repair.html:100
 msgid "Submit"
 msgstr "Soumettre"
 
@@ -40,16 +39,21 @@ msgstr "Soumettre"
 msgid "next"
 msgstr ""
 
-#: reman/templates/reman/modal/create_batch.html:10
-msgid "Create Batch"
-msgstr "Création d'un lot"
-
+#: reman/templates/reman/edit_repair.html:101
 #: reman/templates/reman/modal/create_batch.html:41
 #: reman/templates/reman/modal/create_default.html:43
 #: reman/templates/reman/modal/create_repair.html:38
 #: reman/templates/reman/modal/update_default.html:43
 msgid "Cancel"
 msgstr "Annuler"
+
+#: reman/templates/reman/edit_repair.html:104
+msgid "Valid"
+msgstr "Valider"
+
+#: reman/templates/reman/modal/create_batch.html:10
+msgid "Create Batch"
+msgstr "Création d'un lot"
 
 #: reman/templates/reman/modal/create_batch.html:42
 #: reman/templates/reman/modal/create_default.html:44
@@ -86,7 +90,7 @@ msgstr "Annuler"
 #: reman/templates/reman/part_detail.html:45
 #: reman/templates/reman/part_send_email.html:67
 msgid "New search"
-msgstr ""
+msgstr "Nouvelle recherche"
 
 #: reman/templates/reman/part_send_email.html:68
 msgid "Send email"

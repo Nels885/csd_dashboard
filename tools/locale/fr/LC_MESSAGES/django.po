@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-18 14:04+0200\n"
+"POT-Creation-Date: 2020-08-19 15:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,6 +72,10 @@ msgstr "Ajouter"
 msgid "Thermal Chamber Temperature"
 msgstr "Température Chambre Thermique"
 
+#: tools/tests/tests_tools_views.py:53 tools/views.py:72
+msgid "You do not have the required permissions"
+msgstr ""
+
 #: tools/views.py:19
 msgid "Software list"
 msgstr "Liste logiciel"
@@ -93,18 +97,18 @@ msgstr "Logiciel de données de modification pour JIG : {jig}"
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:61 tools/views.py:86
+#: tools/views.py:60 tools/views.py:88
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: tools/views.py:62
+#: tools/views.py:61
 msgid "Use of the thermal chamber"
 msgstr "Utilisation de la chambre thermique"
 
-#: tools/views.py:87
+#: tools/views.py:89
 msgid "Thermal chamber list"
 msgstr "liste Chambre thermique"
 
-#: tools/views.py:129
+#: tools/views.py:131
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."

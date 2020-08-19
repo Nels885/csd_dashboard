@@ -56,7 +56,6 @@ def soft_edit(request, soft_id):
     return render(request, 'tools/soft_edit.html', locals())
 
 
-@login_required
 def thermal_chamber(request):
     title = _('Thermal chamber')
     table_title = _('Use of the thermal chamber')
@@ -66,8 +65,11 @@ def thermal_chamber(request):
     temp = None
     form = ThermalFrom(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
-        form.save()
-        messages.success(request, _('Modification done successfully!'))
+        if request.user.is_authenticated:
+            form.save()
+            messages.success(request, _('Modification done successfully!'))
+        else:
+            messages.warning(request, _('You do not have the required permissions'))
     errors = form.errors.items()
     return render(request, 'tools/thermal_chamber.html', locals())
 
