@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from squalaetp.models import Corvet
-
 from utils.django.forms import ParaErrorList
 from .forms import NacLicenseForm, NacUpdateForm
 
@@ -24,8 +22,7 @@ def nac_license(request):
     if request.POST and form.is_valid():
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=license"
         soft = form.cleaned_data['software']
-        vin = form.cleaned_data['vin']
-        uin = Corvet.objects.get(vin=vin).electronique_44x
+        uin = form.cleaned_data['uin']
         return redirect(url.format(uin=uin, update=soft))
     for key, error in form.errors.items():
         messages.warning(request, error)

@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 from datetime import datetime
 
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Corvet
 
 
 def validate_vin(value):
@@ -17,6 +17,28 @@ def validate_vin(value):
     if not re.match(r'^VF[37]\w{14}$', str(value)):
         return 'The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'
     return None
+
+
+def validate_nac(value):
+    """
+    Function VIN or UIN validation for NAC product
+    :param value:
+        VIN or UIN value
+    :return:
+         UIN and Error message if not valid
+    """
+    if re.match(r'^VF[37]\w{14}$', str(value)):
+        try:
+            uin = Corvet.objects.get(vin=value).electronique_44x
+            if not uin:
+                return value, "Numéro de série non trouvé (UIN)"
+            value = uin
+        except Corvet.DoesNotExist:
+            return value, "Ce VIN ne se trouve pas dans la base de données CSD",
+    else:
+        if not re.match(r'^0D\w{18}$', str(value)):
+            return value, 'The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'
+    return value, None
 
 
 def validate_xelon(value):
