@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.translation import ugettext as _
 
 from utils.django.validators import validate_nac
 
@@ -18,13 +17,9 @@ class NacLicenseForm(forms.Form):
 
     def clean_uin(self):
         data = self.cleaned_data['uin']
-        data, message = validate_nac(data)
-        if message:
-            raise forms.ValidationError(
-                _(message),
-                code='invalid',
-                params={'value': data},
-            )
+        data, error = validate_nac(data)
+        if error:
+            raise forms.ValidationError(error, code='invalid', params={'value': data})
         return data
 
 
