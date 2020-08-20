@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-19 15:44+0200\n"
+"POT-Creation-Date: 2020-08-20 13:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,7 +74,7 @@ msgstr "Température Chambre Thermique"
 
 #: tools/tests/tests_tools_views.py:53 tools/views.py:72
 msgid "You do not have the required permissions"
-msgstr ""
+msgstr "Vous ne disposez pas des autorisations requises"
 
 #: tools/views.py:19
 msgid "Software list"

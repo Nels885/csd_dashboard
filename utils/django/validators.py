@@ -37,7 +37,7 @@ def validate_nac(value):
             return value, "Ce VIN ne se trouve pas dans la base de données CSD",
     else:
         if not re.match(r'^0D\w{18}$', str(value)):
-            return value, 'The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'
+            return value, 'The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part of PSA vehicles'
     return value, None
 
 
