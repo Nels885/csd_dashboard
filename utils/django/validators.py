@@ -101,6 +101,6 @@ def xml_parser(value):
                     key, value = "{}s_{}".format(child.tag, child.text[:2]), child.text[2:]
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
-    except (ET.ParseError, KeyError):
+    except (ET.ParseError, KeyError, TypeError):
         data = None
     return data

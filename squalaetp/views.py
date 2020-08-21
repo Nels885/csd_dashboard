@@ -67,8 +67,9 @@ def xelon_edit(request, file_id):
     corvet = Corvet.objects.filter(vin=file.vin).first()
     card_title = _('Modification data Xelon file: ') + file.numero_de_dossier
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         form.save()
+        form.save_m2m()
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
     errors = form.errors.items()
@@ -87,7 +88,7 @@ def ajax_xelon(request):
     file = get_object_or_404(Xelon, pk=file_id)
     corvet = Corvet.objects.filter(vin=file.vin).first()
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
         form.save()
         context = {'message': _('Modification done successfully!')}
@@ -134,7 +135,7 @@ def corvet_insert(request):
     title = 'Corvet'
     card_title = _('CORVET integration')
     form = CorvetForm(request.POST or None, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         form.save()
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)

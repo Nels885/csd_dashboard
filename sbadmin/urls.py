@@ -17,10 +17,15 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 from dashboard import views
 
+favicon_view = RedirectView.as_view(url=staticfiles_storage.url('favicon.ico'))
+
 urlpatterns = [
+    path('favicon.ico', favicon_view),
     path('', views.index, name="index"),
     path('api/', include('api.urls')),
     path('dashboard/', include('dashboard.urls')),
