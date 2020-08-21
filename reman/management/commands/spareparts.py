@@ -47,16 +47,17 @@ class Command(BaseCommand):
             nb_part_update = 0
             for row in extraction.read():
                 log.info(row)
+                code_produit = row.pop("code_produit")
                 try:
                     obj, created = SparePart.objects.update_or_create(
-                        code_produit=row.pop("code_produit"), defaults=row
+                        code_produit=code_produit, defaults=row
                     )
                     if not created:
                         nb_part_update += 1
                 except IntegrityError as err:
-                    print("IntegrityError: {} - {}".format(row["code_produit"], err))
+                    print("IntegrityError: {} - {}".format(code_produit, err))
                 except SparePart.MultipleObjectsReturned as err:
-                    print("MultipleObjectsReturned: {} - {}".format(row["code_produit"], err))
+                    print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
