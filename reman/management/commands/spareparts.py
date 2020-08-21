@@ -55,6 +55,8 @@ class Command(BaseCommand):
                         nb_part_update += 1
                 except IntegrityError as err:
                     print("IntegrityError: {} - {}".format(row["code_produit"], err))
+                except SparePart.MultipleObjectsReturned as err:
+                    print("MultipleObjectsReturned: {} - {}".format(row["code_produit"], err))
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(

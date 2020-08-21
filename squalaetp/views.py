@@ -69,7 +69,6 @@ def xelon_edit(request, file_id):
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
     if request.POST and form.is_valid():
         form.save()
-        form.save_m2m()
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
     errors = form.errors.items()

@@ -76,13 +76,11 @@ class Command(BaseCommand):
             if len(row[columns_name]):
                 try:
                     log.info(row)
-                    product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
-                    if product:
-                        product.update_or_create(**row)
+                    obj, created = model.objects.update_or_create(
+                        numero_de_dossier=row.pop("numero_de_dossier"), defaults=row
+                    )
+                    if not created:
                         nb_prod_update += 1
-                    else:
-                        m = model(**row)
-                        m.save()
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:
