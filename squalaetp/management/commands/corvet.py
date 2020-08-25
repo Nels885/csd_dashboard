@@ -86,6 +86,16 @@ class Command(BaseCommand):
             for table in ["Corvet"]:
                 self.stdout.write("Suppression des données de la table {} terminée!".format(table))
 
+        else:
+            if options['filename'] is not None:
+                excel = ExcelSqualaetp(options['filename'])
+            else:
+                excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
+            # self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
+            # self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
+
+            self._update_or_create(Corvet, excel, "vin")
+
     def _insert(self, model, excel_method, columns_name):
         nb_prod_before = model.objects.count()
         for row in excel_method:
@@ -99,6 +109,29 @@ class Command(BaseCommand):
         nb_prod_after = model.objects.count()
         self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
         self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+
+    def _update_or_create(self, model, excel, columns_name):
+        nb_prod_before = model.objects.count()
+        nb_prod_update = 0
+        for row in excel.corvet_table(XLS_ATTRIBUTS_FILE):
+            log.info(row)
+            if len(row[columns_name]):
+                try:
+                    obj, created = model.objects.update_or_create(
+                        vin=row.pop('vin'), defaults=row
+                    )
+                    if not created:
+                        nb_prod_update += 1
+                except IntegrityError as err:
+                    log.warning("IntegrityError:{}".format(err))
+        nb_prod_after = model.objects.count()
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Corvet data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                )
+            )
+        )
 
     def _import(self, model, csv_file):
         nb_prod_before = model.objects.count()
