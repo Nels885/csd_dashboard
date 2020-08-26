@@ -11,5 +11,5 @@ class CorvetCommandTestCase(TestCase):
         call_command('corvet', '--delete', stdout=out)
         self.assertEqual(
             out.getvalue(),
-            "Suppression des données de la table Corvet terminée!\n"
+            "\x1b[33;1mSuppression des données de la table Corvet terminée!\x1b[0m\n"
         )
