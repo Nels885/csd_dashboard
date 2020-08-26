@@ -3,16 +3,17 @@ from utils.microsoft_format import ExcelFormat
 
 class ExcelRaspeedi(ExcelFormat):
     """## Read data in Excel file for Raspeedi ##"""
+    RASPEEDI_COLS = ['ref_boitier', 'produit', 'facade', 'type', 'dab', 'cam', 'dump_peedi', 'cd_version', 'media',
+                     'carto', 'dump_renesas', 'ref_mm']
 
-    def __init__(self, file, sheet_index=0, columns=12):
+    def __init__(self, file, sheet_name=0, columns=None):
         """
         Initialize ExcelRaspeedi class
         :param file:
             excel file to process
         """
-        super().__init__(file, sheet_index, columns)
+        super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str)
         self._convert_boolean()
-        self.sheet.fillna("", inplace=True)
 
     def read(self):
         """
@@ -23,9 +24,7 @@ class ExcelRaspeedi(ExcelFormat):
         data = []
         for line in range(self.nrows):
             try:
-                row = list(self.sheet.loc[line, self.columns])  # get the data in the ith row
-                row_dict = dict(zip(self.columns, row))
-                data.append(row_dict)
+                data.append(dict(self.sheet.loc[line, self.RASPEEDI_COLS].dropna()))
             except KeyError as err:
                 print("KeyError pour la ligne : {}".format(err))
         return data
