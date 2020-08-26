@@ -236,6 +236,9 @@ CONSTANCE_CONFIG = {
     'MQTT_BROKER': ('test.mosquitto.org', 'Server address'),
     'MQTT_PORT': (1883, 'Server port', int),
     'KEEP_ALIVE': (45, 'Keep alive', int),
+
+    # tools Options
+    'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL')
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -248,4 +251,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'MQTT Options': (
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
     ),
+    'Tools Options': (
+        'PRINTER_STREAM_URL',
+    )
 }

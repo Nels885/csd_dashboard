@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
+from constance import config
 
 from .models import CsdSoftware, ThermalChamber
 from dashboard.forms import ParaErrorList
@@ -121,6 +122,7 @@ class UltimakerStreamView(LoginRequiredMixin, TemplateView):
         context = super(UltimakerStreamView, self).get_context_data(**kwargs)
         context['title'] = "Imprimante 3D"
         context['card_title'] = "Ultimaker Streaming"
+        context['stream_url'] = config.PRINTER_STREAM_URL
         return context
 
 

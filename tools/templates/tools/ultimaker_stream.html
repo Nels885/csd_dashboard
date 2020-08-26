@@ -5,7 +5,7 @@
 {% block detail_content %}
 
     <div class="text-center">
-        <img class="text-center" src="http://10.115.141.42:8080/?action=stream" alt="STREAM OFFLINE"/>
+        <img class="text-center" src="{{ stream_url }}" onerror="this.onerror=null;this.src='{% static 'img/stream_offline.png' %}';" alt=""/>
     </div>
 
 {% endblock %}
