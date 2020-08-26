@@ -50,10 +50,7 @@ class Command(BaseCommand):
             else:
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
 
-            self.stdout.write("Nombre de ligne dans Excel:     {}".format(squalaetp.nrows))
-            # self.stdout.write("Noms des colonnes:              {}".format(list(squalaetp.columns)))
-
-            self._squalaetp_file(Xelon, squalaetp.xelon_table(), "numero_de_dossier")
+            self._squalaetp_file(Xelon, squalaetp)
             if options['update']:
                 self._delay_files(Xelon)
             else:
@@ -67,33 +64,34 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             for table in ["Xelon"]:
-                self.stdout.write("Suppression des données de la table {} terminée!".format(table))
+                self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
-    def _squalaetp_file(self, model, excel_method, columns_name):
+    def _squalaetp_file(self, model, excel):
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
-        for row in excel_method:
-            if len(row[columns_name]):
-                try:
-                    log.info(row)
-                    obj, created = model.objects.update_or_create(
-                        numero_de_dossier=row.pop("numero_de_dossier"), defaults=row
-                    )
-                    if not created:
-                        nb_prod_update += 1
-                except IntegrityError as err:
-                    log.warning("IntegrityError:{}".format(err))
-                except DataError as err:
-                    self.stdout.write("DataError dossier {} : {}".format(row[columns_name], err))
+        for row in excel.xelon_table():
+            log.info(row)
+            xelon_number = row.pop("numero_de_dossier")
+            try:
+                obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=row)
+                if not created:
+                    nb_prod_update += 1
+            except IntegrityError as err:
+                self.stderr.write("IntegrityError: {} -{}".format(xelon_number, err))
+            except DataError as err:
+                self.stderr.write("DataError: {} - {}".format(xelon_number, err))
         nb_prod_after = model.objects.count()
-        self.stdout.write("[SQUALAETP] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("[SQUALAETP] Nombre de produits mis à jour:  {}".format(nb_prod_update))
-        self.stdout.write("[SQUALAETP] Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[XELON] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                )
+            )
+        )
 
     def _delay_files(self, model):
-        excels, nb_prod_update = [], 0
-        for file in XLS_DELAY_FILES:
-            excels.append(ExcelDelayAnalysis(file))
+        nb_excel_lines, nb_prod_update = 0, 0
+        excels = [ExcelDelayAnalysis(file) for file in XLS_DELAY_FILES]
         nb_prod_before = model.objects.count()
         for excel in excels:
             for row in excel.table():
@@ -110,35 +108,46 @@ class Command(BaseCommand):
                     self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
                 except FieldDoesNotExist as err:
                     self.stdout.write("FieldDoesNotExist row {} : {}".format(row, err))
+            nb_excel_lines += excel.nrows
         nb_prod_after = model.objects.count()
-        self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("[DELAY] Nombre de produits mis à jour : {}".format(nb_prod_update))
-        self.stdout.write("[DELAY] Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    nb_excel_lines, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                )
+            )
+        )
 
     def _fix_delay_files(self, model):
-        excels, nb_prod_update = [], 0
-        for file in XLS_DELAY_FILES:
-            excels.append(ExcelDelayAnalysis(file))
+        nb_excel_lines, nb_prod_update = 0, 0
+        excels = [ExcelDelayAnalysis(file) for file in XLS_DELAY_FILES]
         nb_prod_before = model.objects.count()
         model.objects.exclude(
             type_de_cloture__in=['Réparé', 'Rebut'], date_retour__isnull=True).update(type_de_cloture='Réparé')
         for excel in excels:
             for row in excel.table():
+                xelon_number = row.pop("numero_de_dossier")
                 try:
-                    if len(row):
-                        product = Xelon.objects.filter(numero_de_dossier=row["numero_de_dossier"])
-                        if product:
-                            del row["numero_de_dossier"]
-                            product.update(type_de_cloture='')
-                            product.update(**row)
-                            nb_prod_update += 1
+                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=row)
+                    if not created:
+                        if obj.nom_technicien:
+                            obj.type_de_cloture = 'En cours'
+                        else:
+                            obj.type_de_cloture = 'En attente'
+                        obj.save()
+                        nb_prod_update += 1
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
                 except DataError as err:
-                    self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
+                    self.stdout.write("DataError dossier {} : {}".format(xelon_number, err))
                 except FieldDoesNotExist as err:
-                    self.stdout.write("FieldDoesNotExist row {} : {}".format(row, err))
+                    self.stdout.write("FieldDoesNotExist row {} : {}".format(xelon_number, err))
+            nb_excel_lines += excel.nrows
         nb_prod_after = model.objects.count()
-        self.stdout.write("[DELAY] Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("[DELAY] Nombre de produits mis à jour : {}".format(nb_prod_update))
-        self.stdout.write("[DELAY] Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    nb_excel_lines, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                )
+            )
+        )

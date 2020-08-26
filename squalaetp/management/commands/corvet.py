@@ -82,7 +82,7 @@ class Command(BaseCommand):
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
-                "Corvet data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                "[CORVET] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                     excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
                 )
             )
@@ -100,7 +100,7 @@ class Command(BaseCommand):
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
-                "Corvet data import completed: ADD = {} | TOTAL = {}".format(
+                "[CORVET] data import completed: ADD = {} | TOTAL = {}".format(
                     nb_prod_after - nb_prod_before, nb_prod_after
                 )
             )

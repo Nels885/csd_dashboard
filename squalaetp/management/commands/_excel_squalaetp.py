@@ -31,7 +31,9 @@ class ExcelSqualaetp(ExcelFormat):
         """
         data = []
         for line in range(self.nrows):
-            data.append(dict(self.sheet.loc[line, self.XELON_COLS].dropna()))
+            row = self.sheet.loc[line, self.XELON_COLS]
+            if row[0]:
+                data.append(dict(row.dropna()))
         return data
 
     def corvet_table(self, attribut_file=None):

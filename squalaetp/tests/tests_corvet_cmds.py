@@ -9,7 +9,7 @@ class CorvetCommandTestCase(TestCase):
     def test_message_of_corvet_commmand_delete(self):
         out = StringIO()
         call_command('corvet', '--delete', stdout=out)
-        self.assertEqual(
-            out.getvalue(),
-            "\x1b[33;1mSuppression des données de la table Corvet terminée!\x1b[0m\n"
+        self.assertIn(
+            "Suppression des données de la table Corvet terminée!",
+            out.getvalue()
         )

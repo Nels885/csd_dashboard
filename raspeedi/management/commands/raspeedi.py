@@ -37,7 +37,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write("Suppression des données de la table Raspeedi terminée!")
+            self.stdout.write(self.style.WARNING("Suppression des données de la table Raspeedi terminée!"))
 
         else:
             if options['filename'] is not None:
@@ -60,7 +60,7 @@ class Command(BaseCommand):
             nb_after = Raspeedi.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "Raspeedi data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[RASPEEDI] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         excel.nrows, nb_after - nb_before, nb_update, nb_after
                     )
                 )
