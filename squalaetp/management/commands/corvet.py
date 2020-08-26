@@ -39,11 +39,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if options['filename'] is not None:
-            excel = ExcelSqualaetp(options['filename'])
-        else:
-            excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-
         if options['import_csv']:
             if options['filename'] is not None:
                 self._import(Corvet, options['filename'])
@@ -58,7 +53,7 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             for table in ["Corvet"]:
-                self.stdout.write("Suppression des données de la table {} terminée!".format(table))
+                self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
         else:
             if options['filename'] is not None:

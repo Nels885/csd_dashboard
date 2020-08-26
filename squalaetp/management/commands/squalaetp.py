@@ -1,13 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
+from django.core.management import call_command
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 
 from squalaetp.models import Xelon, CorvetBackup, Corvet
 from raspeedi.models import Raspeedi
-from utils.conf import XLS_SQUALAETP_FILE
-
-from ._excel_squalaetp import ExcelSqualaetp
 
 
 class Command(BaseCommand):
@@ -42,36 +40,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         if options['relations']:
-            if options['filename'] is not None:
-                excel = ExcelSqualaetp(options['filename'])
-            else:
-                excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-            self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
-            # self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
-
-            count, objects_list = 0, []
-            for xelon in Xelon.objects.all():
-                try:
-                    corvet = Corvet.objects.get(pk=xelon.vin)
-                    corvet.xelons.add(xelon)
-                    count += 1
-                except ObjectDoesNotExist:
-                    objects_list.append(xelon.numero_de_dossier)
-            # self.stdout.write("pas de relation pour les dossier Xelon suivant:\n{}".format(objects_list))
-            self.stdout.write("Nombre de relations Corvet/Xelon ajoutées: {}".format(count))
-            count, objects_list = 0, []
-            for corvet in Corvet.objects.all():
-                try:
-                    for cal in [corvet.electronique_14x, corvet.electronique_94x]:
-                        if cal is not None and len(cal) == 10:
-                            raspeedi = Raspeedi.objects.get(pk=int(cal))
-                            raspeedi.corvets.add(corvet)
-                            count += 1
-                except ObjectDoesNotExist:
-                    objects_list.append(corvet.electronique_14x)
-
-            # self.stdout.write("pas de relation pour les boitiers Corvet suivant:\n{}".format(objects_list))
-            self.stdout.write("Nombre de relations Raspeedi/Corvet ajoutées: {}".format(count))
+            self._relation()
 
         elif options['del_relations']:
             Corvet.xelons.through.objects.all().delete()
@@ -82,7 +51,8 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write("Suppression des relations des tables Xelon, Corvet, Raspeedi terminée!")
+            self.stdout.write(
+                self.style.WARNING("Suppression des relations des tables Xelon, Corvet, Raspeedi terminée!"))
 
         elif options['delete']:
             Xelon.objects.all().delete()
@@ -95,4 +65,36 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             for table in ["Xelon", "Corvet", "CorvetBackup"]:
-                self.stdout.write("Suppression des données de la table {} terminée!".format(table))
+                self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
+
+        else:
+            call_command("corvet")
+            call_command("xelon", "--fix_update")
+            call_command("raspeedi")
+            self._relation()
+
+    def _relation(self):
+        nb_xelon, nb_corvet, objects_list = 0, 0, []
+        for xelon in Xelon.objects.all():
+            try:
+                corvet = Corvet.objects.get(pk=xelon.vin)
+                corvet.xelons.add(xelon)
+                nb_xelon += 1
+            except ObjectDoesNotExist:
+                objects_list.append(xelon.numero_de_dossier)
+        for corvet in Corvet.objects.all():
+            try:
+                for cal in [corvet.electronique_14x, corvet.electronique_94x]:
+                    if cal and len(cal) == 10:
+                        raspeedi = Raspeedi.objects.get(pk=int(cal))
+                        raspeedi.corvets.add(corvet)
+                        nb_corvet += 1
+            except ObjectDoesNotExist:
+                objects_list.append(corvet.electronique_14x)
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[SQUALAETP] Relationships update completed: CORVET/XELON = {} | RASPEEDI/CORVET = {}".format(
+                    nb_xelon, nb_corvet
+                )
+            )
+        )
