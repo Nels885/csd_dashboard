@@ -6,7 +6,7 @@ from .forms import NacLicenseForm, NacUpdateForm
 from dashboard.models import WebLink
 
 context = {
-    'title': 'PSA'
+    'title': 'Info PSA'
 }
 
 
@@ -42,7 +42,7 @@ def nac_update(request):
     return redirect('psa:nac_tools')
 
 
-def userful_links(request):
+def useful_links(request):
     web_links = WebLink.objects.filter(type="PSA")
     context.update(locals())
-    return render(request, 'psa/userful_links.html', context)
+    return render(request, 'psa/useful_links.html', context)

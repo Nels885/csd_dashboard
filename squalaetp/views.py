@@ -103,7 +103,7 @@ def corvet_table(request):
     View of Corvet table page, visible only if authenticated
     """
     # corvets_list = Corvet.objects.all().order_by('vin')
-    title = 'Corvet'
+    title = 'Info PSA'
     table_title = _('CORVET table')
     form = ExportCorvetForm()
     return render(request, 'squalaetp/corvet_table.html', locals())

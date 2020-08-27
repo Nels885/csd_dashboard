@@ -59,7 +59,7 @@
     </li>
 {% endwith %}
 
-<!-- Nav Item - Info PSA Settings Menu -->
+<!-- Nav Item - Info FORD Settings Menu -->
 {% with name="FORD" icon="fa-info-circle" %}
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
@@ -71,7 +71,7 @@
              data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                <a class="collapse-item" href="#">{% trans "Tools & Links" %}</a>
+                <a class="collapse-item" href="{% url 'ford:userful_links' %}">{% trans "Tools & Links" %}</a>
             </div>
         </div>
     </li>

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'import_export.apps.ImportExportConfig',
     'psa.apps.PsaConfig',
+    'ford.apps.FordConfig',
 ]
 
 MIDDLEWARE = [
