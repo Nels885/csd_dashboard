@@ -3,6 +3,7 @@ from django.contrib import messages
 
 from utils.django.forms import ParaErrorList
 from .forms import NacLicenseForm, NacUpdateForm
+from dashboard.models import WebLink
 
 context = {
     'title': 'PSA'
@@ -10,9 +11,9 @@ context = {
 
 
 def nac_tools(request):
-    card_title = "Outils pour les produits NAC"
     form_license = NacLicenseForm(request.POST or None, error_class=ParaErrorList)
     form_update = NacUpdateForm(request.POST or None, error_class=ParaErrorList)
+    web_links = WebLink.objects.filter(type="PSA")
     context.update(locals())
     return render(request, 'psa/nac_tools.html', context)
 
@@ -39,3 +40,9 @@ def nac_update(request):
     for key, error in form.errors.items():
         messages.warning(request, error)
     return redirect('psa:nac_tools')
+
+
+def userful_links(request):
+    web_links = WebLink.objects.filter(type="PSA")
+    context.update(locals())
+    return render(request, 'psa/userful_links.html', context)

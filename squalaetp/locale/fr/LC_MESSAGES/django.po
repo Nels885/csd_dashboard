@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-21 13:47+0200\n"
+"POT-Creation-Date: 2020-08-27 20:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,28 +93,28 @@ msgstr ""
 msgid "Modification data Xelon file: "
 msgstr "Modification données dossier Xelon : "
 
-#: squalaetp/views.py:73 squalaetp/views.py:94 squalaetp/views.py:140
-#: squalaetp/views.py:150
+#: squalaetp/views.py:72 squalaetp/views.py:93 squalaetp/views.py:139
+#: squalaetp/views.py:149
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:108
+#: squalaetp/views.py:107
 msgid "CORVET table"
 msgstr "Table CORVET"
 
-#: squalaetp/views.py:122
+#: squalaetp/views.py:121
 msgid "Detail Corvet data for the VIN: "
 msgstr "Données détaillées de Corvet pour le VIN : "
 
-#: squalaetp/views.py:136 squalaetp/views.py:154
+#: squalaetp/views.py:135 squalaetp/views.py:153
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: squalaetp/views.py:169
+#: squalaetp/views.py:168
 msgid "Success: Squalaetp data was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:174
+#: squalaetp/views.py:173
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"

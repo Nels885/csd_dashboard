@@ -2,6 +2,18 @@
 
 {% load static i18n %}
 
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'psa/tab_select.html' with select='tools' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
 {% block detail_content %}
 
     <h3 class="mt-3">Licence pour MAJ :</h3>
