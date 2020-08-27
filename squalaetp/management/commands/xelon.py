@@ -130,11 +130,9 @@ class Command(BaseCommand):
                 try:
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=row)
                     if not created:
-                        if obj.nom_technicien:
-                            obj.type_de_cloture = 'En cours'
-                        else:
-                            obj.type_de_cloture = 'En attente'
-                        obj.save()
+                        if not obj.nom_technicien:
+                            obj.type_de_cloture = ''
+                            obj.save()
                         nb_prod_update += 1
                 except IntegrityError as err:
                     log.warning("IntegrityError:{}".format(err))
