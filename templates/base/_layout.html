@@ -94,6 +94,8 @@
             $(this).modalForm({formURL: $(this).data('id')});
         });
 
+        $(".create-weblink").modalForm({formURL: "{% url 'dashboard:create_weblink' %}", modalID: "#large-modal"});
+
         // Delete post buttons
         $(".update-corvet").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});

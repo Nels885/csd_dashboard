@@ -16,25 +16,50 @@
 
 {% block detail_content %}
 
-    <br>
+    {% if perms.dashboard.add_weblink %}
+        <a href="#" class="create-weblink btn btn-sm btn-primary mb-3">
+            <i class="fas fa-plus-square text-white-50"></i> {% trans 'Add web link' %}</a>
+    {% endif %}
+
     {% for link in web_links %}
-        <table class="table table-bordered table-striped mb-4">
+        <table class="table table-sm table-bordered mb-4">
             <tbody>
 
             <tr>
                 <!--<td class="td-link-picture text-center" rowspan="3"><img src="{{ link.thumbnail.url }}" alt=""/></td>-->
-                <td class="td-link-picture text-center" rowspan="3">
+                <td class="td-link-picture align-middle bg-gray-100" rowspan="3">
                     <img src="https://aprc.it/api/160x120/{{ link.url }}" alt=""/></td>
-                <td class="text-dark td-link ">Titre</td>
-                <td>{{ link.title }}</td>
+                <td class="text-right bg-gray-100">
+                    <a href="#" class="create-weblink mb-3"><i class="fas fa-edit"></i></a>
+                </td>
+                <!--<td>{{ link.title }}</td>-->
             </tr>
             <tr>
-                <td class="text-dark td-link">Lien</td>
+                <td>
+                    <table class="table table-sm table-borderless">
+                        <tbody>
+                        <tr>
+                            <td class="text-dark">Titre:</td>
+                            <td>{{ link.title }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-dark">Lien:</td>
+                            <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+                        </tr>
+                        <tr>
+                            <td class="text-dark mr-4 text-justify">Description:</td>
+                            <td>{{ link.description }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </td>
+                <!--<td class="text-dark td-link">Lien</td>
                 <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
             </tr>
             <tr>
                 <td class="text-dark td-link">Description</td>
-                <td>{{ link.description }}</td>
+                <td>{{ link.description }}</td>-->
             </tr>
             </tbody>
         </table>
