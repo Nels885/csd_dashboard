@@ -18,8 +18,12 @@
                 <td class="td-link-picture align-middle bg-gray-100" rowspan="3">
                     <img src="https://aprc.it/api/160x120/{{ link.url }}" alt=""/></td>
                 <td class="text-right bg-gray-100">
-                    <a href="#" class="update-weblink mb-3" data-id="{% url 'dashboard:update_weblink' link.pk %}"><i
-                            class="fas fa-edit"></i></a>
+                    {% if perms.dashboard.change_weblink %}
+                        <a href="#" class="update-weblink mb-3"
+                           data-id="{% url 'dashboard:update_weblink' link.pk %}"><i class="fas fa-edit"></i></a>
+                    {% else %}
+                        <br>
+                    {% endif %}
                 </td>
                 <!--<td>{{ link.title }}</td>-->
             </tr>

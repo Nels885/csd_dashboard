@@ -19,3 +19,7 @@ class PsaTestCase(UnitTest):
     def test_nac_update(self):
         response = self.client.get(reverse('psa:nac_update'))
         self.assertRedirects(response, reverse('psa:nac_tools'), status_code=302)
+
+    def test_useful_links_page(self):
+        response = self.client.get(reverse('psa:useful_links'))
+        self.assertEqual(response.status_code, 200)
