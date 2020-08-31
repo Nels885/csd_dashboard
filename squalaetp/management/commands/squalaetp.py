@@ -84,9 +84,9 @@ class Command(BaseCommand):
                 objects_list.append(xelon.numero_de_dossier)
         for corvet in Corvet.objects.all():
             try:
-                for cal in [corvet.electronique_14x, corvet.electronique_94x]:
-                    if cal and len(cal) == 10:
-                        raspeedi = Raspeedi.objects.get(pk=int(cal))
+                for ref in [corvet.electronique_14x, corvet.electronique_14f]:
+                    if ref and len(ref) == 10:
+                        raspeedi = Raspeedi.objects.get(ref_boitier=ref)
                         raspeedi.corvets.add(corvet)
                         nb_corvet += 1
             except ObjectDoesNotExist:
