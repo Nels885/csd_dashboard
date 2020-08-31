@@ -47,7 +47,7 @@
                 {% if perms.squalaetp %}
                     <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
                 {% endif %}
-                <a class="collapse-item" href="{% url 'psa:nac_tools' %}">{% trans "Tools & Links" %}</a>
+                <a class="collapse-item" href="{% url 'psa:useful_links' %}">{% trans "Tools & Links" %}</a>
 
                 {% if perms.squalaetp.add_corvet %}
                     <div class="collapse-divider"></div>
@@ -71,7 +71,7 @@
              data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                <a class="collapse-item" href="{% url 'ford:userful_links' %}">{% trans "Tools & Links" %}</a>
+                <a class="collapse-item" href="{% url 'ford:useful_links' %}">{% trans "Tools & Links" %}</a>
             </div>
         </div>
     </li>

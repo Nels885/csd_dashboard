@@ -1,4 +1,4 @@
-{% extends 'format/detail_format.html' %}
+{% extends 'dashboard/weblink.html' %}
 
 {% load static i18n %}
 
@@ -11,36 +11,5 @@
 
         </ul>
     </div>
-
-{% endblock %}
-
-{% block detail_content %}
-
-    <br>
-    {% for link in web_links %}
-        <table class="table table-bordered table-striped mb-4">
-            <tbody>
-
-            <tr>
-                <!--<td class="td-link-picture text-center" rowspan="3"><img src="{{ link.thumbnail.url }}" alt=""/></td>-->
-                <td class="td-link-picture text-center" rowspan="3">
-                    <img src="https://aprc.it/api/160x120/{{ link.url }}" alt=""/></td>
-                <td class="text-dark td-link ">Titre</td>
-                <td>{{ link.title }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-link">Lien</td>
-                <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
-            </tr>
-            <tr>
-                <td class="text-dark td-link">Description</td>
-                <td>{{ link.description }}</td>
-            </tr>
-            </tbody>
-        </table>
-
-    {% empty %}
-        <p class="empty text-center">Pas liens disponible pour le moment.</p>
-    {% endfor %}
 
 {% endblock %}

@@ -5,5 +5,5 @@ from . import views
 app_name = 'ford'
 
 urlpatterns = [
-    path('userful-links/', views.useful_links, name='userful_links'),
+    path('useful-links/', views.useful_links, name='useful_links'),
 ]

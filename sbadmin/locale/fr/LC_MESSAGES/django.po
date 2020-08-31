@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-27 20:55+0200\n"
+"POT-Creation-Date: 2020-08-31 11:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,11 +41,11 @@ msgstr "Importation CSV"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:156 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:157 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:157 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:158 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -91,8 +91,8 @@ msgid "Login"
 msgstr "S'identifier"
 
 #: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:26
-#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:78
+#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:73
+#: templates/nav/nav_tools.html:28 templates/nav/nav_tools.html:78
 msgid "Informations"
 msgstr ""
 
@@ -122,7 +122,7 @@ msgstr "Dossiers clients"
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:50
+#: templates/nav/nav_csd_atelier.html:50 templates/nav/nav_csd_atelier.html:74
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
@@ -130,7 +130,7 @@ msgstr "Outils & Liens"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:66 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:84 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 

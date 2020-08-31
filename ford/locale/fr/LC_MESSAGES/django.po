@@ -17,15 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
-#: psa/templates/psa/nac_tools.html:33 psa/templates/psa/nac_tools.html:54
-msgid "Download"
-msgstr "Téléchargement"
-
-#: psa/templates/psa/tab_select.html:5
+#: ford/templates/ford/tab_select.html:5
 msgid "Useful links"
 msgstr "Liens utiles"
-
-#: psa/templates/psa/tab_select.html:10
-msgid "NAC tools"
-msgstr "Outils NAC"

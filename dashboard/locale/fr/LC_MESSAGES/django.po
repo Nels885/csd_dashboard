@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-27 20:55+0200\n"
+"POT-Creation-Date: 2020-08-31 11:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,6 +69,8 @@ msgstr ""
 #: dashboard/templates/dashboard/modal/post_create.html:53
 #: dashboard/templates/dashboard/modal/post_delete.html:18
 #: dashboard/templates/dashboard/modal/post_update.html:53
+#: dashboard/templates/dashboard/modal/weblink_create.html:37
+#: dashboard/templates/dashboard/modal/weblink_update.html:37
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -78,6 +80,7 @@ msgid "Logout"
 msgstr "Déconnexion"
 
 #: dashboard/templates/dashboard/modal/post_create.html:54
+#: dashboard/templates/dashboard/modal/weblink_create.html:38
 msgid "Create"
 msgstr "Création"
 
@@ -94,12 +97,21 @@ msgid "Update Post"
 msgstr "Mettre à jour le Post"
 
 #: dashboard/templates/dashboard/modal/post_update.html:54
+#: dashboard/templates/dashboard/modal/weblink_update.html:38
 msgid "Update"
 msgstr "Mise à jour"
 
 #: dashboard/templates/dashboard/modal/signup.html:7
 msgid "New user"
 msgstr "Nouveau utilisateur"
+
+#: dashboard/templates/dashboard/modal/weblink_create.html:10
+msgid "Create web link"
+msgstr ""
+
+#: dashboard/templates/dashboard/modal/weblink_update.html:10
+msgid "Update web link"
+msgstr ""
 
 #: dashboard/templates/dashboard/profile.html:24
 msgid "Profile picture"
@@ -132,6 +144,10 @@ msgstr "Adresse E-mail"
 #: dashboard/templates/dashboard/register.html:17
 msgid "Create an Account!"
 msgstr "Création d'un compte !"
+
+#: dashboard/templates/dashboard/weblink.html:9
+msgid "Add web link"
+msgstr ""
 
 #: dashboard/tests/tests_dashboard_views.py:62
 msgid "This field is required."
@@ -198,3 +214,15 @@ msgstr "Succès: Le message a été mis à jour."
 #: dashboard/views.py:211
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."
+
+#: dashboard/views.py:219
+#, fuzzy
+#| msgid "Success: Post was created."
+msgid "Success: Web link was created"
+msgstr "Succès: Le message a été mis à jour."
+
+#: dashboard/views.py:233
+#, fuzzy
+#| msgid "Success: Post was updated."
+msgid "Success: Web link was updated"
+msgstr "Succès: Le message a été mis à jour."
