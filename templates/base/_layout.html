@@ -101,6 +101,11 @@
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
         });
 
+        // Delete web link buttons
+        $(".delete-weblink").each(function () {
+            $(this).modalForm({formURL: $(this).data('id')});
+        });
+
         // Delete post buttons
         $(".update-corvet").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});

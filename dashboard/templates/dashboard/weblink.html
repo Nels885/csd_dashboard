@@ -18,6 +18,10 @@
                 <td class="td-link-picture align-middle bg-gray-100" rowspan="3">
                     <img src="https://aprc.it/api/160x120/{{ link.url }}" alt=""/></td>
                 <td class="text-right bg-gray-100">
+                    {% if perms.dashboard.delete_weblink %}
+                        <a href="#" class="delete-weblink mb-3 mr-2 text-danger"
+                           data-id="{% url 'dashboard:delete_weblink' link.pk %}"><i class="fas fa-trash-alt"></i></a>
+                    {% endif %}
                     {% if perms.dashboard.change_weblink %}
                         <a href="#" class="update-weblink mb-3"
                            data-id="{% url 'dashboard:update_weblink' link.pk %}"><i class="fas fa-edit"></i></a>

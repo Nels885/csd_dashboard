@@ -237,3 +237,17 @@ class WebLinkUpdateView(PermissionRequiredMixin, BSModalUpdateView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
+    """ View of modal post delete """
+    model = WebLink
+    permission_required = 'dashboard.delete_weblink'
+    template_name = 'dashboard/modal/weblink_delete.html'
+    success_message = _('Success: Web link was deleted.')
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
