@@ -23,7 +23,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
-from .models import Post, UserProfile
+from .models import Post, UserProfile, WebLink
 from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
 from squalaetp.models import Xelon
 from tools.models import EtudeProject
@@ -217,6 +217,20 @@ class WebLinkCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'dashboard.add_weblink'
     template_name = 'dashboard/modal/weblink_create.html'
     success_message = _('Success: Web link was created')
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class WebLinkUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    model = WebLink
+    form_class = WebLinkForm
+    permission_required = 'dashboard.change_weblink'
+    template_name = 'dashboard/modal/weblink_update.html'
+    success_message = _('Success: Web link was updated')
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
