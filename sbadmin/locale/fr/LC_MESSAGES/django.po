@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-31 11:30+0200\n"
+"POT-Creation-Date: 2020-09-01 09:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,7 +77,7 @@ msgstr "Documentation API"
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:153 templates/nav/nav_interface.html:31
+#: templates/base/top_bar.html:153 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -85,8 +85,8 @@ msgstr "Se déconnecter"
 msgid "Guest"
 msgstr "Invité"
 
-#: templates/base/top_bar.html:169 templates/nav/nav_interface.html:13
-#: templates/registration/login.html:46
+#: templates/base/top_bar.html:173 templates/nav/nav_interface.html:21
+#: templates/registration/login.html:47
 msgid "Login"
 msgstr "S'identifier"
 
@@ -146,7 +146,7 @@ msgstr "Chambre thermique"
 msgid "Import / Export"
 msgstr ""
 
-#: templates/nav/nav_interface.html:21
+#: templates/nav/nav_interface.html:29
 msgid "SignUp"
 msgstr "S'inscrire"
 
@@ -209,10 +209,14 @@ msgid "Software Add"
 msgstr "Ajout logiciel"
 
 #: templates/registration/login.html:20
-msgid "Welcome Back!"
-msgstr "Bon retour parmi nous"
+msgid "Welcome to CSD Dashboard"
+msgstr "Bienvenue sur le tableau de bord CSD"
 
-#: templates/registration/login.html:52
+#: templates/registration/login.html:21
+msgid "Please enter your login information to continue."
+msgstr "Veuillez renseigner vos informations de connexion pour continuer."
+
+#: templates/registration/login.html:53
 msgid "Forgot Password?"
 msgstr ""
 
@@ -308,3 +312,6 @@ msgid ""
 msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
+
+#~ msgid "Welcome Back!"
+#~ msgstr "Bon retour parmi nous"
