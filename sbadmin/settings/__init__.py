@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'import_export.apps.ImportExportConfig',
     'psa.apps.PsaConfig',
     'ford.apps.FordConfig',
+    'renault.apps.RenaultConfig',
 ]
 
 MIDDLEWARE = [
