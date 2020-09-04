@@ -37,6 +37,8 @@
         <thead>
         <tr>
             <th>Numéro de dossier</th>
+            <th>Produit</th>
+            <th>V.I.N.</th>
             <th>Utilisateur</th>
             <th>Date</th>
         </tr>
@@ -47,6 +49,8 @@
 
             <tr>
                 <td>{{ prod.unlock.numero_de_dossier }}</td>
+                <td>{{ prod.unlock.modele_produit }}</td>
+                <td>{{ prod.unlock.vin }}</td>
                 <td>{{ prod.user }}</td>
                 <td>{{ prod.created_at }}</td>
             </tr>

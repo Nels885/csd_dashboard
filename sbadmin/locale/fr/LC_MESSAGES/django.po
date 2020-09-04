@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-01 09:22+0200\n"
+"POT-Creation-Date: 2020-09-04 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,11 +41,15 @@ msgstr "Importation CSV"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:157 templates/base/top_bar.html:97
+#: renault/templates/renault/tab_select.html:5
+msgid "Useful links"
+msgstr ""
+
+#: sbadmin/settings/__init__.py:158 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:158 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:159 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -65,34 +69,35 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: templates/base/top_bar.html:135
+#: templates/base/top_bar.html:133
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: templates/base/top_bar.html:144
+#: templates/base/top_bar.html:142
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:148
+#: templates/base/top_bar.html:146
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:153 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:151 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:160
+#: templates/base/top_bar.html:158
 msgid "Guest"
 msgstr "Invité"
 
-#: templates/base/top_bar.html:173 templates/nav/nav_interface.html:21
+#: templates/base/top_bar.html:171 templates/nav/nav_interface.html:21
 #: templates/registration/login.html:47
 msgid "Login"
 msgstr "S'identifier"
 
 #: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:26
 #: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:73
-#: templates/nav/nav_tools.html:28 templates/nav/nav_tools.html:78
+#: templates/nav/nav_csd_atelier.html:91 templates/nav/nav_tools.html:28
+#: templates/nav/nav_tools.html:78
 msgid "Informations"
 msgstr ""
 
@@ -123,6 +128,7 @@ msgid "Corvet table"
 msgstr "Tableau Corvet"
 
 #: templates/nav/nav_csd_atelier.html:50 templates/nav/nav_csd_atelier.html:74
+#: templates/nav/nav_csd_atelier.html:92
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
@@ -130,7 +136,7 @@ msgstr "Outils & Liens"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:84 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:102 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 

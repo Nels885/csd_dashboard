@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-01 09:22+0200\n"
+"POT-Creation-Date: 2020-09-04 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: raspeedi/forms.py:50
+msgid "This Xelon number is already present for unlocking"
+msgstr "Ce numéro Xelon est déjà présent pour le déverrouillage"
 
 #: raspeedi/templates/raspeedi/form.html:7
 msgid "Case reference"
@@ -70,39 +74,39 @@ msgstr "Soumettre"
 msgid "Add"
 msgstr "Ajouter"
 
-#: raspeedi/views.py:23
+#: raspeedi/views.py:22
 msgid "Table Products Telematics PSA"
 msgstr "Table produits télématique PSA"
 
-#: raspeedi/views.py:37
+#: raspeedi/views.py:36
 msgid "Detail raspeedi data for the ref case of Product: "
 msgstr "Détail des données raspeedi pour le cas de référence du produit: "
 
-#: raspeedi/views.py:45
+#: raspeedi/views.py:44
 msgid "Unlocking product for programming"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: raspeedi/views.py:52
+#: raspeedi/views.py:50
 #, python-format
 msgid "Adding the Xelon number %(xelon)s successfully"
 msgstr "Ajout du dossier Xelon %(xelon)s avec succès"
 
-#: raspeedi/views.py:54
+#: raspeedi/views.py:53
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: raspeedi/views.py:62
+#: raspeedi/views.py:61
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: raspeedi/views.py:69
+#: raspeedi/views.py:68
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: raspeedi/views.py:78
+#: raspeedi/views.py:77
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "
 
-#: raspeedi/views.py:83
+#: raspeedi/views.py:82
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
