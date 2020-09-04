@@ -1,6 +1,5 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 from django.utils.translation import ugettext as _
-from django.shortcuts import get_object_or_404
 from crum import get_current_user
 
 from utils.django.validators import validate_xelon

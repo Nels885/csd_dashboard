@@ -54,7 +54,7 @@ class UnlockViewSet(viewsets.ModelViewSet):
         customer_file = self.request.query_params.get('xelon', None)
         queryset = self.queryset
         if customer_file:
-            queryset = UnlockProduct.objects.filter(unlock__numero_de_dossier=customer_file)
+            queryset = UnlockProduct.objects.filter(unlock__numero_de_dossier=customer_file, active=True)
         return queryset
 
     def get_serializer_class(self):
