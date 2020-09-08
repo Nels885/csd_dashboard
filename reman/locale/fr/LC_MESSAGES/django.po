@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-04 09:57+0200\n"
+"POT-Creation-Date: 2020-09-08 11:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr "Soumettre"
 #: reman/templates/reman/edit_ecu_ref_base.html:36
 #: reman/templates/reman/part_create_form.html:49
 msgid "next"
-msgstr ""
+msgstr "Suivant"
 
 #: reman/templates/reman/edit_repair.html:101
 #: reman/templates/reman/modal/create_batch.html:41
@@ -152,6 +152,3 @@ msgstr "Succès: La panne REMAN a été créé."
 #: reman/views.py:251
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
-
-#~ msgid "Previous page"
-#~ msgstr "Page précédente"

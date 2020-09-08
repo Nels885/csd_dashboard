@@ -59,6 +59,21 @@ def unlock_prods(request):
     return render(request, 'raspeedi/unlock_prods.html', context)
 
 
+@permission_required('raspeedi.view_unlockproduct')
+def unlock_table(request):
+    """
+    View of the Unlock product table page
+    :param request:
+        Parameters of the request
+    :return:
+        Unlock product table page
+    """
+    table_title = _('Unlock product table')
+    products = UnlockProduct.objects.all()
+    context.update(locals())
+    return render(request, 'raspeedi/unlock_table.html', context)
+
+
 @permission_required('raspeedi.add_raspeedi')
 def insert(request):
     card_title = _('RASPEEDI integration')

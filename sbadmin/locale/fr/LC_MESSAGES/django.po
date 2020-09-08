@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-04 09:57+0200\n"
+"POT-Creation-Date: 2020-09-08 11:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,10 +40,6 @@ msgstr "Importation CSV"
 #: import_export/views.py:41 import_export/views.py:52
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
-
-#: renault/templates/renault/tab_select.html:5
-msgid "Useful links"
-msgstr ""
 
 #: sbadmin/settings/__init__.py:158 templates/base/top_bar.html:97
 msgid "French"
@@ -97,12 +93,12 @@ msgstr "S'identifier"
 #: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:26
 #: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:73
 #: templates/nav/nav_csd_atelier.html:91 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:78
+#: templates/nav/nav_tools.html:79
 msgid "Informations"
 msgstr ""
 
 #: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:54
-#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:83
+#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:84
 msgid "Editing"
 msgstr "Edition"
 
@@ -206,11 +202,17 @@ msgstr "Tableau produits"
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: templates/nav/nav_tools.html:80
+#: templates/nav/nav_tools.html:57
+#, fuzzy
+#| msgid "Unlock VIN"
+msgid "Unlock table"
+msgstr "Déverrouiller VIN"
+
+#: templates/nav/nav_tools.html:81
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:85
+#: templates/nav/nav_tools.html:86
 msgid "Software Add"
 msgstr "Ajout logiciel"
 

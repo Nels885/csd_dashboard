@@ -94,3 +94,11 @@ class RaspeediTestCase(UnitTest):
         new_unlock = UnlockProduct.objects.count()
         self.assertEqual(new_unlock, old_unlock + 1)
         self.assertEqual(response.status_code, 200)
+
+    def test_unlock_table_page(self):
+        response = self.client.get(reverse('raspeedi:unlock_table'))
+        self.assertRedirects(response, '/accounts/login/?next=/raspeedi/unlock/table/', status_code=302)
+        self.add_perms_user(UnlockProduct, 'view_unlockproduct')
+        self.login()
+        response = self.client.get(reverse('raspeedi:unlock_table'))
+        self.assertEqual(response.status_code, 200)
