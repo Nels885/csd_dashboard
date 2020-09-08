@@ -1,0 +1,11 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n %}
+
+{% block detail_content %}
+
+    <div class="text-center">
+        <img class="text-center" src="{{ stream_url }}" onerror="this.onerror=null;this.src='{% static 'img/stream_offline.png' %}';" alt=""/>
+    </div>
+
+{% endblock %}

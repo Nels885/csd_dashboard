@@ -1,12 +1,14 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from bootstrap_modal_forms.generic import BSModalDeleteView
+from django.urls import reverse_lazy
 
 from .models import Raspeedi, UnlockProduct
 from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
-from squalaetp.models import Xelon
 
 context = {'title': 'Raspeedi'}
 
@@ -44,12 +46,12 @@ def unlock_prods(request):
     products = UnlockProduct.objects.filter(active=True).order_by('created_at')
     table_title = _('Unlocking product for programming')
     form = UnlockForm(request.POST or None, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         if request.user.has_perm('raspeedi.add_unlockproduct'):
-            unlock = form.cleaned_data['unlock']
-            product = get_object_or_404(Xelon, numero_de_dossier=unlock)
-            UnlockProduct.objects.create(user=request.user.userprofile, unlock=product)
-            messages.success(request, _('Adding the Xelon number %(xelon)s successfully') % {'xelon': unlock})
+            form.save()
+            messages.success(
+                request, _('Adding the Xelon number %(xelon)s successfully') % {'xelon': form.cleaned_data['unlock']})
+            form = UnlockForm(error_class=ParaErrorList)
         else:
             messages.warning(request, _('You do not have the required permissions'))
     errors = form.errors.items()
@@ -83,3 +85,12 @@ def edit(request, ref_case):
         messages.success(request, _('Modification done successfully!'))
     context.update(locals())
     return render(request, 'raspeedi/edit.html', context)
+
+
+class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
+    """ View of modal post delete """
+    model = UnlockProduct
+    permission_required = 'raspeedi.delete_unlockproduct'
+    template_name = 'raspeedi/modal/unlock_delete.html'
+    success_message = _('Success: Input was deleted.')
+    success_url = reverse_lazy('raspeedi:unlock_prods')

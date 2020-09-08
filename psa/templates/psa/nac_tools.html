@@ -1,0 +1,59 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'psa/tab_select.html' with select='tools' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block detail_content %}
+
+    <h3 class="mt-3">Licence pour MAJ :</h3>
+
+    <form class="form-inline ml-sm-3 mt-3" method="post" action="{% url 'psa:nac_license' %}">
+
+        {% csrf_token %}
+
+        {% for field in form_license %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success btn-icon-split mb-2">
+            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Download" %}</span>
+        </button>
+
+    </form>
+
+    <hr>
+
+    <h3 class="mt-5">Mise à jour :</h3>
+
+    <form class="form-inline ml-sm-3 mt-3 mb-5" method="post" action="{% url 'psa:nac_update' %}">
+
+        {% csrf_token %}
+
+        {% for field in form_update %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success btn-icon-split mb-2">
+            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Download" %}</span>
+        </button>
+
+    </form>
+
+{% endblock %}

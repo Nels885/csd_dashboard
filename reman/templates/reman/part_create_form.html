@@ -1,0 +1,55 @@
+{% extends 'format/detail_small_format.html' %}
+
+{% load i18n widget_tweaks %}
+
+{% block detail_content %}
+
+    <div class="p-2">
+
+        {% if next_form == 0 %}
+            <p class="mb-4">Le code barre PSA ci-dessous n'éxiste pas dans la base de données REMAN.</p>
+            <p class="display-4 text-center mb-4 ">
+                <span class="bg-warning text-gray-800 font-weight-bold">{{ psa_barcode }}</span>
+            </p>
+            <p class="mb-5">Veuillez transmettre ce produit au technicien ECU pour qu'il soit ajouté.<br>Cliquez sur le bouton
+                <span class="font-weight-bold">Send email</span>, si vous souhaitez envoyer un email automatique à toute la liste ECU.
+            </p>
+
+        {% endif %}
+
+        <form method="post" action="">
+
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    <div class="form-group row">
+                        <label for="{{ field.id_for_label }}" class="col-sm-4 col-form-label">{{ field.label }}</label>
+                        <div class="col-sm-8">
+                            {% render_field field class="form-control" %}
+                            <div class="{% if field.errors %} invalid{% endif %}">
+                                {% for error in field.errors %}
+                                    <p class="help-block">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% if field == form.ecu_type %}
+                                <p class="mt-2 help-block">
+                                    Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs.
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="text-right mt-4">
+                {% if next_form == 0 %}
+                    <a class="align-self-center btn btn-secondary btn-user" href="{% url 'reman:part_check' %}">{% trans "cancel" %}</a>
+                {% endif %}
+                <button type="submit" class="btn btn-primary ml-4">{% trans "next" %}</button>
+            </div>
+        </form>
+
+    </div>
+
+{% endblock %}

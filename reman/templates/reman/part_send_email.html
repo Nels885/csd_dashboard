@@ -1,0 +1,75 @@
+{% extends 'format/detail_small_format.html' %}
+
+{% load i18n widget_tweaks %}
+
+{% block detail_content %}
+
+    <div class="p-2">
+
+        {% with ecu_type=ecu.ecu_type %}
+
+            <p class="mb-4">Le code barre PSA ci-dessous n'éxiste pas dans la base de données REMAN.</p>
+            <p class="display-4 text-center mb-4 ">
+                <span class="bg-warning text-gray-800 font-weight-bold">{{ ecu.psa_barcode }}</span>
+            </p>
+
+            <br>
+
+            <table class="table table-striped table-condensed mb-4">
+                <caption style="caption-side: top;">
+                    <h3 class="text-gray-800">Base Réf REMAN :</h3>
+                </caption>
+                <tbody>
+                <tr>
+                    <td class="text-dark">Référence HW</td>
+                    <td>{{ ecu_type.hw_reference|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Modèle produit</td>
+                    <td>{{ ecu_type.technical_data|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">fabriquant</td>
+                    <td>{{ ecu_type.supplier_oe|default:"---" }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-striped table-condensed mb-4">
+                <caption style="caption-side: top;">
+                    <h3 class="text-gray-800">Pièce détachée :</h3>
+                </caption>
+                <tbody>
+                <tr>
+                    <td class="text-dark">Référence pièce Xelon</td>
+                    <td>
+                        {{ ecu_type.spare_part.code_produit|default:"---" }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Emplacement</td>
+                    <td>{{ ecu_type.spare_part.code_emplacement|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Cumul Dispo</td>
+                    <td>{{ ecu_type.spare_part.cumul_dispo|default:"0" }}</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <p class="mb-5">Veuillez transmettre ce produit au technicien ECU pour qu'il soit ajouté.<br>Cliquez sur le bouton
+                <span class="font-weight-bold">Send email</span>, si vous souhaitez envoyer un email automatique à toute la liste ECU.
+            </p>
+
+            <div class="text-center">
+                <a class="align-self-center btn btn-secondary btn-user"
+                   href="{% url 'reman:part_check' %}">{% trans "New search" %}</a>
+                <a class="btn btn-primary ml-4" href="{% url 'reman:part_email' psa_barcode %}">{% trans "Send email" %}</a>
+            </div>
+
+        {% endwith %}
+
+    </div>
+
+{% endblock %}

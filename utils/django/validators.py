@@ -1,9 +1,11 @@
 import re
 import xml.etree.ElementTree as ET
 
+from django.utils.translation import ugettext as _
+
 from datetime import datetime
 
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Corvet
 
 
 def validate_vin(value):
@@ -15,8 +17,29 @@ def validate_vin(value):
         Error message if not valid
     """
     if not re.match(r'^VF[37]\w{14}$', str(value)):
-        return 'The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'
+        return _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles')
     return None
+
+
+def validate_nac(value):
+    """
+    Function VIN or UIN validation for NAC product
+    :param value:
+        VIN or UIN value
+    :return:
+        UIN and Error message if not valid
+    """
+    if re.match(r'^VF[37]\w{14}$', str(value)):
+        try:
+            uin = Corvet.objects.get(vin=value).electronique_44x
+            if not uin:
+                return value, "Numéro de série non trouvé (UIN)"
+            value = uin
+        except Corvet.DoesNotExist:
+            return value, "Ce VIN ne se trouve pas dans la base de données CSD",
+    elif not re.match(r'^0D\w{18}$', str(value)):
+        return value, _('The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part of PSA vehicles')
+    return value, None
 
 
 def validate_xelon(value):
@@ -78,6 +101,6 @@ def xml_parser(value):
                     key, value = "{}s_{}".format(child.tag, child.text[:2]), child.text[2:]
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
-    except (ET.ParseError, KeyError):
+    except (ET.ParseError, KeyError, TypeError):
         data = None
     return data

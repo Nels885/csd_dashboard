@@ -14,8 +14,10 @@ from api.models import (query_table_by_args,
                         ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
                         xelon_filter, corvet_filter)
 
-from utils.data import mqtt
+from utils.data.mqtt import MQTTClass
 from .utils import TokenAuthSupportQueryString
+
+MQTT_CLIENT = MQTTClass()
 
 
 def documentation(request):
@@ -52,7 +54,7 @@ class UnlockViewSet(viewsets.ModelViewSet):
         customer_file = self.request.query_params.get('xelon', None)
         queryset = self.queryset
         if customer_file:
-            queryset = UnlockProduct.objects.filter(unlock__numero_de_dossier=customer_file)
+            queryset = UnlockProduct.objects.filter(unlock__numero_de_dossier=customer_file, active=True)
         return queryset
 
     def get_serializer_class(self):
@@ -155,7 +157,5 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def thermal_temp(request):
-    if not mqtt.error:
-        mqtt.client.loop_start()
-    data = mqtt.payload
+    data = MQTT_CLIENT.result()
     return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)

@@ -28,11 +28,11 @@
 
 {% block customcss %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/../../static/vendor/datatables/datatables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/datatables.min.css' %}"/>
     <!--<link rel="stylesheet" type="text/css"
-          href="{% static 'dashboard/../../static/vendor/datatables/DataTables/css/jquery.dataTables.min.css' %}"/>-->
+          href="{% static 'vendor/datatables/DataTables/css/jquery.dataTables.min.css' %}"/>-->
     <link rel="stylesheet" type="text/css"
-          href="{% static 'dashboard/../../static/vendor/datatables/Responsive/css/responsive.dataTables.min.css' %}"/>
+          href="{% static 'vendor/datatables/Responsive/css/responsive.dataTables.min.css' %}"/>
 
     {% block tablecss %} {% endblock %}
 
@@ -42,11 +42,11 @@
 {% block customjs %}
 
     <!-- Page level plugins -->
-    <script type="text/javascript" src="{% static 'dashboard/../../static/vendor/datatables/datatables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
     <!--<script type="text/javascript"
-            src="{% static 'dashboard/../../static/vendor/datatables/DataTables/js/jquery.dataTables.min.js' %}"></script>-->
+            src="{% static 'vendor/datatables/DataTables/js/jquery.dataTables.min.js' %}"></script>-->
     <script type="text/javascript"
-            src="{% static 'dashboard/../../static/vendor/datatables/Responsive/js/dataTables.responsive.min.js' %}"></script>
+            src="{% static 'vendor/datatables/Responsive/js/dataTables.responsive.min.js' %}"></script>
 
     {% block tablejs %} {% endblock %}
 

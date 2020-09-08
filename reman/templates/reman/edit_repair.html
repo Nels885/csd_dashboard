@@ -73,33 +73,38 @@
                     </div>
                 </div>
             {% endfor %}
+    </div>
 
-            <hr>
-            <br>
-            <h5 class="text-gray-800">Contrôles :</h5>
-            <hr>
+    <hr>
+    <br>
+    <h5 class="text-gray-800">Contrôles :</h5>
+    <hr>
 
-            <div class="form-group row">
-                <label for="{{ form.quality_control.id_for_label }}" class="col-sm-2 col-form-label">{{ form.quality_control.label }} :</label>
-                <div class="col-sm-2">{{ form.quality_control }}</div>
-            </div>
+    <div class="form-group row">
+        <label for="{{ form.quality_control.id_for_label }}" class="col-sm-2 col-form-label">{{ form.quality_control.label }} :</label>
+        <div class="col-sm-2">{{ form.quality_control }}</div>
+    </div>
 
-            {#            <div class="form-group row">#}
-            {#                <label for="{{ form.checkout.id_for_label }}"#}
-            {#                       class="col-sm-2 col-form-label">{{ form.checkout.label }} :</label>#}
-            {##}
-            {#                <div class="col-sm-2">#}
-            {#                    {{ form.checkout }}#}
-            {#                </div>#}
-            {#            </div>#}
+    {#            <div class="form-group row">#}
+    {#                <label for="{{ form.checkout.id_for_label }}"#}
+    {#                       class="col-sm-2 col-form-label">{{ form.checkout.label }} :</label>#}
+    {##}
+    {#                <div class="col-sm-2">#}
+    {#                    {{ form.checkout }}#}
+    {#                </div>#}
+    {#            </div>#}
 
-            <hr>
-            <br>
+    <hr>
 
-            <button type="submit" name="btn_reman_add" class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-block">
-                {% trans "Submit" %}
-            </button>
+    <div class="mt-lg-5 offset-sm-5 align-self-center">
+        <a href="{% url 'reman:repair_table' %}?filter=quality" role="button" class="btn btn-secondary">
+            {% trans "Cancel" %}
+        </a>
+        <button type="submit" name="btn_reman_add" class="ml-2 btn btn-primary">
+            {% trans "Valid" %}
+        </button>
+    </div>
 
-        </form>
+    </form>
 
 {% endblock %}

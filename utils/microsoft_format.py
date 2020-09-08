@@ -114,7 +114,7 @@ class ExcelFormat(BaseFormat):
                            dtype=dtype, usecols=usecols)
         dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
         dataframe.reset_index(drop=True, inplace=True)
-        print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
+        # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
         return dataframe
 
 

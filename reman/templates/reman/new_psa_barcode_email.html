@@ -3,7 +3,12 @@
 
     Le code barre PSA ci-dessous n'est pas associé à une réf. REMAN.
 
-        - Réf. : {{ psa_barcode }}
+        - Code barre PSA  : {{ ecu.psa_barcode|default:"---" }}
+        - Référence HW    : {{ ecu.ecu_type.hw_reference|default:"---" }}
+        - Modèle produit  : {{ ecu.ecu_type.technical_data|default:"---" }}
+        - Fabriquant      : {{ ecu.ecu_type.supplier_oe|default:"---" }}
+        - Référence Xelon : {{ ecu.ecu_type.spare_part.code_produit|default:"---" }}
+        - Emplacement     : {{ ecu.ecu_type.spare_part.code_emplacement|default:"---" }}
 
     Le produit est disponible au service SpareParts pour réaliser les différents Dump de mémoire.
 

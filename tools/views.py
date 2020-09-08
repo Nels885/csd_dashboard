@@ -1,12 +1,13 @@
-import datetime
-
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
-from bootstrap_modal_forms.generic import BSModalCreateView
+from django.views.generic import TemplateView, ListView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
+from django.utils import timezone
+from constance import config
 
 from .models import CsdSoftware, ThermalChamber
 from dashboard.forms import ParaErrorList
@@ -31,7 +32,7 @@ def soft_add(request):
         jig = form.cleaned_data['jig']
         ref = CsdSoftware.objects.filter(jig=jig)
         if not ref.exists():
-            CsdSoftware.objects.create(**form.cleaned_data, created_by=request.user)
+            CsdSoftware.objects.create(**form.cleaned_data)
             messages.success(request, _('Added successfully!'))
             return redirect("tools:soft_list")
     errors = form.errors.items()
@@ -56,28 +57,45 @@ def soft_edit(request, soft_id):
     return render(request, 'tools/soft_edit.html', locals())
 
 
-@login_required
 def thermal_chamber(request):
     title = _('Thermal chamber')
     table_title = _('Use of the thermal chamber')
+    now = timezone.now()
+    ThermalChamber.objects.filter(created_at__lt=now.date(), active=True).update(active=False)
     thermals = ThermalChamber.objects.filter(active=True).order_by('created_at')
-    now = datetime.datetime.now()
     temp = None
     form = ThermalFrom(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
-        form.save()
-        messages.success(request, _('Modification done successfully!'))
+        if request.user.is_authenticated:
+            form.save()
+            messages.success(request, _('Modification done successfully!'))
+        else:
+            messages.warning(request, _('You do not have the required permissions'))
     errors = form.errors.items()
     return render(request, 'tools/thermal_chamber.html', locals())
 
 
-def thermal_fullscreen(request):
-    return render(request, 'tools/thermal_chamber_fullscreen.html')
+class ThermalFullScreenView(TemplateView):
+    template_name = 'tools/thermal_chamber_fullscreen.html'
+
+
+class ThermalChamberList(LoginRequiredMixin, ListView):
+    queryset = ThermalChamber.objects.all().order_by('-created_at')
+    context_object_name = 'thermal_list'
+    template_name = 'tools/thermal_chamber_table.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ThermalChamberList, self).get_context_data(**kwargs)
+        context['title'] = _('Thermal chamber')
+        context['table_title'] = _('Thermal chamber list')
+        return context
 
 
 @login_required
 def thermal_disable(request, pk):
-    therm = get_object_or_404(ThermalChamber, pk=pk)
+    therm = get_object_or_404(ThermalChamber, pk=pk, active=True)
+    if therm.start_time and not therm.stop_time:
+        therm.stop_time = timezone.now()
     therm.active = False
     therm.save()
     messages.success(request, 'Suppression réalisé avec succès!')
@@ -95,3 +113,22 @@ class TagXelonView(PermissionRequiredMixin, BSModalCreateView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+class UltimakerStreamView(LoginRequiredMixin, TemplateView):
+    template_name = "tools/ultimaker_stream.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(UltimakerStreamView, self).get_context_data(**kwargs)
+        context['title'] = "Imprimante 3D"
+        context['card_title'] = "Ultimaker Streaming"
+        context['stream_url'] = config.PRINTER_STREAM_URL
+        return context
+
+
+class ThermalDeleteView(LoginRequiredMixin, BSModalDeleteView):
+    """ View of modal post delete """
+    model = ThermalChamber
+    template_name = 'tools/modal/thermal_delete.html'
+    success_message = _('Success: Input was deleted.')
+    success_url = reverse_lazy('tools:thermal')

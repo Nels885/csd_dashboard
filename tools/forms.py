@@ -47,7 +47,8 @@ class SoftwareForm(forms.ModelForm):
 class ThermalFrom(forms.ModelForm):
     class Meta:
         model = ThermalChamber
-        fields = ['operating_mode']
+        fields = ['operating_mode', 'xelon_number']
         widgets = {
             'operating_mode': forms.Select(attrs={'class': 'custom-select form-control'}),
+            'xelon_number': forms.TextInput(attrs={'class': 'form-control'}),
         }

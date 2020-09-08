@@ -2,10 +2,11 @@ import csv
 
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
+from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.db import connection
 
-from squalaetp.models import Corvet, CorvetBackup
+from squalaetp.models import Corvet
 from utils.conf import XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE
 
 from ._excel_squalaetp import ExcelSqualaetp
@@ -24,22 +25,10 @@ class Command(BaseCommand):
             help='Specify import Excel file',
         )
         parser.add_argument(
-            '--insert',
-            action='store_true',
-            dest='insert',
-            help='Insert Corvet table',
-        )
-        parser.add_argument(
             '--import_csv',
             action='store_true',
             dest='import_csv',
             help='import Corvet CSV file',
-        )
-        parser.add_argument(
-            '--backup_insert',
-            action='store_true',
-            dest='backup_insert',
-            help='Insert Corvet Backup table',
         )
         parser.add_argument(
             '--delete',
@@ -50,31 +39,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        if options['insert']:
-            if options['filename'] is not None:
-                excel = ExcelSqualaetp(options['filename'])
-            else:
-                excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-            self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
-            # self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
-
-            self._insert(Corvet, excel.corvet_table(XLS_ATTRIBUTS_FILE), "vin")
-
-        elif options['import_csv']:
+        if options['import_csv']:
             if options['filename'] is not None:
                 self._import(Corvet, options['filename'])
             else:
                 self.stdout.write("Fichier CSV manquant")
-
-        elif options['backup_insert']:
-            if options['filename'] is not None:
-                excel = ExcelSqualaetp(options['filename'])
-            else:
-                excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-            self.stdout.write("Nombre de ligne dans Excel:     {}".format(excel.nrows))
-            # self.stdout.write("Noms des colonnes:              {}".format(excel.columns))
-
-            self._insert(CorvetBackup, excel.corvet_backup_table(), "vin")
 
         elif options['delete']:
             Corvet.objects.all().delete()
@@ -84,21 +53,40 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             for table in ["Corvet"]:
-                self.stdout.write("Suppression des données de la table {} terminée!".format(table))
+                self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
-    def _insert(self, model, excel_method, columns_name):
+        else:
+            if options['filename'] is not None:
+                excel = ExcelSqualaetp(options['filename'])
+            else:
+                excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
+
+            self._update_or_create(Corvet, excel)
+
+    def _update_or_create(self, model, excel):
         nb_prod_before = model.objects.count()
-        for row in excel_method:
+        nb_prod_update = 0
+        for row in excel.corvet_table(XLS_ATTRIBUTS_FILE):
             log.info(row)
-            if len(row[columns_name]):
-                try:
-                    m = model(**row)
-                    m.save()
-                except IntegrityError as err:
-                    log.warning("IntegrityError:{}".format(err))
+            vin = row.pop('vin')
+            try:
+                obj, created = model.objects.update_or_create(
+                    vin=vin, defaults=row
+                )
+                if not created:
+                    nb_prod_update += 1
+            except IntegrityError as err:
+                self.stderr.write("IntegrityError: {} - {}".format(vin, err))
+            except ValidationError as err:
+                self.stderr.write("ValidationError: {} - {}".format(vin, err))
         nb_prod_after = model.objects.count()
-        self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[CORVET] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                )
+            )
+        )
 
     def _import(self, model, csv_file):
         nb_prod_before = model.objects.count()
@@ -110,5 +98,10 @@ class Command(BaseCommand):
                 m = model(*row)
                 m.save()
         nb_prod_after = model.objects.count()
-        self.stdout.write("Nombre de produits ajoutés :    {}".format(nb_prod_after - nb_prod_before))
-        self.stdout.write("Nombre de produits total :      {}".format(nb_prod_after))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[CORVET] data import completed: ADD = {} | TOTAL = {}".format(
+                    nb_prod_after - nb_prod_before, nb_prod_after
+                )
+            )
+        )

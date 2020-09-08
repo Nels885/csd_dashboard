@@ -26,6 +26,6 @@ function clock() {
 }
 
 $('#detail-list a').on('click', function (e) {
-  e.preventDefault();
-  $(this).tab('show')
+    e.preventDefault();
+    $(this).tab('show')
 });

@@ -1,10 +1,3 @@
-from model_utils import FieldTracker
-from PIL import Image
-from datetime import date
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-import sys
-import os
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -25,7 +18,7 @@ class UserProfile(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField('titre', max_length=100)
     overview = RichTextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -44,3 +37,19 @@ class Post(models.Model):
 def create_auth_token(sender, instance=None, created=None, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class WebLink(models.Model):
+    TYPE_CHOICES = [
+        ('PSA', 'PSA'), ('OPEL', 'OPEL'), ('FORD', 'FORD'), ('RENAULT', 'RENAULT'), ('CLARION', 'CLARION'),
+        ('AUTRES', 'AUTRES')
+    ]
+
+    title = models.CharField('titre', max_length=200)
+    url = models.URLField('lien web')
+    type = models.CharField('type', max_length=50, choices=TYPE_CHOICES)
+    description = models.TextField('description', max_length=2000)
+    thumbnail = models.ImageField(default="no-img_160x120.png", upload_to="link_thumbnail")
+
+    def __str__(self):
+        return self.title

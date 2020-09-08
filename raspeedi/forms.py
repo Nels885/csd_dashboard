@@ -1,8 +1,10 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 from django.utils.translation import ugettext as _
+from crum import get_current_user
 
 from utils.django.validators import validate_xelon
-from .models import Raspeedi
+from .models import Raspeedi, UnlockProduct
+from squalaetp.models import Xelon
 
 
 class RaspeediForm(ModelForm):
@@ -42,4 +44,16 @@ class UnlockForm(Form):
         message = validate_xelon(data)
         if message:
             self.add_error('unlock', _(message))
+        else:
+            if UnlockProduct.objects.filter(unlock=Xelon.objects.get(numero_de_dossier=data), active=True):
+                self.add_error('unlock', _('This Xelon number is already present for unlocking'))
         return data
+
+    def save(self, commit=True):
+        user = get_current_user()
+        unlock = self.cleaned_data['unlock']
+        instance = UnlockProduct.objects.create(user=user.userprofile,
+                                                unlock=Xelon.objects.get(numero_de_dossier=unlock))
+        if commit:
+            instance.save()
+        return instance

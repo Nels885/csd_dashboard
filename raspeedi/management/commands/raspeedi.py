@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, DataError
 from django.db import connection
 
 from raspeedi.models import Raspeedi
@@ -37,30 +37,30 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write("Suppression des données de la table Raspeedi terminée!")
+            self.stdout.write(self.style.WARNING("Suppression des données de la table Raspeedi terminée!"))
 
         else:
             if options['filename'] is not None:
                 excel = ExcelRaspeedi(options['filename'])
             else:
                 excel = ExcelRaspeedi(XLS_RASPEEDI_FILE)
-            self.stdout.write("Nombre de ligne dans Excel:    {}".format(excel.nrows))
-            # self.stdout.write("Noms des colonnes:             {}".format(excel.columns))
-
             nb_before = Raspeedi.objects.count()
             nb_update = 0
             for row in excel.read():
                 log.info(row)
+                ref_boitier = row.pop("ref_boitier")
                 try:
-                    obj, created = Raspeedi.objects.get_or_create(ref_boitier=row.pop("ref_boitier"), defaults=row)
+                    obj, created = Raspeedi.objects.update_or_create(ref_boitier=ref_boitier, defaults=row)
                     if not created:
                         nb_update += 1
                 except IntegrityError as err:
-                    self.stderr.write("IntegrityError: {}".format(err))
+                    self.stderr.write("[RASPEEDI_CMD] IntegrityError: {} - {}".format(ref_boitier, err))
+                except DataError as err:
+                    self.stderr.write("[RASPEEDI_CMD] DataError: {} - {}".format(ref_boitier, err))
             nb_after = Raspeedi.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "Raspeedi data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[RASPEEDI] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         excel.nrows, nb_after - nb_before, nb_update, nb_after
                     )
                 )

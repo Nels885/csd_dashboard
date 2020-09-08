@@ -1,33 +1,16 @@
 {% load i18n user_tags %}
 
-{% if perms.tools or perms.raspeedi %}
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
+{% if user.is_authenticated %}
 
     <!-- Heading -->
     <div class="sidebar-heading">
         {% trans 'Tools' %}
     </div>
 
-{% endif %}
+    {% if perms.raspeedi %}
 
-{% if perms.tools %}
-
-    {% if perms.tools.add_tagxelon %}
-        <!-- Nav Item - TAG Xelon Multi -->
-        <li class="nav-item">
-            <a class="tag-xelon-btn nav-link" href="#">
-                <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
-            </a>
-        </li>
-    {% endif %}
-
-    {% if perms.tools.view_csdsoftware %}
-        <!-- Nav Item - Software Settings Menu -->
-        {% with name="Software" icon="fa-table" %}
-
-            <!-- Nav Item - Software -->
+        <!-- Nav Item - Raspeedi Settings Menu -->
+        {% with name="Raspeedi" icon="fa-table" %}
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                    aria-expanded="true" aria-controls="collapse{{ name }}">
@@ -37,15 +20,21 @@
                 <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                        <a class="collapse-item"
-                           href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
-                        <div class="collapse-divider"></div>
-                        {% if perms.dashboard.add_csdsoftware %}
-                            <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                            <a class="collapse-item"
-                               href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
+                        <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+                        <a class="collapse-item" href="{% url 'raspeedi:unlock_prods' %}">{% trans "Unlock VIN" %}</a>
+
+                        {% if perms.raspeedi.view_raspeedi %}
+                            <div class="collapse-divider"></div>
+                            <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                            <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
                         {% endif %}
+
+                        {% if perms.raspeedi.add_raspeedi %}
+                            <div class="collapse-divider"></div>
+                            <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                            <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
+                        {% endif %}
+
                     </div>
                 </div>
             </li>
@@ -53,39 +42,74 @@
 
     {% endif %}
 
-{% endif %}
-
-{% if perms.raspeedi %}
-
-    <!-- Nav Item - Raspeedi Settings Menu -->
-    {% with name="Raspeedi" icon="fa-table" %}
+    <!-- Nav Item - Tools Consultation Menu -->
+    {% with name="toolsConsult" icon="fa-table" %}
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                aria-expanded="true" aria-controls="collapse{{ name }}">
                 <i class="fas fa-fw {{ icon }}"></i>
-                <span>{{ name }}</span>
+                <span>Consultation</span>
             </a>
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
-                    <a class="collapse-item" href="{% url 'raspeedi:unlock_prods' %}">{% trans "Unlock VIN" %}</a>
-
-                    {% if perms.raspeedi.view_raspeedi %}
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                        <a class="collapse-item" href="{% url 'raspeedi:table' %}">{% trans "Products table" %}</a>
-                    {% endif %}
-
-                    {% if perms.raspeedi.add_raspeedi %}
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                        <a class="collapse-item" href="{% url 'raspeedi:insert' %}">{% trans "Add product" %}</a>
-                    {% endif %}
-
+                    <a class="collapse-item" href="{% url 'tools:thermal_list' %}">{% trans "Thermal chamber" %}</a>
                 </div>
             </div>
         </li>
     {% endwith %}
+
+    {% if perms.tools %}
+
+        {% if perms.tools.view_csdsoftware %}
+            <!-- Nav Item - Software Settings Menu -->
+            {% with name="Software" icon="fa-table" %}
+
+                <!-- Nav Item - Software -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                       aria-expanded="true" aria-controls="collapse{{ name }}">
+                        <i class="fas fa-fw {{ icon }}"></i>
+                        <span>{{ name }}</span>
+                    </a>
+                    <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                         data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                            <a class="collapse-item"
+                               href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
+                            <div class="collapse-divider"></div>
+                            {% if perms.dashboard.add_csdsoftware %}
+                                <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                                <a class="collapse-item"
+                                   href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endwith %}
+
+        {% endif %}
+
+        {% if perms.tools.add_tagxelon %}
+            <!-- Nav Item - TAG Xelon Multi -->
+            <li class="nav-item">
+                <a class="tag-xelon-btn nav-link" href="#">
+                    <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
+                </a>
+            </li>
+        {% endif %}
+
+    {% endif %}
+
+    <!-- Nav Item - Ultimaker Streaming -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'tools:ultimaker_stream' %}">
+            <i class="fas fa-fw fa-print"></i><span>Ultimaker stream</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
 {% endif %}

@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     'tools.apps.ToolsConfig',
     'api.apps.ApiConfig',
     'import_export.apps.ImportExportConfig',
+    'psa.apps.PsaConfig',
+    'ford.apps.FordConfig',
+    'renault.apps.RenaultConfig',
 ]
 
 MIDDLEWARE = [
@@ -227,6 +230,7 @@ CONSTANCE_CONFIG = {
     ),
 
     # MQTT Options
+    "MQTT_TOPIC": ('TEMP/TC-01', 'Topic subcribe'),
     'MQTT_TEMP_ADJ': (4, 'Temp adjust', int),
     'MQTT_CLIENT': ('', 'Client name'),
     'MQTT_USER': ('', 'Login'),
@@ -234,6 +238,9 @@ CONSTANCE_CONFIG = {
     'MQTT_BROKER': ('test.mosquitto.org', 'Server address'),
     'MQTT_PORT': (1883, 'Server port', int),
     'KEEP_ALIVE': (45, 'Keep alive', int),
+
+    # tools Options
+    'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL')
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -244,6 +251,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'
     ),
     'MQTT Options': (
-        'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
+        'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
     ),
+    'Tools Options': (
+        'PRINTER_STREAM_URL',
+    )
 }

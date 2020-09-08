@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-08 14:19+0200\n"
+"POT-Creation-Date: 2020-09-04 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,25 +26,34 @@ msgstr "Le lot existe déjà !"
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/models.py:80
+#: reman/models.py:84
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
 #: reman/templates/reman/check_parts.html:22
-#: reman/templates/reman/edit_repair.html:100
 msgid "Submit"
 msgstr "Soumettre"
 
-#: reman/templates/reman/modal/create_batch.html:10
-msgid "Create Batch"
-msgstr "Création d'un lot"
+#: reman/templates/reman/edit_ecu_ref_base.html:36
+#: reman/templates/reman/part_create_form.html:49
+msgid "next"
+msgstr ""
 
+#: reman/templates/reman/edit_repair.html:101
 #: reman/templates/reman/modal/create_batch.html:41
 #: reman/templates/reman/modal/create_default.html:43
 #: reman/templates/reman/modal/create_repair.html:38
 #: reman/templates/reman/modal/update_default.html:43
 msgid "Cancel"
 msgstr "Annuler"
+
+#: reman/templates/reman/edit_repair.html:104
+msgid "Valid"
+msgstr "Valider"
+
+#: reman/templates/reman/modal/create_batch.html:10
+msgid "Create Batch"
+msgstr "Création d'un lot"
 
 #: reman/templates/reman/modal/create_batch.html:42
 #: reman/templates/reman/modal/create_default.html:44
@@ -72,12 +81,18 @@ msgstr "Mise à jour"
 msgid "Add"
 msgstr "Ajout"
 
-#: reman/templates/reman/part_detail.html:47
-#: reman/templates/reman/part_detail.html:62
-msgid "Previous page"
-msgstr "Page précédente"
+#: reman/templates/reman/part_create_form.html:47
+#, fuzzy
+#| msgid "Cancel"
+msgid "cancel"
+msgstr "Annuler"
 
-#: reman/templates/reman/part_detail.html:63
+#: reman/templates/reman/part_detail.html:45
+#: reman/templates/reman/part_send_email.html:67
+msgid "New search"
+msgstr "Nouvelle recherche"
+
+#: reman/templates/reman/part_send_email.html:68
 msgid "Send email"
 msgstr "Envoi email"
 
@@ -97,43 +112,46 @@ msgstr "Pièces détachées"
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: reman/tests/tests_reman_views.py:89
+#: reman/tests/tests_reman_views.py:80 reman/tests/tests_reman_views.py:96
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: reman/tests/tests_reman_views.py:92
+#: reman/tests/tests_reman_views.py:99
 msgid "PSA barcode is invalid"
 msgstr "Code barre PSA n'est pas valide"
 
-#: reman/tests/tests_reman_views.py:112 reman/views.py:140
+#: reman/tests/tests_reman_views.py:119 reman/views.py:140
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: reman/views.py:53
+#: reman/views.py:54
 #, python-format
 msgid "Adding Repair n°%(repair)s to lot n°%(batch)s successfully"
 msgstr "Ajout réussi de la réparation n°%(repair)s du lot n°%(batch)s"
 
-#: reman/views.py:99
+#: reman/views.py:100
 msgid "Modification customer folder"
 msgstr "Modification dossier client"
 
-#: reman/views.py:105
+#: reman/views.py:106
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views.py:148
+#: reman/views.py:225
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
-#: reman/views.py:156
+#: reman/views.py:233
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#: reman/views.py:164
+#: reman/views.py:241
 msgid "Success: Reman Default was created."
 msgstr "Succès: La panne REMAN a été créé."
 
-#: reman/views.py:174
+#: reman/views.py:251
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
+
+#~ msgid "Previous page"
+#~ msgstr "Page précédente"

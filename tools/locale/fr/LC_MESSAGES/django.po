@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-08 14:19+0200\n"
+"POT-Creation-Date: 2020-09-04 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,6 +23,7 @@ msgid "CALIBRE file exists !"
 msgstr "Le fichier CALIBRE existe !"
 
 #: tools/templates/tools/modal/tag_xelon.html:37
+#: tools/templates/tools/modal/thermal_delete.html:20
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -30,6 +31,22 @@ msgstr "Annuler"
 #: tools/templates/tools/soft_form.html:55
 msgid "Submit"
 msgstr "Soumettre"
+
+#: tools/templates/tools/modal/thermal_delete.html:7
+msgid "Delete Thermal chamber input"
+msgstr "Suppression d'une entrée"
+
+#: tools/templates/tools/modal/thermal_delete.html:14
+msgid "Are you sure you want to delete input of"
+msgstr "Voulez-vous vraiment supprimer l'entrée de"
+
+#: tools/templates/tools/modal/thermal_delete.html:15
+msgid "created at"
+msgstr "créé le"
+
+#: tools/templates/tools/modal/thermal_delete.html:21
+msgid "Delete"
+msgstr "Supprimer"
 
 #: tools/templates/tools/soft_form.html:7
 msgid "JIG Name"
@@ -55,31 +72,43 @@ msgstr "Ajouter"
 msgid "Thermal Chamber Temperature"
 msgstr "Température Chambre Thermique"
 
-#: tools/views.py:19
+#: tools/tests/tests_tools_views.py:53 tools/views.py:73
+msgid "You do not have the required permissions"
+msgstr "Vous ne disposez pas des autorisations requises"
+
+#: tools/views.py:20
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:28
+#: tools/views.py:29
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:35
+#: tools/views.py:36
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
-#: tools/views.py:50
+#: tools/views.py:51
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"
 
-#: tools/views.py:54 tools/views.py:69
+#: tools/views.py:55 tools/views.py:71
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:61
+#: tools/views.py:61 tools/views.py:89
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
 #: tools/views.py:62
 msgid "Use of the thermal chamber"
 msgstr "Utilisation de la chambre thermique"
+
+#: tools/views.py:90
+msgid "Thermal chamber list"
+msgstr "liste Chambre thermique"
+
+#: tools/views.py:133
+msgid "Success: Input was deleted."
+msgstr "Succès: l'entrée a été supprimée."

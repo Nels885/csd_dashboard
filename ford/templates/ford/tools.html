@@ -1,0 +1,62 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'ford/tab_select.html' with select='tools' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block detail_content %}
+
+    <h3 class="mt-3">Décodeur code Radio :</h3>
+
+    <form class=" form-inline ml-sm-3 mt-3" action="">
+        <table>
+            <tr>
+                <td>
+                    <label for="type" class="control-label">Type:</label>
+                </td>
+                <td>
+                    <input type="text" name="type" id="type" minlength="10" maxlength="13" class="form-control"><br/>
+                    <div style="font-size: 0.8em; color:#A0A0A0;">Example: 7 612 300 524 or leave blank if V-Code.</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="serial" class="control-label">Serial:</label>
+                </td>
+                <td>
+                    <input type="text" name="serial" id="serial" minlength="7" maxlength="7" class="form-control"><br/>
+                    <div style="font-size: 0.8em;  color:#A0A0A0;">Example: 9083560 or V123456</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <button type="button" id="btn_calc" class="btn btn-primary">Calc Pin</button>
+                    =>
+                    <input type="text" id="pin_code" readonly="readonly" size="4"
+                           style="font-weight:bold; color:green; font-size:1.3em;" class="form-control">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <br>
+    <p>Ford radio PIN-code calculator by <a href="https://mk4-wiki.denkdose.de/artikel/nav_common/pin_code_calculator" target="_blank">http://mk4-wiki.denkdose.de</a></p>
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="application/javascript" src="{% static 'ford/tools.js' %}"></script>
+
+{% endblock %}

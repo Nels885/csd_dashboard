@@ -1,69 +1,49 @@
 {% extends 'format/detail_small_format.html' %}
 
-{% load i18n %}
+{% load i18n widget_tweaks %}
 
 {% block detail_content %}
 
     <div class="p-2">
 
-        {% with ecu_ref_base=ecu.ecu_ref_base ecu_type=ecu.ecu_ref_base.ecu_type %}
+        {% with ecu_ref_base=ecu.ecu_type.ecu_ref_base ecu_type=ecu.ecu_type %}
 
-            {% if ecu_ref_base %}
+            <table class="table table-striped table-condensed mb-5">
 
-                <table class="table table-striped table-condensed mb-5">
+                <tbody>
 
-                    <tbody>
+                <tr>
+                    <td class="text-dark">Référence REMAN</td>
+                    <td>{{ ecu_ref_base.reman_reference|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Code Produit</td>
+                    <td>
+                        <span class="bg-warning text-gray-800 font-weight-bold">
+                            {{ ecu_type.spare_part.code_produit|default:"---" }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Code Zone</td>
+                    <td>{{ ecu_type.spare_part.code_zone|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Emplacement</td>
+                    <td>{{ ecu_type.spare_part.code_emplacement|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Cumul Dispo</td>
+                    <td>{{ ecu_type.spare_part.cumul_dispo|default:"0" }}</td>
+                </tr>
 
-                    <tr>
-                        <td class="text-dark">Référence REMAN</td>
-                        <td>{{ ecu_ref_base.reman_reference|default:"---" }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-dark">Code Produit</td>
-                        <td>
-                            <span class="bg-warning text-gray-800 font-weight-bold">
-                                {{ ecu_type.spare_part.code_produit|default:"---" }}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-dark">Code Zone</td>
-                        <td>{{ ecu_type.spare_part.code_zone|default:"---" }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-dark">Emplacement</td>
-                        <td>{{ ecu_type.spare_part.code_emplacement|default:"---" }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-dark">Cumul Dispo</td>
-                        <td>{{ ecu_type.spare_part.cumul_dispo|default:"0" }}</td>
-                    </tr>
+                </tbody>
+            </table>
 
-                    </tbody>
-                </table>
-
-                <div class="text-center">
-                    <a class="align-self-center btn btn-primary btn-user"
-                       href="{{ request.META.HTTP_REFERER }}">{% trans "Previous page" %}</a>
-                </div>
-
-            {% else %}
-
-                <p class="mb-4">Le code barre PSA ci-dessous n'éxiste pas dans la base de données REMAN.</p>
-                <p class="display-4 text-center mb-4 ">
-                    <span class="bg-warning text-gray-800 font-weight-bold">{{ psa_barcode }}</span>
-                </p>
-                <p class="mb-5">Veuillez transmettre ce produit au technicien ECU pour qu'il soit ajouté.<br>Cliquez sur le bouton
-                    <span class="font-weight-bold">Send email</span>, si vous souhaitez envoyer un email automatique à toute la liste ECU.
-                </p>
-
-                <div class="text-center">
-                    <a class="align-self-center btn btn-secondary btn-user"
-                       href="{{ request.META.HTTP_REFERER }}">{% trans "Previous page" %}</a>
-                    <a class="btn btn-primary ml-4" href="{% url 'reman:part_email' psa_barcode %}">{% trans "Send email" %}</a>
-                </div>
-
-            {% endif %}
+            <div class="text-center">
+                <a class="align-self-center btn btn-primary btn-user"
+                   href="{% url 'reman:part_check' %}">{% trans "New search" %}</a>
+            </div>
 
         {% endwith %}
 

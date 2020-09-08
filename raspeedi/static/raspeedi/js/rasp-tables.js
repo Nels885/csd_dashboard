@@ -34,6 +34,12 @@ $(document).ready(function () {
 
     $('#unlockTable').DataTable({
         pagingType: "full_numbers",
-        order: [[2, "desc"]],
+        scrollX: true,
+        order: [[5, "desc"]],
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
     });
 });

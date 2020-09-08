@@ -2,7 +2,7 @@ from django.contrib.messages import get_messages
 
 from .base import UnitTest, reverse, UserProfile
 
-from dashboard.models import Post
+from dashboard.models import Post, WebLink
 
 
 class MixinsTest(UnitTest):
@@ -10,9 +10,11 @@ class MixinsTest(UnitTest):
     def setUp(self):
         super(MixinsTest, self).setUp()
         self.add_perms_user(Post, 'add_post', 'change_post', 'delete_post')
+        self.add_perms_user(WebLink, 'add_weblink', 'change_weblink')
         self.add_group_user("technician")
         self.author = UserProfile.objects.get(user=self.user)
         Post.objects.create(title='test', overview='texte', author=self.author)
+        WebLink.objects.create(title='test', url='http://test.com/', type='AUTRES', description='test')
 
     def test_Login_ajax_mixin(self):
         """
@@ -104,3 +106,48 @@ class MixinsTest(UnitTest):
         response = self.client.post(reverse('dashboard:delete_post', kwargs={'pk': post.pk}))
         messages = get_messages(response.wsgi_request)
         self.assertEqual(len(messages), 1)
+
+    def test_create_weblink_ajax_mixin(self):
+        """
+        Create web link throught BSModalCreateView.
+        """
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('dashboard:create_weblink'),
+            data={
+                'title': 'test1',
+                'url': 'http://test1.com/',
+                'type': 'AUTRES',
+                'description': 'test1',
+            },
+        )
+        # Redirection
+        self.assertRedirects(response, reverse('index'), status_code=302)
+        # Object is created
+        links = WebLink.objects.all()
+        self.assertEqual(links.count(), 2)
+
+    def test_update_weblink_ajax_mixin(self):
+        """
+        Update web link throught BSModalCreateView.
+        """
+        self.login()
+
+        # Update object through BSModalUpdateView
+        link = WebLink.objects.first()
+        response = self.client.post(
+            reverse('dashboard:update_weblink', kwargs={'pk': link.pk}),
+            data={
+                'title': 'test2',
+                'url': 'http://test1.com/',
+                'type': 'AUTRES',
+                'description': 'test1',
+            },
+        )
+        # redirection
+        self.assertRedirects(response, reverse('index'), status_code=302)
+        # Object is updated
+        link = WebLink.objects.first()
+        self.assertEqual(link.title, 'test2')

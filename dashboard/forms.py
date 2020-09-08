@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 
 from bootstrap_modal_forms.forms import BSModalForm
 
-from .models import UserProfile, Post
+from .models import UserProfile, Post, WebLink
 
 
 class ParaErrorList(ErrorList):
@@ -89,3 +89,9 @@ class SignUpForm(UserCreationForm):
             user.save()
             UserProfile(user=user).save()
         return user
+
+
+class WebLinkForm(BSModalForm):
+    class Meta:
+        model = WebLink
+        fields = "__all__"

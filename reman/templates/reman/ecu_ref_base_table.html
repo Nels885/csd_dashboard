@@ -19,6 +19,7 @@
     <table class="table table-bordered" id="ecuModelTable" width="100%" cellspacing="0">
         <thead>
         <tr>
+            <th></th>
             <th>Référence OEM Brute</th>
             <th>Référence REMAN</th>
             <th>Module Moteur</th>
@@ -34,14 +35,18 @@
         {% for ecu in ecus %}
 
             <tr>
+                <td class="bg-white">
+                    <a href="{% url 'reman:edit_ref_base' ecu.psa_barcode %}" title="Modification"
+                       class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                </td>
                 <td>{{ ecu.oe_raw_reference }}</td>
-                <td>{{ ecu.ecu_ref_base }}</td>
-                <td>{{ ecu.ecu_ref_base.ecu_type.technical_data }}</td>
-                <td>{{ ecu.ecu_ref_base.ecu_type.hw_reference }}</td>
-                <td>{{ ecu.ecu_ref_base.ecu_type.supplier_oe }}</td>
+                <td>{{ ecu.ecu_type.ecu_ref_base.reman_reference }}</td>
+                <td>{{ ecu.ecu_type.technical_data }}</td>
+                <td>{{ ecu.ecu_type.hw_reference }}</td>
+                <td>{{ ecu.ecu_type.supplier_oe }}</td>
                 <td>{{ ecu.psa_barcode }}</td>
                 <td>{{ ecu.former_oe_reference }}</td>
-                <td>{{ ecu.ecu_ref_base.ecu_type.spare_part.code_produit }}</td>
+                <td>{{ ecu.ecu_type.spare_part.code_produit }}</td>
             </tr>
 
         {% endfor %}

@@ -21,7 +21,12 @@ $(document).ready(function () {
     $('#ecuModelTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
-        order: [[0, "asc"]],
+        order: [[1, "asc"]],
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
     });
 
     $('#outTable').DataTable({

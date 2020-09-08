@@ -23,8 +23,8 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
-from .models import Post, UserProfile
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList
+from .models import Post, UserProfile, WebLink
+from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
 from squalaetp.models import Xelon
 from tools.models import EtudeProject
 
@@ -109,7 +109,7 @@ def signup(request):
     """ View of Sign Up page """
     title = _("SignUp")
     form = SignUpForm(request.POST or None)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         password = User.objects.make_random_password()
         user = form.save(commit=False)
         user.set_password(password)
@@ -210,3 +210,44 @@ class PostDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     template_name = 'dashboard/modal/post_delete.html'
     success_message = _('Success: Post was deleted.')
     success_url = reverse_lazy('index')
+
+
+class WebLinkCreateView(PermissionRequiredMixin, BSModalCreateView):
+    form_class = WebLinkForm
+    permission_required = 'dashboard.add_weblink'
+    template_name = 'dashboard/modal/weblink_create.html'
+    success_message = _('Success: Web link was created')
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class WebLinkUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    model = WebLink
+    form_class = WebLinkForm
+    permission_required = 'dashboard.change_weblink'
+    template_name = 'dashboard/modal/weblink_update.html'
+    success_message = _('Success: Web link was updated')
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
+    """ View of modal post delete """
+    model = WebLink
+    permission_required = 'dashboard.delete_weblink'
+    template_name = 'dashboard/modal/weblink_delete.html'
+    success_message = _('Success: Web link was deleted.')
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')

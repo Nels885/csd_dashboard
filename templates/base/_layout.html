@@ -13,6 +13,9 @@
 
     {% load static %}
 
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
     <!-- Bootstrap CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet"
@@ -91,6 +94,18 @@
             $(this).modalForm({formURL: $(this).data('id')});
         });
 
+        $(".create-weblink").modalForm({formURL: "{% url 'dashboard:create_weblink' %}", modalID: "#large-modal"});
+
+        // Update web link buttons
+        $(".update-weblink").each(function () {
+            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+        });
+
+        // Delete web link buttons
+        $(".delete-weblink").each(function () {
+            $(this).modalForm({formURL: $(this).data('id')});
+        });
+
         // Delete post buttons
         $(".update-corvet").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
@@ -100,6 +115,16 @@
         $(".update-default").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
         });
+
+        // Delete thermal buttons
+        $(".delete-thermal").each(function () {
+            $(this).modalForm({formURL: $(this).data('id')});
+        })
+
+        // Delete unlock product buttons
+        $(".delete-unlock").each(function () {
+            $(this).modalForm({formURL: $(this).data('id')});
+        })
 
         // log file buttons
         $(".log-btn").each(function () {

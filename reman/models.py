@@ -16,18 +16,21 @@ class EcuType(models.Model):
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
 
+    def part_name(self):
+        return self.technical_data + " HW" + self.hw_reference
+
     def __str__(self):
         return "HW_{} - TYPE_{}".format(self.hw_reference, self.technical_data)
 
 
 class EcuModel(models.Model):
     psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10)
+    oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
-    ecu_ref_base = models.ForeignKey("EcuRefBase", on_delete=models.CASCADE, null=True, blank=True)
+    ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
 
     @staticmethod
     def part_list(psa_barcode):
@@ -35,9 +38,9 @@ class EcuModel(models.Model):
         msg_list = []
         if ecu_models:
             for ecu_model in ecu_models:
-                reman_refs = ecu_model.ecu_ref_base.reman_reference
-                xelon_refs = ecu_model.ecu_ref_base.ecu_type.spare_part.code_produit
-                location = ecu_model.ecu_ref_base.ecu_type.spare_part.code_emplacement
+                reman_refs = ecu_model.ecu_type.ecu_ref_base.reman_reference
+                xelon_refs = ecu_model.ecu_type.spare_part.code_produit
+                location = ecu_model.ecu_type.spare_part.code_emplacement
                 msg_list.append(
                     'Réf. REMAN : {}  -  Réf. XELON : {}  -  EMPLACEMENT : {}'.format(reman_refs, xelon_refs, location))
             return msg_list
@@ -54,7 +57,8 @@ class EcuModel(models.Model):
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
-    ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
+    ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.CASCADE, null=True,
+                                    blank=True)
 
     def __str__(self):
         return self.reman_reference

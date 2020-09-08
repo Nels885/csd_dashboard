@@ -1,4 +1,7 @@
 from django.urls import reverse
+from django.utils import timezone
+from django.contrib.messages import get_messages
+from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
@@ -38,13 +41,21 @@ class ToolsTestCase(UnitTest):
 
     def test_thermal_chamber_page(self):
         response = self.client.get(reverse('tools:thermal'))
-        self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/', status_code=302)
-        self.login()
-        response = self.client.get(reverse('tools:thermal'))
+        self.assertEqual(response.status_code, 200)
+        old_thermal = ThermalChamber.objects.count()
+
+        # Warning adding user for thermal chamber if not authenticated
+        old_thermal = ThermalChamber.objects.count()
+        response = self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
+        new_thermal = ThermalChamber.objects.count()
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), _('You do not have the required permissions'))
+        self.assertEqual(new_thermal, old_thermal)
         self.assertEqual(response.status_code, 200)
 
+        self.login()
         # Adding user for thermal chamber
-        old_thermal = ThermalChamber.objects.count()
         response = self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
         new_thermal = ThermalChamber.objects.count()
         self.assertEqual(new_thermal, old_thermal + 1)
@@ -52,13 +63,31 @@ class ToolsTestCase(UnitTest):
 
     def test_thermal_disable_view(self):
         self.login()
-        self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD'})
-        thermal = ThermalChamber.objects.first()
+        self.client.post(reverse('tools:thermal'), {'operating_mode': 'CHAUD', 'xelon_number': 'A123456789'})
+        thermal = ThermalChamber.objects.get(xelon_number='A123456789')
         response = self.client.post(reverse('tools:thermal_disable', kwargs={'pk': thermal.pk}))
         new_thermal = ThermalChamber.objects.get(pk=thermal.pk)
         self.assertEqual(new_thermal.active, False)
+        self.assertEqual(new_thermal.stop_time, None)
+        self.assertEqual(response.status_code, 302)
+
+        self.client.post(reverse('tools:thermal'), {'operating_mode': 'FROID', 'xelon_number': 'A987654321'})
+        ThermalChamber.objects.filter(xelon_number='A987654321').update(start_time=timezone.now())
+        thermal = ThermalChamber.objects.filter(xelon_number="A987654321").first()
+        response = self.client.post(reverse('tools:thermal_disable', kwargs={'pk': thermal.pk}))
+        new_thermal = ThermalChamber.objects.get(pk=thermal.pk)
+        self.assertEqual(new_thermal.active, False)
+        self.assertNotEqual(new_thermal.stop_time, None)
         self.assertEqual(response.status_code, 302)
 
     def test_thermal_chamber_full_page(self):
         response = self.client.get(reverse('tools:thermal_full'))
         self.assertEqual(response.status_code, 200)
+
+    def test_thermal_chamber_table(self):
+        response = self.client.get(reverse('tools:thermal_list'))
+        self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/table/', status_code=302)
+        self.login()
+        response = self.client.get(reverse('tools:thermal_list'))
+        self.assertEqual(response.status_code, 200)
+

@@ -67,8 +67,7 @@ def xelon_edit(request, file_id):
     corvet = Corvet.objects.filter(vin=file.vin).first()
     card_title = _('Modification data Xelon file: ') + file.numero_de_dossier
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
-    if form.is_valid():
-        xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+    if request.POST and form.is_valid():
         form.save()
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
@@ -88,7 +87,7 @@ def ajax_xelon(request):
     file = get_object_or_404(Xelon, pk=file_id)
     corvet = Corvet.objects.filter(vin=file.vin).first()
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
         form.save()
         context = {'message': _('Modification done successfully!')}
@@ -104,7 +103,7 @@ def corvet_table(request):
     View of Corvet table page, visible only if authenticated
     """
     # corvets_list = Corvet.objects.all().order_by('vin')
-    title = 'Corvet'
+    title = 'Info PSA'
     table_title = _('CORVET table')
     form = ExportCorvetForm()
     return render(request, 'squalaetp/corvet_table.html', locals())
@@ -135,7 +134,7 @@ def corvet_insert(request):
     title = 'Corvet'
     card_title = _('CORVET integration')
     form = CorvetForm(request.POST or None, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         form.save()
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
