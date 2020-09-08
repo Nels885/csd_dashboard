@@ -94,4 +94,7 @@ class SignUpForm(UserCreationForm):
 class WebLinkForm(BSModalForm):
     class Meta:
         model = WebLink
-        fields = "__all__"
+        exclude = ['thumbnail']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 5})
+        }

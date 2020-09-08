@@ -177,10 +177,8 @@ msgid "Create Batch"
 msgstr "Création lot"
 
 #: templates/nav/nav_reman.html:73
-#, fuzzy
-#| msgid "Create file"
 msgid "Create Default"
-msgstr "Création dossier"
+msgstr "Création panne"
 
 #: templates/nav/nav_reman.html:82
 msgid "Shipment"
@@ -203,10 +201,8 @@ msgid "Add product"
 msgstr "Ajout produit"
 
 #: templates/nav/nav_tools.html:57
-#, fuzzy
-#| msgid "Unlock VIN"
 msgid "Unlock table"
-msgstr "Déverrouiller VIN"
+msgstr "Tableau dever. VIN"
 
 #: templates/nav/nav_tools.html:81
 msgid "Software list"
@@ -320,6 +316,3 @@ msgid ""
 msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
-
-#~ msgid "Welcome Back!"
-#~ msgstr "Bon retour parmi nous"
