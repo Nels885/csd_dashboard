@@ -1,7 +1,10 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from bootstrap_modal_forms.generic import BSModalDeleteView
+from django.urls import reverse_lazy
 
 from .models import Raspeedi, UnlockProduct
 from .forms import RaspeediForm, UnlockForm
@@ -82,3 +85,12 @@ def edit(request, ref_case):
         messages.success(request, _('Modification done successfully!'))
     context.update(locals())
     return render(request, 'raspeedi/edit.html', context)
+
+
+class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
+    """ View of modal post delete """
+    model = UnlockProduct
+    permission_required = 'raspeedi.delete_unlockproduct'
+    template_name = 'raspeedi/modal/unlock_delete.html'
+    success_message = _('Success: Input was deleted.')
+    success_url = reverse_lazy('raspeedi:unlock_prods')

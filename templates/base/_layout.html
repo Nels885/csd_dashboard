@@ -121,6 +121,11 @@
             $(this).modalForm({formURL: $(this).data('id')});
         })
 
+        // Delete unlock product buttons
+        $(".delete-unlock").each(function () {
+            $(this).modalForm({formURL: $(this).data('id')});
+        })
+
         // log file buttons
         $(".log-btn").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
