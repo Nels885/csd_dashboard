@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.db.models import Max
 
 from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
@@ -224,6 +225,14 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     form_class = AddBatchForm
     success_message = _('Success: Batch was created.')
     success_url = reverse_lazy('reman:batch_table')
+
+    def get_initial(self):
+        initial = super(BatchCreateView, self).get_initial()
+        try:
+            initial['number'] = Batch.objects.aggregate(Max('number'))['number__max'] + 1
+        except TypeError:
+            initial['number'] = 1
+        return initial
 
 
 class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
