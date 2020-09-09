@@ -57,6 +57,16 @@ class RemanTestCase(UnitTest):
         response = self.client.get(reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}))
         self.assertEqual(response.status_code, 200)
 
+    def test_repair_close_page(self):
+        response = self.client.get(reverse('reman:close_repair', kwargs={'pk': self.repair.pk}))
+        self.assertRedirects(response, '/accounts/login/?next=/reman/repair/' + str(self.repair.pk) + '/close/',
+                             status_code=302)
+
+        self.add_perms_user(Repair, 'change_repair')
+        self.login()
+        response = self.client.get(reverse('reman:close_repair', kwargs={'pk': self.repair.pk}))
+        self.assertEqual(response.status_code, 200)
+
     def test_batch_table(self):
         response = self.client.get(reverse('reman:batch_table'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/batch/table/', status_code=302)

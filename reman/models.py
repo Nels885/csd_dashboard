@@ -4,10 +4,13 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from ckeditor.fields import RichTextField
 from crum import get_current_user
 
 from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
+
+STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 'Rebut')]
 
 
 class EcuType(models.Model):
@@ -105,9 +108,12 @@ class Default(models.Model):
 
 
 class Repair(models.Model):
+
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
-    remark = models.CharField("remarques", max_length=1000, blank=True)
+    remark = models.CharField("remarques", max_length=200, blank=True)
+    comment = RichTextField("Commentaires action", max_length=500, config_name="comment", blank=True)
+    status = models.CharField("status", max_length=50, default='En cours', choices=STATUS_CHOICES)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
@@ -140,14 +146,6 @@ class Repair(models.Model):
 
     def __str__(self):
         return self.identify_number
-
-
-class Comment(models.Model):
-    repair = models.ForeignKey(Repair, related_name="comments", on_delete=models.CASCADE)
-    value = models.CharField("commentaire", max_length=500)
-
-    def __str__(self):
-        return self.value
 
 
 class SparePart(models.Model):

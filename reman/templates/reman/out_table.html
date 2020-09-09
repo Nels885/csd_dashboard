@@ -43,6 +43,8 @@
             <th>Réf. Software</th>
             <th>Créé le</th>
             <th>Modifié par</th>
+            <th>Status</th>
+            <th>Controle Qualité</th>
         </tr>
         </thead>
         <tbody>
@@ -58,6 +60,8 @@
                 <td>{{ file.batch.ecu_model.sw_reference }}</td>
                 <td>{{ file.created_at }}</td>
                 <td>{{ file.modified_by }}</td>
+                <td>{{ file.status }}</td>
+                <td>{% if file.quality_control %}OK{% endif %}</td>
             </tr>
 
         {% endfor %}

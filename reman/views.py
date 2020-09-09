@@ -15,8 +15,8 @@ from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
-    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckPartForm, DefaultForm,
-    PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm
+    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
+    DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm
 )
 
 context = {
@@ -29,10 +29,10 @@ def repair_table(request):
     """ View of Reman Repair table page """
     query = request.GET.get('filter')
     if query and query == 'quality':
-        files = Repair.objects.filter(quality_control=False)
+        files = Repair.objects.filter(status__exact="En cours")
         table_title = 'Dossiers en cours de réparation'
     elif query and query == 'checkout':
-        files = Repair.objects.filter(quality_control=True, checkout=False)
+        files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
         table_title = "Dossiers en attente d'expédition"
     else:
         files = Repair.objects.all()
@@ -48,8 +48,8 @@ def repair_table(request):
 def out_table(request):
     """ View of Reman Out Repair table page """
     table_title = 'Reman Out'
-    files = Repair.objects.filter(quality_control=True, checkout=False)
-    form = CloseRepairForm(request.POST or None, error_class=ParaErrorList)
+    files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
+    form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
         repair = form.save()
         messages.success(request, _('Adding Repair n°%(repair)s to lot n°%(batch)s successfully') % {
@@ -102,19 +102,35 @@ def repair_edit(request, pk):
     prod = get_object_or_404(Repair, pk=pk)
     form = EditRepairForm(request.POST or None, instance=prod)
     formset = SparePartFormset(request.POST or None)
-    if form.is_valid():
+    if request.POST and form.is_valid():
+        form.save()
+        messages.success(request, _('Modification done successfully!'))
+        if "btn_repair_close" in request.POST:
+            return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
+        return redirect(reverse('reman:repair_table', get={'filter': 'quality'}))
+    context.update(locals())
+    return render(request, 'reman/edit_repair.html', context)
+
+
+@permission_required('reman.change_repair')
+def repair_close(request, pk):
+    """ View of close repair page """
+    card_title = _('Modification customer folder')
+    prod = get_object_or_404(Repair, pk=pk)
+    form = CloseRepairForm(request.POST or None, instance=prod)
+    if request.POST and form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
         return redirect(reverse('reman:repair_table', get={'filter': 'quality'}))
     context.update(locals())
-    return render(request, 'reman/edit_repair.html', context)
+    return render(request, 'reman/close_repair.html', context)
 
 
 @permission_required('reman.view_ecumodel')
 def check_parts(request):
     card_title = "Check Spare Parts"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         psa_barcode = form.cleaned_data['psa_barcode']
         try:
             ecu = EcuModel.objects.get(psa_barcode=psa_barcode)

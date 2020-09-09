@@ -5,11 +5,11 @@
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="{% url 'reman:edit_repair' pk=prod.pk %}">
+        <form method="post" action="">
 
             {% csrf_token %}
 
-            <h5 class="text-gray-800">Information Produit :</h5>
+            <h5 class="text-gray-800 mt-3">Information Produit :</h5>
             <hr>
 
             <div class="form-group row">
@@ -41,12 +41,11 @@
             </div>
             <div class="form-group row">
                 <label for="{{ form.remark.id_for_label }}" class="col-sm-2 col-form-label">{{ form.remark.label }} :</label>
-                <div class="col-sm-10">{{ form.remark }}</div>
+                <div class="col-sm-6">{{ form.remark }}</div>
             </div>
 
             <hr>
-            <br>
-            <h5 class="text-gray-800">Réparation :</h5>
+            <h5 class="text-gray-800 mt-5">Réparation :</h5>
             <hr>
 
             <div class="form-group row">
@@ -54,9 +53,19 @@
                 <div class="col-sm-6">{{ form.default }}</div>
             </div>
 
+            <div class="form-group row">
+                <label for="{{ form.comment.id_for_label }}" class="col-sm-2 col-form-label">{{ form.comment.label }} :</label>
+                <div class="col-sm-10">{{ form.comment|safe }}</div>
+                {{ form.media }}
+                <div class="{% if form.comment.errors %} invalid{% endif %}">
+                    {% for error in form.comment.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
             <hr>
-            <br>
-            <h5 class="text-gray-800">Pièces détachées :</h5>
+            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
             <hr>
 
             {{ formset.management_form }}
@@ -73,38 +82,23 @@
                     </div>
                 </div>
             {% endfor %}
+
+            <hr>
+
+            <div class="mt-lg-5 offset-sm-5 align-self-center">
+                <a href="{% url 'reman:repair_table' %}?filter=quality" role="button" class="btn btn-secondary">
+                    {% trans "Cancel" %}
+                </a>
+                <button type="submit" name="btn_repair_save" class="ml-2 btn btn-primary">
+                    Sauvegarder
+                </button>
+                <button type="submit" name="btn_repair_close" class="ml-2 btn btn-primary">
+                    Cloturer
+                </button>
+            </div>
+
+        </form>
+
     </div>
-
-    <hr>
-    <br>
-    <h5 class="text-gray-800">Contrôles :</h5>
-    <hr>
-
-    <div class="form-group row">
-        <label for="{{ form.quality_control.id_for_label }}" class="col-sm-2 col-form-label">{{ form.quality_control.label }} :</label>
-        <div class="col-sm-2">{{ form.quality_control }}</div>
-    </div>
-
-    {#            <div class="form-group row">#}
-    {#                <label for="{{ form.checkout.id_for_label }}"#}
-    {#                       class="col-sm-2 col-form-label">{{ form.checkout.label }} :</label>#}
-    {##}
-    {#                <div class="col-sm-2">#}
-    {#                    {{ form.checkout }}#}
-    {#                </div>#}
-    {#            </div>#}
-
-    <hr>
-
-    <div class="mt-lg-5 offset-sm-5 align-self-center">
-        <a href="{% url 'reman:repair_table' %}?filter=quality" role="button" class="btn btn-secondary">
-            {% trans "Cancel" %}
-        </a>
-        <button type="submit" name="btn_reman_add" class="ml-2 btn btn-primary">
-            {% trans "Valid" %}
-        </button>
-    </div>
-
-    </form>
 
 {% endblock %}

@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel
+from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
@@ -117,16 +117,34 @@ class EditRepairForm(forms.ModelForm):
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'default', 'quality_control']
+        fields = ['identify_number', 'product_number', 'remark', 'comment', 'default']
         widgets = {
-            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
-            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': ''}),
-            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
+            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
+        }
+
+
+class CloseRepairForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CloseRepairForm, self).__init__(*args, **kwargs)
+        selected_choices = ["En cours"]
+        self.fields['status'].choices = [(k, v) for k, v in STATUS_CHOICES if k not in selected_choices]
+
+    class Meta:
+        model = Repair
+        fields = ['identify_number', 'product_number', 'remark', 'status', 'quality_control']
+        widgets = {
+            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
+            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
+            'status': forms.Select(attrs={'class': 'form-control custom-select '}),
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
 
 
-class CloseRepairForm(forms.Form):
+class CheckOutRepairForm(forms.Form):
     identify_number = forms.CharField(label="N° d'identification", max_length=11,
                                       widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'}))
 

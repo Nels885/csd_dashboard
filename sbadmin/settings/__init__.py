@@ -183,12 +183,24 @@ LOGOUT_REDIRECT_URL = '/'
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
-        'width': 760,
+        'width': 765,
         'toolbar_Custom': [
             ['Bold', 'Italic', 'Underline', 'Strike', '-', 'CopyFormatting', 'RemoveFormat'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
              'JustifyRight', 'JustifyBlock'],
             ['TextColor', 'BGColor', '-', 'Link', 'Unlink', 'Anchor'],
+            ['Scayt', '-', 'Source']
+        ],
+    },
+    'comment': {
+        'toolbar': 'Custom',
+        'height': 200,
+        'width': '100%',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline', 'Strike', '-', 'CopyFormatting', 'RemoveFormat'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
+             'JustifyRight', 'JustifyBlock'],
+            ['TextColor', 'BGColor', 'FontSize', '-', 'Link', 'Unlink', 'Anchor'],
             ['Scayt', '-', 'Source']
         ],
     }

@@ -8,6 +8,7 @@ urlpatterns = [
     path('repair/table/', views.repair_table, name='repair_table'),
     path('repair/create/', views.RepairCreateView.as_view(), name='create_repair'),
     path('repair/<int:pk>/edit/', views.repair_edit, name='edit_repair'),
+    path('repair/<int:pk>/close/', views.repair_close, name='close_repair'),
     path('repair/out/table/', views.out_table, name='out_table'),
     path('part/table/', views.part_table, name='part_table'),
     path('part/check/', views.check_parts, name='part_check'),
