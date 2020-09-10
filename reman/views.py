@@ -28,7 +28,7 @@ context = {
 def repair_table(request):
     """ View of Reman Repair table page """
     query = request.GET.get('filter')
-    if query and query == 'quality':
+    if query and query == 'pending':
         files = Repair.objects.filter(status__exact="En cours")
         table_title = 'Dossiers en cours de réparation'
     elif query and query == 'checkout':

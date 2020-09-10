@@ -26,7 +26,7 @@
                         {% endif %}
 
                         <a class="collapse-item"
-                           href="{% url 'reman:repair_table' %}?filter=quality">{% trans "Current folder" %}</a>
+                           href="{% url 'reman:repair_table' %}?filter=pending">{% trans "Current folder" %}</a>
                     </div>
                 </div>
             </li>
@@ -45,12 +45,15 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">{% trans "Repairs" %} :</h6>
-                    <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
                     <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "Batch list" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
+
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">{% trans "Spare Parts" %} :</h6>
-                    <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
+                    <h6 class="collapse-header">{% trans "Traitements" %} :</h6>
                     <a class="collapse-item" href="{% url 'reman:ecu_table' %}">{% trans "ECU ref Base" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
+
                 </div>
             </div>
         </li>
