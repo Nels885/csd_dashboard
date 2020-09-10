@@ -26,7 +26,11 @@
 
             <tr>
                 <td class="bg-white">
-                    <a href="{% url 'reman:edit_repair' pk=file.pk %}" title="Modification dossier" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    {% if perms.change_repair %}
+                        <a href="{% url 'reman:edit_repair' pk=file.pk %}" title="Modification dossier" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                    {% endif %}
                 </td>
                 <td>{{ file.batch }}</td>
                 <td>{{ file.identify_number }}</td>
@@ -65,9 +69,12 @@
 {% block tablecss %}
 
     <!-- SearchPanes css -->
-    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/SearchPanes/css/searchPanes.bootstrap4.min.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Buttons/css/buttons.bootstrap4.min.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Select/css/select.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'vendor/datatables/SearchPanes/css/searchPanes.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'vendor/datatables/Buttons/css/buttons.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'vendor/datatables/Select/css/select.bootstrap4.min.css' %}"/>
 
 {% endblock %}
 
@@ -77,8 +84,10 @@
     <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
 
     <!-- SearchPanes scripts -->
-    <script type="text/javascript" src="{% static 'vendor/datatables/SearchPanes/js/dataTables.searchPanes.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'vendor/datatables/SearchPanes/js/searchPanes.bootstrap4.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'vendor/datatables/SearchPanes/js/dataTables.searchPanes.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'vendor/datatables/SearchPanes/js/searchPanes.bootstrap4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/datatables/Select/js/dataTables.select.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/datatables/Buttons/js/buttons.bootstrap4.min.js' %}"></script>

@@ -80,7 +80,7 @@ class RemanTestCase(UnitTest):
         response = self.client.get(reverse('reman:out_table'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/repair/out/table/', status_code=302)
 
-        self.add_perms_user(Repair, 'change_repair')
+        self.add_perms_user(Repair, 'close_repair')
         self.login()
         response = self.client.get(reverse('reman:out_table'))
         self.assertEqual(response.status_code, 200)
@@ -96,7 +96,7 @@ class RemanTestCase(UnitTest):
         response = self.client.get(reverse('reman:part_check'))
         self.assertRedirects(response, '/accounts/login/?next=/reman/part/check/', status_code=302)
 
-        self.add_perms_user(EcuModel, 'view_ecumodel', 'add_ecumodel')
+        self.add_perms_user(EcuModel, 'check_ecumodel', 'add_ecumodel')
         self.login()
         response = self.client.get(reverse('reman:part_check'))
         self.assertEqual(response.status_code, 200)
@@ -121,7 +121,7 @@ class RemanTestCase(UnitTest):
         response = self.client.get(reverse('reman:part_email', kwargs={'psa_barcode': self.psaBarcode}))
         self.assertRedirects(response, '/accounts/login/?next=/reman/part/9612345678/email/', status_code=302)
 
-        self.add_perms_user(EcuModel, 'view_ecumodel')
+        self.add_perms_user(EcuModel, 'check_ecumodel')
         self.login()
         response = self.client.get(reverse('reman:part_email', kwargs={'psa_barcode': self.psaBarcode}))
         messages = list(get_messages(response.wsgi_request))

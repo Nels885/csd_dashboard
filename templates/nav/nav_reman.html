@@ -76,7 +76,7 @@
 
     {% endif %}
 
-    {% if perms.reman.change_repair %}
+    {% if perms.reman.close_repair %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'reman:out_table' %}">
                 <i class="fas fa-fw fa-truck"></i><span>{% trans "Shipment" %}</span>
@@ -84,7 +84,7 @@
         </li>
     {% endif %}
 
-    {% if perms.reman.view_ecumodel %}
+    {% if perms.reman.check_ecumodel %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'reman:part_check' %}">
                 <i class="fas fa-fw fa-puzzle-piece"></i><span>{% trans "check part" %}</span>

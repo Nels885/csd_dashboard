@@ -35,6 +35,12 @@ class EcuModel(models.Model):
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
     ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+
+        permissions = [
+            ("check_ecumodel", "Check that the EcuModel instance exists")
+        ]
+
     @staticmethod
     def part_list(psa_barcode):
         ecu_models = EcuModel.objects.filter(psa_barcode__exact=psa_barcode)
@@ -124,6 +130,11 @@ class Repair(models.Model):
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
     default = models.ForeignKey("Default", related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        permissions = [
+            ("close_repair", "Closing of the repair instance")
+        ]
 
     def get_absolute_url(self):
         if self.pk:

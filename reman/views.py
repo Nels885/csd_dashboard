@@ -44,7 +44,7 @@ def repair_table(request):
     return render(request, 'reman/repair_table.html', context)
 
 
-@permission_required('reman.change_repair')
+@permission_required('reman.close_repair')
 def out_table(request):
     """ View of Reman Out Repair table page """
     table_title = 'Reman Out'
@@ -126,7 +126,7 @@ def repair_close(request, pk):
     return render(request, 'reman/close_repair.html', context)
 
 
-@permission_required('reman.view_ecumodel')
+@permission_required('reman.check_ecumodel')
 def check_parts(request):
     card_title = "Check Spare Parts"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
@@ -143,7 +143,7 @@ def check_parts(request):
     return render(request, 'reman/check_parts.html', context)
 
 
-@permission_required('reman.view_ecumodel')
+@permission_required('reman.check_ecumodel')
 def new_part_email(request, psa_barcode):
     mail_subject = '[REMAN] Nouveau code barre PSA'
     message = render_to_string('reman/new_psa_barcode_email.html', {
