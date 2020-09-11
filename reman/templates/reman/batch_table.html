@@ -26,6 +26,8 @@
             <th>Codes barre PSA</th>
             <th>Réf. Hardware</th>
             <th>Fabriquant</th>
+            <th>XELON - Code produit</th>
+            <th>XELON - Emplacement</th>
             <th>Date de début</th>
             <th>Date de fin</th>
             <th>Status</th>
@@ -58,6 +60,8 @@
                     </td>
                     <td>{{ batch.ecu_ref_base.ecu_type.hw_reference }}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
+                    <td>{{ batch.ecu_ref_base.ecu_type.spare_part.code_produit }}</td>
+                    <td>{{ batch.ecu_ref_base.ecu_type.spare_part.code_emplacement }}</td>
                     <td>{{ batch.start_date }}</td>
                     <td>{{ batch.end_date }}</td>
                     <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
