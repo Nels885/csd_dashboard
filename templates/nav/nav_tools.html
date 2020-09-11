@@ -54,7 +54,9 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="{% url 'tools:thermal_list' %}">{% trans "Thermal chamber" %}</a>
-                    <a class="collapse-item" href="{% url 'raspeedi:unlock_table' %}">{% trans "Unlock table" %}</a>
+                    {% if perms.view_unlockproduct %}
+                        <a class="collapse-item" href="{% url 'raspeedi:unlock_table' %}">{% trans "Unlock table" %}</a>
+                    {% endif %}
                 </div>
             </div>
         </li>
