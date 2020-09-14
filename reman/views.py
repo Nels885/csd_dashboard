@@ -15,7 +15,7 @@ from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
-    AddBatchForm, AddRepairForm, EditRepairForm, SparePartFormset, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
+    AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm
 )
 
@@ -101,13 +101,12 @@ def repair_edit(request, pk):
     card_title = _('Modification customer folder')
     prod = get_object_or_404(Repair, pk=pk)
     form = EditRepairForm(request.POST or None, instance=prod)
-    formset = SparePartFormset(request.POST or None)
     if request.POST and form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
         if "btn_repair_close" in request.POST:
             return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
-        return redirect(reverse('reman:repair_table', get={'filter': 'quality'}))
+        return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
     return render(request, 'reman/edit_repair.html', context)
 
@@ -121,7 +120,7 @@ def repair_close(request, pk):
     if request.POST and form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
-        return redirect(reverse('reman:repair_table', get={'filter': 'quality'}))
+        return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
     return render(request, 'reman/close_repair.html', context)
 

@@ -35,8 +35,8 @@
                     <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.supplier_oe }}">
                 </div>
 
-                <label for="{{ form.product_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.product_number.label }} :</label>
-                <div class="col-sm-2">{{ form.product_number }}</div>
+{#                <label for="{{ form.product_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.product_number.label }} :</label>#}
+{#                <div class="col-sm-2">{{ form.product_number }}</div>#}
 
             </div>
             <div class="form-group row">
@@ -64,24 +64,24 @@
                 </div>
             </div>
 
-            <hr>
-            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
-            <hr>
-
-            {{ formset.management_form }}
-            {% for form in formset %}
-                <div class="form-group row">
-                    <label class="col-sm-1 col-form-label">{{ form.spare_parts.label }} :</label>
-                    <div class="col-sm-4">{{ form.spare_parts }}</div>
-
-                    <label class="col-sm-2 col-form-label">{{ form.quantity.label }} :</label>
-                    <div class="col-sm-1">{{ form.quantity }}</div>
-
-                    <div class="col-sm-2">
-                        <button class="btn btn-success">+</button>
-                    </div>
-                </div>
-            {% endfor %}
+{#            <hr>#}
+{#            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>#}
+{#            <hr>#}
+{##}
+{#            {{ formset.management_form }}#}
+{#            {% for form in formset %}#}
+{#                <div class="form-group row">#}
+{#                    <label class="col-sm-1 col-form-label">{{ form.spare_parts.label }} :</label>#}
+{#                    <div class="col-sm-4">{{ form.spare_parts }}</div>#}
+{##}
+{#                    <label class="col-sm-2 col-form-label">{{ form.quantity.label }} :</label>#}
+{#                    <div class="col-sm-1">{{ form.quantity }}</div>#}
+{##}
+{#                    <div class="col-sm-2">#}
+{#                        <button class="btn btn-success">+</button>#}
+{#                    </div>#}
+{#                </div>#}
+{#            {% endfor %}#}
 
             <hr>
 

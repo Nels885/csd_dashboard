@@ -57,17 +57,13 @@ class AddBatchForm(BSModalForm):
 class AddRepairForm(BSModalForm):
     psa_barcode = forms.CharField(label='Code barre PSA', max_length=10,
                                   widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
-    ref_supplier = forms.CharField(label='Réf. SUP', required=False,
-                                   widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=10)
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'psa_barcode', 'ref_supplier', 'product_number', 'remark']
+        fields = ['identify_number', 'psa_barcode', 'remark']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}),
-            'product_model': forms.Select(attrs={'class': 'form-control'}),
-            'product_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
 
     def __init__(self, *args, **kwargs):
