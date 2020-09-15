@@ -41,8 +41,11 @@
             </table>
 
             <div class="text-center">
-                <a class="align-self-center btn btn-primary btn-user"
+                <a class="align-self-center btn btn-primary btn-user" id="new_search"
                    href="{% url 'reman:part_check' %}">{% trans "New search" %}</a>
+                <script>
+                    document.getElementById("new_search").focus();
+                </script>
             </div>
 
         {% endwith %}
