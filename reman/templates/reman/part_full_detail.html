@@ -1,0 +1,70 @@
+{% extends 'format/detail_small_format.html' %}
+
+{% load i18n widget_tweaks %}
+
+{% block detail_content %}
+
+    <div class="p-2">
+
+        {% with ecu_type=ecu.ecu_type %}
+
+            <table class="table table-striped table-condensed mb-4">
+                <caption style="caption-side: top;">
+                    <h3 class="text-gray-800">Base Réf REMAN :</h3>
+                </caption>
+                <tbody>
+                <tr>
+                    <td class="text-dark">Code barre PSA</td>
+                    <td>{{ ecu.psa_barcode|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Référence HW</td>
+                    <td>{{ ecu_type.hw_reference|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Modèle produit</td>
+                    <td>{{ ecu_type.technical_data|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">fabriquant</td>
+                    <td>{{ ecu_type.supplier_oe|default:"---" }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-striped table-condensed mb-4">
+                <caption style="caption-side: top;">
+                    <h3 class="text-gray-800">Pièce détachée :</h3>
+                </caption>
+                <tbody>
+                <tr>
+                    <td class="text-dark">Référence pièce Xelon</td>
+                    <td>
+                        {{ ecu_type.spare_part.code_produit|default:"---" }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Emplacement</td>
+                    <td>{{ ecu_type.spare_part.code_emplacement|default:"---" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-dark">Cumul Dispo</td>
+                    <td>{{ ecu_type.spare_part.cumul_dispo|default:"---" }}</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <div class="text-center">
+                <a class="align-self-center btn btn-primary btn-user " id="ecu_table"
+                   href="{% url 'reman:ecu_table' %}">{% trans 'Close' %}</a>
+                <script>
+                    document.getElementById("ecu_table").focus();
+                </script>
+            </div>
+
+        {% endwith %}
+
+    </div>
+
+{% endblock %}

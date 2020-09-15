@@ -220,7 +220,7 @@ def ref_base_edit(request, psa_barcode):
             ecu_type.save()
             ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
             context.update(locals())
-            return render(request, 'reman/part_send_email.html', context)
+            return render(request, 'reman/part_full_detail.html', context)
     else:
         card_title = "Edit Modèle ECU"
         model = get_object_or_404(EcuModel, psa_barcode=psa_barcode)

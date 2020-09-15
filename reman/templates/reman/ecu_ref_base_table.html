@@ -20,14 +20,15 @@
         <thead>
         <tr>
             <th></th>
-            <th>Référence OEM Brute</th>
+            <th>Référence OEM</th>
             <th>Référence REMAN</th>
             <th>Module Moteur</th>
             <th>Réf. Hardware</th>
             <th>Fournisseur</th>
             <th>Code barre PSA</th>
             <th>Réf. fournisseur</th>
-            <th>Réf. Xelon</th>
+            <th>XELON - Code produit</th>
+            <th>XELON - Emplacement</th>
         </tr>
         </thead>
         <tbody>
@@ -50,6 +51,7 @@
                 <td>{{ ecu.psa_barcode }}</td>
                 <td>{{ ecu.former_oe_reference }}</td>
                 <td>{{ ecu.ecu_type.spare_part.code_produit }}</td>
+                <td>{{ ecu.ecu_type.spare_part.code_emplacement }}</td>
             </tr>
 
         {% endfor %}

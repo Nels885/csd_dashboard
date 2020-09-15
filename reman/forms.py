@@ -222,11 +222,11 @@ class PartEcuTypeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PartEcuTypeForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.technical_data:
-            self.fields['technical_data'].widget.attrs['readonly'] = True
-        if instance and instance.supplier_oe:
-            self.fields['supplier_oe'].widget.attrs['readonly'] = True
+        # instance = getattr(self, 'instance', None)
+        # if instance and instance.technical_data:
+        #     self.fields['technical_data'].widget.attrs['readonly'] = True
+        # if instance and instance.supplier_oe:
+        #     self.fields['supplier_oe'].widget.attrs['readonly'] = True
         self.fields['hw_reference'].widget.attrs['readonly'] = True
 
 
@@ -238,13 +238,13 @@ class PartSparePartForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PartSparePartForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.code_emplacement:
-            for field in self.fields:
-                self.fields[field].widget.attrs['readonly'] = True
-        else:
-            self.fields['code_produit'].widget.attrs['readonly'] = True
-        self.fields['code_emplacement'].required = True
+        # instance = getattr(self, 'instance', None)
+        # if instance and instance.code_emplacement:
+        #     for field in self.fields:
+        #         self.fields[field].widget.attrs['readonly'] = True
+        # else:
+        self.fields['code_produit'].widget.attrs['readonly'] = True
+        # self.fields['code_emplacement'].required = True
 
 
 class DefaultForm(BSModalForm):
