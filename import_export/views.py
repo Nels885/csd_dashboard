@@ -11,7 +11,8 @@ from django.core.management import call_command
 
 from squalaetp.models import Xelon, Corvet
 from reman.models import Batch, Repair, EcuModel
-from .forms import ExportCorvetForm, ExportRemanForm
+from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm
+from .utils import extract_ecu
 from utils.file.export import ExportExcel
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
@@ -26,18 +27,26 @@ def import_export(request):
     """ View of import/export files page """
     table_title = 'Import Export'
     form_corvet = ExportCorvetForm()
+    form_corvet_vin = ExportCorvetVinListForm()
     form_reman = ExportRemanForm()
     context.update(locals())
     return render(request, 'import_export/import_export.html', context)
 
 
 def export_corvet(request):
-    form = ExportCorvetForm(request.POST or None)
-    if form.is_valid():
-        if request.user.has_perm('squalaetp.change_corvet'):
-            product = form.cleaned_data['products']
-            if product in ['corvet', 'ecu', 'bsi', 'com', 'bsm']:
-                return redirect('import_export:export_{}_csv'.format(product))
+    if request.user.has_perm('squalaetp.change_corvet') and request.POST:
+        if "btn_corvet_all" in request.POST:
+            form = ExportCorvetForm(request.POST or None)
+            if form.is_valid():
+                product = form.cleaned_data['products']
+                if product in ['corvet', 'ecu', 'bsi', 'com', 'bsm']:
+                    return redirect('import_export:export_{}_csv'.format(product))
+        elif "btn_corvet_vin" in request.POST:
+            form = ExportCorvetVinListForm(request.POST or None)
+            if form.is_valid():
+                vin_list = form.cleaned_data['vin_list'].split('\r\n')
+                return extract_ecu(vin_list)
+    else:
         messages.warning(request, _('You do not have the required permissions'))
     return redirect(request.META.get('HTTP_REFERER'))
 

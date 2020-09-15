@@ -20,7 +20,26 @@
 
     </div>
 
-    <button type="submit" class="btn btn-success btn-icon-split mb-2">
+    <button type="submit" class="btn btn-success btn-icon-split mb-2" name="btn_corvet_all">
+        <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
+    </button>
+
+</form>
+
+<br>
+
+<form class="form-inline ml-sm-3" method="post" action="{% url 'import_export:corvet' %}">
+
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="{{ form_corvet_vin.vin_list.id_for_label }}" class="mb-2">{{ form_corvet_vin.vin_list.label }}</label>
+
+        {{ form_corvet_vin.vin_list }}
+
+    </div>
+
+    <button type="submit" class="btn btn-success btn-icon-split mb-2" name="btn_corvet_vin">
         <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
     </button>
 

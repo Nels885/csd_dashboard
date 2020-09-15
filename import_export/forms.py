@@ -27,3 +27,10 @@ class ExportRemanForm(forms.Form):
         label='Tableaux', required=False, choices=TABLES,
         widget=forms.Select(attrs={'style': 'width:200px', 'class': 'custom-select form-control mx-sm-3 mb-2'}),
     )
+
+
+class ExportCorvetVinListForm(forms.Form):
+    vin_list = forms.CharField(
+        label='Liste de V.I.N.', required=True,
+        widget=forms.Textarea(attrs={'class': 'form-control mx-sm-3 mb-2', 'rows': 8}),
+    )
