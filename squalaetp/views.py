@@ -35,12 +35,12 @@ def xelon_table(request):
 
 
 @login_required
-def part_table(request):
+def stock_table(request):
     """ View of SparePart table page """
     title = 'Xelon'
     table_title = 'Pièces détachées'
-    files = Stock.objects.all()
-    return render(request, 'reman/part_table.html', locals())
+    stocks = Stock.objects.all()
+    return render(request, 'squalaetp/stock_table.html', locals())
 
 
 @login_required
