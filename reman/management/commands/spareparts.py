@@ -1,26 +1,26 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
-from django.db.utils import IntegrityError
+# from django.db.utils import IntegrityError
 
 from reman.models import SparePart
-from utils.conf import CSV_EXTRACTION_FILE
+# from utils.conf import CSV_EXTRACTION_FILE
 
-from ._csv_extraction import CsvSparePart
+# from ._csv_extraction import CsvSparePart
 
-import logging as log
+# import logging as log
 
 
 class Command(BaseCommand):
     help = 'Interact with the SparePart table in the database'
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '-f',
-            '--file',
-            dest='filename',
-            help='Specify import CSV file',
-        )
+        # parser.add_argument(
+        #     '-f',
+        #     '--file',
+        #     dest='filename',
+        #     help='Specify import CSV file',
+        # )
         parser.add_argument(
             '--delete',
             action='store_true',
@@ -37,32 +37,32 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             self.stdout.write(self.style.WARNING("Suppression des données de la table SparePart terminée!"))
-        else:
-            if options['filename'] is not None:
-                extraction = CsvSparePart(options['filename'])
-            else:
-                extraction = CsvSparePart(CSV_EXTRACTION_FILE)
-
-            nb_part_before = SparePart.objects.count()
-            nb_part_update = 0
-            for row in extraction.read():
-                log.info(row)
-                code_produit = row.pop("code_produit")
-                try:
-                    obj, created = SparePart.objects.update_or_create(
-                        code_produit=code_produit, defaults=row
-                    )
-                    if not created:
-                        nb_part_update += 1
-                except IntegrityError as err:
-                    print("IntegrityError: {} - {}".format(code_produit, err))
-                except SparePart.MultipleObjectsReturned as err:
-                    print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
-            nb_part_after = SparePart.objects.count()
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "SpareParts data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                        extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
-                    )
-                )
-            )
+        # else:
+        #     if options['filename'] is not None:
+        #         extraction = CsvSparePart(options['filename'])
+        #     else:
+        #         extraction = CsvSparePart(CSV_EXTRACTION_FILE)
+        #
+        #     nb_part_before = SparePart.objects.count()
+        #     nb_part_update = 0
+        #     for row in extraction.read():
+        #         log.info(row)
+        #         code_produit = row.pop("code_produit")
+        #         try:
+        #             obj, created = SparePart.objects.update_or_create(
+        #                 code_produit=code_produit, defaults=row
+        #             )
+        #             if not created:
+        #                 nb_part_update += 1
+        #         except IntegrityError as err:
+        #             print("IntegrityError: {} - {}".format(code_produit, err))
+        #         except SparePart.MultipleObjectsReturned as err:
+        #             print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
+        #     nb_part_after = SparePart.objects.count()
+        #     self.stdout.write(
+        #         self.style.SUCCESS(
+        #             "SpareParts data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+        #                 extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
+        #             )
+        #         )
+        #     )

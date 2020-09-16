@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Xelon, Corvet
+from .models import Xelon, Corvet, Stock
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -21,6 +21,18 @@ class CorvetAdmin(admin.ModelAdmin):
     search_fields = ('vin', 'electronique_14l', 'electronique_94l')
 
 
+class StockAdmin(admin.ModelAdmin):
+    list_display = ('get_code_produit', 'code_magasin', 'code_zone', 'code_site', 'code_emplacement', 'cumul_dispo')
+    ordering = ('code_produit__name',)
+    search_fields = ('code_produit__name', 'code_magasin', 'code_zone', 'code_emplacement')
+
+    def get_code_produit(self, obj):
+        return obj.code_produit.name
+
+    get_code_produit.short_description = 'Code Produit'
+
+
 admin.site.register(Xelon, XelonAdmin)
 admin.site.register(Corvet, CorvetAdmin)
+admin.site.register(Stock, StockAdmin)
 # admin.site.register(CorvetBackup)

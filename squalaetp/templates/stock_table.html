@@ -29,15 +29,15 @@
         </thead>
         <tbody>
 
-        {% for part in parts %}
+        {% for stock in stocks %}
 
             <tr>
-                <td>{{ part.code_produit }}</td>
-                <td>{{ part.code_zone }}</td>
-                <td>{{ part.code_emplacement }}</td>
-                <td>{{ part.cumul_dispo|default:"" }}</td>
-                <td>{{ part.code_magasin }}</td>
-                <td>{{ part.code_site|default:"" }}</td>
+                <td>{{ stock.code_produit.name }}</td>
+                <td>{{ stock.code_zone }}</td>
+                <td>{{ stock.code_emplacement }}</td>
+                <td>{{ stock.cumul_dispo|default:"" }}</td>
+                <td>{{ stock.code_magasin }}</td>
+                <td>{{ stock.code_site }}</td>
             </tr>
 
         {% endfor %}

@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
-from .models import Xelon, Corvet
+from .models import Xelon, Corvet, Stock
 from .forms import CorvetForm, CorvetModalForm
 from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
@@ -32,6 +32,15 @@ def xelon_table(request):
     else:
         table_title = 'Dossiers Clients'
         return render(request, 'squalaetp/all_xelon_table.html', locals())
+
+
+@login_required
+def part_table(request):
+    """ View of SparePart table page """
+    title = 'Xelon'
+    table_title = 'Pièces détachées'
+    files = Stock.objects.all()
+    return render(request, 'reman/part_table.html', locals())
 
 
 @login_required

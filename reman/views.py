@@ -73,7 +73,7 @@ def batch_table(request):
 def part_table(request):
     """ View of SparePart table page """
     table_title = 'Pièces détachées'
-    files = SparePart.objects.all()
+    parts = SparePart.objects.all()
     context.update(locals())
     return render(request, 'reman/part_table.html', context)
 

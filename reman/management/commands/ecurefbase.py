@@ -3,6 +3,7 @@ from django.core.management.color import no_style
 from django.db import connection
 from django.db.utils import DataError, IntegrityError
 
+from squalaetp.models import ProductCode, Stock
 from reman.models import EcuRefBase, EcuModel, SparePart, EcuType
 from utils.conf import XLS_ECU_REF_BASE
 
@@ -60,14 +61,22 @@ class Command(BaseCommand):
                 for key in ["technical_data", "supplier_oe"]:
                     del row[key]
                 try:
+                    code_produit = row.pop("code_produit")
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
-                        code_produit=row.pop("code_produit"), defaults={
+                        code_produit=code_produit, defaults={
                             "code_zone": "REMAN PSA", "code_magasin": "MAGREM PSA"
                         }
                     )
                     if not part_created:
                         nb_part_update += 1
+
+                    # Update or create StockParts
+                    prod_obj, part_created = ProductCode.objects.get_or_create(
+                        name=code_produit)
+                    stock_obj, stock_created = Stock.objects.update_or_create(
+                        code_magasin="MAGREM PSA", code_zone="REMAN PSA", code_produit=prod_obj
+                    )
 
                     # Update or Create EcuType
                     type_values['spare_part'] = part_obj
