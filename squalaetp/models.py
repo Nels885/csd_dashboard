@@ -134,3 +134,19 @@ class Corvet(models.Model):
 
     def __str__(self):
         return self.vin
+
+
+# class SparePart(models.Model):
+#     code_produit = models.CharField('code Produit', max_length=100)
+#     stocks = models.ManyToManyField('Stock', related_name='spareparts', blank=True)
+#
+#     def __str__(self):
+#         return self.code_produit
+
+
+# class Stock(models.Model):
+#     code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
+#     code_zone = models.CharField('code Zone', max_length=20, blank=True)
+#     code_site = models.IntegerField('code Site', null=True, blank=True)
+#     code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)
+#     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)

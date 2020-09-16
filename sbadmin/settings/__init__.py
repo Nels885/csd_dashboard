@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'constance.backends.database',
     'constance',
+    'django_inlinecss',
 
     # My apps
     'dashboard.apps.DashboardConfig',
@@ -224,6 +225,7 @@ CONSTANCE_CONFIG = {
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
+    'TO_LATE_PRODUCTS_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
 
     # REMAN Options
     'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
@@ -256,7 +258,7 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION'),
+    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'TO_LATE_PRODUCTS_EMAIL_LIST'),
     'REMAN Options': ('ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST'),
     'Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',

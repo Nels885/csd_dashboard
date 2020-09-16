@@ -1,0 +1,49 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Activité</th>
+            <th>Dossier</th>
+            <th>Modèle</th>
+            <th>Date In</th>
+            <th>Délai</th>
+            <th>Tech</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for prod in prods %}
+
+            <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"
+                {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"
+                {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"
+                {% else %}class="bg-success text-gray-700"{% endif %}>
+                <td>{{ prod.ilot }}</td>
+                <td>{{ prod.numero_de_dossier }}</td>
+                <td>{{ prod.modele_produit }}</td>
+                <td>{{ prod.date_retour }}</td>
+                <td>{{ prod.delai_au_en_jours_ouvres }}</td>
+                <td>{{ prod.nom_technicien }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}
