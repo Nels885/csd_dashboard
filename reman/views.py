@@ -134,9 +134,11 @@ def check_parts(request):
         try:
             ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
             context.update(locals())
-            return render(request, 'reman/part_detail.html', context)
+            if ecu.ecu_type.spare_part:
+                return render(request, 'reman/part_detail.html', context)
         except EcuModel.DoesNotExist:
-            return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
+            pass
+        return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/check_parts.html', context)
@@ -185,8 +187,13 @@ def ref_base_create(request, psa_barcode):
             return render(request, 'reman/part_send_email.html', context)
     else:
         card_title = "Ajout Modèle ECU"
-        form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
-        form.initial['psa_barcode'] = psa_barcode
+        try:
+            instance = EcuModel.objects.get(psa_barcode=psa_barcode)
+            form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList, instance=instance)
+            form.initial['hw_reference'] = instance.ecu_type.hw_reference
+        except EcuModel.DoesNotExist:
+            form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
+            form.initial['psa_barcode'] = psa_barcode
     if request.POST and form.is_valid():
         form.save()
         next_form += 1

@@ -21,9 +21,9 @@ class SparePartAdmin(admin.ModelAdmin):
 
 
 class EcuModelAdmin(admin.ModelAdmin):
-    list_display = (
-        'psa_barcode', 'oe_raw_reference', 'sw_reference'
-    )
+    list_display = ('psa_barcode', 'oe_raw_reference', 'sw_reference')
+    ordering = ('psa_barcode',)
+    search_fields = ('psa_barcode', )
 
 
 admin.site.register(Batch, BatchAdmin)
