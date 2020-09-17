@@ -196,13 +196,16 @@ class EcuModelForm(forms.ModelForm):
 
 
 class PartEcuModelForm(forms.ModelForm):
-    hw_reference = forms.CharField(label="HW référence", max_length=10, required=True)
+    hw_reference = forms.CharField(label="HW référence *", max_length=10, required=True)
 
     class Meta:
         model = EcuModel
         fields = ['psa_barcode', 'hw_reference', 'oe_raw_reference', 'former_oe_reference']
         widgets = {
             'psa_barcode': forms.TextInput(attrs={'readonly': None})
+        }
+        labels = {
+            'psa_barcode': 'Code barre PSA *'
         }
 
     def save(self, commit=True):
