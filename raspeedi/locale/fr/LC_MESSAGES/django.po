@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-08 11:35+0200\n"
+"POT-Creation-Date: 2020-09-18 14:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,6 +93,10 @@ msgstr "Supprimer"
 #: raspeedi/templates/raspeedi/unlock_prods.html:22
 msgid "Add"
 msgstr "Ajouter"
+
+#: raspeedi/templates/raspeedi/unlock_prods.html:27
+msgid "Refresh"
+msgstr "Actualiser"
 
 #: raspeedi/views.py:25
 msgid "Table Products Telematics PSA"

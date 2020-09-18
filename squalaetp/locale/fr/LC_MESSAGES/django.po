@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-08 11:35+0200\n"
+"POT-Creation-Date: 2020-09-18 14:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,32 +89,32 @@ msgstr ""
 "Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie des "
 "véhicules PSA"
 
-#: squalaetp/views.py:68
+#: squalaetp/views.py:77
 msgid "Modification data Xelon file: "
 msgstr "Modification données dossier Xelon : "
 
-#: squalaetp/views.py:72 squalaetp/views.py:93 squalaetp/views.py:139
-#: squalaetp/views.py:149
+#: squalaetp/views.py:81 squalaetp/views.py:102 squalaetp/views.py:148
+#: squalaetp/views.py:158
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:107
+#: squalaetp/views.py:116
 msgid "CORVET table"
 msgstr "Table CORVET"
 
-#: squalaetp/views.py:121
+#: squalaetp/views.py:130
 msgid "Detail Corvet data for the VIN: "
 msgstr "Données détaillées de Corvet pour le VIN : "
 
-#: squalaetp/views.py:135 squalaetp/views.py:153
+#: squalaetp/views.py:144 squalaetp/views.py:162
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: squalaetp/views.py:168
+#: squalaetp/views.py:177
 msgid "Success: Squalaetp data was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:173
+#: squalaetp/views.py:182
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
