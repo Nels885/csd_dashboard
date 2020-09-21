@@ -5,13 +5,13 @@ from . import os
 import shutil
 import logging
 
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
-
 from django.shortcuts import HttpResponse
 
 from squalaetp.models import Corvet
 from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 def xml_corvet_file(data, vin):
