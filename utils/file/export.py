@@ -3,6 +3,10 @@ import xlwt
 import datetime
 from . import os
 import shutil
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 from django.shortcuts import HttpResponse
 
@@ -22,9 +26,9 @@ def xml_corvet_file(data, vin):
                 with open(file, "w") as f:
                     f.write(str(data))
             else:
-                print("{} File exists.".format(xelon_nb))
+                logger.warning("{} File exists.".format(xelon_nb))
     except Corvet.DoesNotExist:
-        print("Xelon number not found")
+        logger.warning("Xelon number not found")
 
 
 class Calibre:
@@ -49,7 +53,7 @@ class Calibre:
                     with open(file, "w") as f:
                         f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
                 else:
-                    print("{} File exists.".format(xelon))
+                    logger.warning("%s File exists.", xelon)
                     return False
         return True
 
@@ -101,11 +105,14 @@ class ExportExcel:
         """ Creation file """
         file = os.path.join(path, "{}.{}".format(self.filename, self.excelType))
         self._file_yesterday(path, file)
-        with open(file, 'w', newline='') as f:
-            if self.excelType == "csv":
-                self._csv_writer(f)
-            else:
-                self._xls_writer(f)
+        try:
+            with open(file, 'w', newline='') as f:
+                if self.excelType == "csv":
+                    self._csv_writer(f)
+                else:
+                    self._xls_writer(f)
+        except OSError:
+            logger.warning('File is read-only.')
 
     def _csv_writer(self, response):
         """ Formatting data in CSV format """
