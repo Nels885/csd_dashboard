@@ -95,6 +95,14 @@ def default_table(request):
     return render(request, 'reman/default_table.html', context)
 
 
+@permission_required('reman.view_ecumodel')
+def ecu_dump_table(request):
+    table_title = 'Dump à réaliser'
+    ecus = EcuModel.objects.filter(to_dump=True)
+    context.update(locals())
+    return render(request, 'reman/ecu_dump_table.html', context)
+
+
 @permission_required('reman.change_repair')
 def repair_edit(request, pk):
     """ View of edit repair page """

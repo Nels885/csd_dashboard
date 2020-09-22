@@ -18,6 +18,7 @@ urlpatterns = [
     path('ecu/table/', views.ecu_ref_table, name='ecu_table'),
     path('ecu/<str:psa_barcode>/create/', views.ref_base_create, name='create_ref_base'),
     path('ecu/<str:psa_barcode>/edit/', views.ref_base_edit, name='edit_ref_base'),
+    path('ecu/dump/table', views.ecu_dump_table, name='ecu_dump_table'),
     path('default/create/', views.DefaultCreateView.as_view(), name='create_default'),
     path('default/<int:pk>/edit/', views.DefaultUpdateView.as_view(), name='update_default'),
     path('default/table/', views.default_table, name='default_table'),

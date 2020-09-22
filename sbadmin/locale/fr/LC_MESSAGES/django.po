@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-18 14:13+0200\n"
+"POT-Creation-Date: 2020-09-22 12:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -190,6 +190,10 @@ msgstr ""
 #: templates/nav/nav_reman.html:55
 msgid "Spare Parts"
 msgstr "Pièces détachées"
+
+#: templates/nav/nav_reman.html:56
+msgid "ECU to Dump"
+msgstr "ECU à Dumper"
 
 #: templates/nav/nav_reman.html:66
 msgid "Create Batch"

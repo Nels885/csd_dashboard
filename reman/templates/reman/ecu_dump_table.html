@@ -1,0 +1,66 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'reman/tab_select.html' with select='ecu_dump' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <table class="table table-bordered text-nowrap" id="repairTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Code barre PSA</th>
+            <th>Réf. Hardware</th>
+            <th>Module Moteur</th>
+            <th>Fournisseur</th>
+            <th>Réf. fournisseur</th>
+            <th>XELON - Code produit</th>
+            <th>XELON - Emplacement</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for ecu in ecus %}
+
+            <tr>
+                <td class="bg-white">
+                    {% if perms.reman.change_ecumodel %}
+                        <a href="#" title="Modification dossier" class="btn btn-success btn-circle btn-sm"><i
+                                class="fas fa-edit"></i></a>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                    {% endif %}
+                </td>
+                <td>{{ ecu.psa_barcode }}</td>
+                <td>{{ ecu.ecu_type.hw_reference }}</td>
+                <td>{{ ecu.ecu_type.technical_data }}</td>
+                <td>{{ ecu.ecu_type.supplier_oe }}</td>
+                <td>{{ ecu.former_oe_reference }}</td>
+                <td>{{ ecu.ecu_type.spare_part.code_produit }}</td>
+                <td>{{ ecu.ecu_type.spare_part.code_emplacement }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
+
+{% endblock %}
