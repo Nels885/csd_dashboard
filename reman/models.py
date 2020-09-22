@@ -34,6 +34,7 @@ class EcuModel(models.Model):
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
     ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
+    to_dump = models.BooleanField("à dumper", default=False)
 
     class Meta:
 
@@ -161,10 +162,10 @@ class Repair(models.Model):
 
 class SparePart(models.Model):
     code_produit = models.CharField('code Produit', max_length=100)
-    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
-    code_zone = models.CharField('code Zone', max_length=20, blank=True)
+    code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
+    code_zone = models.CharField('code Zone', max_length=50, blank=True)
     code_site = models.IntegerField('code Site', null=True, blank=True)
-    code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)
+    code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
     repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)
 

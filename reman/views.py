@@ -147,8 +147,11 @@ def check_parts(request):
 @permission_required('reman.check_ecumodel')
 def new_part_email(request, psa_barcode):
     mail_subject = '[REMAN] Nouveau code barre PSA'
+    ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+    ecu.to_dump = True
+    ecu.save()
     message = render_to_string('reman/new_psa_barcode_email.html', {
-        'ecu': get_object_or_404(EcuModel, psa_barcode=psa_barcode),
+        'ecu': ecu,
     })
     email = EmailMessage(
         mail_subject, message, to=string_to_list(",|;", config.ECU_TO_EMAIL_LIST),
