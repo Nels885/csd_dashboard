@@ -5,7 +5,8 @@ from django.db.utils import DataError, IntegrityError
 
 from squalaetp.models import ProductCode, Stock
 from reman.models import EcuRefBase, EcuModel, SparePart, EcuType
-from utils.conf import XLS_ECU_REF_BASE
+from utils.conf import XLS_ECU_REF_BASE, CSD_ROOT
+from utils.file.export import ExportExcel, os
 
 from ._excel_reman import ExcelEcuRefBase
 
@@ -17,13 +18,23 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         # Positional arguments
-        parser.add_argument('sheet_id', type=int)
-
+        parser.add_argument(
+            '-s',
+            '--sheet_id',
+            type=int,
+            default=0
+        )
         parser.add_argument(
             '-f',
             '--file',
             dest='filename',
             help='Specify import Excel file',
+        )
+        parser.add_argument(
+            '--export',
+            action='store_true',
+            dest='export',
+            help='Export all data of EcuRefBase',
         )
         parser.add_argument(
             '--delete',
@@ -44,6 +55,25 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             self.stdout.write(self.style.WARNING("Suppression des données de la table EcuRefBase terminée!"))
+        elif options['export']:
+            filename = 'base_ref_reman_new'
+            path = os.path.join(CSD_ROOT, "EXTS")
+            header = [
+                'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
+                'REF CAL',
+                'REF à créer '
+            ]
+            ecus = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
+            values_list = (
+                'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
+                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference', 'sw_reference',
+                'ecu_type__spare_part__code_produit'
+            )
+            ExportExcel(queryset=ecus, filename=filename, header=header, values_list=values_list).file(path)
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Export ECU_REF_BASE completed: NB_REF = {} | FILE = {}.csv".format(ecus.count(), filename))
+            )
         else:
             if options['filename'] is not None:
                 extraction = ExcelEcuRefBase(options['filename'], sheet_name=options['sheet_id'])

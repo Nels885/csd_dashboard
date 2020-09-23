@@ -259,7 +259,7 @@ def import_ecurefbase(request):
                 my_file = request.FILES["myfile"]
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
-                call_command("ecurefbase", "1", "--file", file_url, stdout=out)
+                call_command("ecurefbase", "--sheet_id", 1, "--file", file_url, stdout=out)
                 for msg in out.getvalue().split("\n"):
                     messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')

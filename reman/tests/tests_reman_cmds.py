@@ -30,7 +30,7 @@ class RemanCommandTestCase(TestCase):
         # self.assertEqual(EcuType.objects.count(), 4)
 
         out = StringIO()
-        call_command('ecurefbase', '1', '--delete', stdout=out)
+        call_command('ecurefbase', '--delete', stdout=out)
         self.assertEqual(
             out.getvalue(),
             "\x1b[33;1mSuppression des données de la table EcuRefBase terminée!\x1b[0m\n"
