@@ -28,6 +28,7 @@ services:
   - postgresql
 
 script:
+  - manage.py collectstatic --no-input -l
   - coverage run --source="." manage.py test -v 2
   - coverage report
   - flake8

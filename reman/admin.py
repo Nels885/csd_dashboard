@@ -21,8 +21,9 @@ class SparePartAdmin(admin.ModelAdmin):
 
 
 class EcuModelAdmin(admin.ModelAdmin):
-    list_display = ('psa_barcode', 'oe_raw_reference', 'sw_reference', 'get_ecu_type')
-    ordering = ('psa_barcode',)
+    list_display = ('psa_barcode', 'oe_raw_reference', 'sw_reference', 'get_ecu_type', 'to_dump')
+    ordering = ('psa_barcode', 'oe_raw_reference')
+    list_filter = ('ecu_type__hw_reference', 'to_dump')
     search_fields = ('psa_barcode', 'ecu_type__hw_reference')
 
     def get_ecu_type(self, obj):
