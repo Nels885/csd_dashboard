@@ -26,20 +26,22 @@
     </li>
 {% endif %}
 
-<li class="nav-item {% if select == 'ecu' %}active{% endif %}">
-    <a class="nav-link {% if select == 'ecu' %}active{% endif %}" href="{% url 'reman:ecu_table' %}">
-        {% trans 'Base ECU Reman' %}
-    </a>
-</li>
+{% if perms.reman.view_ecurefbase %}
+    <li class="nav-item {% if select == 'ecu' %}active{% endif %}">
+        <a class="nav-link {% if select == 'ecu' %}active{% endif %}" href="{% url 'reman:ecu_table' %}">
+            {% trans 'Base ECU Reman' %}
+        </a>
+    </li>
+
+    <li class="nav-item {% if select == 'ecu_dump' %}active{% endif %}">
+        <a class="nav-link {% if select == 'ecu_dump' %}active{% endif %}" href="{% url 'reman:ecu_dump_table' %}">
+            {% trans "ECU to Dump" %}
+        </a>
+    </li>
+{% endif %}
 
 <li class="nav-item {% if select == 'part' %}active{% endif %}">
     <a class="nav-link {% if select == 'part' %}active{% endif %}" href="{% url 'reman:part_table' %}">
         {% trans "Spare Parts" %}
-    </a>
-</li>
-
-<li class="nav-item {% if select == 'ecu_dump' %}active{% endif %}">
-    <a class="nav-link {% if select == 'ecu_dump' %}active{% endif %}" href="{% url 'reman:ecu_dump_table' %}">
-        {% trans "ECU to Dump" %}
     </a>
 </li>

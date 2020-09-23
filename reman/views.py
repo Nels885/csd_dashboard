@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -24,7 +24,7 @@ context = {
 }
 
 
-@permission_required('reman.view_repair')
+@login_required()
 def repair_table(request):
     """ View of Reman Repair table page """
     query = request.GET.get('filter')
@@ -63,7 +63,7 @@ def out_table(request):
     return render(request, 'reman/out_table.html', context)
 
 
-@permission_required('reman.view_batch')
+@login_required()
 def batch_table(request):
     """ View of batch table page """
     table_title = 'Liste des lots REMAN ajoutés'
@@ -72,7 +72,7 @@ def batch_table(request):
     return render(request, 'reman/batch_table.html', context)
 
 
-@permission_required('reman.view_sparepart')
+@login_required()
 def part_table(request):
     """ View of SparePart table page """
     table_title = 'Pièces détachées'
@@ -90,20 +90,20 @@ def ecu_ref_table(request):
     return render(request, 'reman/ecu_ref_base_table.html', context)
 
 
+@permission_required('reman.view_ecurefbase')
+def ecu_dump_table(request):
+    table_title = 'Dump à réaliser'
+    ecus = EcuModel.objects.filter(to_dump=True)
+    context.update(locals())
+    return render(request, 'reman/ecu_dump_table.html', context)
+
+
 @permission_required('reman.view_default')
 def default_table(request):
     table_title = 'Liste de panne'
     defaults = Default.objects.all()
     context.update(locals())
     return render(request, 'reman/default_table.html', context)
-
-
-@permission_required('reman.view_ecumodel')
-def ecu_dump_table(request):
-    table_title = 'Dump à réaliser'
-    ecus = EcuModel.objects.filter(to_dump=True)
-    context.update(locals())
-    return render(request, 'reman/ecu_dump_table.html', context)
 
 
 @permission_required('reman.change_repair')

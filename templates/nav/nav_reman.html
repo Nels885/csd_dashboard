@@ -46,13 +46,17 @@
                     <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "Batch list" %}</a>
                     <a class="collapse-item" href="{% url 'reman:repair_table' %}?filter=pending">{% trans "Current files" %}</a>
                     <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
-                    <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
+                    {% if perms.reman.view_default %}
+                        <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
+                    {% endif %}
 
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
-                    <a class="collapse-item" href="{% url 'reman:ecu_table' %}">{% trans "ECU ref Base" %}</a>
+                    {% if perms.reman.view_ecurefbase %}
+                        <a class="collapse-item" href="{% url 'reman:ecu_table' %}">{% trans "ECU ref Base" %}</a>
+                        <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
+                    {% endif %}
                     <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
-                    <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
                 </div>
             </div>
         </li>
