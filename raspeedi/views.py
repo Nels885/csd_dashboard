@@ -43,7 +43,7 @@ def detail(request, ref_case):
 
 @permission_required('raspeedi.view_unlockproduct')
 def unlock_prods(request):
-    products = UnlockProduct.objects.filter(active=True).order_by('created_at')
+    products = UnlockProduct.objects.filter(active=True).order_by('-created_at')
     table_title = _('Unlocking product for programming')
     form = UnlockForm(request.POST or None, error_class=ParaErrorList)
     if request.POST and form.is_valid():
@@ -69,7 +69,7 @@ def unlock_table(request):
         Unlock product table page
     """
     table_title = _('Unlock product table')
-    products = UnlockProduct.objects.all()
+    products = UnlockProduct.objects.all().order_by('-created_at')
     context.update(locals())
     return render(request, 'raspeedi/unlock_table.html', context)
 

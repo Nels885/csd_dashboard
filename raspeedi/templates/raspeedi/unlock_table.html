@@ -7,7 +7,6 @@
     <table class="table table-bordered text-nowrap" id="unlockTable" width="100%" cellspacing="0">
         <thead>
         <tr>
-            <th></th>
             <th>Numéro de dossier</th>
             <th>Produit</th>
             <th>V.I.N.</th>
@@ -21,7 +20,6 @@
         {% for prod in products %}
 
             <tr>
-                <td></td>
                 <td>{{ prod.unlock.numero_de_dossier }}</td>
                 <td>{{ prod.unlock.modele_produit }}</td>
                 <td>{{ prod.unlock.vin }}</td>

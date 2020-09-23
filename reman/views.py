@@ -53,11 +53,12 @@ def out_table(request):
     table_title = 'Expédition'
     files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
     form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList)
-    if form.is_valid():
+    if request.POST and form.is_valid():
         repair = form.save()
-        messages.success(request, _('Adding Repair n°%(repair)s to lot n°%(batch)s successfully') % {
+        messages.success(request, _('Repair n°%(repair)s to batch n°%(batch)s ready for shipment') % {
             'repair': repair.identify_number,
             'batch': repair.batch})
+        form = CheckOutRepairForm(error_class=ParaErrorList)
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/out_table.html', context)

@@ -60,9 +60,7 @@
                         <a href="#" data-id="{% url 'raspeedi:unlock_delete' prod.pk %}" title="Suppression"
                            class="delete-thermal btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
                     {% else %}
-                        <td>
-                            <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
-                        </td>
+                        <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
                     {% endif %}
                 </td>
                 <td>{{ prod.unlock.numero_de_dossier }}</td>

@@ -1,111 +1,114 @@
 {% load i18n user_tags %}
 
-<!-- Heading -->
-<div class="sidebar-heading">
-    CSD Atelier
-</div>
+{% if perms.squalaetp or perms.raspeedi.view_unlockproduct %}
 
-{% if perms.squalaetp %}
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        CSD Atelier
+    </div>
 
-    <!-- Nav Item - Xelon Settings Menu -->
-    {% with name="Xelon" icon="fa-table" %}
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-               aria-expanded="true" aria-controls="collapse{{ name }}">
-                <i class="fas fa-fw {{ icon }}"></i>
-                <span>{{ name }}</span>
-            </a>
-            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
-                    <a class="collapse-item"
-                       href="{% url 'squalaetp:xelon' %}?filter=pending">{% trans "Current folder" %}</a>
-                    <a class="collapse-item" href="{% url 'dashboard:late_prod' %}">{% trans "Late products" %}</a>
-                    <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                    <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
-                    <a class="collapse-item" href="{% url 'squalaetp:stock_parts' %}">{% trans "Stock Parts" %}</a>
+    {% if perms.squalaetp %}
+        <!-- Nav Item - Xelon Settings Menu -->
+        {% with name="Xelon" icon="fa-table" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>{{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+                        <a class="collapse-item"
+                           href="{% url 'squalaetp:xelon' %}?filter=pending">{% trans "Current folder" %}</a>
+                        <a class="collapse-item" href="{% url 'dashboard:late_prod' %}">{% trans "Late products" %}</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                        <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
+                        <a class="collapse-item" href="{% url 'squalaetp:stock_parts' %}">{% trans "Stock Parts" %}</a>
+                    </div>
                 </div>
-            </div>
+            </li>
+        {% endwith %}
+
+        <!-- Nav Item - Info PSA Settings Menu -->
+        {% with name="PSA" icon="fa-info-circle" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>Info {{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                        {% if perms.squalaetp %}
+                            <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
+                        {% endif %}
+                        <a class="collapse-item" href="{% url 'psa:useful_links' %}">{% trans "Tools & Links" %}</a>
+
+                        {% if perms.squalaetp.add_corvet %}
+                            <div class="collapse-divider"></div>
+                            <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                            <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+
+        <!-- Nav Item - Info RENAULT Settings Menu -->
+        {% with name="RENAULT" icon="fa-info-circle" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>Info {{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                        <a class="collapse-item" href="{% url 'renault:useful_links' %}">{% trans "Tools & Links" %}</a>
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+
+        <!-- Nav Item - Info FORD Settings Menu -->
+        {% with name="FORD" icon="fa-info-circle" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>Info {{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                        <a class="collapse-item" href="{% url 'ford:useful_links' %}">{% trans "Tools & Links" %}</a>
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+
+    {% endif %}
+
+    {% if perms.raspeedi.view_unlockproduct %}
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
+                <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
+
+            </a>
         </li>
-    {% endwith %}
+
+    {% endif %}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
 {% endif %}
-
-<!-- Nav Item - Info PSA Settings Menu -->
-{% with name="PSA" icon="fa-info-circle" %}
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-           aria-expanded="true" aria-controls="collapse{{ name }}">
-            <i class="fas fa-fw {{ icon }}"></i>
-            <span>Info {{ name }}</span>
-        </a>
-        <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-             data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                {% if perms.squalaetp %}
-                    <a class="collapse-item" href="{% url 'squalaetp:corvet' %}">{% trans "Corvet table" %}</a>
-                {% endif %}
-                <a class="collapse-item" href="{% url 'psa:useful_links' %}">{% trans "Tools & Links" %}</a>
-
-                {% if perms.squalaetp.add_corvet %}
-                    <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                    <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
-                {% endif %}
-            </div>
-        </div>
-    </li>
-{% endwith %}
-
-<!-- Nav Item - Info RENAULT Settings Menu -->
-{% with name="RENAULT" icon="fa-info-circle" %}
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-           aria-expanded="true" aria-controls="collapse{{ name }}">
-            <i class="fas fa-fw {{ icon }}"></i>
-            <span>Info {{ name }}</span>
-        </a>
-        <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-             data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                <a class="collapse-item" href="{% url 'renault:useful_links' %}">{% trans "Tools & Links" %}</a>
-            </div>
-        </div>
-    </li>
-{% endwith %}
-
-<!-- Nav Item - Info FORD Settings Menu -->
-{% with name="FORD" icon="fa-info-circle" %}
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-           aria-expanded="true" aria-controls="collapse{{ name }}">
-            <i class="fas fa-fw {{ icon }}"></i>
-            <span>Info {{ name }}</span>
-        </a>
-        <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-             data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                <a class="collapse-item" href="{% url 'ford:useful_links' %}">{% trans "Tools & Links" %}</a>
-            </div>
-        </div>
-    </li>
-{% endwith %}
-
-{% if perms.raspeedi.view_unlockproduct %}
-
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
-            <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
-
-        </a>
-    </li>
-
-{% endif %}
-
-<!-- Divider -->
-<hr class="sidebar-divider">
