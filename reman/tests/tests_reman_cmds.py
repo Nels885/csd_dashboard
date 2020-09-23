@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from io import StringIO
 
-from reman.models import SparePart
+from reman.models import SparePart, EcuRefBase, EcuModel, EcuType
 
 
 class RemanCommandTestCase(TestCase):
@@ -18,16 +18,16 @@ class RemanCommandTestCase(TestCase):
 
     def test_ecurefbase(self):
         out = StringIO()
-        # call_command('ecurefbase', '1', '-f' 'reman/tests/Base_réf_ECU_test.xlsx', stdout=out)
-        # self.assertEqual(
-        #     out.getvalue(),
-        #     "\x1b[32;1mEcuRefBase data update completed: CSV_LINES = 5 | ADD = 4 | UPDATE = 1 | TOTAL = 4\x1b[0m\n" +
-        #     "\x1b[32;1mEcuModel data update completed: CSV_LINES = 5 | ADD = 5 | UPDATE = 0 | TOTAL = 5\x1b[0m\n"
-        # )
-        # self.assertEqual(EcuRefBase.objects.count(), 4)
-        # self.assertEqual(EcuModel.objects.count(), 5)
-        # self.assertEqual(SparePart.objects.count(), 4)
-        # self.assertEqual(EcuType.objects.count(), 4)
+        call_command('ecurefbase', '-s', 1, '-f', 'reman/tests/Base_réf_ECU_test.xlsx', stdout=out)
+        self.assertEqual(
+            out.getvalue(),
+            "\x1b[32;1mEcuRefBase data update completed: CSV_LINES = 5 | ADD = 4 | UPDATE = 1 | TOTAL = 4\x1b[0m\n" +
+            "\x1b[32;1mEcuModel data update completed: CSV_LINES = 5 | ADD = 5 | UPDATE = 0 | TOTAL = 5\x1b[0m\n"
+        )
+        self.assertEqual(EcuRefBase.objects.count(), 4)
+        self.assertEqual(EcuModel.objects.count(), 5)
+        self.assertEqual(SparePart.objects.count(), 4)
+        self.assertEqual(EcuType.objects.count(), 4)
 
         out = StringIO()
         call_command('ecurefbase', '--delete', stdout=out)
@@ -38,7 +38,7 @@ class RemanCommandTestCase(TestCase):
 
     def test_spareparts(self):
         # out = StringIO()
-        # call_command('spareparts', '-f' 'reman/tests/extraction_test.csv', stdout=out)
+        # call_command('spareparts', '-f', 'reman/tests/extraction_test.csv', stdout=out)
         # self.assertEqual(
         #     out.getvalue(),
         #     "\x1b[32;1mSpareParts data update completed: CSV_LINES = 2 | ADD = 2 | UPDATE = 0 | TOTAL = 2\x1b[0m\n"
