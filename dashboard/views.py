@@ -49,7 +49,12 @@ def late_products(request):
     """ View of Late products page """
     title = _("Late Products")
     prods = ProductAnalysis()
-    prods = prods.late_products().order_by('-delai_au_en_jours_ouvres')[:300]
+    prods = prods.late_products().order_by('-delai_au_en_jours_ouvres')
+    psa = prods.filter(ilot='PSA')
+    clarion = prods.filter(ilot='CLARION')
+    labo_qual = prods.filter(ilot='LaboQual')
+    ilot_autre = prods.filter(ilot='ILOTAUTRE')
+    defaut = prods.filter(ilot='DEFAUT')
     return render(request, 'dashboard/late_products.html', locals())
 
 
