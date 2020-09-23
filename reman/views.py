@@ -28,9 +28,11 @@ context = {
 def repair_table(request):
     """ View of Reman Repair table page """
     query = request.GET.get('filter')
+    select_tab = 'repair'
     if query and query == 'pending':
         files = Repair.objects.filter(status__exact="En cours")
         table_title = 'Dossiers en cours de réparation'
+        select_tab = 'repair_pending'
     elif query and query == 'checkout':
         files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
         table_title = "Dossiers en attente d'expédition"
@@ -39,7 +41,8 @@ def repair_table(request):
         table_title = 'Dossiers de réparation'
     context.update({
         'table_title': table_title,
-        'files': files
+        'files': files,
+        'select_tab': select_tab
     })
     return render(request, 'reman/repair_table.html', context)
 
@@ -47,7 +50,7 @@ def repair_table(request):
 @permission_required('reman.close_repair')
 def out_table(request):
     """ View of Reman Out Repair table page """
-    table_title = 'Reman Out'
+    table_title = 'Expédition'
     files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
     form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
@@ -106,7 +109,7 @@ def ecu_dump_table(request):
 @permission_required('reman.change_repair')
 def repair_edit(request, pk):
     """ View of edit repair page """
-    card_title = _('Modification customer folder')
+    card_title = _('Modification customer file')
     prod = get_object_or_404(Repair, pk=pk)
     form = EditRepairForm(request.POST or None, instance=prod)
     if request.POST and form.is_valid():
@@ -122,7 +125,7 @@ def repair_edit(request, pk):
 @permission_required('reman.change_repair')
 def repair_close(request, pk):
     """ View of close repair page """
-    card_title = _('Modification customer folder')
+    card_title = _('Modification customer file')
     prod = get_object_or_404(Repair, pk=pk)
     form = CloseRepairForm(request.POST or None, instance=prod)
     if request.POST and form.is_valid():
@@ -135,7 +138,7 @@ def repair_close(request, pk):
 
 @permission_required('reman.check_ecumodel')
 def check_parts(request):
-    card_title = "Check Spare Parts"
+    card_title = "Vérification pièce détachée"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if request.POST and form.is_valid():
         psa_barcode = form.cleaned_data['psa_barcode']

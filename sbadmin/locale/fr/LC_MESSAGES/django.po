@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-22 12:07+0200\n"
+"POT-Creation-Date: 2020-09-23 10:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,12 +103,12 @@ msgstr ""
 msgid "Editing"
 msgstr "Edition"
 
-#: templates/nav/nav_csd_atelier.html:21 templates/nav/nav_reman.html:22
-#: templates/nav/nav_tools.html:23
+#: templates/nav/nav_csd_atelier.html:21 templates/nav/nav_reman.html:21
+#: templates/nav/nav_reman.html:52 templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:23 templates/nav/nav_reman.html:29
+#: templates/nav/nav_csd_atelier.html:23
 msgid "Current folder"
 msgstr "Dossier en cours"
 
@@ -116,13 +116,11 @@ msgstr "Dossier en cours"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:49
+#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:48
 msgid "Customer files"
 msgstr "Dossiers clients"
 
 #: templates/nav/nav_csd_atelier.html:28
-#, fuzzy
-#| msgid "Spare Parts"
 msgid "Stock Parts"
 msgstr "Pièces détachées"
 
@@ -159,55 +157,51 @@ msgstr ""
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: templates/nav/nav_reman.html:17 templates/nav/nav_reman.html:47
+#: templates/nav/nav_reman.html:17 templates/nav/nav_reman.html:45
 msgid "Repairs"
 msgstr "Réparations"
 
-#: templates/nav/nav_reman.html:25
+#: templates/nav/nav_reman.html:24
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:48
+#: templates/nav/nav_reman.html:27 templates/nav/nav_reman.html:47
+msgid "Current files"
+msgstr "Dossier en cours"
+
+#: templates/nav/nav_reman.html:46
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:50
-#, fuzzy
-#| msgid "Batch list"
+#: templates/nav/nav_reman.html:49
 msgid "Default list"
-msgstr "Liste des lots"
+msgstr "Liste des pannes"
 
 #: templates/nav/nav_reman.html:53
-#, fuzzy
-#| msgid "Treatments"
-msgid "Traitements"
-msgstr "traitements"
+msgid "ECU ref Base"
+msgstr "Base réf. ECU"
 
 #: templates/nav/nav_reman.html:54
-msgid "ECU ref Base"
-msgstr ""
-
-#: templates/nav/nav_reman.html:55
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:56
+#: templates/nav/nav_reman.html:55
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: templates/nav/nav_reman.html:66
+#: templates/nav/nav_reman.html:65
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:76
+#: templates/nav/nav_reman.html:75
 msgid "Create Default"
 msgstr "Création panne"
 
-#: templates/nav/nav_reman.html:85
+#: templates/nav/nav_reman.html:84
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:93
+#: templates/nav/nav_reman.html:92
 msgid "check part"
 msgstr "Vérification pièce"
 

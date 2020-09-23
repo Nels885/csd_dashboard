@@ -6,6 +6,12 @@
     </a>
 </li>
 
+<li class="nav-item {% if select == 'repair_pending' %}active{% endif %}">
+    <a class="nav-link {% if select == 'repair_pending' %}active{% endif %}" href="{% url 'reman:repair_table' %}?filter=pending">
+        {% trans "Current files" %}
+    </a>
+</li>
+
 <li class="nav-item {% if select == 'repair' %}active{% endif %}">
     <a class="nav-link {% if select == 'repair' %}active{% endif %}" href="{% url 'reman:repair_table' %}">
         {% trans "Customer files" %}

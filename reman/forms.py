@@ -141,8 +141,10 @@ class CloseRepairForm(forms.ModelForm):
 
 
 class CheckOutRepairForm(forms.Form):
-    identify_number = forms.CharField(label="N° d'identification", max_length=11,
-                                      widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'}))
+    identify_number = forms.CharField(
+        label="N° d'identification", max_length=11,
+        widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''})
+    )
 
     def clean_identify_number(self):
         data = self.cleaned_data["identify_number"]
@@ -218,7 +220,6 @@ class PartEcuModelForm(forms.ModelForm):
 
 
 class PartEcuTypeForm(forms.ModelForm):
-
     class Meta:
         model = EcuType
         fields = ['hw_reference', 'technical_data', 'supplier_oe']
@@ -234,7 +235,6 @@ class PartEcuTypeForm(forms.ModelForm):
 
 
 class PartSparePartForm(forms.ModelForm):
-
     class Meta:
         model = SparePart
         fields = ['code_produit', 'code_emplacement']
@@ -251,7 +251,6 @@ class PartSparePartForm(forms.ModelForm):
 
 
 class DefaultForm(BSModalForm):
-
     class Meta:
         model = Default
         fields = '__all__'
