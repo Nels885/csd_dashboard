@@ -90,8 +90,8 @@ class Command(BaseCommand):
                 )
                 for key in ["technical_data", "supplier_oe"]:
                     del row[key]
+                code_produit = row.pop("code_produit")
                 try:
-                    code_produit = row.pop("code_produit")
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
                         code_produit=code_produit, defaults={
@@ -133,6 +133,8 @@ class Command(BaseCommand):
                     print("DataError: {} - {}".format(reman_reference, err))
                 except IntegrityError as err:
                     print("IntegrityError: {} - {}".format(reman_reference, err))
+                except Stock.MultipleObjectsReturned as err:
+                    print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
 
             nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
             self.stdout.write(
