@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, DataError
 
 from squalaetp.models import ProductCode, Stock
 from utils.conf import CSV_EXTRACTION_FILE
@@ -64,6 +64,8 @@ class Command(BaseCommand):
                     print("IntegrityError: {} - {}".format(code_produit, err))
                 except ProductCode.MultipleObjectsReturned as err:
                     print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
+                except DataError as err:
+                    print("DataError: {} - {}".format(code_produit, err))
             nb_part_after = ProductCode.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(

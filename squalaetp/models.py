@@ -144,9 +144,9 @@ class ProductCode(models.Model):
 
 
 class Stock(models.Model):
-    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
-    code_zone = models.CharField('code Zone', max_length=20, blank=True)
+    code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
+    code_zone = models.CharField('code Zone', max_length=50, blank=True)
     code_site = models.IntegerField('code Site', null=True, blank=True)
-    code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)
+    code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
     code_produit = models.ForeignKey('ProductCode', on_delete=models.CASCADE)
