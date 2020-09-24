@@ -20,21 +20,15 @@
         </thead>
         <tbody>
 
-        {% for prod in prods %}
+        {% include 'dashboard/late_product_row.html' with prods=psa total_title='Total PSA' %}
 
-            <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"
-                {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"
-                {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"
-                {% else %}class="bg-success text-gray-700"{% endif %}>
-                <td>{{ prod.ilot }}</td>
-                <td>{{ prod.numero_de_dossier }}</td>
-                <td>{{ prod.modele_produit }}</td>
-                <td>{{ prod.date_retour }}</td>
-                <td>{{ prod.delai_au_en_jours_ouvres }}</td>
-                <td>{{ prod.nom_technicien }}</td>
-            </tr>
+        {% include 'dashboard/late_product_row.html' with prods=ilot_autre total_title='Total Autres' %}
 
-        {% endfor %}
+        {% include 'dashboard/late_product_row.html' with prods=clarion total_title='Total Clarion' %}
+
+        {% include 'dashboard/late_product_row.html' with prods=labo_qual total_title='Total LaboQual' %}
+
+        {% include 'dashboard/late_product_row.html' with prods=defaut total_title='Total Defaut' %}
 
         </tbody>
     </table>

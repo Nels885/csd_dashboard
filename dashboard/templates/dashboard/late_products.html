@@ -4,56 +4,65 @@
 
 {% block table_content %}
 
-{#    <table class="table table-bordered text-nowrap" id="lateProdTable" width="100%" cellspacing="0">#}
-{#        <thead>#}
-{#        <tr>#}
-{#            <th>Activité</th>#}
-{#            <th>Dossier</th>#}
-{#            <th>Modèle</th>#}
-{#            <th>Date In</th>#}
-{#            <th>Délai</th>#}
-{#            <th>Tech</th>#}
-{##}
-{#        </tr>#}
-{#        </thead>#}
-{#        <tbody>#}
-{##}
-{#        {% for prod in prods %}#}
-{##}
-{#            <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"#}
-{#                {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"#}
-{#                {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"#}
-{#                {% else %}class="bg-success text-gray-700"{% endif %}>#}
-{#                <td>{{ prod.ilot }}</td>#}
-{#                <td>{{ prod.numero_de_dossier }}</td>#}
-{#                <td>{{ prod.modele_produit }}</td>#}
-{#                <td>{{ prod.date_retour }}</td>#}
-{#                <td>{{ prod.delai_au_en_jours_ouvres }}</td>#}
-{#                <td>{{ prod.nom_technicien }}</td>#}
-{#            </tr>#}
-{##}
-{#        {% endfor %}#}
-{##}
-{#        </tbody>#}
-{#    </table>#}
+    {#    <table class="table table-bordered text-nowrap" id="lateProdTable" width="100%" cellspacing="0">#}
+    {#        <thead>#}
+    {#        <tr>#}
+    {#            <th>Activité</th>#}
+    {#            <th>Dossier</th>#}
+    {#            <th>Modèle</th>#}
+    {#            <th>Date In</th>#}
+    {#            <th>Délai</th>#}
+    {#            <th>Tech</th>#}
+    {##}
+    {#        </tr>#}
+    {#        </thead>#}
+    {#        <tbody>#}
+    {##}
+    {#        {% for prod in prods %}#}
+    {##}
+    {#            <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"#}
+    {#                {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"#}
+    {#                {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"#}
+    {#                {% else %}class="bg-success text-gray-700"{% endif %}>#}
+    {#                <td>{{ prod.ilot }}</td>#}
+    {#                <td>{{ prod.numero_de_dossier }}</td>#}
+    {#                <td>{{ prod.modele_produit }}</td>#}
+    {#                <td>{{ prod.date_retour }}</td>#}
+    {#                <td>{{ prod.delai_au_en_jours_ouvres }}</td>#}
+    {#                <td>{{ prod.nom_technicien }}</td>#}
+    {#            </tr>#}
+    {##}
+    {#        {% endfor %}#}
+    {##}
+    {#        </tbody>#}
+    {#    </table>#}
 
-    {% include 'dashboard/late_product_table.html' with prods=psa total_title='Total PSA' %}
+    <table class="table table-bordered text-nowrap" id="lateProdNewTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Activité</th>
+            <th>Dossier</th>
+            <th>Modèle</th>
+            <th>Date In</th>
+            <th>Délai</th>
+            <th>Tech</th>
 
-    <br>
+        </tr>
+        </thead>
+        <tbody>
 
-    {% include 'dashboard/late_product_table.html' with prods=ilot_autre total_title='Total Autres' %}
+        {% include 'dashboard/late_product_row.html' with prods=psa total_title='Total PSA' %}
 
-    <br>
+        {% include 'dashboard/late_product_row.html' with prods=ilot_autre total_title='Total Autres' %}
 
-    {% include 'dashboard/late_product_table.html' with prods=clarion total_title='Total Clarion' %}
+        {% include 'dashboard/late_product_row.html' with prods=clarion total_title='Total Clarion' %}
 
-    <br>
+        {% include 'dashboard/late_product_row.html' with prods=labo_qual total_title='Total LaboQual' %}
 
-    {% include 'dashboard/late_product_table.html' with prods=labo_qual total_title='Total LaboQual' %}
+        {% include 'dashboard/late_product_row.html' with prods=defaut total_title='Total Defaut' %}
 
-    <br>
-
-    {% include 'dashboard/late_product_table.html' with prods=defaut total_title='Total Defaut' %}
+        </tbody>
+    </table>
 
 {% endblock %}
 
