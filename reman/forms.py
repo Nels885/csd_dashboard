@@ -91,10 +91,10 @@ class AddRepairForm(BSModalForm):
 
     def clean(self):
         cleaned_data = super(AddRepairForm, self).clean()
-        ref_psa = cleaned_data.get("ref_psa")
-        if ref_psa:
+        psa_barcode = cleaned_data.get("psa_barcode")
+        if psa_barcode:
             batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
-                                         ecu_ref_base__ecu_type__ecumodel__psa_barcode=ref_psa).first()
+                                         ecu_ref_base__ecu_type__ecumodel__psa_barcode=psa_barcode).first()
             if not batch:
                 raise forms.ValidationError("Pas de lot associé")
             elif not batch.active:

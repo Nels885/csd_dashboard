@@ -22,6 +22,8 @@
             <th>Numéro de lot</th>
             <th>Quantité</th>
             <th>Réf. REMAN</th>
+            <th>Nb de dossiers</th>
+            <th>Status</th>
             <th>Type ECU</th>
             <th>Codes barre PSA</th>
             <th>Réf. Hardware</th>
@@ -30,7 +32,6 @@
             <th>XELON - Emplacement</th>
             <th>Date de début</th>
             <th>Date de fin</th>
-            <th>Status</th>
             <th>Ajouté par</th>
             <th>Ajouté le</th>
         </tr>
@@ -44,6 +45,8 @@
                     <td>{{ batch }}</td>
                     <td>{{ batch.quantity }}</td>
                     <td>{{ batch.ecu_ref_base.reman_reference }}</td>
+                    <td>{{ batch.repairs.count }}</td>
+                    <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
                     <td>
                         {% if ecus|length > 1 %}
@@ -64,7 +67,6 @@
                     <td>{{ batch.ecu_ref_base.ecu_type.spare_part.code_emplacement }}</td>
                     <td>{{ batch.start_date }}</td>
                     <td>{{ batch.end_date }}</td>
-                    <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
                     <td>{{ batch.created_by }}</td>
                     <td>{{ batch.created_at }}</td>
                 </tr>
