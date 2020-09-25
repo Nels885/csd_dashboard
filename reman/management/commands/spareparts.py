@@ -64,7 +64,7 @@ class Command(BaseCommand):
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[SPAREPARTS] data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[SPAREPARTS] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
                     )
                 )
