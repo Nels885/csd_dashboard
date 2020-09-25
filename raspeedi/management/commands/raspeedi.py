@@ -29,6 +29,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[RASPEEDI] Waiting...")
 
         if options['delete']:
             Raspeedi.objects.all().delete()

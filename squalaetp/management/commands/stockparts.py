@@ -29,6 +29,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[STOCKPARTS] Waiting...")
+
         if options['delete']:
             Stock.objects.all().delete()
             ProductCode.objects.all().delete()
@@ -61,15 +63,15 @@ class Command(BaseCommand):
                     if not created:
                         nb_part_update += 1
                 except IntegrityError as err:
-                    print("IntegrityError: {} - {}".format(code_produit, err))
+                    self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(code_produit, err)))
                 except ProductCode.MultipleObjectsReturned as err:
-                    print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
+                    self.stderr.write(self.style.ERROR("MultipleObjectsReturned: {} - {}".format(code_produit, err)))
                 except DataError as err:
-                    print("DataError: {} - {}".format(code_produit, err))
+                    self.stderr.write(self.style.ERROR("DataError: {} - {}".format(code_produit, err)))
             nb_part_after = ProductCode.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "SpareParts data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[STOCKPARTS] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
                     )
                 )

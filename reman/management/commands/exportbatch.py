@@ -10,6 +10,8 @@ class Command(BaseCommand):
     help = 'Export CSV file for Batch REMAN'
 
     def handle(self, *args, **options):
+        self.stdout.write("[BATCH] Waiting...")
+
         filename = "lots_reman"
         path = os.path.join(CSD_ROOT, "EXTS")
         header = [
@@ -24,5 +26,5 @@ class Command(BaseCommand):
         )
         ExportExcel(queryset=batch, filename=filename, header=header, values_list=values_list).file(path)
         self.stdout.write(
-            self.style.SUCCESS("export BATCH completed: NB_BATCH = {} | FILE = {}.csv".format(batch.count(), filename))
+            self.style.SUCCESS("[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(batch.count(), filename))
         )

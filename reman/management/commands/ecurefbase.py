@@ -44,6 +44,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[ECUREFBASE] Waiting...")
+
         if options['delete']:
             EcuRefBase.objects.all().delete()
             EcuModel.objects.all().delete()
@@ -139,14 +141,14 @@ class Command(BaseCommand):
             nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "EcuRefBase data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[ECUREFBASE] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         extraction.nrows, nb_base_after - nb_base_before, nb_base_update, nb_base_after
                     )
                 )
             )
             self.stdout.write(
                 self.style.SUCCESS(
-                    "EcuModel data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[ECUMODEL] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         extraction.nrows, nb_ecu_after - nb_ecu_before, nb_ecu_update, nb_ecu_after
                     )
                 )

@@ -29,6 +29,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[SPAREPARTS] Waiting...")
+
         if options['delete']:
             SparePart.objects.all().delete()
 
@@ -62,7 +64,7 @@ class Command(BaseCommand):
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "SpareParts data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[SPAREPARTS] data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
                     )
                 )

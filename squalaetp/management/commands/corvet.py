@@ -38,6 +38,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[CORVET] Waiting...")
 
         if options['import_csv']:
             if options['filename'] is not None:
@@ -76,9 +77,9 @@ class Command(BaseCommand):
                 if not created:
                     nb_prod_update += 1
             except IntegrityError as err:
-                self.stderr.write("IntegrityError: {} - {}".format(vin, err))
+                self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(vin, err)))
             except ValidationError as err:
-                self.stderr.write("ValidationError: {} - {}".format(vin, err))
+                self.stderr.write(self.style.ERROR("ValidationError: {} - {}".format(vin, err)))
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(

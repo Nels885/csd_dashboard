@@ -10,8 +10,6 @@ from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES
 from ._excel_squalaetp import ExcelSqualaetp
 from ._excel_delay_analysis import ExcelDelayAnalysis
 
-import logging as log
-
 
 class Command(BaseCommand):
     help = 'Interact with the Xelon table in the database'
@@ -67,19 +65,19 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
     def _squalaetp_file(self, model, excel):
+        self.stdout.write("[XELON] Waiting...")
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
         for row in excel.xelon_table():
-            log.info(row)
             xelon_number = row.pop("numero_de_dossier")
             try:
                 obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=row)
                 if not created:
                     nb_prod_update += 1
             except IntegrityError as err:
-                self.stderr.write("IntegrityError: {} -{}".format(xelon_number, err))
+                self.stderr.write(self.style.ERROR("IntegrityError: {} -{}".format(xelon_number, err)))
             except DataError as err:
-                self.stderr.write("DataError: {} - {}".format(xelon_number, err))
+                self.stderr.write(self.style.ERROR("DataError: {} - {}".format(xelon_number, err)))
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
@@ -90,6 +88,7 @@ class Command(BaseCommand):
         )
 
     def _delay_files(self, model):
+        self.stdout.write("[DELAY] Waiting...")
         nb_excel_lines, nb_prod_update = 0, 0
         excels = [ExcelDelayAnalysis(file) for file in XLS_DELAY_FILES]
         nb_prod_before = model.objects.count()
@@ -103,11 +102,11 @@ class Command(BaseCommand):
                             product.update(**row)
                             nb_prod_update += 1
                 except IntegrityError as err:
-                    log.warning("IntegrityError:{}".format(err))
+                    self.stderr.write("IntegrityError:{}".format(err))
                 except DataError as err:
-                    self.stdout.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
+                    self.stderr.write("DataError dossier {} : {}".format(row["numero_de_dossier"], err))
                 except FieldDoesNotExist as err:
-                    self.stdout.write("FieldDoesNotExist row {} : {}".format(row, err))
+                    self.stderr.write("FieldDoesNotExist row {} : {}".format(row, err))
             nb_excel_lines += excel.nrows
         nb_prod_after = model.objects.count()
         self.stdout.write(
@@ -119,6 +118,7 @@ class Command(BaseCommand):
         )
 
     def _fix_delay_files(self, model):
+        self.stdout.write("[DELAY] Waiting...")
         nb_excel_lines, nb_prod_update = 0, 0
         excels = [ExcelDelayAnalysis(file) for file in XLS_DELAY_FILES]
         nb_prod_before = model.objects.count()
@@ -135,11 +135,13 @@ class Command(BaseCommand):
                             obj.save()
                         nb_prod_update += 1
                 except IntegrityError as err:
-                    log.warning("IntegrityError:{}".format(err))
+                    self.stderr.write(self.style.ERROR("IntegrityError row {} : {}".format(xelon_number, err)))
                 except DataError as err:
-                    self.stdout.write("DataError dossier {} : {}".format(xelon_number, err))
+                    self.stderr.write(self.style.ERROR("DataError row {} : {}".format(xelon_number, err)))
                 except FieldDoesNotExist as err:
-                    self.stdout.write("FieldDoesNotExist row {} : {}".format(xelon_number, err))
+                    self.stderr.write(self.style.ERROR("FieldDoesNotExist row {} : {}".format(xelon_number, err)))
+                except KeyError as err:
+                    self.stderr.write(self.style.ERROR("KeyError row {} : {}".format(xelon_number, err)))
             nb_excel_lines += excel.nrows
         nb_prod_after = model.objects.count()
         self.stdout.write(
