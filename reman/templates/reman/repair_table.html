@@ -20,6 +20,7 @@
         <thead>
         <tr>
             <th></th>
+            <th></th>
             <th>Numéro de lot</th>
             <th>Numéro d'identification</th>
             <th>Modèle produit</th>
@@ -43,6 +44,9 @@
                     {% else %}
                         <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                     {% endif %}
+                </td>
+                <td class="bg-white">
+                    <a href="{% url 'reman:detail_repair' pk=file.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
                 <td>{{ file.batch }}</td>
                 <td>{{ file.identify_number }}</td>

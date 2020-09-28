@@ -30,7 +30,7 @@ def repair_table(request):
     query = request.GET.get('filter')
     select_tab = 'repair'
     if query and query == 'pending':
-        files = Repair.objects.filter(status__exact="En cours")
+        files = Repair.objects.filter(checkout=False)
         table_title = 'Dossiers en cours de réparation'
         select_tab = 'repair_pending'
     elif query and query == 'checkout':
@@ -137,6 +137,16 @@ def repair_close(request, pk):
         return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
     return render(request, 'reman/close_repair.html', context)
+
+
+@permission_required('reman.view_repair')
+def repair_detail(request, pk):
+    """ View of detail repair page """
+    card_title = _('Detail customer file')
+    prod = get_object_or_404(Repair, pk=pk)
+    form = CloseRepairForm(request.POST or None, instance=prod)
+    context.update(locals())
+    return render(request, 'reman/detail_repair.html', context)
 
 
 @permission_required('reman.check_ecumodel')

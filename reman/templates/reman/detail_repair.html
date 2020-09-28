@@ -88,13 +88,10 @@
 
             <hr>
 
-            <div class="mt-lg-5 offset-sm-5 align-self-center">
-                <a href="{% url 'reman:repair_table' %}?filter=pending" role="button" class="btn btn-secondary">
-                    {% trans "Cancel" %}
+            <div class="offset-sm-6 align-self-center">
+                <a href="{% url 'reman:repair_table' %}" role="button" class="btn btn-secondary">
+                    {% trans "Close" %}
                 </a>
-                <button type="submit" name="btn_reman_add" class="ml-2 btn btn-primary">
-                    Cloturer
-                </button>
             </div>
 
         </form>

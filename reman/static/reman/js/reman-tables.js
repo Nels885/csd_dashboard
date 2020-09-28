@@ -3,10 +3,10 @@ $(document).ready(function () {
     $('#repairTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
-        order: [[2, "asc"]],
+        order: [[3, "asc"]],
         // Disable sorting for the Tags and Actions columns.
         columnDefs: [{
-            targets: 0,
+            targets:[0, 1],
             searchable: false,
             orderable: false,
         }],
