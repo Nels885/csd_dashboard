@@ -139,6 +139,14 @@ class CloseRepairForm(forms.ModelForm):
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
 
+    def save(self, commit=True):
+        instance = super(CloseRepairForm, self).save(commit=False)
+        if commit:
+            if instance.status != "Réparé":
+                instance.quality_control = False
+            instance.save()
+        return instance
+
 
 class CheckOutRepairForm(forms.Form):
     identify_number = forms.CharField(

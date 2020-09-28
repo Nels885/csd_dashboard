@@ -22,7 +22,9 @@
             <th>Numéro de lot</th>
             <th>Quantité</th>
             <th>Réf. REMAN</th>
-            <th>Nb de dossiers</th>
+            <th>Réparés</th>
+            <th>Emballés</th>
+            <th>Total</th>
             <th>Status</th>
             <th>Type ECU</th>
             <th>Codes barre PSA</th>
@@ -45,6 +47,8 @@
                     <td>{{ batch }}</td>
                     <td>{{ batch.quantity }}</td>
                     <td>{{ batch.ecu_ref_base.reman_reference }}</td>
+                    <td>{{ batch.repaired }}</td>
+                    <td>{{ batch.packed }}</td>
                     <td>{{ batch.repairs.count }}</td>
                     <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>

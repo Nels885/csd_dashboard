@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from django.db.models import Max
+from django.db.models import Max, Q, Count
 
 from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
@@ -68,7 +68,9 @@ def out_table(request):
 def batch_table(request):
     """ View of batch table page """
     table_title = 'Liste des lots REMAN ajoutés'
-    batchs = Batch.objects.all()
+    repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
+    packed = Count('repairs', filter=Q(repairs__checkout=True))
+    batchs = Batch.objects.all().annotate(repaired=repaired, packed=packed)
     context.update(locals())
     return render(request, 'reman/batch_table.html', context)
 
