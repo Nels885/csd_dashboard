@@ -14,6 +14,25 @@ class BatchAdmin(admin.ModelAdmin):
     batch_number.short_description = "Numéro de lot"
 
 
+class RepairAdmin(admin.ModelAdmin):
+    list_display = (
+        'identify_number', 'get_batch_number', 'get_hw_reference', 'psa_barcode', 'created_at', 'status',
+        'quality_control', 'checkout', 'closing_date'
+    )
+    ordering = ('identify_number', 'batch__batch_number')
+    list_filter = ('batch__batch_number',)
+    search_fields = ('identify_number', 'batch__batch_number', 'batch__ecu_ref_base__ecu_type__hw_reference')
+
+    def get_batch_number(self, obj):
+        return obj.batch.batch_number
+
+    def get_hw_reference(self, obj):
+        return obj.batch.ecu_ref_base.ecu_type.hw_reference
+
+    get_batch_number.short_description = "batch number"
+    get_hw_reference.short_description = "hw reference"
+
+
 class SparePartAdmin(admin.ModelAdmin):
     list_display = ('code_produit', 'code_zone', 'code_emplacement', 'cumul_dispo')
     ordering = ('code_produit',)
@@ -47,6 +66,6 @@ admin.site.register(Batch, BatchAdmin)
 admin.site.register(EcuRefBase)
 admin.site.register(EcuType, EcuTypeAdmin)
 admin.site.register(EcuModel, EcuModelAdmin)
-admin.site.register(Repair)
+admin.site.register(Repair, RepairAdmin)
 admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(Default)
