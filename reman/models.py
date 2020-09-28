@@ -150,12 +150,14 @@ class Repair(models.Model):
         if not self.pk:
             batch_number = self.identify_number[:-3] + "000"
             self.batch = Batch.objects.get(batch_number__exact=batch_number)
-        elif self.pk and self.quality_control:
-            prod_ok = Repair.objects.filter(batch=self.batch, quality_control=True).count()
-            if prod_ok + 1 >= self.batch.quantity:
-                self.batch.active = False
-                self.batch.save()
+            self.batch.active = True
         super(Repair, self).save(*args, **kwargs)
+        prod_ok = Repair.objects.filter(batch=self.batch, quality_control=True).count()
+        if prod_ok >= self.batch.quantity:
+            self.batch.active = False
+        else:
+            self.batch.active = True
+        self.batch.save()
 
     def __str__(self):
         return self.identify_number

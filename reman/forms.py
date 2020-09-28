@@ -127,6 +127,10 @@ class CloseRepairForm(forms.ModelForm):
         super(CloseRepairForm, self).__init__(*args, **kwargs)
         selected_choices = ["En cours"]
         self.fields['status'].choices = [(k, v) for k, v in STATUS_CHOICES if k not in selected_choices]
+        instance = getattr(self, 'instance', None)
+        if instance and instance.checkout:
+            self.fields['status'].widget.attrs['disabled'] = 'disabled'
+            self.fields['quality_control'].widget.attrs['disabled'] = 'disabled'
 
     class Meta:
         model = Repair
