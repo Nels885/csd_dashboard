@@ -30,7 +30,7 @@ def repair_table(request):
     query = request.GET.get('filter')
     select_tab = 'repair'
     if query and query == 'pending':
-        files = Repair.objects.filter(checkout=False)
+        files = Repair.objects.exclude(status="Rebut").filter(checkout=False)
         table_title = 'Dossiers en cours de réparation'
         select_tab = 'repair_pending'
     elif query and query == 'checkout':

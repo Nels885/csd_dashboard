@@ -44,7 +44,8 @@ class RemanTestCase(UnitTest):
         urls_perms = [
             (reverse('reman:create_repair'), 'add_repair'),
             (reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}), 'change_repair'),
-            (reverse('reman:close_repair', kwargs={'pk': self.repair.pk}), 'change_repair')
+            (reverse('reman:close_repair', kwargs={'pk': self.repair.pk}), 'change_repair'),
+            (reverse('reman:detail_repair', kwargs={'pk': self.repair.pk}), 'view_repair'),
         ]
         for url, perm in urls_perms:
             response = self.client.get(url)
