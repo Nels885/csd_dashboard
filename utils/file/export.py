@@ -23,7 +23,7 @@ def xml_corvet_file(data, vin):
             os.makedirs(XML_PATH, exist_ok=True)
             file = os.path.join(XML_PATH, xelon_nb + ".xml")
             if not os.path.isfile(file):
-                with open(file, "w") as f:
+                with open(file, "w", encoding='utf-8') as f:
                     f.write(str(data))
             else:
                 logger.warning("{} File exists.".format(xelon_nb))
@@ -50,7 +50,7 @@ class Calibre:
                 file = os.path.join(path, xelon + ".txt")
                 os.makedirs(path, exist_ok=True)
                 if not os.path.isfile(file):
-                    with open(file, "w") as f:
+                    with open(file, "w", encoding='utf-8') as f:
                         f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
                 else:
                     logger.warning("%s File exists.", xelon)
@@ -107,7 +107,7 @@ class ExportExcel:
         if copy:
             self._file_yesterday(path, file)
         try:
-            with open(file, 'w', newline='') as f:
+            with open(file, 'w', newline='', encoding='utf-8') as f:
                 if self.excelType == "csv":
                     self._csv_writer(f)
                 else:

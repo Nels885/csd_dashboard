@@ -58,12 +58,12 @@ class Command(BaseCommand):
             filename = "repairs_reman"
             path = os.path.join(CSD_ROOT, "EXTS")
             header = ['Numero_Identification', 'Code_Barre_PSA', 'Status', 'Controle_Qualite']
-            batch = Repair.objects.filter(status="Réparé", quality_control=True).order_by('identify_number')
+            repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
             values_list = ('identify_number', 'psa_barcode', 'status', 'quality_control')
-            ExportExcel(queryset=batch, filename=filename, header=header, values_list=values_list).file(path, False)
+            ExportExcel(queryset=repairs, filename=filename, header=header, values_list=values_list).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}.csv".format(batch.count(), filename)
+                    "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}.csv".format(repairs.count(), filename)
                 )
             )
         elif options['cal_ecu']:
