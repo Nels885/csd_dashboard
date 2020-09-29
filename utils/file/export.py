@@ -101,10 +101,11 @@ class ExportExcel:
             self._xls_writer(response)
         return response
 
-    def file(self, path):
+    def file(self, path, copy=True):
         """ Creation file """
         file = os.path.join(path, "{}.{}".format(self.filename, self.excelType))
-        self._file_yesterday(path, file)
+        if copy:
+            self._file_yesterday(path, file)
         try:
             with open(file, 'w', newline='') as f:
                 if self.excelType == "csv":
