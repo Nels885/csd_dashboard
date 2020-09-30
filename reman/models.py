@@ -150,7 +150,6 @@ class Repair(models.Model):
         if not self.pk:
             batch_number = self.identify_number[:-3] + "000"
             self.batch = Batch.objects.get(batch_number__exact=batch_number)
-            self.batch.active = True
         super(Repair, self).save(*args, **kwargs)
 
     def __str__(self):

@@ -8,7 +8,7 @@ from .models import Repair
 @receiver(post_save, sender=Repair)
 def post_save_repair(sender, instance, **kwargs):
     call_command('exportreman', '--repair')
-    prod_ok = Repair.objects.filter(batch=instance.batch, quality_control=True).count()
+    prod_ok = Repair.objects.exclude(status="Rebut").filter(batch=instance.batch).count()
     if prod_ok >= instance.batch.quantity:
         instance.batch.active = False
     else:
