@@ -2,25 +2,56 @@
 
 {% load static i18n %}
 
-{% block card_header %}
-
-    <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs" role="tablist">
-
-            {% include 'reman/tab_select.html' with select=select_tab %}
-
-        </ul>
+{% block messages %}
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <div style="border-radius:0;" {% if message.tags %}
+                     class="alert alert-icon alert-{{ message.tags }} alert-dismissible fade show mb-0"
+                     role="alert" {% endif %}>
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
-
 {% endblock %}
 
 {% block table_content %}
 
-    <table class="table table-bordered text-nowrap" id="repairTable" width="100%" cellspacing="0">
+    <form class="form-inline" method="post" action="">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.identify_number.id_for_label }}" class="mb-2 mr-sm-4">{{ form.identify_number.label }}</label>
+
+            {{ form.identify_number }}
+
+        </div>
+
+        <button type="submit" class="btn btn-success btn-icon-split mb-2">
+            <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+            <span class="text">{% trans "Validate" %}</span>
+        </button>
+
+    </form>
+
+    {% if errors %}
+        {% for key, error in errors %}
+            {% autoescape off %}
+                {{ error }}
+            {% endautoescape %}
+        {% endfor %}
+    {% endif %}
+
+    <hr>
+
+    <table class="table table-bordered text-nowrap" id="outTable" width="100%" cellspacing="0">
         <thead>
         <tr>
-            <th></th>
-            <th></th>
             <th>Numéro d'identification</th>
             <th>Numéro de lot</th>
             <th>Modèle produit</th>
@@ -41,16 +72,6 @@
         {% for file in files %}
 
             <tr>
-                <td class="bg-white">
-                    {% if perms.reman.change_repair and not file.checkout %}
-                        <a href="{% url 'reman:edit_repair' pk=file.pk %}" title="Modification dossier" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                    {% else %}
-                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
-                    {% endif %}
-                </td>
-                <td class="bg-white">
-                    <a href="{% url 'reman:detail_repair' pk=file.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
-                </td>
                 <td>{{ file.identify_number }}</td>
                 <td>{{ file.batch }}</td>
                 <td>{{ file.batch.ecu_ref_base.ecu_type.technical_data }}</td>

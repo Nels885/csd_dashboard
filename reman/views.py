@@ -44,7 +44,7 @@ def repair_table(request):
         'files': files,
         'select_tab': select_tab
     })
-    return render(request, 'reman/repair_table.html', context)
+    return render(request, 'reman/repair/repair_table.html', context)
 
 
 @permission_required('reman.close_repair')
@@ -61,7 +61,7 @@ def out_table(request):
         form = CheckOutRepairForm(error_class=ParaErrorList)
     errors = form.errors.items()
     context.update(locals())
-    return render(request, 'reman/out_table.html', context)
+    return render(request, 'reman/repair/out_table.html', context)
 
 
 @login_required()
@@ -122,7 +122,7 @@ def repair_edit(request, pk):
             return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
         return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
-    return render(request, 'reman/edit_repair.html', context)
+    return render(request, 'reman/repair/repair_edit.html', context)
 
 
 @permission_required('reman.change_repair')
@@ -136,7 +136,7 @@ def repair_close(request, pk):
         messages.success(request, _('Modification done successfully!'))
         return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
-    return render(request, 'reman/close_repair.html', context)
+    return render(request, 'reman/repair/repair_close.html', context)
 
 
 @permission_required('reman.view_repair')
@@ -146,7 +146,7 @@ def repair_detail(request, pk):
     prod = get_object_or_404(Repair, pk=pk)
     form = CloseRepairForm(request.POST or None, instance=prod)
     context.update(locals())
-    return render(request, 'reman/detail_repair.html', context)
+    return render(request, 'reman/repair/repair_detail.html', context)
 
 
 @permission_required('reman.check_ecumodel')
