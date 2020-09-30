@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-23 18:35+0200\n"
+"POT-Creation-Date: 2020-09-30 17:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,8 +51,8 @@ msgid "English"
 msgstr "Anglais"
 
 #: templates/base/top_bar.html:24
-msgid "Search Xelon or VIN..."
-msgstr "Recherche Xelon ou VIN..."
+msgid "Search Xelon, VIN or SN..."
+msgstr "Recherche Xelon, VIN ou SN..."
 
 #: templates/base/top_bar.html:120
 msgid "Profile"
@@ -91,53 +91,53 @@ msgstr "Invité"
 msgid "Login"
 msgstr "S'identifier"
 
-#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:26
-#: templates/nav/nav_csd_atelier.html:47 templates/nav/nav_csd_atelier.html:74
-#: templates/nav/nav_csd_atelier.html:92 templates/nav/nav_tools.html:28
+#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:27
+#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:73
+#: templates/nav/nav_csd_atelier.html:91 templates/nav/nav_tools.html:28
 #: templates/nav/nav_tools.html:81
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:55
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:54
 #: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:86
 msgid "Editing"
 msgstr "Edition"
 
-#: templates/nav/nav_csd_atelier.html:21 templates/nav/nav_reman.html:21
+#: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
 #: templates/nav/nav_reman.html:54 templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:23
+#: templates/nav/nav_csd_atelier.html:24
 msgid "Current folder"
 msgstr "Dossier en cours"
 
-#: templates/nav/nav_csd_atelier.html:24
+#: templates/nav/nav_csd_atelier.html:25
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:27 templates/nav/nav_reman.html:48
+#: templates/nav/nav_csd_atelier.html:28 templates/nav/nav_reman.html:48
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: templates/nav/nav_csd_atelier.html:28
+#: templates/nav/nav_csd_atelier.html:29
 msgid "Stock Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_csd_atelier.html:49
+#: templates/nav/nav_csd_atelier.html:48
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:51 templates/nav/nav_csd_atelier.html:75
-#: templates/nav/nav_csd_atelier.html:93
+#: templates/nav/nav_csd_atelier.html:50 templates/nav/nav_csd_atelier.html:74
+#: templates/nav/nav_csd_atelier.html:92
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
-#: templates/nav/nav_csd_atelier.html:56
+#: templates/nav/nav_csd_atelier.html:55
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:103 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:104 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 

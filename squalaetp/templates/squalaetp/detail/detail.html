@@ -7,11 +7,11 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
 
-            {% include 'squalaetp/tab_select.html' with name='xelon' tab_title='Info Xelon' %}
+            {% include 'tab_select.html' with name='xelon' tab_title='Info Xelon' %}
 
             {% if corvet %}
 
-                {% include 'squalaetp/tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
+                {% include 'tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
 
                 <li class="nav-item">
                     <a class="nav-link" href="#corvet" role="tab" aria-controls="corvet" aria-selected="false">
@@ -63,14 +63,14 @@
         <!-- Detail Xelon -->
         <div class="tab-pane {% if select == 'xelon' %}active{% endif %}" id="xelon" role="tabpanel" aria-labelledby="xelon-tab">
 
-            {% include 'squalaetp/detail_xelon.html' %}
+            {% include 'squalaetp/detail/detail_xelon.html' %}
 
         </div>
 
         <!-- Detail IHM -->
         <div class="tab-pane {% if select == 'ihm' %}active{% endif %}" id="ihm" role="tabpanel" aria-labelledby="ihm-tab">
 
-            {% include 'squalaetp/detail_ihm.html' %}
+            {% include 'squalaetp/detail/detail_ihm.html' %}
 
         </div>
 
@@ -100,7 +100,7 @@
         <!-- Detail LOGs -->
         <div class="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
 
-            {% include 'squalaetp/detail_logs.html' %}
+            {% include 'squalaetp/detail/detail_logs.html' %}
 
         </div>
 

@@ -55,7 +55,7 @@ def late_products(request):
     labo_qual = prods.filter(ilot='LaboQual')
     ilot_autre = prods.filter(ilot='ILOTAUTRE')
     defaut = prods.filter(ilot='DEFAUT')
-    return render(request, 'dashboard/late_products.html', locals())
+    return render(request, 'dashboard/late_products/late_products.html', locals())
 
 
 @login_required
@@ -65,10 +65,17 @@ def search(request):
     if query:
         query = query.upper()
         # select = request.GET.get('select')
-        xelon = Xelon.objects.filter(Q(numero_de_dossier=query) |
-                                     Q(vin=query)).first()
-        if xelon:
-            return redirect('squalaetp:detail', file_id=xelon.id)
+        files = Xelon.objects.filter(Q(numero_de_dossier=query) |
+                                     Q(vin=query) |
+                                     Q(corvet__electronique_44l=query) |
+                                     Q(corvet__electronique_44x=query) |
+                                     Q(corvet__electronique_44a=query))
+        if files and len(files) > 1:
+            title = _('Search')
+            table_title = _('Xelon files')
+            return render(request, 'squalaetp/xelon_table.html', locals())
+        elif files:
+            return redirect('squalaetp:detail', file_id=files.first().id)
         messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(request.META.get('HTTP_REFERER'))
 

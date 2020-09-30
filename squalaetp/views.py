@@ -31,7 +31,7 @@ def xelon_table(request):
         return render(request, 'squalaetp/xelon_table.html', locals())
     else:
         table_title = 'Dossiers Clients'
-        return render(request, 'squalaetp/all_xelon_table.html', locals())
+        return render(request, 'squalaetp/ajax_xelon_table.html', locals())
 
 
 @login_required
@@ -61,7 +61,7 @@ def detail(request, file_id):
     select = 'xelon'
     redirect = request.META.get('HTTP_REFERER')
     # 'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
-    return render(request, 'squalaetp/detail.html', locals())
+    return render(request, 'squalaetp/detail/detail.html', locals())
 
 
 @permission_required('squalaetp.view_xelon')

@@ -23,7 +23,7 @@ class Command(BaseCommand):
         labo_qual = prods.filter(ilot='LaboQual')
         ilot_autre = prods.filter(ilot='ILOTAUTRE')
         defaut = prods.filter(ilot='DEFAUT')
-        html_message = render_to_string('dashboard/late_products_email.html', {
+        html_message = render_to_string('dashboard/late_products/lp_email.html', {
             'psa': psa,
             'clarion': clarion,
             'labo_qual': labo_qual,

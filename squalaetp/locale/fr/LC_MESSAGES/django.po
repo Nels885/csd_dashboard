@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-23 18:35+0200\n"
+"POT-Creation-Date: 2020-09-30 17:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "Les données XML ne correspondent pas au VIN"
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
-#: squalaetp/templates/squalaetp/all_xelon_table.html:74
+#: squalaetp/templates/squalaetp/ajax_xelon_table.html:74
 #: squalaetp/templates/squalaetp/corvet_insert.html:40
 #: squalaetp/templates/squalaetp/modal/corvet_form.html:53
 #: squalaetp/templates/squalaetp/xelon_edit.html:40
@@ -53,23 +53,23 @@ msgstr "Page précédente"
 msgid "Data Export"
 msgstr "Export Données"
 
-#: squalaetp/templates/squalaetp/detail.html:18
+#: squalaetp/templates/squalaetp/detail/detail.html:18
 msgid "Corvet data"
 msgstr "Données Corvet"
 
-#: squalaetp/templates/squalaetp/detail.html:24
+#: squalaetp/templates/squalaetp/detail/detail.html:24
 msgid "Log Files"
 msgstr "Fichiers Log"
 
-#: squalaetp/templates/squalaetp/detail.html:31
+#: squalaetp/templates/squalaetp/detail/detail.html:31
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: squalaetp/templates/squalaetp/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:37
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 
-#: squalaetp/templates/squalaetp/detail.html:44
+#: squalaetp/templates/squalaetp/detail/detail.html:44
 msgid "CORVET Update"
 msgstr "MAJ CORVET"
 
