@@ -180,6 +180,11 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Configuration sessions
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 1209600
+
 # Configuration CkEditor
 CKEDITOR_CONFIGS = {
     'default': {

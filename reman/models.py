@@ -5,7 +5,6 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
-from crum import get_current_user
 
 from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
@@ -93,14 +92,6 @@ class Batch(models.Model):
         else:
             raise ValidationError(_('Impossible formatting of the year!'))
 
-    def save(self, *args, **kwargs):
-        user = get_current_user()
-        if user and user.pk:
-            self.created_by = user
-        number, quantity = str(self.number), str(self.quantity)
-        self.batch_number = self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity + "000"
-        super(Batch, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.batch_number
 
@@ -142,15 +133,6 @@ class Repair(models.Model):
         if self.pk:
             return reverse_lazy('reman:edit_repair', args=[self.pk])
         return reverse_lazy('reman:repair_table', get={'filter': 'quality'})
-
-    def save(self, *args, **kwargs):
-        user = get_current_user()
-        if user and user.pk:
-            self.created_by = self.modified_by = user
-        if not self.pk:
-            batch_number = self.identify_number[:-3] + "000"
-            self.batch = Batch.objects.get(batch_number__exact=batch_number)
-        super(Repair, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.identify_number

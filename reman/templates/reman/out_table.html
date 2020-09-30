@@ -58,10 +58,13 @@
             <th>Fabriquant</th>
             <th>Réf. Hardware</th>
             <th>Code barre PSA</th>
-            <th>Créé le</th>
-            <th>Modifié par</th>
             <th>Status</th>
-            <th>Controle Qualité</th>
+            <th>Contrôle qualité</th>
+            <th>Date de cloture</th>
+            <th>Modifié par</th>
+            <th>Modifié le</th>
+            <th>Créé par</th>
+            <th>Créé le</th>
         </tr>
         </thead>
         <tbody>
@@ -75,10 +78,13 @@
                 <td>{{ file.batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
                 <td>{{ file.batch.ecu_ref_base.ecu_type.hw_reference }}</td>
                 <td>{{ file.psa_barcode }}</td>
-                <td>{{ file.created_at }}</td>
-                <td>{{ file.modified_by }}</td>
                 <td>{{ file.status }}</td>
                 <td>{% if file.quality_control %}OK{% endif %}</td>
+                <td>{{ file.closing_date|default:"--" }}</td>
+                <td>{{ file.modified_by }}</td>
+                <td>{{ file.modified_at }}</td>
+                <td>{{ file.created_by }}</td>
+                <td>{{ file.created_at }}</td>
             </tr>
 
         {% endfor %}
