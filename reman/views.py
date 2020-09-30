@@ -5,7 +5,6 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from django.core.management import call_command
 from django.db.models import Max, Q, Count
 
 from constance import config
@@ -135,7 +134,6 @@ def repair_close(request, pk):
     if request.POST and form.is_valid():
         form.save()
         messages.success(request, _('Modification done successfully!'))
-        call_command('exportreman', '--repair')
         return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
     return render(request, 'reman/close_repair.html', context)

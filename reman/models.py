@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
 from ckeditor.fields import RichTextField
 from crum import get_current_user
 
@@ -152,12 +152,6 @@ class Repair(models.Model):
             self.batch = Batch.objects.get(batch_number__exact=batch_number)
             self.batch.active = True
         super(Repair, self).save(*args, **kwargs)
-        prod_ok = Repair.objects.filter(batch=self.batch, quality_control=True).count()
-        if prod_ok >= self.batch.quantity:
-            self.batch.active = False
-        else:
-            self.batch.active = True
-        self.batch.save()
 
     def __str__(self):
         return self.identify_number
