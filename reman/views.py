@@ -279,7 +279,8 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     def get_initial(self):
         initial = super(BatchCreateView, self).get_initial()
         try:
-            initial['number'] = Batch.objects.aggregate(Max('number'))['number__max'] + 1
+            batchs = Batch.objects.exclude(number="999")
+            initial['number'] = batchs.aggregate(Max('number'))['number__max'] + 1
         except TypeError:
             initial['number'] = 1
         return initial
