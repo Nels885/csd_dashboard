@@ -35,17 +35,17 @@ def import_export(request):
 
 def export_corvet(request):
     if request.user.has_perm('squalaetp.change_corvet') and request.POST:
-        if "btn_corvet_all" in request.POST:
+        if "btn_corvet_vin" in request.POST:
+            form = ExportCorvetVinListForm(request.POST or None)
+            if form.is_valid():
+                vin_list = form.cleaned_data['vin_list'].split('\r\n')
+                return extract_ecu(vin_list)
+        else:
             form = ExportCorvetForm(request.POST or None)
             if form.is_valid():
                 product = form.cleaned_data['products']
                 if product in ['corvet', 'ecu', 'bsi', 'com', 'bsm']:
                     return redirect('import_export:export_{}_csv'.format(product))
-        elif "btn_corvet_vin" in request.POST:
-            form = ExportCorvetVinListForm(request.POST or None)
-            if form.is_valid():
-                vin_list = form.cleaned_data['vin_list'].split('\r\n')
-                return extract_ecu(vin_list)
     else:
         messages.warning(request, _('You do not have the required permissions'))
     return redirect(request.META.get('HTTP_REFERER'))
@@ -82,17 +82,17 @@ def export_corvet_csv(request):
 def export_ecu_csv(request):
     filename = 'ecu'
     header = [
-        'Numero de dossier', 'V.I.N.', 'Modele produit', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD', '34A_CMM_SOFT_LIVRE',
-        '94A_CMM_SOFT', '44A_CMM_FOURN.NO.SERIE', '54A_CMM_FOURN.DATE.FAB', '64A_CMM_FOURN.CODE', '84A_CMM_DOTE',
-        'P4A_CMM_EOBD'
+        'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD',
+        '34A_CMM_SOFT_LIVRE', '94A_CMM_SOFT', '44A_CMM_FOURN.NO.SERIE', '54A_CMM_FOURN.DATE.FAB', '64A_CMM_FOURN.CODE',
+        '84A_CMM_DOTE', 'P4A_CMM_EOBD'
     ]
     ecus = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14a__exact='').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
     values_list = (
-        'numero_de_dossier', 'vin', 'modele_produit', 'date_debut_garantie', 'corvet__electronique_14a',
-        'corvet__electronique_34a', 'corvet__electronique_94a', 'corvet__electronique_44a', 'corvet__electronique_54a',
-        'corvet__electronique_64a', 'corvet__electronique_84a', 'corvet__electronique_p4a'
+        'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
+        'corvet__electronique_14a', 'corvet__electronique_34a', 'corvet__electronique_94a', 'corvet__electronique_44a',
+        'corvet__electronique_54a', 'corvet__electronique_64a', 'corvet__electronique_84a', 'corvet__electronique_p4a'
     )
 
     return ExportExcel(queryset=ecus, filename=filename, header=header, values_list=values_list).http_response()
@@ -102,17 +102,17 @@ def export_ecu_csv(request):
 def export_bsi_csv(request):
     filename = 'bsi'
     header = [
-        'Numero de dossier', 'V.I.N.', 'Modele produit', 'DATE_DEBUT_GARANTIE', '14B_BSI_HARD', '94B_BSI_SOFT',
-        '44B_BSI_FOURN.NO.SERIE', '54B_BSI_FOURN.DATE.FAB', '64B_BSI_FOURN.CODE', '84B_BSI_DOTE'
+        'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14B_BSI_HARD',
+        '94B_BSI_SOFT', '44B_BSI_FOURN.NO.SERIE', '54B_BSI_FOURN.DATE.FAB', '64B_BSI_FOURN.CODE', '84B_BSI_DOTE'
     ]
 
     bsis = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14b__exact='').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
     values_list = (
-        'numero_de_dossier', 'vin', 'modele_produit', 'date_debut_garantie', 'corvet__electronique_14b',
-        'corvet__electronique_94b', 'corvet__electronique_44b', 'corvet__electronique_54b', 'corvet__electronique_64b',
-        'corvet__electronique_84b',
+        'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
+        'corvet__electronique_14b', 'corvet__electronique_94b', 'corvet__electronique_44b', 'corvet__electronique_54b',
+        'corvet__electronique_64b', 'corvet__electronique_84b',
     )
 
     return ExportExcel(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
@@ -122,7 +122,7 @@ def export_bsi_csv(request):
 def export_com_csv(request):
     filename = 'com200x'
     header = [
-        'Numero de dossier', 'V.I.N.', 'Modele produit', 'DATE_DEBUT_GARANTIE', '16P_HDC_HARD',
+        'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '16P_HDC_HARD',
         '46P_HDC_FOURN.NO.SERIE', '56P_HDC_FOURN.DATE.FAB', '66P_HDC_FOURN.CODE'
     ]
 
@@ -130,8 +130,8 @@ def export_com_csv(request):
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
     values_list = (
-        'numero_de_dossier', 'vin', 'modele_produit', 'date_debut_garantie', 'corvet__electronique_16p',
-        'corvet__electronique_46p', 'corvet__electronique_56p', 'corvet__electronique_66p'
+        'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
+        'corvet__electronique_16p', 'corvet__electronique_46p', 'corvet__electronique_56p', 'corvet__electronique_66p'
     )
 
     return ExportExcel(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
@@ -141,7 +141,7 @@ def export_com_csv(request):
 def export_bsm_csv(request):
     filename = 'BSM'
     header = [
-        'Numero de dossier', 'V.I.N.', 'Modele produit', 'DATE_DEBUT_GARANTIE', '16B_BSM_HARD',
+        'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '16B_BSM_HARD',
         '46B_BSM_FOURN.NO.SERIE', '56B_BSM_FOURN.DATE.FAB', '66B_BSM_FOURN.CODE', '86B_BSM_DOTE', '96B_BSM_SOFT'
     ]
 
@@ -149,9 +149,9 @@ def export_bsm_csv(request):
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
     values_list = (
-        'numero_de_dossier', 'vin', 'modele_produit', 'date_debut_garantie', 'corvet__electronique_16b',
-        'corvet__electronique_46b', 'corvet__electronique_56b', 'corvet__electronique_66b', 'corvet__electronique_86b',
-        'corvet__electronique_96b'
+        'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
+        'corvet__electronique_16b', 'corvet__electronique_46b', 'corvet__electronique_56b', 'corvet__electronique_66b',
+        'corvet__electronique_86b', 'corvet__electronique_96b'
     )
 
     return ExportExcel(queryset=bsis, filename=filename, header=header, values_list=values_list).http_response()
