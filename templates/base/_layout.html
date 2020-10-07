@@ -84,6 +84,11 @@
 
         $(".create-post").modalForm({formURL: "{% url 'dashboard:create_post' %}", modalID: "#large-modal"});
 
+        // Filter Batch buttons
+        $(".out-filter-btn").each(function () {
+            $(this).modalForm({formURL: $(this).data('form-url')});
+        });
+
         // Update post buttons
         $(".update-post").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});

@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-from bootstrap_modal_forms.forms import BSModalModelForm
+from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
@@ -266,3 +266,17 @@ class DefaultForm(BSModalModelForm):
     class Meta:
         model = Default
         fields = '__all__'
+
+
+class CheckOutSelectBatchForm(BSModalForm):
+    batch = forms.CharField(label='Numéro de lot', max_length=10, required=True)
+
+    class Meta:
+        fields = ['batch']
+
+    def clean_batch(self):
+        data = self.cleaned_data['batch']
+        batchs = Batch.objects.filter(batch_number=data)
+        if not batchs:
+            self.add_error('batch', "Pas de lot associé")
+        return data

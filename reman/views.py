@@ -8,7 +8,7 @@ from django.core.mail import EmailMessage
 from django.db.models import Max, Q, Count
 
 from constance import config
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView
 from utils.django.urls import reverse, reverse_lazy
 
 from utils.conf import string_to_list
@@ -16,7 +16,7 @@ from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
     AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
-    DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm
+    DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm
 )
 
 context = {
@@ -51,7 +51,9 @@ def repair_table(request):
 def out_table(request):
     """ View of Reman Out Repair table page """
     table_title = 'Expédition'
-    files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
+    batch_number = request.GET.get('filter')
+    files = Repair.objects.filter(batch__batch_number=batch_number, status="Réparé", quality_control=True,
+                                  checkout=False)
     form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList)
     if request.POST and form.is_valid():
         repair = form.save()
@@ -225,7 +227,8 @@ def ref_base_create(request, psa_barcode):
     if request.POST and form.is_valid():
         form.save()
         next_form += 1
-        return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
+        return redirect(
+            reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
     context.update(locals())
     return render(request, 'reman/part_create_form.html', context)
 
@@ -310,3 +313,16 @@ class DefaultUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     form_class = DefaultForm
     success_message = _('Success: Reman Default was updated.')
     success_url = reverse_lazy('reman:default_table')
+
+
+class CheckOutFilterView(BSModalFormView):
+    template_name = 'reman/modal/select_batch.html'
+    form_class = CheckOutSelectBatchForm
+
+    def form_valid(self, form):
+        self.filter = '?filter=' + str(form.cleaned_data['batch'])
+        response = super().form_valid(form)
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('reman:out_table') + self.filter
