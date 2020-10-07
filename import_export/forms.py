@@ -2,8 +2,8 @@ from django import forms
 
 
 class ExportCorvetForm(forms.Form):
-    PRODUCTS = [('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com', 'COM200x'), ('bsm', 'BSM')]
-    FORMATS = [('csv', 'CSV')]
+    PRODUCTS = [('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM')]
+    FORMATS = [('csv', 'CSV'), ('xls', 'XLS')]
 
     formats = forms.ChoiceField(
         label='Formats', required=False, choices=FORMATS,
