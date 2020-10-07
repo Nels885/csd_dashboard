@@ -141,17 +141,16 @@ def extract_reman(model, excel_type='csv'):
         )
     elif model == "repair_reman":
         header = [
-            'Numero_identification', 'Numero_lot', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'SW_Reference',
-            'Fabriquant',
-            'Remarque', 'Cree_le', 'Modifie_par', 'Date_de_cloture'
+            'Numero_identification', 'Numero_lot', 'Ref_REMAN', 'Type_ECU', 'Fabriquant', 'HW_Reference',
+            'Code_barre_PSA', 'status', 'Controle_qualite', 'Date_de_cloture', 'Modifie_par', 'Modifie_le',
+            'Cree par', 'Cree_le'
         ]
         queryset = Repair.objects.all().order_by('identify_number')
         values_list = (
             'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__reman_reference',
-            'batch__ecu_ref_base__ecu_type__technical_data', 'batch__ecu_ref_base__ecu_type__hw_reference',
-            'batch__ecu_ref_base__ecu_type__ecumodel__sw_reference', 'batch__ecu_ref_base__ecu_type__supplier_oe',
-            'remark',
-            'created_at', 'modified_by__username', 'closing_date'
+            'batch__ecu_ref_base__ecu_type__technical_data', 'batch__ecu_ref_base__ecu_type__supplier_oe',
+            'batch__ecu_ref_base__ecu_type__hw_reference', 'psa_barcode', 'status', 'quality_control',
+            'closing_date', 'modified_by__username', 'modified_at', 'created_at', 'created_by__username',
         )
     elif model == "base_ref_reman":
         header = [
