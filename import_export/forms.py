@@ -1,12 +1,13 @@
 from django import forms
 
+FORMAT_CHOICES = [('csv', 'CSV'), ('xls', 'XLS')]
+
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM')]
-    FORMATS = [('csv', 'CSV'), ('xls', 'XLS')]
 
     formats = forms.ChoiceField(
-        label='Formats', required=False, choices=FORMATS,
+        label='Formats', required=False, choices=FORMAT_CHOICES,
         widget=forms.Select(attrs={'style': 'width:100px', 'class': 'custom-select form-control mx-sm-3 mb-2'})
     )
     products = forms.ChoiceField(
@@ -16,11 +17,10 @@ class ExportCorvetForm(forms.Form):
 
 
 class ExportRemanForm(forms.Form):
-    TABLES = [('batch', 'BATCH'), ('repair', 'REPAIR'), ('base_ref', 'BASE REF REMAN')]
-    FORMATS = [('csv', 'CSV')]
+    TABLES = [('batch', 'BATCH'), ('repair_reman', 'REPAIR'), ('base_ref_reman', 'BASE REF REMAN')]
 
     formats = forms.ChoiceField(
-        label='Formats', required=False, choices=FORMATS,
+        label='Formats', required=False, choices=FORMAT_CHOICES,
         widget=forms.Select(attrs={'style': 'width:100px', 'class': 'custom-select form-control mx-sm-3 mb-2'})
     )
     tables = forms.ChoiceField(

@@ -3,7 +3,17 @@ from django.db.models import DateTimeField, CharField
 from django.http import Http404
 
 from squalaetp.models import Corvet, Xelon
+from reman.models import Batch, Repair, EcuModel
 from utils.file.export import ExportExcel
+
+
+"""
+##################################
+
+Export CORVET data to excel format
+
+##################################
+"""
 
 
 def extract_ecu(vin_list=None):
@@ -100,6 +110,61 @@ def extract_corvet(product='corvet', excel_type='csv'):
         ]
         queryset = Corvet.objects.all()
         values_list = None
+    if queryset:
+        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
+    else:
+        raise Http404("No data matches")
+
+
+"""
+##################################
+
+Export REMAN data to excel format
+
+##################################
+"""
+
+
+def extract_reman(model, excel_type='csv'):
+    filename = model
+    header = queryset = values_list = None
+    if model == "batch":
+        header = [
+            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
+            'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
+        ]
+        queryset = Batch.objects.all().order_by('batch_number')
+        values_list = (
+            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
+            'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
+            'active', 'created_by__username', 'created_at'
+        )
+    elif model == "repair_reman":
+        header = [
+            'Numero_identification', 'Numero_lot', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'SW_Reference',
+            'Fabriquant',
+            'Remarque', 'Cree_le', 'Modifie_par', 'Date_de_cloture'
+        ]
+        queryset = Repair.objects.all().order_by('identify_number')
+        values_list = (
+            'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__reman_reference',
+            'batch__ecu_ref_base__ecu_type__technical_data', 'batch__ecu_ref_base__ecu_type__hw_reference',
+            'batch__ecu_ref_base__ecu_type__ecumodel__sw_reference', 'batch__ecu_ref_base__ecu_type__supplier_oe',
+            'remark',
+            'created_at', 'modified_by__username', 'closing_date'
+        )
+    elif model == "base_ref_reman":
+        header = [
+            'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR', 'REF CAL',
+            'REF à créer '
+        ]
+        queryset = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
+        values_list = (
+            'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
+            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference', 'sw_reference',
+            'ecu_type__spare_part__code_produit'
+        )
+
     if queryset:
         return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
     else:
