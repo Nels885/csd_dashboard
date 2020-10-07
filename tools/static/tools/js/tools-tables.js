@@ -31,4 +31,10 @@ $(document).ready(function () {
         scrollX: true,
         order: []
     });
+
+    $('#tagXelonTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
+        order: []
+    });
 });

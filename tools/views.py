@@ -9,7 +9,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber
+from .models import CsdSoftware, ThermalChamber, TagXelon
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom
 
@@ -20,6 +20,14 @@ def soft_list(request):
     table_title = _('Software list')
     softs = CsdSoftware.objects.all()
     return render(request, 'tools/soft_table.html', locals())
+
+
+def tag_xelon_list(request):
+    """ View of Software list page """
+    title = _('Tools')
+    table_title = _('Tag Xelon list')
+    tags = TagXelon.objects.all().order_by('-created_at')
+    return render(request, 'tools/tag_xelon_table.html', locals())
 
 
 @permission_required('tools.add_csdsoftware')
