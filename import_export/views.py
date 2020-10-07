@@ -43,11 +43,11 @@ def export_corvet(request):
                 return extract_corvet(product, excel_type)
     else:
         messages.warning(request, _('You do not have the required permissions'))
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('import_export:detail')
 
 
 def export_reman(request):
-    if request.user.has_perms(['reman.view_batch', 'reman.view_repair', 'reman.view_ecumodel']):
+    if request.user.has_perms(['reman.view_batch', 'reman.view_repair', 'reman.view_ecumodel']) and request.POST:
         form = ExportRemanForm(request.POST or None)
         if form.is_valid():
             table = form.cleaned_data['tables']
@@ -55,7 +55,7 @@ def export_reman(request):
             return extract_reman(table, excel_type)
     else:
         messages.warning(request, _('You do not have the required permissions'))
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('import_export:detail')
 
 
 @permission_required('reman.add_sparepart', 'reman.change_sparepart')

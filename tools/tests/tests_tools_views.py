@@ -36,7 +36,7 @@ class ToolsTestCase(UnitTest):
         self.assertEqual(response.status_code, 302)
 
     def test_tag_xelon_is_disconnected(self):
-        url = reverse('tools:tag_xelon')
+        url = reverse('tools:tag_xelon_add')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 

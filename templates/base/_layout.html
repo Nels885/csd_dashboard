@@ -72,7 +72,7 @@
         $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
         $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
 
-        $(".tag-xelon-btn").modalForm({formURL: "{% url 'tools:tag_xelon' %}", modalID: "#create-modal"});
+        $(".tag-xelon-btn").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
 
         $(".batch-btn").modalForm({formURL: "{% url 'reman:create_batch' %}"});
 

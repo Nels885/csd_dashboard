@@ -110,7 +110,7 @@ def thermal_disable(request, pk):
     return redirect('tools:thermal')
 
 
-class TagXelonView(PermissionRequiredMixin, BSModalCreateView):
+class TagXelonCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'tools.add_tagxelon'
     template_name = 'tools/modal/tag_xelon.html'
     form_class = TagXelonForm
