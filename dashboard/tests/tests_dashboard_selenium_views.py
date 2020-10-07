@@ -14,7 +14,6 @@ class DashboardSeleniumTestCase(LiveServerTestCase):
         self.driver.implicitly_wait(30)
         super(DashboardSeleniumTestCase, self).setUp()
         user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.groups.add(Group.objects.create(name="cellule"))
         user.save()
 
     def tearDown(self):

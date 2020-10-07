@@ -9,9 +9,6 @@ class MixinsTest(UnitTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        self.add_perms_user(Post, 'add_post', 'change_post', 'delete_post')
-        self.add_perms_user(WebLink, 'add_weblink', 'change_weblink')
-        self.add_group_user("technician")
         self.author = UserProfile.objects.get(user=self.user)
         Post.objects.create(title='test', overview='texte', author=self.author)
         WebLink.objects.create(title='test', url='http://test.com/', type='AUTRES', description='test')
@@ -57,6 +54,7 @@ class MixinsTest(UnitTest):
         """
         Create Post throught BSModalCreateView.
         """
+        self.add_perms_user(Post, 'add_post')
         self.login()
 
         # First post request = ajax request checking if form in view is valid
@@ -78,6 +76,7 @@ class MixinsTest(UnitTest):
         """
         Update Post throught BSModalCreateView.
         """
+        self.add_perms_user(Post, 'change_post')
         self.login()
 
         # Update object through BSModalUpdateView
@@ -100,7 +99,9 @@ class MixinsTest(UnitTest):
         """
         Delete object through BSModalDeleteView.
         """
+        self.add_perms_user(Post, 'delete_post')
         self.login()
+
         # Request to delete view passes message to the response
         post = Post.objects.first()
         response = self.client.post(reverse('dashboard:delete_post', kwargs={'pk': post.pk}))
@@ -111,6 +112,7 @@ class MixinsTest(UnitTest):
         """
         Create web link throught BSModalCreateView.
         """
+        self.add_perms_user(WebLink, 'add_weblink')
         self.login()
 
         # First post request = ajax request checking if form in view is valid
@@ -133,6 +135,7 @@ class MixinsTest(UnitTest):
         """
         Update web link throught BSModalCreateView.
         """
+        self.add_perms_user(WebLink, 'change_weblink')
         self.login()
 
         # Update object through BSModalUpdateView
