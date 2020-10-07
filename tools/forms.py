@@ -1,13 +1,13 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from bootstrap_modal_forms.forms import BSModalForm
+from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.validators import validate_xelon
 
 from .models import TagXelon, CsdSoftware, ThermalChamber
 
 
-class TagXelonForm(BSModalForm):
+class TagXelonForm(BSModalModelForm):
     class Meta:
         model = TagXelon
         fields = ['xelon', 'comments']

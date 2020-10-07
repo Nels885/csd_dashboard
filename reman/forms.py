@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-from bootstrap_modal_forms.forms import BSModalForm
+from bootstrap_modal_forms.forms import BSModalModelForm
 from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
@@ -9,7 +9,7 @@ from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
 
-class AddBatchForm(BSModalForm):
+class AddBatchForm(BSModalModelForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
 
     class Meta:
@@ -54,7 +54,7 @@ class AddBatchForm(BSModalForm):
         return data
 
 
-class AddRepairForm(BSModalForm):
+class AddRepairForm(BSModalModelForm):
     psa_barcode = forms.CharField(label='Code barre PSA', max_length=10,
                                   widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
 
@@ -262,7 +262,7 @@ class PartSparePartForm(forms.ModelForm):
         # self.fields['code_emplacement'].required = True
 
 
-class DefaultForm(BSModalForm):
+class DefaultForm(BSModalModelForm):
     class Meta:
         model = Default
         fields = '__all__'
