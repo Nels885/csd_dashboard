@@ -1,4 +1,5 @@
 import os
+import codecs
 import re
 import glob
 import pandas as pd
@@ -105,3 +106,20 @@ def handle_uploaded_file(f):
         for chunk in f.chunks():
             destination.write(chunk)
     return file_url
+
+
+def convert_utf8_to_ansi(oldfile, newfile):
+    """
+    :param oldfile: path to UTF8 file
+    :param newfile: path to the ANSI file to be saved
+    """
+    # Open UTF8 text file
+    with codecs.open(oldfile, 'r', 'utf8') as f:
+        utfstr = f.read()
+
+    # Transcode UTF8 strings into ANSI strings
+    outansestr = utfstr.encode('mbcs')
+
+    # Save the transcoded text in binary format
+    with open(newfile, 'wb') as f:
+        f.write(outansestr)
