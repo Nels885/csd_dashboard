@@ -282,7 +282,7 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     def get_initial(self):
         initial = super(BatchCreateView, self).get_initial()
         try:
-            batchs = Batch.objects.exclude(number="999")
+            batchs = Batch.objects.exclude(number__gte=900)
             initial['number'] = batchs.aggregate(Max('number'))['number__max'] + 1
         except TypeError:
             initial['number'] = 1
@@ -321,7 +321,7 @@ class CheckOutFilterView(BSModalFormView):
 
     def form_valid(self, form):
         self.filter = '?filter=' + str(form.cleaned_data['batch'])
-        response = super().form_valid(form)
+        response = super(CheckOutFilterView, self).form_valid(form)
         return response
 
     def get_success_url(self):
