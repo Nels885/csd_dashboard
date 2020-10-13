@@ -62,19 +62,23 @@ class Command(BaseCommand):
             path = os.path.join(CSD_ROOT, "EXTS")
             header = [
                 'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
-                'REF CAL',
-                'REF à créer '
+                'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
             ]
-            ecus = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
+            queryset = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
             values_list = (
                 'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
-                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference', 'sw_reference',
-                'ecu_type__spare_part__code_produit'
+                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference',
+                'ecu_type__ecu_ref_base__ref_cal_out', 'ecu_type__spare_part__code_produit',
+                'ecu_type__ecu_ref_base__ref_psa_out', 'ecu_type__ecu_ref_base__open_diag',
+                'ecu_type__ecu_ref_base__ref_mat', 'ecu_type__ecu_ref_base__ref_comp',
+                'ecu_type__ecu_ref_base__cal_ktag',
+                'ecu_type__ecu_ref_base__status'
+
             )
-            ExportExcel(queryset=ecus, filename=filename, header=header, values_list=values_list).file(path)
+            ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list).file(path)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "Export ECU_REF_BASE completed: NB_REF = {} | FILE = {}.csv".format(ecus.count(), filename))
+                    "Export ECU_REF_BASE completed: NB_REF = {} | FILE = {}.csv".format(queryset.count(), filename))
             )
         else:
             if options['filename'] is not None:
@@ -93,6 +97,14 @@ class Command(BaseCommand):
                 for key in ["technical_data", "supplier_oe"]:
                     del row[key]
                 code_produit = row.pop("code_produit")
+                base_values = dict((key, value) for key, value in row.items() if
+                                   key in ["ref_cal_out", "ref_psa_out", "open_diag", "ref_mat", "ref_comp", "cal_ktag",
+                                           "status"])
+                for key in ["ref_cal_out", "ref_psa_out", "open_diag", "ref_mat", "ref_comp", "cal_ktag", "status"]:
+                    try:
+                        del row[key]
+                    except KeyError:
+                        pass
                 try:
                     # Update or Create SpareParts
                     part_obj, part_created = SparePart.objects.update_or_create(
@@ -119,8 +131,10 @@ class Command(BaseCommand):
                         nb_type_update += 1
 
                     # Update or Create EcurefBase
+                    base_values['ecu_type'] = type_obj
                     base_obj, base_created = EcuRefBase.objects.update_or_create(
-                        reman_reference=reman_reference, defaults={"ecu_type": type_obj})
+                        reman_reference=reman_reference, defaults=base_values
+                    )
                     if not base_created:
                         nb_base_update += 1
 

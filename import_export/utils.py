@@ -155,14 +155,18 @@ def extract_reman(model, excel_type='csv'):
         )
     elif model == "base_ref_reman":
         header = [
-            'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR', 'REF CAL',
-            'REF à créer '
+            'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
+            'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
         ]
         queryset = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
         values_list = (
             'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
-            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference', 'sw_reference',
-            'ecu_type__spare_part__code_produit'
+            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference',
+            'ecu_type__ecu_ref_base__ref_cal_out', 'ecu_type__spare_part__code_produit',
+            'ecu_type__ecu_ref_base__ref_psa_out', 'ecu_type__ecu_ref_base__open_diag',
+            'ecu_type__ecu_ref_base__ref_mat', 'ecu_type__ecu_ref_base__ref_comp', 'ecu_type__ecu_ref_base__cal_ktag',
+            'ecu_type__ecu_ref_base__status'
+
         )
 
     if queryset:

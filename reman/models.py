@@ -66,6 +66,13 @@ class EcuModel(models.Model):
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
+    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
+    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
+    open_diag = models.CharField("OPENDIAG", max_length=16, blank=True)
+    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
+    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
+    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
+    status = models.CharField("STATUT", max_length=16, blank=True)
     ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.CASCADE, null=True,
                                     blank=True)
 
