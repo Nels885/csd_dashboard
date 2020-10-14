@@ -49,6 +49,8 @@
 
     <hr>
 
+    {% if files %}
+
     <table class="table table-bordered text-nowrap" id="outTable" width="100%" cellspacing="0">
         <thead>
         <tr>
@@ -91,6 +93,12 @@
 
         </tbody>
     </table>
+
+    {% else %}
+
+        <h1 class="display-4 text-center font-weight-bold m-5">Le lot {{ batch_number }} est terminé !!!</h1>
+
+    {% endif %}
 
 {% endblock %}
 

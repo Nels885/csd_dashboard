@@ -9,6 +9,13 @@ from utils.conf import DICT_YEAR
 from utils.django.validators import validate_psa_barcode
 
 
+"""
+~~~~~~~~~~~~~~~
+MAMANGER FORMS
+~~~~~~~~~~~~~~~
+"""
+
+
 class AddBatchForm(BSModalModelForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
 
@@ -52,6 +59,19 @@ class AddBatchForm(BSModalModelForm):
         except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
         return data
+
+
+class DefaultForm(BSModalModelForm):
+    class Meta:
+        model = Default
+        fields = '__all__'
+
+
+"""
+~~~~~~~~~~~~~~~~~
+TECHNICIAN FORMS
+~~~~~~~~~~~~~~~~~
+"""
 
 
 class AddRepairForm(BSModalModelForm):
@@ -152,26 +172,62 @@ class CloseRepairForm(forms.ModelForm):
         return instance
 
 
+"""
+~~~~~~~~~~~~~~~
+IN / OUT FORMS
+~~~~~~~~~~~~~~~
+"""
+
+
+class CheckOutSelectBatchForm(BSModalForm):
+    batch = forms.CharField(label='Numéro de lot', max_length=10, required=True)
+
+    class Meta:
+        fields = ['batch']
+
+    def clean_batch(self):
+        data = self.cleaned_data['batch']
+        batchs = Batch.objects.filter(batch_number=data)
+        if not batchs:
+            self.add_error('batch', "Pas de lot associé")
+        return data
+
+
 class CheckOutRepairForm(forms.Form):
     identify_number = forms.CharField(
         label="N° d'identification", max_length=11,
         widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''})
     )
 
+    def __init__(self, *args, **kwargs):
+        batch_number = kwargs.pop("batch_number", None)
+        super(CheckOutRepairForm, self).__init__(*args, **kwargs)
+        if batch_number:
+            batch = Batch.objects.filter(batch_number=batch_number).first()
+        else:
+            batch = None
+        self.repairs = Repair.objects.filter(quality_control=True, checkout=False, batch=batch)
+
     def clean_identify_number(self):
         data = self.cleaned_data["identify_number"]
-        repair = Repair.objects.filter(quality_control=True, checkout=False)
-        if data[-1] != "R" or not repair.filter(identify_number=data[:-1]):
+        if data[-1] != "R" or not self.repairs.filter(identify_number=data[:-1]):
             self.add_error('identify_number', "N° d'identification invalide")
         return data
 
     def save(self, commit=True):
-        repair = Repair.objects.get(identify_number=self.cleaned_data["identify_number"][:-1])
+        repair = self.repairs.get(identify_number=self.cleaned_data["identify_number"][:-1])
         repair.closing_date = timezone.now()
         repair.checkout = True
         if commit:
             repair.save()
         return repair
+
+
+"""
+~~~~~~~~~~~~~~~~~~
+SPARE PARTS FORMS
+~~~~~~~~~~~~~~~~~~
+"""
 
 
 class SparePartForm(forms.Form):
@@ -260,23 +316,3 @@ class PartSparePartForm(forms.ModelForm):
         # else:
         self.fields['code_produit'].widget.attrs['readonly'] = True
         # self.fields['code_emplacement'].required = True
-
-
-class DefaultForm(BSModalModelForm):
-    class Meta:
-        model = Default
-        fields = '__all__'
-
-
-class CheckOutSelectBatchForm(BSModalForm):
-    batch = forms.CharField(label='Numéro de lot', max_length=10, required=True)
-
-    class Meta:
-        fields = ['batch']
-
-    def clean_batch(self):
-        data = self.cleaned_data['batch']
-        batchs = Batch.objects.filter(batch_number=data)
-        if not batchs:
-            self.add_error('batch', "Pas de lot associé")
-        return data

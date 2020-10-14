@@ -24,91 +24,11 @@ context = {
 }
 
 
-@login_required()
-def repair_table(request):
-    """ View of Reman Repair table page """
-    query = request.GET.get('filter')
-    select_tab = 'repair'
-    if query and query == 'pending':
-        files = Repair.objects.exclude(status="Rebut").filter(checkout=False)
-        table_title = 'Dossiers en cours de réparation'
-        select_tab = 'repair_pending'
-    elif query and query == 'checkout':
-        files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
-        table_title = "Dossiers en attente d'expédition"
-    else:
-        files = Repair.objects.all()
-        table_title = 'Dossiers de réparation'
-    context.update({
-        'table_title': table_title,
-        'files': files,
-        'select_tab': select_tab
-    })
-    return render(request, 'reman/repair/repair_table.html', context)
-
-
-@permission_required('reman.close_repair')
-def out_table(request):
-    """ View of Reman Out Repair table page """
-    table_title = 'Expédition'
-    batch_number = request.GET.get('filter')
-    files = Repair.objects.filter(batch__batch_number=batch_number, status="Réparé", quality_control=True,
-                                  checkout=False)
-    form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        repair = form.save()
-        messages.success(request, _('Repair n°%(repair)s to batch n°%(batch)s ready for shipment') % {
-            'repair': repair.identify_number,
-            'batch': repair.batch})
-        form = CheckOutRepairForm(error_class=ParaErrorList)
-    errors = form.errors.items()
-    context.update(locals())
-    return render(request, 'reman/repair/out_table.html', context)
-
-
-@login_required()
-def batch_table(request):
-    """ View of batch table page """
-    table_title = 'Liste des lots REMAN ajoutés'
-    repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
-    packed = Count('repairs', filter=Q(repairs__checkout=True))
-    batchs = Batch.objects.all().annotate(repaired=repaired, packed=packed)
-    context.update(locals())
-    return render(request, 'reman/batch_table.html', context)
-
-
-@login_required()
-def part_table(request):
-    """ View of SparePart table page """
-    table_title = 'Pièces détachées'
-    parts = SparePart.objects.all()
-    context.update(locals())
-    return render(request, 'reman/part_table.html', context)
-
-
-@permission_required('reman.view_ecurefbase')
-def ecu_ref_table(request):
-    """ View of EcuRefBase table page """
-    table_title = 'Base ECU Reman'
-    ecus = EcuModel.objects.all()
-    context.update(locals())
-    return render(request, 'reman/ecu_ref_base_table.html', context)
-
-
-@permission_required('reman.view_ecurefbase')
-def ecu_dump_table(request):
-    table_title = 'Dump à réaliser'
-    ecus = EcuModel.objects.filter(to_dump=True)
-    context.update(locals())
-    return render(request, 'reman/ecu_dump_table.html', context)
-
-
-@permission_required('reman.view_default')
-def default_table(request):
-    table_title = 'Liste de panne'
-    defaults = Default.objects.all()
-    context.update(locals())
-    return render(request, 'reman/default_table.html', context)
+"""
+~~~~~~~~~~~~~~~~~
+TECHNICIAN VIEWS
+~~~~~~~~~~~~~~~~~
+"""
 
 
 @permission_required('reman.change_repair')
@@ -151,86 +71,18 @@ def repair_detail(request, pk):
     return render(request, 'reman/repair/repair_detail.html', context)
 
 
-@permission_required('reman.check_ecumodel')
-def check_parts(request):
-    card_title = "Vérification pièce détachée"
-    form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        psa_barcode = form.cleaned_data['psa_barcode']
-        try:
-            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
-            context.update(locals())
-            if ecu.ecu_type and ecu.ecu_type.spare_part:
-                return render(request, 'reman/part_detail.html', context)
-        except EcuModel.DoesNotExist:
-            pass
-        return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
-    errors = form.errors.items()
-    context.update(locals())
-    return render(request, 'reman/check_parts.html', context)
+class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'reman.add_repair'
+    template_name = 'reman/modal/create_repair.html'
+    form_class = AddRepairForm
+    success_message = _('Success: Repair was created.')
 
 
-@permission_required('reman.check_ecumodel')
-def new_part_email(request, psa_barcode):
-    mail_subject = '[REMAN] Nouveau code barre PSA'
-    ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
-    ecu.to_dump = True
-    ecu.save()
-    message = render_to_string('reman/new_psa_barcode_email.html', {
-        'ecu': ecu,
-    })
-    email = EmailMessage(
-        mail_subject, message, to=string_to_list(",|;", config.ECU_TO_EMAIL_LIST),
-        cc=string_to_list(",|;", config.ECU_CC_EMAIL_LIST)
-    )
-    email.send()
-    messages.success(request, _('Success: The email has been sent.'))
-    return redirect("reman:part_check")
-
-
-@permission_required('reman.add_ecumodel')
-def ref_base_create(request, psa_barcode):
-    next_form = int(request.GET.get('next', 0))
-    if next_form == 1:
-        card_title = "Ajout Type ECU"
-        try:
-            ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
-            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
-        except EcuType.DoesNotExist:
-            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
-    elif next_form == 2:
-        card_title = "Ajout Pièce détachée"
-        ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
-        try:
-            part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
-            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
-        except SparePart.DoesNotExist:
-            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
-            form.initial['code_produit'] = ecu_type.technical_data + " HW" + ecu_type.hw_reference
-        if form.is_valid():
-            part_obj = form.save()
-            ecu_type.spare_part = part_obj
-            ecu_type.save()
-            ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
-            context.update(locals())
-            return render(request, 'reman/part_send_email.html', context)
-    else:
-        card_title = "Ajout Modèle ECU"
-        try:
-            instance = EcuModel.objects.get(psa_barcode=psa_barcode)
-            form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList, instance=instance)
-            if instance.ecu_type:
-                form.initial['hw_reference'] = instance.ecu_type.hw_reference
-        except EcuModel.DoesNotExist:
-            form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
-            form.initial['psa_barcode'] = psa_barcode
-    if request.POST and form.is_valid():
-        form.save()
-        next_form += 1
-        return redirect(
-            reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
-    context.update(locals())
-    return render(request, 'reman/part_create_form.html', context)
+"""
+~~~~~~~~~~~~~~
+MANAGER VIEWS
+~~~~~~~~~~~~~~
+"""
 
 
 @permission_required('reman.change_ecumodel')
@@ -289,13 +141,6 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
         return initial
 
 
-class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
-    permission_required = 'reman.add_repair'
-    template_name = 'reman/modal/create_repair.html'
-    form_class = AddRepairForm
-    success_message = _('Success: Repair was created.')
-
-
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
     """ View of modal default create """
     permission_required = 'reman.add_default'
@@ -315,6 +160,102 @@ class DefaultUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     success_url = reverse_lazy('reman:default_table')
 
 
+"""
+~~~~~~~~~~~~~~~~~~
+SPARE PARTS VIEWS
+~~~~~~~~~~~~~~~~~~
+"""
+
+
+@permission_required('reman.check_ecumodel')
+def check_parts(request):
+    card_title = "Vérification pièce détachée"
+    form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
+    if request.POST and form.is_valid():
+        psa_barcode = form.cleaned_data['psa_barcode']
+        try:
+            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
+            context.update(locals())
+            if ecu.ecu_type and ecu.ecu_type.spare_part:
+                return render(request, 'reman/part_detail.html', context)
+        except EcuModel.DoesNotExist:
+            pass
+        return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
+    errors = form.errors.items()
+    context.update(locals())
+    return render(request, 'reman/check_parts.html', context)
+
+
+@permission_required('reman.add_ecumodel')
+def ref_base_create(request, psa_barcode):
+    next_form = int(request.GET.get('next', 0))
+    if next_form == 1:
+        card_title = "Ajout Type ECU"
+        try:
+            ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
+            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
+        except EcuType.DoesNotExist:
+            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
+    elif next_form == 2:
+        card_title = "Ajout Pièce détachée"
+        ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
+        try:
+            part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
+            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
+        except SparePart.DoesNotExist:
+            form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
+            form.initial['code_produit'] = ecu_type.technical_data + " HW" + ecu_type.hw_reference
+        if form.is_valid():
+            part_obj = form.save()
+            ecu_type.spare_part = part_obj
+            ecu_type.save()
+            ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+            context.update(locals())
+            return render(request, 'reman/part_send_email.html', context)
+    else:
+        card_title = "Ajout Modèle ECU"
+        try:
+            instance = EcuModel.objects.get(psa_barcode=psa_barcode)
+            form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList, instance=instance)
+            if instance.ecu_type:
+                form.initial['hw_reference'] = instance.ecu_type.hw_reference
+        except EcuModel.DoesNotExist:
+            form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
+            form.initial['psa_barcode'] = psa_barcode
+    if request.POST and form.is_valid():
+        form.save()
+        next_form += 1
+        return redirect(
+            reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
+    context.update(locals())
+    return render(request, 'reman/part_create_form.html', context)
+
+
+@permission_required('reman.check_ecumodel')
+def new_part_email(request, psa_barcode):
+    mail_subject = '[REMAN] Nouveau code barre PSA'
+    ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+    ecu.to_dump = True
+    ecu.save()
+    message = render_to_string('reman/new_psa_barcode_email.html', {
+        'ecu': ecu,
+    })
+    email = EmailMessage(
+        mail_subject, message, to=string_to_list(",|;", config.ECU_TO_EMAIL_LIST),
+        cc=string_to_list(",|;", config.ECU_CC_EMAIL_LIST)
+    )
+    email.send()
+    messages.success(request, _('Success: The email has been sent.'))
+    return redirect("reman:part_check")
+
+
+"""
+~~~~~~~~~~~~~~~
+IN / OUT VIEWS
+~~~~~~~~~~~~~~~
+"""
+
+
 class CheckOutFilterView(BSModalFormView):
     template_name = 'reman/modal/select_batch.html'
     form_class = CheckOutSelectBatchForm
@@ -326,3 +267,97 @@ class CheckOutFilterView(BSModalFormView):
 
     def get_success_url(self):
         return reverse_lazy('reman:out_table') + self.filter
+
+
+@permission_required('reman.close_repair')
+def out_table(request):
+    """ View of Reman Out Repair table page """
+    table_title = 'Expédition'
+    batch_number = request.GET.get('filter')
+    files = Repair.objects.filter(batch__batch_number=batch_number, status="Réparé", quality_control=True,
+                                  checkout=False)
+    form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList, batch_number=batch_number,)
+    if request.POST and form.is_valid():
+        repair = form.save()
+        messages.success(request, _('Repair n°%(repair)s to batch n°%(batch)s ready for shipment') % {
+            'repair': repair.identify_number,
+            'batch': repair.batch})
+        form = CheckOutRepairForm(error_class=ParaErrorList)
+    errors = form.errors.items()
+    context.update(locals())
+    return render(request, 'reman/repair/out_table.html', context)
+
+
+"""
+~~~~~~~~~~~~~~~~~
+CONSULTING VIEWS
+~~~~~~~~~~~~~~~~~
+"""
+
+
+@login_required()
+def batch_table(request):
+    """ View of batch table page """
+    table_title = 'Liste des lots REMAN ajoutés'
+    repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
+    packed = Count('repairs', filter=Q(repairs__checkout=True))
+    batchs = Batch.objects.all().annotate(repaired=repaired, packed=packed)
+    context.update(locals())
+    return render(request, 'reman/batch_table.html', context)
+
+
+@login_required()
+def repair_table(request):
+    """ View of Reman Repair table page """
+    query = request.GET.get('filter')
+    select_tab = 'repair'
+    if query and query == 'pending':
+        files = Repair.objects.exclude(status="Rebut").filter(checkout=False)
+        table_title = 'Dossiers en cours de réparation'
+        select_tab = 'repair_pending'
+    elif query and query == 'checkout':
+        files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
+        table_title = "Dossiers en attente d'expédition"
+    else:
+        files = Repair.objects.all()
+        table_title = 'Dossiers de réparation'
+    context.update({
+        'table_title': table_title,
+        'files': files,
+        'select_tab': select_tab
+    })
+    return render(request, 'reman/repair/repair_table.html', context)
+
+
+@login_required()
+def part_table(request):
+    """ View of SparePart table page """
+    table_title = 'Pièces détachées'
+    parts = SparePart.objects.all()
+    context.update(locals())
+    return render(request, 'reman/part_table.html', context)
+
+
+@permission_required('reman.view_ecurefbase')
+def ecu_ref_table(request):
+    """ View of EcuRefBase table page """
+    table_title = 'Base ECU Reman'
+    ecus = EcuModel.objects.all()
+    context.update(locals())
+    return render(request, 'reman/ecu_ref_base_table.html', context)
+
+
+@permission_required('reman.view_ecurefbase')
+def ecu_dump_table(request):
+    table_title = 'Dump à réaliser'
+    ecus = EcuModel.objects.filter(to_dump=True)
+    context.update(locals())
+    return render(request, 'reman/ecu_dump_table.html', context)
+
+
+@permission_required('reman.view_default')
+def default_table(request):
+    table_title = 'Liste de panne'
+    defaults = Default.objects.all()
+    context.update(locals())
+    return render(request, 'reman/default_table.html', context)
