@@ -241,8 +241,8 @@ def new_part_email(request, psa_barcode):
         'ecu': ecu,
     })
     email = EmailMessage(
-        mail_subject, message, to=string_to_list(",|;", config.ECU_TO_EMAIL_LIST),
-        cc=string_to_list(",|;", config.ECU_CC_EMAIL_LIST)
+        mail_subject, message, to=string_to_list(config.ECU_TO_EMAIL_LIST),
+        cc=string_to_list(config.ECU_CC_EMAIL_LIST)
     )
     email.send()
     messages.success(request, _('Success: The email has been sent.'))

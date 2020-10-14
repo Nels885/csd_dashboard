@@ -1,13 +1,5 @@
 # Config Clarion
 
-xls_delay_files = [
-    "RH/AnalyseRetards/PSA.xls",
-    "RH/AnalyseRetards/ILOTAUTRE.xls",
-    "RH/AnalyseRetards/LaboQual.xls",
-    "RH/AnalyseRetards/DEFAUT.xls",
-    "RH/AnalyseRetards/CLARION.xls"
-]
-
 xml_extract_dir = "LOGS/CORVET_XML_TEST"
 
 prod_log_dir = {
@@ -27,8 +19,3 @@ prod_log_dir = {
 
 tag_log_dir = "LOGS/LOG_CONFIG_PROD"
 tag_dir = "LOGS/CALIBRE"
-
-dict_year = {
-    2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U',
-    2029: 'V', 2030: 'W',
-}

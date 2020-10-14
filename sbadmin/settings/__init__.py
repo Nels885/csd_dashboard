@@ -240,6 +240,10 @@ CONSTANCE_CONFIG = {
     'REPAIR_EXPORT_FILE': ('reman_repairs', 'File name for exporting repairs'),
     'CHECKOUT_EXPORT_FILE': ('reman_output', 'File name for exporting data from check out'),
     'ECUREFBASE_EXPORT_FILE': ('base_ref_reman_new', 'File name for exporting Base Ref REMAN'),
+    'DICT_YEAR': (
+        "{2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U'}",
+        'REMAN batch date formatting dictionary'
+    ),
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
@@ -271,7 +275,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'TO_LATE_PRODUCTS_EMAIL_LIST'),
     'REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
-        'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE'
+        'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE', 'DICT_YEAR'
     ),
     'Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',

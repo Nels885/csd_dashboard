@@ -32,7 +32,7 @@ class Command(BaseCommand):
         })
         plain_message = strip_tags(html_message)
         send_mail(
-            subject, plain_message, None, string_to_list(",|;", config.TO_LATE_PRODUCTS_EMAIL_LIST),
+            subject, plain_message, None, string_to_list(config.TO_LATE_PRODUCTS_EMAIL_LIST),
             html_message=html_message
         )
         self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en retard terminée!"))

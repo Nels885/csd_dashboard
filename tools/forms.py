@@ -13,7 +13,7 @@ class TagXelonForm(BSModalModelForm):
         fields = ['xelon', 'comments']
         widgets = {
             'xelon': forms.TextInput(
-                attrs={'class': 'form-control col-sm-6', 'onkeypress': 'return event.keyCode != 13;'}
+                attrs={'class': 'form-control col-sm-6'}    # 'onkeypress': 'return event.keyCode != 13;'
             ),
             'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
         }
