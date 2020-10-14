@@ -121,7 +121,7 @@ def ref_base_edit(request, psa_barcode):
         next_form += 1
         return redirect(reverse('reman:edit_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
     context.update(locals())
-    return render(request, 'reman/edit_ecu_ref_base.html', context)
+    return render(request, 'reman/ecu_ref_base_update.html', context)
 
 
 class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
@@ -183,7 +183,7 @@ def check_parts(request):
         return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
-    return render(request, 'reman/check_parts.html', context)
+    return render(request, 'reman/part_check.html', context)
 
 
 @permission_required('reman.add_ecumodel')

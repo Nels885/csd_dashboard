@@ -89,36 +89,33 @@ class AddRepairForm(BSModalModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AddRepairForm, self).__init__(*args, **kwargs)
-        self.batchNumber = None
+        self.queryset = Batch.objects.all()
 
     def clean_identify_number(self):
         data = self.cleaned_data["identify_number"]
-        self.batchNumber = data[:-3] + "000"
-        if len(data) < 10 or data == self.batchNumber:
-            self.add_error('identify_number', "Ce numéro n'est pas possible")
-        elif Repair.objects.filter(identify_number__exact=data):
-            self.add_error('identify_number', 'Ce numéro éxiste')
-        elif not Batch.objects.filter(batch_number__exact=self.batchNumber):
-            self.add_error('identify_number', 'Pas de lot associé')
+        batch_number = data[:-3] + "000"
+        self.queryset = self.queryset.filter(batch_number__exact=batch_number)
+        if self.queryset and self.queryset.filter(repairs__identify_number=data):
+            self.add_error("identify_number", "Ce numéro éxiste")
+        elif data[-1] == "0":
+            self.add_error("identify_number", "Ce numéro n'est pas autorisé")
         return data
 
     def clean_psa_barcode(self):
         data = self.cleaned_data["psa_barcode"]
-        batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
-                                     ecu_ref_base__ecu_type__ecumodel__psa_barcode=data).first()
-        if not batch:
+        queryset = self.queryset.filter(ecu_ref_base__ecu_type__ecumodel__psa_barcode=data)
+        if not queryset:
             self.add_error('psa_barcode', "Code barre PSA incorrecte")
         return data
 
     def clean(self):
         cleaned_data = super(AddRepairForm, self).clean()
+        identify_number = cleaned_data.get("identify_number")
         psa_barcode = cleaned_data.get("psa_barcode")
-        if psa_barcode:
-            batch = Batch.objects.filter(batch_number__exact=self.batchNumber,
-                                         ecu_ref_base__ecu_type__ecumodel__psa_barcode=psa_barcode).first()
-            if not batch:
+        if psa_barcode and identify_number:
+            if not self.queryset:
                 raise forms.ValidationError("Pas de lot associé")
-            elif not batch.active:
+            elif not self.queryset.first().active:
                 raise forms.ValidationError("Ce lot n'est plus actif")
 
 
