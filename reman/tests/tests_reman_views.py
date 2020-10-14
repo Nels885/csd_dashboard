@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase, EcuType
+from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase, EcuType, Default
 
 
 class RemanTestCase(UnitTest):
@@ -139,6 +139,16 @@ class RemanTestCase(UnitTest):
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
         self.add_perms_user(EcuRefBase, 'view_ecurefbase')
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_default_table(self):
+        url =reverse('reman:default_table')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(Default, 'view_default')
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)

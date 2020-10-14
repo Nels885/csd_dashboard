@@ -256,7 +256,8 @@ IN / OUT VIEWS
 """
 
 
-class CheckOutFilterView(BSModalFormView):
+class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
+    permission_required = 'reman.close_repair'
     template_name = 'reman/modal/batch_select.html'
     form_class = CheckOutSelectBatchForm
 

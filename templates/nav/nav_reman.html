@@ -84,9 +84,6 @@
 
     {% if perms.reman.close_repair %}
         <li class="nav-item">
-{#            <a class="nav-link" href="{% url 'reman:out_table' %}">#}
-{#                <i class="fas fa-fw fa-truck"></i><span>{% trans "Shipment" %}</span>#}
-{#            </a>#}
             <a class="out-filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}">
                 <i class="fas fa-fw fa-truck"></i><span>{% trans "Shipment" %}</span>
             </a>
