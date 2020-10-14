@@ -1,6 +1,7 @@
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from django.db.models import Q, Count
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
@@ -10,9 +11,9 @@ from utils.django.validators import validate_psa_barcode
 
 
 """
-~~~~~~~~~~~~~~~
-MAMANGER FORMS
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+MANAGER FORMS
+~~~~~~~~~~~~~~
 """
 
 
@@ -180,16 +181,30 @@ IN / OUT FORMS
 
 
 class CheckOutSelectBatchForm(BSModalForm):
-    batch = forms.CharField(label='Numéro de lot', max_length=10, required=True)
+    batch = forms.CharField(label="Numéro de lot", max_length=10, required=True)
 
     class Meta:
-        fields = ['batch']
+        fields = ["batch"]
+
+    def __init__(self, *args, **kwargs):
+        super(CheckOutSelectBatchForm, self).__init__(*args, **kwargs)
+        repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
+        packed = Count('repairs', filter=Q(repairs__checkout=True))
+        self.batch = Batch.objects.all().annotate(repaired=repaired, packed=packed)
 
     def clean_batch(self):
-        data = self.cleaned_data['batch']
-        batchs = Batch.objects.filter(batch_number=data)
+        data = self.cleaned_data["batch"]
+        batchs = self.batch.filter(batch_number=data)
         if not batchs:
-            self.add_error('batch', "Pas de lot associé")
+            self.add_error("batch", "Pas de lot associé")
+        elif len(batchs) > 1:
+            self.add_error("batch", "Il y a plusieurs lots associés")
+        else:
+            batch = batchs.first()
+            if batch.repaired != batch.quantity:
+                self.add_error(
+                    "batch", "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
+                )
         return data
 
 

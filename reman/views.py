@@ -73,7 +73,7 @@ def repair_detail(request, pk):
 
 class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'reman.add_repair'
-    template_name = 'reman/modal/create_repair.html'
+    template_name = 'reman/modal/repair_create.html'
     form_class = AddRepairForm
     success_message = _('Success: Repair was created.')
 
@@ -126,7 +126,7 @@ def ref_base_edit(request, psa_barcode):
 
 class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'reman.add_batch'
-    template_name = 'reman/modal/create_batch.html'
+    template_name = 'reman/modal/batch_create.html'
     form_class = AddBatchForm
     success_message = _('Success: Batch was created.')
     success_url = reverse_lazy('reman:batch_table')
@@ -144,7 +144,7 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
     """ View of modal default create """
     permission_required = 'reman.add_default'
-    template_name = 'reman/modal/create_default.html'
+    template_name = 'reman/modal/default_create.html'
     form_class = DefaultForm
     success_message = _('Success: Reman Default was created.')
     success_url = reverse_lazy('reman:default_table')
@@ -154,7 +154,7 @@ class DefaultUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     """ View of modal default update """
     model = Default
     permission_required = 'reman.change_default'
-    template_name = 'reman/modal/update_default.html'
+    template_name = 'reman/modal/default_update.html'
     form_class = DefaultForm
     success_message = _('Success: Reman Default was updated.')
     success_url = reverse_lazy('reman:default_table')
@@ -257,7 +257,7 @@ IN / OUT VIEWS
 
 
 class CheckOutFilterView(BSModalFormView):
-    template_name = 'reman/modal/select_batch.html'
+    template_name = 'reman/modal/batch_select.html'
     form_class = CheckOutSelectBatchForm
 
     def form_valid(self, form):

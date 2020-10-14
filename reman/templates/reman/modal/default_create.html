@@ -4,7 +4,7 @@
     {% csrf_token %}
 
     <div class="modal-header">
-        <h3 class="modal-title">{% trans 'Update Default' %}</h3>
+        <h3 class="modal-title">{% trans 'Create Default' %}</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -25,7 +25,7 @@
                         {% render_field field class="form-control" %}
                         <div class="{% if field.errors %} invalid{% endif %}">
                             {% for error in field.errors %}
-                                <p class="help-block">{{ error }}</p>
+                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
                             {% endfor %}
                         </div>
                         {% if field == form.ecu_type %}
@@ -41,7 +41,7 @@
 
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
-        <button type="button" class="submit-btn btn btn-primary">{% trans 'Update' %}</button>
+        <button type="button" class="submit-btn btn btn-primary">{% trans 'Create' %}</button>
     </div>
 
 </form>
