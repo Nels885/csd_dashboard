@@ -80,28 +80,6 @@ def import_sparepart(request):
     return redirect('import_export:detail')
 
 
-@permission_required('reman.add_ecumodel', 'reman.change_ecumodel')
-def import_ecureference(request):
-    if request.method == 'POST':
-        try:
-            if request.FILES["myfile"]:
-                my_file = request.FILES["myfile"]
-                file_url = handle_uploaded_file(my_file)
-                out = StringIO()
-                call_command("ecureference", "--file", file_url, stdout=out)
-                for msg in out.getvalue().split("\n"):
-                    messages.success(request, msg)
-                # messages.success(request, 'Upload terminé !')
-                return redirect('reman:ecu_table')
-        except MultiValueDictKeyError:
-            messages.warning(request, 'Le fichier est absent !')
-        except UnicodeDecodeError:
-            messages.warning(request, 'Format de fichier incorrect !')
-        except KeyError:
-            messages.warning(request, "Le fichier n'est pas correctement formaté")
-    return redirect('import_export:detail')
-
-
 @permission_required('reman.add_ecurefbase', 'reman.change_ecurefbase')
 def import_ecurefbase(request):
     if request.method == 'POST':

@@ -235,6 +235,11 @@ CONSTANCE_CONFIG = {
     # REMAN Options
     'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
     'ECU_CC_EMAIL_LIST': ('', 'REMAN Cc email list'),
+    'EXPORT_PATH': ('EXTS', 'Export path'),
+    'BATCH_EXPORT_FILE': ('reman_lots', 'File name for exporting batch'),
+    'REPAIR_EXPORT_FILE': ('reman_repairs', 'File name for exporting repairs'),
+    'CHECKOUT_EXPORT_FILE': ('reman_output', 'File name for exporting data from check out'),
+    'ECUREFBASE_EXPORT_FILE': ('base_ref_reman_new', 'File name for exporting Base Ref REMAN'),
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
@@ -264,7 +269,10 @@ CONSTANCE_CONFIG = {
 
 CONSTANCE_CONFIG_FIELDSETS = {
     'General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'TO_LATE_PRODUCTS_EMAIL_LIST'),
-    'REMAN Options': ('ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST'),
+    'REMAN Options': (
+        'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
+        'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE'
+    ),
     'Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'

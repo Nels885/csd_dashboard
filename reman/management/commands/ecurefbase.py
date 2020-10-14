@@ -5,7 +5,7 @@ from django.db.utils import DataError, IntegrityError
 
 from squalaetp.models import ProductCode, Stock
 from reman.models import EcuRefBase, EcuModel, SparePart, EcuType
-from utils.conf import XLS_ECU_REF_BASE, CSD_ROOT
+from utils.conf import XLS_ECU_REF_BASE, CSD_ROOT, conf
 from utils.file.export import ExportExcel, os
 
 from ._excel_reman import ExcelEcuRefBase
@@ -59,7 +59,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("Suppression des données de la table EcuRefBase terminée!"))
         elif options['export']:
             filename = 'base_ref_reman_new'
-            path = os.path.join(CSD_ROOT, "EXTS")
+            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
             header = [
                 'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
                 'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
@@ -75,7 +75,7 @@ class Command(BaseCommand):
                 'ecu_type__ecu_ref_base__status'
 
             )
-            ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list).file(path)
+            ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
                     "Export ECU_REF_BASE completed: NB_REF = {} | FILE = {}.csv".format(queryset.count(), filename))
