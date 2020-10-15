@@ -178,7 +178,10 @@ IN / OUT FORMS
 
 
 class CheckOutSelectBatchForm(BSModalForm):
-    batch = forms.CharField(label="Numéro de lot", max_length=10, required=True)
+    batch = forms.CharField(
+        label="Numéro de lot", max_length=10, required=True,
+        widget=forms.TextInput(attrs={'onkeypress': 'return event.keyCode != 13;'})
+    )
 
     class Meta:
         fields = ["batch"]
