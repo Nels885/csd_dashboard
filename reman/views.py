@@ -273,8 +273,8 @@ class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
 @permission_required('reman.close_repair')
 def out_table(request):
     """ View of Reman Out Repair table page """
-    table_title = 'Expédition'
     batch_number = request.GET.get('filter')
+    table_title = 'Préparation lot n° {}'.format(batch_number)
     files = Repair.objects.filter(batch__batch_number=batch_number, status="Réparé", quality_control=True,
                                   checkout=False)
     form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList, batch_number=batch_number,)

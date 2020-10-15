@@ -92,14 +92,18 @@ class Command(BaseCommand):
                 log.info(row)
                 reman_reference = row.pop("reman_reference")
                 type_values = dict(
-                    (key, value) for key, value in row.items() if key in ["technical_data", "supplier_oe"]
+                    (key, value) for key, value in row.items() if key in [
+                        "technical_data", "supplier_oe"
+                    ] and value != ""
                 )
                 for key in ["technical_data", "supplier_oe"]:
                     del row[key]
                 code_produit = row.pop("code_produit")
-                base_values = dict((key, value) for key, value in row.items() if
-                                   key in ["ref_cal_out", "ref_psa_out", "open_diag", "ref_mat", "ref_comp", "cal_ktag",
-                                           "status"])
+                base_values = dict(
+                    (key, value) for key, value in row.items() if key in [
+                        "ref_cal_out", "ref_psa_out", "open_diag", "ref_mat", "ref_comp", "cal_ktag", "status"
+                    ] and value != ""
+                )
                 for key in ["ref_cal_out", "ref_psa_out", "open_diag", "ref_mat", "ref_comp", "cal_ktag", "status"]:
                     try:
                         del row[key]
