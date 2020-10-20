@@ -5,12 +5,14 @@ from rest_framework import viewsets, permissions, status, authentication
 from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
+from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
+from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
+from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
+from .serializers import RemanBatchSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon, Corvet
+from reman.models import Batch
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
-from api.models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
 
 from utils.data.mqtt import MQTTClass
 from .utils import TokenAuthSupportQueryString
@@ -156,3 +158,12 @@ class CorvetViewSet(viewsets.ModelViewSet):
 def thermal_temp(request):
     data = MQTT_CLIENT.result()
     return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)
+
+
+class RemanBatchViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows users to be viewed or edited. """
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAdminUser,)
+    queryset = Batch.objects.all().order_by('batch_number')
+    serializer_class = RemanBatchSerializer
+    http_method_names = ['get']

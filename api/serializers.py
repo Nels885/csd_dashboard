@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from squalaetp.models import Xelon, Corvet
 from raspeedi.models import Raspeedi, UnlockProduct
+from reman.models import Batch
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -121,3 +122,18 @@ class UnlockUpdateSerializer(UnlockSerializer):
     class Meta:
         model = UnlockProduct
         fields = UnlockSerializer.Meta.fields + ('active',)
+
+
+class RemanBatchSerializer(serializers.ModelSerializer):
+    reman_reference = serializers.CharField(source='ecu_ref_base.reman_reference', read_only=True)
+    ecu_type = serializers.CharField(source='ecu_ref_base.ecu_type.technical_data')
+    hw_reference = serializers.CharField(source='ecu_ref_base.ecu_type.hw_reference', read_only=True)
+    supplier = serializers.CharField(source='ecu_ref_base.ecu_type.supplier_oe', read_only=True)
+    created_by = serializers.CharField(source='created_by.username', read_only=True)
+
+    class Meta:
+        model = Batch
+        fields = (
+            'batch_number', 'quantity', 'reman_reference', 'ecu_type', 'hw_reference', 'supplier', 'start_date',
+            'end_date', 'active', 'created_by', 'created_at'
+        )

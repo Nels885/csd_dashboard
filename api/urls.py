@@ -11,6 +11,7 @@ router.register(r'cal', views.CalViewSet, basename='cal')
 router.register(r'xelon', views.XelonViewSet, basename='xelon')
 router.register(r'corvet', views.CorvetViewSet, basename='corvet')
 router.register(r'unlock', views.UnlockViewSet, basename='unlock')
+router.register(r'reman/batch', views.RemanBatchViewSet, basename='reman_batch')
 
 app_name = 'api'
 
