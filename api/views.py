@@ -162,8 +162,8 @@ def thermal_temp(request):
 
 class RemanBatchViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows users to be viewed or edited. """
-    authentication_classes = (authentication.SessionAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Batch.objects.all().order_by('batch_number')
     serializer_class = RemanBatchSerializer
     filter_backends = [SearchFilter, OrderingFilter]
@@ -173,8 +173,8 @@ class RemanBatchViewSet(viewsets.ModelViewSet):
 
 class RemanCheckOutViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows users to be viewed or edited. """
-    authentication_classes = (authentication.SessionAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = EcuModel.objects.all().order_by('psa_barcode')
     serializer_class = RemanCheckOutSerializer
     filter_backends = [SearchFilter, OrderingFilter]
