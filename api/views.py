@@ -8,10 +8,10 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
 from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
-from .serializers import RemanBatchSerializer
+from .serializers import RemanBatchSerializer, RemanCheckOutSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon, Corvet
-from reman.models import Batch
+from reman.models import Batch, EcuModel
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
 
 from utils.data.mqtt import MQTTClass
@@ -166,4 +166,17 @@ class RemanBatchViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAdminUser,)
     queryset = Batch.objects.all().order_by('batch_number')
     serializer_class = RemanBatchSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['batch_number', 'ecu_ref_base__reman_reference']
+    http_method_names = ['get']
+
+
+class RemanCheckOutViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows users to be viewed or edited. """
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAdminUser,)
+    queryset = EcuModel.objects.all().order_by('psa_barcode')
+    serializer_class = RemanCheckOutSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['psa_barcode', 'ecu_type__ecu_ref_base__reman_reference']
     http_method_names = ['get']

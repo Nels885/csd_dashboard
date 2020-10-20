@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from squalaetp.models import Xelon, Corvet
 from raspeedi.models import Raspeedi, UnlockProduct
-from reman.models import Batch
+from reman.models import Batch, EcuModel
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -136,4 +136,25 @@ class RemanBatchSerializer(serializers.ModelSerializer):
         fields = (
             'batch_number', 'quantity', 'reman_reference', 'ecu_type', 'hw_reference', 'supplier', 'start_date',
             'end_date', 'active', 'created_by', 'created_at'
+        )
+
+
+class RemanCheckOutSerializer(serializers.ModelSerializer):
+    reman_reference = serializers.CharField(source='ecu_type.ecu_ref_base.reman_reference', read_only=True)
+    ecu_type = serializers.CharField(source='ecu_type.technical_data')
+    hw_reference = serializers.CharField(source='ecu_type.hw_reference', read_only=True)
+    supplier = serializers.CharField(source='ecu_type.supplier_oe', read_only=True)
+    ref_cal_out = serializers.CharField(source='ecu_type.ecu_ref_base.ref_cal_out', read_only=True)
+    ref_psa_out = serializers.CharField(source='ecu_type.ecu_ref_base.ref_psa_out', read_only=True)
+    open_diag = serializers.CharField(source='ecu_type.ecu_ref_base.open_diag', read_only=True)
+    ref_mat = serializers.CharField(source='ecu_type.ecu_ref_base.ref_mat', read_only=True)
+    ref_comp = serializers.CharField(source='ecu_type.ecu_ref_base.ref_comp', read_only=True)
+    cal_ktag = serializers.CharField(source='ecu_type.ecu_ref_base.cal_ktag', read_only=True)
+    status = serializers.CharField(source='ecu_type.ecu_ref_base.status', read_only=True)
+
+    class Meta:
+        model = EcuModel
+        fields = (
+            'psa_barcode', 'reman_reference', 'ecu_type', 'hw_reference', 'supplier', 'ref_cal_out', 'ref_psa_out',
+            'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
         )
