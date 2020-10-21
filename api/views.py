@@ -122,7 +122,7 @@ class XelonViewSet(viewsets.ModelViewSet):
             if folder and folder == 'pending':
                 self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
             xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
-            serializer = XelonSerializer(xelon["items"], many=True)
+            serializer = self.serializer_class(xelon["items"], many=True)
             data = {
                 "data": serializer.data,
                 "draw": xelon["draw"],
@@ -142,7 +142,7 @@ class CorvetViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         try:
             corvet = QueryTableByArgs(self.queryset, CORVET_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = CorvetSerializer(corvet["items"], many=True)
+            serializer = self.serializer_class(corvet["items"], many=True)
             data = {
                 "data": serializer.data,
                 "draw": corvet["draw"],

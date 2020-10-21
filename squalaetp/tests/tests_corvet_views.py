@@ -10,11 +10,12 @@ class CorvetTestCase(UnitTest):
 
     def setUp(self):
         super(CorvetTestCase, self).setUp()
-        self.add_perms_user(Corvet, "add_corvet", "view_corvet", "change_corvet")
+        self.add_perms_user(Corvet, "add_corvet", "change_corvet")
 
     def test_corvet_table_page(self):
         response = self.client.get(reverse('squalaetp:corvet'))
         self.assertEqual(response.status_code, 302)
+        self.add_perms_user(Corvet, 'view_corvet')
         self.login()
         response = self.client.get(reverse('squalaetp:corvet'))
         self.assertEqual(response.status_code, 200)
@@ -75,8 +76,10 @@ class CorvetTestCase(UnitTest):
         response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': self.vin}))
         self.assertEqual(response.status_code, 302)
 
-        # Detail is not found
+        self.add_perms_user(Corvet, 'view_corvet')
         self.login()
+
+        # Detail is not found
         response = self.client.get(reverse('squalaetp:corvet_detail', kwargs={'vin': "123456789"}))
         self.assertEqual(response.status_code, 404)
 

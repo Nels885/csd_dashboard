@@ -1,8 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic import TemplateView
+from django.utils.translation import ugettext as _
 
 from utils.django.forms import ParaErrorList
 from .forms import NacLicenseForm, NacUpdateForm
+from squalaetp.models import Corvet
 from dashboard.models import WebLink
 
 context = {
@@ -46,3 +51,31 @@ def useful_links(request):
     web_links = WebLink.objects.filter(type="PSA")
     context.update(locals())
     return render(request, 'psa/useful_links.html', context)
+
+
+class CorvetView(PermissionRequiredMixin, TemplateView):
+    template_name = 'psa/corvet_table.html'
+    permission_required = ['squalaetp.view_corvet']
+
+    def get_context_data(self, **kwargs):
+        context = super(CorvetView, self).get_context_data(**kwargs)
+        context['title'] = 'Info PSA'
+        context['table_title'] = _('CORVET table')
+        return context
+
+
+@permission_required('squalaetp.view_corvet')
+def corvet_detail(request, vin):
+    """
+    detailed view of Corvet data for a file
+    :param vin:
+        VIN for Corvet data
+    """
+    title = 'Info PSA'
+    corvet = get_object_or_404(Corvet, vin=vin)
+    card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
+    dict_corvet = vars(corvet)
+    for key in ["_state"]:
+        del dict_corvet[key]
+    # redirect = request.META.get('HTTP_REFERER')
+    return render(request, 'psa/corvet_detail.html', locals())

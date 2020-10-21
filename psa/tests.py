@@ -4,6 +4,8 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
+from squalaetp.models import Corvet
+
 
 class PsaTestCase(UnitTest):
 
@@ -49,3 +51,30 @@ class PsaTestCase(UnitTest):
     def test_useful_links_page(self):
         response = self.client.get(reverse('psa:useful_links'))
         self.assertEqual(response.status_code, 200)
+
+    def test_corvet_table_page(self):
+        response = self.client.get(reverse('psa:corvet'))
+        self.assertEqual(response.status_code, 302)
+        self.add_perms_user(Corvet, 'view_corvet')
+        self.login()
+        response = self.client.get(reverse('psa:corvet'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_corvet_detail_page(self):
+        url = reverse('psa:corvet_detail', kwargs={'vin': self.vin})
+
+        # Detail page is disconnected
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(Corvet, 'view_corvet')
+        self.login()
+
+        # Detail is not found
+        response = self.client.get(reverse('psa:corvet_detail', kwargs={'vin': "123456789"}))
+        self.assertEqual(response.status_code, 404)
+
+        # # Detail is valid
+        # self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
+        # response = self.client.get(url)
+        # self.assertEqual(response.status_code, 200)
