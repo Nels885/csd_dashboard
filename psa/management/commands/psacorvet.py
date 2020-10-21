@@ -1,13 +1,17 @@
+import csv
+import datetime
+
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.db import connection
 
-from squalaetp.models import Corvet
+from psa.models import Corvet
 from utils.conf import XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE
 
-from ._excel_squalaetp import ExcelSqualaetp
+from ._csv_squalaetp_corvet import CsvCorvet
+from squalaetp.management.commands._excel_squalaetp import ExcelSqualaetp
 
 import logging as log
 
@@ -23,6 +27,12 @@ class Command(BaseCommand):
             help='Specify import Excel file',
         )
         parser.add_argument(
+            '--import_csv',
+            action='store_true',
+            dest='import_csv',
+            help='import Corvet CSV file',
+        )
+        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -32,7 +42,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("[CORVET] Waiting...")
 
-        if options['delete']:
+        if options['import_csv']:
+            if options['filename'] is not None:
+                excel = CsvCorvet(options['filename'])
+                self._update_or_create(Corvet, excel.read())
+            else:
+                self.stdout.write("Fichier CSV manquant")
+
+        elif options['delete']:
             Corvet.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Corvet, ])
@@ -48,12 +65,12 @@ class Command(BaseCommand):
             else:
                 excel = ExcelSqualaetp(XLS_SQUALAETP_FILE)
 
-            self._update_or_create(Corvet, excel)
+            self._update_or_create(Corvet, excel.corvet_table(XLS_ATTRIBUTS_FILE))
 
-    def _update_or_create(self, model, excel):
+    def _update_or_create(self, model, data):
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
-        for row in excel.corvet_table(XLS_ATTRIBUTS_FILE):
+        for row in data:
             log.info(row)
             vin = row.pop('vin')
             try:
@@ -70,7 +87,28 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 "[CORVET] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                    len(data), nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                )
+            )
+        )
+
+    def _import(self, model, csv_file):
+        nb_prod_before = model.objects.count()
+        with open(csv_file, 'r') as f:
+            reader = csv.reader(f, delimiter=';')
+            for row in reader:
+                if row[0] == "vin" or row[2] == "":
+                    continue
+                for i in range(1, 3):
+                    row[i] = datetime.datetime.strptime(row[i], '%d/%m/%Y %H:%M:%S')
+                print(row[:-1])
+                m = model(*row[:-1])
+                m.save()
+        nb_prod_after = model.objects.count()
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[CORVET] data import completed: ADD = {} | TOTAL = {}".format(
+                    nb_prod_after - nb_prod_before, nb_prod_after
                 )
             )
         )

@@ -106,7 +106,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '14K', '14L', '14R', '14X', '19Z', '44F', '44L', '44X', '54F', '54K', '54L', '84F', '84L', '84X', '94F',
             '94L', '94X', 'DAT', 'DCX', '19H', '49H', '64F', '64X', '69H', '89H', '99H', '14A', '34A', '44A', '54A',
             '64A', '84A', '94A', 'P4A', 'MOTEUR', 'TRANSMISSION', '10', '14B', '20', '44B', '54B', '64B', '84B', '94B',
-            '16P', '46P', '56P', '66P'
+            '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
         ]
         queryset = Corvet.objects.all()
         values_list = None
