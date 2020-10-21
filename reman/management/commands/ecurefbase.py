@@ -120,13 +120,13 @@ class Command(BaseCommand):
                 if not ecu_created:
                     nb_ecu_update += 1
             except KeyError as err:
-                print("KeyError: {}".format(err))
+                self.stderr.write(self.style.ERROR("KeyError: {}".format(err)))
             except DataError as err:
-                print("DataError: {} - {}".format(reman_reference, err))
+                self.stderr.write(self.style.ERROR("DataError: {} - {}".format(reman_reference, err)))
             except IntegrityError as err:
-                print("IntegrityError: {} - {}".format(reman_reference, err))
+                self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(reman_reference, err)))
             except Stock.MultipleObjectsReturned as err:
-                print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
+                self.stderr.write(self.style.ERROR("MultipleObjectsReturned: {} - {}".format(code_produit, err)))
 
         nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
         self.stdout.write(
