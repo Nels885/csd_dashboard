@@ -29,6 +29,8 @@ class Command(BaseCommand):
             ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(queryset.count(), filename)
+                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(
+                        queryset.count(), os.path.join(path, filename)
+                    )
                 )
             )

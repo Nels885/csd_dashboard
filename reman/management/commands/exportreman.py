@@ -55,7 +55,9 @@ class Command(BaseCommand):
             ExportExcel(queryset=batch, filename=filename, header=header, values_list=values_list).file(path)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(batch.count(), filename)
+                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(
+                        batch.count(), os.path.join(path, filename)
+                    )
                 )
             )
         elif options['repair']:
@@ -69,7 +71,9 @@ class Command(BaseCommand):
             ExportExcel(queryset=repairs, filename=filename, header=header, values_list=values_list).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}.csv".format(repairs.count(), filename)
+                    "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}.csv".format(
+                        repairs.count(), os.path.join(path, filename)
+                    )
                 )
             )
         elif options['cal_ecu']:
@@ -99,6 +103,8 @@ class Command(BaseCommand):
             ExportExcel(queryset=ecu, filename=filename, header=header, values_list=values_list).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}.csv".format(ecu.count(), filename)
+                    "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}.csv".format(
+                        ecu.count(), os.path.join(path, filename)
+                    )
                 )
             )
