@@ -1,7 +1,5 @@
 from django.db import models
 
-from squalaetp.models import Xelon
-
 
 class Corvet(models.Model):
     vin = models.CharField('V.I.N.', max_length=17, primary_key=True)

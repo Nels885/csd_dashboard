@@ -150,3 +150,15 @@ class Stock(models.Model):
     code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
     code_produit = models.ForeignKey('ProductCode', on_delete=models.CASCADE)
+
+
+class Indicator(models.Model):
+    date = models.DateField('Date du jours', unique=True)
+    products_to_repair = models.IntegerField('Produits à réparer')
+    late_products = models.IntegerField('Produits en retard')
+    express_products = models.IntegerField('Produits express')
+    output_products = models.IntegerField('Produits en sortie')
+    xelons = models.ManyToManyField('Xelon')
+
+    def __str__(self):
+        return self.date
