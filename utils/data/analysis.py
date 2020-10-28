@@ -14,9 +14,10 @@ class ProductAnalysis:
         """
         Initialization of the ProductAnalysis class
         """
-        self.pendingQueries = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
-        self.pending = self.pendingQueries.filter(type_de_cloture__in=['', 'Sauvée']).count()
-        self.express = self.pendingQueries.filter(type_de_cloture__in=['', 'Sauvée'], express=True).count()
+        self.queryset = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
+        self.pendingQueryset = self.queryset.filter(type_de_cloture__in=['', 'Sauvée'])
+        self.pending = self.pendingQueryset.count()
+        self.express = self.pendingQueryset.filter(express=True).count()
         self.late = self.late_products().count()
         self.percent = int(self._percent_of_late_products())
 
@@ -37,8 +38,7 @@ class ProductAnalysis:
         :return:
             result
         """
-        return self.pendingQueries.filter(
-            delai_au_en_jours_ouvres__gt=3).exclude(type_de_cloture__in=['Réparé', 'Admin'])
+        return self.queryset.filter(delai_au_en_jours_ouvres__gt=3).exclude(type_de_cloture__in=['Réparé', 'Admin'])
 
     def products_count(self):
         """
@@ -47,7 +47,7 @@ class ProductAnalysis:
             list of name and number of different products
         """
         prod_nb, rtx_nb = [], 0
-        pending_prod = self.pendingQueries.filter(type_de_cloture__in=['', 'Sauvée'])
+        pending_prod = self.pendingQueryset
         for prod in self.LABELS[:-1]:
             if prod == "RTx":
                 for rtx in ["RT3", "RT4", "RT5"]:
@@ -76,8 +76,8 @@ class IndicatorAnalysis:
         """
         Initialization of the ProductAnalysis class
         """
-        self.queries = Xelon.objects.filter(date_retour__isnull=False)
-        last_query = self.queries.order_by('-date_retour').first()
+        self.queryset = Xelon.objects.filter(date_retour__isnull=False)
+        last_query = self.queryset.order_by('-date_retour').first()
         if last_query:
             self.LAST_60_DAYS = last_query.date_retour - datetime.timedelta(60)
         else:
@@ -85,7 +85,7 @@ class IndicatorAnalysis:
 
     def result(self):
         data = {"areaLabels": [], "prodsInValue": [], "prodsExpValue": [], "prodsLateValue": []}
-        prods_in = self.queries.filter(date_retour__gte=self.LAST_60_DAYS).extra(
+        prods_in = self.queryset.filter(date_retour__gte=self.LAST_60_DAYS).extra(
             {"day": "date_trunc('day', date_retour)"}).values("day").order_by('date_retour')
         prods_in = prods_in.annotate(count=Count("id"))
         prods_in = prods_in.annotate(exp=Count("express", filter=Q(express=True)))

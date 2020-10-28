@@ -160,5 +160,13 @@ class Indicator(models.Model):
     output_products = models.IntegerField('Produits en sortie')
     xelons = models.ManyToManyField('Xelon')
 
+    def count_prods(self):
+        prod_list = ["RT6", "SMEG", "NAC", "RNEG", "NG4", "DISPLAY", "NISSAN", "BSI", "BSM"]
+        data = {key: self.xelons.filter(modele_produit__startswith=key).count() for key in prod_list}
+        data['RTx'] = self.xelons.filter(modele_produit__in=['RT3', 'RT4', 'RT5']).count()
+        data['CALC_MOT'] = self.xelons.filter(famille_produit__exact="CALC MOT").count()
+        data['AUTRES'] = self.xelons.all().count() - sum(data.values())
+        return data
+
     def __str__(self):
-        return self.date
+        return str(self.date)
