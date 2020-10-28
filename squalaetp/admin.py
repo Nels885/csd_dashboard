@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Xelon, Corvet, Stock
+from .models import Xelon, Corvet, Stock, Indicator
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -32,7 +32,13 @@ class StockAdmin(admin.ModelAdmin):
     get_code_produit.short_description = 'Code Produit'
 
 
+class IndicatorAdmin(admin.ModelAdmin):
+    list_display = ('date', 'products_to_repair', 'late_products', 'express_products', 'output_products')
+    ordering = ('date',)
+
+
 admin.site.register(Xelon, XelonAdmin)
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(Stock, StockAdmin)
+admin.site.register(Indicator, IndicatorAdmin)
 # admin.site.register(CorvetBackup)

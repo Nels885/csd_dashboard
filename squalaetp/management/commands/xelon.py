@@ -6,6 +6,7 @@ from django.db import connection
 
 from squalaetp.models import Xelon
 from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES
+from utils.django.models import defaults_dict
 
 from ._excel_squalaetp import ExcelSqualaetp
 from ._excel_delay_analysis import ExcelDelayAnalysis
@@ -69,9 +70,10 @@ class Command(BaseCommand):
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
         for row in excel.xelon_table():
-            xelon_number = row.pop("numero_de_dossier")
+            xelon_number = row.get("numero_de_dossier")
+            defaults = defaults_dict(model, row, "numero_de_dossier")
             try:
-                obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=row)
+                obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                 if not created:
                     nb_prod_update += 1
             except IntegrityError as err:
@@ -119,35 +121,35 @@ class Command(BaseCommand):
 
     def _fix_delay_files(self, model):
         self.stdout.write("[DELAY] Waiting...")
-        nb_excel_lines, nb_prod_update = 0, 0
-        excels = [ExcelDelayAnalysis(file) for file in XLS_DELAY_FILES]
+        nb_prod_update = 0
+        excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
         nb_prod_before = model.objects.count()
         model.objects.exclude(
             type_de_cloture__in=['Réparé', 'Rebut'], date_retour__isnull=True).update(type_de_cloture='Réparé')
-        for excel in excels:
-            for row in excel.table():
-                xelon_number = row.pop("numero_de_dossier")
-                try:
-                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=row)
-                    if not created:
-                        if not obj.nom_technicien:
-                            obj.type_de_cloture = ''
-                            obj.save()
-                        nb_prod_update += 1
-                except IntegrityError as err:
-                    self.stderr.write(self.style.ERROR("IntegrityError row {} : {}".format(xelon_number, err)))
-                except DataError as err:
-                    self.stderr.write(self.style.ERROR("DataError row {} : {}".format(xelon_number, err)))
-                except FieldDoesNotExist as err:
-                    self.stderr.write(self.style.ERROR("FieldDoesNotExist row {} : {}".format(xelon_number, err)))
-                except KeyError as err:
-                    self.stderr.write(self.style.ERROR("KeyError row {} : {}".format(xelon_number, err)))
-            nb_excel_lines += excel.nrows
+        for row in excel.table():
+            xelon_number = row.get("numero_de_dossier")
+            defaults = defaults_dict(model, row, "numero_de_dossier")
+            try:
+                obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
+                if not created:
+                    if not obj.nom_technicien:
+                        obj.type_de_cloture = ''
+                        obj.save()
+                    nb_prod_update += 1
+            except IntegrityError as err:
+                self.stderr.write(self.style.ERROR("IntegrityError row {} : {}".format(xelon_number, err)))
+            except DataError as err:
+                self.stderr.write(self.style.ERROR("DataError row {} : {}".format(xelon_number, err)))
+            except FieldDoesNotExist as err:
+                self.stderr.write(self.style.ERROR("FieldDoesNotExist row {} : {}".format(xelon_number, err)))
+            except KeyError as err:
+                self.stderr.write(self.style.ERROR("KeyError row {} : {}".format(xelon_number, err)))
+
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
                 "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    nb_excel_lines, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                    excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
                 )
             )
         )

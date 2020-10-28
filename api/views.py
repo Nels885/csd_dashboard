@@ -10,9 +10,9 @@ from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSer
 from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
 from .serializers import RemanBatchSerializer, RemanCheckOutSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
-from squalaetp.models import Xelon, Corvet
+from squalaetp.models import Xelon, Corvet, Indicator
 from reman.models import Batch, EcuModel
-from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
+from utils.data.analysis import IndicatorAnalysis
 
 from utils.data.mqtt import MQTTClass
 from .utils import TokenAuthSupportQueryString
@@ -105,8 +105,9 @@ def charts(request):
     """
     API endpoint that allows chart data to be viewed
     """
-    analysis, indicator = ProductAnalysis(), IndicatorAnalysis()
-    data = analysis.products_count()
+    indicator = IndicatorAnalysis()
+    prod = Indicator.count_prods()
+    data = {"prodLabels": prod.keys(), "prodDefault": prod.values()}
     data.update(indicator.result())
     return Response(data, status=status.HTTP_200_OK)
 

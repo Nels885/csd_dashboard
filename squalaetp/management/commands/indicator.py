@@ -20,6 +20,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[INDICATOR] Waiting...")
 
         if options['delete']:
             Indicator.objects.all().delete()
