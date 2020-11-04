@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Corvet
+from .models import Corvet, Product
 
 
 class CorvetAdmin(admin.ModelAdmin):
@@ -14,5 +14,12 @@ class CorvetAdmin(admin.ModelAdmin):
     search_fields = ('vin', 'electronique_14l', 'electronique_94l')
 
 
-admin.site.register(Corvet, CorvetAdmin)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('reference', 'name', 'front', 'type', 'dab', 'cam', 'media', 'carto')
+    list_filter = ('name', 'front', 'type', 'media', 'carto')
+    ordering = ('reference',)
+    search_fields = ('reference', 'name', 'type')
 
+
+admin.site.register(Corvet, CorvetAdmin)
+admin.site.register(Product, ProductAdmin)

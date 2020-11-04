@@ -1,5 +1,7 @@
 from django.db import models
 
+from raspeedi.models import Raspeedi
+
 
 class Corvet(models.Model):
     vin = models.CharField('V.I.N.', max_length=17, primary_key=True)
@@ -95,3 +97,49 @@ class Corvet(models.Model):
 
     def __str__(self):
         return self.vin
+
+
+class Product(models.Model):
+    TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
+    CON_CHOICES = [(1, '1'), (2, '2')]
+    MEDIA_CHOICES = [
+        ('N/A', 'Vide'),
+        ('HDD', 'Disque Dur'),
+        ('8Go', 'Carte SD 8Go'),
+        ('16Go', 'Carte SD 16Go'),
+        ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
+    ]
+    PRODUCT_CHOICES = [
+        ('RT4', 'RT4'),
+        ('RT5', 'RT5'),
+        ('RT6', 'RT6'),
+        ('RT6v2', 'RT6 version 2'),
+        ('SMEG', 'SMEG'),
+        ('SMEGP', 'SMEG+ / SMEG+ IV1'),
+        ('SMEGP2', 'SMEG+ IV2'),
+    ]
+
+    reference = models.BigIntegerField('référence boîtier', primary_key=True)
+    name = models.CharField('produit', max_length=20, choices=PRODUCT_CHOICES)
+    front = models.CharField('façade', max_length=2)
+    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    dab = models.BooleanField('DAB', default=False)
+    cam = models.BooleanField('caméra de recul', default=False)
+    cd_version = models.CharField('version CD', max_length=10, blank=True)
+    media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, blank=True)
+    carto = models.CharField('version cartographie', max_length=20, blank=True)
+    mm_ref = models.CharField('référence MM', max_length=200, blank=True)
+    screen_con = models.IntegerField("nombre de connecteur d'écran", choices=CON_CHOICES, null=True, blank=True)
+    raspeedi = models.ForeignKey(Raspeedi, on_delete=models.CASCADE, null=True, blank=True)
+    corvets = models.ManyToManyField(Corvet, related_name='products', blank=True)
+
+    class Meta:
+        verbose_name = "Données Produit"
+        ordering = ['reference']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return "{} - {} - {} - {}".format(self.reference, self.name, self.front, self.type)

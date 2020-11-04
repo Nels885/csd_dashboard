@@ -65,5 +65,9 @@ class UnlockProduct(models.Model):
     created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
     modified_at = models.DateTimeField('modifié le', auto_now=True)
 
+    class Meta:
+        verbose_name = "Déverrouillage VIN"
+        ordering = ['-created_at']
+
     def __str__(self):
         return self.unlock.numero_de_dossier

@@ -4,7 +4,9 @@ from django.db.utils import IntegrityError, DataError
 from django.db import connection
 
 from raspeedi.models import Raspeedi
+from psa.models import Product
 from utils.conf import XLS_RASPEEDI_FILE
+from utils.django.models import defaults_dict
 
 from ._excel_raspeedi import ExcelRaspeedi
 
@@ -54,6 +56,12 @@ class Command(BaseCommand):
                     obj, created = Raspeedi.objects.update_or_create(ref_boitier=ref_boitier, defaults=row)
                     if not created:
                         nb_update += 1
+                    values = {
+                        "name": row.get("produit", ""), "front": row.get("facade", ""), "mm_ref": row.get("ref_mm", ""),
+                        "raspeedi": obj
+                    }
+                    values.update(defaults_dict(Product, row))
+                    Product.objects.update_or_create(reference=ref_boitier, defaults=values)
                 except IntegrityError as err:
                     self.stderr.write("[RASPEEDI_CMD] IntegrityError: {} - {}".format(ref_boitier, err))
                 except DataError as err:
