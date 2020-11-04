@@ -1,5 +1,3 @@
-import csv
-
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.core.exceptions import ValidationError
@@ -25,12 +23,6 @@ class Command(BaseCommand):
             help='Specify import Excel file',
         )
         parser.add_argument(
-            '--import_csv',
-            action='store_true',
-            dest='import_csv',
-            help='import Corvet CSV file',
-        )
-        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -38,14 +30,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[CORVET] Waiting...")
 
-        if options['import_csv']:
-            if options['filename'] is not None:
-                self._import(Corvet, options['filename'])
-            else:
-                self.stdout.write("Fichier CSV manquant")
-
-        elif options['delete']:
+        if options['delete']:
             Corvet.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Corvet, ])
@@ -76,32 +63,14 @@ class Command(BaseCommand):
                 if not created:
                     nb_prod_update += 1
             except IntegrityError as err:
-                self.stderr.write("IntegrityError: {} - {}".format(vin, err))
+                self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(vin, err)))
             except ValidationError as err:
-                self.stderr.write("ValidationError: {} - {}".format(vin, err))
+                self.stderr.write(self.style.ERROR("ValidationError: {} - {}".format(vin, err)))
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
                 "[CORVET] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                     excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
-                )
-            )
-        )
-
-    def _import(self, model, csv_file):
-        nb_prod_before = model.objects.count()
-        with open(csv_file) as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row[0] == "vin":
-                    continue
-                m = model(*row)
-                m.save()
-        nb_prod_after = model.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[CORVET] data import completed: ADD = {} | TOTAL = {}".format(
-                    nb_prod_after - nb_prod_before, nb_prod_after
                 )
             )
         )

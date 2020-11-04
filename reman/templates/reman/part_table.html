@@ -16,7 +16,7 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered" id="partTable" width="100%" cellspacing="0">
+    <table class="table table-bordered text-nowrap" id="partTable" width="100%" cellspacing="0">
         <thead>
         <tr>
             <th class="all">Code produit</th>
@@ -29,15 +29,15 @@
         </thead>
         <tbody>
 
-        {% for file in files %}
+        {% for part in parts %}
 
             <tr>
-                <td>{{ file.code_produit }}</td>
-                <td>{{ file.code_zone }}</td>
-                <td>{{ file.code_emplacement }}</td>
-                <td>{{ file.cumul_dispo }}</td>
-                <td>{{ file.code_magasin }}</td>
-                <td>{{ file.code_site }}</td>
+                <td>{{ part.code_produit }}</td>
+                <td>{{ part.code_zone }}</td>
+                <td>{{ part.code_emplacement }}</td>
+                <td>{{ part.cumul_dispo|default:"" }}</td>
+                <td>{{ part.code_magasin }}</td>
+                <td>{{ part.code_site|default:"" }}</td>
             </tr>
 
         {% endfor %}

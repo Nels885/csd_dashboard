@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-04 09:57+0200\n"
+"POT-Creation-Date: 2020-09-30 17:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,6 +67,10 @@ msgstr "Date de validation"
 #: tools/templates/tools/thermal_chamber.html:35
 msgid "Add"
 msgstr "Ajouter"
+
+#: tools/templates/tools/thermal_chamber.html:40
+msgid "Refresh"
+msgstr "Actualiser"
 
 #: tools/templates/tools/thermal_chamber_fullscreen.html:12
 msgid "Thermal Chamber Temperature"

@@ -36,6 +36,7 @@ class BaseTest:
         self.user.save()
         UserProfile(user=self.user).save()
         self.redirectUrl = reverse('index')
+        self.nextLoginUrl = '/accounts/login/?next='
 
     def add_group_user(self, *args):
         for group in args:

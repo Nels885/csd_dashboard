@@ -47,9 +47,16 @@ class XelonTestCase(UnitTest):
 
         # Detail is not found
         self.login()
-        response = self.client.get(reverse('squalaetp:detail', kwargs={'file_id': 2}))
+        response = self.client.get(reverse('squalaetp:detail', kwargs={'file_id': 666}))
         self.assertEqual(response.status_code, 404)
 
         # Detail is valid
         response = self.client.get(reverse('squalaetp:detail', kwargs={'file_id': self.xelonId}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_stock_table_page(self):
+        response = self.client.get(reverse('squalaetp:stock_parts'))
+        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/stock-parts/', status_code=302)
+        self.login()
+        response = self.client.get(reverse('squalaetp:stock_parts'))
         self.assertEqual(response.status_code, 200)

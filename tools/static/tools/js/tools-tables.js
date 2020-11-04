@@ -19,7 +19,7 @@ $(document).ready(function () {
         pagingType: "full_numbers",
         scrollX: true,
         columnDefs: [{
-            targets: 0,
+            targets: [0, 1],
             searchable: false,
             orderable: false,
         }],
@@ -27,6 +27,12 @@ $(document).ready(function () {
     });
 
     $('#thermalTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
+        order: []
+    });
+
+    $('#tagXelonTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
         order: []

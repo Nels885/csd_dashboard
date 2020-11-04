@@ -6,7 +6,7 @@
 
 {% block table_content %}
 
-    <form class="form-inline" method="post" action="{% url 'raspeedi:unlock_prods' %}">
+    <form class="form-inline" method="post" action="">
 
         {% csrf_token %}
 
@@ -17,10 +17,15 @@
 
         </div>
 
-        <button type="submit" class="btn btn-success btn-icon-split mb-2">
+        <button type="submit" class="btn btn-success btn-icon-split mb-2 mr-4">
             <span class="icon text-white-50"><i class="fas fa-check"></i></span><span
                 class="text">{% trans "Add" %}</span>
         </button>
+
+        <a class="btn btn-primary btn-icon-split mb-2" href="{% url 'raspeedi:unlock_prods' %}">
+            <span class="icon text-white-50"><i class="fas fa-sync"></i></span>
+            <span class="text">{% trans "Refresh" %}</span>
+        </a>
 
     </form>
 
@@ -34,7 +39,7 @@
 
     <hr>
 
-    <table class="table table-bordered" id="unlockTable" width="100%" cellspacing="0">
+    <table class="table table-bordered text-nowrap" id="unlockTable" width="100%" cellspacing="0">
         <thead>
         <tr>
             <th></th>
@@ -55,9 +60,7 @@
                         <a href="#" data-id="{% url 'raspeedi:unlock_delete' prod.pk %}" title="Suppression"
                            class="delete-thermal btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
                     {% else %}
-                        <td>
-                            <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
-                        </td>
+                        <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
                     {% endif %}
                 </td>
                 <td>{{ prod.unlock.numero_de_dossier }}</td>

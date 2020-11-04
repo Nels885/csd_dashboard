@@ -1,0 +1,37 @@
+{% extends 'format/forms_small_format.html' %}
+
+{% load i18n %}
+
+{% block form_content %}
+
+    <div class="p-2">
+        <form class="form-inline" method="post" action="">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.psa_barcode.id_for_label }}"
+                       class="mb-2 mr-sm-4">{{ form.psa_barcode.label }}</label>
+
+                {{ form.psa_barcode }}
+
+            </div>
+
+            <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+                <span class="text">{% trans "Validate" %}</span>
+            </button>
+
+        </form>
+
+        {% if errors %}
+            {% for key, error in errors %}
+                {% autoescape off %}
+                    {{ error }}
+                {% endautoescape %}
+            {% endfor %}
+        {% endif %}
+
+    </div>
+
+{% endblock %}

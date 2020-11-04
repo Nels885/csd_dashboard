@@ -54,6 +54,10 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="{% url 'tools:thermal_list' %}">{% trans "Thermal chamber" %}</a>
+                    {% if perms.raspeedi.view_unlockproduct %}
+                        <a class="collapse-item" href="{% url 'raspeedi:unlock_table' %}">{% trans "Unlock table" %}</a>
+                    {% endif %}
+                    <a class="collapse-item" href="{% url 'tools:tag_xelon_list' %}">{% trans "tag Xelon table" %}</a>
                 </div>
             </div>
         </li>
@@ -79,7 +83,7 @@
                             <a class="collapse-item"
                                href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
                             <div class="collapse-divider"></div>
-                            {% if perms.dashboard.add_csdsoftware %}
+                            {% if perms.tools.add_csdsoftware %}
                                 <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                                 <a class="collapse-item"
                                    href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>

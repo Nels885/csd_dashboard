@@ -5,14 +5,14 @@ from rest_framework import viewsets, permissions, status, authentication
 from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from api.serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from api.serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
+from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
+from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
+from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
+from .serializers import RemanBatchSerializer, RemanCheckOutSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
-from squalaetp.models import Xelon, Corvet
-from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
-from api.models import (query_table_by_args,
-                        ORDER_CORVET_COLUMN_CHOICES, ORDER_XELON_COLUMN_CHOICES,
-                        xelon_filter, corvet_filter)
+from squalaetp.models import Xelon, Corvet, Indicator
+from reman.models import Batch, EcuModel
+from utils.data.analysis import IndicatorAnalysis
 
 from utils.data.mqtt import MQTTClass
 from .utils import TokenAuthSupportQueryString
@@ -105,8 +105,9 @@ def charts(request):
     """
     API endpoint that allows chart data to be viewed
     """
-    analysis, indicator = ProductAnalysis(), IndicatorAnalysis()
-    data = analysis.products_count()
+    indicator = IndicatorAnalysis()
+    prod = Indicator.count_prods()
+    data = {"prodLabels": prod.keys(), "prodDefault": prod.values()}
     data.update(indicator.result())
     return Response(data, status=status.HTTP_200_OK)
 
@@ -121,8 +122,8 @@ class XelonViewSet(viewsets.ModelViewSet):
             folder = self.request.query_params.get('folder', None)
             if folder and folder == 'pending':
                 self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
-            xelon = query_table_by_args(xelon_filter, self.queryset, ORDER_XELON_COLUMN_CHOICES, **request.query_params)
-            serializer = XelonSerializer(xelon["items"], many=True)
+            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
+            serializer = self.serializer_class(xelon["items"], many=True)
             data = {
                 "data": serializer.data,
                 "draw": xelon["draw"],
@@ -141,9 +142,8 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
-            corvet = query_table_by_args(corvet_filter, self.queryset, ORDER_CORVET_COLUMN_CHOICES,
-                                         **request.query_params)
-            serializer = CorvetSerializer(corvet["items"], many=True)
+            corvet = QueryTableByArgs(self.queryset, CORVET_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(corvet["items"], many=True)
             data = {
                 "data": serializer.data,
                 "draw": corvet["draw"],
@@ -159,3 +159,25 @@ class CorvetViewSet(viewsets.ModelViewSet):
 def thermal_temp(request):
     data = MQTT_CLIENT.result()
     return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)
+
+
+class RemanBatchViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows users to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Batch.objects.all().order_by('batch_number')
+    serializer_class = RemanBatchSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['batch_number', 'ecu_ref_base__reman_reference']
+    http_method_names = ['get']
+
+
+class RemanCheckOutViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows users to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = EcuModel.objects.all().order_by('psa_barcode')
+    serializer_class = RemanCheckOutSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['psa_barcode', 'ecu_type__ecu_ref_base__reman_reference']
+    http_method_names = ['get']

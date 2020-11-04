@@ -1,14 +1,14 @@
-from utils.microsoft_format import ExcelFormat
+from utils.microsoft_format import ExcelFormat, pd
 
 
 class ExcelDelayAnalysis(ExcelFormat):
     """## Read data in Excel file for Delay Analysis ##"""
 
-    DROP_COLS = ['ref_produit_commerciale', 'ref_produit_clarion', 'code_pdv', 'nom_pdv',
+    DROP_COLS = ['ref_produit_clarion', 'code_pdv', 'nom_pdv',
                  'date_daccord_de_la_demande', 'delai_prevu_sp', 'nom_equipe', 'n_commande_de_travaux']
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S"}
 
-    def __init__(self, file, sheet_name=0, columns=None):
+    def __init__(self, files, sheet_name=0, columns=None):
         """
         Initialize ExcelDelayAnalysis class
         :param file:
@@ -18,7 +18,13 @@ class ExcelDelayAnalysis(ExcelFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8)
+        dfs = []
+        for file in files:
+            super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8)
+            self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
+            dfs.append(self.sheet)
+        self.sheet = pd.concat(dfs).reset_index(drop=True)
+        self.nrows = self.sheet.shape[0]
         self._columns_convert(digit=False)
         self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
         self.sheet.drop(columns=self.DROP_COLS, inplace=True)
@@ -45,14 +51,10 @@ class ExcelDelayAnalysis(ExcelFormat):
         :return:
             list of dictionnaries that represents the data for table
         """
-        data = []
-        for line in range(self.nrows):
-            row_dict = self.key_formatting(dict(self.sheet.loc[line].dropna()))
-            data.append(row_dict)
+        data = [self.key_formatting(dict(self.sheet.loc[line].dropna())) for line in range(self.nrows)]
         return data
 
     def key_formatting(self, data):
-        data['ilot'] = self.basename
-        data["numero_de_dossier"] = data["n_de_dossier"]
-        del data["n_de_dossier"]
+        data["numero_de_dossier"] = data.pop("n_de_dossier")
+        data["modele_produit"] = data.pop("ref_produit_commerciale")
         return data

@@ -36,8 +36,13 @@ class ToolsTestCase(UnitTest):
         self.assertEqual(response.status_code, 302)
 
     def test_tag_xelon_is_disconnected(self):
-        response = self.client.get(reverse('tools:tag_xelon'))
-        self.assertRedirects(response, '/accounts/login/?next=/tools/tag-xelon/', status_code=302)
+        url = reverse('tools:tag_xelon_add')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+    def test_tag_xelon_list_page(self):
+        response = self.client.get(reverse('tools:tag_xelon_list'))
+        self.assertEqual(response.status_code, 200)
 
     def test_thermal_chamber_page(self):
         response = self.client.get(reverse('tools:thermal'))
@@ -84,10 +89,9 @@ class ToolsTestCase(UnitTest):
         response = self.client.get(reverse('tools:thermal_full'))
         self.assertEqual(response.status_code, 200)
 
-    def test_thermal_chamber_table(self):
+    def test_thermal_chamber_list_page(self):
         response = self.client.get(reverse('tools:thermal_list'))
         self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/table/', status_code=302)
         self.login()
         response = self.client.get(reverse('tools:thermal_list'))
         self.assertEqual(response.status_code, 200)
-

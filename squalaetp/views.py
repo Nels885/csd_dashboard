@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
-from .models import Xelon, Corvet
+from .models import Xelon, Corvet, Stock
 from .forms import CorvetForm, CorvetModalForm
 from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
@@ -31,7 +31,16 @@ def xelon_table(request):
         return render(request, 'squalaetp/xelon_table.html', locals())
     else:
         table_title = 'Dossiers Clients'
-        return render(request, 'squalaetp/all_xelon_table.html', locals())
+        return render(request, 'squalaetp/ajax_xelon_table.html', locals())
+
+
+@login_required
+def stock_table(request):
+    """ View of SparePart table page """
+    title = 'Xelon'
+    table_title = 'Pièces détachées'
+    stocks = Stock.objects.all()
+    return render(request, 'squalaetp/stock_table.html', locals())
 
 
 @login_required
@@ -52,7 +61,7 @@ def detail(request, file_id):
     select = 'xelon'
     redirect = request.META.get('HTTP_REFERER')
     # 'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
-    return render(request, 'squalaetp/detail.html', locals())
+    return render(request, 'squalaetp/detail/detail.html', locals())
 
 
 @permission_required('squalaetp.view_xelon')

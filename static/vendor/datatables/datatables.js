@@ -4,24 +4,24 @@
  *
  * To rebuild or modify this file with the latest versions of the included
  * software please visit:
- *   https://datatables.net/download/#bs4/dt-1.10.18
+ *   https://datatables.net/download/#bs4/dt-1.10.21/b-1.6.3/sp-1.1.1
  *
  * Included libraries:
- *   DataTables 1.10.18
+ *   DataTables 1.10.21, Buttons 1.6.3, SearchPanes 1.1.1
  */
 
-/*! DataTables 1.10.18
- * ©2008-2018 SpryMedia Ltd - datatables.net/license
+/*! DataTables 1.10.21
+ * ©2008-2020 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     DataTables
  * @description Paginate, search and order HTML tables
- * @version     1.10.18
+ * @version     1.10.21
  * @file        jquery.dataTables.js
  * @author      SpryMedia Ltd
  * @contact     www.datatables.net
- * @copyright   Copyright 2008-2018 SpryMedia Ltd.
+ * @copyright   Copyright 2008-2020 SpryMedia Ltd.
  *
  * This source file is free software, available under the following license:
  *   MIT license - http://datatables.net/license
@@ -910,7 +910,7 @@
 			_fnCamelToHungarian( defaults.column, defaults.column, true );
 			
 			/* Setting up the initialisation object */
-			_fnCamelToHungarian( defaults, $.extend( oInit, $this.data() ) );
+			_fnCamelToHungarian( defaults, $.extend( oInit, $this.data() ), true );
 			
 			
 			
@@ -1346,7 +1346,7 @@
 	var _api_registerPlural; // DataTable.Api.registerPlural
 	
 	var _re_dic = {};
-	var _re_new_lines = /[\r\n]/g;
+	var _re_new_lines = /[\r\n\u2028]/g;
 	var _re_html = /<.*?>/g;
 	
 	// This is not strict ISO8601 - Date.parse() is quite lax, although
@@ -2036,7 +2036,7 @@
 			_fnCompatCols( oOptions );
 	
 			// Map camel case parameters to their Hungarian counterparts
-			_fnCamelToHungarian( DataTable.defaults.column, oOptions );
+			_fnCamelToHungarian( DataTable.defaults.column, oOptions, true );
 	
 			/* Backwards compatibility for mDataProp */
 			if ( oOptions.mDataProp !== undefined && !oOptions.mData )
@@ -3090,7 +3090,7 @@
 			rowData = row._aData,
 			cells = [],
 			nTr, nTd, oCol,
-			i, iLen;
+			i, iLen, create;
 	
 		if ( row.nTr === null )
 		{
@@ -3111,8 +3111,9 @@
 			for ( i=0, iLen=oSettings.aoColumns.length ; i<iLen ; i++ )
 			{
 				oCol = oSettings.aoColumns[i];
+				create = nTrIn ? false : true;
 	
-				nTd = nTrIn ? anTds[i] : document.createElement( oCol.sCellType );
+				nTd = create ? document.createElement( oCol.sCellType ) : anTds[i];
 				nTd._DT_CellIndex = {
 					row: iRow,
 					column: i
@@ -3121,9 +3122,9 @@
 				cells.push( nTd );
 	
 				// Need to create the HTML if new, or if a rendering function is defined
-				if ( (!nTrIn || oCol.mRender || oCol.mData !== i) &&
+				if ( create || ((!nTrIn || oCol.mRender || oCol.mData !== i) &&
 					 (!$.isPlainObject(oCol.mData) || oCol.mData._ !== i+'.display')
-				) {
+				)) {
 					nTd.innerHTML = _fnGetCellData( oSettings, iRow, i, 'display' );
 				}
 	
@@ -4123,7 +4124,7 @@
 		var recordsTotal    = compat( 'iTotalRecords',        'recordsTotal' );
 		var recordsFiltered = compat( 'iTotalDisplayRecords', 'recordsFiltered' );
 	
-		if ( draw ) {
+		if ( draw !== undefined ) {
 			// Protect against out of sequence returns
 			if ( draw*1 < settings.iDraw ) {
 				return;
@@ -4238,6 +4239,14 @@
 					_fnThrottle( searchFn, searchDelay ) :
 					searchFn
 			)
+			.on( 'mouseup', function(e) {
+				// Edge fix! Edge 17 does not trigger anything other than mouse events when clicking
+				// on the clear icon (Edge bug 17584515). This is safe in other browsers as `searchFn`
+				// checks the value to see if it has changed. In other browsers it won't have.
+				setTimeout( function () {
+					searchFn.call(jqFilter[0]);
+				}, 10);
+			} )
 			.on( 'keypress.DT', function(e) {
 				/* Prevent form submission */
 				if ( e.keyCode == 13 ) {
@@ -4418,6 +4427,7 @@
 			// New search - start from the master array
 			if ( invalidated ||
 				 force ||
+				 regex ||
 				 prevSearch.length > input.length ||
 				 input.indexOf(prevSearch) !== 0 ||
 				 settings.bSorted // On resort, the display master needs to be
@@ -4541,7 +4551,7 @@
 					}
 	
 					if ( cellData.replace ) {
-						cellData = cellData.replace(/[\r\n]/g, '');
+						cellData = cellData.replace(/[\r\n\u2028]/g, '');
 					}
 	
 					filterData.push( cellData );
@@ -5171,10 +5181,10 @@
 			} );
 		}
 	
-		$(scrollBody).css(
-			scrollY && scroll.bCollapse ? 'max-height' : 'height', 
-			scrollY
-		);
+		$(scrollBody).css('max-height', scrollY);
+		if (! scroll.bCollapse) {
+			$(scrollBody).css('height', scrollY);
+		}
 	
 		settings.nScrollHead = scrollHead;
 		settings.nScrollBody = scrollBody;
@@ -5469,7 +5479,7 @@
 		table.children('colgroup').insertBefore( table.children('thead') );
 	
 		/* Adjust the position of the header in case we loose the y-scrollbar */
-		divBody.scroll();
+		divBody.trigger('scroll');
 	
 		// If sorting or filtering has occurred, jump the scrolling back to the top
 		// only if we aren't holding the position
@@ -6422,7 +6432,7 @@
 	
 			_fnCallbackFire( settings, 'aoStateLoaded', 'stateLoaded', [settings, s] );
 			callback();
-		}
+		};
 	
 		if ( ! settings.oFeatures.bStateSave ) {
 			callback();
@@ -6588,7 +6598,7 @@
 	{
 		$(n)
 			.on( 'click.DT', oData, function (e) {
-					$(n).blur(); // Remove focus outline for mouse users
+					$(n).trigger('blur'); // Remove focus outline for mouse users
 					fn(e);
 				} )
 			.on( 'keypress.DT', oData, function (e){
@@ -6902,7 +6912,7 @@
 		var ctxSettings = function ( o ) {
 			var a = _toSettings( o );
 			if ( a ) {
-				settings = settings.concat( a );
+				settings.push.apply( settings, a );
 			}
 		};
 	
@@ -7200,8 +7210,7 @@
 	
 		var
 			i, ien,
-			j, jen,
-			struct, inner,
+			struct,
 			methodScoping = function ( scope, fn, struc ) {
 				return function () {
 					var ret = fn.apply( scope, arguments );
@@ -7216,9 +7225,9 @@
 			struct = ext[i];
 	
 			// Value
-			obj[ struct.name ] = typeof struct.val === 'function' ?
+			obj[ struct.name ] = struct.type === 'function' ?
 				methodScoping( scope, struct.val, struct ) :
-				$.isPlainObject( struct.val ) ?
+				struct.type === 'object' ?
 					{} :
 					struct.val;
 	
@@ -7299,13 +7308,19 @@
 					name:      key,
 					val:       {},
 					methodExt: [],
-					propExt:   []
+					propExt:   [],
+					type:      'object'
 				};
 				struct.push( src );
 			}
 	
 			if ( i === ien-1 ) {
 				src.val = val;
+				src.type = typeof val === 'function' ?
+					'function' :
+					$.isPlainObject( val ) ?
+						'object' :
+						'other';
 			}
 			else {
 				struct = method ?
@@ -7314,7 +7329,6 @@
 			}
 		}
 	};
-	
 	
 	_Api.registerPlural = _api_registerPlural = function ( pluralName, singularName, val ) {
 		_Api.register( pluralName, val );
@@ -7353,6 +7367,12 @@
 	 */
 	var __table_selector = function ( selector, a )
 	{
+		if ( $.isArray(selector) ) {
+			return $.map( selector, function (item) {
+				return __table_selector(item, a);
+			} );
+		}
+	
 		// Integer is used to pick out a table by index
 		if ( typeof selector === 'number' ) {
 			return [ a[ selector ] ];
@@ -7388,7 +7408,7 @@
 	 */
 	_api_register( 'tables()', function ( selector ) {
 		// A new instance is created if there was a selector specified
-		return selector ?
+		return selector !== undefined && selector !== null ?
 			new _Api( __table_selector( selector, this.context ) ) :
 			this;
 	} );
@@ -7928,7 +7948,7 @@
 						[];
 				}
 				else if ( cellIdx ) {
-					return aoData[ cellIdx.row ] && aoData[ cellIdx.row ].nTr === sel ?
+					return aoData[ cellIdx.row ] && aoData[ cellIdx.row ].nTr === sel.parentNode ?
 						[ cellIdx.row ] :
 						[];
 				}
@@ -8162,7 +8182,7 @@
 		row._aData = data;
 	
 		// If the DOM has an id, and the data source is an array
-		if ( $.isArray( data ) && row.nTr.id ) {
+		if ( $.isArray( data ) && row.nTr && row.nTr.id ) {
 			_fnSetObjectDataFn( ctx[0].rowId )( data, row.nTr.id );
 		}
 	
@@ -8587,16 +8607,6 @@
 	
 		// Common actions
 		col.bVisible = vis;
-		_fnDrawHead( settings, settings.aoHeader );
-		_fnDrawHead( settings, settings.aoFooter );
-	
-		// Update colspan for no records display. Child rows and extensions will use their own
-		// listeners to do this - only need to update the empty table item here
-		if ( ! settings.aiDisplay.length ) {
-			$(settings.nTBody).find('td[colspan]').attr('colspan', _fnVisbleColumns(settings));
-		}
-	
-		_fnSaveState( settings );
 	};
 	
 	
@@ -8660,6 +8670,7 @@
 	} );
 	
 	_api_registerPlural( 'columns().visible()', 'column().visible()', function ( vis, calc ) {
+		var that = this;
 		var ret = this.iterator( 'column', function ( settings, column ) {
 			if ( vis === undefined ) {
 				return settings.aoColumns[ column ].bVisible;
@@ -8669,14 +8680,28 @@
 	
 		// Group the column visibility changes
 		if ( vis !== undefined ) {
-			// Second loop once the first is done for events
-			this.iterator( 'column', function ( settings, column ) {
-				_fnCallbackFire( settings, null, 'column-visibility', [settings, column, vis, calc] );
-			} );
+			this.iterator( 'table', function ( settings ) {
+				// Redraw the header after changes
+				_fnDrawHead( settings, settings.aoHeader );
+				_fnDrawHead( settings, settings.aoFooter );
+		
+				// Update colspan for no records display. Child rows and extensions will use their own
+				// listeners to do this - only need to update the empty table item here
+				if ( ! settings.aiDisplay.length ) {
+					$(settings.nTBody).find('td[colspan]').attr('colspan', _fnVisbleColumns(settings));
+				}
+		
+				_fnSaveState( settings );
 	
-			if ( calc === undefined || calc ) {
-				this.columns.adjust();
-			}
+				// Second loop once the first is done for events
+				that.iterator( 'column', function ( settings, column ) {
+					_fnCallbackFire( settings, null, 'column-visibility', [settings, column, vis, calc] );
+				} );
+	
+				if ( calc === undefined || calc ) {
+					that.columns.adjust();
+				}
+			});
 		}
 	
 		return ret;
@@ -8827,13 +8852,20 @@
 			} );
 		}
 	
-		// Row + column selector
-		var columns = this.columns( columnSelector );
-		var rows = this.rows( rowSelector );
-		var a, i, ien, j, jen;
+		// The default built in options need to apply to row and columns
+		var internalOpts = opts ? {
+			page: opts.page,
+			order: opts.order,
+			search: opts.search
+		} : {};
 	
-		this.iterator( 'table', function ( settings, idx ) {
-			a = [];
+		// Row + column selector
+		var columns = this.columns( columnSelector, internalOpts );
+		var rows = this.rows( rowSelector, internalOpts );
+		var i, ien, j, jen;
+	
+		var cellsNoOpts = this.iterator( 'table', function ( settings, idx ) {
+			var a = [];
 	
 			for ( i=0, ien=rows[idx].length ; i<ien ; i++ ) {
 				for ( j=0, jen=columns[idx].length ; j<jen ; j++ ) {
@@ -8843,10 +8875,16 @@
 					} );
 				}
 			}
+	
+			return a;
 		}, 1 );
 	
-	    // Now pass through the cell selector for options
-	    var cells = this.cells( a, opts );
+		// There is currently only one extension which uses a cell selector extension
+		// It is a _major_ performance drag to run this if it isn't needed, so this is
+		// an extension specific check at the moment
+		var cells = opts && opts.selected ?
+			this.cells( cellsNoOpts, opts ) :
+			cellsNoOpts;
 	
 		$.extend( cells.selector, {
 			cols: columnSelector,
@@ -9467,7 +9505,6 @@
 	
 		return resolved.replace( '%d', plural ); // nb: plural might be undefined,
 	} );
-
 	/**
 	 * Version string for plug-ins to check compatibility. Allowed format is
 	 * `a.b.c-d` where: a:int, b:int, c:int, d:string(dev|beta|alpha). `d` is used
@@ -9476,7 +9513,7 @@
 	 *  @type string
 	 *  @default Version number
 	 */
-	DataTable.version = "1.10.18";
+	DataTable.version = "1.10.21";
 
 	/**
 	 * Private data store, containing all of the settings objects that are
@@ -10994,7 +11031,9 @@
 						'DataTables_'+settings.sInstance+'_'+location.pathname
 					)
 				);
-			} catch (e) {}
+			} catch (e) {
+				return {};
+			}
 		},
 	
 	
@@ -13898,7 +13937,7 @@
 		 *
 		 *  @type string
 		 */
-		build:"bs4/dt-1.10.18",
+		build:"bs4/dt-1.10.21/b-1.6.3/sp-1.1.1",
 	
 	
 		/**
@@ -14539,7 +14578,8 @@
 				var btnDisplay, btnClass, counter=0;
 	
 				var attach = function( container, buttons ) {
-					var i, ien, node, button;
+					var i, ien, node, button, tabIndex;
+					var disabledClass = classes.sPageButtonDisabled;
 					var clickHandler = function ( e ) {
 						_fnPageChange( settings, e.data.action, true );
 					};
@@ -14554,7 +14594,8 @@
 						}
 						else {
 							btnDisplay = null;
-							btnClass = '';
+							btnClass = button;
+							tabIndex = settings.iTabIndex;
 	
 							switch ( button ) {
 								case 'ellipsis':
@@ -14563,26 +14604,38 @@
 	
 								case 'first':
 									btnDisplay = lang.sFirst;
-									btnClass = button + (page > 0 ?
-										'' : ' '+classes.sPageButtonDisabled);
+	
+									if ( page === 0 ) {
+										tabIndex = -1;
+										btnClass += ' ' + disabledClass;
+									}
 									break;
 	
 								case 'previous':
 									btnDisplay = lang.sPrevious;
-									btnClass = button + (page > 0 ?
-										'' : ' '+classes.sPageButtonDisabled);
+	
+									if ( page === 0 ) {
+										tabIndex = -1;
+										btnClass += ' ' + disabledClass;
+									}
 									break;
 	
 								case 'next':
 									btnDisplay = lang.sNext;
-									btnClass = button + (page < pages-1 ?
-										'' : ' '+classes.sPageButtonDisabled);
+	
+									if ( pages === 0 || page === pages-1 ) {
+										tabIndex = -1;
+										btnClass += ' ' + disabledClass;
+									}
 									break;
 	
 								case 'last':
 									btnDisplay = lang.sLast;
-									btnClass = button + (page < pages-1 ?
-										'' : ' '+classes.sPageButtonDisabled);
+	
+									if ( page === pages-1 ) {
+										tabIndex = -1;
+										btnClass += ' ' + disabledClass;
+									}
 									break;
 	
 								default:
@@ -14598,7 +14651,7 @@
 										'aria-controls': settings.sTableId,
 										'aria-label': aria[ button ],
 										'data-dt-idx': counter,
-										'tabindex': settings.iTabIndex,
+										'tabindex': tabIndex,
 										'id': idx === 0 && typeof button === 'string' ?
 											settings.sTableId +'_'+ button :
 											null
@@ -14633,7 +14686,7 @@
 				attach( $(host).empty(), buttons );
 	
 				if ( activeEl !== undefined ) {
-					$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
+					$(host).find( '[data-dt-idx='+activeEl+']' ).trigger('focus');
 				}
 			}
 		}
@@ -14919,7 +14972,11 @@
 	
 	var __htmlEscapeEntities = function ( d ) {
 		return typeof d === 'string' ?
-			d.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') :
+			d
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;') :
 			d;
 	};
 	
@@ -14987,7 +15044,8 @@
 	
 		text: function () {
 			return {
-				display: __htmlEscapeEntities
+				display: __htmlEscapeEntities,
+				filter: __htmlEscapeEntities
 			};
 		}
 	};
@@ -15225,7 +15283,7 @@
 
 	/**
 	 * Processing event, fired when DataTables is doing some kind of processing
-	 * (be it, order, searcg or anything else). It can be used to indicate to
+	 * (be it, order, search or anything else). It can be used to indicate to
 	 * the end user that there is something happening, or that something has
 	 * finished.
 	 *  @name DataTable#processing.dt
@@ -15485,12 +15543,4828 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 	);
 
 	if ( activeEl !== undefined ) {
-		$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
+		$(host).find( '[data-dt-idx='+activeEl+']' ).trigger('focus');
 	}
 };
 
 
 return DataTable;
+}));
+
+
+/*! Buttons for DataTables 1.6.3
+ * ©2016-2020 SpryMedia Ltd - datatables.net/license
+ */
+
+(function( factory ){
+	if ( typeof define === 'function' && define.amd ) {
+		// AMD
+		define( ['jquery', 'datatables.net'], function ( $ ) {
+			return factory( $, window, document );
+		} );
+	}
+	else if ( typeof exports === 'object' ) {
+		// CommonJS
+		module.exports = function (root, $) {
+			if ( ! root ) {
+				root = window;
+			}
+
+			if ( ! $ || ! $.fn.dataTable ) {
+				$ = require('datatables.net')(root, $).$;
+			}
+
+			return factory( $, root, root.document );
+		};
+	}
+	else {
+		// Browser
+		factory( jQuery, window, document );
+	}
+}(function( $, window, document, undefined ) {
+'use strict';
+var DataTable = $.fn.dataTable;
+
+
+// Used for namespacing events added to the document by each instance, so they
+// can be removed on destroy
+var _instCounter = 0;
+
+// Button namespacing counter for namespacing events on individual buttons
+var _buttonCounter = 0;
+
+var _dtButtons = DataTable.ext.buttons;
+
+// Allow for jQuery slim
+function _fadeIn(el, duration, fn) {
+	if ($.fn.animate) {
+		el
+			.stop()
+			.fadeIn( duration, fn );
+	}
+	else {
+		el.css('display', 'block');
+
+		if (fn) {
+			fn.call(el);
+		}
+	}
+}
+
+function _fadeOut(el, duration, fn) {
+	if ($.fn.animate) {
+		el
+			.stop()
+			.fadeOut( duration, fn );
+	}
+	else {
+		el.css('display', 'none');
+		
+		if (fn) {
+			fn.call(el);
+		}
+	}
+}
+
+/**
+ * [Buttons description]
+ * @param {[type]}
+ * @param {[type]}
+ */
+var Buttons = function( dt, config )
+{
+	// If not created with a `new` keyword then we return a wrapper function that
+	// will take the settings object for a DT. This allows easy use of new instances
+	// with the `layout` option - e.g. `topLeft: $.fn.dataTable.Buttons( ... )`.
+	if ( !(this instanceof Buttons) ) {
+		return function (settings) {
+			return new Buttons( settings, dt ).container();
+		};
+	}
+
+	// If there is no config set it to an empty object
+	if ( typeof( config ) === 'undefined' ) {
+		config = {};	
+	}
+	
+	// Allow a boolean true for defaults
+	if ( config === true ) {
+		config = {};
+	}
+
+	// For easy configuration of buttons an array can be given
+	if ( $.isArray( config ) ) {
+		config = { buttons: config };
+	}
+
+	this.c = $.extend( true, {}, Buttons.defaults, config );
+
+	// Don't want a deep copy for the buttons
+	if ( config.buttons ) {
+		this.c.buttons = config.buttons;
+	}
+
+	this.s = {
+		dt: new DataTable.Api( dt ),
+		buttons: [],
+		listenKeys: '',
+		namespace: 'dtb'+(_instCounter++)
+	};
+
+	this.dom = {
+		container: $('<'+this.c.dom.container.tag+'/>')
+			.addClass( this.c.dom.container.className )
+	};
+
+	this._constructor();
+};
+
+
+$.extend( Buttons.prototype, {
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * Public methods
+	 */
+
+	/**
+	 * Get the action of a button
+	 * @param  {int|string} Button index
+	 * @return {function}
+	 *//**
+	 * Set the action of a button
+	 * @param  {node} node Button element
+	 * @param  {function} action Function to set
+	 * @return {Buttons} Self for chaining
+	 */
+	action: function ( node, action )
+	{
+		var button = this._nodeToButton( node );
+
+		if ( action === undefined ) {
+			return button.conf.action;
+		}
+
+		button.conf.action = action;
+
+		return this;
+	},
+
+	/**
+	 * Add an active class to the button to make to look active or get current
+	 * active state.
+	 * @param  {node} node Button element
+	 * @param  {boolean} [flag] Enable / disable flag
+	 * @return {Buttons} Self for chaining or boolean for getter
+	 */
+	active: function ( node, flag ) {
+		var button = this._nodeToButton( node );
+		var klass = this.c.dom.button.active;
+		var jqNode = $(button.node);
+
+		if ( flag === undefined ) {
+			return jqNode.hasClass( klass );
+		}
+
+		jqNode.toggleClass( klass, flag === undefined ? true : flag );
+
+		return this;
+	},
+
+	/**
+	 * Add a new button
+	 * @param {object} config Button configuration object, base string name or function
+	 * @param {int|string} [idx] Button index for where to insert the button
+	 * @return {Buttons} Self for chaining
+	 */
+	add: function ( config, idx )
+	{
+		var buttons = this.s.buttons;
+
+		if ( typeof idx === 'string' ) {
+			var split = idx.split('-');
+			var base = this.s;
+
+			for ( var i=0, ien=split.length-1 ; i<ien ; i++ ) {
+				base = base.buttons[ split[i]*1 ];
+			}
+
+			buttons = base.buttons;
+			idx = split[ split.length-1 ]*1;
+		}
+
+		this._expandButton( buttons, config, base !== undefined, idx );
+		this._draw();
+
+		return this;
+	},
+
+	/**
+	 * Get the container node for the buttons
+	 * @return {jQuery} Buttons node
+	 */
+	container: function ()
+	{
+		return this.dom.container;
+	},
+
+	/**
+	 * Disable a button
+	 * @param  {node} node Button node
+	 * @return {Buttons} Self for chaining
+	 */
+	disable: function ( node ) {
+		var button = this._nodeToButton( node );
+
+		$(button.node)
+			.addClass( this.c.dom.button.disabled )
+			.attr('disabled', true);
+
+		return this;
+	},
+
+	/**
+	 * Destroy the instance, cleaning up event handlers and removing DOM
+	 * elements
+	 * @return {Buttons} Self for chaining
+	 */
+	destroy: function ()
+	{
+		// Key event listener
+		$('body').off( 'keyup.'+this.s.namespace );
+
+		// Individual button destroy (so they can remove their own events if
+		// needed). Take a copy as the array is modified by `remove`
+		var buttons = this.s.buttons.slice();
+		var i, ien;
+		
+		for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
+			this.remove( buttons[i].node );
+		}
+
+		// Container
+		this.dom.container.remove();
+
+		// Remove from the settings object collection
+		var buttonInsts = this.s.dt.settings()[0];
+
+		for ( i=0, ien=buttonInsts.length ; i<ien ; i++ ) {
+			if ( buttonInsts.inst === this ) {
+				buttonInsts.splice( i, 1 );
+				break;
+			}
+		}
+
+		return this;
+	},
+
+	/**
+	 * Enable / disable a button
+	 * @param  {node} node Button node
+	 * @param  {boolean} [flag=true] Enable / disable flag
+	 * @return {Buttons} Self for chaining
+	 */
+	enable: function ( node, flag )
+	{
+		if ( flag === false ) {
+			return this.disable( node );
+		}
+
+		var button = this._nodeToButton( node );
+		$(button.node)
+			.removeClass( this.c.dom.button.disabled )
+			.removeAttr('disabled');
+
+		return this;
+	},
+
+	/**
+	 * Get the instance name for the button set selector
+	 * @return {string} Instance name
+	 */
+	name: function ()
+	{
+		return this.c.name;
+	},
+
+	/**
+	 * Get a button's node of the buttons container if no button is given
+	 * @param  {node} [node] Button node
+	 * @return {jQuery} Button element, or container
+	 */
+	node: function ( node )
+	{
+		if ( ! node ) {
+			return this.dom.container;
+		}
+
+		var button = this._nodeToButton( node );
+		return $(button.node);
+	},
+
+	/**
+	 * Set / get a processing class on the selected button
+	 * @param {element} node Triggering button node
+	 * @param  {boolean} flag true to add, false to remove, undefined to get
+	 * @return {boolean|Buttons} Getter value or this if a setter.
+	 */
+	processing: function ( node, flag )
+	{
+		var dt = this.s.dt;
+		var button = this._nodeToButton( node );
+
+		if ( flag === undefined ) {
+			return $(button.node).hasClass( 'processing' );
+		}
+
+		$(button.node).toggleClass( 'processing', flag );
+
+		$(dt.table().node()).triggerHandler( 'buttons-processing.dt', [
+			flag, dt.button( node ), dt, $(node), button.conf
+		] );
+
+		return this;
+	},
+
+	/**
+	 * Remove a button.
+	 * @param  {node} node Button node
+	 * @return {Buttons} Self for chaining
+	 */
+	remove: function ( node )
+	{
+		var button = this._nodeToButton( node );
+		var host = this._nodeToHost( node );
+		var dt = this.s.dt;
+
+		// Remove any child buttons first
+		if ( button.buttons.length ) {
+			for ( var i=button.buttons.length-1 ; i>=0 ; i-- ) {
+				this.remove( button.buttons[i].node );
+			}
+		}
+
+		// Allow the button to remove event handlers, etc
+		if ( button.conf.destroy ) {
+			button.conf.destroy.call( dt.button(node), dt, $(node), button.conf );
+		}
+
+		this._removeKey( button.conf );
+
+		$(button.node).remove();
+
+		var idx = $.inArray( button, host );
+		host.splice( idx, 1 );
+
+		return this;
+	},
+
+	/**
+	 * Get the text for a button
+	 * @param  {int|string} node Button index
+	 * @return {string} Button text
+	 *//**
+	 * Set the text for a button
+	 * @param  {int|string|function} node Button index
+	 * @param  {string} label Text
+	 * @return {Buttons} Self for chaining
+	 */
+	text: function ( node, label )
+	{
+		var button = this._nodeToButton( node );
+		var buttonLiner = this.c.dom.collection.buttonLiner;
+		var linerTag = button.inCollection && buttonLiner && buttonLiner.tag ?
+			buttonLiner.tag :
+			this.c.dom.buttonLiner.tag;
+		var dt = this.s.dt;
+		var jqNode = $(button.node);
+		var text = function ( opt ) {
+			return typeof opt === 'function' ?
+				opt( dt, jqNode, button.conf ) :
+				opt;
+		};
+
+		if ( label === undefined ) {
+			return text( button.conf.text );
+		}
+
+		button.conf.text = label;
+
+		if ( linerTag ) {
+			jqNode.children( linerTag ).html( text(label) );
+		}
+		else {
+			jqNode.html( text(label) );
+		}
+
+		return this;
+	},
+
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * Constructor
+	 */
+
+	/**
+	 * Buttons constructor
+	 * @private
+	 */
+	_constructor: function ()
+	{
+		var that = this;
+		var dt = this.s.dt;
+		var dtSettings = dt.settings()[0];
+		var buttons =  this.c.buttons;
+
+		if ( ! dtSettings._buttons ) {
+			dtSettings._buttons = [];
+		}
+
+		dtSettings._buttons.push( {
+			inst: this,
+			name: this.c.name
+		} );
+
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			this.add( buttons[i] );
+		}
+
+		dt.on( 'destroy', function ( e, settings ) {
+			if ( settings === dtSettings ) {
+				that.destroy();
+			}
+		} );
+
+		// Global key event binding to listen for button keys
+		$('body').on( 'keyup.'+this.s.namespace, function ( e ) {
+			if ( ! document.activeElement || document.activeElement === document.body ) {
+				// SUse a string of characters for fast lookup of if we need to
+				// handle this
+				var character = String.fromCharCode(e.keyCode).toLowerCase();
+
+				if ( that.s.listenKeys.toLowerCase().indexOf( character ) !== -1 ) {
+					that._keypress( character, e );
+				}
+			}
+		} );
+	},
+
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * Private methods
+	 */
+
+	/**
+	 * Add a new button to the key press listener
+	 * @param {object} conf Resolved button configuration object
+	 * @private
+	 */
+	_addKey: function ( conf )
+	{
+		if ( conf.key ) {
+			this.s.listenKeys += $.isPlainObject( conf.key ) ?
+				conf.key.key :
+				conf.key;
+		}
+	},
+
+	/**
+	 * Insert the buttons into the container. Call without parameters!
+	 * @param  {node} [container] Recursive only - Insert point
+	 * @param  {array} [buttons] Recursive only - Buttons array
+	 * @private
+	 */
+	_draw: function ( container, buttons )
+	{
+		if ( ! container ) {
+			container = this.dom.container;
+			buttons = this.s.buttons;
+		}
+
+		container.children().detach();
+
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			container.append( buttons[i].inserter );
+			container.append( ' ' );
+
+			if ( buttons[i].buttons && buttons[i].buttons.length ) {
+				this._draw( buttons[i].collection, buttons[i].buttons );
+			}
+		}
+	},
+
+	/**
+	 * Create buttons from an array of buttons
+	 * @param  {array} attachTo Buttons array to attach to
+	 * @param  {object} button Button definition
+	 * @param  {boolean} inCollection true if the button is in a collection
+	 * @private
+	 */
+	_expandButton: function ( attachTo, button, inCollection, attachPoint )
+	{
+		var dt = this.s.dt;
+		var buttonCounter = 0;
+		var buttons = ! $.isArray( button ) ?
+			[ button ] :
+			button;
+
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			var conf = this._resolveExtends( buttons[i] );
+
+			if ( ! conf ) {
+				continue;
+			}
+
+			// If the configuration is an array, then expand the buttons at this
+			// point
+			if ( $.isArray( conf ) ) {
+				this._expandButton( attachTo, conf, inCollection, attachPoint );
+				continue;
+			}
+
+			var built = this._buildButton( conf, inCollection );
+			if ( ! built ) {
+				continue;
+			}
+
+			if ( attachPoint !== undefined && attachPoint !== null ) {
+				attachTo.splice( attachPoint, 0, built );
+				attachPoint++;
+			}
+			else {
+				attachTo.push( built );
+			}
+
+			if ( built.conf.buttons ) {
+				built.collection = $('<'+this.c.dom.collection.tag+'/>');
+
+				built.conf._collection = built.collection;
+
+				this._expandButton( built.buttons, built.conf.buttons, true, attachPoint );
+			}
+
+			// init call is made here, rather than buildButton as it needs to
+			// be selectable, and for that it needs to be in the buttons array
+			if ( conf.init ) {
+				conf.init.call( dt.button( built.node ), dt, $(built.node), conf );
+			}
+
+			buttonCounter++;
+		}
+	},
+
+	/**
+	 * Create an individual button
+	 * @param  {object} config            Resolved button configuration
+	 * @param  {boolean} inCollection `true` if a collection button
+	 * @return {jQuery} Created button node (jQuery)
+	 * @private
+	 */
+	_buildButton: function ( config, inCollection )
+	{
+		var buttonDom = this.c.dom.button;
+		var linerDom = this.c.dom.buttonLiner;
+		var collectionDom = this.c.dom.collection;
+		var dt = this.s.dt;
+		var text = function ( opt ) {
+			return typeof opt === 'function' ?
+				opt( dt, button, config ) :
+				opt;
+		};
+
+		if ( inCollection && collectionDom.button ) {
+			buttonDom = collectionDom.button;
+		}
+
+		if ( inCollection && collectionDom.buttonLiner ) {
+			linerDom = collectionDom.buttonLiner;
+		}
+
+		// Make sure that the button is available based on whatever requirements
+		// it has. For example, Flash buttons require Flash
+		if ( config.available && ! config.available( dt, config ) ) {
+			return false;
+		}
+
+		var action = function ( e, dt, button, config ) {
+			config.action.call( dt.button( button ), e, dt, button, config );
+
+			$(dt.table().node()).triggerHandler( 'buttons-action.dt', [
+				dt.button( button ), dt, button, config 
+			] );
+		};
+
+		var tag = config.tag || buttonDom.tag;
+		var clickBlurs = config.clickBlurs === undefined ? true : config.clickBlurs
+		var button = $('<'+tag+'/>')
+			.addClass( buttonDom.className )
+			.attr( 'tabindex', this.s.dt.settings()[0].iTabIndex )
+			.attr( 'aria-controls', this.s.dt.table().node().id )
+			.on( 'click.dtb', function (e) {
+				e.preventDefault();
+
+				if ( ! button.hasClass( buttonDom.disabled ) && config.action ) {
+					action( e, dt, button, config );
+				}
+				if( clickBlurs ) {
+					button.trigger('blur');
+				}
+			} )
+			.on( 'keyup.dtb', function (e) {
+				if ( e.keyCode === 13 ) {
+					if ( ! button.hasClass( buttonDom.disabled ) && config.action ) {
+						action( e, dt, button, config );
+					}
+				}
+			} );
+
+		// Make `a` tags act like a link
+		if ( tag.toLowerCase() === 'a' ) {
+			button.attr( 'href', '#' );
+		}
+
+		// Button tags should have `type=button` so they don't have any default behaviour
+		if ( tag.toLowerCase() === 'button' ) {
+			button.attr( 'type', 'button' );
+		}
+
+		if ( linerDom.tag ) {
+			var liner = $('<'+linerDom.tag+'/>')
+				.html( text( config.text ) )
+				.addClass( linerDom.className );
+
+			if ( linerDom.tag.toLowerCase() === 'a' ) {
+				liner.attr( 'href', '#' );
+			}
+
+			button.append( liner );
+		}
+		else {
+			button.html( text( config.text ) );
+		}
+
+		if ( config.enabled === false ) {
+			button.addClass( buttonDom.disabled );
+		}
+
+		if ( config.className ) {
+			button.addClass( config.className );
+		}
+
+		if ( config.titleAttr ) {
+			button.attr( 'title', text( config.titleAttr ) );
+		}
+
+		if ( config.attr ) {
+			button.attr( config.attr );
+		}
+
+		if ( ! config.namespace ) {
+			config.namespace = '.dt-button-'+(_buttonCounter++);
+		}
+
+		var buttonContainer = this.c.dom.buttonContainer;
+		var inserter;
+		if ( buttonContainer && buttonContainer.tag ) {
+			inserter = $('<'+buttonContainer.tag+'/>')
+				.addClass( buttonContainer.className )
+				.append( button );
+		}
+		else {
+			inserter = button;
+		}
+
+		this._addKey( config );
+
+		// Style integration callback for DOM manipulation
+		// Note that this is _not_ documented. It is currently
+		// for style integration only
+		if( this.c.buttonCreated ) {
+			inserter = this.c.buttonCreated( config, inserter );
+		}
+
+		return {
+			conf:         config,
+			node:         button.get(0),
+			inserter:     inserter,
+			buttons:      [],
+			inCollection: inCollection,
+			collection:   null
+		};
+	},
+
+	/**
+	 * Get the button object from a node (recursive)
+	 * @param  {node} node Button node
+	 * @param  {array} [buttons] Button array, uses base if not defined
+	 * @return {object} Button object
+	 * @private
+	 */
+	_nodeToButton: function ( node, buttons )
+	{
+		if ( ! buttons ) {
+			buttons = this.s.buttons;
+		}
+
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			if ( buttons[i].node === node ) {
+				return buttons[i];
+			}
+
+			if ( buttons[i].buttons.length ) {
+				var ret = this._nodeToButton( node, buttons[i].buttons );
+
+				if ( ret ) {
+					return ret;
+				}
+			}
+		}
+	},
+
+	/**
+	 * Get container array for a button from a button node (recursive)
+	 * @param  {node} node Button node
+	 * @param  {array} [buttons] Button array, uses base if not defined
+	 * @return {array} Button's host array
+	 * @private
+	 */
+	_nodeToHost: function ( node, buttons )
+	{
+		if ( ! buttons ) {
+			buttons = this.s.buttons;
+		}
+
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			if ( buttons[i].node === node ) {
+				return buttons;
+			}
+
+			if ( buttons[i].buttons.length ) {
+				var ret = this._nodeToHost( node, buttons[i].buttons );
+
+				if ( ret ) {
+					return ret;
+				}
+			}
+		}
+	},
+
+	/**
+	 * Handle a key press - determine if any button's key configured matches
+	 * what was typed and trigger the action if so.
+	 * @param  {string} character The character pressed
+	 * @param  {object} e Key event that triggered this call
+	 * @private
+	 */
+	_keypress: function ( character, e )
+	{
+		// Check if this button press already activated on another instance of Buttons
+		if ( e._buttonsHandled ) {
+			return;
+		}
+
+		var run = function ( conf, node ) {
+			if ( ! conf.key ) {
+				return;
+			}
+
+			if ( conf.key === character ) {
+				e._buttonsHandled = true;
+				$(node).click();
+			}
+			else if ( $.isPlainObject( conf.key ) ) {
+				if ( conf.key.key !== character ) {
+					return;
+				}
+
+				if ( conf.key.shiftKey && ! e.shiftKey ) {
+					return;
+				}
+
+				if ( conf.key.altKey && ! e.altKey ) {
+					return;
+				}
+
+				if ( conf.key.ctrlKey && ! e.ctrlKey ) {
+					return;
+				}
+
+				if ( conf.key.metaKey && ! e.metaKey ) {
+					return;
+				}
+
+				// Made it this far - it is good
+				e._buttonsHandled = true;
+				$(node).click();
+			}
+		};
+
+		var recurse = function ( a ) {
+			for ( var i=0, ien=a.length ; i<ien ; i++ ) {
+				run( a[i].conf, a[i].node );
+
+				if ( a[i].buttons.length ) {
+					recurse( a[i].buttons );
+				}
+			}
+		};
+
+		recurse( this.s.buttons );
+	},
+
+	/**
+	 * Remove a key from the key listener for this instance (to be used when a
+	 * button is removed)
+	 * @param  {object} conf Button configuration
+	 * @private
+	 */
+	_removeKey: function ( conf )
+	{
+		if ( conf.key ) {
+			var character = $.isPlainObject( conf.key ) ?
+				conf.key.key :
+				conf.key;
+
+			// Remove only one character, as multiple buttons could have the
+			// same listening key
+			var a = this.s.listenKeys.split('');
+			var idx = $.inArray( character, a );
+			a.splice( idx, 1 );
+			this.s.listenKeys = a.join('');
+		}
+	},
+
+	/**
+	 * Resolve a button configuration
+	 * @param  {string|function|object} conf Button config to resolve
+	 * @return {object} Button configuration
+	 * @private
+	 */
+	_resolveExtends: function ( conf )
+	{
+		var dt = this.s.dt;
+		var i, ien;
+		var toConfObject = function ( base ) {
+			var loop = 0;
+
+			// Loop until we have resolved to a button configuration, or an
+			// array of button configurations (which will be iterated
+			// separately)
+			while ( ! $.isPlainObject(base) && ! $.isArray(base) ) {
+				if ( base === undefined ) {
+					return;
+				}
+
+				if ( typeof base === 'function' ) {
+					base = base( dt, conf );
+
+					if ( ! base ) {
+						return false;
+					}
+				}
+				else if ( typeof base === 'string' ) {
+					if ( ! _dtButtons[ base ] ) {
+						throw 'Unknown button type: '+base;
+					}
+
+					base = _dtButtons[ base ];
+				}
+
+				loop++;
+				if ( loop > 30 ) {
+					// Protect against misconfiguration killing the browser
+					throw 'Buttons: Too many iterations';
+				}
+			}
+
+			return $.isArray( base ) ?
+				base :
+				$.extend( {}, base );
+		};
+
+		conf = toConfObject( conf );
+
+		while ( conf && conf.extend ) {
+			// Use `toConfObject` in case the button definition being extended
+			// is itself a string or a function
+			if ( ! _dtButtons[ conf.extend ] ) {
+				throw 'Cannot extend unknown button type: '+conf.extend;
+			}
+
+			var objArray = toConfObject( _dtButtons[ conf.extend ] );
+			if ( $.isArray( objArray ) ) {
+				return objArray;
+			}
+			else if ( ! objArray ) {
+				// This is a little brutal as it might be possible to have a
+				// valid button without the extend, but if there is no extend
+				// then the host button would be acting in an undefined state
+				return false;
+			}
+
+			// Stash the current class name
+			var originalClassName = objArray.className;
+
+			conf = $.extend( {}, objArray, conf );
+
+			// The extend will have overwritten the original class name if the
+			// `conf` object also assigned a class, but we want to concatenate
+			// them so they are list that is combined from all extended buttons
+			if ( originalClassName && conf.className !== originalClassName ) {
+				conf.className = originalClassName+' '+conf.className;
+			}
+
+			// Buttons to be added to a collection  -gives the ability to define
+			// if buttons should be added to the start or end of a collection
+			var postfixButtons = conf.postfixButtons;
+			if ( postfixButtons ) {
+				if ( ! conf.buttons ) {
+					conf.buttons = [];
+				}
+
+				for ( i=0, ien=postfixButtons.length ; i<ien ; i++ ) {
+					conf.buttons.push( postfixButtons[i] );
+				}
+
+				conf.postfixButtons = null;
+			}
+
+			var prefixButtons = conf.prefixButtons;
+			if ( prefixButtons ) {
+				if ( ! conf.buttons ) {
+					conf.buttons = [];
+				}
+
+				for ( i=0, ien=prefixButtons.length ; i<ien ; i++ ) {
+					conf.buttons.splice( i, 0, prefixButtons[i] );
+				}
+
+				conf.prefixButtons = null;
+			}
+
+			// Although we want the `conf` object to overwrite almost all of
+			// the properties of the object being extended, the `extend`
+			// property should come from the object being extended
+			conf.extend = objArray.extend;
+		}
+
+		return conf;
+	},
+
+	/**
+	 * Display (and replace if there is an existing one) a popover attached to a button
+	 * @param {string|node} content Content to show
+	 * @param {DataTable.Api} hostButton DT API instance of the button
+	 * @param {object} inOpts Options (see object below for all options)
+	 */
+	_popover: function ( content, hostButton, inOpts ) {
+		var dt = hostButton;
+		var buttonsSettings = this.c;
+		var options = $.extend( {
+			align: 'button-left', // button-right, dt-container
+			autoClose: false,
+			background: true,
+			backgroundClassName: 'dt-button-background',
+			contentClassName: buttonsSettings.dom.collection.className,
+			collectionLayout: '',
+			collectionTitle: '',
+			dropup: false,
+			fade: 400,
+			rightAlignClassName: 'dt-button-right',
+			tag: buttonsSettings.dom.collection.tag
+		}, inOpts );
+		var hostNode = hostButton.node();
+
+		var close = function () {
+			_fadeOut(
+				$('.dt-button-collection'),
+				options.fade,
+				function () {
+					$(this).detach();
+				}
+			);
+
+			$(dt.buttons( '[aria-haspopup="true"][aria-expanded="true"]' ).nodes())
+				.attr('aria-expanded', 'false');
+
+			$('div.dt-button-background').off( 'click.dtb-collection' );
+			Buttons.background( false, options.backgroundClassName, options.fade, hostNode );
+
+			$('body').off( '.dtb-collection' );
+			dt.off( 'buttons-action.b-internal' );
+		};
+
+		if (content === false) {
+			close();
+		}
+
+		var existingExpanded = $(dt.buttons( '[aria-haspopup="true"][aria-expanded="true"]' ).nodes());
+		if ( existingExpanded.length ) {
+			hostNode = existingExpanded.eq(0);
+
+			close();
+		}
+
+		var display = $('<div/>')
+			.addClass('dt-button-collection')
+			.addClass(options.collectionLayout)
+			.css('display', 'none');
+
+		content = $(content)
+			.addClass(options.contentClassName)
+			.attr('role', 'menu')
+			.appendTo(display);
+
+		hostNode.attr( 'aria-expanded', 'true' );
+
+		if ( hostNode.parents('body')[0] !== document.body ) {
+			hostNode = document.body.lastChild;
+		}
+
+		if ( options.collectionTitle ) {
+			display.prepend('<div class="dt-button-collection-title">'+options.collectionTitle+'</div>');
+		}
+
+		_fadeIn( display.insertAfter( hostNode ) );
+
+		var tableContainer = $( hostButton.table().container() );
+		var position = display.css( 'position' );
+
+		if ( options.align === 'dt-container' ) {
+			hostNode = hostNode.parent();
+			display.css('width', tableContainer.width());
+		}
+
+		// Align the popover relative to the DataTables container
+		// Useful for wide popovers such as SearchPanes
+		if (
+			position === 'absolute' &&
+			(
+				display.hasClass( options.rightAlignClassName ) ||
+				display.hasClass( options.leftAlignClassName ) ||
+				options.align === 'dt-container'
+			)
+		) {
+
+			var hostPosition = hostNode.position();
+
+			display.css( {
+				top: hostPosition.top + hostNode.outerHeight(),
+				left: hostPosition.left
+			} );
+
+			// calculate overflow when positioned beneath
+			var collectionHeight = display.outerHeight();
+			var tableBottom = tableContainer.offset().top + tableContainer.height();
+			var listBottom = hostPosition.top + hostNode.outerHeight() + collectionHeight;
+			var bottomOverflow = listBottom - tableBottom;
+
+			// calculate overflow when positioned above
+			var listTop = hostPosition.top - collectionHeight;
+			var tableTop = tableContainer.offset().top;
+			var topOverflow = tableTop - listTop;
+
+			// if bottom overflow is larger, move to the top because it fits better, or if dropup is requested
+			var moveTop = hostPosition.top - collectionHeight - 5;
+			if ( (bottomOverflow > topOverflow || options.dropup) && -moveTop < tableTop ) {
+				display.css( 'top', moveTop);
+			}
+
+			// Get the size of the container (left and width - and thus also right)
+			var tableLeft = tableContainer.offset().left;
+			var tableWidth = tableContainer.width();
+			var tableRight = tableLeft + tableWidth;
+
+			// Get the size of the popover (left and width - and ...)
+			var popoverLeft = display.offset().left;
+			var popoverWidth = display.width();
+			var popoverRight = popoverLeft + popoverWidth;
+
+			// Get the size of the host buttons (left and width - and ...)
+			var buttonsLeft = hostNode.offset().left;
+			var buttonsWidth = hostNode.outerWidth()
+			var buttonsRight = buttonsLeft + buttonsWidth;
+			
+			// You've then got all the numbers you need to do some calculations and if statements,
+			//  so we can do some quick JS maths and apply it only once
+			// If it has the right align class OR the buttons are right aligned OR the button container is floated right,
+			//  then calculate left position for the popover to align the popover to the right hand
+			//  side of the button - check to see if the left of the popover is inside the table container.
+			// If not, move the popover so it is, but not more than it means that the popover is to the right of the table container
+			var popoverShuffle = 0;
+			if ( display.hasClass( options.rightAlignClassName )) {
+				popoverShuffle = buttonsRight - popoverRight;
+				if(tableLeft > (popoverLeft + popoverShuffle)){
+					var leftGap = tableLeft - (popoverLeft + popoverShuffle);
+					var rightGap = tableRight - (popoverRight + popoverShuffle);
+	
+					if(leftGap > rightGap){
+						popoverShuffle += rightGap; 
+					}
+					else {
+						popoverShuffle += leftGap;
+					}
+				}
+			}
+			// else attempt to left align the popover to the button. Similar to above, if the popover's right goes past the table container's right,
+			//  then move it back, but not so much that it goes past the left of the table container
+			else {
+				popoverShuffle = tableLeft - popoverLeft;
+
+				if(tableRight < (popoverRight + popoverShuffle)){
+					var leftGap = tableLeft - (popoverLeft + popoverShuffle);
+					var rightGap = tableRight - (popoverRight + popoverShuffle);
+
+					if(leftGap > rightGap ){
+						popoverShuffle += rightGap;
+					}
+					else {
+						popoverShuffle += leftGap;
+					}
+
+				}
+			}
+
+			display.css('left', display.position().left + popoverShuffle);
+			
+		}
+		else if (position === 'absolute') {
+			// Align relative to the host button
+			var hostPosition = hostNode.position();
+
+			display.css( {
+				top: hostPosition.top + hostNode.outerHeight(),
+				left: hostPosition.left
+			} );
+
+			// calculate overflow when positioned beneath
+			var collectionHeight = display.outerHeight();
+			var top = hostNode.offset().top
+			var popoverShuffle = 0;
+
+			// Get the size of the host buttons (left and width - and ...)
+			var buttonsLeft = hostNode.offset().left;
+			var buttonsWidth = hostNode.outerWidth()
+			var buttonsRight = buttonsLeft + buttonsWidth;
+
+			// Get the size of the popover (left and width - and ...)
+			var popoverLeft = display.offset().left;
+			var popoverWidth = content.width();
+			var popoverRight = popoverLeft + popoverWidth;
+
+			var moveTop = hostPosition.top - collectionHeight - 5;
+			var tableBottom = tableContainer.offset().top + tableContainer.height();
+			var listBottom = hostPosition.top + hostNode.outerHeight() + collectionHeight;
+			var bottomOverflow = listBottom - tableBottom;
+
+			// calculate overflow when positioned above
+			var listTop = hostPosition.top - collectionHeight;
+			var tableTop = tableContainer.offset().top;
+			var topOverflow = tableTop - listTop;
+
+			if ( (bottomOverflow > topOverflow || options.dropup) && -moveTop < tableTop ) {
+				display.css( 'top', moveTop);
+			}
+
+			popoverShuffle = options.align === 'button-right'
+				? buttonsRight - popoverRight
+				: buttonsLeft - popoverLeft;
+
+			display.css('left', display.position().left + popoverShuffle);
+		}
+		else {
+			// Fix position - centre on screen
+			var top = display.height() / 2;
+			if ( top > $(window).height() / 2 ) {
+				top = $(window).height() / 2;
+			}
+
+			display.css( 'marginTop', top*-1 );
+		}
+
+		if ( options.background ) {
+			Buttons.background( true, options.backgroundClassName, options.fade, hostNode );
+		}
+
+		// This is bonkers, but if we don't have a click listener on the
+		// background element, iOS Safari will ignore the body click
+		// listener below. An empty function here is all that is
+		// required to make it work...
+		$('div.dt-button-background').on( 'click.dtb-collection', function () {} );
+
+		$('body')
+			.on( 'click.dtb-collection', function (e) {
+				// andSelf is deprecated in jQ1.8, but we want 1.7 compat
+				var back = $.fn.addBack ? 'addBack' : 'andSelf';
+				var parent = $(e.target).parent()[0];
+
+				if (( ! $(e.target).parents()[back]().filter( content ).length  && !$(parent).hasClass('dt-buttons')) || $(e.target).hasClass('dt-button-background')) {
+					close();
+				}
+			} )
+			.on( 'keyup.dtb-collection', function (e) {
+				if ( e.keyCode === 27 ) {
+					close();
+				}
+			} );
+
+		if ( options.autoClose ) {
+			setTimeout( function () {
+				dt.on( 'buttons-action.b-internal', function (e, btn, dt, node) {
+					if ( node[0] === hostNode[0] ) {
+						return;
+					}
+					close();
+				} );
+			}, 0);
+		}
+
+		$(display).trigger('buttons-popover.dt');
+	}
+} );
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Statics
+ */
+
+/**
+ * Show / hide a background layer behind a collection
+ * @param  {boolean} Flag to indicate if the background should be shown or
+ *   hidden 
+ * @param  {string} Class to assign to the background
+ * @static
+ */
+Buttons.background = function ( show, className, fade, insertPoint ) {
+	if ( fade === undefined ) {
+		fade = 400;
+	}
+	if ( ! insertPoint ) {
+		insertPoint = document.body;
+	}
+
+	if ( show ) {
+		_fadeIn(
+			$('<div/>')
+				.addClass( className )
+				.css( 'display', 'none' )
+				.insertAfter( insertPoint ),
+			fade
+		);
+	}
+	else {
+		_fadeOut(
+			$('div.'+className),
+			fade,
+			function () {
+				$(this)
+					.removeClass( className )
+					.remove();
+			}
+		);
+	}
+};
+
+/**
+ * Instance selector - select Buttons instances based on an instance selector
+ * value from the buttons assigned to a DataTable. This is only useful if
+ * multiple instances are attached to a DataTable.
+ * @param  {string|int|array} Instance selector - see `instance-selector`
+ *   documentation on the DataTables site
+ * @param  {array} Button instance array that was attached to the DataTables
+ *   settings object
+ * @return {array} Buttons instances
+ * @static
+ */
+Buttons.instanceSelector = function ( group, buttons )
+{
+	if ( group === undefined || group === null ) {
+		return $.map( buttons, function ( v ) {
+			return v.inst;
+		} );
+	}
+
+	var ret = [];
+	var names = $.map( buttons, function ( v ) {
+		return v.name;
+	} );
+
+	// Flatten the group selector into an array of single options
+	var process = function ( input ) {
+		if ( $.isArray( input ) ) {
+			for ( var i=0, ien=input.length ; i<ien ; i++ ) {
+				process( input[i] );
+			}
+			return;
+		}
+
+		if ( typeof input === 'string' ) {
+			if ( input.indexOf( ',' ) !== -1 ) {
+				// String selector, list of names
+				process( input.split(',') );
+			}
+			else {
+				// String selector individual name
+				var idx = $.inArray( $.trim(input), names );
+
+				if ( idx !== -1 ) {
+					ret.push( buttons[ idx ].inst );
+				}
+			}
+		}
+		else if ( typeof input === 'number' ) {
+			// Index selector
+			ret.push( buttons[ input ].inst );
+		}
+	};
+	
+	process( group );
+
+	return ret;
+};
+
+/**
+ * Button selector - select one or more buttons from a selector input so some
+ * operation can be performed on them.
+ * @param  {array} Button instances array that the selector should operate on
+ * @param  {string|int|node|jQuery|array} Button selector - see
+ *   `button-selector` documentation on the DataTables site
+ * @return {array} Array of objects containing `inst` and `idx` properties of
+ *   the selected buttons so you know which instance each button belongs to.
+ * @static
+ */
+Buttons.buttonSelector = function ( insts, selector )
+{
+	var ret = [];
+	var nodeBuilder = function ( a, buttons, baseIdx ) {
+		var button;
+		var idx;
+
+		for ( var i=0, ien=buttons.length ; i<ien ; i++ ) {
+			button = buttons[i];
+
+			if ( button ) {
+				idx = baseIdx !== undefined ?
+					baseIdx+i :
+					i+'';
+
+				a.push( {
+					node: button.node,
+					name: button.conf.name,
+					idx:  idx
+				} );
+
+				if ( button.buttons ) {
+					nodeBuilder( a, button.buttons, idx+'-' );
+				}
+			}
+		}
+	};
+
+	var run = function ( selector, inst ) {
+		var i, ien;
+		var buttons = [];
+		nodeBuilder( buttons, inst.s.buttons );
+
+		var nodes = $.map( buttons, function (v) {
+			return v.node;
+		} );
+
+		if ( $.isArray( selector ) || selector instanceof $ ) {
+			for ( i=0, ien=selector.length ; i<ien ; i++ ) {
+				run( selector[i], inst );
+			}
+			return;
+		}
+
+		if ( selector === null || selector === undefined || selector === '*' ) {
+			// Select all
+			for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
+				ret.push( {
+					inst: inst,
+					node: buttons[i].node
+				} );
+			}
+		}
+		else if ( typeof selector === 'number' ) {
+			// Main button index selector
+			ret.push( {
+				inst: inst,
+				node: inst.s.buttons[ selector ].node
+			} );
+		}
+		else if ( typeof selector === 'string' ) {
+			if ( selector.indexOf( ',' ) !== -1 ) {
+				// Split
+				var a = selector.split(',');
+
+				for ( i=0, ien=a.length ; i<ien ; i++ ) {
+					run( $.trim(a[i]), inst );
+				}
+			}
+			else if ( selector.match( /^\d+(\-\d+)*$/ ) ) {
+				// Sub-button index selector
+				var indexes = $.map( buttons, function (v) {
+					return v.idx;
+				} );
+
+				ret.push( {
+					inst: inst,
+					node: buttons[ $.inArray( selector, indexes ) ].node
+				} );
+			}
+			else if ( selector.indexOf( ':name' ) !== -1 ) {
+				// Button name selector
+				var name = selector.replace( ':name', '' );
+
+				for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
+					if ( buttons[i].name === name ) {
+						ret.push( {
+							inst: inst,
+							node: buttons[i].node
+						} );
+					}
+				}
+			}
+			else {
+				// jQuery selector on the nodes
+				$( nodes ).filter( selector ).each( function () {
+					ret.push( {
+						inst: inst,
+						node: this
+					} );
+				} );
+			}
+		}
+		else if ( typeof selector === 'object' && selector.nodeName ) {
+			// Node selector
+			var idx = $.inArray( selector, nodes );
+
+			if ( idx !== -1 ) {
+				ret.push( {
+					inst: inst,
+					node: nodes[ idx ]
+				} );
+			}
+		}
+	};
+
+
+	for ( var i=0, ien=insts.length ; i<ien ; i++ ) {
+		var inst = insts[i];
+
+		run( selector, inst );
+	}
+
+	return ret;
+};
+
+
+/**
+ * Buttons defaults. For full documentation, please refer to the docs/option
+ * directory or the DataTables site.
+ * @type {Object}
+ * @static
+ */
+Buttons.defaults = {
+	buttons: [ 'copy', 'excel', 'csv', 'pdf', 'print' ],
+	name: 'main',
+	tabIndex: 0,
+	dom: {
+		container: {
+			tag: 'div',
+			className: 'dt-buttons'
+		},
+		collection: {
+			tag: 'div',
+			className: ''
+		},
+		button: {
+			// Flash buttons will not work with `<button>` in IE - it has to be `<a>`
+			tag: 'ActiveXObject' in window ?
+				'a' :
+				'button',
+			className: 'dt-button',
+			active: 'active',
+			disabled: 'disabled'
+		},
+		buttonLiner: {
+			tag: 'span',
+			className: ''
+		}
+	}
+};
+
+/**
+ * Version information
+ * @type {string}
+ * @static
+ */
+Buttons.version = '1.6.3';
+
+
+$.extend( _dtButtons, {
+	collection: {
+		text: function ( dt ) {
+			return dt.i18n( 'buttons.collection', 'Collection' );
+		},
+		className: 'buttons-collection',
+		init: function ( dt, button, config ) {
+			button.attr( 'aria-expanded', false );
+		},
+		action: function ( e, dt, button, config ) {
+			e.stopPropagation();
+
+			if ( config._collection.parents('body').length ) {
+				this.popover(false, config);
+			}
+			else {
+				this.popover(config._collection, config);
+			}
+		},
+		attr: {
+			'aria-haspopup': true
+		}
+		// Also the popover options, defined in Buttons.popover
+	},
+	copy: function ( dt, conf ) {
+		if ( _dtButtons.copyHtml5 ) {
+			return 'copyHtml5';
+		}
+		if ( _dtButtons.copyFlash && _dtButtons.copyFlash.available( dt, conf ) ) {
+			return 'copyFlash';
+		}
+	},
+	csv: function ( dt, conf ) {
+		// Common option that will use the HTML5 or Flash export buttons
+		if ( _dtButtons.csvHtml5 && _dtButtons.csvHtml5.available( dt, conf ) ) {
+			return 'csvHtml5';
+		}
+		if ( _dtButtons.csvFlash && _dtButtons.csvFlash.available( dt, conf ) ) {
+			return 'csvFlash';
+		}
+	},
+	excel: function ( dt, conf ) {
+		// Common option that will use the HTML5 or Flash export buttons
+		if ( _dtButtons.excelHtml5 && _dtButtons.excelHtml5.available( dt, conf ) ) {
+			return 'excelHtml5';
+		}
+		if ( _dtButtons.excelFlash && _dtButtons.excelFlash.available( dt, conf ) ) {
+			return 'excelFlash';
+		}
+	},
+	pdf: function ( dt, conf ) {
+		// Common option that will use the HTML5 or Flash export buttons
+		if ( _dtButtons.pdfHtml5 && _dtButtons.pdfHtml5.available( dt, conf ) ) {
+			return 'pdfHtml5';
+		}
+		if ( _dtButtons.pdfFlash && _dtButtons.pdfFlash.available( dt, conf ) ) {
+			return 'pdfFlash';
+		}
+	},
+	pageLength: function ( dt ) {
+		var lengthMenu = dt.settings()[0].aLengthMenu;
+		var vals = $.isArray( lengthMenu[0] ) ? lengthMenu[0] : lengthMenu;
+		var lang = $.isArray( lengthMenu[0] ) ? lengthMenu[1] : lengthMenu;
+		var text = function ( dt ) {
+			return dt.i18n( 'buttons.pageLength', {
+				"-1": 'Show all rows',
+				_:    'Show %d rows'
+			}, dt.page.len() );
+		};
+
+		return {
+			extend: 'collection',
+			text: text,
+			className: 'buttons-page-length',
+			autoClose: true,
+			buttons: $.map( vals, function ( val, i ) {
+				return {
+					text: lang[i],
+					className: 'button-page-length',
+					action: function ( e, dt ) {
+						dt.page.len( val ).draw();
+					},
+					init: function ( dt, node, conf ) {
+						var that = this;
+						var fn = function () {
+							that.active( dt.page.len() === val );
+						};
+
+						dt.on( 'length.dt'+conf.namespace, fn );
+						fn();
+					},
+					destroy: function ( dt, node, conf ) {
+						dt.off( 'length.dt'+conf.namespace );
+					}
+				};
+			} ),
+			init: function ( dt, node, conf ) {
+				var that = this;
+				dt.on( 'length.dt'+conf.namespace, function () {
+					that.text( conf.text );
+				} );
+			},
+			destroy: function ( dt, node, conf ) {
+				dt.off( 'length.dt'+conf.namespace );
+			}
+		};
+	}
+} );
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * DataTables API
+ *
+ * For complete documentation, please refer to the docs/api directory or the
+ * DataTables site
+ */
+
+// Buttons group and individual button selector
+DataTable.Api.register( 'buttons()', function ( group, selector ) {
+	// Argument shifting
+	if ( selector === undefined ) {
+		selector = group;
+		group = undefined;
+	}
+
+	this.selector.buttonGroup = group;
+
+	var res = this.iterator( true, 'table', function ( ctx ) {
+		if ( ctx._buttons ) {
+			return Buttons.buttonSelector(
+				Buttons.instanceSelector( group, ctx._buttons ),
+				selector
+			);
+		}
+	}, true );
+
+	res._groupSelector = group;
+	return res;
+} );
+
+// Individual button selector
+DataTable.Api.register( 'button()', function ( group, selector ) {
+	// just run buttons() and truncate
+	var buttons = this.buttons( group, selector );
+
+	if ( buttons.length > 1 ) {
+		buttons.splice( 1, buttons.length );
+	}
+
+	return buttons;
+} );
+
+// Active buttons
+DataTable.Api.registerPlural( 'buttons().active()', 'button().active()', function ( flag ) {
+	if ( flag === undefined ) {
+		return this.map( function ( set ) {
+			return set.inst.active( set.node );
+		} );
+	}
+
+	return this.each( function ( set ) {
+		set.inst.active( set.node, flag );
+	} );
+} );
+
+// Get / set button action
+DataTable.Api.registerPlural( 'buttons().action()', 'button().action()', function ( action ) {
+	if ( action === undefined ) {
+		return this.map( function ( set ) {
+			return set.inst.action( set.node );
+		} );
+	}
+
+	return this.each( function ( set ) {
+		set.inst.action( set.node, action );
+	} );
+} );
+
+// Enable / disable buttons
+DataTable.Api.register( ['buttons().enable()', 'button().enable()'], function ( flag ) {
+	return this.each( function ( set ) {
+		set.inst.enable( set.node, flag );
+	} );
+} );
+
+// Disable buttons
+DataTable.Api.register( ['buttons().disable()', 'button().disable()'], function () {
+	return this.each( function ( set ) {
+		set.inst.disable( set.node );
+	} );
+} );
+
+// Get button nodes
+DataTable.Api.registerPlural( 'buttons().nodes()', 'button().node()', function () {
+	var jq = $();
+
+	// jQuery will automatically reduce duplicates to a single entry
+	$( this.each( function ( set ) {
+		jq = jq.add( set.inst.node( set.node ) );
+	} ) );
+
+	return jq;
+} );
+
+// Get / set button processing state
+DataTable.Api.registerPlural( 'buttons().processing()', 'button().processing()', function ( flag ) {
+	if ( flag === undefined ) {
+		return this.map( function ( set ) {
+			return set.inst.processing( set.node );
+		} );
+	}
+
+	return this.each( function ( set ) {
+		set.inst.processing( set.node, flag );
+	} );
+} );
+
+// Get / set button text (i.e. the button labels)
+DataTable.Api.registerPlural( 'buttons().text()', 'button().text()', function ( label ) {
+	if ( label === undefined ) {
+		return this.map( function ( set ) {
+			return set.inst.text( set.node );
+		} );
+	}
+
+	return this.each( function ( set ) {
+		set.inst.text( set.node, label );
+	} );
+} );
+
+// Trigger a button's action
+DataTable.Api.registerPlural( 'buttons().trigger()', 'button().trigger()', function () {
+	return this.each( function ( set ) {
+		set.inst.node( set.node ).trigger( 'click' );
+	} );
+} );
+
+// Button resolver to the popover
+DataTable.Api.register( 'button().popover()', function (content, options) {
+	return this.map( function ( set ) {
+		return set.inst._popover( content, this.button(this[0].node), options );
+	} );
+} );
+
+// Get the container elements
+DataTable.Api.register( 'buttons().containers()', function () {
+	var jq = $();
+	var groupSelector = this._groupSelector;
+
+	// We need to use the group selector directly, since if there are no buttons
+	// the result set will be empty
+	this.iterator( true, 'table', function ( ctx ) {
+		if ( ctx._buttons ) {
+			var insts = Buttons.instanceSelector( groupSelector, ctx._buttons );
+
+			for ( var i=0, ien=insts.length ; i<ien ; i++ ) {
+				jq = jq.add( insts[i].container() );
+			}
+		}
+	} );
+
+	return jq;
+} );
+
+DataTable.Api.register( 'buttons().container()', function () {
+	// API level of nesting is `buttons()` so we can zip into the containers method
+	return this.containers().eq(0);
+} );
+
+// Add a new button
+DataTable.Api.register( 'button().add()', function ( idx, conf ) {
+	var ctx = this.context;
+
+	// Don't use `this` as it could be empty - select the instances directly
+	if ( ctx.length ) {
+		var inst = Buttons.instanceSelector( this._groupSelector, ctx[0]._buttons );
+
+		if ( inst.length ) {
+			inst[0].add( conf, idx );
+		}
+	}
+
+	return this.button( this._groupSelector, idx );
+} );
+
+// Destroy the button sets selected
+DataTable.Api.register( 'buttons().destroy()', function () {
+	this.pluck( 'inst' ).unique().each( function ( inst ) {
+		inst.destroy();
+	} );
+
+	return this;
+} );
+
+// Remove a button
+DataTable.Api.registerPlural( 'buttons().remove()', 'buttons().remove()', function () {
+	this.each( function ( set ) {
+		set.inst.remove( set.node );
+	} );
+
+	return this;
+} );
+
+// Information box that can be used by buttons
+var _infoTimer;
+DataTable.Api.register( 'buttons.info()', function ( title, message, time ) {
+	var that = this;
+
+	if ( title === false ) {
+		this.off('destroy.btn-info');
+		_fadeOut(
+			$('#datatables_buttons_info'),
+			400,
+			function () {
+				$(this).remove();
+			}
+		);
+		clearTimeout( _infoTimer );
+		_infoTimer = null;
+
+		return this;
+	}
+
+	if ( _infoTimer ) {
+		clearTimeout( _infoTimer );
+	}
+
+	if ( $('#datatables_buttons_info').length ) {
+		$('#datatables_buttons_info').remove();
+	}
+
+	title = title ? '<h2>'+title+'</h2>' : '';
+
+	_fadeIn(
+		$('<div id="datatables_buttons_info" class="dt-button-info"/>')
+			.html( title )
+			.append( $('<div/>')[ typeof message === 'string' ? 'html' : 'append' ]( message ) )
+			.css( 'display', 'none' )
+			.appendTo( 'body' )
+	);
+
+	if ( time !== undefined && time !== 0 ) {
+		_infoTimer = setTimeout( function () {
+			that.buttons.info( false );
+		}, time );
+	}
+
+	this.on('destroy.btn-info', function () {
+		that.buttons.info(false);
+	});
+
+	return this;
+} );
+
+// Get data from the table for export - this is common to a number of plug-in
+// buttons so it is included in the Buttons core library
+DataTable.Api.register( 'buttons.exportData()', function ( options ) {
+	if ( this.context.length ) {
+		return _exportData( new DataTable.Api( this.context[0] ), options );
+	}
+} );
+
+// Get information about the export that is common to many of the export data
+// types (DRY)
+DataTable.Api.register( 'buttons.exportInfo()', function ( conf ) {
+	if ( ! conf ) {
+		conf = {};
+	}
+
+	return {
+		filename: _filename( conf ),
+		title: _title( conf ),
+		messageTop: _message(this, conf.message || conf.messageTop, 'top'),
+		messageBottom: _message(this, conf.messageBottom, 'bottom')
+	};
+} );
+
+
+
+/**
+ * Get the file name for an exported file.
+ *
+ * @param {object}	config Button configuration
+ * @param {boolean} incExtension Include the file name extension
+ */
+var _filename = function ( config )
+{
+	// Backwards compatibility
+	var filename = config.filename === '*' && config.title !== '*' && config.title !== undefined && config.title !== null && config.title !== '' ?
+		config.title :
+		config.filename;
+
+	if ( typeof filename === 'function' ) {
+		filename = filename();
+	}
+
+	if ( filename === undefined || filename === null ) {
+		return null;
+	}
+
+	if ( filename.indexOf( '*' ) !== -1 ) {
+		filename = $.trim( filename.replace( '*', $('head > title').text() ) );
+	}
+
+	// Strip characters which the OS will object to
+	filename = filename.replace(/[^a-zA-Z0-9_\u00A1-\uFFFF\.,\-_ !\(\)]/g, "");
+
+	var extension = _stringOrFunction( config.extension );
+	if ( ! extension ) {
+		extension = '';
+	}
+
+	return filename + extension;
+};
+
+/**
+ * Simply utility method to allow parameters to be given as a function
+ *
+ * @param {undefined|string|function} option Option
+ * @return {null|string} Resolved value
+ */
+var _stringOrFunction = function ( option )
+{
+	if ( option === null || option === undefined ) {
+		return null;
+	}
+	else if ( typeof option === 'function' ) {
+		return option();
+	}
+	return option;
+};
+
+/**
+ * Get the title for an exported file.
+ *
+ * @param {object} config	Button configuration
+ */
+var _title = function ( config )
+{
+	var title = _stringOrFunction( config.title );
+
+	return title === null ?
+		null : title.indexOf( '*' ) !== -1 ?
+			title.replace( '*', $('head > title').text() || 'Exported data' ) :
+			title;
+};
+
+var _message = function ( dt, option, position )
+{
+	var message = _stringOrFunction( option );
+	if ( message === null ) {
+		return null;
+	}
+
+	var caption = $('caption', dt.table().container()).eq(0);
+	if ( message === '*' ) {
+		var side = caption.css( 'caption-side' );
+		if ( side !== position ) {
+			return null;
+		}
+
+		return caption.length ?
+			caption.text() :
+			'';
+	}
+
+	return message;
+};
+
+
+
+
+
+
+
+var _exportTextarea = $('<textarea/>')[0];
+var _exportData = function ( dt, inOpts )
+{
+	var config = $.extend( true, {}, {
+		rows:           null,
+		columns:        '',
+		modifier:       {
+			search: 'applied',
+			order:  'applied'
+		},
+		orthogonal:     'display',
+		stripHtml:      true,
+		stripNewlines:  true,
+		decodeEntities: true,
+		trim:           true,
+		format:         {
+			header: function ( d ) {
+				return strip( d );
+			},
+			footer: function ( d ) {
+				return strip( d );
+			},
+			body: function ( d ) {
+				return strip( d );
+			}
+		},
+		customizeData: null
+	}, inOpts );
+
+	var strip = function ( str ) {
+		if ( typeof str !== 'string' ) {
+			return str;
+		}
+
+		// Always remove script tags
+		str = str.replace( /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '' );
+
+		// Always remove comments
+		str = str.replace( /<!\-\-.*?\-\->/g, '' );
+
+		if ( config.stripHtml ) {
+			str = str.replace( /<[^>]*>/g, '' );
+		}
+
+		if ( config.trim ) {
+			str = str.replace( /^\s+|\s+$/g, '' );
+		}
+
+		if ( config.stripNewlines ) {
+			str = str.replace( /\n/g, ' ' );
+		}
+
+		if ( config.decodeEntities ) {
+			_exportTextarea.innerHTML = str;
+			str = _exportTextarea.value;
+		}
+
+		return str;
+	};
+
+
+	var header = dt.columns( config.columns ).indexes().map( function (idx) {
+		var el = dt.column( idx ).header();
+		return config.format.header( el.innerHTML, idx, el );
+	} ).toArray();
+
+	var footer = dt.table().footer() ?
+		dt.columns( config.columns ).indexes().map( function (idx) {
+			var el = dt.column( idx ).footer();
+			return config.format.footer( el ? el.innerHTML : '', idx, el );
+		} ).toArray() :
+		null;
+	
+	// If Select is available on this table, and any rows are selected, limit the export
+	// to the selected rows. If no rows are selected, all rows will be exported. Specify
+	// a `selected` modifier to control directly.
+	var modifier = $.extend( {}, config.modifier );
+	if ( dt.select && typeof dt.select.info === 'function' && modifier.selected === undefined ) {
+		if ( dt.rows( config.rows, $.extend( { selected: true }, modifier ) ).any() ) {
+			$.extend( modifier, { selected: true } )
+		}
+	}
+
+	var rowIndexes = dt.rows( config.rows, modifier ).indexes().toArray();
+	var selectedCells = dt.cells( rowIndexes, config.columns );
+	var cells = selectedCells
+		.render( config.orthogonal )
+		.toArray();
+	var cellNodes = selectedCells
+		.nodes()
+		.toArray();
+
+	var columns = header.length;
+	var rows = columns > 0 ? cells.length / columns : 0;
+	var body = [];
+	var cellCounter = 0;
+
+	for ( var i=0, ien=rows ; i<ien ; i++ ) {
+		var row = [ columns ];
+
+		for ( var j=0 ; j<columns ; j++ ) {
+			row[j] = config.format.body( cells[ cellCounter ], i, j, cellNodes[ cellCounter ] );
+			cellCounter++;
+		}
+
+		body[i] = row;
+	}
+
+	var data = {
+		header: header,
+		footer: footer,
+		body:   body
+	};
+
+	if ( config.customizeData ) {
+		config.customizeData( data );
+	}
+
+	return data;
+};
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * DataTables interface
+ */
+
+// Attach to DataTables objects for global access
+$.fn.dataTable.Buttons = Buttons;
+$.fn.DataTable.Buttons = Buttons;
+
+
+
+// DataTables creation - check if the buttons have been defined for this table,
+// they will have been if the `B` option was used in `dom`, otherwise we should
+// create the buttons instance here so they can be inserted into the document
+// using the API. Listen for `init` for compatibility with pre 1.10.10, but to
+// be removed in future.
+$(document).on( 'init.dt plugin-init.dt', function (e, settings) {
+	if ( e.namespace !== 'dt' ) {
+		return;
+	}
+
+	var opts = settings.oInit.buttons || DataTable.defaults.buttons;
+
+	if ( opts && ! settings._buttons ) {
+		new Buttons( settings, opts ).container();
+	}
+} );
+
+function _init ( settings, options ) {
+	var api = new DataTable.Api( settings );
+	var opts = options
+		? options
+		: api.init().buttons || DataTable.defaults.buttons;
+
+	return new Buttons( api, opts ).container();
+}
+
+// DataTables `dom` feature option
+DataTable.ext.feature.push( {
+	fnInit: _init,
+	cFeature: "B"
+} );
+
+// DataTables 2 layout feature
+if ( DataTable.ext.features ) {
+	DataTable.ext.features.register( 'buttons', _init );
+}
+
+
+return Buttons;
+}));
+
+
+/*! Bootstrap integration for DataTables' Buttons
+ * ©2016 SpryMedia Ltd - datatables.net/license
+ */
+
+(function( factory ){
+	if ( typeof define === 'function' && define.amd ) {
+		// AMD
+		define( ['jquery', 'datatables.net-bs4', 'datatables.net-buttons'], function ( $ ) {
+			return factory( $, window, document );
+		} );
+	}
+	else if ( typeof exports === 'object' ) {
+		// CommonJS
+		module.exports = function (root, $) {
+			if ( ! root ) {
+				root = window;
+			}
+
+			if ( ! $ || ! $.fn.dataTable ) {
+				$ = require('datatables.net-bs4')(root, $).$;
+			}
+
+			if ( ! $.fn.dataTable.Buttons ) {
+				require('datatables.net-buttons')(root, $);
+			}
+
+			return factory( $, root, root.document );
+		};
+	}
+	else {
+		// Browser
+		factory( jQuery, window, document );
+	}
+}(function( $, window, document, undefined ) {
+'use strict';
+var DataTable = $.fn.dataTable;
+
+$.extend( true, DataTable.Buttons.defaults, {
+	dom: {
+		container: {
+			className: 'dt-buttons btn-group flex-wrap'
+		},
+		button: {
+			className: 'btn btn-secondary'
+		},
+		collection: {
+			tag: 'div',
+			className: 'dropdown-menu',
+			button: {
+				tag: 'a',
+				className: 'dt-button dropdown-item',
+				active: 'active',
+				disabled: 'disabled'
+			}
+		}
+	},
+	buttonCreated: function ( config, button ) {
+		return config.buttons ?
+			$('<div class="btn-group"/>').append(button) :
+			button;
+	}
+} );
+
+DataTable.ext.buttons.collection.className += ' dropdown-toggle';
+DataTable.ext.buttons.collection.rightAlignClassName = 'dropdown-menu-right';
+
+return DataTable.Buttons;
+}));
+
+
+/*! SearchPanes 1.1.1
+ * 2019-2020 SpryMedia Ltd - datatables.net/license
+ */
+(function () {
+    'use strict';
+
+    var $;
+    var DataTable;
+    function setJQuery(jq) {
+        $ = jq;
+        DataTable = jq.fn.dataTable;
+    }
+    var SearchPane = /** @class */ (function () {
+        /**
+         * Creates the panes, sets up the search function
+         * @param paneSettings The settings for the searchPanes
+         * @param opts The options for the default features
+         * @param idx the index of the column for this pane
+         * @returns {object} the pane that has been created, including the table and the index of the pane
+         */
+        function SearchPane(paneSettings, opts, idx, layout, panesContainer, panes) {
+            var _this = this;
+            if (panes === void 0) { panes = null; }
+            // Check that the required version of DataTables is included
+            if (!DataTable || !DataTable.versionCheck || !DataTable.versionCheck('1.10.0')) {
+                throw new Error('SearchPane requires DataTables 1.10 or newer');
+            }
+            // Check that Select is included
+            if (!DataTable.select) {
+                throw new Error('SearchPane requires Select');
+            }
+            var table = new DataTable.Api(paneSettings);
+            this.classes = $.extend(true, {}, SearchPane.classes);
+            // Get options from user
+            this.c = $.extend(true, {}, SearchPane.defaults, opts);
+            this.customPaneSettings = panes;
+            this.s = {
+                cascadeRegen: false,
+                clearing: false,
+                colOpts: [],
+                deselect: false,
+                displayed: false,
+                dt: table,
+                dtPane: undefined,
+                filteringActive: false,
+                index: idx,
+                indexes: [],
+                lastCascade: false,
+                lastSelect: false,
+                listSet: false,
+                name: undefined,
+                redraw: false,
+                rowData: {
+                    arrayFilter: [],
+                    arrayOriginal: [],
+                    arrayTotals: [],
+                    bins: {},
+                    binsOriginal: {},
+                    binsTotal: {},
+                    filterMap: new Map(),
+                    totalOptions: 0
+                },
+                scrollTop: 0,
+                searchFunction: undefined,
+                selectPresent: false,
+                serverSelect: [],
+                serverSelecting: false,
+                showFiltered: false,
+                tableLength: null,
+                updating: false
+            };
+            var rowLength = table.columns().eq(0).toArray().length;
+            this.colExists = this.s.index < rowLength;
+            // Add extra elements to DOM object including clear and hide buttons
+            this.c.layout = layout;
+            var layVal = parseInt(layout.split('-')[1], 10);
+            this.dom = {
+                buttonGroup: $('<div/>').addClass(this.classes.buttonGroup),
+                clear: $('<button type="button">&#215;</button>')
+                    .addClass(this.classes.dull)
+                    .addClass(this.classes.paneButton)
+                    .addClass(this.classes.clearButton),
+                container: $('<div/>').addClass(this.classes.container).addClass(this.classes.layout +
+                    (layVal < 10 ? layout : layout.split('-')[0] + '-9')),
+                countButton: $('<button type="button"></button>')
+                    .addClass(this.classes.paneButton)
+                    .addClass(this.classes.countButton),
+                dtP: $('<table><thead><tr><th>' +
+                    (this.colExists
+                        ? $(table.column(this.colExists ? this.s.index : 0).header()).text()
+                        : this.customPaneSettings.header || 'Custom Pane') + '</th><th/></tr></thead></table>'),
+                lower: $('<div/>').addClass(this.classes.subRow2).addClass(this.classes.narrowButton),
+                nameButton: $('<button type="button"></button>').addClass(this.classes.paneButton).addClass(this.classes.nameButton),
+                panesContainer: panesContainer,
+                searchBox: $('<input/>').addClass(this.classes.paneInputButton).addClass(this.classes.search),
+                searchButton: $('<button type = "button" class="' + this.classes.searchIcon + '"></button>')
+                    .addClass(this.classes.paneButton),
+                searchCont: $('<div/>').addClass(this.classes.searchCont),
+                searchLabelCont: $('<div/>').addClass(this.classes.searchLabelCont),
+                topRow: $('<div/>').addClass(this.classes.topRow),
+                upper: $('<div/>').addClass(this.classes.subRow1).addClass(this.classes.narrowSearch)
+            };
+            this.s.displayed = false;
+            table = this.s.dt;
+            this.selections = [];
+            this.s.colOpts = this.colExists ? this._getOptions() : this._getBonusOptions();
+            var colOpts = this.s.colOpts;
+            var clear = $('<button type="button">X</button>').addClass(this.classes.paneButton);
+            $(clear).text(table.i18n('searchPanes.clearPane', 'X'));
+            this.dom.container.addClass(colOpts.className);
+            this.dom.container.addClass((this.customPaneSettings !== null && this.customPaneSettings.className !== undefined)
+                ? this.customPaneSettings.className
+                : '');
+            // Set the value of name incase ordering is desired
+            if (this.s.colOpts.name !== undefined) {
+                this.s.name = this.s.colOpts.name;
+            }
+            else if (this.customPaneSettings !== null && this.customPaneSettings.name !== undefined) {
+                this.s.name = this.customPaneSettings.name;
+            }
+            else {
+                this.s.name = this.colExists ?
+                    $(table.column(this.s.index).header()).text() :
+                    this.customPaneSettings.header || 'Custom Pane';
+            }
+            $(panesContainer).append(this.dom.container);
+            var tableNode = table.table(0).node();
+            // Custom search function for table
+            this.s.searchFunction = function (settings, searchData, dataIndex, origData) {
+                // If no data has been selected then show all
+                if (_this.selections.length === 0) {
+                    return true;
+                }
+                if (settings.nTable !== tableNode) {
+                    return true;
+                }
+                var filter = '';
+                if (_this.colExists) {
+                    // Get the current filtered data
+                    filter = searchData[_this.s.index];
+                    if (colOpts.orthogonal.filter !== 'filter') {
+                        // get the filter value from the map
+                        filter = _this.s.rowData.filterMap.get(dataIndex);
+                        if (filter instanceof $.fn.dataTable.Api) {
+                            filter = filter.toArray();
+                        }
+                    }
+                }
+                return _this._search(filter, dataIndex);
+            };
+            $.fn.dataTable.ext.search.push(this.s.searchFunction);
+            // If the clear button for this pane is clicked clear the selections
+            if (this.c.clear) {
+                $(clear).on('click', function () {
+                    var searches = _this.dom.container.find(_this.classes.search);
+                    searches.each(function () {
+                        $(this).val('');
+                        $(this).trigger('input');
+                    });
+                    _this.clearPane();
+                });
+            }
+            // Sometimes the top row of the panes containing the search box and ordering buttons appears
+            //  weird if the width of the panes is lower than expected, this fixes the design.
+            // Equally this may occur when the table is resized.
+            table.on('draw.dtsp', function () {
+                _this._adjustTopRow();
+            });
+            table.on('buttons-action', function () {
+                _this._adjustTopRow();
+            });
+            $(window).on('resize.dtsp', DataTable.util.throttle(function () {
+                _this._adjustTopRow();
+            }));
+            // When column-reorder is present and the columns are moved, it is necessary to
+            //  reassign all of the panes indexes to the new index of the column.
+            table.on('column-reorder.dtsp', function (e, settings, details) {
+                _this.s.index = details.mapping[_this.s.index];
+            });
+            return this;
+        }
+        /**
+         * In the case of a rebuild there is potential for new data to have been included or removed
+         * so all of the rowData must be reset as a precaution.
+         */
+        SearchPane.prototype.clearData = function () {
+            this.s.rowData = {
+                arrayFilter: [],
+                arrayOriginal: [],
+                arrayTotals: [],
+                bins: {},
+                binsOriginal: {},
+                binsTotal: {},
+                filterMap: new Map(),
+                totalOptions: 0
+            };
+        };
+        /**
+         * Clear the selections in the pane
+         */
+        SearchPane.prototype.clearPane = function () {
+            // Deselect all rows which are selected and update the table and filter count.
+            this.s.dtPane.rows({ selected: true }).deselect();
+            this.updateTable();
+            return this;
+        };
+        /**
+         * Strips all of the SearchPanes elements from the document and turns all of the listeners for the buttons off
+         */
+        SearchPane.prototype.destroy = function () {
+            $(this.s.dtPane).off('.dtsp');
+            $(this.s.dt).off('.dtsp');
+            $(this.dom.nameButton).off('.dtsp');
+            $(this.dom.countButton).off('.dtsp');
+            $(this.dom.clear).off('.dtsp');
+            $(this.dom.searchButton).off('.dtsp');
+            $(this.dom.container).remove();
+            var searchIdx = $.fn.dataTable.ext.search.indexOf(this.s.searchFunction);
+            while (searchIdx !== -1) {
+                $.fn.dataTable.ext.search.splice(searchIdx, 1);
+                searchIdx = $.fn.dataTable.ext.search.indexOf(this.s.searchFunction);
+            }
+            // If the datatables have been defined for the panes then also destroy these
+            if (this.s.dtPane !== undefined) {
+                this.s.dtPane.destroy();
+            }
+            this.s.listSet = false;
+        };
+        /**
+         * Updates the number of filters that have been applied in the title
+         */
+        SearchPane.prototype.getPaneCount = function () {
+            return this.s.dtPane !== undefined ?
+                this.s.dtPane.rows({ selected: true }).data().toArray().length :
+                0;
+        };
+        /**
+         * Rebuilds the panes from the start having deleted the old ones
+         * @param? last boolean to indicate if this is the last pane a selection was made in
+         * @param? dataIn data to be used in buildPane
+         * @param? init Whether this is the initial draw or not
+         * @param? maintainSelection Whether the current selections are to be maintained over rebuild
+         */
+        SearchPane.prototype.rebuildPane = function (last, dataIn, init, maintainSelection) {
+            if (last === void 0) { last = false; }
+            if (dataIn === void 0) { dataIn = null; }
+            if (init === void 0) { init = null; }
+            if (maintainSelection === void 0) { maintainSelection = false; }
+            this.clearData();
+            var selectedRows = [];
+            this.s.serverSelect = [];
+            var prevEl = null;
+            // When rebuilding strip all of the HTML Elements out of the container and start from scratch
+            if (this.s.dtPane !== undefined) {
+                if (maintainSelection) {
+                    if (!this.s.dt.page.info().serverSide) {
+                        selectedRows = this.s.dtPane.rows({ selected: true }).data().toArray();
+                    }
+                    else {
+                        this.s.serverSelect = this.s.dtPane.rows({ selected: true }).data().toArray();
+                    }
+                }
+                this.s.dtPane.clear().destroy();
+                prevEl = $(this.dom.container).prev();
+                this.destroy();
+                this.s.dtPane = undefined;
+                $.fn.dataTable.ext.search.push(this.s.searchFunction);
+            }
+            this.dom.container.removeClass(this.classes.hidden);
+            this.s.displayed = false;
+            this._buildPane(!this.s.dt.page.info().serverSide ?
+                selectedRows :
+                this.s.serverSelect, last, dataIn, init, prevEl);
+            return this;
+        };
+        /**
+         * removes the pane from the page and sets the displayed property to false.
+         */
+        SearchPane.prototype.removePane = function () {
+            this.s.displayed = false;
+            $(this.dom.container).hide();
+        };
+        /**
+         * Sets the cascadeRegen property of the pane. Accessible from above because as SearchPanes.ts deals with the rebuilds.
+         * @param val the boolean value that the cascadeRegen property is to be set to
+         */
+        SearchPane.prototype.setCascadeRegen = function (val) {
+            this.s.cascadeRegen = val;
+        };
+        /**
+         * This function allows the clearing property to be assigned. This is used when implementing cascadePane.
+         * In setting this to true for the clearing of the panes selection on the deselects it forces the pane to
+         * repopulate from the entire dataset not just the displayed values.
+         * @param val the boolean value which the clearing property is to be assigned
+         */
+        SearchPane.prototype.setClear = function (val) {
+            this.s.clearing = val;
+        };
+        /**
+         * Updates the values of all of the panes
+         * @param draw whether this has been triggered by a draw event or not
+         */
+        SearchPane.prototype.updatePane = function (draw) {
+            if (draw === void 0) { draw = false; }
+            this.s.updating = true;
+            this._updateCommon(draw);
+            this.s.updating = false;
+        };
+        /**
+         * Updates the panes if one of the options to do so has been set to true
+         *   rather than the filtered message when using viewTotal.
+         */
+        SearchPane.prototype.updateTable = function () {
+            var selectedRows = this.s.dtPane.rows({ selected: true }).data().toArray();
+            this.selections = selectedRows;
+            this._searchExtras();
+            // If either of the options that effect how the panes are displayed are selected then update the Panes
+            if (this.c.cascadePanes || this.c.viewTotal) {
+                this.updatePane();
+            }
+        };
+        /**
+         * Sets the listeners for the pane.
+         *
+         * Having it in it's own function makes it easier to only set them once
+         */
+        SearchPane.prototype._setListeners = function () {
+            var _this = this;
+            var rowData = this.s.rowData;
+            var t0;
+            // When an item is selected on the pane, add these to the array which holds selected items.
+            // Custom search will perform.
+            this.s.dtPane.on('select.dtsp', function () {
+                if (_this.s.dt.page.info().serverSide && !_this.s.updating) {
+                    if (!_this.s.serverSelecting) {
+                        _this.s.serverSelect = _this.s.dtPane.rows({ selected: true }).data().toArray();
+                        _this.s.scrollTop = $(_this.s.dtPane.table().node()).parent()[0].scrollTop;
+                        _this.s.selectPresent = true;
+                        _this.s.dt.draw(false);
+                    }
+                }
+                else {
+                    clearTimeout(t0);
+                    $(_this.dom.clear).removeClass(_this.classes.dull);
+                    _this.s.selectPresent = true;
+                    if (!_this.s.updating) {
+                        _this._makeSelection();
+                    }
+                    _this.s.selectPresent = false;
+                }
+            });
+            // When an item is deselected on the pane, re add the currently selected items to the array
+            // which holds selected items. Custom search will be performed.
+            this.s.dtPane.on('deselect.dtsp', function () {
+                t0 = setTimeout(function () {
+                    if (_this.s.dt.page.info().serverSide && !_this.s.updating) {
+                        if (!_this.s.serverSelecting) {
+                            _this.s.serverSelect = _this.s.dtPane.rows({ selected: true }).data().toArray();
+                            _this.s.deselect = true;
+                            _this.s.dt.draw(false);
+                        }
+                    }
+                    else {
+                        _this.s.deselect = true;
+                        if (_this.s.dtPane.rows({ selected: true }).data().toArray().length === 0) {
+                            $(_this.dom.clear).addClass(_this.classes.dull);
+                        }
+                        _this._makeSelection();
+                        _this.s.deselect = false;
+                        _this.s.dt.state.save();
+                    }
+                }, 50);
+            });
+            // When saving the state store all of the selected rows for preselection next time around
+            this.s.dt.on('stateSaveParams.dtsp', function (e, settings, data) {
+                // If the data being passed in is empty then a state clear must have occured so clear the panes state as well
+                if ($.isEmptyObject(data)) {
+                    _this.s.dtPane.state.clear();
+                    return;
+                }
+                var selected = [];
+                var searchTerm;
+                var order;
+                var bins;
+                var arrayFilter;
+                // Get all of the data needed for the state save from the pane
+                if (_this.s.dtPane !== undefined) {
+                    selected = _this.s.dtPane.rows({ selected: true }).data().map(function (item) { return item.filter.toString(); }).toArray();
+                    searchTerm = $(_this.dom.searchBox).val();
+                    order = _this.s.dtPane.order();
+                    bins = rowData.binsOriginal;
+                    arrayFilter = rowData.arrayOriginal;
+                }
+                if (data.searchPanes === undefined) {
+                    data.searchPanes = {};
+                }
+                if (data.searchPanes.panes === undefined) {
+                    data.searchPanes.panes = [];
+                }
+                // Add the panes data to the state object
+                data.searchPanes.panes.push({
+                    arrayFilter: arrayFilter,
+                    bins: bins,
+                    id: _this.s.index,
+                    order: order,
+                    searchTerm: searchTerm,
+                    selected: selected
+                });
+            });
+            this.s.dtPane.on('user-select.dtsp', function (e, _dt, type, cell, originalEvent) {
+                originalEvent.stopPropagation();
+            });
+            this.s.dtPane.on('draw.dtsp', function () {
+                _this._adjustTopRow();
+            });
+            // When the button to order by the name of the options is clicked then
+            //  change the ordering to whatever it isn't currently
+            $(this.dom.nameButton).on('click.dtsp', function () {
+                var currentOrder = _this.s.dtPane.order()[0][1];
+                _this.s.dtPane.order([0, currentOrder === 'asc' ? 'desc' : 'asc']).draw();
+                _this.s.dt.state.save();
+            });
+            // When the button to order by the number of entries in the column is clicked then
+            //  change the ordering to whatever it isn't currently
+            $(this.dom.countButton).on('click.dtsp', function () {
+                var currentOrder = _this.s.dtPane.order()[0][1];
+                _this.s.dtPane.order([1, currentOrder === 'asc' ? 'desc' : 'asc']).draw();
+                _this.s.dt.state.save();
+            });
+            // When the clear button is clicked reset the pane
+            $(this.dom.clear).on('click.dtsp', function () {
+                var searches = _this.dom.container.find('.' + _this.classes.search);
+                searches.each(function () {
+                    // set the value of the search box to be an empty string and then search on that, effectively reseting
+                    $(this).val('');
+                    $(this).trigger('input');
+                });
+                _this.clearPane();
+            });
+            // When the search button is clicked then draw focus to the search box
+            $(this.dom.searchButton).on('click.dtsp', function () {
+                $(_this.dom.searchBox).focus();
+            });
+            // When a character is inputted into the searchbox search the pane for matching values.
+            // Doing it this way means that no button has to be clicked to trigger a search, it is done asynchronously
+            $(this.dom.searchBox).on('input.dtsp', function () {
+                _this.s.dtPane.search($(_this.dom.searchBox).val()).draw();
+                _this.s.dt.state.save();
+            });
+            // Make sure to save the state once the pane has been built
+            this.s.dt.state.save();
+            return true;
+        };
+        /**
+         * Takes in potentially undetected rows and adds them to the array if they are not yet featured
+         * @param filter the filter value of the potential row
+         * @param display the display value of the potential row
+         * @param sort the sort value of the potential row
+         * @param type the type value of the potential row
+         * @param arrayFilter the array to be populated
+         * @param bins the bins to be populated
+         */
+        SearchPane.prototype._addOption = function (filter, display, sort, type, arrayFilter, bins) {
+            // If the filter is an array then take a note of this, and add the elements to the arrayFilter array
+            if (Array.isArray(filter) || filter instanceof DataTable.Api) {
+                // Convert to an array so that we can work with it
+                if (filter instanceof DataTable.Api) {
+                    filter = filter.toArray();
+                    display = display.toArray();
+                }
+                if (filter.length === display.length) {
+                    for (var i = 0; i < filter.length; i++) {
+                        // If we haven't seen this row before add it
+                        if (!bins[filter[i]]) {
+                            bins[filter[i]] = 1;
+                            arrayFilter.push({
+                                display: display[i],
+                                filter: filter[i],
+                                sort: sort[i],
+                                type: type[i]
+                            });
+                        }
+                        // Otherwise just increment the count
+                        else {
+                            bins[filter[i]]++;
+                        }
+                        this.s.rowData.totalOptions++;
+                    }
+                    return;
+                }
+                else {
+                    throw new Error('display and filter not the same length');
+                }
+            }
+            // If the values were affected by othogonal data and are not an array then check if it is already present
+            else if (typeof this.s.colOpts.orthogonal === 'string') {
+                if (!bins[filter]) {
+                    bins[filter] = 1;
+                    arrayFilter.push({
+                        display: display,
+                        filter: filter,
+                        sort: sort,
+                        type: type
+                    });
+                    this.s.rowData.totalOptions++;
+                }
+                else {
+                    bins[filter]++;
+                    this.s.rowData.totalOptions++;
+                    return;
+                }
+            }
+            // Otherwise we must just be adding an option
+            else {
+                arrayFilter.push({
+                    display: display,
+                    filter: filter,
+                    sort: sort,
+                    type: type
+                });
+            }
+        };
+        /**
+         * Adds a row to the panes table
+         * @param display the value to be displayed to the user
+         * @param filter the value to be filtered on when searchpanes is implemented
+         * @param shown the number of rows in the table that are currently visible matching this criteria
+         * @param total the total number of rows in the table that match this criteria
+         * @param sort the value to be sorted in the pane table
+         * @param type the value of which the type is to be derived from
+         */
+        SearchPane.prototype._addRow = function (display, filter, shown, total, sort, type) {
+            var index;
+            for (var _i = 0, _a = this.s.indexes; _i < _a.length; _i++) {
+                var entry = _a[_i];
+                if (entry.filter === filter) {
+                    index = entry.index;
+                }
+            }
+            if (index === undefined) {
+                index = this.s.indexes.length;
+                this.s.indexes.push({ filter: filter, index: index });
+            }
+            return this.s.dtPane.row.add({
+                display: display !== '' ? display : this.c.emptyMessage,
+                filter: filter,
+                index: index,
+                shown: shown,
+                sort: sort !== '' ? sort : this.c.emptyMessage,
+                total: total,
+                type: type
+            });
+        };
+        /**
+         * Adjusts the layout of the top row when the screen is resized
+         */
+        SearchPane.prototype._adjustTopRow = function () {
+            var subContainers = this.dom.container.find('.' + this.classes.subRowsContainer);
+            var subRow1 = this.dom.container.find('.dtsp-subRow1');
+            var subRow2 = this.dom.container.find('.dtsp-subRow2');
+            var topRow = this.dom.container.find('.' + this.classes.topRow);
+            // If the width is 0 then it is safe to assume that the pane has not yet been displayed.
+            //  Even if it has, if the width is 0 it won't make a difference if it has the narrow class or not
+            if (($(subContainers[0]).width() < 252 || $(topRow[0]).width() < 252) && $(subContainers[0]).width() !== 0) {
+                $(subContainers[0]).addClass(this.classes.narrow);
+                $(subRow1[0]).addClass(this.classes.narrowSub).removeClass(this.classes.narrowSearch);
+                $(subRow2[0]).addClass(this.classes.narrowSub).removeClass(this.classes.narrowButton);
+            }
+            else {
+                $(subContainers[0]).removeClass(this.classes.narrow);
+                $(subRow1[0]).removeClass(this.classes.narrowSub).addClass(this.classes.narrowSearch);
+                $(subRow2[0]).removeClass(this.classes.narrowSub).addClass(this.classes.narrowButton);
+            }
+        };
+        /**
+         * Method to construct the actual pane.
+         * @param selectedRows previously selected Rows to be reselected
+         * @last boolean to indicate whether this pane was the last one to have a selection made
+         */
+        SearchPane.prototype._buildPane = function (selectedRows, last, dataIn, init, prevEl) {
+            var _this = this;
+            if (selectedRows === void 0) { selectedRows = []; }
+            if (last === void 0) { last = false; }
+            if (dataIn === void 0) { dataIn = null; }
+            if (init === void 0) { init = null; }
+            if (prevEl === void 0) { prevEl = null; }
+            // Aliases
+            this.selections = [];
+            var table = this.s.dt;
+            var column = table.column(this.colExists ? this.s.index : 0);
+            var colOpts = this.s.colOpts;
+            var rowData = this.s.rowData;
+            // Other Variables
+            var countMessage = table.i18n('searchPanes.count', '{total}');
+            var filteredMessage = table.i18n('searchPanes.countFiltered', '{shown} ({total})');
+            var loadedFilter = table.state.loaded();
+            // If the listeners have not been set yet then using the latest state may result in funny errors
+            if (this.s.listSet) {
+                loadedFilter = table.state();
+            }
+            // If it is not a custom pane in place
+            if (this.colExists) {
+                var idx = -1;
+                if (loadedFilter && loadedFilter.searchPanes && loadedFilter.searchPanes.panes) {
+                    for (var i = 0; i < loadedFilter.searchPanes.panes.length; i++) {
+                        if (loadedFilter.searchPanes.panes[i].id === this.s.index) {
+                            idx = i;
+                            break;
+                        }
+                    }
+                }
+                // Perform checks that do not require populate pane to run
+                if ((colOpts.show === false
+                    || (colOpts.show !== undefined && colOpts.show !== true)) &&
+                    idx === -1) {
+                    this.dom.container.addClass(this.classes.hidden);
+                    this.s.displayed = false;
+                    return false;
+                }
+                else if (colOpts.show === true || idx !== -1) {
+                    this.s.displayed = true;
+                }
+                if (!this.s.dt.page.info().serverSide) {
+                    // Only run populatePane if the data has not been collected yet
+                    if (rowData.arrayFilter.length === 0) {
+                        this._populatePane(last);
+                        this.s.rowData.totalOptions = 0;
+                        this._detailsPane();
+                        if (loadedFilter && loadedFilter.searchPanes && loadedFilter.searchPanes.panes) {
+                            // If the index is not found then no data has been added to the state for this pane,
+                            //  which will only occur if it has previously failed to meet the criteria to be
+                            //  displayed, therefore we can just hide it again here
+                            if (idx !== -1) {
+                                rowData.binsOriginal = loadedFilter.searchPanes.panes[idx].bins;
+                                rowData.arrayOriginal = loadedFilter.searchPanes.panes[idx].arrayFilter;
+                            }
+                            else {
+                                this.dom.container.addClass(this.classes.hidden);
+                                this.s.displayed = false;
+                                return;
+                            }
+                        }
+                        else {
+                            rowData.arrayOriginal = rowData.arrayTotals;
+                            rowData.binsOriginal = rowData.binsTotal;
+                        }
+                    }
+                    var binLength = Object.keys(rowData.binsOriginal).length;
+                    var uniqueRatio = this._uniqueRatio(binLength, table.rows()[0].length);
+                    // Don't show the pane if there isn't enough variance in the data, or there is only 1 entry for that pane
+                    if (this.s.displayed === false && ((colOpts.show === undefined && colOpts.threshold === null ?
+                        uniqueRatio > this.c.threshold :
+                        uniqueRatio > colOpts.threshold)
+                        || (colOpts.show !== true && binLength <= 1))) {
+                        this.dom.container.addClass(this.classes.hidden);
+                        this.s.displayed = false;
+                        return;
+                    }
+                    // If the option viewTotal is true then find
+                    // the total count for the whole table to display alongside the displayed count
+                    if (this.c.viewTotal && rowData.arrayTotals.length === 0) {
+                        this.s.rowData.totalOptions = 0;
+                        this._detailsPane();
+                    }
+                    else {
+                        rowData.binsTotal = rowData.bins;
+                    }
+                    this.dom.container.addClass(this.classes.show);
+                    this.s.displayed = true;
+                }
+                else if (dataIn !== null) {
+                    if (dataIn.tableLength !== undefined) {
+                        this.s.tableLength = dataIn.tableLength;
+                        this.s.rowData.totalOptions = this.s.tableLength;
+                    }
+                    else if (this.s.tableLength === null || table.rows()[0].length > this.s.tableLength) {
+                        this.s.tableLength = table.rows()[0].length;
+                        this.s.rowData.totalOptions = this.s.tableLength;
+                    }
+                    var colTitle = table.column(this.s.index).dataSrc();
+                    if (dataIn[colTitle] !== undefined) {
+                        for (var _i = 0, _a = dataIn[colTitle]; _i < _a.length; _i++) {
+                            var dataPoint = _a[_i];
+                            this.s.rowData.arrayFilter.push({
+                                display: dataPoint.label,
+                                filter: dataPoint.value,
+                                sort: dataPoint.label,
+                                type: dataPoint.label
+                            });
+                            this.s.rowData.bins[dataPoint.value] = this.c.viewTotal || this.c.cascadePanes ?
+                                dataPoint.count :
+                                dataPoint.total;
+                            this.s.rowData.binsTotal[dataPoint.value] = dataPoint.total;
+                        }
+                    }
+                    var binLength = Object.keys(rowData.binsTotal).length;
+                    var uniqueRatio = this._uniqueRatio(binLength, this.s.tableLength);
+                    // Don't show the pane if there isn't enough variance in the data, or there is only 1 entry for that pane
+                    if (this.s.displayed === false && ((colOpts.show === undefined && colOpts.threshold === null ?
+                        uniqueRatio > this.c.threshold :
+                        uniqueRatio > colOpts.threshold)
+                        || (colOpts.show !== true && binLength <= 1))) {
+                        this.dom.container.addClass(this.classes.hidden);
+                        this.s.displayed = false;
+                        return;
+                    }
+                    this.s.displayed = true;
+                }
+            }
+            else {
+                this.s.displayed = true;
+            }
+            // If the variance is accceptable then display the search pane
+            this._displayPane();
+            if (!this.s.listSet) {
+                // Here, when the state is loaded if the data object on the original table is empty,
+                //  then a state.clear() must have occurred, so delete all of the panes tables state objects too.
+                this.dom.dtP.on('stateLoadParams.dt', function (e, settings, data) {
+                    if ($.isEmptyObject(table.state.loaded())) {
+                        $.each(data, function (index, value) {
+                            delete data[index];
+                        });
+                    }
+                });
+            }
+            // Add the container to the document in its original location
+            if (prevEl !== null && $(this.dom.panesContainer).has(prevEl).length > 0) {
+                $(this.dom.panesContainer).insertAfter(prevEl);
+            }
+            else {
+                $(this.dom.panesContainer).prepend(this.dom.container);
+            }
+            // Declare the datatable for the pane
+            var errMode = $.fn.dataTable.ext.errMode;
+            $.fn.dataTable.ext.errMode = 'none';
+            var haveScroller = DataTable.Scroller;
+            this.s.dtPane = $(this.dom.dtP).DataTable($.extend(true, {
+                columnDefs: [
+                    {
+                        className: 'dtsp-nameColumn',
+                        data: 'display',
+                        render: function (data, type, row) {
+                            if (type === 'sort') {
+                                return row.sort;
+                            }
+                            else if (type === 'type') {
+                                return row.type;
+                            }
+                            var message;
+                            (_this.s.filteringActive || _this.s.showFiltered) && _this.c.viewTotal
+                                ? message = filteredMessage.replace(/{total}/, row.total)
+                                : message = countMessage.replace(/{total}/, row.total);
+                            message = message.replace(/{shown}/, row.shown);
+                            while (message.indexOf('{total}') !== -1) {
+                                message = message.replace(/{total}/, row.total);
+                            }
+                            while (message.indexOf('{shown}') !== -1) {
+                                message = message.replace(/{shown}/, row.shown);
+                            }
+                            // We are displaying the count in the same columne as the name of the search option.
+                            // This is so that there is not need to call columns.adjust(), which in turn speeds up the code
+                            var displayMessage = '';
+                            var pill = '<span class="' + _this.classes.pill + '">' + message + '</span>';
+                            if (_this.c.hideCount || colOpts.hideCount) {
+                                pill = '';
+                            }
+                            if (!_this.c.dataLength) {
+                                displayMessage = '<span class="' + _this.classes.name + '">' + data + '</span>' + pill;
+                            }
+                            else if (data !== null && data.length > _this.c.dataLength) {
+                                displayMessage = '<span title="' + data + '" class="' + _this.classes.name + '">'
+                                    + data.substr(0, _this.c.dataLength) + '...'
+                                    + '</span>'
+                                    + pill;
+                            }
+                            else {
+                                displayMessage = '<span class="' + _this.classes.name + '">' + data + '</span>' + pill;
+                            }
+                            return displayMessage;
+                        },
+                        targets: 0,
+                        // Accessing the private datatables property to set type based on the original table.
+                        // This is null if not defined by the user, meaning that automatic type detection would take place
+                        type: table.settings()[0].aoColumns[this.s.index] !== undefined ?
+                            table.settings()[0].aoColumns[this.s.index]._sManualType :
+                            null
+                    },
+                    {
+                        className: 'dtsp-countColumn ' + this.classes.badgePill,
+                        data: 'total',
+                        targets: 1,
+                        visible: false
+                    }
+                ],
+                deferRender: true,
+                dom: 't',
+                info: false,
+                paging: haveScroller ? true : false,
+                scrollY: '200px',
+                scroller: haveScroller ? true : false,
+                select: true,
+                stateSave: table.settings()[0].oFeatures.bStateSave ? true : false
+            }, this.c.dtOpts, colOpts !== undefined ? colOpts.dtOpts : {}, (this.customPaneSettings !== null && this.customPaneSettings.dtOpts !== undefined)
+                ? this.customPaneSettings.dtOpts
+                : {}));
+            $(this.dom.dtP).addClass(this.classes.table);
+            // This is hacky but necessary for when datatables is generating the column titles automatically
+            $(this.dom.searchBox).attr('placeholder', colOpts.header !== undefined
+                ? colOpts.header
+                : this.colExists
+                    ? table.settings()[0].aoColumns[this.s.index].sTitle
+                    : this.customPaneSettings.header || 'Custom Pane');
+            // As the pane table is not in the document yet we must initialise select ourselves
+            $.fn.dataTable.select.init(this.s.dtPane);
+            $.fn.dataTable.ext.errMode = errMode;
+            // If it is not a custom pane
+            if (this.colExists) {
+                // On initialisation, do we need to set a filtering value from a
+                // saved state or init option?
+                var search = column.search();
+                search = search ? search.substr(1, search.length - 2).split('|') : [];
+                // Count the number of empty cells
+                var count_1 = 0;
+                rowData.arrayFilter.forEach(function (element) {
+                    if (element.filter === '') {
+                        count_1++;
+                    }
+                });
+                // Add all of the search options to the pane
+                for (var i = 0, ien = rowData.arrayFilter.length; i < ien; i++) {
+                    var selected = false;
+                    for (var _b = 0, _c = this.s.serverSelect; _b < _c.length; _b++) {
+                        var option = _c[_b];
+                        if (option.filter === rowData.arrayFilter[i].filter) {
+                            selected = true;
+                        }
+                    }
+                    if (this.s.dt.page.info().serverSide &&
+                        (!this.c.cascadePanes ||
+                            (this.c.cascadePanes && rowData.bins[rowData.arrayFilter[i].filter] !== 0) ||
+                            (this.c.cascadePanes && init !== null) ||
+                            selected)) {
+                        var row = this._addRow(rowData.arrayFilter[i].display, rowData.arrayFilter[i].filter, init ?
+                            rowData.binsTotal[rowData.arrayFilter[i].filter] :
+                            rowData.bins[rowData.arrayFilter[i].filter], this.c.viewTotal || init
+                            ? String(rowData.binsTotal[rowData.arrayFilter[i].filter])
+                            : rowData.bins[rowData.arrayFilter[i].filter], rowData.arrayFilter[i].sort, rowData.arrayFilter[i].type);
+                        if (colOpts.preSelect !== undefined && colOpts.preSelect.indexOf(rowData.arrayFilter[i].filter) !== -1) {
+                            row.select();
+                        }
+                        for (var _d = 0, _e = this.s.serverSelect; _d < _e.length; _d++) {
+                            var option = _e[_d];
+                            if (option.filter === rowData.arrayFilter[i].filter) {
+                                this.s.serverSelecting = true;
+                                row.select();
+                                this.s.serverSelecting = false;
+                            }
+                        }
+                    }
+                    else if (!this.s.dt.page.info().serverSide &&
+                        rowData.arrayFilter[i] &&
+                        (rowData.bins[rowData.arrayFilter[i].filter] !== undefined || !this.c.cascadePanes)) {
+                        var row = this._addRow(rowData.arrayFilter[i].display, rowData.arrayFilter[i].filter, rowData.bins[rowData.arrayFilter[i].filter], rowData.binsTotal[rowData.arrayFilter[i].filter], rowData.arrayFilter[i].sort, rowData.arrayFilter[i].type);
+                        if (colOpts.preSelect !== undefined && colOpts.preSelect.indexOf(rowData.arrayFilter[i].filter) !== -1) {
+                            row.select();
+                        }
+                    }
+                    else if (!this.s.dt.page.info().serverSide) {
+                        this._addRow(this.c.emptyMessage, count_1, count_1, this.c.emptyMessage, this.c.emptyMessage, this.c.emptyMessage);
+                    }
+                }
+            }
+            // If there are custom options set or it is a custom pane then get them
+            if (colOpts.options !== undefined ||
+                (this.customPaneSettings !== null && this.customPaneSettings.options !== undefined)) {
+                this._getComparisonRows();
+            }
+            DataTable.select.init(this.s.dtPane);
+            // Display the pane
+            this.s.dtPane.draw();
+            this._adjustTopRow();
+            if (!this.s.listSet) {
+                this._setListeners();
+                this.s.listSet = true;
+            }
+            for (var _f = 0, selectedRows_1 = selectedRows; _f < selectedRows_1.length; _f++) {
+                var selection = selectedRows_1[_f];
+                if (selection !== undefined) {
+                    for (var _g = 0, _h = this.s.dtPane.rows().indexes().toArray(); _g < _h.length; _g++) {
+                        var row = _h[_g];
+                        if (this.s.dtPane.row(row).data() !== undefined && selection.filter === this.s.dtPane.row(row).data().filter) {
+                            // If this is happening when serverSide processing is happening then different behaviour is needed
+                            if (this.s.dt.page.info().serverSide) {
+                                this.s.serverSelecting = true;
+                                this.s.dtPane.row(row).select();
+                                this.s.serverSelecting = false;
+                            }
+                            else {
+                                this.s.dtPane.row(row).select();
+                            }
+                        }
+                    }
+                }
+            }
+            this.s.dt.draw();
+            // Reload the selection, searchbox entry and ordering from the previous state
+            if (loadedFilter && loadedFilter.searchPanes && loadedFilter.searchPanes.panes) {
+                if (!this.c.cascadePanes) {
+                    this._reloadSelect(loadedFilter);
+                }
+                for (var _j = 0, _k = loadedFilter.searchPanes.panes; _j < _k.length; _j++) {
+                    var pane = _k[_j];
+                    if (pane.id === this.s.index) {
+                        $(this.dom.searchBox).val(pane.searchTerm);
+                        $(this.dom.searchBox).trigger('input');
+                        this.s.dtPane.order(pane.order).draw();
+                    }
+                }
+            }
+            // Make sure to save the state once the pane has been built
+            this.s.dt.state.save();
+            return true;
+        };
+        /**
+         * Update the array which holds the display and filter values for the table
+         */
+        SearchPane.prototype._detailsPane = function () {
+            var _this = this;
+            var table = this.s.dt;
+            this.s.rowData.arrayTotals = [];
+            this.s.rowData.binsTotal = {};
+            var settings = this.s.dt.settings()[0];
+            table.rows().every(function (rowIdx) {
+                _this._populatePaneArray(rowIdx, _this.s.rowData.arrayTotals, settings, _this.s.rowData.binsTotal);
+            });
+        };
+        /**
+         * Appends all of the HTML elements to their relevant parent Elements
+         */
+        SearchPane.prototype._displayPane = function () {
+            var container = this.dom.container;
+            var colOpts = this.s.colOpts;
+            var layVal = parseInt(this.c.layout.split('-')[1], 10);
+            //  Empty everything to start again
+            $(this.dom.topRow).empty();
+            $(this.dom.dtP).empty();
+            $(this.dom.topRow).addClass(this.classes.topRow);
+            // If there are more than 3 columns defined then make there be a smaller gap between the panes
+            if (layVal > 3) {
+                $(this.dom.container).addClass(this.classes.smallGap);
+            }
+            $(this.dom.topRow).addClass(this.classes.subRowsContainer);
+            $(this.dom.upper).appendTo(this.dom.topRow);
+            $(this.dom.lower).appendTo(this.dom.topRow);
+            $(this.dom.searchCont).appendTo(this.dom.upper);
+            $(this.dom.buttonGroup).appendTo(this.dom.lower);
+            // If no selections have been made in the pane then disable the clear button
+            if (this.c.dtOpts.searching === false ||
+                (colOpts.dtOpts !== undefined &&
+                    colOpts.dtOpts.searching === false) ||
+                (!this.c.controls || !colOpts.controls) ||
+                (this.customPaneSettings !== null &&
+                    this.customPaneSettings.dtOpts !== undefined &&
+                    this.customPaneSettings.dtOpts.searching !== undefined &&
+                    !this.customPaneSettings.dtOpts.searching)) {
+                $(this.dom.searchBox).attr('disabled', 'disabled')
+                    .removeClass(this.classes.paneInputButton)
+                    .addClass(this.classes.disabledButton);
+            }
+            $(this.dom.searchBox).appendTo(this.dom.searchCont);
+            // Create the contents of the searchCont div. Worth noting that this function will change when using semantic ui
+            this._searchContSetup();
+            // If the clear button is allowed to show then display it
+            if (this.c.clear && this.c.controls && colOpts.controls) {
+                $(this.dom.clear).appendTo(this.dom.buttonGroup);
+            }
+            if (this.c.orderable && colOpts.orderable && this.c.controls && colOpts.controls) {
+                $(this.dom.nameButton).appendTo(this.dom.buttonGroup);
+            }
+            // If the count column is hidden then don't display the ordering button for it
+            if (!this.c.hideCount &&
+                !colOpts.hideCount &&
+                this.c.orderable &&
+                colOpts.orderable &&
+                this.c.controls &&
+                colOpts.controls) {
+                $(this.dom.countButton).appendTo(this.dom.buttonGroup);
+            }
+            $(this.dom.topRow).prependTo(this.dom.container);
+            $(container).append(this.dom.dtP);
+            $(container).show();
+        };
+        /**
+         * Gets the options for the row for the customPanes
+         * @returns {object} The options for the row extended to include the options from the user.
+         */
+        SearchPane.prototype._getBonusOptions = function () {
+            // We need to reset the thresholds as if they have a value in colOpts then that value will be used
+            var defaultMutator = {
+                orthogonal: {
+                    threshold: null
+                },
+                threshold: null
+            };
+            return $.extend(true, {}, SearchPane.defaults, defaultMutator, this.c !== undefined ? this.c : {});
+        };
+        /**
+         * Adds the custom options to the pane
+         * @returns {Array} Returns the array of rows which have been added to the pane
+         */
+        SearchPane.prototype._getComparisonRows = function () {
+            var colOpts = this.s.colOpts;
+            // Find the appropriate options depending on whether this is a pane for a specific column or a custom pane
+            var options = colOpts.options !== undefined
+                ? colOpts.options
+                : this.customPaneSettings !== null && this.customPaneSettings.options !== undefined
+                    ? this.customPaneSettings.options
+                    : undefined;
+            if (options === undefined) {
+                return;
+            }
+            var tableVals = this.s.dt.rows({ search: 'applied' }).data().toArray();
+            var appRows = this.s.dt.rows({ search: 'applied' });
+            var tableValsTotal = this.s.dt.rows().data().toArray();
+            var allRows = this.s.dt.rows();
+            var rows = [];
+            // Clear all of the other rows from the pane, only custom options are to be displayed when they are defined
+            this.s.dtPane.clear();
+            for (var _i = 0, options_1 = options; _i < options_1.length; _i++) {
+                var comp = options_1[_i];
+                // Initialise the object which is to be placed in the row
+                var insert = comp.label !== '' ? comp.label : this.c.emptyMessage;
+                var comparisonObj = {
+                    display: insert,
+                    filter: typeof comp.value === 'function' ? comp.value : [],
+                    shown: 0,
+                    sort: insert,
+                    total: 0,
+                    type: insert
+                };
+                // If a custom function is in place
+                if (typeof comp.value === 'function') {
+                    // Count the number of times the function evaluates to true for the data currently being displayed
+                    for (var tVal = 0; tVal < tableVals.length; tVal++) {
+                        if (comp.value.call(this.s.dt, tableVals[tVal], appRows[0][tVal])) {
+                            comparisonObj.shown++;
+                        }
+                    }
+                    // Count the number of times the function evaluates to true for the original data in the Table
+                    for (var i = 0; i < tableValsTotal.length; i++) {
+                        if (comp.value.call(this.s.dt, tableValsTotal[i], allRows[0][i])) {
+                            comparisonObj.total++;
+                        }
+                    }
+                    // Update the comparisonObj
+                    if (typeof comparisonObj.filter !== 'function') {
+                        comparisonObj.filter.push(comp.filter);
+                    }
+                }
+                // If cascadePanes is not active or if it is and the comparisonObj should be shown then add it to the pane
+                if (!this.c.cascadePanes || (this.c.cascadePanes && comparisonObj.shown !== 0)) {
+                    rows.push(this._addRow(comparisonObj.display, comparisonObj.filter, comparisonObj.shown, comparisonObj.total, comparisonObj.sort, comparisonObj.type));
+                }
+            }
+            return rows;
+        };
+        /**
+         * Gets the options for the row for the customPanes
+         * @returns {object} The options for the row extended to include the options from the user.
+         */
+        SearchPane.prototype._getOptions = function () {
+            var table = this.s.dt;
+            // We need to reset the thresholds as if they have a value in colOpts then that value will be used
+            var defaultMutator = {
+                orthogonal: {
+                    threshold: null
+                },
+                threshold: null
+            };
+            return $.extend(true, {}, SearchPane.defaults, defaultMutator, table.settings()[0].aoColumns[this.s.index].searchPanes);
+        };
+        /**
+         * This method allows for changes to the panes and table to be made when a selection or a deselection occurs
+         * @param select Denotes whether a selection has been made or not
+         */
+        SearchPane.prototype._makeSelection = function () {
+            this.updateTable();
+            this.s.updating = true;
+            this.s.dt.draw();
+            this.s.updating = false;
+        };
+        /**
+         * Fill the array with the values that are currently being displayed in the table
+         * @param last boolean to indicate whether this was the last pane a selection was made in
+         */
+        SearchPane.prototype._populatePane = function (last) {
+            if (last === void 0) { last = false; }
+            var table = this.s.dt;
+            this.s.rowData.arrayFilter = [];
+            this.s.rowData.bins = {};
+            var settings = this.s.dt.settings()[0];
+            // If cascadePanes or viewTotal are active it is necessary to get the data which is currently
+            //  being displayed for their functionality. Also make sure that this was not the last pane to have a selection made
+            if (!this.s.dt.page.info().serverSide) {
+                var indexArray = (this.c.cascadePanes || this.c.viewTotal) && (!this.s.clearing && !last) ?
+                    table.rows({ search: 'applied' }).indexes() :
+                    table.rows().indexes();
+                for (var _i = 0, _a = indexArray.toArray(); _i < _a.length; _i++) {
+                    var index = _a[_i];
+                    this._populatePaneArray(index, this.s.rowData.arrayFilter, settings);
+                }
+            }
+        };
+        /**
+         * Populates an array with all of the data for the table
+         * @param rowIdx The current row index to be compared
+         * @param arrayFilter The array that is to be populated with row Details
+         * @param bins The bins object that is to be populated with the row counts
+         */
+        SearchPane.prototype._populatePaneArray = function (rowIdx, arrayFilter, settings, bins) {
+            if (bins === void 0) { bins = this.s.rowData.bins; }
+            var colOpts = this.s.colOpts;
+            // Retrieve the rendered data from the cell using the fnGetCellData function
+            //  rather than the cell().render API method for optimisation
+            if (typeof colOpts.orthogonal === 'string') {
+                var rendered = settings.oApi._fnGetCellData(settings, rowIdx, this.s.index, colOpts.orthogonal);
+                this.s.rowData.filterMap.set(rowIdx, rendered);
+                this._addOption(rendered, rendered, rendered, rendered, arrayFilter, bins);
+            }
+            else {
+                var filter = settings.oApi._fnGetCellData(settings, rowIdx, this.s.index, colOpts.orthogonal.search);
+                this.s.rowData.filterMap.set(rowIdx, filter);
+                if (!bins[filter]) {
+                    bins[filter] = 1;
+                    this._addOption(filter, settings.oApi._fnGetCellData(settings, rowIdx, this.s.index, colOpts.orthogonal.display), settings.oApi._fnGetCellData(settings, rowIdx, this.s.index, colOpts.orthogonal.sort), settings.oApi._fnGetCellData(settings, rowIdx, this.s.index, colOpts.orthogonal.type), arrayFilter, bins);
+                    this.s.rowData.totalOptions++;
+                }
+                else {
+                    bins[filter]++;
+                    this.s.rowData.totalOptions++;
+                    return;
+                }
+            }
+        };
+        /**
+         * Reloads all of the previous selects into the panes
+         * @param loadedFilter The loaded filters from a previous state
+         */
+        SearchPane.prototype._reloadSelect = function (loadedFilter) {
+            // If the state was not saved don't selected any
+            if (loadedFilter === undefined) {
+                return;
+            }
+            var idx;
+            // For each pane, check that the loadedFilter list exists and is not null,
+            // find the id of each search item and set it to be selected.
+            for (var i = 0; i < loadedFilter.searchPanes.panes.length; i++) {
+                if (loadedFilter.searchPanes.panes[i].id === this.s.index) {
+                    idx = i;
+                    break;
+                }
+            }
+            if (idx !== undefined) {
+                var table = this.s.dtPane;
+                var rows = table.rows({ order: 'index' }).data().map(function (item) { return item.filter !== null ?
+                    item.filter.toString() :
+                    null; }).toArray();
+                for (var _i = 0, _a = loadedFilter.searchPanes.panes[idx].selected; _i < _a.length; _i++) {
+                    var filter = _a[_i];
+                    var id = -1;
+                    if (filter !== null) {
+                        id = rows.indexOf(filter.toString());
+                    }
+                    if (id > -1) {
+                        table.row(id).select();
+                        this.s.dt.state.save();
+                    }
+                }
+            }
+        };
+        /**
+         * This method decides whether a row should contribute to the pane or not
+         * @param filter the value that the row is to be filtered on
+         * @param dataIndex the row index
+         */
+        SearchPane.prototype._search = function (filter, dataIndex) {
+            var colOpts = this.s.colOpts;
+            var table = this.s.dt;
+            // For each item selected in the pane, check if it is available in the cell
+            for (var _i = 0, _a = this.selections; _i < _a.length; _i++) {
+                var colSelect = _a[_i];
+                // if the filter is an array then is the column present in it
+                if (Array.isArray(filter)) {
+                    if (filter.indexOf(colSelect.filter) !== -1) {
+                        return true;
+                    }
+                }
+                // if the filter is a function then does it meet the criteria of that function or not
+                else if (typeof colSelect.filter === 'function') {
+                    if (colSelect.filter.call(table, table.row(dataIndex).data(), dataIndex)) {
+                        if (colOpts.combiner === 'or') {
+                            return true;
+                        }
+                    }
+                    // If the combiner is an "and" then we need to check against all possible selections
+                    //  so if it fails here then the and is not met and return false
+                    else if (colOpts.combiner === 'and') {
+                        return false;
+                    }
+                }
+                // otherwise if the two filter values are equal then return true
+                else if (filter === colSelect.filter) {
+                    return true;
+                }
+            }
+            // If the combiner is an and then we need to check against all possible selections
+            //  so return true here if so because it would have returned false earlier if it had failed
+            if (colOpts.combiner === 'and') {
+                return true;
+            }
+            // Otherwise it hasn't matched with anything by this point so it must be false
+            else {
+                return false;
+            }
+        };
+        /**
+         * Creates the contents of the searchCont div
+         *
+         * NOTE This is overridden when semantic ui styling in order to integrate the search button into the text box.
+         */
+        SearchPane.prototype._searchContSetup = function () {
+            if (this.c.controls && this.s.colOpts.controls) {
+                $(this.dom.searchButton).appendTo(this.dom.searchLabelCont);
+            }
+            if (!(this.c.dtOpts.searching === false ||
+                this.s.colOpts.dtOpts.searching === false ||
+                (this.customPaneSettings !== null &&
+                    this.customPaneSettings.dtOpts !== undefined &&
+                    this.customPaneSettings.dtOpts.searching !== undefined &&
+                    !this.customPaneSettings.dtOpts.searching))) {
+                $(this.dom.searchLabelCont).appendTo(this.dom.searchCont);
+            }
+        };
+        /**
+         * Adds outline to the pane when a selection has been made
+         */
+        SearchPane.prototype._searchExtras = function () {
+            var updating = this.s.updating;
+            this.s.updating = true;
+            var filters = this.s.dtPane.rows({ selected: true }).data().pluck('filter').toArray();
+            var nullIndex = filters.indexOf(this.c.emptyMessage);
+            var container = $(this.s.dtPane.table().container());
+            // If null index is found then search for empty cells as a filter.
+            if (nullIndex > -1) {
+                filters[nullIndex] = '';
+            }
+            // If a filter has been applied then outline the respective pane, remove it when it no longer is.
+            if (filters.length > 0) {
+                container.addClass(this.classes.selected);
+            }
+            else if (filters.length === 0) {
+                container.removeClass(this.classes.selected);
+            }
+            this.s.updating = updating;
+        };
+        /**
+         * Finds the ratio of the number of different options in the table to the number of rows
+         * @param bins the number of different options in the table
+         * @param rowCount the total number of rows in the table
+         * @returns {number} returns the ratio
+         */
+        SearchPane.prototype._uniqueRatio = function (bins, rowCount) {
+            if (rowCount > 0 &&
+                ((this.s.rowData.totalOptions > 0 && !this.s.dt.page.info().serverSide) ||
+                    (this.s.dt.page.info().serverSide && this.s.tableLength > 0))) {
+                return bins / this.s.rowData.totalOptions;
+            }
+            else {
+                return 1;
+            }
+        };
+        /**
+         * updates the options within the pane
+         * @param draw a flag to define whether this has been called due to a draw event or not
+         */
+        SearchPane.prototype._updateCommon = function (draw) {
+            if (draw === void 0) { draw = false; }
+            // Update the panes if doing a deselect. if doing a select then
+            // update all of the panes except for the one causing the change
+            if (!this.s.dt.page.info().serverSide &&
+                this.s.dtPane !== undefined &&
+                (!this.s.filteringActive || this.c.cascadePanes || draw === true) &&
+                (this.c.cascadePanes !== true || this.s.selectPresent !== true) && (!this.s.lastSelect || !this.s.lastCascade)) {
+                var colOpts = this.s.colOpts;
+                var selected = this.s.dtPane.rows({ selected: true }).data().toArray();
+                var scrollTop = $(this.s.dtPane.table().node()).parent()[0].scrollTop;
+                var rowData = this.s.rowData;
+                // Clear the pane in preparation for adding the updated search options
+                this.s.dtPane.clear();
+                // If it is not a custom pane
+                if (this.colExists) {
+                    // Only run populatePane if the data has not been collected yet
+                    if (rowData.arrayFilter.length === 0) {
+                        this._populatePane();
+                    }
+                    // If cascadePanes is active and the table has returned to its default state then
+                    //  there is a need to update certain parts ofthe rowData.
+                    else if (this.c.cascadePanes
+                        && this.s.dt.rows().data().toArray().length === this.s.dt.rows({ search: 'applied' }).data().toArray().length) {
+                        rowData.arrayFilter = rowData.arrayOriginal;
+                        rowData.bins = rowData.binsOriginal;
+                    }
+                    // Otherwise if viewTotal or cascadePanes is active then the data from the table must be read.
+                    else if (this.c.viewTotal || this.c.cascadePanes) {
+                        this._populatePane();
+                    }
+                    // If the viewTotal option is selected then find the totals for the table
+                    if (this.c.viewTotal) {
+                        this._detailsPane();
+                    }
+                    else {
+                        rowData.binsTotal = rowData.bins;
+                    }
+                    if (this.c.viewTotal && !this.c.cascadePanes) {
+                        rowData.arrayFilter = rowData.arrayTotals;
+                    }
+                    var _loop_1 = function (dataP) {
+                        // If both view Total and cascadePanes have been selected and the count of the row is not 0 then add it to pane
+                        // Do this also if the viewTotal option has been selected and cascadePanes has not
+                        if (dataP && ((rowData.bins[dataP.filter] !== undefined && rowData.bins[dataP.filter] !== 0 && this_1.c.cascadePanes)
+                            || !this_1.c.cascadePanes
+                            || this_1.s.clearing)) {
+                            var row = this_1._addRow(dataP.display, dataP.filter, !this_1.c.viewTotal
+                                ? rowData.bins[dataP.filter]
+                                : rowData.bins[dataP.filter] !== undefined
+                                    ? rowData.bins[dataP.filter]
+                                    : 0, this_1.c.viewTotal
+                                ? String(rowData.binsTotal[dataP.filter])
+                                : rowData.bins[dataP.filter], dataP.sort, dataP.type);
+                            // Find out if the filter was selected in the previous search, if so select it and remove from array.
+                            var selectIndex = selected.findIndex(function (element) {
+                                return element.filter === dataP.filter;
+                            });
+                            if (selectIndex !== -1) {
+                                row.select();
+                                selected.splice(selectIndex, 1);
+                            }
+                        }
+                    };
+                    var this_1 = this;
+                    for (var _i = 0, _a = rowData.arrayFilter; _i < _a.length; _i++) {
+                        var dataP = _a[_i];
+                        _loop_1(dataP);
+                    }
+                }
+                if ((colOpts.searchPanes !== undefined && colOpts.searchPanes.options !== undefined) ||
+                    colOpts.options !== undefined ||
+                    (this.customPaneSettings !== null && this.customPaneSettings.options !== undefined)) {
+                    var rows = this._getComparisonRows();
+                    var _loop_2 = function (row) {
+                        var selectIndex = selected.findIndex(function (element) {
+                            if (element.display === row.data().display) {
+                                return true;
+                            }
+                        });
+                        if (selectIndex !== -1) {
+                            row.select();
+                            selected.splice(selectIndex, 1);
+                        }
+                    };
+                    for (var _b = 0, rows_1 = rows; _b < rows_1.length; _b++) {
+                        var row = rows_1[_b];
+                        _loop_2(row);
+                    }
+                }
+                // Add search options which were previously selected but whos results are no
+                // longer present in the resulting data set.
+                for (var _c = 0, selected_1 = selected; _c < selected_1.length; _c++) {
+                    var selectedEl = selected_1[_c];
+                    var row = this._addRow(selectedEl.display, selectedEl.filter, 0, this.c.viewTotal
+                        ? selectedEl.total
+                        : 0, selectedEl.filter, selectedEl.filter);
+                    this.s.updating = true;
+                    row.select();
+                    this.s.updating = false;
+                }
+                this.s.dtPane.draw();
+                this.s.dtPane.table().node().parentNode.scrollTop = scrollTop;
+            }
+        };
+        SearchPane.version = '1.1.0';
+        SearchPane.classes = {
+            buttonGroup: 'dtsp-buttonGroup',
+            buttonSub: 'dtsp-buttonSub',
+            clear: 'dtsp-clear',
+            clearAll: 'dtsp-clearAll',
+            clearButton: 'clearButton',
+            container: 'dtsp-searchPane',
+            countButton: 'dtsp-countButton',
+            disabledButton: 'dtsp-disabledButton',
+            dull: 'dtsp-dull',
+            hidden: 'dtsp-hidden',
+            hide: 'dtsp-hide',
+            layout: 'dtsp-',
+            name: 'dtsp-name',
+            nameButton: 'dtsp-nameButton',
+            narrow: 'dtsp-narrow',
+            paneButton: 'dtsp-paneButton',
+            paneInputButton: 'dtsp-paneInputButton',
+            pill: 'dtsp-pill',
+            search: 'dtsp-search',
+            searchCont: 'dtsp-searchCont',
+            searchIcon: 'dtsp-searchIcon',
+            searchLabelCont: 'dtsp-searchButtonCont',
+            selected: 'dtsp-selected',
+            smallGap: 'dtsp-smallGap',
+            subRow1: 'dtsp-subRow1',
+            subRow2: 'dtsp-subRow2',
+            subRowsContainer: 'dtsp-subRowsContainer',
+            title: 'dtsp-title',
+            topRow: 'dtsp-topRow'
+        };
+        // Define SearchPanes default options
+        SearchPane.defaults = {
+            cascadePanes: false,
+            clear: true,
+            combiner: 'or',
+            controls: true,
+            container: function (dt) {
+                return dt.table().container();
+            },
+            dataLength: 30,
+            dtOpts: {},
+            emptyMessage: '<i>No Data</i>',
+            hideCount: false,
+            layout: 'columns-3',
+            name: undefined,
+            orderable: true,
+            orthogonal: {
+                display: 'display',
+                hideCount: false,
+                search: 'filter',
+                show: undefined,
+                sort: 'sort',
+                threshold: 0.6,
+                type: 'type'
+            },
+            preSelect: [],
+            threshold: 0.6,
+            viewTotal: false
+        };
+        return SearchPane;
+    }());
+
+    var $$1;
+    var DataTable$1;
+    function setJQuery$1(jq) {
+        $$1 = jq;
+        DataTable$1 = jq.fn.dataTable;
+    }
+    var SearchPanes = /** @class */ (function () {
+        function SearchPanes(paneSettings, opts, fromInit) {
+            var _this = this;
+            if (fromInit === void 0) { fromInit = false; }
+            this.regenerating = false;
+            // Check that the required version of DataTables is included
+            if (!DataTable$1 || !DataTable$1.versionCheck || !DataTable$1.versionCheck('1.10.0')) {
+                throw new Error('SearchPane requires DataTables 1.10 or newer');
+            }
+            // Check that Select is included
+            if (!DataTable$1.select) {
+                throw new Error('SearchPane requires Select');
+            }
+            var table = new DataTable$1.Api(paneSettings);
+            this.classes = $$1.extend(true, {}, SearchPanes.classes);
+            // Get options from user
+            this.c = $$1.extend(true, {}, SearchPanes.defaults, opts);
+            // Add extra elements to DOM object including clear
+            this.dom = {
+                clearAll: $$1('<button type="button">Clear All</button>').addClass(this.classes.clearAll),
+                container: $$1('<div/>').addClass(this.classes.panes).text(table.i18n('searchPanes.loadMessage', 'Loading Search Panes...')),
+                emptyMessage: $$1('<div/>').addClass(this.classes.emptyMessage),
+                options: $$1('<div/>').addClass(this.classes.container),
+                panes: $$1('<div/>').addClass(this.classes.container),
+                title: $$1('<div/>').addClass(this.classes.title),
+                titleRow: $$1('<div/>').addClass(this.classes.titleRow),
+                wrapper: $$1('<div/>')
+            };
+            this.s = {
+                colOpts: [],
+                dt: table,
+                filterPane: -1,
+                panes: [],
+                selectionList: [],
+                serverData: {},
+                updating: false
+            };
+            if (table.settings()[0]._searchPanes !== undefined) {
+                return;
+            }
+            // We are using the xhr event to rebuild the panes if required due to viewTotal being enabled
+            // If viewTotal is not enabled then we simply update the data from the server
+            table.on('xhr', function (e, settings, json, xhr) {
+                if (json.searchPanes && json.searchPanes.options) {
+                    _this.s.serverData = json.searchPanes.options;
+                    _this.s.serverData.tableLength = json.recordsTotal;
+                    if (_this.c.viewTotal || _this.c.cascadePanes) {
+                        _this._serverTotals();
+                    }
+                }
+            });
+            table.settings()[0]._searchPanes = this;
+            this.dom.clearAll.text(table.i18n('searchPanes.clearMessage', 'Clear All'));
+            this._getState();
+            if (this.s.dt.settings()[0]._bInitComplete || fromInit) {
+                this._paneDeclare(table, paneSettings, opts);
+            }
+            else {
+                table.one('preInit.dt', function (settings) {
+                    _this._paneDeclare(table, paneSettings, opts);
+                });
+            }
+        }
+        /**
+         * Clear the selections of all of the panes
+         */
+        SearchPanes.prototype.clearSelections = function () {
+            // Load in all of the searchBoxes in the documents
+            var searches = this.dom.container.find(this.classes.search);
+            // For each searchBox set the input text to be empty and then trigger
+            //  an input on them so that they no longer filter the panes
+            searches.each(function () {
+                $$1(this).val('');
+                $$1(this).trigger('input');
+            });
+            var returnArray = [];
+            // For every pane, clear the selections in the pane
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (pane.s.dtPane !== undefined) {
+                    returnArray.push(pane.clearPane());
+                }
+            }
+            this.s.dt.draw();
+            return returnArray;
+        };
+        /**
+         * returns the container node for the searchPanes
+         */
+        SearchPanes.prototype.getNode = function () {
+            return this.dom.container;
+        };
+        /**
+         * rebuilds all of the panes
+         */
+        SearchPanes.prototype.rebuild = function (targetIdx, maintainSelection) {
+            if (targetIdx === void 0) { targetIdx = false; }
+            if (maintainSelection === void 0) { maintainSelection = false; }
+            $$1(this.dom.emptyMessage).remove();
+            // As a rebuild from scratch is required, empty the searchpanes container.
+            var returnArray = [];
+            // Rebuild each pane individually, if a specific pane has been selected then only rebuild that one
+            $$1(this.dom.panes).empty();
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (targetIdx !== false && pane.s.index !== targetIdx) {
+                    $$1(this.dom.panes).append(pane.dom.container);
+                    continue;
+                }
+                pane.clearData();
+                returnArray.push(
+                // Pass a boolean to say whether this is the last choice made for maintaining selections when rebuilding
+                pane.rebuildPane(this.s.selectionList[this.s.selectionList.length - 1] !== undefined ?
+                    pane.s.index === this.s.selectionList[this.s.selectionList.length - 1].index :
+                    false, this.s.dt.page.info().serverSide ?
+                    this.s.serverData :
+                    undefined, null, maintainSelection));
+                $$1(this.dom.panes).append(pane.dom.container);
+            }
+            if (this.c.cascadePanes || this.c.viewTotal) {
+                this.redrawPanes(true);
+            }
+            else {
+                this._updateSelection();
+            }
+            // Attach panes, clear buttons, and title bar to the document
+            this._updateFilterCount();
+            this._attachPaneContainer();
+            this.s.dt.draw();
+            // If a single pane has been rebuilt then return only that pane
+            if (returnArray.length === 1) {
+                return returnArray[0];
+            }
+            // Otherwise return all of the panes that have been rebuilt
+            else {
+                return returnArray;
+            }
+        };
+        /**
+         * Redraws all of the panes
+         */
+        SearchPanes.prototype.redrawPanes = function (rebuild) {
+            if (rebuild === void 0) { rebuild = false; }
+            var table = this.s.dt;
+            // Only do this if the redraw isn't being triggered by the panes updating themselves
+            if (!this.s.updating && !this.s.dt.page.info().serverSide) {
+                var filterActive = true;
+                var filterPane = this.s.filterPane;
+                // If the number of rows currently visible is equal to the number of rows in the table
+                //  then there can't be any filtering taking place
+                if (table.rows({ search: 'applied' }).data().toArray().length === table.rows().data().toArray().length) {
+                    filterActive = false;
+                }
+                // Otherwise if viewTotal is active then it is necessary to determine which panes a select is present in.
+                //  If there is only one pane with a selection present then it should not show the filtered message as
+                //  more selections may be made in that pane.
+                else if (this.c.viewTotal) {
+                    for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                        var pane = _a[_i];
+                        if (pane.s.dtPane !== undefined) {
+                            var selectLength = pane.s.dtPane.rows({ selected: true }).data().toArray().length;
+                            if (selectLength === 0) {
+                                for (var _b = 0, _c = this.s.selectionList; _b < _c.length; _b++) {
+                                    var selection = _c[_b];
+                                    if (selection.index === pane.s.index && selection.rows.length !== 0) {
+                                        selectLength = selection.rows.length;
+                                    }
+                                }
+                            }
+                            // If filterPane === -1 then a pane with a selection has not been found yet, so set filterPane to that panes index
+                            if (selectLength > 0 && filterPane === -1) {
+                                filterPane = pane.s.index;
+                            }
+                            // Then if another pane is found with a selection then set filterPane to null to
+                            //  show that multiple panes have selections present
+                            else if (selectLength > 0) {
+                                filterPane = null;
+                            }
+                        }
+                    }
+                }
+                var deselectIdx = void 0;
+                var newSelectionList = [];
+                // Don't run this if it is due to the panes regenerating
+                if (!this.regenerating) {
+                    for (var _d = 0, _e = this.s.panes; _d < _e.length; _d++) {
+                        var pane = _e[_d];
+                        // Identify the pane where a selection or deselection has been made and add it to the list.
+                        if (pane.s.selectPresent) {
+                            this.s.selectionList.push({ index: pane.s.index, rows: pane.s.dtPane.rows({ selected: true }).data().toArray(), protect: false });
+                            table.state.save();
+                            break;
+                        }
+                        else if (pane.s.deselect) {
+                            deselectIdx = pane.s.index;
+                            var selectedData = pane.s.dtPane.rows({ selected: true }).data().toArray();
+                            if (selectedData.length > 0) {
+                                this.s.selectionList.push({ index: pane.s.index, rows: selectedData, protect: true });
+                            }
+                        }
+                    }
+                    if (this.s.selectionList.length > 0) {
+                        var last = this.s.selectionList[this.s.selectionList.length - 1].index;
+                        for (var _f = 0, _g = this.s.panes; _f < _g.length; _f++) {
+                            var pane = _g[_f];
+                            pane.s.lastSelect = (pane.s.index === last);
+                        }
+                    }
+                    // Remove selections from the list from the pane where a deselect has taken place
+                    for (var i = 0; i < this.s.selectionList.length; i++) {
+                        if (this.s.selectionList[i].index !== deselectIdx || this.s.selectionList[i].protect === true) {
+                            var further = false;
+                            // Find out if this selection is the last one in the list for that pane
+                            for (var j = i + 1; j < this.s.selectionList.length; j++) {
+                                if (this.s.selectionList[j].index === this.s.selectionList[i].index) {
+                                    further = true;
+                                }
+                            }
+                            // If there are no selections for this pane in the list then just push this one
+                            if (!further) {
+                                newSelectionList.push(this.s.selectionList[i]);
+                                this.s.selectionList[i].protect = false;
+                            }
+                        }
+                    }
+                    var solePane = -1;
+                    if (newSelectionList.length === 1) {
+                        solePane = newSelectionList[0].index;
+                    }
+                    // Update all of the panes to reflect the current state of the filters
+                    for (var _h = 0, _j = this.s.panes; _h < _j.length; _h++) {
+                        var pane = _j[_h];
+                        if (pane.s.dtPane !== undefined) {
+                            var tempFilter = true;
+                            pane.s.filteringActive = true;
+                            if ((filterPane !== -1 && filterPane !== null && filterPane === pane.s.index) ||
+                                filterActive === false ||
+                                pane.s.index === solePane) {
+                                tempFilter = false;
+                                pane.s.filteringActive = false;
+                            }
+                            pane.updatePane(!tempFilter ? false : filterActive);
+                        }
+                    }
+                    // Update the label that shows how many filters are in place
+                    this._updateFilterCount();
+                    // If the length of the selections are different then some of them have been removed and a deselect has occured
+                    if (newSelectionList.length > 0 && (newSelectionList.length < this.s.selectionList.length || rebuild)) {
+                        this._cascadeRegen(newSelectionList);
+                        var last = newSelectionList[newSelectionList.length - 1].index;
+                        for (var _k = 0, _l = this.s.panes; _k < _l.length; _k++) {
+                            var pane = _l[_k];
+                            pane.s.lastSelect = (pane.s.index === last);
+                        }
+                    }
+                    else if (newSelectionList.length > 0) {
+                        // Update all of the other panes as you would just making a normal selection
+                        for (var _m = 0, _o = this.s.panes; _m < _o.length; _m++) {
+                            var paneUpdate = _o[_m];
+                            if (paneUpdate.s.dtPane !== undefined) {
+                                var tempFilter = true;
+                                paneUpdate.s.filteringActive = true;
+                                if ((filterPane !== -1 && filterPane !== null && filterPane === paneUpdate.s.index) || filterActive === false) {
+                                    tempFilter = false;
+                                    paneUpdate.s.filteringActive = false;
+                                }
+                                paneUpdate.updatePane(!tempFilter ? tempFilter : filterActive);
+                            }
+                        }
+                    }
+                }
+                else {
+                    var solePane = -1;
+                    if (newSelectionList.length === 1) {
+                        solePane = newSelectionList[0].index;
+                    }
+                    for (var _p = 0, _q = this.s.panes; _p < _q.length; _p++) {
+                        var pane = _q[_p];
+                        if (pane.s.dtPane !== undefined) {
+                            var tempFilter = true;
+                            pane.s.filteringActive = true;
+                            if ((filterPane !== -1 && filterPane !== null && filterPane === pane.s.index) ||
+                                filterActive === false ||
+                                pane.s.index === solePane) {
+                                tempFilter = false;
+                                pane.s.filteringActive = false;
+                            }
+                            pane.updatePane(!tempFilter ? tempFilter : filterActive);
+                        }
+                    }
+                    // Update the label that shows how many filters are in place
+                    this._updateFilterCount();
+                }
+                if (!filterActive) {
+                    this.s.selectionList = [];
+                }
+            }
+        };
+        /**
+         * Attach the panes, buttons and title to the document
+         */
+        SearchPanes.prototype._attach = function () {
+            var _this = this;
+            $$1(this.dom.container).removeClass(this.classes.hide);
+            $$1(this.dom.titleRow).removeClass(this.classes.hide);
+            $$1(this.dom.titleRow).remove();
+            $$1(this.dom.title).appendTo(this.dom.titleRow);
+            // If the clear button is permitted attach it
+            if (this.c.clear) {
+                $$1(this.dom.clearAll).appendTo(this.dom.titleRow);
+                $$1(this.dom.clearAll).on('click.dtsps', function () {
+                    _this.clearSelections();
+                });
+            }
+            $$1(this.dom.titleRow).appendTo(this.dom.container);
+            // Attach the container for each individual pane to the overall container
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                $$1(pane.dom.container).appendTo(this.dom.panes);
+            }
+            // Attach everything to the document
+            $$1(this.dom.panes).appendTo(this.dom.container);
+            if ($$1('div.' + this.classes.container).length === 0) {
+                $$1(this.dom.container).prependTo(this.s.dt);
+            }
+            return this.dom.container;
+        };
+        /**
+         * Attach the top row containing the filter count and clear all button
+         */
+        SearchPanes.prototype._attachExtras = function () {
+            $$1(this.dom.container).removeClass(this.classes.hide);
+            $$1(this.dom.titleRow).removeClass(this.classes.hide);
+            $$1(this.dom.titleRow).remove();
+            $$1(this.dom.title).appendTo(this.dom.titleRow);
+            // If the clear button is permitted attach it
+            if (this.c.clear) {
+                $$1(this.dom.clearAll).appendTo(this.dom.titleRow);
+            }
+            $$1(this.dom.titleRow).appendTo(this.dom.container);
+            return this.dom.container;
+        };
+        /**
+         * If there are no panes to display then this method is called to either
+         *   display a message in their place or hide them completely.
+         */
+        SearchPanes.prototype._attachMessage = function () {
+            // Create a message to display on the screen
+            var message;
+            try {
+                message = this.s.dt.i18n('searchPanes.emptyPanes', 'No SearchPanes');
+            }
+            catch (error) {
+                message = null;
+            }
+            // If the message is an empty string then searchPanes.emptyPanes is undefined,
+            //  therefore the pane container should be removed from the display
+            if (message === null) {
+                $$1(this.dom.container).addClass(this.classes.hide);
+                $$1(this.dom.titleRow).removeClass(this.classes.hide);
+                return;
+            }
+            else {
+                $$1(this.dom.container).removeClass(this.classes.hide);
+                $$1(this.dom.titleRow).addClass(this.classes.hide);
+            }
+            // Otherwise display the message
+            $$1(this.dom.emptyMessage).text(message);
+            this.dom.emptyMessage.appendTo(this.dom.container);
+            return this.dom.container;
+        };
+        /**
+         * Attaches the panes to the document and displays a message or hides if there are none
+         */
+        SearchPanes.prototype._attachPaneContainer = function () {
+            // If a pane is to be displayed then attach the normal pane output
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (pane.s.displayed === true) {
+                    return this._attach();
+                }
+            }
+            // Otherwise attach the custom message or remove the container from the display
+            return this._attachMessage();
+        };
+        /**
+         * Prepares the panes for selections to be made when cascade is active and a deselect has occured
+         * @param newSelectionList the list of selections which are to be made
+         */
+        SearchPanes.prototype._cascadeRegen = function (newSelectionList) {
+            // Set this to true so that the actions taken do not cause this to run until it is finished
+            this.regenerating = true;
+            // If only one pane has been selected then take note of its index
+            var solePane = -1;
+            if (newSelectionList.length === 1) {
+                solePane = newSelectionList[0].index;
+            }
+            // Let the pane know that a cascadeRegen is taking place to avoid unexpected behaviour
+            //  and clear all of the previous selections in the pane
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                pane.setCascadeRegen(true);
+                pane.setClear(true);
+                // If this is the same as the pane with the only selection then pass it as a parameter into clearPane
+                if ((pane.s.dtPane !== undefined && pane.s.index === solePane) || pane.s.dtPane !== undefined) {
+                    pane.clearPane();
+                }
+                pane.setClear(false);
+            }
+            // Remake Selections
+            this._makeCascadeSelections(newSelectionList);
+            // Set the selection list property to be the list without the selections from the deselect pane
+            this.s.selectionList = newSelectionList;
+            // The regeneration of selections is over so set it back to false
+            for (var _b = 0, _c = this.s.panes; _b < _c.length; _b++) {
+                var pane = _c[_b];
+                pane.setCascadeRegen(false);
+            }
+            this.regenerating = false;
+        };
+        /**
+         * Attaches the message to the document but does not add any panes
+         */
+        SearchPanes.prototype._checkMessage = function () {
+            // If a pane is to be displayed then attach the normal pane output
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (pane.s.displayed === true) {
+                    return;
+                }
+            }
+            // Otherwise attach the custom message or remove the container from the display
+            return this._attachMessage();
+        };
+        /**
+         * Gets the selection list from the previous state and stores it in the selectionList Property
+         */
+        SearchPanes.prototype._getState = function () {
+            var loadedFilter = this.s.dt.state.loaded();
+            if (loadedFilter && loadedFilter.searchPanes && loadedFilter.searchPanes.selectionList !== undefined) {
+                this.s.selectionList = loadedFilter.searchPanes.selectionList;
+            }
+        };
+        /**
+         * Makes all of the selections when cascade is active
+         * @param newSelectionList the list of selections to be made, in the order they were originally selected
+         */
+        SearchPanes.prototype._makeCascadeSelections = function (newSelectionList) {
+            // make selections in the order they were made previously, excluding those from the pane where a deselect was made
+            for (var i = 0; i < newSelectionList.length; i++) {
+                var _loop_1 = function (pane) {
+                    if (pane.s.index === newSelectionList[i].index && pane.s.dtPane !== undefined) {
+                        // When regenerating the cascade selections we need this flag so that the panes are only ignored if it
+                        //  is the last selection and the pane for that selection
+                        if (i === newSelectionList.length - 1) {
+                            pane.s.lastCascade = true;
+                        }
+                        // if there are any selections currently in the pane then deselect them as we are about to make our new selections
+                        if (pane.s.dtPane.rows({ selected: true }).data().toArray().length > 0 && pane.s.dtPane !== undefined) {
+                            pane.setClear(true);
+                            pane.clearPane();
+                            pane.setClear(false);
+                        }
+                        var _loop_2 = function (row) {
+                            pane.s.dtPane.rows().every(function (rowIdx) {
+                                if (pane.s.dtPane.row(rowIdx).data() !== undefined &&
+                                    row !== undefined &&
+                                    pane.s.dtPane.row(rowIdx).data().filter === row.filter) {
+                                    pane.s.dtPane.row(rowIdx).select();
+                                }
+                            });
+                        };
+                        // select every row in the pane that was selected previously
+                        for (var _i = 0, _a = newSelectionList[i].rows; _i < _a.length; _i++) {
+                            var row = _a[_i];
+                            _loop_2(row);
+                        }
+                        // Update the label that shows how many filters are in place
+                        this_1._updateFilterCount();
+                        pane.s.lastCascade = false;
+                    }
+                };
+                var this_1 = this;
+                // As the selections may have been made across the panes in a different order to the pane index we must identify
+                //  which pane has the index of the selection. This is also important for colreorder etc
+                for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                    var pane = _a[_i];
+                    _loop_1(pane);
+                }
+            }
+            // Make sure that the state is saved after all of these selections
+            this.s.dt.state.save();
+        };
+        /**
+         * Declares the instances of individual searchpanes dependant on the number of columns.
+         * It is necessary to run this once preInit has completed otherwise no panes will be
+         *  created as the column count will be 0.
+         * @param table the DataTable api for the parent table
+         * @param paneSettings the settings passed into the constructor
+         * @param opts the options passed into the constructor
+         */
+        SearchPanes.prototype._paneDeclare = function (table, paneSettings, opts) {
+            var _this = this;
+            // Create Panes
+            table
+                .columns(this.c.columns.length > 0 ? this.c.columns : undefined)
+                .eq(0)
+                .each(function (idx) {
+                _this.s.panes.push(new SearchPane(paneSettings, opts, idx, _this.c.layout, _this.dom.panes));
+            });
+            // If there is any extra custom panes defined then create panes for them too
+            var rowLength = table.columns().eq(0).toArray().length;
+            var paneLength = this.c.panes.length;
+            for (var i = 0; i < paneLength; i++) {
+                var id = rowLength + i;
+                this.s.panes.push(new SearchPane(paneSettings, opts, id, this.c.layout, this.dom.panes, this.c.panes[i]));
+            }
+            // If a custom ordering is being used
+            if (this.c.order.length > 0) {
+                // Make a new Array of panes based upon the order
+                var newPanes = this.c.order.map(function (name, index, values) {
+                    return _this._findPane(name);
+                });
+                // Remove the old panes from the dom
+                this.dom.panes.empty();
+                this.s.panes = newPanes;
+                // Append the panes in the correct order
+                for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                    var pane = _a[_i];
+                    this.dom.panes.append(pane.dom.container);
+                }
+            }
+            // If this internal property is true then the DataTable has been initialised already
+            if (this.s.dt.settings()[0]._bInitComplete) {
+                this._paneStartup(table);
+            }
+            else {
+                // Otherwise add the paneStartup function to the list of functions that are to be run when the table is initialised
+                // This will garauntee that the panes are initialised before the init event and init Complete callback is fired
+                this.s.dt.settings()[0].aoInitComplete.push({ fn: function () {
+                        _this._paneStartup(table);
+                    } });
+            }
+        };
+        /**
+         * Finds a pane based upon the name of that pane
+         * @param name string representing the name of the pane
+         * @returns SearchPane The pane which has that name
+         */
+        SearchPanes.prototype._findPane = function (name) {
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (name === pane.s.name) {
+                    return pane;
+                }
+            }
+        };
+        /**
+         * Runs the start up functions for the panes to enable listeners and populate panes
+         * @param table the DataTable api for the parent Table
+         */
+        SearchPanes.prototype._paneStartup = function (table) {
+            var _this = this;
+            // Magic number of 500 is a guess at what will be fast
+            if (this.s.dt.page.info().recordsTotal <= 500) {
+                this._startup(table);
+            }
+            else {
+                setTimeout(function () {
+                    _this._startup(table);
+                }, 100);
+            }
+        };
+        /**
+         * Works out which panes to update when data is recieved from the server and viewTotal is active
+         */
+        SearchPanes.prototype._serverTotals = function () {
+            var selectPresent = false;
+            var deselectPresent = false;
+            var table = this.s.dt;
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                // Identify the pane where a selection or deselection has been made and add it to the list.
+                if (pane.s.selectPresent) {
+                    this.s.selectionList.push({ index: pane.s.index, rows: pane.s.dtPane.rows({ selected: true }).data().toArray(), protect: false });
+                    table.state.save();
+                    pane.s.selectPresent = false;
+                    selectPresent = true;
+                    break;
+                }
+                else if (pane.s.deselect) {
+                    var selectedData = pane.s.dtPane.rows({ selected: true }).data().toArray();
+                    if (selectedData.length > 0) {
+                        this.s.selectionList.push({ index: pane.s.index, rows: selectedData, protect: true });
+                    }
+                    selectPresent = true;
+                    deselectPresent = true;
+                }
+            }
+            // Build an updated list based on any selections or deselections added
+            if (!selectPresent) {
+                this.s.selectionList = [];
+            }
+            else {
+                var newSelectionList = [];
+                for (var i = 0; i < this.s.selectionList.length; i++) {
+                    var further = false;
+                    // Find out if this selection is the last one in the list for that pane
+                    for (var j = i + 1; j < this.s.selectionList.length; j++) {
+                        if (this.s.selectionList[j].index === this.s.selectionList[i].index) {
+                            further = true;
+                        }
+                    }
+                    // If there are no selections for this pane in the list then just push this one
+                    if (!further &&
+                        this.s.panes[this.s.selectionList[i].index].s.dtPane.rows({ selected: true }).data().toArray().length > 0) {
+                        newSelectionList.push(this.s.selectionList[i]);
+                    }
+                }
+                this.s.selectionList = newSelectionList;
+            }
+            var initIdx = -1;
+            // If there has been a deselect and only one pane has a selection then update everything
+            if (deselectPresent && this.s.selectionList.length === 1) {
+                for (var _b = 0, _c = this.s.panes; _b < _c.length; _b++) {
+                    var pane = _c[_b];
+                    pane.s.lastSelect = false;
+                    pane.s.deselect = false;
+                    if (pane.s.dtPane !== undefined && pane.s.dtPane.rows({ selected: true }).data().toArray().length > 0) {
+                        initIdx = pane.s.index;
+                    }
+                }
+            }
+            // Otherwise if there are more 1 selections then find the last one and set it to not update that pane
+            else if (this.s.selectionList.length > 0) {
+                var last = this.s.selectionList[this.s.selectionList.length - 1].index;
+                for (var _d = 0, _e = this.s.panes; _d < _e.length; _d++) {
+                    var pane = _e[_d];
+                    pane.s.lastSelect = (pane.s.index === last);
+                    pane.s.deselect = false;
+                }
+            }
+            // Otherwise if there are no selections then find where that took place and do not update to maintain scrolling
+            else if (this.s.selectionList.length === 0) {
+                for (var _f = 0, _g = this.s.panes; _f < _g.length; _f++) {
+                    var pane = _g[_f];
+                    // pane.s.lastSelect = (pane.s.deselect === true);
+                    pane.s.lastSelect = false;
+                    pane.s.deselect = false;
+                }
+            }
+            $$1(this.dom.panes).empty();
+            // Rebuild the desired panes
+            for (var _h = 0, _j = this.s.panes; _h < _j.length; _h++) {
+                var pane = _j[_h];
+                if (!pane.s.lastSelect) {
+                    pane.rebuildPane(undefined, this.s.dt.page.info().serverSide ? this.s.serverData : undefined, pane.s.index === initIdx ? true : null, true);
+                }
+                else {
+                    pane._setListeners();
+                }
+                // append all of the panes and enable select
+                $$1(this.dom.panes).append(pane.dom.container);
+                if (pane.s.dtPane !== undefined) {
+                    $$1(pane.s.dtPane.table().node()).parent()[0].scrollTop = pane.s.scrollTop;
+                    $$1.fn.dataTable.select.init(pane.s.dtPane);
+                }
+            }
+        };
+        /**
+         * Initialises the tables previous/preset selections and initialises callbacks for events
+         * @param table the parent table for which the searchPanes are being created
+         */
+        SearchPanes.prototype._startup = function (table) {
+            var _this = this;
+            $$1(this.dom.container).text('');
+            // Attach clear button and title bar to the document
+            this._attachExtras();
+            $$1(this.dom.container).append(this.dom.panes);
+            $$1(this.dom.panes).empty();
+            if (this.c.viewTotal && !this.c.cascadePanes) {
+                var loadedFilter = this.s.dt.state.loaded();
+                if (loadedFilter !== null &&
+                    loadedFilter !== undefined &&
+                    loadedFilter.searchPanes !== undefined &&
+                    loadedFilter.searchPanes.panes !== undefined) {
+                    var filterActive = false;
+                    for (var _i = 0, _a = loadedFilter.searchPanes.panes; _i < _a.length; _i++) {
+                        var pane = _a[_i];
+                        if (pane.selected.length > 0) {
+                            filterActive = true;
+                            break;
+                        }
+                    }
+                    if (filterActive) {
+                        for (var _b = 0, _c = this.s.panes; _b < _c.length; _b++) {
+                            var pane = _c[_b];
+                            pane.s.showFiltered = true;
+                        }
+                    }
+                }
+            }
+            for (var _d = 0, _e = this.s.panes; _d < _e.length; _d++) {
+                var pane = _e[_d];
+                pane.rebuildPane(undefined, this.s.dt.page.info().serverSide ? this.s.serverData : undefined);
+                $$1(this.dom.panes).append(pane.dom.container);
+            }
+            if (this.c.viewTotal && !this.c.cascadePanes) {
+                for (var _f = 0, _g = this.s.panes; _f < _g.length; _f++) {
+                    var pane = _g[_f];
+                    pane.updatePane();
+                }
+            }
+            this._updateFilterCount();
+            this._checkMessage();
+            // When a draw is called on the DataTable, update all of the panes incase the data in the DataTable has changed
+            table.on('draw.dtsps', function () {
+                _this._updateFilterCount();
+                if ((_this.c.cascadePanes || _this.c.viewTotal) && !_this.s.dt.page.info().serverSide) {
+                    _this.redrawPanes();
+                }
+                else {
+                    _this._updateSelection();
+                }
+                _this.s.filterPane = -1;
+            });
+            // Whenever a state save occurs store the selection list in the state object
+            this.s.dt.on('stateSaveParams.dtsp', function (e, settings, data) {
+                if (data.searchPanes === undefined) {
+                    data.searchPanes = {};
+                }
+                data.searchPanes.selectionList = _this.s.selectionList;
+            });
+            // If the data is reloaded from the server then it is possible that it has changed completely,
+            // so we need to rebuild the panes
+            this.s.dt.on('xhr', function () {
+                var processing = false;
+                if (!_this.s.dt.page.info().serverSide) {
+                    _this.s.dt.one('draw', function () {
+                        if (processing) {
+                            return;
+                        }
+                        processing = true;
+                        $$1(_this.dom.panes).empty();
+                        for (var _i = 0, _a = _this.s.panes; _i < _a.length; _i++) {
+                            var pane = _a[_i];
+                            pane.clearData(); // Clears all of the bins and will mean that the data has to be re-read
+                            // Pass a boolean to say whether this is the last choice made for maintaining selections when rebuilding
+                            pane.rebuildPane(_this.s.selectionList[_this.s.selectionList.length - 1] !== undefined ?
+                                pane.s.index === _this.s.selectionList[_this.s.selectionList.length - 1].index :
+                                false, undefined, undefined, true);
+                            $$1(_this.dom.panes).append(pane.dom.container);
+                        }
+                        if (_this.c.cascadePanes || _this.c.viewTotal) {
+                            _this.redrawPanes(_this.c.cascadePanes);
+                        }
+                        else {
+                            _this._updateSelection();
+                        }
+                        _this._checkMessage();
+                    });
+                }
+            });
+            if (this.s.selectionList !== undefined && this.s.selectionList.length > 0) {
+                var last = this.s.selectionList[this.s.selectionList.length - 1].index;
+                for (var _h = 0, _j = this.s.panes; _h < _j.length; _h++) {
+                    var pane = _j[_h];
+                    pane.s.lastSelect = (pane.s.index === last);
+                }
+            }
+            // If cascadePanes is active then make the previous selections in the order they were previously
+            if (this.s.selectionList.length > 0 && this.c.cascadePanes) {
+                this._cascadeRegen(this.s.selectionList);
+            }
+            // PreSelect any selections which have been defined using the preSelect option
+            table
+                .columns(this.c.columns.length > 0 ? this.c.columns : undefined)
+                .eq(0)
+                .each(function (idx) {
+                if (_this.s.panes[idx] !== undefined &&
+                    _this.s.panes[idx].s.dtPane !== undefined &&
+                    _this.s.panes[idx].s.colOpts.preSelect !== undefined) {
+                    var tableLength = _this.s.panes[idx].s.dtPane.rows().data().toArray().length;
+                    for (var i = 0; i < tableLength; i++) {
+                        if (_this.s.panes[idx].s.colOpts.preSelect.indexOf(_this.s.panes[idx].s.dtPane.cell(i, 0).data()) !== -1) {
+                            _this.s.panes[idx].s.dtPane.row(i).select();
+                            _this.s.panes[idx].updateTable();
+                        }
+                    }
+                }
+            });
+            // Update the title bar to show how many filters have been selected
+            this._updateFilterCount();
+            // If the table is destroyed and restarted then clear the selections so that they do not persist.
+            table.on('destroy.dtsps', function () {
+                for (var _i = 0, _a = _this.s.panes; _i < _a.length; _i++) {
+                    var pane = _a[_i];
+                    pane.destroy();
+                }
+                table.off('.dtsps');
+                $$1(_this.dom.clearAll).off('.dtsps');
+                $$1(_this.dom.container).remove();
+                _this.clearSelections();
+            });
+            // When the clear All button has been pressed clear all of the selections in the panes
+            if (this.c.clear) {
+                $$1(this.dom.clearAll).on('click.dtsps', function () {
+                    _this.clearSelections();
+                });
+            }
+            if (this.s.dt.page.info().serverSide) {
+                table.on('preXhr.dt', function (e, settings, data) {
+                    if (data.searchPanes === undefined) {
+                        data.searchPanes = {};
+                    }
+                    for (var _i = 0, _a = _this.s.panes; _i < _a.length; _i++) {
+                        var pane = _a[_i];
+                        var src = _this.s.dt.column(pane.s.index).dataSrc();
+                        if (data.searchPanes[src] === undefined) {
+                            data.searchPanes[src] = {};
+                        }
+                        if (pane.s.dtPane !== undefined) {
+                            var rowData = pane.s.dtPane.rows({ selected: true }).data().toArray();
+                            for (var i = 0; i < rowData.length; i++) {
+                                data.searchPanes[src][i] = rowData[i].display;
+                            }
+                        }
+                    }
+                    if (_this.c.viewTotal) {
+                        _this._prepViewTotal();
+                    }
+                });
+            }
+            else {
+                table.on('preXhr.dt', function (e, settings, data) {
+                    for (var _i = 0, _a = _this.s.panes; _i < _a.length; _i++) {
+                        var pane = _a[_i];
+                        pane.clearData();
+                    }
+                });
+            }
+            table.settings()[0]._searchPanes = this;
+        };
+        SearchPanes.prototype._prepViewTotal = function () {
+            var filterPane = this.s.filterPane;
+            var filterActive = false;
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (pane.s.dtPane !== undefined) {
+                    var selectLength = pane.s.dtPane.rows({ selected: true }).data().toArray().length;
+                    // If filterPane === -1 then a pane with a selection has not been found yet, so set filterPane to that panes index
+                    if (selectLength > 0 && filterPane === -1) {
+                        filterPane = pane.s.index;
+                        filterActive = true;
+                    }
+                    // Then if another pane is found with a selection then set filterPane to null to
+                    //  show that multiple panes have selections present
+                    else if (selectLength > 0) {
+                        filterPane = null;
+                    }
+                }
+            }
+            // Update all of the panes to reflect the current state of the filters
+            for (var _b = 0, _c = this.s.panes; _b < _c.length; _b++) {
+                var pane = _c[_b];
+                if (pane.s.dtPane !== undefined) {
+                    pane.s.filteringActive = true;
+                    if ((filterPane !== -1 && filterPane !== null && filterPane === pane.s.index) || filterActive === false) {
+                        pane.s.filteringActive = false;
+                    }
+                }
+            }
+        };
+        /**
+         * Updates the number of filters that have been applied in the title
+         */
+        SearchPanes.prototype._updateFilterCount = function () {
+            var filterCount = 0;
+            // Add the number of all of the filters throughout the panes
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (pane.s.dtPane !== undefined) {
+                    filterCount += pane.getPaneCount();
+                }
+            }
+            // Run the message through the internationalisation method to improve readability
+            var message = this.s.dt.i18n('searchPanes.title', 'Filters Active - %d', filterCount);
+            $$1(this.dom.title).text(message);
+            if (this.c.filterChanged !== undefined && typeof this.c.filterChanged === 'function') {
+                this.c.filterChanged(filterCount);
+            }
+        };
+        /**
+         * Updates the selectionList when cascade is not in place
+         */
+        SearchPanes.prototype._updateSelection = function () {
+            this.s.selectionList = [];
+            for (var _i = 0, _a = this.s.panes; _i < _a.length; _i++) {
+                var pane = _a[_i];
+                if (pane.s.dtPane !== undefined) {
+                    this.s.selectionList.push({ index: pane.s.index, rows: pane.s.dtPane.rows({ selected: true }).data().toArray(), protect: false });
+                }
+            }
+            this.s.dt.state.save();
+        };
+        SearchPanes.version = '1.1.1';
+        SearchPanes.classes = {
+            clear: 'dtsp-clear',
+            clearAll: 'dtsp-clearAll',
+            container: 'dtsp-searchPanes',
+            emptyMessage: 'dtsp-emptyMessage',
+            hide: 'dtsp-hidden',
+            panes: 'dtsp-panesContainer',
+            search: 'dtsp-search',
+            title: 'dtsp-title',
+            titleRow: 'dtsp-titleRow'
+        };
+        // Define SearchPanes default options
+        SearchPanes.defaults = {
+            cascadePanes: false,
+            clear: true,
+            container: function (dt) {
+                return dt.table().container();
+            },
+            columns: [],
+            filterChanged: undefined,
+            layout: 'columns-3',
+            order: [],
+            panes: [],
+            viewTotal: false
+        };
+        return SearchPanes;
+    }());
+
+    /*! SearchPanes 1.1.1
+     * 2019-2020 SpryMedia Ltd - datatables.net/license
+     */
+    // DataTables extensions common UMD. Note that this allows for AMD, CommonJS
+    // (with window and jQuery being allowed as parameters to the returned
+    // function) or just default browser loading.
+    (function (factory) {
+        if (typeof define === 'function' && define.amd) {
+            // AMD
+            define(['jquery', 'datatables.net'], function ($) {
+                return factory($, window, document);
+            });
+        }
+        else if (typeof exports === 'object') {
+            // CommonJS
+            module.exports = function (root, $) {
+                if (!root) {
+                    root = window;
+                }
+                if (!$ || !$.fn.dataTable) {
+                    $ = require('datatables.net')(root, $).$;
+                }
+                return factory($, root, root.document);
+            };
+        }
+        else {
+            // Browser - assume jQuery has already been loaded
+            factory(window.jQuery, window, document);
+        }
+    }(function ($, window, document) {
+        setJQuery($);
+        setJQuery$1($);
+        var DataTable = $.fn.dataTable;
+        $.fn.dataTable.SearchPanes = SearchPanes;
+        $.fn.DataTable.SearchPanes = SearchPanes;
+        $.fn.dataTable.SearchPane = SearchPane;
+        $.fn.DataTable.SearchPane = SearchPane;
+        DataTable.Api.register('searchPanes.rebuild()', function () {
+            return this.iterator('table', function () {
+                if (this.searchPanes) {
+                    this.searchPanes.rebuild();
+                }
+            });
+        });
+        DataTable.Api.register('column().paneOptions()', function (options) {
+            return this.iterator('column', function (idx) {
+                var col = this.aoColumns[idx];
+                if (!col.searchPanes) {
+                    col.searchPanes = {};
+                }
+                col.searchPanes.values = options;
+                if (this.searchPanes) {
+                    this.searchPanes.rebuild();
+                }
+            });
+        });
+        var apiRegister = $.fn.dataTable.Api.register;
+        apiRegister('searchPanes()', function () {
+            return this;
+        });
+        apiRegister('searchPanes.clearSelections()', function () {
+            var ctx = this.context[0];
+            ctx._searchPanes.clearSelections();
+            return this;
+        });
+        apiRegister('searchPanes.rebuildPane()', function (targetIdx, maintainSelections) {
+            var ctx = this.context[0];
+            ctx._searchPanes.rebuild(targetIdx, maintainSelections);
+            return this;
+        });
+        apiRegister('searchPanes.container()', function () {
+            var ctx = this.context[0];
+            return ctx._searchPanes.getNode();
+        });
+        $.fn.dataTable.ext.buttons.searchPanesClear = {
+            text: 'Clear Panes',
+            action: function (e, dt, node, config) {
+                dt.searchPanes.clearSelections();
+            }
+        };
+        $.fn.dataTable.ext.buttons.searchPanes = {
+            action: function (e, dt, node, config) {
+                e.stopPropagation();
+                this.popover(config._panes.getNode(), {
+                    align: 'dt-container'
+                });
+            },
+            config: {},
+            init: function (dt, node, config) {
+                var panes = new $.fn.dataTable.SearchPanes(dt, $.extend({
+                    filterChanged: function (count) {
+                        dt.button(node).text(dt.i18n('searchPanes.collapse', { 0: 'SearchPanes', _: 'SearchPanes (%d)' }, count));
+                    }
+                }, config.config));
+                var message = dt.i18n('searchPanes.collapse', 'SearchPanes', 0);
+                dt.button(node).text(message);
+                config._panes = panes;
+            },
+            text: 'Search Panes'
+        };
+        function _init(settings, fromPre) {
+            if (fromPre === void 0) { fromPre = false; }
+            var api = new DataTable.Api(settings);
+            var opts = api.init().searchPanes || DataTable.defaults.searchPanes;
+            var searchPanes = new SearchPanes(api, opts, fromPre);
+            var node = searchPanes.getNode();
+            return node;
+        }
+        // Attach a listener to the document which listens for DataTables initialisation
+        // events so we can automatically initialise
+        $(document).on('preInit.dt.dtsp', function (e, settings, json) {
+            if (e.namespace !== 'dt') {
+                return;
+            }
+            if (settings.oInit.searchPanes ||
+                DataTable.defaults.searchPanes) {
+                if (!settings._searchPanes) {
+                    _init(settings, true);
+                }
+            }
+        });
+        // DataTables `dom` feature option
+        DataTable.ext.feature.push({
+            cFeature: 'P',
+            fnInit: _init
+        });
+        // DataTables 2 layout feature
+        if (DataTable.ext.features) {
+            DataTable.ext.features.register('searchPanes', _init);
+        }
+    }));
+
+}());
+
+
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['jquery', 'datatables.net-bs4', 'datatables.net-searchPanes'], function ($) {
+            return factory($, window, document);
+        });
+    }
+    else if (typeof exports === 'object') {
+        // CommonJS
+        module.exports = function (root, $) {
+            if (!root) {
+                root = window;
+            }
+            if (!$ || !$.fn.dataTable) {
+                $ = require('datatables.net-bs4')(root, $).$;
+            }
+            if (!$.fn.dataTable.searchPanes) {
+                require('datatables.net-searchPanes')(root, $);
+            }
+            return factory($, root, root.document);
+        };
+    }
+    else {
+        // Browser
+        factory(jQuery, window, document);
+    }
+}(function ($, window, document) {
+    'use strict';
+    var DataTable = $.fn.dataTable;
+    $.extend(true, DataTable.SearchPane.classes, {
+        buttonGroup: 'btn-group col justify-content-end',
+        disabledButton: 'disabled',
+        dull: '',
+        narrow: 'col',
+        pane: {
+            container: 'table'
+        },
+        paneButton: 'btn btn-light',
+        pill: 'pill badge badge-pill badge-secondary',
+        search: 'col-sm form-control search',
+        searchCont: 'input-group col-sm',
+        searchLabelCont: 'input-group-append',
+        subRow1: 'dtsp-subRow1',
+        subRow2: 'dtsp-subRow2',
+        table: 'table table-sm table-borderless',
+        topRow: 'dtsp-topRow row'
+    });
+    $.extend(true, DataTable.SearchPanes.classes, {
+        clearAll: 'dtsp-clearAll col-auto btn btn-light',
+        container: 'dtsp-searchPanes',
+        panes: 'dtsp-panes dtsp-container',
+        title: 'dtsp-title col',
+        titleRow: 'dtsp-titleRow row'
+    });
+    return DataTable.searchPanes;
 }));
 
 

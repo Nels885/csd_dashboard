@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from bootstrap_modal_forms.forms import BSModalForm
+from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.validators import validate_vin, xml_parser
 from utils.file.export import xml_corvet_file
@@ -76,7 +76,7 @@ class CorvetForm(forms.ModelForm):
     #     return corvet
 
 
-class CorvetModalForm(CorvetForm, BSModalForm):
+class CorvetModalForm(CorvetForm, BSModalModelForm):
 
     class Meta(CorvetForm):
         model = Corvet

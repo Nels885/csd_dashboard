@@ -3,10 +3,23 @@ $(document).ready(function () {
     $('#lateProdTable').DataTable({
         paging: false,
         scrollX: true,
-        order: [[4, "desc"]],
+        // order: [[4, "desc"]],
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
+    });
+    $('#lateProdNewTable').DataTable({
+        paging: false,
+        order: false,
+        scrollX: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        columnDefs: [{
+            targets: "_all",
+            orderable: false,
+        }],
     });
 });

@@ -4,8 +4,7 @@ from django.core.files.images import get_image_dimensions
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
 
-from bootstrap_modal_forms.forms import BSModalForm
-
+from bootstrap_modal_forms.forms import BSModalModelForm
 from .models import UserProfile, Post, WebLink
 
 
@@ -57,7 +56,7 @@ class UserProfileForm(forms.ModelForm):
         return avatar
 
 
-class PostForm(BSModalForm):
+class PostForm(BSModalModelForm):
     class Meta:
         model = Post
         fields = ['title', 'overview']
@@ -91,7 +90,10 @@ class SignUpForm(UserCreationForm):
         return user
 
 
-class WebLinkForm(BSModalForm):
+class WebLinkForm(BSModalModelForm):
     class Meta:
         model = WebLink
-        fields = "__all__"
+        exclude = ['thumbnail']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 5})
+        }

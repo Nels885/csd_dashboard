@@ -134,3 +134,44 @@ class Corvet(models.Model):
 
     def __str__(self):
         return self.vin
+
+
+class ProductCode(models.Model):
+    name = models.CharField('code Produit', max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Stock(models.Model):
+    code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
+    code_zone = models.CharField('code Zone', max_length=50, blank=True)
+    code_site = models.IntegerField('code Site', null=True, blank=True)
+    code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
+    cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
+    code_produit = models.ForeignKey('ProductCode', on_delete=models.CASCADE)
+
+
+class Indicator(models.Model):
+    date = models.DateField('Date du jours', unique=True)
+    products_to_repair = models.IntegerField('Produits à réparer')
+    late_products = models.IntegerField('Produits en retard')
+    express_products = models.IntegerField('Produits express')
+    output_products = models.IntegerField('Produits en sortie')
+    xelons = models.ManyToManyField('Xelon')
+
+    @classmethod
+    def count_prods(cls):
+        query = cls.objects.order_by("-date").first()
+        if query:
+            prod_list = ["RT6", "SMEG", "NAC", "RNEG", "NG4", "DISPLAY", "NISSAN", "BSI", "BSM"]
+            data = {key: query.xelons.filter(modele_produit__startswith=key).count() for key in prod_list}
+            data['RTx'] = query.xelons.filter(modele_produit__in=['RT3', 'RT4', 'RT5']).count()
+            data['CALC_MOT'] = query.xelons.filter(famille_produit__exact="CALC MOT").count()
+            data['AUTRES'] = query.xelons.all().count() - sum(data.values())
+        else:
+            data = {}
+        return data
+
+    def __str__(self):
+        return str(self.date)

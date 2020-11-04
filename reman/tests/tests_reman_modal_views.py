@@ -10,7 +10,7 @@ class MixinsTest(UnitTest):
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
         ecu = EcuModel.objects.create(oe_raw_reference='1699999999', psa_barcode='9876543210', ecu_type=ecu_type)
-        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
+        batch = Batch.objects.create(year="C", number=1, quantity=1, created_by=self.user, ecu_ref_base=ref_base)
         Default.objects.create(code='TEST1', description='Ceci est le test 1')
         self.ecuId = ecu.id
 
@@ -93,7 +93,7 @@ class MixinsTest(UnitTest):
             reverse('reman:create_repair'),
             data={
                 'psa_barcode': '9876543210',
-                'identify_number': 'C001010001',
+                'identify_number': 'C001001001',
                 'ref_supplier': '1234567890',
                 'product_number': '1234567890',
                 'remark': 'test',
@@ -167,3 +167,37 @@ class MixinsTest(UnitTest):
         # Object is updated
         default = Default.objects.first()
         self.assertEqual(default.code, 'TEST3')
+
+    def test_filter_checkout_ajax_mixin(self):
+        """
+        Create Default through BSModalCreateView.
+        """
+        self.add_perms_user(Repair, 'close_repair')
+        self.login()
+
+        # First search request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('reman:out_filter'),
+            data={
+                'batch': '',
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+
+        # Second search request = non-ajax request creating an object
+        Repair.objects.create(psa_barcode='9876543210', identify_number='C001001001', status='Réparé',
+                              quality_control=True, created_by=self.user)
+        response = self.client.post(
+            reverse('reman:out_filter'),
+            data={
+                'batch': 'C001001000',
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)

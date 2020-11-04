@@ -29,6 +29,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[SPAREPARTS] Waiting...")
+
         if options['delete']:
             SparePart.objects.all().delete()
 
@@ -49,11 +51,12 @@ class Command(BaseCommand):
                 log.info(row)
                 code_produit = row.pop("code_produit")
                 try:
-                    obj, created = SparePart.objects.update_or_create(
-                        code_produit=code_produit, defaults=row
-                    )
-                    if not created:
-                        nb_part_update += 1
+                    if "REMAN PSA" in row['code_zone']:
+                        obj, created = SparePart.objects.update_or_create(
+                            code_produit=code_produit, defaults=row
+                        )
+                        if not created:
+                            nb_part_update += 1
                 except IntegrityError as err:
                     print("IntegrityError: {} - {}".format(code_produit, err))
                 except SparePart.MultipleObjectsReturned as err:
@@ -61,7 +64,7 @@ class Command(BaseCommand):
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "SpareParts data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[SPAREPARTS] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
                     )
                 )

@@ -1,0 +1,43 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static %}
+
+{% block table_content %}
+
+    <table class="table table-bordered text-nowrap" id="unlockTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Numéro de dossier</th>
+            <th>Produit</th>
+            <th>V.I.N.</th>
+            <th>Utilisateur</th>
+            <th>Date</th>
+            <th>Déverrouillage</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for prod in products %}
+
+            <tr>
+                <td>{{ prod.unlock.numero_de_dossier }}</td>
+                <td>{{ prod.unlock.modele_produit }}</td>
+                <td>{{ prod.unlock.vin }}</td>
+                <td>{{ prod.user }}</td>
+                <td>{{ prod.created_at }}</td>
+                <td>{% if not prod.active %}Effectué{% else %}En attente{% endif %}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'raspeedi/js/rasp-tables.js' %}"></script>
+
+{% endblock %}

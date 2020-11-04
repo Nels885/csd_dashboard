@@ -1,18 +1,20 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from bootstrap_modal_forms.forms import BSModalForm
+from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.validators import validate_xelon
 
 from .models import TagXelon, CsdSoftware, ThermalChamber
 
 
-class TagXelonForm(BSModalForm):
+class TagXelonForm(BSModalModelForm):
     class Meta:
         model = TagXelon
         fields = ['xelon', 'comments']
         widgets = {
-            'xelon': forms.TextInput(attrs={'class': 'form-control col-sm-6'}),
+            'xelon': forms.TextInput(
+                attrs={'class': 'form-control col-sm-6', 'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''}
+            ),
             'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
         }
 

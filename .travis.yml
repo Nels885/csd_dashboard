@@ -1,7 +1,7 @@
 language: python
 python:
-  - "3.5"
   - "3.6"
+  - "3.8"
 
 env:
   - DJANGO_SETTINGS_MODULE="sbadmin.settings.travis" MOZ_HEADLESS=1 USER_CORVET="test" PWD_CORVET="test"
@@ -28,6 +28,7 @@ services:
   - postgresql
 
 script:
+  - python manage.py collectstatic --no-input -l
   - coverage run --source="." manage.py test -v 2
   - coverage report
   - flake8

@@ -36,7 +36,7 @@ class RaspeediForm(ModelForm):
 class UnlockForm(Form):
     unlock = CharField(
         label='Numéro de dossier', max_length=10,
-        widget=TextInput(attrs={'class': 'form-control mb-2 mr-sm-4'})
+        widget=TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''})
     )
 
     def clean_unlock(self):

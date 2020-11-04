@@ -2,18 +2,18 @@
 
 [![Build Status](https://travis-ci.org/Nels885/csd_dashboard.svg?branch=master)](https://travis-ci.org/Nels885/csd_dashboard)
 
-Dashboard create with Django 2.2.10 or 3.x for the CSD service of the company Faurecia Clarion Electronics
+Dashboard create with Django 3.1.1 or 3.x for the CSD service of the company Faurecia Clarion Electronics
 
 ## Start guide
 
 ### Dependencies
 
-- [Python 3.5 or more](https://www.python.org/) is required
+- [Python 3.6 or more](https://www.python.org/) is required
 - [PostgreSQL](https://www.postgresql.org/download/)
 
 ### Installing the Linux development environment
 
-Install Python 3.5 or more, PostgreSQL and linux packages useful for the
+Install Python 3.6 or more, PostgreSQL and linux packages useful for the
 proper functioning of the application.
 
 ```bash

@@ -1,0 +1,114 @@
+{% extends 'format/forms_format.html' %}
+
+{% load i18n %}
+
+{% block form_content %}
+
+    <div class="p-2">
+        <form method="post" action="">
+
+            {% csrf_token %}
+
+            <h5 class="text-gray-800 mt-3">Information Produit :</h5>
+            <hr>
+
+            <div class="form-group row">
+                <label for="{{ form.identify_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.identify_number.label }} :</label>
+
+                <div class="col-sm-2">{{ form.identify_number }}</div>
+
+                <label for="product_model" class="col-sm-2 col-form-label">Modèle :</label>
+                <div class="col-sm-4">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.technical_data }}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+
+                <label for="product_model" class="col-sm-2 col-form-label">HW référence :</label>
+                <div class="col-sm-2">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.hw_reference }}">
+                </div>
+
+                <label for="product_model" class="col-sm-2 col-form-label">Fabriquant :</label>
+                <div class="col-sm-2">
+                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.supplier_oe }}">
+                </div>
+
+                <label for="{{ form.product_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.product_number.label }} :</label>
+                <div class="col-sm-2">{{ form.product_number }}</div>
+
+            </div>
+            <div class="form-group row">
+                <label for="{{ form.remark.id_for_label }}" class="col-sm-2 col-form-label">{{ form.remark.label }} :</label>
+                <div class="col-sm-6">{{ form.remark }}</div>
+            </div>
+
+            <hr>
+            <h5 class="text-gray-800 mt-5">Réparation :</h5>
+            <hr>
+
+            <div class="form-group row">
+                <label for="code" class="col-sm-2 col-form-label">Code défaut :</label>
+                <div class="col-sm-2">
+                    <input type="text" id="code" class="form-control" readonly value="{{ prod.default.code }}">
+                </div>
+                <label for="description" class="col-sm-2 col-form-label">Libellé :</label>
+                <div class="col-sm-4">
+                    <input type="text" id="description" class="form-control" readonly value="{{ prod.default.description }}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="description" class="col-sm-2 col-form-label">Commentaires action :</label>
+                <div class="col-sm-6">
+                    <div class="form-control" style="height: auto;" readonly>
+                        {% if prod.comment %}
+                            {{ prod.comment|safe }}
+                        {% else %}
+                            ---
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <h5 class="text-gray-800 mt-5">Contrôles :</h5>
+            <hr>
+
+            <div class="form-group row">
+                <label for="{{ form.status.id_for_label }}" class="col-sm-2 col-form-label">{{ form.status.label }} :</label>
+                <div class="col-sm-2">{{ form.status }}</div>
+            </div>
+
+            <div class="form-group row">
+                <label for="{{ form.quality_control.id_for_label }}" class="col-sm-2 col-form-label">{{ form.quality_control.label }} :</label>
+                <div class="col-sm-2">{{ form.quality_control }}</div>
+            </div>
+
+            <hr>
+
+            <div class="offset-sm-6 align-self-center">
+                <a href="{% url 'reman:repair_table' %}" role="button" class="btn btn-secondary">
+                    {% trans "Close" %}
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        $("#description").focus(function () {
+            t = $(this);
+            t.css('min-height', t.height() + 10);
+        }).blur(function () {
+            $(this).css('min-height', '');
+        });
+    </script>
+
+{% endblock %}

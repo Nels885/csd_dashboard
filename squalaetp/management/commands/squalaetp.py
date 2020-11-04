@@ -38,6 +38,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.stdout.write("[SQUALAETP] Waiting...")
 
         if options['relations']:
             self._relation()
@@ -69,11 +70,15 @@ class Command(BaseCommand):
 
         else:
             call_command("corvet")
+            call_command("psacorvet")
             call_command("xelon", "--fix_update")
+            call_command("indicator")
             call_command("raspeedi")
             self._relation()
 
     def _relation(self):
+        self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
+
         nb_xelon, nb_corvet, objects_list = 0, 0, []
         for xelon in Xelon.objects.all():
             try:

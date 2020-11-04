@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-04 09:57+0200\n"
+"POT-Creation-Date: 2020-09-30 17:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "Les données XML ne correspondent pas au VIN"
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
-#: squalaetp/templates/squalaetp/all_xelon_table.html:74
+#: squalaetp/templates/squalaetp/ajax_xelon_table.html:74
 #: squalaetp/templates/squalaetp/corvet_insert.html:40
 #: squalaetp/templates/squalaetp/modal/corvet_form.html:53
 #: squalaetp/templates/squalaetp/xelon_edit.html:40
@@ -53,23 +53,23 @@ msgstr "Page précédente"
 msgid "Data Export"
 msgstr "Export Données"
 
-#: squalaetp/templates/squalaetp/detail.html:18
+#: squalaetp/templates/squalaetp/detail/detail.html:18
 msgid "Corvet data"
 msgstr "Données Corvet"
 
-#: squalaetp/templates/squalaetp/detail.html:24
+#: squalaetp/templates/squalaetp/detail/detail.html:24
 msgid "Log Files"
 msgstr "Fichiers Log"
 
-#: squalaetp/templates/squalaetp/detail.html:31
+#: squalaetp/templates/squalaetp/detail/detail.html:31
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: squalaetp/templates/squalaetp/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:37
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 
-#: squalaetp/templates/squalaetp/detail.html:44
+#: squalaetp/templates/squalaetp/detail/detail.html:44
 msgid "CORVET Update"
 msgstr "MAJ CORVET"
 
@@ -89,38 +89,32 @@ msgstr ""
 "Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie des "
 "véhicules PSA"
 
-#: squalaetp/views.py:68
+#: squalaetp/views.py:77
 msgid "Modification data Xelon file: "
 msgstr "Modification données dossier Xelon : "
 
-#: squalaetp/views.py:72 squalaetp/views.py:93 squalaetp/views.py:139
-#: squalaetp/views.py:149
+#: squalaetp/views.py:81 squalaetp/views.py:102 squalaetp/views.py:148
+#: squalaetp/views.py:158
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:107
+#: squalaetp/views.py:116
 msgid "CORVET table"
 msgstr "Table CORVET"
 
-#: squalaetp/views.py:121
+#: squalaetp/views.py:130
 msgid "Detail Corvet data for the VIN: "
 msgstr "Données détaillées de Corvet pour le VIN : "
 
-#: squalaetp/views.py:135 squalaetp/views.py:153
+#: squalaetp/views.py:144 squalaetp/views.py:162
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: squalaetp/views.py:168
+#: squalaetp/views.py:177
 msgid "Success: Squalaetp data was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:173
+#: squalaetp/views.py:182
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
-
-#~ msgid "An internal error has occurred. Thank you recommend your request"
-#~ msgstr "Une erreur interne est apparue. Merci de recommencer votre requête"
-
-#~ msgid "XML data"
-#~ msgstr "Données XML"

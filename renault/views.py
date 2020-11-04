@@ -8,6 +8,6 @@ context = {
 
 
 def useful_links(request):
-    link = WebLink.objects.filter(type='RENAULT')
+    web_links = WebLink.objects.filter(type='RENAULT')
     context.update(locals())
     return render(request, 'renault/useful_links.html', context)

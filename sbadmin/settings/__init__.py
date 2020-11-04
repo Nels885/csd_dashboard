@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'constance.backends.database',
     'constance',
+    'django_inlinecss',
 
     # My apps
     'dashboard.apps.DashboardConfig',
@@ -179,16 +180,33 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 LOGIN_REDIRECT_URL = '/dashboard/charts/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Configuration sessions
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 1209600
+
 # Configuration CkEditor
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
-        'width': 760,
+        'width': 765,
         'toolbar_Custom': [
             ['Bold', 'Italic', 'Underline', 'Strike', '-', 'CopyFormatting', 'RemoveFormat'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
              'JustifyRight', 'JustifyBlock'],
             ['TextColor', 'BGColor', '-', 'Link', 'Unlink', 'Anchor'],
+            ['Scayt', '-', 'Source']
+        ],
+    },
+    'comment': {
+        'toolbar': 'Custom',
+        'height': 200,
+        'width': '100%',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline', 'Strike', '-', 'CopyFormatting', 'RemoveFormat'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
+             'JustifyRight', 'JustifyBlock'],
+            ['TextColor', 'BGColor', 'FontSize', '-', 'Link', 'Unlink', 'Anchor'],
             ['Scayt', '-', 'Source']
         ],
     }
@@ -212,10 +230,20 @@ CONSTANCE_CONFIG = {
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
+    'TO_LATE_PRODUCTS_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
 
     # REMAN Options
     'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
     'ECU_CC_EMAIL_LIST': ('', 'REMAN Cc email list'),
+    'EXPORT_PATH': ('EXTS', 'Export path'),
+    'BATCH_EXPORT_FILE': ('reman_lots', 'File name for exporting batch'),
+    'REPAIR_EXPORT_FILE': ('reman_repairs', 'File name for exporting repairs'),
+    'CHECKOUT_EXPORT_FILE': ('reman_output', 'File name for exporting data from check out'),
+    'ECUREFBASE_EXPORT_FILE': ('base_ref_reman_new', 'File name for exporting Base Ref REMAN'),
+    'DICT_YEAR': (
+        "{2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U'}",
+        'REMAN batch date formatting dictionary'
+    ),
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
@@ -244,8 +272,11 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION'),
-    'REMAN Options': ('ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST'),
+    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'TO_LATE_PRODUCTS_EMAIL_LIST'),
+    'REMAN Options': (
+        'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
+        'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE', 'DICT_YEAR'
+    ),
     'Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'

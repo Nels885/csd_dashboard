@@ -3,11 +3,15 @@ import xlwt
 import datetime
 from . import os
 import shutil
+import logging
 
 from django.shortcuts import HttpResponse
 
 from squalaetp.models import Corvet
 from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 def xml_corvet_file(data, vin):
@@ -19,12 +23,12 @@ def xml_corvet_file(data, vin):
             os.makedirs(XML_PATH, exist_ok=True)
             file = os.path.join(XML_PATH, xelon_nb + ".xml")
             if not os.path.isfile(file):
-                with open(file, "w") as f:
+                with open(file, "w", encoding='utf-8') as f:
                     f.write(str(data))
             else:
-                print("{} File exists.".format(xelon_nb))
+                logger.warning("{} File exists.".format(xelon_nb))
     except Corvet.DoesNotExist:
-        print("Xelon number not found")
+        logger.warning("Xelon number not found")
 
 
 class Calibre:
@@ -46,10 +50,10 @@ class Calibre:
                 file = os.path.join(path, xelon + ".txt")
                 os.makedirs(path, exist_ok=True)
                 if not os.path.isfile(file):
-                    with open(file, "w") as f:
+                    with open(file, "w", encoding='utf-8') as f:
                         f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
                 else:
-                    print("{} File exists.".format(xelon))
+                    logger.warning("%s File exists.", xelon)
                     return False
         return True
 
@@ -97,15 +101,19 @@ class ExportExcel:
             self._xls_writer(response)
         return response
 
-    def file(self, path):
+    def file(self, path, copy=True):
         """ Creation file """
         file = os.path.join(path, "{}.{}".format(self.filename, self.excelType))
-        self._file_yesterday(path, file)
-        with open(file, 'w', newline='') as f:
-            if self.excelType == "csv":
-                self._csv_writer(f)
-            else:
-                self._xls_writer(f)
+        if copy:
+            self._file_yesterday(path, file)
+        try:
+            with open(file, 'w', newline='', encoding='utf-8') as f:
+                if self.excelType == "csv":
+                    self._csv_writer(f)
+                else:
+                    self._xls_writer(f)
+        except OSError:
+            logger.warning('File is read-only.')
 
     def _csv_writer(self, response):
         """ Formatting data in CSV format """

@@ -28,7 +28,7 @@
 
 {% block customcss %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/datatables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/DataTables/css/dataTables.bootstrap4.min.css' %}"/>
     <!--<link rel="stylesheet" type="text/css"
           href="{% static 'vendor/datatables/DataTables/css/jquery.dataTables.min.css' %}"/>-->
     <link rel="stylesheet" type="text/css"
@@ -42,9 +42,9 @@
 {% block customjs %}
 
     <!-- Page level plugins -->
-    <script type="text/javascript" src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
-    <!--<script type="text/javascript"
-            src="{% static 'vendor/datatables/DataTables/js/jquery.dataTables.min.js' %}"></script>-->
+
+    <script type="text/javascript" src="{% static 'vendor/datatables/DataTables/js/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/datatables/DataTables/js/dataTables.bootstrap4.min.js' %}"></script>
     <script type="text/javascript"
             src="{% static 'vendor/datatables/Responsive/js/dataTables.responsive.min.js' %}"></script>
 

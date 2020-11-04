@@ -1,13 +1,15 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
-from crum import get_current_user
+from ckeditor.fields import RichTextField
 
 from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
+
+STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 'Rebut')]
 
 
 class EcuType(models.Model):
@@ -31,6 +33,13 @@ class EcuModel(models.Model):
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
     ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
+    to_dump = models.BooleanField("à dumper", default=False)
+
+    class Meta:
+
+        permissions = [
+            ("check_ecumodel", "Check that the EcuModel instance exists")
+        ]
 
     @staticmethod
     def part_list(psa_barcode):
@@ -57,6 +66,13 @@ class EcuModel(models.Model):
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
+    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
+    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
+    open_diag = models.CharField("OPENDIAG", max_length=16, blank=True)
+    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
+    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
+    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
+    status = models.CharField("STATUT", max_length=16, blank=True)
     ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.CASCADE, null=True,
                                     blank=True)
 
@@ -83,14 +99,6 @@ class Batch(models.Model):
         else:
             raise ValidationError(_('Impossible formatting of the year!'))
 
-    def save(self, *args, **kwargs):
-        user = get_current_user()
-        if user and user.pk:
-            self.created_by = user
-        number, quantity = str(self.number), str(self.quantity)
-        self.batch_number = self.year + "0" * (3 - len(number)) + number + "0" * (3 - len(quantity)) + quantity + "000"
-        super(Batch, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.batch_number
 
@@ -105,9 +113,13 @@ class Default(models.Model):
 
 
 class Repair(models.Model):
+
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
+    psa_barcode = models.CharField("code barre PSA", max_length=10, blank=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
-    remark = models.CharField("remarques", max_length=1000, blank=True)
+    remark = models.CharField("remarques", max_length=200, blank=True)
+    comment = RichTextField("Commentaires action", max_length=500, config_name="comment", blank=True)
+    status = models.CharField("status", max_length=50, default='En cours', choices=STATUS_CHOICES)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
@@ -119,43 +131,26 @@ class Repair(models.Model):
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
     default = models.ForeignKey("Default", related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+        permissions = [
+            ("close_repair", "Closing of the repair instance")
+        ]
+
     def get_absolute_url(self):
         if self.pk:
             return reverse_lazy('reman:edit_repair', args=[self.pk])
         return reverse_lazy('reman:repair_table', get={'filter': 'quality'})
 
-    def save(self, *args, **kwargs):
-        user = get_current_user()
-        if user and user.pk:
-            self.created_by = self.modified_by = user
-        if not self.pk:
-            batch_number = self.identify_number[:-3] + "000"
-            self.batch = Batch.objects.get(batch_number__exact=batch_number)
-        elif self.pk and self.quality_control:
-            prod_ok = Repair.objects.filter(batch=self.batch, quality_control=True).count()
-            if self.batch.quantity <= prod_ok:
-                self.batch.active = False
-                self.batch.save()
-        super(Repair, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.identify_number
 
 
-class Comment(models.Model):
-    repair = models.ForeignKey(Repair, related_name="comments", on_delete=models.CASCADE)
-    value = models.CharField("commentaire", max_length=500)
-
-    def __str__(self):
-        return self.value
-
-
 class SparePart(models.Model):
     code_produit = models.CharField('code Produit', max_length=100)
-    code_magasin = models.CharField('code Magasin', max_length=20, blank=True)
-    code_zone = models.CharField('code Zone', max_length=20, blank=True)
+    code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
+    code_zone = models.CharField('code Zone', max_length=50, blank=True)
     code_site = models.IntegerField('code Site', null=True, blank=True)
-    code_emplacement = models.CharField('code Emplacement', max_length=10, blank=True)
+    code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
     repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)
 

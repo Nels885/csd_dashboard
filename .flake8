@@ -8,4 +8,5 @@ exclude =
     admin.py,
     models.py,
     tests.py,
+    apps.py,
 max-line-length = 140

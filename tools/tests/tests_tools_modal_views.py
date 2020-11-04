@@ -13,7 +13,7 @@ class MixinsTest(UnitTest):
         self.add_perms_user(TagXelon, 'add_tagxelon')
         self.xelonId = str(xelon.id)
 
-    def test_Tag_xelon_ajax_mixin(self):
+    def test_create_Tag_xelon_ajax_mixin(self):
         """
         Create TagXelon through BSModalCreateView.
         """
@@ -21,7 +21,7 @@ class MixinsTest(UnitTest):
 
         # First post request = ajax request checking if form in view is valid
         response = self.client.post(
-            reverse('tools:tag_xelon'),
+            reverse('tools:tag_xelon_add'),
             data={
                 'xelon': 'wrong_xelon',
                 'comments': ''
@@ -39,7 +39,7 @@ class MixinsTest(UnitTest):
 
         # Second post request = non-ajax request creating an object
         response = self.client.post(
-            reverse('tools:tag_xelon'),
+            reverse('tools:tag_xelon_add'),
             data={
                 'xelon': 'A123456789',
                 'comments': ''
