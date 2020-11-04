@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Corvet, Product
+from .models import Corvet, Product, Firmware
 
 
 class CorvetAdmin(admin.ModelAdmin):
@@ -21,5 +21,13 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('reference', 'name', 'type')
 
 
+class FirmwareAdmin(admin.ModelAdmin):
+    list_display = ('update_id', 'version', 'type', 'version_date', 'ecu_type', 'is_active')
+    list_filter = ('type', 'ecu_type')
+    ordering = ('-update_id',)
+    search_fields = ('update_id', 'version', 'type', 'ecu_type', 'is_active')
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(Firmware, FirmwareAdmin)

@@ -29,7 +29,7 @@ def nac_license(request):
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=license"
         soft = form.cleaned_data['software']
         uin = form.cleaned_data['uin']
-        return redirect(url.format(uin=uin, update=soft))
+        return redirect(url.format(uin=uin, update=soft.update_id))
     for key, error in form.errors.items():
         messages.warning(request, error)
     return redirect('psa:nac_tools')
@@ -41,7 +41,7 @@ def nac_update(request):
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=fw"
         soft = form.cleaned_data['software']
         uin = "00000000000000000000"
-        return redirect(url.format(uin=uin, update=soft))
+        return redirect(url.format(uin=uin, update=soft.update_id))
     for key, error in form.errors.items():
         messages.warning(request, error)
     return redirect('psa:nac_tools')

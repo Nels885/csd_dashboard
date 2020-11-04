@@ -143,3 +143,28 @@ class Product(models.Model):
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.reference, self.name, self.front, self.type)
+
+
+FW_ECU_TYPE_CHOICES = [
+    ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
+    ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
+    ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
+    ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4')
+]
+
+
+class Firmware(models.Model):
+    update_id = models.CharField('SWL(UpdateID)', max_length=18, unique=True)
+    version = models.CharField('UpdateVersion', max_length=200)
+    type = models.CharField('UpdateType', max_length=100, blank=True)
+    version_date = models.DateField('MediaVersionDate', null=True, blank=True)
+    ecu_type = models.CharField('EcuType', max_length=50, choices=FW_ECU_TYPE_CHOICES)
+    url = models.URLField('lien de téléchargement', max_length=500, blank=True)
+    is_active = models.BooleanField('actif', default=False)
+
+    class Meta:
+        verbose_name = "Firmwares Télématique"
+        ordering = ['-update_id']
+
+    def __str__(self):
+        return f"{self.version}_{self.ecu_type}"
