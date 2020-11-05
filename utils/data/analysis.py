@@ -14,7 +14,8 @@ class ProductAnalysis:
         """
         Initialization of the ProductAnalysis class
         """
-        self.queryset = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
+        # self.queryset = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
+        self.queryset = Xelon.objects.all()
         self.pendingQueryset = self.queryset.filter(type_de_cloture__in=['', 'Sauvée'])
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
