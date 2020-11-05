@@ -48,7 +48,7 @@ class CorvetTestCase(UnitTest):
     def test_corvet_insert_page_with_vin_is_not_valid(self):
         self.login()
         old_corvets = Corvet.objects.count()
-        for vin in ['123456789', 'VF4ABCDEF12345678']:
+        for vin in ['123456789', 'ABCDEFGH123456789']:
             response = self.client.post(reverse('squalaetp:corvet_insert'), {'vin': vin, 'xml_data': self.xmlData})
             new_corvets = Corvet.objects.count()
             self.assertEqual(new_corvets, old_corvets)

@@ -97,7 +97,7 @@ class AddRepairForm(BSModalModelForm):
         self.queryset = self.queryset.filter(batch_number__exact=batch_number)
         if self.queryset and self.queryset.filter(repairs__identify_number=data):
             self.add_error("identify_number", "Ce numéro éxiste")
-        elif data[-1] == "0":
+        elif data[-3:] == "000":
             self.add_error("identify_number", "Ce numéro n'est pas autorisé")
         return data
 

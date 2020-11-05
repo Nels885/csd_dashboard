@@ -16,7 +16,8 @@ def validate_vin(value):
     :return:
         Error message if not valid
     """
-    if not re.match(r'^VF[37]\w{14}$', str(value)):
+    # if not re.match(r'^VF[37]\w{14}$', str(value)):
+    if not re.match(r'^[VW][FR0]\w{15}$', str(value)):
         return _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles')
     return None
 
@@ -29,7 +30,7 @@ def validate_nac(value):
     :return:
         UIN and Error message if not valid
     """
-    if re.match(r'^VF[37]\w{14}$', str(value)):
+    if re.match(r'^[VW][FR0]\w{15}$', str(value)):
         try:
             uin = Corvet.objects.get(vin=value).electronique_44x
             if not uin:
