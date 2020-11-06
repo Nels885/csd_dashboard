@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
-#: renault/templates/renault/tab_select.html:5
+#: vag/templates/vag/tab_select.html:5
 msgid "Useful links"
 msgstr "Liens utiles"
+

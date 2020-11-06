@@ -39,15 +39,16 @@ def create_auth_token(sender, instance=None, created=None, **kwargs):
         Token.objects.create(user=instance)
 
 
-class WebLink(models.Model):
-    TYPE_CHOICES = [
-        ('PSA', 'PSA'), ('OPEL', 'OPEL'), ('FORD', 'FORD'), ('RENAULT', 'RENAULT'), ('CLARION', 'CLARION'),
-        ('AUTRES', 'AUTRES')
-    ]
+WEB_LINK_TYPE_CHOICES = [
+    ('PSA', 'PSA'), ('OPEL', 'OPEL'), ('FORD', 'FORD'), ('RENAULT', 'RENAULT'), ('CLARION', 'CLARION'),
+    ('VAG', 'VAG'), ('AUTRES', 'AUTRES')
+]
 
+
+class WebLink(models.Model):
     title = models.CharField('titre', max_length=200)
     url = models.URLField('lien web')
-    type = models.CharField('type', max_length=50, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=50, choices=WEB_LINK_TYPE_CHOICES)
     description = models.TextField('description', max_length=2000)
     thumbnail = models.ImageField(default="no-img_160x120.png", upload_to="link_thumbnail")
 

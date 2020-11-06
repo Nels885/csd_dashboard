@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 17:55+0200\n"
+"POT-Creation-Date: 2020-11-06 12:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr "Entrez le numéro de VIN"
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:51 squalaetp/tests/tests_corvet_views.py:69
+#: squalaetp/forms.py:51 squalaetp/tests/tests_corvet_views.py:70
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
@@ -65,11 +65,11 @@ msgstr "Fichiers Log"
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:39
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:44
+#: squalaetp/templates/squalaetp/detail/detail.html:46
 msgid "CORVET Update"
 msgstr "MAJ CORVET"
 
@@ -78,11 +78,11 @@ msgstr "MAJ CORVET"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: squalaetp/tests/tests_corvet_views.py:44
+#: squalaetp/tests/tests_corvet_views.py:45
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: squalaetp/tests/tests_corvet_views.py:56
+#: squalaetp/tests/tests_corvet_views.py:57
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""

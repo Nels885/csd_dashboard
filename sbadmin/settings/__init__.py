@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'psa.apps.PsaConfig',
     'ford.apps.FordConfig',
     'renault.apps.RenaultConfig',
+    'vag.apps.VagConfig',
 ]
 
 MIDDLEWARE = [

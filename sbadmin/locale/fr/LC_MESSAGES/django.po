@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 17:55+0200\n"
+"POT-Creation-Date: 2020-11-06 12:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,26 +27,25 @@ msgid "Data Export"
 msgstr "Exportation de données"
 
 #: import_export/templates/import_export/detail_reman.html:50
-#: import_export/templates/import_export/detail_reman.html:88
+#: import_export/templates/import_export/import_export_old.html:113
+msgid "Csv Import"
+msgstr "Importation CSV"
+
+#: import_export/templates/import_export/detail_reman.html:69
 #: import_export/templates/import_export/import_export_old.html:94
 #: import_export/templates/import_export/import_export_old.html:132
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/templates/import_export/detail_reman.html:69
-#: import_export/templates/import_export/import_export_old.html:113
-msgid "Csv Import"
-msgstr "Importation CSV"
-
-#: import_export/views.py:50 import_export/views.py:61
+#: import_export/views.py:45 import_export/views.py:57
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:159 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:160 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:160 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:161 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -93,13 +92,13 @@ msgstr "S'identifier"
 
 #: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:27
 #: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:73
-#: templates/nav/nav_csd_atelier.html:91 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:81
+#: templates/nav/nav_csd_atelier.html:91 templates/nav/nav_csd_atelier.html:109
+#: templates/nav/nav_tools.html:28 templates/nav/nav_tools.html:82
 msgid "Informations"
 msgstr ""
 
 #: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:54
-#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:86
+#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:87
 msgid "Editing"
 msgstr "Edition"
 
@@ -129,7 +128,7 @@ msgid "Corvet table"
 msgstr "Tableau Corvet"
 
 #: templates/nav/nav_csd_atelier.html:50 templates/nav/nav_csd_atelier.html:74
-#: templates/nav/nav_csd_atelier.html:92
+#: templates/nav/nav_csd_atelier.html:92 templates/nav/nav_csd_atelier.html:110
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
@@ -137,7 +136,7 @@ msgstr "Outils & Liens"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:104 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:122 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -221,11 +220,15 @@ msgstr "Ajout produit"
 msgid "Unlock table"
 msgstr "Tableau dever. VIN"
 
-#: templates/nav/nav_tools.html:83
+#: templates/nav/nav_tools.html:60
+msgid "tag Xelon table"
+msgstr ""
+
+#: templates/nav/nav_tools.html:84
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:88
+#: templates/nav/nav_tools.html:89
 msgid "Software Add"
 msgstr "Ajout logiciel"
 
@@ -321,14 +324,14 @@ msgstr ""
 msgid "Reset my password"
 msgstr "Réinitialiser mon mot de passe"
 
-#: utils/django/validators.py:20
+#: utils/django/validators.py:21
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie "
 "des véhicules PSA"
 
-#: utils/django/validators.py:41
+#: utils/django/validators.py:42
 msgid ""
 "The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part "
 "of PSA vehicles"

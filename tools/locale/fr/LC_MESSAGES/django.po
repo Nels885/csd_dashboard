@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 17:55+0200\n"
+"POT-Creation-Date: 2020-11-06 12:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,7 +76,7 @@ msgstr "Actualiser"
 msgid "Thermal Chamber Temperature"
 msgstr "Température Chambre Thermique"
 
-#: tools/tests/tests_tools_views.py:53 tools/views.py:73
+#: tools/tests/tests_tools_views.py:58 tools/views.py:81
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
@@ -84,35 +84,43 @@ msgstr "Vous ne disposez pas des autorisations requises"
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:29
+#: tools/views.py:27
+msgid "Tools"
+msgstr ""
+
+#: tools/views.py:28
+msgid "Tag Xelon list"
+msgstr ""
+
+#: tools/views.py:37
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:36
+#: tools/views.py:44
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
-#: tools/views.py:51
+#: tools/views.py:59
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"
 
-#: tools/views.py:55 tools/views.py:71
+#: tools/views.py:63 tools/views.py:79
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:61 tools/views.py:89
+#: tools/views.py:69 tools/views.py:97
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: tools/views.py:62
+#: tools/views.py:70
 msgid "Use of the thermal chamber"
 msgstr "Utilisation de la chambre thermique"
 
-#: tools/views.py:90
+#: tools/views.py:98
 msgid "Thermal chamber list"
 msgstr "liste Chambre thermique"
 
-#: tools/views.py:133
+#: tools/views.py:141
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."

@@ -95,6 +95,24 @@
             </li>
         {% endwith %}
 
+        <!-- Nav Item - Info VAG Settings Menu -->
+        {% with name="VAG" icon="fa-info-circle" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>Info {{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                        <a class="collapse-item" href="{% url 'vag:useful_links' %}">{% trans "Tools & Links" %}</a>
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+
     {% endif %}
 
     {% if perms.raspeedi.view_unlockproduct %}

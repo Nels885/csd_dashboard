@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 17:55+0200\n"
+"POT-Creation-Date: 2020-11-06 12:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: psa/templates/psa/corvet_detail.html:8
+msgid "Previous page"
+msgstr ""
 
 #: psa/templates/psa/nac_tools.html:33 psa/templates/psa/nac_tools.html:54
 msgid "Download"
@@ -29,3 +33,15 @@ msgstr "Liens utiles"
 #: psa/templates/psa/tab_select.html:10
 msgid "NAC tools"
 msgstr "Outils NAC"
+
+#: psa/tests.py:30 psa/tests.py:45
+msgid "This field is required."
+msgstr ""
+
+#: psa/views.py:63
+msgid "CORVET table"
+msgstr ""
+
+#: psa/views.py:76
+msgid "Detail Corvet data for the VIN: "
+msgstr ""
