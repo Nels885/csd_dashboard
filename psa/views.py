@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 
 from utils.django.forms import ParaErrorList
 from .forms import NacLicenseForm, NacUpdateForm
-from squalaetp.models import Corvet
+from .models import Corvet, Product
 from dashboard.models import WebLink
 
 context = {
@@ -71,11 +71,12 @@ def corvet_detail(request, vin):
     :param vin:
         VIN for Corvet data
     """
-    title = 'Info PSA'
+    title = f'Info CORVET : {vin}'
     corvet = get_object_or_404(Corvet, vin=vin)
+    btel = Product.objects.filter(reference=corvet.electronique_14x).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = vars(corvet)
     for key in ["_state"]:
         del dict_corvet[key]
-    # redirect = request.META.get('HTTP_REFERER')
-    return render(request, 'psa/corvet_detail.html', locals())
+    select = "prods"
+    return render(request, 'psa/detail/detail.html', locals())
