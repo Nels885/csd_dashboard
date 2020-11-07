@@ -15,8 +15,8 @@ class CorvetAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('reference', 'name', 'front', 'type', 'dab', 'cam', 'media', 'carto')
-    list_filter = ('name', 'front', 'type', 'media', 'carto')
+    list_display = ('reference', 'name', 'front', 'type', 'dab', 'cam', 'media')
+    list_filter = ('name', 'front', 'type', 'media')
     ordering = ('reference',)
     search_fields = ('reference', 'name', 'type')
 

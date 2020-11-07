@@ -57,8 +57,8 @@ class Command(BaseCommand):
                     if not created:
                         nb_update += 1
                     values = {
-                        "name": row.get("produit", ""), "front": row.get("facade", ""), "mm_ref": row.get("ref_mm", ""),
-                        "raspeedi": obj
+                        "name": row.get("produit", ""), "front": row.get("facade", ""),
+                        "oe_reference": row.get("ref_mm", ""),
                     }
                     values.update(defaults_dict(Product, row))
                     Product.objects.update_or_create(reference=ref_boitier, defaults=values)

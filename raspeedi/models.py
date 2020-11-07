@@ -52,6 +52,20 @@ class Raspeedi(models.Model):
         return "{} - {} - {} - {}".format(self.ref_boitier, self.produit, self.facade, self.type)
 
 
+class Programing(models.Model):
+    psa_barcode = models.BigIntegerField('référence boîtier', primary_key=True)
+    peedi_path = models.CharField('dossier PEEDI', max_length=20)
+    peedi_dump = models.CharField('dump PEEDI', max_length=25, blank=True)
+    renesas_dump = models.CharField('dump RENESAS', max_length=50, blank=True)
+
+    class Meta:
+        verbose_name = "Données Programmation"
+        ordering = ['psa_barcode']
+
+    def __str__(self):
+        return self.psa_barcode
+
+
 class AddReference(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     add_product = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)

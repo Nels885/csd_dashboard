@@ -99,38 +99,40 @@ class Corvet(models.Model):
         return self.vin
 
 
-class Product(models.Model):
-    TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
-    CON_CHOICES = [(1, '1'), (2, '2')]
-    MEDIA_CHOICES = [
-        ('N/A', 'Vide'),
-        ('HDD', 'Disque Dur'),
-        ('8Go', 'Carte SD 8Go'),
-        ('16Go', 'Carte SD 16Go'),
-        ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
-    ]
-    PRODUCT_CHOICES = [
-        ('RT4', 'RT4'),
-        ('RT5', 'RT5'),
-        ('RT6', 'RT6'),
-        ('RT6v2', 'RT6 version 2'),
-        ('SMEG', 'SMEG'),
-        ('SMEGP', 'SMEG+ / SMEG+ IV1'),
-        ('SMEGP2', 'SMEG+ IV2'),
-    ]
+TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
+MEDIA_CHOICES = [
+    ('N/A', 'Vide'),
+    ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'),
+    ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
+]
+PRODUCT_CHOICES = [
+    ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6'), ('RT6v2', 'RT6 version 2'),
+    ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
+    ('NG4', 'NG4'), ('RNEG', 'RNEG'),
+    ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
+]
 
-    reference = models.BigIntegerField('référence boîtier', primary_key=True)
-    name = models.CharField('produit', max_length=20, choices=PRODUCT_CHOICES)
-    front = models.CharField('façade', max_length=2)
+
+class Product(models.Model):
+    LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
+    USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
+
+    reference = models.BigIntegerField('code barre PSA', primary_key=True)
+    name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES)
+    current_cal = models.CharField('calibration actuelle', max_length=10, blank=True)
+    oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    front = models.CharField('façade', max_length=2, blank=True)
     dab = models.BooleanField('DAB', default=False)
     cam = models.BooleanField('caméra de recul', default=False)
     cd_version = models.CharField('version CD', max_length=10, blank=True)
     media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, blank=True)
-    carto = models.CharField('version cartographie', max_length=20, blank=True)
-    mm_ref = models.CharField('référence MM', max_length=200, blank=True)
-    screen_con = models.IntegerField("nombre de connecteur d'écran", choices=CON_CHOICES, null=True, blank=True)
-    raspeedi = models.ForeignKey(Raspeedi, on_delete=models.CASCADE, null=True, blank=True)
+    lvds_con = models.IntegerField("nombre d'LVDS", choices=LVDS_CON_CHOICES, null=True, blank=True)
+    usb_con = models.IntegerField("nombre d'USB", choices=USB_CON_CHOICES,  null=True, blank=True)
+    front_pic = models.ImageField(upload_to='psa', blank=True)
+    setplate_pic = models.ImageField(upload_to='psa', blank=True)
+    rear_pic = models.ImageField(upload_to='psa', blank=True)
     corvets = models.ManyToManyField(Corvet, related_name='products', blank=True)
 
     class Meta:
@@ -142,7 +144,7 @@ class Product(models.Model):
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return "{} - {} - {} - {}".format(self.reference, self.name, self.front, self.type)
+        return "{}_{}_{}_{}".format(self.reference, self.name, self.front, self.type)
 
 
 FW_ECU_TYPE_CHOICES = [
