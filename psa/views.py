@@ -73,7 +73,8 @@ def corvet_detail(request, vin):
     """
     title = f'Info CORVET : {vin}'
     corvet = get_object_or_404(Corvet, vin=vin)
-    btel = Product.objects.filter(reference=corvet.electronique_14x).first()
+    if corvet.electronique_14x:
+        btel = Product.objects.filter(reference=corvet.electronique_14x).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = vars(corvet)
     for key in ["_state"]:
