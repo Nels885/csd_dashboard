@@ -9,7 +9,8 @@ from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSer
 from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
 from .serializers import RemanBatchSerializer, RemanCheckOutSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
-from squalaetp.models import Xelon, Corvet
+from squalaetp.models import Xelon
+from psa.models import Corvet
 from reman.models import Batch, EcuModel
 
 from .utils import TokenAuthSupportQueryString

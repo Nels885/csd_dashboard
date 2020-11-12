@@ -20,15 +20,17 @@
         </thead>
         <tbody>
 
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=psa total_title='Total PSA' %}
+        {% include 'dashboard/late_products/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
 
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=ilot_autre total_title='Total Autres' %}
+        {% include 'dashboard/late_products/lp_tr_format.html' with prods=autre activity='Autres produits' %}
 
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=clarion total_title='Total Clarion' %}
+        {% include 'dashboard/late_products/lp_tr_format.html' with prods=clarion activity='Clarion' %}
 
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=labo_qual total_title='Total LaboQual' %}
+        {% include 'dashboard/late_products/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
 
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=defaut total_title='Total Defaut' %}
+        {% include 'dashboard/late_products/lp_tr_format.html' with prods=etude activity='Etude' %}
+
+        {% include 'dashboard/late_products/lp_tr_format.html' with prods=defaut activity='Defaut' %}
 
         </tbody>
     </table>

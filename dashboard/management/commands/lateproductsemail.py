@@ -17,19 +17,9 @@ class Command(BaseCommand):
         date_joined = formats.date_format(timezone.now(), "SHORT_DATETIME_FORMAT")
         subject = 'Stocks et Retards {}'.format(date_joined)
         prods = ProductAnalysis()
-        prods = prods.late_products().order_by('-delai_au_en_jours_ouvres')
-        psa = prods.filter(ilot='PSA')
-        clarion = prods.filter(ilot='CLARION')
-        labo_qual = prods.filter(ilot='LaboQual')
-        ilot_autre = prods.filter(ilot='ILOTAUTRE')
-        defaut = prods.filter(ilot='DEFAUT')
-        html_message = render_to_string('dashboard/late_products/lp_email.html', {
-            'psa': psa,
-            'clarion': clarion,
-            'labo_qual': labo_qual,
-            'ilot_autre': ilot_autre,
-            'defaut': defaut
-        })
+        data = prods.late_products()
+
+        html_message = render_to_string('dashboard/late_products/lp_email.html', data)
         plain_message = strip_tags(html_message)
         send_mail(
             subject, plain_message, None, string_to_list(config.TO_LATE_PRODUCTS_EMAIL_LIST),

@@ -22,13 +22,12 @@ from django.utils.encoding import force_bytes, force_text
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
-from utils.data.analysis import ProductAnalysis
+from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
 from utils.django.tokens import account_activation_token
-from utils.data.analysis import IndicatorAnalysis
-from .models import Post, UserProfile, WebLink
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
 from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
+from .models import Post, UserProfile, WebLink
+from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
 
 
 def index(request):
@@ -60,15 +59,10 @@ def charts_ajax(request):
 @login_required
 def late_products(request):
     """ View of Late products page """
-    title = _("Late Products")
+    data = {'title': _("Late Products")}
     prods = ProductAnalysis()
-    prods = prods.late_products().order_by('-delai_au_en_jours_ouvres')
-    psa = prods.filter(ilot='PSA')
-    clarion = prods.filter(ilot='CLARION')
-    labo_qual = prods.filter(ilot='LaboQual')
-    ilot_autre = prods.filter(ilot='ILOTAUTRE')
-    defaut = prods.filter(ilot='DEFAUT')
-    return render(request, 'dashboard/late_products/late_products.html', locals())
+    data.update(prods.late_products())
+    return render(request, 'dashboard/late_products/late_products.html', data)
 
 
 @login_required

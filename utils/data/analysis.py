@@ -9,18 +9,20 @@ from squalaetp.models import Xelon, Corvet, Indicator
 
 class ProductAnalysis:
     LABELS = ["RT6/RNEG2", "SMEG", "NAC", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN', "AUTRES"]
+    # QUERYSET = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
+    QUERYSET = Xelon.objects.all()
 
     def __init__(self):
         """
         Initialization of the ProductAnalysis class
         """
-        # self.queryset = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
-        self.queryset = Xelon.objects.all()
-        self.pendingQueryset = self.queryset.filter(type_de_cloture__in=['', 'Sauvée'])
+        self.pendingQueryset = self.QUERYSET.filter(type_de_cloture__in=['', 'Sauvée'])
+        self.lateQueryset = self.QUERYSET.filter(delai_au_en_jours_ouvres__gt=3).exclude(
+            type_de_cloture__in=['Réparé', 'Admin']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
-        self.late = self.late_products().count()
-        self.percent = int(self._percent_of_late_products())
+        self.late = self.lateQueryset.count()
+        self.percent = self._percent_of_late_products()
 
     def _percent_of_late_products(self):
         """
@@ -29,17 +31,23 @@ class ProductAnalysis:
             result
         """
         if self.pending:
-            return (self.late / self.pending) * 100
+            return int((self.late / self.pending) * 100)
         else:
             return 0
 
     def late_products(self):
         """
-        Calculating of the number of late products
+        Organization of late products by activity
         :return:
-            result
+            Dictionary of different activities
         """
-        return self.queryset.filter(delai_au_en_jours_ouvres__gt=3).exclude(type_de_cloture__in=['Réparé', 'Admin'])
+        psa = self.lateQueryset.filter(ilot='PSA').exclude(famille_produit='CALC MOT')
+        clarion = self.lateQueryset.filter(ilot='CLARION')
+        etude = self.lateQueryset.filter(ilot='LaboQual').exclude(famille_produit='CALC MOT')
+        autre = self.lateQueryset.filter(ilot='ILOTAUTRE').exclude(famille_produit='CALC MOT')
+        calc_mot = self.lateQueryset.filter(famille_produit='CALC MOT')
+        defaut = self.lateQueryset.filter(ilot='DEFAUT').exclude(famille_produit='CALC MOT')
+        return locals()
 
     def products_count(self):
         """

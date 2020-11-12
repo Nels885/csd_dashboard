@@ -70,6 +70,10 @@
                                         <td class="text-dark">{% trans "E-mail address" %} :</td>
                                         <td colspan="2">{{ user.email }}</td>
                                     </tr>
+                                    <tr>
+                                        <td class="text-dark">auth_token :</td>
+                                        <td class="font-weight-bold" colspan="2">{{ user.auth_token.key }}</td>
+                                    </tr>
                                     </tbody>
                                 </table>
 
