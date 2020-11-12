@@ -21,6 +21,5 @@ urlpatterns = [
     path('charts/', views.charts, name="charts"),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='token_auth'),
-    path('temp/', views.thermal_temp, name='temp'),
     path('doc/', views.documentation, name='doc')
 ]

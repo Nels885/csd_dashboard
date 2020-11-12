@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from django.views.generic import TemplateView, ListView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
@@ -12,6 +13,9 @@ from constance import config
 from .models import CsdSoftware, ThermalChamber, TagXelon
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom
+from utils.data.mqtt import MQTTClass
+
+MQTT_CLIENT = MQTTClass()
 
 
 def soft_list(request):
@@ -81,6 +85,11 @@ def thermal_chamber(request):
             messages.warning(request, _('You do not have the required permissions'))
     errors = form.errors.items()
     return render(request, 'tools/thermal_chamber.html', locals())
+
+
+def ajax_temp(request):
+    data = MQTT_CLIENT.result()
+    return JsonResponse(data)
 
 
 class ThermalFullScreenView(TemplateView):

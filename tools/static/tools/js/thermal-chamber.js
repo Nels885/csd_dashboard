@@ -1,6 +1,6 @@
 async function getTemp() {
     $.ajax({
-        url: '/api/temp/',
+        url: '/tools/thermal/ajax/',
         dataType: 'json',
         success: function (data) {
             const {temp} = data;
@@ -20,7 +20,7 @@ async function getTemp() {
 
 async function getTempFull() {
     $.ajax({
-        url: '/api/temp/',
+        url: '/tools/thermal/ajax/',
         dataType: 'json',
         success: function (data) {
             const {temp} = data;

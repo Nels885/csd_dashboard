@@ -14,10 +14,7 @@ from squalaetp.models import Xelon, Corvet, Indicator
 from reman.models import Batch, EcuModel
 from utils.data.analysis import IndicatorAnalysis
 
-from utils.data.mqtt import MQTTClass
 from .utils import TokenAuthSupportQueryString
-
-MQTT_CLIENT = MQTTClass()
 
 
 def documentation(request):
@@ -153,12 +150,6 @@ class CorvetViewSet(viewsets.ModelViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['GET'])
-def thermal_temp(request):
-    data = MQTT_CLIENT.result()
-    return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)
 
 
 class RemanBatchViewSet(viewsets.ModelViewSet):

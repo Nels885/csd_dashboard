@@ -79,8 +79,3 @@ class ApiTestCase(APITestCase):
         response = self.client.get(reverse('api:corvet-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
-
-    def test_thermal_chamber(self):
-        response = self.client.get(reverse('api:temp'), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, {"temp": "Hors ligne"})

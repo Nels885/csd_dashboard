@@ -95,3 +95,8 @@ class ToolsTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('tools:thermal_list'))
         self.assertEqual(response.status_code, 200)
+
+    def test_ajax_temp(self):
+        response = self.client.get(reverse('tools:ajax_temp'), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"temp": "Hors ligne"})
