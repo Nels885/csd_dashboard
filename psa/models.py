@@ -166,3 +166,23 @@ class Firmware(models.Model):
 
     def __str__(self):
         return f"{self.version}_{self.ecu_type}"
+
+
+class Calibration(models.Model):
+    TYPE_CHOICES = [
+        ('94B', 'BSI SOFT - Boitier Servitude Intelligent'), ('94A', 'CMM SOFT - Calculateur Moteur Multifonction'),
+        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94L', 'EMF SOFT - Ecran Multifonctions'),
+        ('94X', 'BTEL SOFT - Boitier Telematique'), ('96B', 'BSM SOFT - Boitier Servitude Moteur'),
+        ('99H', 'MDS SOFT - Module de service telematique')
+    ]
+
+    factory = models.CharField('version usine', max_length=10, unique=True)
+    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    current = models.CharField('version actuelle', max_length=10, blank=True)
+
+    class Meta:
+        verbose_name = "Calibration"
+        ordering = ['-factory']
+
+    def __str__(self):
+        return self.factory
