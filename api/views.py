@@ -108,7 +108,7 @@ def charts(request):
     indicator = IndicatorAnalysis()
     prod = Indicator.count_prods()
     data = {"prodLabels": prod.keys(), "prodDefault": prod.values()}
-    data.update(indicator.result())
+    data.update(indicator.new_result())
     return Response(data, status=status.HTTP_200_OK)
 
 

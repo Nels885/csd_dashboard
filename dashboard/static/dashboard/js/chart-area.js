@@ -8,6 +8,7 @@ $.ajax({
     success: function (data) {
         console.log(data);
         const {areaLabels} = data;
+        const {prodsRepValue} = data;
         const {prodsInValue} = data;
         const {prodsExpValue} = data;
         const {prodsLateValue} = data;
@@ -19,6 +20,16 @@ $.ajax({
             data: {
                 labels: areaLabels,
                 datasets: [
+                    {
+                        data: prodsRepValue,
+                        label: "Pdts en cours",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(0, 143, 136, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBorderColor: "rgba(0, 143, 136, 1)",
+                    },
                     {
                         data: prodsInValue,
                         label: "Pdts en IN",

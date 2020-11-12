@@ -4,7 +4,7 @@ import datetime
 from django.db.models.aggregates import Count
 from django.db.models import Q
 
-from squalaetp.models import Xelon, Corvet
+from squalaetp.models import Xelon, Corvet, Indicator
 
 
 class ProductAnalysis:
@@ -85,7 +85,7 @@ class IndicatorAnalysis:
             self.LAST_60_DAYS = datetime.datetime.today() - datetime.timedelta(60)
 
     def result(self):
-        data = {"areaLabels": [], "prodsInValue": [], "prodsExpValue": [], "prodsLateValue": []}
+        data = {"areaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
         prods_in = self.queryset.filter(date_retour__gte=self.LAST_60_DAYS).extra(
             {"day": "date_trunc('day', date_retour)"}).values("day").order_by('date_retour')
         prods_in = prods_in.annotate(count=Count("id"))
@@ -96,4 +96,16 @@ class IndicatorAnalysis:
             data["prodsInValue"].append(prods_in[nb]["count"])
             data["prodsExpValue"].append(prods_in[nb]["exp"])
             data["prodsLateValue"].append(prods_in[nb]["late"])
+        return data
+
+    def new_result(self):
+        last_60_days = datetime.datetime.today() - datetime.timedelta(60)
+        data = {"areaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
+        prods = Indicator.objects.filter(date__gte=last_60_days)
+        for prod in prods:
+            data["areaLabels"].append(prod.date.strftime("%d/%m/%Y"))
+            data["prodsInValue"].append(self.queryset.filter(date_retour=prod.date).count())
+            data["prodsRepValue"].append(prod.products_to_repair)
+            data["prodsExpValue"].append(prod.express_products)
+            data["prodsLateValue"].append(prod.late_products)
         return data
