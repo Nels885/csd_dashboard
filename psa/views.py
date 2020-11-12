@@ -9,6 +9,7 @@ from utils.django.forms import ParaErrorList
 from .forms import NacLicenseForm, NacUpdateForm
 from .models import Corvet, Product
 from dashboard.models import WebLink
+from raspeedi.models import Programing
 
 context = {
     'title': 'Info PSA'
@@ -55,7 +56,7 @@ def useful_links(request):
 
 class CorvetView(PermissionRequiredMixin, TemplateView):
     template_name = 'psa/corvet_table.html'
-    permission_required = ['psa.view_corvet']
+    permission_required = 'psa.view_corvet'
 
     def get_context_data(self, **kwargs):
         context = super(CorvetView, self).get_context_data(**kwargs)
@@ -75,6 +76,7 @@ def corvet_detail(request, vin):
     corvet = get_object_or_404(Corvet, vin=vin)
     if corvet.electronique_14x:
         btel = Product.objects.filter(reference=corvet.electronique_14x).first()
+        prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = vars(corvet)
     for key in ["_state"]:

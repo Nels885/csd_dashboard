@@ -27,17 +27,36 @@
                 <td class="text-dark td-ihm">Facade</td>
                 <td>{{ btel.front }}</td>
             </tr>
-                        <tr>
+            <tr>
                 <td class="text-dark td-ihm">DAB</td>
                 <td>{% if btel.dab %}Oui{% else %}Non{% endif %}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Caméra de recul</td>
-                <td>{% if btel.cam%}Oui{% else %}Non{% endif %}</td>
+                <td>{% if btel.cam %}Oui{% else %}Non{% endif %}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Média</td>
                 <td>{{ btel.get_media_display }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3 class="text-gray-800">PROGRAMMATION :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">Dossier PEEDI</td>
+                <td>{{ prog.peedi_path }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Dump PEEDI</td>
+                <td>{{ prog.peedi_dump }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Dump RENESAS</td>
+                <td>{{ prog.renesas_dump }}</td>
             </tr>
             </tbody>
         </table>
