@@ -13,11 +13,7 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Modèle</td>
-                <td>{{ btel.name }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Calibration actuelle</td>
-                <td>{{ btel.current_cal }}</td>
+                <td>{{ btel.get_name_display }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Fabriquant</td>
@@ -25,7 +21,7 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Type</td>
-                <td>{{ btel.type }}</td>
+                <td>{{ btel.get_type_display }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Facade</td>
@@ -33,11 +29,15 @@
             </tr>
                         <tr>
                 <td class="text-dark td-ihm">DAB</td>
-                <td>{{ btel.dab }}</td>
+                <td>{% if btel.dab %}Oui{% else %}Non{% endif %}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Caméra de recul</td>
-                <td>{{ btel.cam }}</td>
+                <td>{% if btel.cam%}Oui{% else %}Non{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Média</td>
+                <td>{{ btel.get_media_display }}</td>
             </tr>
             </tbody>
         </table>

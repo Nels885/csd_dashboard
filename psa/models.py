@@ -99,27 +99,24 @@ class Corvet(models.Model):
         return self.vin
 
 
-TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
-MEDIA_CHOICES = [
-    ('N/A', 'Vide'),
-    ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'),
-    ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
-]
-PRODUCT_CHOICES = [
-    ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6'), ('RT6v2', 'RT6 version 2'),
-    ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
-    ('NG4', 'NG4'), ('RNEG', 'RNEG'),
-    ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
-]
-
-
 class Product(models.Model):
+    TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
+    MEDIA_CHOICES = [
+        ('N/A', 'Vide'),
+        ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'),
+        ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
+    ]
+    PRODUCT_CHOICES = [
+        ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
+        ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
+        ('NG4', 'NG4'), ('RNEG', 'RNEG'),
+        ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
+    ]
     LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
 
     reference = models.BigIntegerField('code barre PSA', primary_key=True)
     name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES)
-    current_cal = models.CharField('calibration actuelle', max_length=10, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
@@ -133,7 +130,7 @@ class Product(models.Model):
     front_pic = models.ImageField(upload_to='psa', blank=True)
     setplate_pic = models.ImageField(upload_to='psa', blank=True)
     rear_pic = models.ImageField(upload_to='psa', blank=True)
-    corvets = models.ManyToManyField(Corvet, related_name='products', blank=True)
+    corvets = models.ManyToManyField('Corvet', related_name='products', blank=True)
 
     class Meta:
         verbose_name = "Données Produit"
@@ -147,20 +144,19 @@ class Product(models.Model):
         return "{}_{}_{}_{}".format(self.reference, self.name, self.front, self.type)
 
 
-FW_ECU_TYPE_CHOICES = [
-    ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
-    ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
-    ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
-    ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4')
-]
-
-
 class Firmware(models.Model):
+    ECU_TYPE_CHOICES = [
+        ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
+        ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
+        ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
+        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4')
+    ]
+
     update_id = models.CharField('SWL(UpdateID)', max_length=18, unique=True)
     version = models.CharField('UpdateVersion', max_length=200)
     type = models.CharField('UpdateType', max_length=100, blank=True)
     version_date = models.DateField('MediaVersionDate', null=True, blank=True)
-    ecu_type = models.CharField('EcuType', max_length=50, choices=FW_ECU_TYPE_CHOICES)
+    ecu_type = models.CharField('EcuType', max_length=50, choices=ECU_TYPE_CHOICES)
     url = models.URLField('lien de téléchargement', max_length=500, blank=True)
     is_active = models.BooleanField('actif', default=False)
 

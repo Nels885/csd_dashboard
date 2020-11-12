@@ -55,7 +55,7 @@ def useful_links(request):
 
 class CorvetView(PermissionRequiredMixin, TemplateView):
     template_name = 'psa/corvet_table.html'
-    permission_required = ['squalaetp.view_corvet']
+    permission_required = ['psa.view_corvet']
 
     def get_context_data(self, **kwargs):
         context = super(CorvetView, self).get_context_data(**kwargs)
@@ -64,7 +64,7 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
         return context
 
 
-@permission_required('squalaetp.view_corvet')
+@permission_required('psa.view_corvet')
 def corvet_detail(request, vin):
     """
     detailed view of Corvet data for a file
@@ -81,3 +81,18 @@ def corvet_detail(request, vin):
         del dict_corvet[key]
     select = "prods"
     return render(request, 'psa/detail/detail.html', locals())
+
+
+@permission_required('psa.view_product')
+def product_table(request):
+    """
+    View of the product table page
+    :param request:
+        Parameters of the request
+    :return:
+        Product table page
+    """
+    table_title = _('Products PSA table')
+    products = Product.objects.all().order_by('reference')
+    context.update(locals())
+    return render(request, 'psa/product_table.html', context)

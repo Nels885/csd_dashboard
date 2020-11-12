@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from squalaetp.models import Corvet
+from psa.models import Corvet
 
 
 class PsaTestCase(UnitTest):

@@ -11,4 +11,5 @@ urlpatterns = [
     path('useful-links/', views.useful_links, name='useful_links'),
     path('corvet/', views.CorvetView.as_view(), name='corvet'),
     path('corvet/<slug:vin>/detail/', views.corvet_detail, name='corvet_detail'),
+    path('product/', views.product_table, name='product'),
 ]

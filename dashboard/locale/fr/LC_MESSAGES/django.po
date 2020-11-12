@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-06 12:04+0100\n"
+"POT-Creation-Date: 2020-11-12 17:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,7 +77,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal/logout.html:14
-#: dashboard/templates/dashboard/profile.html:80
+#: dashboard/templates/dashboard/profile.html:84
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -159,88 +159,88 @@ msgstr "Création d'un compte !"
 msgid "Add web link"
 msgstr "Ajouter un lien Web"
 
-#: dashboard/tests/tests_dashboard_views.py:62
+#: dashboard/tests/tests_dashboard_views.py:70
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: dashboard/views.py:34
+#: dashboard/views.py:35
 msgid "Home"
 msgstr "Acceuil"
 
-#: dashboard/views.py:41 dashboard/views.py:97
+#: dashboard/views.py:42 dashboard/views.py:104
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: dashboard/views.py:50
+#: dashboard/views.py:62
 msgid "Late Products"
 msgstr "Produits en retard"
 
-#: dashboard/views.py:74
+#: dashboard/views.py:81
 msgid "Search"
 msgstr "Recherche"
 
-#: dashboard/views.py:75
+#: dashboard/views.py:82
 msgid "Xelon files"
 msgstr "Dossiers Xelon"
 
-#: dashboard/views.py:79
+#: dashboard/views.py:86
 msgid "Warning: The research was not successful."
 msgstr "Avertissement: la recherche n'a pas réussi."
 
-#: dashboard/views.py:98
+#: dashboard/views.py:105
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:106
+#: dashboard/views.py:113
 msgid "User Profile"
 msgstr "Mon Profil"
 
-#: dashboard/views.py:112 dashboard/views.py:178
+#: dashboard/views.py:119 dashboard/views.py:185
 msgid "Success: Modification done!"
 msgstr "Succès: Modification effectuée !"
 
-#: dashboard/views.py:122
+#: dashboard/views.py:129
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: dashboard/views.py:146
+#: dashboard/views.py:153
 msgid "Success: Sign up succeeded. You can now Log in."
 msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
 
-#: dashboard/views.py:162
+#: dashboard/views.py:169
 msgid "Thank you for your email confirmation. Now you can login your account."
 msgstr ""
 "Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous "
 "connecter à votre compte."
 
-#: dashboard/views.py:165
+#: dashboard/views.py:172
 msgid "Activation link is invalid!"
 msgstr "Le lien d'activation n'est pas valide !"
 
-#: dashboard/views.py:190
+#: dashboard/views.py:197
 msgid "Success: You are logged in."
 msgstr "Succès: vous êtes connecté."
 
-#: dashboard/views.py:204
+#: dashboard/views.py:211
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été créé."
 
-#: dashboard/views.py:214
+#: dashboard/views.py:221
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:223
+#: dashboard/views.py:230
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."
 
-#: dashboard/views.py:231
+#: dashboard/views.py:238
 msgid "Success: Web link was created"
 msgstr "Succès: Le lien Web a été créé."
 
-#: dashboard/views.py:245
+#: dashboard/views.py:252
 msgid "Success: Web link was updated"
 msgstr "Succès: Le lien Web a été mis à jour."
 
-#: dashboard/views.py:259
+#: dashboard/views.py:266
 msgid "Success: Web link was deleted."
 msgstr "Succès: Le lien Web a été supprimé."

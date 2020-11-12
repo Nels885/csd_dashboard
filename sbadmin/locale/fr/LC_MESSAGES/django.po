@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-06 12:04+0100\n"
+"POT-Creation-Date: 2020-11-12 17:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,13 +91,13 @@ msgid "Login"
 msgstr "S'identifier"
 
 #: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:27
-#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:73
-#: templates/nav/nav_csd_atelier.html:91 templates/nav/nav_csd_atelier.html:109
+#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:74
+#: templates/nav/nav_csd_atelier.html:92 templates/nav/nav_csd_atelier.html:110
 #: templates/nav/nav_tools.html:28 templates/nav/nav_tools.html:82
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:54
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:55
 #: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:87
 msgid "Editing"
 msgstr "Edition"
@@ -127,16 +127,20 @@ msgstr "Pièces détachées"
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:50 templates/nav/nav_csd_atelier.html:74
-#: templates/nav/nav_csd_atelier.html:92 templates/nav/nav_csd_atelier.html:110
+#: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_tools.html:29
+msgid "Products table"
+msgstr "Tableau produits"
+
+#: templates/nav/nav_csd_atelier.html:51 templates/nav/nav_csd_atelier.html:75
+#: templates/nav/nav_csd_atelier.html:93 templates/nav/nav_csd_atelier.html:111
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
-#: templates/nav/nav_csd_atelier.html:55
+#: templates/nav/nav_csd_atelier.html:56
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:122 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:123 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -207,10 +211,6 @@ msgstr "Vérification pièce"
 #: templates/nav/nav_tools.html:7
 msgid "Tools"
 msgstr "Outils"
-
-#: templates/nav/nav_tools.html:29
-msgid "Products table"
-msgstr "Tableau produits"
 
 #: templates/nav/nav_tools.html:35
 msgid "Add product"
@@ -338,3 +338,8 @@ msgid ""
 msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
+
+#, fuzzy
+#~| msgid "Products table"
+#~ msgid "Product table"
+#~ msgstr "Tableau produits"
