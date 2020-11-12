@@ -2,7 +2,6 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status, authentication
-from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
@@ -10,9 +9,8 @@ from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSer
 from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
 from .serializers import RemanBatchSerializer, RemanCheckOutSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
-from squalaetp.models import Xelon, Corvet, Indicator
+from squalaetp.models import Xelon, Corvet
 from reman.models import Batch, EcuModel
-from utils.data.analysis import IndicatorAnalysis
 
 from .utils import TokenAuthSupportQueryString
 
@@ -95,18 +93,6 @@ class CalViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['numero_de_dossier', 'vin']
     http_method_names = ['get']
-
-
-@api_view(['GET'])
-def charts(request):
-    """
-    API endpoint that allows chart data to be viewed
-    """
-    indicator = IndicatorAnalysis()
-    prod = Indicator.count_prods()
-    data = {"prodLabels": prod.keys(), "prodDefault": prod.values()}
-    data.update(indicator.new_result())
-    return Response(data, status=status.HTTP_200_OK)
 
 
 class XelonViewSet(viewsets.ModelViewSet):

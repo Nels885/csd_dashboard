@@ -1,5 +1,4 @@
 async function getTemp(url) {
-    console.log(url)
     $.ajax({
         url: url,
         dataType: 'json',

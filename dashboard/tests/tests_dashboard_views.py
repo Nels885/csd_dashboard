@@ -1,3 +1,5 @@
+import json
+
 from django.utils.translation import ugettext as _
 from django.utils import translation
 
@@ -21,6 +23,12 @@ class DashboardTestCase(UnitTest):
     def test_charts_page(self):
         response = self.client.get(reverse('dashboard:charts'))
         self.assertEqual(response.status_code, 200)
+
+    def test_charts_ajax(self):
+        response = self.client.get(reverse('dashboard:charts_ajax'), format='json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 7)
 
     def test_late_products(self):
         response = self.client.get(reverse('dashboard:late_prod'))

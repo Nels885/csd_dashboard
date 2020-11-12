@@ -12,6 +12,7 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.db.models import Q
+from django.http import JsonResponse
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -23,9 +24,10 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 
 from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
+from utils.data.analysis import IndicatorAnalysis
 from .models import Post, UserProfile, WebLink
 from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
 
 
@@ -42,6 +44,17 @@ def charts(request):
     prods = ProductAnalysis()
     projects = EtudeProject.objects.all()
     return render(request, 'dashboard/charts.html', locals())
+
+
+def charts_ajax(request):
+    """
+    API endpoint that allows chart data to be viewed
+    """
+    indicator = IndicatorAnalysis()
+    prod = Indicator.count_prods()
+    data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
+    data.update(indicator.new_result())
+    return JsonResponse(data)
 
 
 @login_required

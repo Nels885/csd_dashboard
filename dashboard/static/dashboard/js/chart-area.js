@@ -27,7 +27,7 @@ $.ajax({
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(0, 143, 136, 1)",
                         pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBackgroundColor: "rgba(0, 143, 136, 1)",
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
