@@ -19,7 +19,7 @@ class ProductAnalysis:
         self.pendingQueryset = self.QUERYSET.filter(type_de_cloture__in=['', 'Sauvée'])
         self.lateQueryset = self.QUERYSET.filter(Q(delai_au_en_jours_ouvres__gt=3) |
                                                  Q(express=True) |
-                                                 Q(modele_produit__contains='COMBINE')).exclude(
+                                                 Q(famille_produit__startswith='TBORD')).exclude(
             type_de_cloture__in=['Réparé', 'Admin']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
@@ -44,11 +44,11 @@ class ProductAnalysis:
             Dictionary of different activities
         """
         psa = self.lateQueryset.filter(Q(ilot='PSA') |
-                                       Q(modele_produit__contains='COMBINE')).exclude(famille_produit='CALC MOT')
+                                       Q(famille_produit__exact='TBORD PSA')).exclude(famille_produit='CALC MOT')
         clarion = self.lateQueryset.filter(ilot='CLARION')
         etude = self.lateQueryset.filter(ilot='LaboQual').exclude(famille_produit='CALC MOT')
         autre = self.lateQueryset.filter(ilot='ILOTAUTRE').exclude(Q(famille_produit='CALC MOT') |
-                                                                   Q(modele_produit__contains='COMBINE'))
+                                                                   Q(famille_produit__exact='TBORD PSA'))
         calc_mot = self.lateQueryset.filter(famille_produit='CALC MOT')
         defaut = self.lateQueryset.filter(ilot='DEFAUT').exclude(famille_produit='CALC MOT')
         return locals()
