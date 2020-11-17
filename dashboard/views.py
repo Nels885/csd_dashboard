@@ -74,9 +74,9 @@ def search(request):
         # select = request.GET.get('select')
         files = Xelon.objects.filter(Q(numero_de_dossier=query) |
                                      Q(vin=query) |
-                                     Q(corvet__electronique_44l=query) |
-                                     Q(corvet__electronique_44x=query) |
-                                     Q(corvet__electronique_44a=query))
+                                     Q(corvet__electronique_44l__contains=query) |
+                                     Q(corvet__electronique_44x__contains=query) |
+                                     Q(corvet__electronique_44a__contains=query))
         if files and len(files) > 1:
             title = _('Search')
             table_title = _('Xelon files')
