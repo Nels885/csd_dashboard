@@ -16,7 +16,7 @@ class EcuType(models.Model):
     hw_reference = models.CharField("hardware", max_length=10, unique=True)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
-    spare_part = models.ForeignKey("SparePart", on_delete=models.CASCADE, null=True, blank=True)
+    spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
 
     def part_name(self):
         return self.technical_data + " HW" + self.hw_reference
@@ -32,7 +32,7 @@ class EcuModel(models.Model):
     sw_reference = models.CharField("software", max_length=10, blank=True)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
     supplier_es = models.CharField("service après vente", max_length=50, blank=True)
-    ecu_type = models.ForeignKey("EcuType", on_delete=models.CASCADE, null=True, blank=True)
+    ecu_type = models.ForeignKey("EcuType", on_delete=models.SET_NULL, null=True, blank=True)
     to_dump = models.BooleanField("à dumper", default=False)
 
     class Meta:
@@ -73,7 +73,7 @@ class EcuRefBase(models.Model):
     ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
     cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
     status = models.CharField("STATUT", max_length=16, blank=True)
-    ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.CASCADE, null=True,
+    ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.SET_NULL, null=True,
                                     blank=True)
 
     def __str__(self):
@@ -126,10 +126,10 @@ class Repair(models.Model):
     created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, related_name="repairs_created", editable=False, on_delete=models.CASCADE)
     modified_at = models.DateTimeField('modifié le', auto_now=True)
-    modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.CASCADE, null=True,
+    modified_by = models.ForeignKey(User, related_name="repairs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
-    default = models.ForeignKey("Default", related_name="repairs", on_delete=models.CASCADE, null=True, blank=True)
+    default = models.ForeignKey("Default", related_name="repairs", on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         permissions = [
