@@ -26,6 +26,7 @@ from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
 from utils.django.tokens import account_activation_token
 from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
+from psa.models import Corvet
 from .models import Post, UserProfile, WebLink
 from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
 
@@ -83,6 +84,10 @@ def search(request):
             return render(request, 'squalaetp/xelon_table.html', locals())
         elif files:
             return redirect('squalaetp:detail', file_id=files.first().id)
+        else:
+            corvets = Corvet.objects.filter(vin=query)
+            if corvets:
+                return redirect('psa:corvet_detail', vin=corvets.first().vin)
         messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
