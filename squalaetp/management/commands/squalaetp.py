@@ -76,7 +76,8 @@ class Command(BaseCommand):
             call_command("xelon", "--fix_update")
             call_command("indicator")
             call_command("raspeedi")
-            self._relation()
+            self._foreignkey_relation()
+            # self._relation()
 
     def _relation(self):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")

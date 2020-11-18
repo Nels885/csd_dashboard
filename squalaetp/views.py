@@ -6,13 +6,12 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
+from bootstrap_modal_forms.generic import BSModalUpdateView
 
 from .models import Xelon, Stock
 from psa.models import Corvet
 from raspeedi.models import Raspeedi
-from .forms import CorvetForm, CorvetModalForm
-from import_export.forms import ExportCorvetForm
+from psa.forms import CorvetForm, CorvetModalForm
 from dashboard.forms import ParaErrorList
 from utils.file.export import xml_corvet_file
 from utils.file import LogFile, os
@@ -108,73 +107,10 @@ def ajax_xelon(request):
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 
 
-@permission_required('squalaetp.view_corvet')
-def corvet_table(request):
-    """
-    View of Corvet table page, visible only if authenticated
-    """
-    # corvets_list = Corvet.objects.all().order_by('vin')
-    title = 'Info PSA'
-    table_title = _('CORVET table')
-    form = ExportCorvetForm()
-    return render(request, 'squalaetp/corvet_table.html', locals())
-
-
-@permission_required('squalaetp.view_corvet')
-def corvet_detail(request, vin):
-    """
-    detailed view of Corvet data for a file
-    :param vin:
-        VIN for Corvet data
-    """
-    title = 'Corvet'
-    corvet = get_object_or_404(Corvet, vin=vin)
-    card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
-    dict_corvet = vars(corvet)
-    for key in ["_state"]:
-        del dict_corvet[key]
-    # redirect = request.META.get('HTTP_REFERER')
-    return render(request, 'squalaetp/corvet_detail.html', locals())
-
-
-@permission_required('squalaetp.add_corvet')
-def corvet_insert(request):
-    """
-    View of Corvet insert page, visible only if authenticated
-    """
-    title = 'Corvet'
-    card_title = _('CORVET integration')
-    form = CorvetForm(request.POST or None, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        form.save()
-        context = {'title': _('Modification done successfully!')}
-        return render(request, 'dashboard/done.html', context)
-    errors = form.errors.items()
-    return render(request, 'squalaetp/corvet_insert.html', locals())
-
-
-class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
-    permission_required = ['squalaetp.add_corvet']
-    template_name = 'squalaetp/modal/corvet_form.html'
-    form_class = CorvetModalForm
-    success_message = _('Modification done successfully!')
-
-    def get_context_data(self, **kwargs):
-        context = super(CorvetCreateView, self).get_context_data(**kwargs)
-        context['modal_title'] = _('CORVET integration')
-        return context
-
-    def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
-
-
 class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
     permission_required = ['squalaetp.change_xelon', 'squalaetp.change_corvet']
-    template_name = 'squalaetp/modal/corvet_form.html'
+    template_name = 'psa/modal/corvet_form.html'
     form_class = CorvetModalForm
     success_message = _('Success: Squalaetp data was updated.')
 

@@ -4,9 +4,11 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import TemplateView
 from django.utils.translation import ugettext as _
+from django.urls import reverse_lazy
+from bootstrap_modal_forms.generic import BSModalCreateView
 
 from utils.django.forms import ParaErrorList
-from .forms import NacLicenseForm, NacUpdateForm
+from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Product
 from dashboard.models import WebLink
 from raspeedi.models import Programing
@@ -83,6 +85,40 @@ def corvet_detail(request, vin):
         del dict_corvet[key]
     select = "prods"
     return render(request, 'psa/detail/detail.html', locals())
+
+
+@permission_required('psa.add_corvet')
+def corvet_insert(request):
+    """
+    View of Corvet insert page, visible only if authenticated
+    """
+    title = 'Corvet'
+    card_title = _('CORVET integration')
+    form = CorvetForm(request.POST or None, error_class=ParaErrorList)
+    if request.POST and form.is_valid():
+        form.save()
+        context = {'title': _('Modification done successfully!')}
+        return render(request, 'dashboard/done.html', context)
+    errors = form.errors.items()
+    return render(request, 'psa/corvet_insert.html', locals())
+
+
+class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = ['squalaetp.add_corvet']
+    template_name = 'psa/modal/corvet_form.html'
+    form_class = CorvetModalForm
+    success_message = _('Modification done successfully!')
+
+    def get_context_data(self, **kwargs):
+        context = super(CorvetCreateView, self).get_context_data(**kwargs)
+        context['modal_title'] = _('CORVET integration')
+        return context
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
 
 
 @permission_required('psa.view_product')
