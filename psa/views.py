@@ -104,7 +104,7 @@ def corvet_insert(request):
 
 
 class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
-    permission_required = ['squalaetp.add_corvet']
+    permission_required = 'psa.add_corvet'
     template_name = 'psa/modal/corvet_form.html'
     form_class = CorvetModalForm
     success_message = _('Modification done successfully!')

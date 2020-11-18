@@ -46,11 +46,10 @@ class Command(BaseCommand):
             self._foreignkey_relation()
 
         elif options['del_relations']:
-            Corvet.xelons.through.objects.all().delete()
             Raspeedi.corvets.through.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(),
-                                                             [Corvet.xelons.through, Raspeedi.corvets.through, ])
+                                                             [Raspeedi.corvets.through, ])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
@@ -60,7 +59,6 @@ class Command(BaseCommand):
         elif options['delete']:
             Xelon.objects.all().delete()
             Corvet.objects.all().delete()
-            Corvet.xelons.through.objects.all().delete()
             CorvetBackup.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Xelon, Corvet, CorvetBackup, ])

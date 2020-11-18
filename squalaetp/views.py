@@ -50,13 +50,12 @@ def detail(request, file_id):
     title = xelon.numero_de_dossier
     if xelon.corvet:
         corvet = get_object_or_404(Corvet, vin=xelon.vin)
-        raspeedi = Raspeedi.objects.filter(ref_boitier=corvet.electronique_14x).first()
+        if corvet.electronique_14x:
+            raspeedi = Raspeedi.objects.filter(ref_boitier=corvet.electronique_14x).first()
         dict_corvet = vars(corvet)
         for key in ["_state"]:
             del dict_corvet[key]
         dict_corvet = vars(corvet)
-    else:
-        corvet = dict_corvet = raspeedi = None
     form = CorvetForm()
     form.fields['vin'].initial = xelon.vin
     select = 'xelon'
