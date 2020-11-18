@@ -64,7 +64,7 @@ class ProgViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows prog list to be viewed """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.all().prefetch_related('corvet')
+    queryset = Xelon.objects.all()
     serializer_class = ProgSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['numero_de_dossier', 'vin', 'modele_produit']
@@ -81,7 +81,7 @@ class ProgViewSet(viewsets.ModelViewSet):
             self.serializer_class = RaspeediSerializer
             queryset = Raspeedi.objects.filter(ref_boitier=ref_case)
         else:
-            queryset = Xelon.objects.all().prefetch_related('corvet')
+            queryset = Xelon.objects.all()
         return queryset
 
 
@@ -89,7 +89,7 @@ class CalViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows prog list to be viewed """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.all().prefetch_related('corvet')
+    queryset = Xelon.objects.all()
     serializer_class = CalSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['numero_de_dossier', 'vin']

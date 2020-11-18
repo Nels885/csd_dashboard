@@ -22,6 +22,7 @@ class Xelon(models.Model):
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
     ilot = models.CharField('ilot', max_length=100, blank=True)
+    corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         verbose_name = "dossier Xelon"
@@ -126,7 +127,6 @@ class Corvet(models.Model):
     electronique_66b = models.CharField('BSM FOURN.CODE - Boitier Servitude Moteur', max_length=200, blank=True)
     electronique_86b = models.CharField('BSM DOTE - Boitier Servitude Moteur', max_length=200, blank=True)
     electronique_96b = models.CharField('BSM SOFT - Boitier Servitude Moteur', max_length=200, blank=True)
-    xelons = models.ManyToManyField(Xelon, related_name='corvet', blank=True)
 
     class Meta:
         verbose_name = "données CORVET"

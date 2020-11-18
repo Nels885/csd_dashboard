@@ -4,8 +4,9 @@ from django.core.management import call_command
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 
-from squalaetp.models import Xelon, CorvetBackup, Corvet
+from squalaetp.models import Xelon, CorvetBackup
 from raspeedi.models import Raspeedi
+from psa.models import Corvet
 
 
 class Command(BaseCommand):
@@ -41,7 +42,8 @@ class Command(BaseCommand):
         self.stdout.write("[SQUALAETP] Waiting...")
 
         if options['relations']:
-            self._relation()
+            # self._relation()
+            self._foreignkey_relation()
 
         elif options['del_relations']:
             Corvet.xelons.through.objects.all().delete()
@@ -96,6 +98,34 @@ class Command(BaseCommand):
                         nb_corvet += 1
             except ObjectDoesNotExist:
                 objects_list.append(corvet.electronique_14x)
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[SQUALAETP] Relationships update completed: CORVET/XELON = {} | RASPEEDI/CORVET = {}".format(
+                    nb_xelon, nb_corvet
+                )
+            )
+        )
+
+    def _foreignkey_relation(self):
+        self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
+
+        nb_xelon, nb_corvet, objects_list = 0, 0, []
+        for xelon in Xelon.objects.all():
+            try:
+                xelon.corvet = Corvet.objects.get(pk=xelon.vin)
+                xelon.save()
+                nb_xelon += 1
+            except ObjectDoesNotExist:
+                objects_list.append(xelon.numero_de_dossier)
+        # for corvet in Corvet.objects.all():
+        #     try:
+        #         for ref in [corvet.electronique_14x, corvet.electronique_14f]:
+        #             if ref and len(ref) == 10 and ref.isdigit():
+        #                 raspeedi = Raspeedi.objects.get(ref_boitier=ref)
+        #                 raspeedi.corvets.add(corvet)
+        #                 nb_corvet += 1
+        #     except ObjectDoesNotExist:
+        #         objects_list.append(corvet.electronique_14x)
         self.stdout.write(
             self.style.SUCCESS(
                 "[SQUALAETP] Relationships update completed: CORVET/XELON = {} | RASPEEDI/CORVET = {}".format(

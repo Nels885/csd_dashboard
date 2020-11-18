@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
-from squalaetp.models import Xelon, Corvet
+from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
 from reman.models import Batch, EcuModel
+from psa.models import Corvet
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -67,32 +68,30 @@ class CorvetSerializer(DynamicFieldsModelSerializer):
     bsi_ref = serializers.CharField(source='electronique_14b')
     bsi_cal = serializers.CharField(source='electronique_94b')
 
-    raspeedi = RaspeediSerializer(many=True, read_only=True)
-
     class Meta:
         model = Corvet
         fields = ('vin', 'rad_ref', 'rad_cal', 'nav_ref', 'nav_cal',
-                  'cmm_ref', 'cmm_cal', 'bsi_ref', 'bsi_cal', 'raspeedi')
+                  'cmm_ref', 'cmm_cal', 'bsi_ref', 'bsi_cal')
 
 
 class ProgSerializer(serializers.ModelSerializer):
     """
     Serializer for the programming data that will be used by the Raspeedi tool
     """
-    corvet = CorvetSerializer(many=True, read_only=True)
+    corvet = CorvetSerializer(read_only=True, fields=(
+        'rad_ref', 'rad_cal', 'nav_ref', 'nav_cal', 'cmm_ref', 'cmm_cal', 'bsi_ref', 'bsi_cal'
+    ))
 
     class Meta:
         model = Xelon
         fields = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet')
-        depth = 1
 
 
 class CalSerializer(serializers.ModelSerializer):
     """
     Serializer of the calibration data that will be used by the calibration tool
     """
-    corvet = CorvetSerializer(many=True, read_only=True,
-                              fields=('rad_ref', 'rad_cal', 'nav_ref', 'nav_cal'))
+    corvet = CorvetSerializer(read_only=True, fields=('rad_ref', 'rad_cal', 'nav_ref', 'nav_cal'))
 
     class Meta:
         model = Xelon
@@ -100,7 +99,6 @@ class CalSerializer(serializers.ModelSerializer):
 
 
 class XelonSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Xelon
         fields = (

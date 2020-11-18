@@ -29,7 +29,7 @@ def import_export(request):
 
 
 def export_corvet(request):
-    if request.user.has_perm('squalaetp.view_corvet') and request.POST:
+    if request.user.has_perm('psa.view_corvet') and request.POST:
         if "btn_corvet_vin" in request.POST:
             form = ExportCorvetVinListForm(request.POST or None)
             if form.is_valid():

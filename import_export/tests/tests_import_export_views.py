@@ -3,7 +3,8 @@ import io
 from django.urls import reverse
 
 from dashboard.tests.base import UnitTest
-from squalaetp.models import Corvet, Xelon
+from squalaetp.models import Xelon
+from psa.models import Corvet
 from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase, EcuType
 
 
@@ -12,12 +13,12 @@ class ImportExportTestCase(UnitTest):
     def setUp(self):
         super(ImportExportTestCase, self).setUp()
         self.add_perms_user(EcuModel, 'add_ecumodel', 'change_ecumodel')
-        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin)
         corvet = Corvet.objects.create(
             vin=self.vin, electronique_14x='9812345680', electronique_14a='9812345680', electronique_14b='9812345680',
             electronique_16p='9812345680', electronique_16b='9812345680'
         )
-        corvet.xelons.add(xelon)
+        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, corvet=corvet)
+        # corvet.xelons.add(xelon)
         psaBarcode = '9612345678'
         spare_part = SparePart.objects.create(code_produit='test HW_9876543210')
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test', spare_part=spare_part)

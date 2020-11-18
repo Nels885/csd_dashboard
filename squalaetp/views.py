@@ -8,7 +8,9 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
-from .models import Xelon, Corvet, Stock
+from .models import Xelon, Stock
+from psa.models import Corvet
+from raspeedi.models import Raspeedi
 from .forms import CorvetForm, CorvetModalForm
 from import_export.forms import ExportCorvetForm
 from dashboard.forms import ParaErrorList
@@ -47,9 +49,9 @@ def stock_table(request):
 def detail(request, file_id):
     xelon = get_object_or_404(Xelon, pk=file_id)
     title = xelon.numero_de_dossier
-    if xelon.corvet.exists():
+    if xelon.corvet:
         corvet = get_object_or_404(Corvet, vin=xelon.vin)
-        raspeedi = corvet.raspeedi.first()
+        raspeedi = Raspeedi.objects.filter(ref_boitier=corvet.electronique_14x).first()
         dict_corvet = vars(corvet)
         for key in ["_state"]:
             del dict_corvet[key]
