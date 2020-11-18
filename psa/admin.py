@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Corvet, Product, Firmware, Calibration
+from .models import Corvet, Product, Firmware, Calibration, CorvetChoices
 
 
 class CorvetAdmin(admin.ModelAdmin):
@@ -39,3 +39,4 @@ admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
+admin.site.register(CorvetChoices)
