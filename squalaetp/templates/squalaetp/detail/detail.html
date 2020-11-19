@@ -13,6 +13,8 @@
 
                 {% include 'tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
 
+                {% include 'tab_select.html' with name='vehicle' tab_title="Info Véhicule" %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="#corvet" role="tab" aria-controls="corvet" aria-selected="false">
                         {% trans "Corvet data" %}
@@ -77,6 +79,14 @@
              aria-labelledby="ihm-tab">
 
             {% include 'squalaetp/detail/detail_ihm.html' %}
+
+        </div>
+
+        <!-- Detail Info véhicule -->
+        <div class="tab-pane {% if select == 'vehicle' %}active{% endif %}" id="vehicle" role="tabpanel"
+             aria-labelledby="vehicle-tab">
+
+            {% include 'psa/detail/detail_vehicle.html' %}
 
         </div>
 

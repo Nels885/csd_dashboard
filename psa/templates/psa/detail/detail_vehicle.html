@@ -1,0 +1,62 @@
+{% load i18n corvet_tags %}
+
+<div class="row">
+    <section class="col-sm-6">
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3 class="text-gray-800">Informations générales :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">GENRE_DE_PRODUIT</td>
+                <td>{{ corvet.donnee_genre_de_produit|get_corvet:"DON_GEN_PROD" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">MARQUE_COMMERCIALE</td>
+                <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">LIGNE_DE_PRODUIT</td>
+                <td>{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">SILHOUETTE</td>
+                <td>{{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">MOTEUR</td>
+                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">TRANSMISSION</td>
+                <td>{{ corvet.donnee_transmission|get_corvet:"DON_TRA" }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3 class="text-gray-800">Equipement intérieur :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
+                <td>{{ corvet.attribut_dgm|get_corvet:"ATT_DGM" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">HAUT PARLEUR</td>
+                <td>{{ corvet.attribut_dhb|get_corvet:"ATT_DHB" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">ANTENNE</td>
+                <td>{{ corvet.attribut_dat|get_corvet:"ATT_DAT" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
+                <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>

@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n corvet_tags %}
 
 <div class="row">
     <section class="col-sm-6">
@@ -169,6 +169,10 @@
             <tr>
                 <td class="text-dark td-ihm">N° série BSM</td>
                 <td>{{ corvet.electronique_46b }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">N° série BSM</td>
+                <td>{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }}</td>
             </tr>
             </tbody>
         </table>
