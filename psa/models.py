@@ -1,6 +1,5 @@
 from django.db import models
-
-from raspeedi.models import Raspeedi
+from django.db.utils import ProgrammingError
 
 
 class CorvetChoices(models.Model):
@@ -15,30 +14,37 @@ class CorvetChoices(models.Model):
     value = models.CharField('valeur', max_length=200)
     column = models.CharField('colonne', max_length=100, choices=COL_CHOICES)
 
+
     class Meta:
         verbose_name = "Convertion données CORVET"
         ordering = ['pk']
+        constraints = [
+            models.UniqueConstraint(fields=['key', 'column'], name='key_column_unique')
+        ]
 
     def __str__(self):
         return f"{self.key} - {self.value} - {self.column}"
 
 
 def corvet_choices(column):
-    data = CorvetChoices.objects.filter(column=column)
-    return list(data.values_list('key', 'value'))
+    try:
+        data = CorvetChoices.objects.filter(column=column)
+        return list(data.values_list('key', 'value'))
+    except ProgrammingError:
+        return []
 
 
 class Corvet(models.Model):
     vin = models.CharField('V.I.N.', max_length=17, primary_key=True)
     donnee_date_debut_garantie = models.DateTimeField('Date début garantie', null=True, blank=True)
     donnee_date_entree_montage = models.DateTimeField('Date entrée montage', null=True, blank=True)
-    donnee_ligne_de_produit = models.CharField('LIGNE_DE_PRODUIT', max_length=200, blank=True, choices=corvet_choices('DON_LIN_PROD'))
-    donnee_marque_commerciale = models.CharField('MARQUE_COMMERCIALE', max_length=200, blank=True, choices=corvet_choices('DON_MAR_COMM'))
-    donnee_silhouette = models.CharField('SILHOUETTE', max_length=200, blank=True, choices=corvet_choices('DON_SIL'))
-    donnee_genre_de_produit = models.CharField('GENRE_DE_PRODUIT', max_length=200, blank=True, choices=corvet_choices('DON_GEN_PROD'))
+    donnee_ligne_de_produit = models.CharField('LIGNE_DE_PRODUIT', max_length=200, blank=True)
+    donnee_marque_commerciale = models.CharField('MARQUE_COMMERCIALE', max_length=200, blank=True)
+    donnee_silhouette = models.CharField('SILHOUETTE', max_length=200, blank=True)
+    donnee_genre_de_produit = models.CharField('GENRE_DE_PRODUIT', max_length=200, blank=True)
     attribut_ddo = models.CharField('KIT TELEPHONE MAIN LIBRE', max_length=200, blank=True)
-    attribut_dgm = models.CharField('COMBINE (CARACTERISTIQUES)', max_length=200, blank=True, choices=corvet_choices('ATT_DGM'))
-    attribut_dhb = models.CharField('HAUT PARLEUR', max_length=200, blank=True, choices=corvet_choices('ATT_DHB'))
+    attribut_dgm = models.CharField('COMBINE (CARACTERISTIQUES)', max_length=200, blank=True)
+    attribut_dhb = models.CharField('HAUT PARLEUR', max_length=200, blank=True)
     attribut_dhg = models.CharField('COMMANDE AUTO-RADIO', max_length=200, blank=True)
     attribut_djq = models.CharField('COMPACT DISQUE', max_length=200, blank=True)
     attribut_djy = models.CharField('SYSTEME NAVIGATION', max_length=200, blank=True)
@@ -78,8 +84,8 @@ class Corvet(models.Model):
     electronique_94f = models.CharField('RADIO SOFT - Recepteur Radio', max_length=200, blank=True)
     electronique_94l = models.CharField('EMF SOFT - Ecran Multifonctions', max_length=200, blank=True)
     electronique_94x = models.CharField('BTEL SOFT - Boitier Telematique (radio telephone)', max_length=200, blank=True)
-    attribut_dat = models.CharField('ANTENNE', max_length=200, blank=True, choices=corvet_choices('ATT_DAT'))
-    attribut_dcx = models.CharField('COTE CONDUITE/POSTE CONDUITE', max_length=200, blank=True, choices=corvet_choices('ATT_DCX'))
+    attribut_dat = models.CharField('ANTENNE', max_length=200, blank=True)
+    attribut_dcx = models.CharField('COTE CONDUITE/POSTE CONDUITE', max_length=200, blank=True)
     electronique_19h = models.CharField('MDS HARD - Module de service telematique', max_length=200, blank=True)
     electronique_49h = models.CharField('MDS FOURN.NO.SERIE - Module de service telematique', max_length=200, blank=True)
     electronique_64f = models.CharField('RADIO FOURN.CODE - Recepteur Radio', max_length=200, blank=True)
@@ -95,8 +101,8 @@ class Corvet(models.Model):
     electronique_84a = models.CharField('CMM DOTE - Calculateur Moteur Multifonction', max_length=200, blank=True)
     electronique_94a = models.CharField('CMM SOFT - Calculateur Moteur Multifonction', max_length=200, blank=True)
     electronique_p4a = models.CharField('CMM EOBD - Calculateur Moteur Multifonction', max_length=200, blank=True)
-    donnee_moteur = models.CharField('MOTEUR', max_length=200, blank=True, choices=corvet_choices('DON_MOT'))
-    donnee_transmission = models.CharField('TRANSMISSION', max_length=200, blank=True, choices=corvet_choices('DON_TRA'))
+    donnee_moteur = models.CharField('MOTEUR', max_length=200, blank=True)
+    donnee_transmission = models.CharField('TRANSMISSION', max_length=200, blank=True)
     organes_10 = models.CharField('MOTEUR', max_length=200, blank=True)
     electronique_14b = models.CharField('BSI HARD - Boitier Servitude Intelligent', max_length=200, blank=True)
     organes_20 = models.CharField('BOITE DE VITESSES', max_length=200, blank=True)

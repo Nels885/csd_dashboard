@@ -10,16 +10,17 @@ class CorvetTestCase(UnitTest):
 
     def setUp(self):
         super(CorvetTestCase, self).setUp()
-        self.add_perms_user(Corvet, "add_corvet", "change_corvet")
 
     def test_corvet_insert_page(self):
         response = self.client.get(reverse('psa:corvet_insert'))
         self.assertEqual(response.status_code, 302)
+        self.add_perms_user(Corvet, "add_corvet")
         self.login()
         response = self.client.get(reverse('psa:corvet_insert'))
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_is_valid(self):
+        self.add_perms_user(Corvet, "add_corvet")
         self.login()
         old_corvets = Corvet.objects.count()
         response = self.client.post(reverse('psa:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
@@ -28,6 +29,7 @@ class CorvetTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_is_not_valid(self):
+        self.add_perms_user(Corvet, "add_corvet")
         self.login()
         old_corvets = Corvet.objects.count()
         vin = ''
@@ -38,6 +40,7 @@ class CorvetTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_with_vin_is_not_valid(self):
+        self.add_perms_user(Corvet, "add_corvet")
         self.login()
         old_corvets = Corvet.objects.count()
         for vin in ['123456789', 'ABCDEFGH123456789']:
@@ -51,6 +54,7 @@ class CorvetTestCase(UnitTest):
             self.assertEqual(response.status_code, 200)
 
     def test_corvet_insert_page_with_xml_data_is_not_valid(self):
+        self.add_perms_user(Corvet, "add_corvet")
         self.login()
         old_corvets = Corvet.objects.count()
         for xml_data in ['abcdefgh', '<?xml version="1.0" encoding="UTF-8"?>']:
@@ -68,7 +72,7 @@ class CorvetTestCase(UnitTest):
         response = self.client.get(reverse('psa:corvet_detail', kwargs={'vin': self.vin}))
         self.assertEqual(response.status_code, 302)
 
-        self.add_perms_user(Corvet, 'view_corvet')
+        self.add_perms_user(Corvet, 'view_corvet', 'add_corvet')
         self.login()
 
         # Detail is not found
