@@ -55,7 +55,7 @@
 
                         <a class="collapse-item" href="{% url 'psa:useful_links' %}">{% trans "Tools & Links" %}</a>
 
-                        {% if perms.squalaetp.add_corvet %}
+                        {% if perms.psa.add_corvet %}
                             <div class="collapse-divider"></div>
                             <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                             <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>

@@ -108,7 +108,7 @@ def ajax_xelon(request):
 
 class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
-    permission_required = ['squalaetp.change_xelon', 'squalaetp.change_corvet']
+    permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'psa/modal/corvet_form.html'
     form_class = CorvetModalForm
     success_message = _('Success: Squalaetp data was updated.')

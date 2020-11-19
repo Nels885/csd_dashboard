@@ -41,7 +41,7 @@
                 </a>
             </li>
 
-            {% if perms.squalaetp.change_xelon and perms.squalaetp.change_corvet %}
+            {% if perms.squalaetp.change_xelon and perms.psa.change_corvet %}
                 <li class="nav-item">
                     <a class="update-corvet nav-link" href="#" data-id="{% url 'squalaetp:corvet_edit' xelon.pk %}"
                        role="tab" aria-selected="false">
