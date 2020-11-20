@@ -289,3 +289,43 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'PRINTER_STREAM_URL',
     )
 }
+
+###############################
+# DJANGO LOGGER CONFIGURATION
+###############################
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] [{process:d}] [{levelname}] {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'console_verbose': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console_verbose'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'WARNING'),
+            'propagate': False,
+        },
+    },
+}

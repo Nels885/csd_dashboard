@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db.utils import IntegrityError, DataError
@@ -10,7 +12,8 @@ from utils.django.models import defaults_dict
 
 from ._excel_raspeedi import ExcelRaspeedi
 
-import logging as log
+# Get an instance of a logger
+log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
