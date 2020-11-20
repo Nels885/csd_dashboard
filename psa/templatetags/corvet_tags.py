@@ -12,4 +12,4 @@ def get_corvet(value, arg):
         data = CorvetChoices.objects.get(key=value, column=arg)
         return data.value
     except CorvetChoices.DoesNotExist:
-        return value
+        return f"* {value} *"
