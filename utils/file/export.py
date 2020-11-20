@@ -107,13 +107,13 @@ class ExportExcel:
         if copy:
             self._file_yesterday(path, file)
         try:
-            with open(file, 'w', newline='', encoding='utf-8') as f:
+            with open(file, 'w+', newline='', encoding='utf-8') as f:
                 if self.excelType == "csv":
                     self._csv_writer(f)
                 else:
                     self._xls_writer(f)
         except OSError:
-            logger.warning('File is read-only.')
+            logger.warning('{} File is read-only.'.format(file))
 
     def _csv_writer(self, response):
         """ Formatting data in CSV format """
