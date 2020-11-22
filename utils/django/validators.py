@@ -2,10 +2,12 @@ import re
 import xml.etree.ElementTree as ET
 
 from django.utils.translation import ugettext as _
+from django.utils.timezone import make_aware
 
 from datetime import datetime
 
-from squalaetp.models import Xelon, Corvet
+from squalaetp.models import Xelon
+from psa.models import Corvet
 
 
 def validate_vin(value):
@@ -87,7 +89,7 @@ def xml_parser(value):
                     elif child.tag in ["DATE_DEBUT_GARANTIE", "DATE_ENTREE_MONTAGE"]:
                         key, value = "DONNEE_{}".format(child.tag), child.text
                         if value:
-                            data[key.lower()] = datetime.strptime(value, "%d/%m/%Y %H:%M:%S")
+                            data[key.lower()] = make_aware(datetime.strptime(value, "%d/%m/%Y %H:%M:%S"))
                     else:
                         key, value = "DONNEE_{}".format(child.tag), child.text
                         # print("{} : {}".format(key, value))
