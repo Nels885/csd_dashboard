@@ -30,13 +30,20 @@ class FirmwareAdmin(admin.ModelAdmin):
 
 class CalibrationAdmin(admin.ModelAdmin):
     list_display = ('factory', 'type', 'current')
-    liste_filter = ('type',)
+    list_filter = ('type',)
     ordering = ('-factory',)
     search_fields = ('factory', 'type', 'current')
+
+
+class CorvetChoicesAdmin(admin.ModelAdmin):
+    list_display = ('key', 'value', 'column')
+    list_filter = ('column',)
+    ordering = ('key', 'value', 'column')
+    search_fields = ('key', 'value', 'column')
 
 
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
-admin.site.register(CorvetChoices)
+admin.site.register(CorvetChoices, CorvetChoicesAdmin)
