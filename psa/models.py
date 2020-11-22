@@ -14,7 +14,6 @@ class CorvetChoices(models.Model):
     value = models.CharField('valeur', max_length=200)
     column = models.CharField('colonne', max_length=100, choices=COL_CHOICES)
 
-
     class Meta:
         verbose_name = "Convertion données CORVET"
         ordering = ['pk']

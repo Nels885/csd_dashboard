@@ -4,6 +4,7 @@ from django.db.utils import IntegrityError, DataError
 from django.db import connection
 
 from raspeedi.models import Programing
+from psa.models import Multimedia
 from utils.conf import XLS_RASPEEDI_FILE
 from utils.django.models import defaults_dict
 
@@ -55,7 +56,9 @@ class Command(BaseCommand):
             log.info(row)
             psa_barcode = row.pop("psa_barcode")
             try:
-                values = defaults_dict(Programing, row)
+                multimedia = Multimedia.objects.filter(hw_reference=psa_barcode).first()
+                values = {'multimedia': multimedia}
+                values.update(defaults_dict(Programing, row))
                 obj, created = Programing.objects.update_or_create(psa_barcode=psa_barcode, defaults=values)
                 if not created:
                     nb_update += 1
