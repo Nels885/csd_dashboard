@@ -5,6 +5,8 @@ class ExcelRaspeedi(ExcelFormat):
     """## Read data in Excel file for Raspeedi ##"""
     RASPEEDI_COLS = ['ref_boitier', 'produit', 'facade', 'type', 'dab', 'cam', 'dump_peedi', 'cd_version', 'media',
                      'carto', 'dump_renesas', 'ref_mm']
+    COLS = {'A': 'ref_boitier', 'B': 'produit', 'C': 'facade', 'D': 'type', 'E': 'dab', 'F': 'cam', 'G': 'dump_peedi',
+            'H': 'cd_version', 'I': 'media', 'J': 'carto', 'K': 'dump_renesas', 'L': 'ref_mm'}
 
     def __init__(self, file, sheet_name=0, columns=None):
         """
@@ -12,8 +14,11 @@ class ExcelRaspeedi(ExcelFormat):
         :param file:
             excel file to process
         """
-        super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str)
+        cols = ",".join(self.COLS.keys())
+        super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
         self._convert_boolean()
+        self._columns_rename()
+        self.sheet.fillna('', inplace=True)
 
     def read(self):
         """
@@ -24,7 +29,7 @@ class ExcelRaspeedi(ExcelFormat):
         data = []
         for line in range(self.nrows):
             try:
-                data.append(dict(self.sheet.loc[line, self.RASPEEDI_COLS].dropna()))
+                data.append(dict(self.sheet.loc[line]))
             except KeyError as err:
                 print("KeyError pour la ligne : {}".format(err))
         return data
@@ -60,11 +65,11 @@ class ExcelPrograming(ExcelFormat):
         :return:
             list of dictionnaries that represents the data in the sheet
         """
-        return [dict(self.sheet.loc[line]) for line in range(self.nrows)]
-
-    def _columns_rename(self):
-        new_columns = {}
-        for i, column in enumerate(self.columns):
-            new_columns[column] = list(self.COLS.values())[i]
-        self.sheet.rename(columns=new_columns, inplace=True)
-        self.columns = list(self.sheet.columns)
+        data = []
+        for line in range(self.nrows):
+            try:
+                data.append(dict(self.sheet.loc[line]))
+            except KeyError:
+                print("KeyError: {}".format(line))
+        #         return [dict(self.sheet.loc[line]) for line in range(self.nrows)]
+        return data

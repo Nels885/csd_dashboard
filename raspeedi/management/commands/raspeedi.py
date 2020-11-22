@@ -38,8 +38,9 @@ class Command(BaseCommand):
 
         if options['delete']:
             Raspeedi.objects.all().delete()
+            Product.objects.all().delete()
 
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Raspeedi, ])
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Raspeedi, Product, ])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
