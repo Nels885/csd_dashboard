@@ -6,7 +6,7 @@ class ExcelRaspeedi(ExcelFormat):
     RASPEEDI_COLS = ['ref_boitier', 'produit', 'facade', 'type', 'dab', 'cam', 'dump_peedi', 'cd_version', 'media',
                      'carto', 'dump_renesas', 'ref_mm']
     COLS = {'A': 'ref_boitier', 'B': 'produit', 'C': 'facade', 'D': 'type', 'E': 'dab', 'F': 'cam', 'G': 'dump_peedi',
-            'H': 'cd_version', 'I': 'media', 'J': 'carto', 'K': 'dump_renesas', 'L': 'ref_mm'}
+            'H': 'cd_version', 'I': 'media', 'J': 'carto', 'K': 'dump_renesas', 'L': 'ref_mm', 'N': 'jukebox'}
 
     def __init__(self, file, sheet_name=0, columns=None):
         """
@@ -40,8 +40,10 @@ class ExcelRaspeedi(ExcelFormat):
         :return:
             Data line converts
         """
-        for col in ["dab", "cam"]:
-            self.sheet[col] = self.sheet[col].replace({"O": True, "N": False, "?": False, None: False})
+        for col in ["dab", "cam", "JUKEBOX"]:
+            self.sheet[col] = self.sheet[col].replace({
+                "O": True, "N": False, "?": False, None: False, "NON": False, "OUI": True
+            })
 
 
 class ExcelPrograming(ExcelFormat):

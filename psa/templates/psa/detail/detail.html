@@ -1,6 +1,6 @@
 {% extends 'format/detail_format.html' %}
 
-{% load static i18n %}
+{% load static i18n corvet_tags %}
 
 {% block card_header %}
 
@@ -97,6 +97,9 @@
                     </button>
                 </div>
                 <div class="modal-body text-center">
+                    <div>
+                        {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
+                    </div>
                     <img id="barcode" src="" alt="{{ corvet.vin }}"/>
                 </div>
             </div>

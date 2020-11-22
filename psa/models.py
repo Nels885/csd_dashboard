@@ -130,14 +130,15 @@ class Corvet(models.Model):
         return self.vin
 
 
-class Product(models.Model):
+class Multimedia(models.Model):
     TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
         ('N/A', 'Vide'),
-        ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'),
+        ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'), ('external SD', 'Carte SD Externe'),
         ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
     ]
     PRODUCT_CHOICES = [
+        ('RD3', 'RD3'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
         ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
         ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
         ('NG4', 'NG4'), ('RNEG', 'RNEG'),
@@ -146,33 +147,34 @@ class Product(models.Model):
     LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
 
-    reference = models.BigIntegerField('code barre PSA', primary_key=True)
+    hw_reference = models.BigIntegerField('référence HW', primary_key=True)
     name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
-    front = models.CharField('façade', max_length=2, blank=True)
+    level = models.CharField('niveau', max_length=2, blank=True)
+    extra = models.CharField('supplément', max_length=100, blank=True)
     dab = models.BooleanField('DAB', default=False)
     cam = models.BooleanField('caméra de recul', default=False)
-    cd_version = models.CharField('version CD', max_length=10, blank=True)
+    cd_player = models.BooleanField('lecteur CD', default=False)
+    jukebox = models.BooleanField('jukebox', default=False)
     media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, blank=True)
     lvds_con = models.IntegerField("nombre d'LVDS", choices=LVDS_CON_CHOICES, null=True, blank=True)
     usb_con = models.IntegerField("nombre d'USB", choices=USB_CON_CHOICES,  null=True, blank=True)
     front_pic = models.ImageField(upload_to='psa', blank=True)
     setplate_pic = models.ImageField(upload_to='psa', blank=True)
     rear_pic = models.ImageField(upload_to='psa', blank=True)
-    corvets = models.ManyToManyField('Corvet', related_name='products', blank=True)
 
     class Meta:
-        verbose_name = "Données Produit"
-        ordering = ['reference']
+        verbose_name = "Données Multimédia"
+        ordering = ['hw_reference']
 
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return "{}_{}_{}_{}".format(self.reference, self.name, self.front, self.type)
+        return "{}_{}_{}_{}".format(self.hw_reference, self.name, self.level, self.type)
 
 
 class Firmware(models.Model):

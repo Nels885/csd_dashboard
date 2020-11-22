@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Corvet, Product, Firmware, Calibration, CorvetChoices
+from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices
 
 
 class CorvetAdmin(admin.ModelAdmin):
@@ -14,11 +14,11 @@ class CorvetAdmin(admin.ModelAdmin):
     search_fields = ('vin', 'electronique_14l', 'electronique_94l')
 
 
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('reference', 'name', 'front', 'type', 'dab', 'cam', 'media')
-    list_filter = ('name', 'front', 'type', 'media')
-    ordering = ('reference',)
-    search_fields = ('reference', 'name', 'type')
+class MultimediaAdmin(admin.ModelAdmin):
+    list_display = ('hw_reference', 'name', 'level', 'type', 'dab', 'cam', 'media')
+    list_filter = ('name', 'level', 'type', 'media')
+    ordering = ('hw_reference',)
+    search_fields = ('hw_reference', 'name', 'type')
 
 
 class FirmwareAdmin(admin.ModelAdmin):
@@ -36,7 +36,7 @@ class CalibrationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Corvet, CorvetAdmin)
-admin.site.register(Product, ProductAdmin)
+admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices)

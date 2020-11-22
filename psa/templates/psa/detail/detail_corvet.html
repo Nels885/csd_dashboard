@@ -4,16 +4,20 @@
     <section class="col-sm-6">
         <table class="table table-bordered table-striped">
             <caption style="caption-side: top;">
-                <h3 class="text-gray-800">TELEMATIQUE :</h3>
+                <h3 class="text-gray-800">MULTIMEDIA :</h3>
             </caption>
             <tbody>
             <tr>
-                <td class="text-dark td-ihm">Code barre PSA</td>
-                <td>{{ btel.reference }}</td>
+                <td class="text-dark td-ihm">Référence HW</td>
+                <td>{{ btel.hw_reference }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Modèle</td>
                 <td>{{ btel.get_name_display }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Référence OEM</td>
+                <td>{{ btel.oe_reference }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Fabriquant</td>
@@ -24,8 +28,8 @@
                 <td>{{ btel.get_type_display }}</td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Facade</td>
-                <td>{{ btel.front }}</td>
+                <td class="text-dark td-ihm">Niveau</td>
+                <td>{{ btel.level }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">DAB</td>

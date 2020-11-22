@@ -9,7 +9,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 
 from utils.django.forms import ParaErrorList
 from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
-from .models import Corvet, Product
+from .models import Corvet, Multimedia
 from dashboard.models import WebLink
 from raspeedi.models import Programing
 
@@ -77,8 +77,10 @@ def corvet_detail(request, vin):
     title = f'Info CORVET : {vin}'
     corvet = get_object_or_404(Corvet, vin=vin)
     if corvet.electronique_14x:
-        btel = Product.objects.filter(reference=corvet.electronique_14x).first()
+        btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14x).first()
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
+    elif corvet.electronique_14f:
+        btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = vars(corvet)
     for key in ["_state"]:
@@ -131,6 +133,6 @@ def product_table(request):
         Product table page
     """
     table_title = _('Products PSA table')
-    products = Product.objects.all().order_by('reference')
+    products = Multimedia.objects.all().order_by('hw_reference')
     context.update(locals())
     return render(request, 'psa/product_table.html', context)
