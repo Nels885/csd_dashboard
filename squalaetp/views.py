@@ -9,8 +9,8 @@ from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView
 
 from .models import Xelon, Stock
-from psa.models import Corvet
-from raspeedi.models import Raspeedi
+from psa.models import Corvet, Multimedia
+from raspeedi.models import Programing
 from psa.forms import CorvetForm, CorvetModalForm
 from dashboard.forms import ParaErrorList
 from utils.file.export import xml_corvet_file
@@ -51,7 +51,11 @@ def detail(request, file_id):
     if xelon.corvet:
         corvet = get_object_or_404(Corvet, vin=xelon.vin)
         if corvet.electronique_14x:
-            raspeedi = Raspeedi.objects.filter(ref_boitier=corvet.electronique_14x).first()
+            # raspeedi = Raspeedi.objects.filter(ref_boitier=corvet.electronique_14x).first()
+            btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14x).first()
+            prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
+        elif corvet.electronique_14f:
+            btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
         dict_corvet = vars(corvet)
         for key in ["_state"]:
             del dict_corvet[key]

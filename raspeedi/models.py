@@ -63,6 +63,10 @@ class Programing(models.Model):
         verbose_name = "Données Programmation"
         ordering = ['psa_barcode']
 
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
     def __str__(self):
         return str(self.psa_barcode)
 

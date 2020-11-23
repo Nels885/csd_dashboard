@@ -27,17 +27,79 @@
         </table>
         <table class="table table-bordered table-striped">
             <caption style="caption-side: top;">
-                <h3 class="text-gray-800">RASPEEDI :</h3>
+                <h3 class="text-gray-800">MULTIMEDIA :</h3>
             </caption>
             <tbody>
-            {% for field, value in raspeedi %}
-                {% if value %}
-                    <tr>
-                        <td class="text-dark td-ihm-40">{{ field }}</td>
-                        <td>{{ value }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
+            <tr>
+                <td class="text-dark td-ihm">Référence HW</td>
+                <td>{{ btel.hw_reference }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Modèle</td>
+                <td>{{ btel.get_name_display }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Référence OEM</td>
+                <td>{{ btel.oe_reference }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Fabriquant</td>
+                <td>{{ btel.supplier_oe }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Type</td>
+                <td>{{ btel.get_type_display }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Niveau</td>
+                <td>{{ btel.level }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">DAB</td>
+                <td>{% if btel.dab %}Oui{% else %}Non{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Caméra de recul</td>
+                <td>{% if btel.cam %}Oui{% else %}Non{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Média</td>
+                <td>{{ btel.get_media_display }}</td>
+            </tr>
+            </tbody>
+        </table>
+{#        <table class="table table-bordered table-striped">#}
+{#            <caption style="caption-side: top;">#}
+{#                <h3 class="text-gray-800">RASPEEDI :</h3>#}
+{#            </caption>#}
+{#            <tbody>#}
+{#            {% for field, value in raspeedi %}#}
+{#                {% if value %}#}
+{#                    <tr>#}
+{#                        <td class="text-dark td-ihm-40">{{ field }}</td>#}
+{#                        <td>{{ value }}</td>#}
+{#                    </tr>#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+{#            </tbody>#}
+{#        </table>#}
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3 class="text-gray-800">PROGRAMMATION :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">Dossier PEEDI</td>
+                <td>{{ prog.peedi_path }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Dump PEEDI</td>
+                <td>{{ prog.peedi_dump }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Dump RENESAS</td>
+                <td>{{ prog.renesas_dump }}</td>
+            </tr>
             </tbody>
         </table>
     </section>
