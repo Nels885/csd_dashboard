@@ -145,8 +145,11 @@ class Multimedia(models.Model):
     ]
     LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
+    ANT_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
 
     hw_reference = models.BigIntegerField('référence HW', primary_key=True)
+    hw_type = models.CharField('type HW', max_length=10, blank=True)
+    label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
@@ -156,9 +159,11 @@ class Multimedia(models.Model):
     dab = models.BooleanField('DAB', default=False)
     cam = models.BooleanField('caméra de recul', default=False)
     cd_player = models.BooleanField('lecteur CD', default=False)
-    jukebox = models.BooleanField('jukebox', default=False)
+    jukebox = models.BooleanField('jukebox', null=True)
+    carplay = models.BooleanField('CarPlay', null=True)
     media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, blank=True)
     lvds_con = models.IntegerField("nombre d'LVDS", choices=LVDS_CON_CHOICES, null=True, blank=True)
+    ant_con = models.IntegerField("Nombre d'antenne", choices=ANT_CON_CHOICES, null=True, blank=True)
     usb_con = models.IntegerField("nombre d'USB", choices=USB_CON_CHOICES,  null=True, blank=True)
     front_pic = models.ImageField(upload_to='psa', blank=True)
     setplate_pic = models.ImageField(upload_to='psa', blank=True)
