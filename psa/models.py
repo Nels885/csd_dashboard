@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.utils import ProgrammingError
 
 
 class CorvetChoices(models.Model):
@@ -23,14 +22,6 @@ class CorvetChoices(models.Model):
 
     def __str__(self):
         return f"{self.key} - {self.value} - {self.column}"
-
-
-def corvet_choices(column):
-    try:
-        data = CorvetChoices.objects.filter(column=column)
-        return list(data.values_list('key', 'value'))
-    except ProgrammingError:
-        return []
 
 
 class Corvet(models.Model):
@@ -121,12 +112,36 @@ class Corvet(models.Model):
     electronique_86b = models.CharField('BSM DOTE - Boitier Servitude Moteur', max_length=200, blank=True)
     electronique_96b = models.CharField('BSM SOFT - Boitier Servitude Moteur', max_length=200, blank=True)
 
+    # radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
+    # btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
+    # cmm = models.ForeignKey('psa.EcuType', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
+    # bsi = models.ForeignKey('psa.EcuType', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
+    # bsm = models.ForeignKey('psa.EcuType'; related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
+
     class Meta:
         verbose_name = "données CORVET"
         ordering = ['vin']
 
     def __str__(self):
         return self.vin
+
+
+# class EcuType(models.Model):
+#     TYPE_CHOICES = [
+#         ('CMM', 'Calculateur Moteur Multifonction'), ('BSI', 'Boitier Servitude Intelligent'),
+#         ('BSM', 'Boitier Servitude Moteur')
+#     ]
+#
+#     hw_reference = models.CharField("hardware", max_length=10, unique=True)
+#     name = models.CharField("modèle produit", max_length=50, blank=True)
+#     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+#     type = models.CharField("type", max_length=10, choices=TYPE_CHOICES)
+#
+#     def part_name(self):
+#         return self.name + " HW" + self.hw_reference
+#
+#     def __str__(self):
+#         return f"HW_{self.hw_reference} - MODEL_{self.name} - TYPE_{self.type}"
 
 
 class Multimedia(models.Model):
@@ -178,7 +193,7 @@ class Multimedia(models.Model):
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return "{}_{}_{}_{}".format(self.hw_reference, self.name, self.level, self.type)
+        return f"{self.hw_reference}_{self.name}_{self.level}_{self.type}"
 
 
 class Firmware(models.Model):
