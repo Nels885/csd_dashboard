@@ -12,12 +12,13 @@ from django.forms.models import model_to_dict
 from .models import Xelon, Stock
 from psa.models import Corvet, Multimedia
 from raspeedi.models import Programing
-from .forms import IhmModalForm
-from psa.forms import CorvetForm, CorvetModalForm
+from .forms import IhmForm, XelonModalForm
+from psa.forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.file.export import xml_corvet_file
 from utils.file import LogFile, os
 from utils.conf import CSD_ROOT
+from utils.django.models import defaults_dict
 
 
 # from utils.scraping import ScrapingCorvet
@@ -58,8 +59,8 @@ def detail(request, file_id):
         elif corvet.electronique_14f:
             btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
         dict_corvet = model_to_dict(corvet)
-    form = IhmModalForm(instance=xelon.corvet,
-                        initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
+    form = IhmForm(instance=xelon.corvet,
+                   initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
     select = 'xelon'
     redirect = request.META.get('HTTP_REFERER')
     # 'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
@@ -112,7 +113,7 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'psa/modal/corvet_form.html'
-    form_class = CorvetModalForm
+    form_class = XelonModalForm
     success_message = _('Success: Squalaetp data was updated.')
 
     def get_context_data(self, **kwargs):
@@ -120,6 +121,13 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         file = self.object.numero_de_dossier
         context['modal_title'] = _('CORVET update for %(file)s' % {'file': file})
         return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data['xml_data']
+        defaults = defaults_dict(Corvet, data, 'vin')
+        obj, created = Corvet.objects.update_or_create(vin=form.cleaned_data['vin'], defaults=defaults)
+        self.object.corvet = obj
+        return super(SqualaetpUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:

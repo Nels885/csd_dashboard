@@ -26,19 +26,16 @@ logger = logging.getLogger(__name__)
 # logger.addHandler(ch)
 
 
-def xml_corvet_file(data, vin):
+def xml_corvet_file(instance, data, vin):
     try:
-        xelons = Corvet.objects.get(vin=vin).xelon_set.all()
-
-        for queryset in xelons:
-            xelon_nb = queryset.numero_de_dossier
-            os.makedirs(XML_PATH, exist_ok=True)
-            file = os.path.join(XML_PATH, xelon_nb + ".xml")
-            if not os.path.isfile(file):
-                with open(file, "w", encoding='utf-8') as f:
-                    f.write(str(data))
-            else:
-                logger.warning("{} File exists.".format(xelon_nb))
+        xelon_nb = instance.numero_de_dossier
+        os.makedirs(XML_PATH, exist_ok=True)
+        file = os.path.join(XML_PATH, xelon_nb + ".xml")
+        if not os.path.isfile(file):
+            with open(file, "w", encoding='utf-8') as f:
+                f.write(str(data))
+        else:
+            logger.warning("{} File exists.".format(xelon_nb))
     except Corvet.DoesNotExist:
         logger.warning("Xelon number not found")
 

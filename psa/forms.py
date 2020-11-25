@@ -3,7 +3,7 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.validators import validate_vin, validate_nac, xml_parser
-from utils.file.export import xml_corvet_file
+# from utils.file.export import xml_corvet_file
 from .models import Corvet, Firmware
 
 
@@ -69,7 +69,7 @@ class CorvetForm(forms.ModelForm):
         if data and data['vin'] == vin:
             for field, value in data.items():
                 self.cleaned_data[field] = value
-            xml_corvet_file(xml_data, vin)
+            # xml_corvet_file(xml_data, vin)
         elif data and data['vin'] != vin:
             self.add_error('xml_data', _('XML data does not match VIN'))
         else:
