@@ -57,10 +57,7 @@ def detail(request, file_id):
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
         elif corvet.electronique_14f:
             btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
-        dict_corvet = vars(corvet)
-        for key in ["_state"]:
-            del dict_corvet[key]
-        dict_corvet = vars(corvet)
+        dict_corvet = model_to_dict(corvet)
     form = IhmModalForm(instance=xelon.corvet,
                         initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
     select = 'xelon'

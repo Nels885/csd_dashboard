@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import TemplateView
 from django.utils.translation import ugettext as _
 from django.urls import reverse_lazy
+from django.forms.models import model_to_dict
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from utils.django.forms import ParaErrorList
@@ -82,9 +83,7 @@ def corvet_detail(request, vin):
     elif corvet.electronique_14f:
         btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
-    dict_corvet = vars(corvet)
-    for key in ["_state"]:
-        del dict_corvet[key]
+    dict_corvet = model_to_dict(corvet)
     select = "prods"
     return render(request, 'psa/detail/detail.html', locals())
 
