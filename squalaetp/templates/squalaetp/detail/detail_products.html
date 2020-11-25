@@ -1,0 +1,72 @@
+{% load i18n %}
+
+<div class="row">
+    <section class="col-sm-6">
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3 class="text-gray-800">XELON :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">Numéro de dossier</td>
+                <td>{{ xelon.numero_de_dossier }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">V.I.N.</td>
+                <td>{{ xelon.vin }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Modèle produit</td>
+                <td>{{ xelon.modele_produit }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Modèle véhicule</td>
+                <td>{{ xelon.modele_vehicule }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        {% include 'psa/format/mutimedia_table_format.html' with object=btel %}
+
+        {#        <table class="table table-bordered table-striped">#}
+        {#            <caption style="caption-side: top;">#}
+        {#                <h3 class="text-gray-800">RASPEEDI :</h3>#}
+        {#            </caption>#}
+        {#            <tbody>#}
+        {#            {% for field, value in raspeedi %}#}
+        {#                {% if value %}#}
+        {#                    <tr>#}
+        {#                        <td class="text-dark td-ihm-40">{{ field }}</td>#}
+        {#                        <td>{{ value }}</td>#}
+        {#                    </tr>#}
+        {#                {% endif %}#}
+        {#            {% endfor %}#}
+        {#            </tbody>#}
+        {#        </table>#}
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3 class="text-gray-800">PROGRAMMATION :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">Dossier PEEDI</td>
+                <td>{{ prog.peedi_path }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Dump PEEDI</td>
+                <td>{{ prog.peedi_dump }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Dump RENESAS</td>
+                <td>{{ prog.renesas_dump }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="col-sm-6">
+        <h3 class="text-gray-800">CORVET :</h3>
+
+        {% include 'psa/format/corvet_table_format.html' with object=corvet %}
+
+    </section>
+</div>

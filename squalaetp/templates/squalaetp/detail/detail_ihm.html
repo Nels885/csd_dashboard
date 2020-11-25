@@ -1,72 +1,33 @@
-{% load i18n %}
+{% load i18n widget_tweaks %}
 
+<div class="{% if form.non_field_errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
+    {% for error in form.non_field_errors %}
+        {{ error }}
+    {% endfor %}
+</div>
 <div class="row">
-    <section class="col-sm-6">
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">XELON :</h3>
-            </caption>
-            <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Numéro de dossier</td>
-                <td>{{ xelon.numero_de_dossier }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">V.I.N.</td>
-                <td>{{ xelon.vin }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Modèle produit</td>
-                <td>{{ xelon.modele_produit }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Modèle véhicule</td>
-                <td>{{ xelon.modele_vehicule }}</td>
-            </tr>
-            </tbody>
-        </table>
-
-        {% include 'psa/format/mutimedia_table_format.html' with object=btel %}
-
-        {#        <table class="table table-bordered table-striped">#}
-        {#            <caption style="caption-side: top;">#}
-        {#                <h3 class="text-gray-800">RASPEEDI :</h3>#}
-        {#            </caption>#}
-        {#            <tbody>#}
-        {#            {% for field, value in raspeedi %}#}
-        {#                {% if value %}#}
-        {#                    <tr>#}
-        {#                        <td class="text-dark td-ihm-40">{{ field }}</td>#}
-        {#                        <td>{{ value }}</td>#}
-        {#                    </tr>#}
-        {#                {% endif %}#}
-        {#            {% endfor %}#}
-        {#            </tbody>#}
-        {#        </table>#}
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">PROGRAMMATION :</h3>
-            </caption>
-            <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Dossier PEEDI</td>
-                <td>{{ prog.peedi_path }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Dump PEEDI</td>
-                <td>{{ prog.peedi_dump }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Dump RENESAS</td>
-                <td>{{ prog.renesas_dump }}</td>
-            </tr>
-            </tbody>
-        </table>
+    <section class="col-sm-3">
+        <button class="btn btn-secondary btn-block mb-3" disabled>Envoi Email</button>
+        <button class="update-corvet btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:edit' xelon.pk %}">
+            Modification CORVET
+        </button>
+        <button class="btn btn-secondary btn-block">Info VIN Raspeedi</button>
     </section>
-    <section class="col-sm-6">
-        <h3 class="text-gray-800">CORVET :</h3>
-
-        {% include 'psa/format/corvet_table_format.html' with object=corvet %}
-
+    <section class="col-sm-9">
+        {% for field in form %}
+            <div class="form-group">
+                <div class="form-group row">
+                    <label for="{{ field.id_for_label }}" class="col-sm-7 col-form-label">{{ field.label }}</label>
+                    <div class="col-sm-5">
+                        {% render_field field class="form-control" %}
+                        <div class="{% if field.errors %} invalid{% endif %}">
+                            {% for error in field.errors %}
+                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </section>
 </div>
