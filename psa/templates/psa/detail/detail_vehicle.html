@@ -48,14 +48,50 @@
                 <td class="text-dark td-ihm">HAUT PARLEUR</td>
                 <td>{{ corvet.attribut_dhb|get_corvet:"ATT_DHB" }}</td>
             </tr>
+            {% if corvet.attribut_dhg %}
+                <tr>
+                    <td class="text-dark td-ihm">COMMANDE AUTO-RADIO</td>
+                    <td>{{ corvet.attribut_dhg|get_corvet:"ATT_DHG" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_djy %}
+                <tr>
+                    <td class="text-dark td-ihm">SYSTEME NAVIGATION</td>
+                    <td>{{ corvet.attribut_djy|get_corvet:"ATT_DJY" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dlx %}
+                <tr>
+                    <td class="text-dark td-ihm">AFFICHEUR AV</td>
+                    <td>{{ corvet.attribut_dlx|get_corvet:"ATT_DLX" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dym %}
+                <tr>
+                    <td class="text-dark td-ihm">PRISE AUXILIAIRE PACK AUDIO</td>
+                    <td>{{ corvet.attribut_dym|get_corvet:"ATT_DYM" }}</td>
+                </tr>
+            {% endif %}
             <tr>
                 <td class="text-dark td-ihm">ANTENNE</td>
                 <td>{{ corvet.attribut_dat|get_corvet:"ATT_DAT" }}</td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm font-weight-bold">COTE CONDUITE/POSTE CONDUITE</td>
+                <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
                 <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
             </tr>
+            {% if corvet.attribut_dqs %}
+                <tr>
+                    <td class="text-dark td-ihm">WIFI</td>
+                    <td>{% if corvet.attribut_dqs == "01" %}AVEC{% else %}SANS{% endif %} WIFI</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dun %}
+                <tr>
+                    <td class="text-dark td-ihm">AMPLI EQUALISEUR</td>
+                    <td>{% if corvet.attribut_dun == "01" %}AVEC{% else %}SANS{% endif %} AMPLI EQUALISEUR</td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
     </section>
