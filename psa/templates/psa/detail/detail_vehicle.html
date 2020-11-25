@@ -40,14 +40,18 @@
                 <h3 class="text-gray-800">Equipement intérieur :</h3>
             </caption>
             <tbody>
-            <tr>
-                <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
-                <td>{{ corvet.attribut_dgm|get_corvet:"ATT_DGM" }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">HAUT PARLEUR</td>
-                <td>{{ corvet.attribut_dhb|get_corvet:"ATT_DHB" }}</td>
-            </tr>
+            {% if corvet.attribut_dgm %}
+                <tr>
+                    <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
+                    <td>{{ corvet.attribut_dgm|get_corvet:"ATT_DGM" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dhb %}
+                <tr>
+                    <td class="text-dark td-ihm">HAUT PARLEUR</td>
+                    <td>{{ corvet.attribut_dhb|get_corvet:"ATT_DHB" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dhg %}
                 <tr>
                     <td class="text-dark td-ihm">COMMANDE AUTO-RADIO</td>
@@ -72,14 +76,12 @@
                     <td>{{ corvet.attribut_dym|get_corvet:"ATT_DYM" }}</td>
                 </tr>
             {% endif %}
-            <tr>
-                <td class="text-dark td-ihm">ANTENNE</td>
-                <td>{{ corvet.attribut_dat|get_corvet:"ATT_DAT" }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
-                <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
-            </tr>
+            {% if corvet.attribut_dat %}
+                <tr>
+                    <td class="text-dark td-ihm">ANTENNE</td>
+                    <td>{{ corvet.attribut_dat|get_corvet:"ATT_DAT" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dqs %}
                 <tr>
                     <td class="text-dark td-ihm">WIFI</td>
@@ -92,6 +94,18 @@
                     <td>{% if corvet.attribut_dun == "01" %}AVEC{% else %}SANS{% endif %} AMPLI EQUALISEUR</td>
                 </tr>
             {% endif %}
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-striped">
+            <caption style="caption-side: top;">
+                <h3 class="text-gray-800">Divers :</h3>
+            </caption>
+            <tbody>
+            <tr>
+                <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
+                <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
+            </tr>
             </tbody>
         </table>
     </section>
