@@ -111,7 +111,12 @@
             $(this).modalForm({formURL: $(this).data('id')});
         });
 
-        // Delete post buttons
+        // ihm email buttons
+        $(".ihm-email").each(function () {
+            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+        });
+
+        // Update corvet buttons
         $(".update-corvet").each(function () {
             $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
         });

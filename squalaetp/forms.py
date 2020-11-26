@@ -1,11 +1,17 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from bootstrap_modal_forms.forms import BSModalModelForm
+from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 
 from utils.django.validators import validate_vin, xml_parser
 from utils.file.export import xml_corvet_file
 from psa.models import Corvet
 from .models import Xelon
+
+
+class IhmEmailModalForm(BSModalForm):
+    to = forms.CharField(label='à', required=True, widget=forms.TextInput())
+    subject = forms.CharField(label='Objet', required=True, widget=forms.TextInput())
+    message = forms.CharField(widget=forms.Textarea(attrs={'rows': 10}), required=True)
 
 
 class IhmForm(forms.ModelForm):

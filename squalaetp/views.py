@@ -6,13 +6,13 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from bootstrap_modal_forms.generic import BSModalUpdateView
+from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
 
 from .models import Xelon, Stock
 from psa.models import Corvet, Multimedia
 from raspeedi.models import Programing
-from .forms import IhmForm, XelonModalForm
+from .forms import IhmForm, XelonModalForm, IhmEmailModalForm
 from psa.forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.file.export import xml_corvet_file
@@ -128,6 +128,19 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         obj, created = Corvet.objects.update_or_create(vin=form.cleaned_data['vin'], defaults=defaults)
         self.object.corvet = obj
         return super(SqualaetpUpdateView, self).form_valid(form)
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
+    permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
+    template_name = 'squalaetp/modal/ihm_email_form.html'
+    form_class = IhmEmailModalForm
+    success_message = _('Success: Squalaetp data was updated.')
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
