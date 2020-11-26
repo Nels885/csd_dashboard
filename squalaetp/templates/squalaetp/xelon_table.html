@@ -26,7 +26,7 @@
 
         {% for file in files %}
 
-            <tr {% if "PSA" in file.famille_client and "VF3" in file.vin and "VF7" in file.vin and not file.corvet %}class="bg-danger text-light"{% endif %}>
+            <tr {% if file.vin|slice:":3" == "VF3" or file.vin|slice:":3" == "VF7" %}{% if not file.corvet %}class="bg-danger text-light"{% endif %}{% endif %}>
                 <td class="bg-white">
                     <a href="{% url 'squalaetp:xelon_edit' file_id=file.id %}" title="Modification VIN et Corvet" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
