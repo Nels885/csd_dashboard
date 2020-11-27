@@ -23,17 +23,28 @@ class LogFile:
     def __init__(self, path, name=None):
         # self.files = list_dir(path, name)
         self.path = os.path.join(path, 'LOGS')
-        self.name = name
-        self.calrt6 = self.log_filter('LOG_CAL_RT6')
-        self.calrd45 = self.log_filter('LOG_CAL_RD45')
-        self.raspeedi = self.log_filter('LOG_RASPEEDI')
-        self.rasprog = self.log_filter('LOG_RASPROG')
-        self.calibre = self.log_filter('CALIBRE')
+        self.paths = {
+            'SMEG': os.path.join(path, 'LOG_RASPEEDI/SMEG/'),
+            'SMEGP': os.path.join(path, 'LOG_RASPROG/SMEGP/'),
+            'RT6': os.path.join(path, 'LOG_RASPEEDI/RT6/'),
+            'RT6v2': os.path.join(path, 'LOG_RASPEEDI/RT6v2/'),
+            'cal_rt6': os.path.join(path, 'LOG_CAL_RT6'),
+            'calibre': os.path.join(path, 'CALIBRE')
+        }
         self.ecu = self.log_filter('LOG_ECU_IN')
 
     def log_filter(self, dir_name):
-        files = list_dir(os.path.join(self.path, dir_name), self.name)
+        files = list_dir(os.path.join(self.path, dir_name))
         return [file.split('/')[-1] for file in files if dir_name in file]
+
+    def vin_err_filter(self, product, file_name):
+        if self.paths.get(product):
+            files = glob.glob(os.path.join(self.paths[product], f"{file_name}") + "*_Erreur_VIN.txt")
+            if files:
+                with open(files[0], 'r') as f:
+                    data = f.read()
+                return data
+        return None
 
     def export_cal(self, file_name):
         cal_list = []
