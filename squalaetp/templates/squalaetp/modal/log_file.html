@@ -1,14 +1,18 @@
 {% load i18n %}
 
 <div class="modal-header">
-    <h5 class="modal-title" id="logoutModalLabel">Contenu du fichier LOG</h5>
+    <h3 class="modal-title" id="logoutModalLabel">Contenu du fichier LOG</h3>
     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">×</span>
     </button>
 </div>
 <div class="modal-body">
-    <p>{{ text|safe }}</p>
+    {% if text %}
+        <p>{{ text|linebreaksbr }}</p>
+    {% else %}
+        <h5 class="text-center m-5">Pas de fichiers LOG disponible.</h5>
+    {% endif %}
 </div>
 <div class="modal-footer">
-    <button class="btn btn-secondary" type="button" data-dismiss="modal">{% trans "Cancel" %}</button>
+    <button class="btn btn-primary col-sm-2" type="button" data-dismiss="modal">{% trans "OK" %}</button>
 </div>

@@ -154,8 +154,12 @@ class LogFileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(LogFileView, self).get_context_data(**kwargs)
-        file = LogFile(os.path.join(CSD_ROOT, 'LOGS'), context['file'])
-        with open(file.files[0], 'r') as f:
-            text = f.read().replace('\n', '<br>')
-        context['text'] = text
+        file = LogFile(os.path.join(CSD_ROOT, 'LOGS'), )
+        xelon = get_object_or_404(Xelon, pk=context['pk'])
+        if xelon.corvet:
+            if xelon.corvet.electronique_14x:
+                btel = Multimedia.objects.filter(hw_reference=xelon.corvet.electronique_14x).first()
+                text = file.vin_err_filter(btel.name, xelon.numero_de_dossier)
+                # print(f"Info LOG : {btel.name} - {xelon.numero_de_dossier}")
+                context['text'] = text
         return context
