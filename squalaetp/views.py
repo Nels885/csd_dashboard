@@ -16,7 +16,7 @@ from .forms import IhmForm, XelonModalForm, IhmEmailModalForm
 from psa.forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.file.export import xml_corvet_file
-from utils.file import LogFile, os
+from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
 
@@ -63,7 +63,6 @@ def detail(request, file_id):
                    initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
     select = 'xelon'
     redirect = request.META.get('HTTP_REFERER')
-    # 'log_file': LogFile(CSD_ROOT, file.numero_de_dossier)
     return render(request, 'squalaetp/detail/detail.html', locals())
 
 
