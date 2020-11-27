@@ -24,12 +24,10 @@ class LogFile:
         # self.files = list_dir(path, name)
         self.path = os.path.join(path, 'LOGS')
         self.paths = {
-            'SMEG': os.path.join(path, 'LOG_RASPEEDI/SMEG/'),
-            'SMEGP': os.path.join(path, 'LOG_RASPROG/SMEGP/'),
-            'RT6': os.path.join(path, 'LOG_RASPEEDI/RT6/'),
-            'RT6v2': os.path.join(path, 'LOG_RASPEEDI/RT6v2/'),
-            'cal_rt6': os.path.join(path, 'LOG_CAL_RT6'),
-            'calibre': os.path.join(path, 'CALIBRE')
+            'SMEG': os.path.join(self.path, 'LOG_RASPROG/'),
+            'RT6': os.path.join(self.path, 'LOG_RASPEEDI/'),
+            'cal_rt6': os.path.join(self.path, 'LOG_CAL_RT6'),
+            'calibre': os.path.join(self.path, 'CALIBRE')
         }
         self.ecu = self.log_filter('LOG_ECU_IN')
 
@@ -38,8 +36,9 @@ class LogFile:
         return [file.split('/')[-1] for file in files if dir_name in file]
 
     def vin_err_filter(self, product, file_name):
-        if self.paths.get(product):
-            files = glob.glob(os.path.join(self.paths[product], f"{file_name}") + "*_Erreur_VIN.txt")
+        keys = [key for key in self.paths.keys() if key in product]
+        if keys:
+            files = glob.glob(os.path.join(self.paths[keys[0]], f"{keys[0]}*/{file_name}") + "*_Erreur_VIN.txt")
             if files:
                 with open(files[0], 'r') as f:
                     data = f.read()
