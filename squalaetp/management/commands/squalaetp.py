@@ -109,7 +109,7 @@ class Command(BaseCommand):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
 
         nb_xelon, nb_corvet, objects_list = 0, 0, []
-        for xelon in Xelon.objects.all():
+        for xelon in Xelon.objects.filter(corvet__isnull=True):
             try:
                 xelon.corvet = Corvet.objects.get(pk=xelon.vin)
                 xelon.save()
