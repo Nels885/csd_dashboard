@@ -90,8 +90,8 @@ class LogFile:
     def _dataframe(self, path):
         data = {"xelon": [], "cal": []}
         for file in self.ecu:
-            with open(os.path.join(path, file), "r") as f:
-                try:
+            try:
+                with open(os.path.join(path, file), "r") as f:
                     xelon = cal = None
                     for line in f.readlines():
                         if "NumXelon=" in line:
@@ -105,8 +105,10 @@ class LogFile:
                     if xelon and cal:
                         data["xelon"].append(xelon)
                         data["cal"].append(cal)
-                except UnicodeDecodeError:
-                    pass
+            except UnicodeDecodeError:
+                pass
+            except FileNotFoundError as err:
+                print(f"FileNotFoundError : {err}")
         return pd.DataFrame(data)
 
 
