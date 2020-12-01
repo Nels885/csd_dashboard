@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 17:19+0100\n"
+"POT-Creation-Date: 2020-12-01 10:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/forms.py:15
+#: squalaetp/forms.py:44
 msgid ""
 "Data in XML format available on the RepairNAV site during CORVET "
 "extraction..."
@@ -26,95 +26,92 @@ msgstr ""
 "Données au format XML disponible sur le site RepairNAV lors de l'extraction "
 "CORVET..."
 
-#: squalaetp/forms.py:26 squalaetp/forms.py:85
+#: squalaetp/forms.py:55
 msgid "Enter the VIN number"
 msgstr "Entrez le numéro de VIN"
 
-#: squalaetp/forms.py:49
+#: squalaetp/forms.py:76
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:51 squalaetp/tests/tests_corvet_views.py:70
+#: squalaetp/forms.py:78
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
 #: squalaetp/templates/squalaetp/ajax_xelon_table.html:74
-#: squalaetp/templates/squalaetp/corvet_insert.html:40
-#: squalaetp/templates/squalaetp/modal/corvet_form.html:53
 #: squalaetp/templates/squalaetp/xelon_edit.html:40
 msgid "Submit"
 msgstr "Soumettre"
 
-#: squalaetp/templates/squalaetp/corvet_detail.html:8
-msgid "Previous page"
-msgstr "Page précédente"
-
-#: squalaetp/templates/squalaetp/corvet_table.html:27
-msgid "Data Export"
-msgstr "Export Données"
-
-#: squalaetp/templates/squalaetp/detail/detail.html:18
+#: squalaetp/templates/squalaetp/detail/detail.html:26
 msgid "Corvet data"
 msgstr "Données Corvet"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:24
+#: squalaetp/templates/squalaetp/detail/detail.html:32
 msgid "Log Files"
 msgstr "Fichiers Log"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:31
+#: squalaetp/templates/squalaetp/detail/detail.html:39
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:39
+#: squalaetp/templates/squalaetp/detail/detail.html:48
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:46
-msgid "CORVET Update"
-msgstr "MAJ CORVET"
-
-#: squalaetp/templates/squalaetp/modal/corvet_form.html:52
-#: squalaetp/templates/squalaetp/modal/log_file.html:13
+#: squalaetp/templates/squalaetp/modal/ihm_email_form.html:37
 msgid "Cancel"
 msgstr "Annuler"
 
-#: squalaetp/tests/tests_corvet_views.py:45
-msgid "This field is required."
-msgstr "Ce champ est requis."
-
-#: squalaetp/tests/tests_corvet_views.py:57
-msgid ""
-"The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
+#: squalaetp/templates/squalaetp/modal/ihm_update.html:22
+msgid "Add Corvet"
 msgstr ""
-"Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie des "
-"véhicules PSA"
 
-#: squalaetp/views.py:77
+#: squalaetp/templates/squalaetp/modal/log_file.html:17
+msgid "OK"
+msgstr ""
+
+#: squalaetp/views.py:79
 msgid "Modification data Xelon file: "
 msgstr "Modification données dossier Xelon : "
 
-#: squalaetp/views.py:81 squalaetp/views.py:102 squalaetp/views.py:148
-#: squalaetp/views.py:158
+#: squalaetp/views.py:83 squalaetp/views.py:104
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: squalaetp/views.py:116
-msgid "CORVET table"
-msgstr "Table CORVET"
-
-#: squalaetp/views.py:130
-msgid "Detail Corvet data for the VIN: "
-msgstr "Données détaillées de Corvet pour le VIN : "
-
-#: squalaetp/views.py:144 squalaetp/views.py:162
-msgid "CORVET integration"
-msgstr "Intégration CORVET"
-
-#: squalaetp/views.py:177
+#: squalaetp/views.py:116 squalaetp/views.py:142
 msgid "Success: Squalaetp data was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:182
+#: squalaetp/views.py:121
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
+
+#~ msgid "Previous page"
+#~ msgstr "Page précédente"
+
+#~ msgid "Data Export"
+#~ msgstr "Export Données"
+
+#~ msgid "CORVET Update"
+#~ msgstr "MAJ CORVET"
+
+#~ msgid "This field is required."
+#~ msgstr "Ce champ est requis."
+
+#~ msgid ""
+#~ "The V.I.N. is invalid, it should be 17 characters and be part of PSA "
+#~ "vehicles"
+#~ msgstr ""
+#~ "Le V.I.N. est invalide, il doit contenir 17 caractères et faire partie "
+#~ "des véhicules PSA"
+
+#~ msgid "CORVET table"
+#~ msgstr "Table CORVET"
+
+#~ msgid "Detail Corvet data for the VIN: "
+#~ msgstr "Données détaillées de Corvet pour le VIN : "
+
+#~ msgid "CORVET integration"
+#~ msgstr "Intégration CORVET"

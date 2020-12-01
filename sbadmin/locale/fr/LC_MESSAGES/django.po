@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-12 17:19+0100\n"
+"POT-Creation-Date: 2020-12-01 10:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,14 +90,14 @@ msgstr "Invité"
 msgid "Login"
 msgstr "S'identifier"
 
-#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:27
-#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:74
-#: templates/nav/nav_csd_atelier.html:92 templates/nav/nav_csd_atelier.html:110
+#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:29
+#: templates/nav/nav_csd_atelier.html:48 templates/nav/nav_csd_atelier.html:81
+#: templates/nav/nav_csd_atelier.html:99 templates/nav/nav_csd_atelier.html:117
 #: templates/nav/nav_tools.html:28 templates/nav/nav_tools.html:82
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:55
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:62
 #: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:87
 msgid "Editing"
 msgstr "Edition"
@@ -107,40 +107,46 @@ msgstr "Edition"
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:24
-msgid "Current folder"
-msgstr "Dossier en cours"
+#: templates/nav/nav_csd_atelier.html:24 templates/nav/nav_reman.html:27
+#: templates/nav/nav_reman.html:47
+msgid "Current files"
+msgstr "Dossiers en cours"
 
-#: templates/nav/nav_csd_atelier.html:25
+#: templates/nav/nav_csd_atelier.html:26
+msgid "VIN Error files"
+msgstr "Dossiers erreur VIN"
+
+#: templates/nav/nav_csd_atelier.html:27
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:28 templates/nav/nav_reman.html:48
+#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:48
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: templates/nav/nav_csd_atelier.html:29
+#: templates/nav/nav_csd_atelier.html:31
 msgid "Stock Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_csd_atelier.html:48
+#: templates/nav/nav_csd_atelier.html:51
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_tools.html:29
+#: templates/nav/nav_csd_atelier.html:55 templates/nav/nav_tools.html:29
 msgid "Products table"
 msgstr "Tableau produits"
 
-#: templates/nav/nav_csd_atelier.html:51 templates/nav/nav_csd_atelier.html:75
-#: templates/nav/nav_csd_atelier.html:93 templates/nav/nav_csd_atelier.html:111
+#: templates/nav/nav_csd_atelier.html:58 templates/nav/nav_csd_atelier.html:82
+#: templates/nav/nav_csd_atelier.html:100
+#: templates/nav/nav_csd_atelier.html:118
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
-#: templates/nav/nav_csd_atelier.html:56
+#: templates/nav/nav_csd_atelier.html:63
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:123 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:130 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -167,10 +173,6 @@ msgstr "Réparations"
 #: templates/nav/nav_reman.html:24
 msgid "Create file"
 msgstr "Création dossier"
-
-#: templates/nav/nav_reman.html:27 templates/nav/nav_reman.html:47
-msgid "Current files"
-msgstr "Dossier en cours"
 
 #: templates/nav/nav_reman.html:46
 msgid "Batch list"
@@ -324,20 +326,23 @@ msgstr ""
 msgid "Reset my password"
 msgstr "Réinitialiser mon mot de passe"
 
-#: utils/django/validators.py:21
+#: utils/django/validators.py:23
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie "
 "des véhicules PSA"
 
-#: utils/django/validators.py:42
+#: utils/django/validators.py:44
 msgid ""
 "The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part "
 "of PSA vehicles"
 msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
+
+#~ msgid "Current folder"
+#~ msgstr "Dossier en cours"
 
 #, fuzzy
 #~| msgid "Products table"

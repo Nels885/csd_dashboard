@@ -103,9 +103,7 @@ class XelonViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
-            folder = self.request.query_params.get('folder', None)
-            if folder and folder == 'pending':
-                self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
+            self._filter(request)
             xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
             serializer = self.serializer_class(xelon["items"], many=True)
             data = {
@@ -117,6 +115,14 @@ class XelonViewSet(viewsets.ModelViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+    def _filter(self, request):
+        query = request.query_params.get('filter', None)
+        if query and query == 'pending':
+            self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
+        elif query and query == "vin-error":
+            self.queryset = self.queryset.filter(vin__regex=r'^VF[37]\w{14}$', corvet__isnull=True).order_by(
+                '-date_retour')
 
 
 class CorvetViewSet(viewsets.ModelViewSet):

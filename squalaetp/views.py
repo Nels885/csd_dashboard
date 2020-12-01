@@ -28,14 +28,14 @@ from utils.django.models import defaults_dict
 def xelon_table(request):
     title = 'Xelon'
     form = CorvetForm()
-    if request.GET.get('filter') and request.GET.get('filter') == "pending":
+    query_param = request.GET.get('filter', None)
+    if query_param and query_param == "pending":
         table_title = 'Dossiers en cours'
-        files = Xelon.objects.exclude(type_de_cloture__exact='Réparé').filter(
-            date_retour__isnull=False).order_by('-date_retour')
-        return render(request, 'squalaetp/xelon_table.html', locals())
+    elif query_param and query_param == "vin-error":
+        table_title = 'Dossiers avec erreur de VIN'
     else:
         table_title = 'Dossiers Clients'
-        return render(request, 'squalaetp/ajax_xelon_table.html', locals())
+    return render(request, 'squalaetp/ajax_xelon_table.html', locals())
 
 
 @login_required
