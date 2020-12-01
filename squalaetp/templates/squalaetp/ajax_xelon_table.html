@@ -2,6 +2,18 @@
 
 {% load static i18n %}
 
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'squalaetp/tab_select.html' with select=query_param %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
 {% block table_content %}
 
     <table class="table table-bordered text-nowrap" id="xelonTable" width="100%" cellspacing="0">
