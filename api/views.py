@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status, authentication
 from rest_framework.filters import SearchFilter, OrderingFilter
+from constance import config
 
 from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
 from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
@@ -20,6 +21,7 @@ def documentation(request):
     """ View of API Documentation page """
     title = "Documentation API"
     card_title = "Documentation"
+    domain = config.WEBSITE_DOMAIN
     return render(request, 'api/doc.html', locals())
 
 

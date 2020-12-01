@@ -231,7 +231,11 @@ CONSTANCE_CONFIG = {
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
+    'WEBSITE_DOMAIN': ('', 'Webside domain name'),
+
+    # CSD Repair Options
     'TO_LATE_PRODUCTS_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
+    'XELON_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN to email list'),
 
     # REMAN Options
     'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
@@ -273,20 +277,21 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'TO_LATE_PRODUCTS_EMAIL_LIST'),
-    'REMAN Options': (
+    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
+    '2. CSD Repair Options': ('TO_LATE_PRODUCTS_EMAIL_LIST', 'XELON_TO_EMAIL_LIST'),
+    '3. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
         'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE', 'DICT_YEAR'
     ),
-    'Network Options': (
+    '4. Tools Options': (
+        'PRINTER_STREAM_URL',
+    ),
+    '5. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'
     ),
-    'MQTT Options': (
+    '6. MQTT Options': (
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
-    ),
-    'Tools Options': (
-        'PRINTER_STREAM_URL',
     )
 }
 
