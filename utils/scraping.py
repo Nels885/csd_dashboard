@@ -40,11 +40,12 @@ class ScrapingCorvet(webdriver.Firefox):
             if vin_value:
                 vin.send_keys(vin_value)
             submit.click()
-            time.sleep(3)
+            time.sleep(1)
             data = WebDriverWait(self, 10).until(
                 EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
             ).text
             self.logout()
+            self.close()
         else:
             data = "Corvet login Error !!!"
         return data

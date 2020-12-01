@@ -15,7 +15,6 @@ from raspeedi.models import Programing
 from .forms import IhmForm, XelonModalForm, IhmEmailModalForm
 from psa.forms import CorvetForm
 from dashboard.forms import ParaErrorList
-from utils.file.export import xml_corvet_file
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
@@ -99,7 +98,7 @@ def ajax_xelon(request):
     corvet = Corvet.objects.filter(vin=file.vin).first()
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
     if request.POST and form.is_valid():
-        xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
+        # xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
         form.save()
         context = {'message': _('Modification done successfully!')}
         messages.success(request, context['message'])
@@ -120,6 +119,11 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         file = self.object.numero_de_dossier
         context['modal_title'] = _('CORVET update for %(file)s' % {'file': file})
         return context
+
+    # def get_initial(self):
+    #     initial = super(SqualaetpUpdateView, self).get_initial()
+    #     initial["xml_data"] = ScrapingCorvet().result(self.object.vin)
+    #     return initial
 
     def form_valid(self, form):
         data = form.cleaned_data['xml_data']
