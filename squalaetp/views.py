@@ -20,7 +20,7 @@ from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
 
 
-# from utils.scraping import ScrapingCorvet
+from utils.scraping import ScrapingCorvet
 
 
 @login_required
@@ -107,10 +107,23 @@ def ajax_xelon(request):
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 
 
+@permission_required('psa.change_corvet')
+def ajax_corvet(request):
+    """
+    View for import CORVET data
+    """
+    vin = request.GET.get('vin')
+    if request.GET and vin:
+        data = ScrapingCorvet().result(vin)
+        context = {'xml_data': data}
+        return JsonResponse(context, status=200)
+    return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
+
+
 class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
-    template_name = 'psa/modal/corvet_form.html'
+    template_name = 'squalaetp/modal/squalaetp_form.html'
     form_class = XelonModalForm
     success_message = _('Success: Squalaetp data was updated.')
 
@@ -119,11 +132,6 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         file = self.object.numero_de_dossier
         context['modal_title'] = _('CORVET update for %(file)s' % {'file': file})
         return context
-
-    # def get_initial(self):
-    #     initial = super(SqualaetpUpdateView, self).get_initial()
-    #     initial["xml_data"] = ScrapingCorvet().result(self.object.vin)
-    #     return initial
 
     def form_valid(self, form):
         data = form.cleaned_data['xml_data']
