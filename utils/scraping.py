@@ -12,8 +12,6 @@ from selenium.common.exceptions import WebDriverException
 class ScrapingCorvet(webdriver.Firefox):
     """ Scraping data Corvet of the repairnav web site"""
     START_URLS = 'https://www.repairnav.com/clarionservice_v2/corvet.xhtml'
-    # CORVET_USER = os.environ.get('CORVET_USER')
-    # CORVET_PWD = os.environ.get('CORVET_PWD')
     CORVET_USER = config.CORVET_USER
     CORVET_PWD = config.CORVET_PWD
     ERROR = False
@@ -23,7 +21,7 @@ class ScrapingCorvet(webdriver.Firefox):
         options = Options()
         options.add_argument('-headless')
         try:
-            super().__init__(firefox_options=options)
+            super(ScrapingCorvet, self).__init__(firefox_options=options)
             self.implicitly_wait(10)
             self.get(self.START_URLS)
         except WebDriverException:
@@ -47,9 +45,9 @@ class ScrapingCorvet(webdriver.Firefox):
                 EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
             ).text
             self.logout()
-            self.close()
         else:
             data = "Corvet login Error !!!"
+        self.quit()
         return data
 
     def login(self):
@@ -64,7 +62,7 @@ class ScrapingCorvet(webdriver.Firefox):
                 element.clear()
                 element.send_keys(value)
             login.click()
-            WebDriverWait(self, 1).until(EC.presence_of_element_located((By.NAME, 'form:input_vin')))
+            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin')))
         except (NoSuchElementException, TimeoutException, ElementClickInterceptedException):
             return False
         return True
