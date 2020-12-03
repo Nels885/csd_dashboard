@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
+from constance import config
 
 from .models import Xelon, Stock
 from psa.models import Corvet, Multimedia
@@ -82,9 +83,6 @@ def xelon_edit(request, file_id):
         context = {'title': _('Modification done successfully!')}
         return render(request, 'dashboard/done.html', context)
     errors = form.errors.items()
-    # corvet = ScrapingCorvet()
-    # form.fields['xml_data'].initial = corvet.result(file.vin)
-    # corvet.close()
     return render(request, 'squalaetp/xelon_edit.html', locals())
 
 
@@ -114,7 +112,7 @@ def ajax_corvet(request):
     """
     vin = request.GET.get('vin')
     if request.GET and vin:
-        data = ScrapingCorvet().result(vin)
+        data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(vin)
         context = {'xml_data': data}
         return JsonResponse(context, status=200)
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)

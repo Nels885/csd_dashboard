@@ -1,5 +1,4 @@
 import time
-from constance import config
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
@@ -12,12 +11,12 @@ from selenium.common.exceptions import WebDriverException
 class ScrapingCorvet(webdriver.Firefox):
     """ Scraping data Corvet of the repairnav web site"""
     START_URLS = 'https://www.repairnav.com/clarionservice_v2/corvet.xhtml'
-    CORVET_USER = config.CORVET_USER
-    CORVET_PWD = config.CORVET_PWD
     ERROR = False
 
-    def __init__(self):
+    def __init__(self, username, password):
         """ Initialization """
+        self.username = username
+        self.password = password
         options = Options()
         options.add_argument('-headless')
         try:
@@ -25,6 +24,7 @@ class ScrapingCorvet(webdriver.Firefox):
             self.implicitly_wait(10)
             self.get(self.START_URLS)
         except WebDriverException:
+            self.quit()
             self.ERROR = True
 
     def result(self, vin_value=None):
@@ -41,9 +41,12 @@ class ScrapingCorvet(webdriver.Firefox):
                 vin.send_keys(vin_value)
             submit.click()
             time.sleep(1)
-            data = WebDriverWait(self, 10).until(
-                EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
-            ).text
+            try:
+                data = WebDriverWait(self, 10).until(
+                    EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
+                ).text
+            except (NoSuchElementException, TimeoutException, ElementClickInterceptedException):
+                data = "Exception or timeout error !"
             self.logout()
         else:
             data = "Corvet login Error !!!"
@@ -58,12 +61,13 @@ class ScrapingCorvet(webdriver.Firefox):
             username = self.find_element_by_name('form:identifiant2')
             password = self.find_element_by_name('form:password2')
             login = self.find_element_by_id('form:login2')
-            for element, value in {username: self.CORVET_USER, password: self.CORVET_PWD}.items():
+            for element, value in {username: self.username, password: self.password}.items():
                 element.clear()
                 element.send_keys(value)
             login.click()
             WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin')))
         except (NoSuchElementException, TimeoutException, ElementClickInterceptedException):
+            self.quit()
             return False
         return True
 
@@ -76,5 +80,6 @@ class ScrapingCorvet(webdriver.Firefox):
             logout = self.find_element_by_id('form:deconnect2')
             logout.click()
         except (NoSuchElementException, ElementClickInterceptedException):
+            self.quit()
             return False
         return True
