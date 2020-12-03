@@ -1,5 +1,5 @@
-import os
 import time
+from constance import config
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
@@ -12,8 +12,10 @@ from selenium.common.exceptions import WebDriverException
 class ScrapingCorvet(webdriver.Firefox):
     """ Scraping data Corvet of the repairnav web site"""
     START_URLS = 'https://www.repairnav.com/clarionservice_v2/corvet.xhtml'
-    USER_CORVET = os.environ.get('USER_CORVET')
-    PWD_CORVET = os.environ.get('PWD_CORVET')
+    # CORVET_USER = os.environ.get('CORVET_USER')
+    # CORVET_PWD = os.environ.get('CORVET_PWD')
+    CORVET_USER = config.CORVET_USER
+    CORVET_PWD = config.CORVET_PWD
     ERROR = False
 
     def __init__(self):
@@ -58,7 +60,7 @@ class ScrapingCorvet(webdriver.Firefox):
             username = self.find_element_by_name('form:identifiant2')
             password = self.find_element_by_name('form:password2')
             login = self.find_element_by_id('form:login2')
-            for element, value in {username: self.USER_CORVET, password: self.PWD_CORVET}.items():
+            for element, value in {username: self.CORVET_USER, password: self.CORVET_PWD}.items():
                 element.clear()
                 element.send_keys(value)
             login.click()
