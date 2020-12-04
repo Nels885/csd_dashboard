@@ -96,13 +96,15 @@
             {% endif %}
             <tr>
                 <td class="text-dark td-ihm">DÉTECTION D’OBSTACLE </td>
-                <td>{% if corvet.electronique_14r %}{{ corvet.electronique_14r|get_corvet:"ELE_14R" }}{% else %}SANS{% endif %}</td>
+                <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
             </tr>
             {% if corvet.attribut_dyr %}
+                {% with bta=corvet.electronique_69h %}
                 <tr>
                     <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
-                    <td>{{ corvet.attribut_dyr|get_corvet:"ATT_DYR" }}</td>
+                    <td>{{ corvet.attribut_dyr|get_corvet:"ATT_DYR" }} {% if bta == "0000000002" %}(BTA MM){% elif bta == "000000000E" %}(BTA Autoliv){% endif %}</td>
                 </tr>
+                {% endwith %}
             {% endif %}
             </tbody>
         </table>
