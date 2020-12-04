@@ -22,21 +22,29 @@ class Command(BaseCommand):
             data = str(xml_parser(data))
             self.stdout.write(data)
         else:
+            self.stdout.write("[IMPORT_CORVET] Waiting...")
             xelons = Xelon.objects.filter(
-                vin__regex=r'^VF[37]\w{14}$', date_retour__isnull=False, corvet__isnull=True).order_by('-date_retour')
-            for xelon in xelons[:10]:
+                vin__regex=r'^VF[37]\w{14}$', vin_error=False, date_retour__isnull=False, corvet__isnull=True).order_by(
+                '-date_retour')
+            nb_created = 0
+            for xelon in xelons:
                 start_time = time.time()
                 data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(xelon.vin)
                 row = xml_parser(data)
                 if row.get('donnee_date_entree_montage'):
                     defaults = defaults_dict(Corvet, row, "vin")
                     obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
+                    if created:
+                        nb_created += 1
                     xelon.corvet = obj
-                    xelon.save()
                     delay_time = time.time() - start_time
                     self.stdout.write(
                         self.style.SUCCESS(f"{xelon.numero_de_dossier} - {xelon.vin} updated in {delay_time}"))
                 else:
+                    xelon.vin_error = True
                     delay_time = time.time() - start_time
                     self.stdout.write(
                         self.style.ERROR(f"{xelon.numero_de_dossier} - {xelon.vin} error VIN in {delay_time}"))
+                xelon.save()
+                if nb_created >= 10:
+                    break

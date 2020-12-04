@@ -22,6 +22,7 @@ class Xelon(models.Model):
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
     ilot = models.CharField('ilot', max_length=100, blank=True)
+    vin_error = models.BooleanField('Erreur VIN', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
