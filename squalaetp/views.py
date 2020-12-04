@@ -130,6 +130,7 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     def get_context_data(self, **kwargs):
         context = super(SqualaetpUpdateView, self).get_context_data(**kwargs)
         file = self.object.numero_de_dossier
+        context['active_import'] = 'false'
         context['modal_title'] = _('CORVET update for %(file)s' % {'file': file})
         return context
 
