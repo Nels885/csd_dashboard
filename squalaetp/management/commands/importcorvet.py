@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 start_time = time.time()
                 data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(xelon.vin)
                 row = xml_parser(data)
-                if row.get('donnee_date_entree_montage'):
+                if row and row.get('donnee_date_entree_montage'):
                     defaults = defaults_dict(Corvet, row, "vin")
                     obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
                     if created:
