@@ -96,12 +96,14 @@
             {% endif %}
             <tr>
                 <td class="text-dark td-ihm">DÉTECTION D’OBSTACLE </td>
-                <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
+                <td>{% if corvet.electronique_14r %}{{ corvet.electronique_14r|get_corvet:"ELE_14R" }}{% else %}SANS{% endif %}</td>
             </tr>
-            <tr>
-                <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
-                <td>{% if corvet.electronique_19h %}AVEC{% else %}SANS{% endif %}</td>
-            </tr>
+            {% if corvet.attribut_dyr %}
+                <tr>
+                    <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
+                    <td>{{ corvet.attribut_dyr|get_corvet:"ATT_DYR" }}</td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
 
