@@ -94,6 +94,14 @@
                     <td>{% if corvet.attribut_dun == "01" %}AVEC{% else %}SANS{% endif %} AMPLI EQUALISEUR</td>
                 </tr>
             {% endif %}
+            <tr>
+                <td class="text-dark td-ihm">DÉTECTION D’OBSTACLE </td>
+                <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
+                <td>{% if corvet.electronique_19h %}AVEC{% else %}SANS{% endif %}</td>
+            </tr>
             </tbody>
         </table>
 
