@@ -1,3 +1,5 @@
+from io import StringIO
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
@@ -8,7 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
-from constance import config
+from django.core.management import call_command
 
 from .models import Xelon, Stock
 from psa.models import Corvet, Multimedia
@@ -19,9 +21,6 @@ from dashboard.forms import ParaErrorList
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
-
-
-from utils.scraping import ScrapingCorvet
 
 
 @login_required
@@ -112,7 +111,10 @@ def ajax_corvet(request):
     """
     vin = request.GET.get('vin')
     if request.GET and vin:
-        data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(vin)
+        out = StringIO()
+        call_command("importcorvet", vin, stdout=out)
+        data = out.getvalue()
+        # data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(vin)
         context = {'xml_data': data}
         return JsonResponse(context, status=200)
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
