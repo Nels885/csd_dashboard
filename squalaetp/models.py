@@ -32,9 +32,9 @@ class Xelon(models.Model):
 
     def save(self, *args, **kwargs):
         from psa.models import Corvet
-        self.vin_error = False
         try:
             self.corvet = Corvet.objects.get(pk=self.vin)
+            self.vin_error = False
         except ObjectDoesNotExist:
             pass
         super(Xelon, self).save(*args, **kwargs)

@@ -345,11 +345,3 @@ msgid ""
 msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
-
-#~ msgid "Current folder"
-#~ msgstr "Dossier en cours"
-
-#, fuzzy
-#~| msgid "Products table"
-#~ msgid "Product table"
-#~ msgstr "Tableau produits"
