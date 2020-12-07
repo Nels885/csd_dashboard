@@ -1,19 +1,42 @@
-<!DOCTYPE html>
-<html lang="fr">
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
 
-<body>
+    <!DOCTYPE html>
+    <html lang="fr">
 
-<p> Vous trouvez ci-dessous la liste des dossiers Xelon ayant une erreur de VIN.</p>
+    <body>
 
-<ul>
-    {% for xelon in xelons %}
-        <li>{{ xelon.numero_de_dossier }} - {{ xelon.modele_produit }} => {{ xelon.vin }}</li>
-    {% endfor %}
-</ul>
+    <p> Vous trouvez ci-dessous la liste des dossiers Xelon ayant une erreur de VIN.</p>
 
-<p>Cordialement</p>
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Dossier</th>
+            <th>Modèle</th>
+            <th>V.I.N.</th>
+            <th>Date In</th>
+        </tr>
+        </thead>
+        <tbody>
 
-<p>CSD Dashboard</p>
+        {% for xelon in xelons %}
 
-</body>
-</html>
+            <tr>
+                <td>{{ xelon.numero_de_dossier }}</td>
+                <td>{{ xelon.modele_produit }}</td>
+                <td>{{ xelon.vin }}</td>
+                <td>{{ xelon.date_retour }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}
