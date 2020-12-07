@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-01 10:34+0100\n"
+"POT-Creation-Date: 2020-12-07 16:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,21 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: psa/forms.py:40
+#: psa/forms.py:39
 msgid ""
 "Data in XML format available on the RepairNAV site during CORVET "
 "extraction..."
 msgstr ""
 
-#: psa/forms.py:51 psa/forms.py:86
+#: psa/forms.py:46
 msgid "Enter the VIN number"
 msgstr ""
 
-#: psa/forms.py:74
+#: psa/forms.py:72
 msgid "XML data does not match VIN"
 msgstr ""
 
-#: psa/forms.py:76 psa/tests/tests_corvet_views.py:66
+#: psa/forms.py:74 psa/tests/tests_corvet_views.py:66
 msgid "Invalid XML data"
 msgstr ""
 

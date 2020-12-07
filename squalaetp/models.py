@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Xelon(models.Model):
@@ -28,6 +29,15 @@ class Xelon(models.Model):
     class Meta:
         verbose_name = "dossier Xelon"
         ordering = ['numero_de_dossier']
+
+    def save(self, *args, **kwargs):
+        from psa.models import Corvet
+        self.vin_error = False
+        try:
+            self.corvet = Corvet.objects.get(pk=self.vin)
+        except ObjectDoesNotExist:
+            pass
+        super(Xelon, self).save(*args, **kwargs)
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)

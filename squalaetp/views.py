@@ -32,6 +32,8 @@ def xelon_table(request):
         table_title = 'Dossiers en cours'
     elif query_param and query_param == "vin-error":
         table_title = 'Dossiers avec erreur de VIN'
+    elif query_param and query_param == "corvet-error":
+        table_title = 'Dossiers avec erreur CORVET'
     else:
         table_title = 'Dossiers Clients'
     return render(request, 'squalaetp/ajax_xelon_table.html', locals())
@@ -138,7 +140,6 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         data = form.cleaned_data['xml_data']
         defaults = defaults_dict(Corvet, data, 'vin')
         obj, created = Corvet.objects.update_or_create(vin=form.cleaned_data['vin'], defaults=defaults)
-        self.object.corvet = obj
         return super(SqualaetpUpdateView, self).form_valid(form)
 
     def get_success_url(self):

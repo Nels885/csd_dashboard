@@ -123,8 +123,10 @@ class XelonViewSet(viewsets.ModelViewSet):
         if query and query == 'pending':
             self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
         elif query and query == "vin-error":
-            self.queryset = self.queryset.filter(vin__regex=r'^VF[37]\w{14}$', corvet__isnull=True).order_by(
-                '-date_retour')
+            self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
+        elif query and query == "corvet-error":
+            self.queryset = self.queryset.filter(
+                vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
 
 
 class CorvetViewSet(viewsets.ModelViewSet):
