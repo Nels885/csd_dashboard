@@ -3,7 +3,6 @@ from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.validators import validate_vin, validate_nac, xml_parser
-# from utils.file.export import xml_corvet_file
 from .models import Corvet, Firmware
 
 
@@ -43,13 +42,13 @@ class CorvetForm(forms.ModelForm):
         ),
         required=True
     )
+    vin = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number")})
+    )
 
     class Meta:
         model = Corvet
         fields = "__all__"
-        widgets = {
-            'vin': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number")}),
-        }
 
     def clean_vin(self):
         data = self.cleaned_data['vin']
@@ -69,7 +68,6 @@ class CorvetForm(forms.ModelForm):
         if data and data['vin'] == vin:
             for field, value in data.items():
                 self.cleaned_data[field] = value
-            # xml_corvet_file(xml_data, vin)
         elif data and data['vin'] != vin:
             self.add_error('xml_data', _('XML data does not match VIN'))
         else:
@@ -82,6 +80,3 @@ class CorvetModalForm(CorvetForm, BSModalModelForm):
     class Meta(CorvetForm):
         model = Corvet
         fields = '__all__'
-        widgets = {
-            'vin': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number")}),
-        }
