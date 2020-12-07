@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<body>
+
+<p> Vous trouvez ci-dessous la liste des dossiers Xelon ayant une erreur de VIN.</p>
+
+<ul>
+    {% for xelon in xelons %}
+        <li>{{ xelon.numero_de_dossier }} - {{ xelon.modele_produit }} => {{ xelon.vin }}</li>
+    {% endfor %}
+</ul>
+
+<p>Cordialement</p>
+
+<p>CSD Dashboard</p>
+
+</body>
+</html>

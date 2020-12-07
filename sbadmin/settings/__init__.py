@@ -234,8 +234,9 @@ CONSTANCE_CONFIG = {
     'WEBSITE_DOMAIN': ('', 'Webside domain name'),
 
     # CSD Repair Options
-    'TO_LATE_PRODUCTS_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
-    'XELON_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN to email list'),
+    'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error to email list'),
+    'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
+    'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN to email list'),
     'CORVET_USER': ('', 'CORVET user for RepairLab'),
     'CORVET_PWD': ('', 'CORVET password for RepairLab'),
 
@@ -280,7 +281,10 @@ CONSTANCE_CONFIG = {
 
 CONSTANCE_CONFIG_FIELDSETS = {
     '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
-    '2. CSD Repair Options': ('TO_LATE_PRODUCTS_EMAIL_LIST', 'XELON_TO_EMAIL_LIST', 'CORVET_USER', 'CORVET_PWD'),
+    '2. CSD Repair Options': (
+        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
+        'CORVET_USER', 'CORVET_PWD'
+    ),
     '3. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
         'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE', 'DICT_YEAR'
