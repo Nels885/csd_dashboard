@@ -69,7 +69,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
         else:
-            call_command("corvet")
+            # call_command("corvet")
             call_command("psacorvet")
             call_command("xelon", "--fix_update")
             call_command("indicator")

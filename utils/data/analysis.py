@@ -4,7 +4,8 @@ import datetime
 from django.db.models.aggregates import Count
 from django.db.models import Q
 
-from squalaetp.models import Xelon, Corvet, Indicator
+from squalaetp.models import Xelon, Indicator
+from psa.models import Corvet
 
 
 class ProductAnalysis:

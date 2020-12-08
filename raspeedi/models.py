@@ -1,6 +1,6 @@
 from django.db import models
 
-from squalaetp.models import Corvet, Xelon
+from squalaetp.models import Xelon
 from dashboard.models import UserProfile, User
 
 
@@ -38,7 +38,6 @@ class Raspeedi(models.Model):
     dump_renesas = models.CharField('dump RENESAS', max_length=50, blank=True)
     ref_mm = models.CharField('référence MM', max_length=200, blank=True)
     connecteur_ecran = models.IntegerField("nombre de connecteur d'écran", choices=CON_CHOICES, null=True, blank=True)
-    corvets = models.ManyToManyField(Corvet, related_name='raspeedi', blank=True)
 
     class Meta:
         verbose_name = "Données RASPEEDI"

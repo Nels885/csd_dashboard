@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Xelon, Corvet, Stock, Indicator
+from .models import Xelon, Stock, Indicator
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -8,17 +8,6 @@ class XelonAdmin(admin.ModelAdmin):
     list_filter = ('type_de_cloture', 'modele_vehicule')
     ordering = ('numero_de_dossier',)
     search_fields = ('numero_de_dossier', 'vin')
-
-
-class CorvetAdmin(admin.ModelAdmin):
-    list_display = (
-        'vin', 'electronique_14f', 'electronique_94f',
-        'electronique_14x', 'electronique_94x',
-        'electronique_14a', 'electronique_94a',
-    )
-    list_filter = ('donnee_silhouette', 'donnee_marque_commerciale')
-    ordering = ('vin',)
-    search_fields = ('vin', 'electronique_14l', 'electronique_94l')
 
 
 class StockAdmin(admin.ModelAdmin):
@@ -38,7 +27,5 @@ class IndicatorAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Xelon, XelonAdmin)
-admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(Stock, StockAdmin)
 admin.site.register(Indicator, IndicatorAdmin)
-# admin.site.register(CorvetBackup)
