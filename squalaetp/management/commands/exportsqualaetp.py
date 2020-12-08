@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from squalaetp.models import Corvet
+from psa.models import Corvet
 
 from utils.file.export import ExportExcel, os
 from utils.conf import CSD_ROOT, conf
