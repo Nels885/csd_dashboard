@@ -1,0 +1,45 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Activité</th>
+            <th>Dossier</th>
+            <th>Modèle</th>
+            <th>Date In</th>
+            <th>Délai</th>
+            <th>Tech</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        {% include 'dashboard/email_format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
+
+        {% include 'dashboard/email_format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
+
+        {% include 'dashboard/email_format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
+
+        {% include 'dashboard/email_format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
+
+        {% include 'dashboard/email_format/lp_tr_format.html' with prods=etude activity='Etude' %}
+
+        {% include 'dashboard/email_format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+
+        </tbody>
+    </table>
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}
