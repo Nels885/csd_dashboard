@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 # import itertools
 
 from django.db.models.aggregates import Count
@@ -11,7 +11,7 @@ from psa.models import Corvet
 class ProductAnalysis:
     LABELS = ["RT6/RNEG2", "SMEG", "NAC", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN', "AUTRES"]
     # QUERYSET = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
-    QUERYSET = Xelon.objects.all()
+    QUERYSET = Xelon.objects.exclude(date_retour__isnull=True)
 
     def __init__(self):
         """
@@ -93,9 +93,9 @@ class IndicatorAnalysis:
         self.queryset = Xelon.objects.filter(date_retour__isnull=False)
         last_query = self.queryset.order_by('-date_retour').first()
         if last_query:
-            self.LAST_60_DAYS = last_query.date_retour - datetime.timedelta(60)
+            self.LAST_60_DAYS = last_query.date_retour - timezone.timedelta(60)
         else:
-            self.LAST_60_DAYS = datetime.datetime.today() - datetime.timedelta(60)
+            self.LAST_60_DAYS = timezone.datetime.today() - timezone.timedelta(60)
 
     def result(self):
         data = {"areaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
@@ -112,9 +112,9 @@ class IndicatorAnalysis:
         return data
 
     def new_result(self):
-        last_60_days = datetime.datetime.today() - datetime.timedelta(60)
+        last_60_days = timezone.datetime.today() - timezone.timedelta(60)
         data = {"areaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
-        prods = Indicator.objects.filter(date__gte=last_60_days)
+        prods = Indicator.objects.filter(date__gte=last_60_days).order_by('date')
         for prod in prods:
             data["areaLabels"].append(prod.date.strftime("%d/%m/%Y"))
             data["prodsInValue"].append(self.queryset.filter(date_retour=prod.date).count())
