@@ -116,11 +116,12 @@ class ExportExcel:
         if copy:
             self._file_yesterday(path, file)
         try:
-            with open(file, 'w+', newline='', encoding='utf-8') as f:
-                if self.excelType == "csv":
-                    self._csv_writer(f)
-                else:
-                    self._xls_writer(f)
+            if self.excelType == "csv":
+                with open(file, 'w+', newline='', encoding='utf-8') as f:
+                    if self.excelType == "csv":
+                        self._csv_writer(f)
+            else:
+                self._xls_writer(file)
         except OSError:
             logger.warning('{} File is read-only.'.format(file))
 
@@ -135,8 +136,8 @@ class ExportExcel:
 
     def _xls_writer(self, response):
         """ Formatting data in Excel format """
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('base')
+        xldoc = xlwt.Workbook(encoding='utf-8')
+        sheet = xldoc.add_sheet('base')
 
         # Sheet header, first row
         row_num = 0
@@ -145,18 +146,19 @@ class ExportExcel:
         font_style.font.bold = True
 
         for col_num in range(len(self.header)):
-            ws.write(row_num, col_num, self.header[col_num], font_style)
+            sheet.write(row_num, col_num, self.header[col_num], font_style)
 
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
 
         for i, query in enumerate(self.valueSet):
             query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+            query = tuple(["#" if not value else value for value in query])
             row_num += 1
             for col_num in range(len(query)):
-                ws.write(row_num, col_num, query[col_num], font_style)
+                sheet.write(row_num, col_num, query[col_num], font_style)
 
-        wb.save(response)
+        xldoc.save(response)
         return response
 
     def _file_yesterday(self, path, file):

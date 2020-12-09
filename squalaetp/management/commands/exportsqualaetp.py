@@ -1,9 +1,11 @@
 from django.core.management.base import BaseCommand
 
+from squalaetp.models import Xelon
 from psa.models import Corvet
 
+from ._excel_squalaetp import ExcelSqualaetp
 from utils.file.export import ExportExcel, os
-from utils.conf import CSD_ROOT, conf
+from utils.conf import CSD_ROOT, conf, XLS_SQUALAETP_FILE
 
 
 class Command(BaseCommand):
@@ -19,7 +21,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['corvet']:
-            self.stdout.write("[CORVET] Waiting...")
+            self.stdout.write("[CORVET_EXPORT] Waiting...")
 
             filename = "squalaetp_corvet"
             path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
@@ -30,6 +32,39 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS(
                     "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(
+                        queryset.count(), os.path.join(path, filename)
+                    )
+                )
+            )
+        else:
+            self.stdout.write("[SQUALAETP_EXPORT] Waiting...")
+
+            filename = "squalaetp_test"
+            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
+            header = [
+                'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE',
+                'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE', 'SILHOUETTE', 'GENRE_DE_PRODUIT',
+                'DDO', 'DGM', 'DHB', 'DHG', 'DJQ', 'DJY', 'DKX', 'DLX', 'DOI', 'DQM', 'DQS', 'DRC', 'DRT', 'DTI',
+                'DUN', 'DWL', 'DWT', 'DXJ', 'DYB', 'DYM', 'DYR', 'DZV', 'GG8', '14F', '14J', '14K', '14L', '14R',
+                '14X', '19Z', '44F', '44L', '44X', '54F', '54K', '54L', '84F', '84L', '84X', '94F', '94L', '94X',
+                'DAT', 'DCX', '19H', '49H', '64F', '64X', '69H', '89H', '99H', '14A', '34A', '44A', '54A', '64A',
+                '84A', '94A', 'P4A', 'MOTEUR', 'TRANSMISSION', '10', '14B', '20', '44B', '54B', '64B', '84B', '94B',
+                '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
+            ]
+            squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
+            xelon_list = list(squalaetp.sheet['numero_de_dossier'])
+
+            queryset = Xelon.objects.filter(numero_de_dossier__in=xelon_list).exclude(corvet__isnull=True)
+
+            corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if field.name != 'vin'])
+            xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
+
+            values_list = xelon_list + corvet_list
+            ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
+                        excel_type='xls').file(path, False)
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
                         queryset.count(), os.path.join(path, filename)
                     )
                 )
