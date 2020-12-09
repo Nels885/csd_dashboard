@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Xelon, Stock, Indicator
+from .models import Xelon, Stock, Indicator, Action
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -26,6 +26,11 @@ class IndicatorAdmin(admin.ModelAdmin):
     ordering = ('date',)
 
 
+class ActionAdmin(admin.ModelAdmin):
+    list_display = ('content', 'modified_at', 'modified_by', 'content_object')
+
+
 admin.site.register(Xelon, XelonAdmin)
 admin.site.register(Stock, StockAdmin)
 admin.site.register(Indicator, IndicatorAdmin)
+admin.site.register(Action, ActionAdmin)

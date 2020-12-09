@@ -1,5 +1,9 @@
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from crum import get_current_user
 
 
 class Xelon(models.Model):
@@ -25,6 +29,7 @@ class Xelon(models.Model):
     ilot = models.CharField('ilot', max_length=100, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
+    actions = GenericRelation('Action')
 
     class Meta:
         verbose_name = "dossier Xelon"
@@ -82,3 +87,25 @@ class Indicator(models.Model):
 
     def __str__(self):
         return str(self.date)
+
+
+class Action(models.Model):
+    content = models.TextField()
+    modified_at = models.DateTimeField('modifié le', auto_now=True)
+    modified_by = models.ForeignKey(User, related_name="action_modified", on_delete=models.SET_NULL, null=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Modification"
+        ordering = ['-modified_at']
+
+    def __str__(self):
+        return "Action de {} sur {}".format(self.modified_by, self.content_object)
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and user.pk:
+            self.modified_by = user
+        super(Action, self).save(*args, **kwargs)
