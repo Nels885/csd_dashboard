@@ -141,8 +141,9 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
     def form_valid(self, form):
         data = form.cleaned_data['xml_data']
+        vin = form.cleaned_data['vin']
         defaults = defaults_dict(Corvet, data, 'vin')
-        obj, created = Corvet.objects.update_or_create(vin=form.cleaned_data['vin'], defaults=defaults)
+        obj, created = Corvet.objects.update_or_create(vin=vin, defaults=defaults)
         return super(SqualaetpUpdateView, self).form_valid(form)
 
     def get_success_url(self):
