@@ -118,6 +118,11 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
         context['modal_title'] = _('CORVET integration')
         return context
 
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            form.save()
+        return super(CorvetCreateView, self).form_valid(form)
+
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
             return self.request.META['HTTP_REFERER']
