@@ -15,6 +15,7 @@ from django.core.management import call_command
 from .models import Xelon, Stock
 from psa.models import Corvet, Multimedia
 from raspeedi.models import Programing
+from reman.models import EcuType
 from .forms import IhmForm, XelonModalForm, IhmEmailModalForm
 from psa.forms import CorvetForm
 from dashboard.forms import ParaErrorList
@@ -59,6 +60,8 @@ def detail(request, file_id):
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
         elif corvet.electronique_14f:
             btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
+        if corvet.electronique_14a:
+            cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
     form = IhmForm(instance=xelon.corvet,
                    initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))

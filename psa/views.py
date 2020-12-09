@@ -13,6 +13,7 @@ from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Multimedia
 from dashboard.models import WebLink
 from raspeedi.models import Programing
+from reman.models import EcuType
 
 context = {
     'title': 'Info PSA'
@@ -82,6 +83,8 @@ def corvet_detail(request, vin):
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
     elif corvet.electronique_14f:
         btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
+    if corvet.electronique_14a:
+        cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)
     select = "prods"
