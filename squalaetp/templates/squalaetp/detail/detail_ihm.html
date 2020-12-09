@@ -31,3 +31,37 @@
         {% endfor %}
     </section>
 </div>
+
+{% if xelon.actions.all %}
+
+    <div class="row">
+        <section class="col-sm-12 mt-4">
+            <table class="table table-bordered table-condensed text-nowrap">
+                <caption style="caption-side: top;">
+                    <h3 class="text-gray-800">HISTORIQUE MODIFICATIONS :</h3>
+                </caption>
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Modifié le</th>
+                    <th>Modifié par</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for action in xelon.actions.all %}
+
+                    <tr>
+                        <td>{{ action.content|linebreaksbr }}</td>
+                        <td>{{ action.modified_at }}</td>
+                        <td>{{ action.modified_by }}</td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+{% endif %}

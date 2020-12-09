@@ -12,7 +12,7 @@
     </div>
     <div class="modal-body">
 
-        <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
             {% for error in form.non_field_errors %}
                 {{ error }}
             {% endfor %}
