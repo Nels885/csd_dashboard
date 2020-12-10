@@ -179,9 +179,17 @@ class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
         initial['to'] = config.CHANGE_VIN_TO_EMAIL_LIST
         initial['cc'] = config.VIN_ERROR_TO_EMAIL_LIST
         initial['subject'] = "[{}] Erreur VIN Xelon".format(xelon.numero_de_dossier)
+        message = "Bonjour,\n\n"
+        message += "Vous trouverez ci-dessous, le nouveau VIN pour le dossier {} :\n".format(xelon.numero_de_dossier)
         if action:
-            initial['message'] = "Bonjour,\n\nCi-joint le nouveau VIN pour le dossier {} :\n{}\n\nCordialement".format(
-                xelon.numero_de_dossier, action.content)
+            data = action.content.split('\n')
+            message += "- Ancien VIN = {}\n".format(data[0][-17:])
+            message += "- Nouveau VIN = {}\n".format(data[1][-17:])
+        else:
+            message += "\n### NOUVEAU VIN NON DISPONIBLE ###\n"
+        message += "\nCordialement\n\n"
+        message += "{} {}".format(self.request.user.first_name, self.request.user.last_name)
+        initial['message'] = message
         return initial
 
     def form_valid(self, form):
