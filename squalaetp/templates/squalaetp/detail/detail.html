@@ -7,8 +7,6 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
 
-            {% include 'tab_select.html' with name='xelon' tab_title='Info Xelon' %}
-
             {% if perms.squalaetp.change_xelon and perms.psa.change_corvet %}
 
                 {% include 'tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
@@ -41,6 +39,8 @@
                     </li>
                 {% endif %}
             {% endif %}
+
+            {% include 'tab_select.html' with name='xelon' tab_title='Info Xelon' %}
 
             <li class="nav-item">
                 <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"

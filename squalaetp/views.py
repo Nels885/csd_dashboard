@@ -76,7 +76,7 @@ def detail(request, file_id):
         dict_corvet = model_to_dict(corvet)
     form = IhmForm(instance=xelon.corvet,
                    initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
-    select = 'xelon'
+    select = 'ihm'
     redirect = request.META.get('HTTP_REFERER')
     return render(request, 'squalaetp/detail/detail.html', locals())
 
