@@ -126,6 +126,7 @@ class Command(BaseCommand):
         nb_prod_before = model.objects.count()
         model.objects.exclude(
             type_de_cloture__in=['Réparé', 'Rebut'], date_retour__isnull=True).update(type_de_cloture='Réparé')
+        model.objects.filter(actions__isnull=True)
         for row in excel.table():
             xelon_number = row.get("numero_de_dossier")
             defaults = defaults_dict(model, row, "numero_de_dossier")

@@ -60,6 +60,9 @@ class Command(BaseCommand):
             call_command("corvet")
             call_command("xelon", "--fix_update")
             call_command("indicator")
+            call_command("importcorvet")
+            call_command("exportsqualaetp")
+            self._foreignkey_relation()
 
     def _foreignkey_relation(self):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")

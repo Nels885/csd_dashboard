@@ -151,10 +151,12 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return context
 
     def form_valid(self, form):
-        data = form.cleaned_data['xml_data']
-        vin = form.cleaned_data['vin']
-        defaults = defaults_dict(Corvet, data, 'vin')
-        obj, created = Corvet.objects.update_or_create(vin=vin, defaults=defaults)
+        if not self.request.is_ajax():
+            data = form.cleaned_data['xml_data']
+            vin = form.cleaned_data['vin']
+            defaults = defaults_dict(Corvet, data, 'vin')
+            obj, created = Corvet.objects.update_or_create(vin=vin, defaults=defaults)
+            call_command("exportsqualaetp")
         return super(SqualaetpUpdateView, self).form_valid(form)
 
     def get_success_url(self):
