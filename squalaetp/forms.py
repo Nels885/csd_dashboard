@@ -10,6 +10,7 @@ from .models import Xelon, Action
 
 class IhmEmailModalForm(BSModalForm):
     to = forms.CharField(label='À', required=True, widget=forms.TextInput())
+    cc = forms.CharField(label='Cc', widget=forms.TextInput())
     subject = forms.CharField(label='Objet', required=True, widget=forms.TextInput())
     message = forms.CharField(widget=forms.Textarea(attrs={'rows': 10}), required=True)
 

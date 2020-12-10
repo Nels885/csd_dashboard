@@ -165,7 +165,8 @@ class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
         initial = super(IhmEmailFormView, self).get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
         action = xelon.actions.filter(content__contains="OLD_VIN").first()
-        initial['to'] = config.VIN_ERROR_TO_EMAIL_LIST
+        initial['to'] = config.CHANGE_VIN_TO_EMAIL_LIST
+        initial['cc'] = config.VIN_ERROR_TO_EMAIL_LIST
         initial['subject'] = "[{}] Erreur VIN Xelon".format(xelon.numero_de_dossier)
         if action:
             initial['message'] = "Bonjour,\n\nCi-joint le nouveau VIN pour le dossier {} :\n{}\n\nCordialement".format(
@@ -175,11 +176,10 @@ class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def form_valid(self, form):
         if not self.request.is_ajax():
             to = form.cleaned_data['to']
+            cc = form.cleaned_data['cc']
             mail_subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
-            email = EmailMessage(
-                mail_subject, message, to=string_to_list(to),
-            )
+            email = EmailMessage(mail_subject, message, to=string_to_list(to), cc=string_to_list(cc))
             email.send()
             xelon = Xelon.objects.get(pk=self.kwargs['pk'])
             content = "Envoi Email de modification VIN effectué."
