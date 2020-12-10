@@ -7,12 +7,13 @@
 </div>
 <div class="row">
     <section class="col-sm-3">
-        <button class="ihm-email btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:email' xelon.pk %}">Envoi Email</button>
+        <button class="ihm-email btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:email' xelon.pk %}" {% if not xelon.actions.all %}disabled="disabled"{% endif %}>Envoi Email VIN</button>
+        <button class="ihm-email btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:email' xelon.pk %}" disabled="disabled">Envoi Email BOITIER</button>
         <button class="update-corvet btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:edit' xelon.pk %}">
             Modification CORVET
         </button>
-        <button class="log-btn btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
-        <a class="btn btn-secondary btn-block" href="{% url 'squalaetp:update' xelon.pk %}">Update Squalaetp</a>
+        <button class="log-btn btn btn-secondary btn-block mb-5" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
+        <a class="btn btn-success btn-block" href="{% url 'squalaetp:update' xelon.pk %}">Update Squalaetp</a>
     </section>
     <section class="col-sm-9">
         {% for field in form %}
