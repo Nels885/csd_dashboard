@@ -1,6 +1,6 @@
 from io import StringIO
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -24,6 +24,15 @@ from dashboard.forms import ParaErrorList
 from utils.file import LogFile
 from utils.conf import CSD_ROOT, string_to_list
 from utils.django.models import defaults_dict
+
+
+@login_required
+def update(request, pk):
+    out = StringIO()
+    call_command("exportsqualaetp", stdout=out)
+    for msg in out.getvalue().split("\n"):
+        messages.success(request, msg)
+    return redirect('squalaetp:detail', file_id=pk)
 
 
 @login_required

@@ -49,19 +49,6 @@
                 </a>
             </li>
 
-            {#            {% if perms.squalaetp.change_xelon and perms.psa.change_corvet %}#}
-            {#                <li class="nav-item">#}
-            {#                    <a class="update-corvet nav-link" href="#" data-id="{% url 'squalaetp:edit' xelon.pk %}"#}
-            {#                       role="tab" aria-selected="false">#}
-            {#                        {% trans "CORVET Update" %}#}
-            {#                    </a>#}
-            {#                </li>#}
-            {#            {% endif %}#}
-            {#            <li class="nav-item">#}
-            {#                <a id="cor-update" class="nav-link" href="#" target="_blank" role="tab" aria-selected="false">#}
-            {#                    Test popup#}
-            {#                </a>#}
-            {#            </li>#}
         </ul>
     </div>
 
@@ -177,16 +164,6 @@
         JsBarcode("#barcode", "{{ xelon.vin }}", {
             width: 2.2,
             height: 100,
-        });
-
-        $("#cor-update").click(function () {
-            const w = 500;
-            const h = 500;
-            const left = (screen.width / 2) - (w / 2);
-            const top = (screen.height / 3) - (h / 3);
-            const strWindowFeatures = "width=" + w + ",height=" + h + ",top=" + top + ",left=" + left;
-            window.open("{% url 'psa:create_corvet' %}", "_blank", strWindowFeatures);
-            return false;
         });
     </script>
 

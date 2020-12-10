@@ -11,7 +11,8 @@
         <button class="update-corvet btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:edit' xelon.pk %}">
             Modification CORVET
         </button>
-        <button class="log-btn btn btn-secondary btn-block" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
+        <button class="log-btn btn btn-secondary btn-block mb-3" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
+        <a class="btn btn-secondary btn-block" href="{% url 'squalaetp:update' xelon.pk %}">Update Squalaetp</a>
     </section>
     <section class="col-sm-9">
         {% for field in form %}
