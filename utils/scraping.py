@@ -4,8 +4,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementClickInterceptedException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import (
+    NoSuchElementException, TimeoutException, ElementClickInterceptedException, WebDriverException,
+    StaleElementReferenceException
+)
 
 
 class ScrapingCorvet(webdriver.Firefox):
@@ -45,7 +47,8 @@ class ScrapingCorvet(webdriver.Firefox):
                 data = WebDriverWait(self, 10).until(
                     EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
                 ).text
-            except (NoSuchElementException, TimeoutException, ElementClickInterceptedException):
+            except (NoSuchElementException,
+                    TimeoutException, ElementClickInterceptedException, StaleElementReferenceException):
                 data = "Exception or timeout error !"
             self.logout()
         else:
