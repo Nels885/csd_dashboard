@@ -71,7 +71,7 @@ def search(request):
     """ View of search page """
     query = request.GET.get('query')
     if query:
-        query = query.upper()
+        query = query.upper().strip()
         # select = request.GET.get('select')
         files = Xelon.objects.filter(Q(numero_de_dossier=query) |
                                      Q(vin=query) |
@@ -83,7 +83,7 @@ def search(request):
             table_title = _('Xelon files')
             return render(request, 'squalaetp/xelon_table.html', locals())
         elif files:
-            return redirect('squalaetp:detail', file_id=files.first().id)
+            return redirect('squalaetp:detail', pk=files.first().pk)
         else:
             corvets = Corvet.objects.filter(vin=query)
             if corvets:

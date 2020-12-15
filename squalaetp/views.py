@@ -32,7 +32,7 @@ def update(request, pk):
     call_command("exportsqualaetp", stdout=out)
     for msg in out.getvalue().split("\n"):
         messages.success(request, msg)
-    return redirect('squalaetp:detail', file_id=pk)
+    return redirect('squalaetp:detail', pk=pk)
 
 
 @login_required
@@ -61,11 +61,11 @@ def stock_table(request):
 
 
 @login_required
-def detail(request, file_id):
-    xelon = get_object_or_404(Xelon, id=file_id)
+def detail(request, pk):
+    xelon = get_object_or_404(Xelon, pk=pk)
     title = f"{xelon.numero_de_dossier} - {xelon.modele_vehicule} - {xelon.vin}"
     if xelon.corvet:
-        corvet = get_object_or_404(Corvet, vin=xelon.vin)
+        corvet = xelon.corvet
         if corvet.electronique_14x:
             btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14x).first()
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
@@ -82,14 +82,14 @@ def detail(request, file_id):
 
 
 @permission_required('squalaetp.view_xelon')
-def xelon_edit(request, file_id):
+def xelon_edit(request, pk):
     """
     View for changing Xelon data
-    :param file_id:
+    :param pk:
         Xelon file id to edit
     """
     title = 'Xelon'
-    file = get_object_or_404(Xelon, pk=file_id)
+    file = get_object_or_404(Xelon, pk=pk)
     corvet = Corvet.objects.filter(vin=file.vin).first()
     card_title = _('Modification data Xelon file: ') + file.numero_de_dossier
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
@@ -106,8 +106,8 @@ def ajax_xelon(request):
     """
     View for changing Xelon data
     """
-    file_id = request.POST.get('file_id')
-    file = get_object_or_404(Xelon, pk=file_id)
+    pk = request.POST.get('pk')
+    file = get_object_or_404(Xelon, pk=pk)
     corvet = Corvet.objects.filter(vin=file.vin).first()
     form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
     if request.POST and form.is_valid():
