@@ -62,7 +62,7 @@ def stock_table(request):
 
 @login_required
 def detail(request, file_id):
-    xelon = get_object_or_404(Xelon, pk=file_id)
+    xelon = get_object_or_404(Xelon, id=file_id)
     title = f"{xelon.numero_de_dossier} - {xelon.modele_vehicule} - {xelon.vin}"
     if xelon.corvet:
         corvet = get_object_or_404(Corvet, vin=xelon.vin)
