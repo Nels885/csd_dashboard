@@ -28,6 +28,8 @@
 
     {% block customcss %} {% endblock %}
 
+    {% block datatablescss %} {% endblock %}
+
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/custom.css' %}" rel="stylesheet" type="text/css">
@@ -64,6 +66,8 @@
 
 {% block customjs %} {% endblock %}
 
+{% block datatablesjs %} {% endblock %}
+
 {% block extrascripts %} {% endblock %}
 
 <script type="text/javascript">
@@ -90,26 +94,6 @@
         $(".out-filter-btn").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url')});
         });
-
-        // ihm email buttons
-        $(".ihm-email").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
-        });
-
-        // Update corvet buttons
-        $(".update-corvet").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
-        });
-
-        // Update default buttons
-        $(".update-default").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
-        });
-
-        // Delete thermal buttons
-        $(".delete-thermal").each(function () {
-            $(this).modalForm({formURL: $(this).data('id')});
-        })
 
         // Commun modal button
         $(".bs-modal").each(function () {

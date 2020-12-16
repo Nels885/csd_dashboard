@@ -32,7 +32,7 @@
                 <tr>
                     <td class="bg-white">
                         {% if perms.change_default %}
-                            <a href="#" title="Modification" class="update-default btn btn-success btn-circle btn-sm" data-id="{% url 'reman:update_default' default.pk %}"><i class="fas fa-edit"></i></a>
+                            <a href="#" title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:update_default' default.pk %}"><i class="fas fa-edit"></i></a>
                         {% else %}
                             <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                         {% endif %}

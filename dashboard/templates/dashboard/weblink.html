@@ -19,12 +19,12 @@
                     <img src="https://aprc.it/api/160x120/{{ link.url }}" alt=""/></td>
                 <td class="text-right bg-gray-100">
                     {% if perms.dashboard.delete_weblink %}
-                        <a href="#" class="delete-weblink mb-3 mr-2 text-danger"
-                           data-id="{% url 'dashboard:delete_weblink' link.pk %}"><i class="fas fa-trash-alt"></i></a>
+                        <a href="#" class="bs-modal mb-3 mr-2 text-danger"
+                           data-form-url="{% url 'dashboard:delete_weblink' link.pk %}"><i class="fas fa-trash-alt"></i></a>
                     {% endif %}
                     {% if perms.dashboard.change_weblink %}
-                        <a href="#" class="update-weblink mb-3"
-                           data-id="{% url 'dashboard:update_weblink' link.pk %}"><i class="fas fa-edit"></i></a>
+                        <a href="#" class="bs-large-modal mb-3"
+                           data-form-url="{% url 'dashboard:update_weblink' link.pk %}"><i class="fas fa-edit"></i></a>
                     {% else %}
                         <br>
                     {% endif %}
