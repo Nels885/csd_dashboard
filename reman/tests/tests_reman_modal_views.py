@@ -1,3 +1,5 @@
+from django.contrib.messages import get_messages
+
 from dashboard.tests.base import UnitTest, reverse
 
 from reman.models import EcuModel, Batch, Repair, EcuRefBase, EcuType, Default
@@ -13,6 +15,7 @@ class MixinsTest(UnitTest):
         batch = Batch.objects.create(year="C", number=1, quantity=1, created_by=self.user, ecu_ref_base=ref_base)
         Default.objects.create(code='TEST1', description='Ceci est le test 1')
         self.ecuId = ecu.id
+        self.refBaseId = ref_base.id
 
     def test_create_batch_ajax_mixin(self):
         """
@@ -59,6 +62,19 @@ class MixinsTest(UnitTest):
         # Object is not created
         batchs = Batch.objects.all()
         self.assertEqual(batchs.count(), 2)
+
+    def test_Delete_batch_ajax_mixin(self):
+        """
+        Delete object through BSModalDeleteView.
+        """
+        self.add_perms_user(Batch, 'delete_batch')
+        self.login()
+
+        # Request to delete view passes message to the response
+        batch = Batch.objects.first()
+        response = self.client.post(reverse('reman:delete_batch', kwargs={'pk': batch.pk}))
+        messages = get_messages(response.wsgi_request)
+        self.assertEqual(len(messages), 1)
 
     def test_create_repair_ajax_mixin(self):
         """

@@ -319,7 +319,7 @@ def batch_table(request):
     table_title = 'Liste des lots REMAN ajoutés'
     repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
     packed = Count('repairs', filter=Q(repairs__checkout=True))
-    batchs = Batch.objects.all().annotate(repaired=repaired, packed=packed)
+    batchs = Batch.objects.all().annotate(repaired=repaired, packed=packed, total=Count('repairs'))
     context.update(locals())
     return render(request, 'reman/batch_table.html', context)
 
