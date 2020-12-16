@@ -43,18 +43,18 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">{% trans "Repairs" %} :</h6>
-                    <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "Batch list" %}</a>
                     <a class="collapse-item" href="{% url 'reman:repair_table' %}?filter=pending">{% trans "Current files" %}</a>
                     <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
-                    {% if perms.reman.view_default %}
-                        <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
-                    {% endif %}
+                    <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
 
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+                    <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "Batch list" %}</a>
+                    {% if perms.reman.view_default %}
+                        <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
+                    {% endif %}
                     {% if perms.reman.view_ecurefbase %}
                         <a class="collapse-item" href="{% url 'reman:ecu_table' %}">{% trans "ECU ref Base" %}</a>
-                        <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
                     {% endif %}
                     <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
                 </div>
@@ -65,7 +65,7 @@
     {% if perms.reman.add_batch %}
 
         <li class="nav-item">
-            <a class="batch-btn nav-link" href="#">
+            <a class="create-batch nav-link" href="#">
                 <i class="fas fa-fw fa-box"></i><span>{% trans "Create Batch" %}</span>
             </a>
         </li>
