@@ -129,16 +129,19 @@
             $(this).modalForm({formURL: $(this).data('id')});
         })
 
-        // Delete unlock product buttons
-        $(".delete-unlock").each(function () {
-            $(this).modalForm({formURL: $(this).data('id')});
+        // Commun modal button
+        $(".bs-modal").each(function () {
+            $(this).modalForm({formURL: $(this).data('form-url')});
+        })
+        $(".bs-large-modal").each(function () {
+            $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#large-modal"});
         })
 
         // Batch buttons
         $(".create-batch").modalForm({formURL: "{% url 'reman:create_batch' %}"});
 
-        $(".bs-batch").each(function () {
-            $(this).modalForm({formURL: $(this).data('form-url')});
+        $(".update-batch").each(function () {
+            $(this).modalForm({formURL: $(this).data('id')});
         });
 
         // log file buttons
