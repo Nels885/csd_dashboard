@@ -82,31 +82,13 @@
 
         $(".create-post").modalForm({formURL: "{% url 'dashboard:create_post' %}", modalID: "#large-modal"});
 
+        $(".create-weblink").modalForm({formURL: "{% url 'dashboard:create_weblink' %}", modalID: "#large-modal"});
+
+        $(".create-batch").modalForm({formURL: "{% url 'reman:create_batch' %}"});
+
         // Filter Batch buttons
         $(".out-filter-btn").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url')});
-        });
-
-        // Update post buttons
-        $(".update-post").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
-        });
-
-        // Delete post buttons
-        $(".delete-post").each(function () {
-            $(this).modalForm({formURL: $(this).data('id')});
-        });
-
-        $(".create-weblink").modalForm({formURL: "{% url 'dashboard:create_weblink' %}", modalID: "#large-modal"});
-
-        // Update web link buttons
-        $(".update-weblink").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
-        });
-
-        // Delete web link buttons
-        $(".delete-weblink").each(function () {
-            $(this).modalForm({formURL: $(this).data('id')});
         });
 
         // ihm email buttons
@@ -136,13 +118,6 @@
         $(".bs-large-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#large-modal"});
         })
-
-        // Batch buttons
-        $(".create-batch").modalForm({formURL: "{% url 'reman:create_batch' %}"});
-
-        $(".update-batch").each(function () {
-            $(this).modalForm({formURL: $(this).data('id')});
-        });
 
         // log file buttons
         $(".log-btn").each(function () {

@@ -44,12 +44,12 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                              aria-labelledby="dropdownMenuLink">
-                                            <a class="update-post dropdown-item"
-                                               href="#" data-id="{% url 'dashboard:update_post' post.pk %}">
+                                            <a class="bs-large-modal dropdown-item"
+                                               href="#" data-form-url="{% url 'dashboard:update_post' post.pk %}">
                                                 <i class="fas fa-edit mr-2 text-gray-400"></i>{% trans 'Edit' %}
                                             </a>
-                                            <a class="delete-post dropdown-item text-danger"
-                                               href="#" data-id="{% url 'dashboard:delete_post' post.pk %}">
+                                            <a class="bs-modal dropdown-item text-danger"
+                                               href="#" data-form-url="{% url 'dashboard:delete_post' post.pk %}">
                                                 <i class="fas fa-trash-alt mr-2 text-gray-400"></i>{% trans 'Delete' %}
                                             </a>
                                         </div>
