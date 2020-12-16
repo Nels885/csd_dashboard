@@ -42,7 +42,7 @@ class ExcelEcuRefBase(ExcelFormat):
         """
         cols = ",".join(self.COLS.keys())
         super(ExcelEcuRefBase, self).__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
-        self._columns_rename()
+        self._columns_rename(self.COLS)
         self.sheet.replace({"#": None}, inplace=True)
         self.sheet.fillna('', inplace=True)
         self.data = self._data_update()
@@ -82,10 +82,3 @@ class ExcelEcuRefBase(ExcelFormat):
             if row["reman_reference"] != "" and row["psa_barcode"] != "":
                 data.append(dict(row))
         return data
-
-    def _columns_rename(self):
-        new_columns = {}
-        for i, column in enumerate(self.columns):
-            new_columns[column] = list(self.COLS.values())[i]
-        self.sheet.rename(columns=new_columns, inplace=True)
-        self.columns = list(self.sheet.columns)

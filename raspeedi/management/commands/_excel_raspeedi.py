@@ -17,7 +17,7 @@ class ExcelRaspeedi(ExcelFormat):
         cols = ",".join(self.COLS.keys())
         super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
         self._convert_boolean()
-        self._columns_rename()
+        self._columns_rename(self.COLS)
         self.sheet.fillna('', inplace=True)
 
     def read(self):
@@ -58,7 +58,7 @@ class ExcelPrograming(ExcelFormat):
         """
         cols = ",".join(self.COLS.keys())
         super(ExcelPrograming, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
-        self._columns_rename()
+        self._columns_rename(self.COLS)
         self.sheet.fillna('', inplace=True)
 
     def read(self):

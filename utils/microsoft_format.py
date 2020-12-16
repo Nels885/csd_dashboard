@@ -9,7 +9,6 @@ import os
 
 
 class BaseFormat:
-    COLS = {}
 
     def __init__(self, data_frame, columns):
         self.sheet = data_frame.dropna(how='all')
@@ -46,13 +45,12 @@ class BaseFormat:
         self.sheet.rename(columns=new_columns, inplace=True)
         self.columns = list(self.sheet.columns)
 
-    def _columns_rename(self):
-        if self.COLS:
-            new_columns = {}
-            for i, column in enumerate(self.columns):
-                new_columns[column] = list(self.COLS.values())[i]
-            self.sheet.rename(columns=new_columns, inplace=True)
-            self.columns = list(self.sheet.columns)
+    def _columns_rename(self, col_dict):
+        new_columns = {}
+        for i, column in enumerate(self.columns):
+            new_columns[column] = list(col_dict.values())[i]
+        self.sheet.rename(columns=new_columns, inplace=True)
+        self.columns = list(self.sheet.columns)
 
 
 class ExcelFormat(BaseFormat):
