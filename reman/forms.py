@@ -17,6 +17,12 @@ MANAGER FORMS
 """
 
 
+class BatchForm(BSModalModelForm):
+    class Meta:
+        model = Batch
+        fields = "__all__"
+
+
 class AddBatchForm(BSModalModelForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
 

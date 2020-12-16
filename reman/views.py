@@ -8,14 +8,14 @@ from django.core.mail import EmailMessage
 from django.db.models import Max, Q, Count
 
 from constance import config
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
 from utils.django.urls import reverse, reverse_lazy
 
 from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
-    AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
+    BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm
 )
 
@@ -139,6 +139,23 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
         except TypeError:
             initial['number'] = 1
         return initial
+
+
+class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    model = Batch
+    permission_required = 'reman.change_batch'
+    template_name = 'reman/modal/batch_update.html'
+    form_class = BatchForm
+    success_message = _('Success: Batch was updated.')
+    success_url = reverse_lazy('reman:batch_table')
+
+
+class BatchDeleteView(PermissionRequiredMixin, BSModalDeleteView):
+    model = Batch
+    permission_required = 'reman.delete_batch'
+    template_name = 'reman/modal/batch_delete.html'
+    success_message = _('Success: Batch was deleted.')
+    success_url = reverse_lazy('reman:batch_table')
 
 
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):

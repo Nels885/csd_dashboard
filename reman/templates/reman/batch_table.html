@@ -19,6 +19,8 @@
     <table class="table table-bordered text-nowrap" id="batchTable" width="100%" cellspacing="0">
         <thead>
         <tr>
+            <th></th>
+            <th></th>
             <th>Numéro de lot</th>
             <th>Quantité</th>
             <th>Réf. REMAN</th>
@@ -44,6 +46,20 @@
             {% with ecus=batch.ecu_ref_base.ecu_type.ecumodel_set.all %}
 
                 <tr>
+                    <td>
+                        {% if perms.reman.change_batch and not batch.repairs.count %}
+                            <a href="#" data-form-url="{% url 'reman:update_batch' batch.pk %}" class="bs-batch btn btn-success btn-circle btn-sm" title="Modification dossier" ><i class="fas fa-edit"></i></a>
+                        {% else %}
+                            <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if perms.reman.delete_batch and not batch.repairs.count %}
+                            <a href="#" data-form-url="{% url 'reman:delete_batch' batch.pk %}" class="bs-batch btn btn-danger btn-circle btn-sm" title="Suppression"><i class="fas fa-trash-alt"></i></a>
+                        {% else %}
+                            <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                        {% endif %}
+                    </td>
                     <td>{{ batch }}</td>
                     <td>{{ batch.quantity }}</td>
                     <td>{{ batch.ecu_ref_base.reman_reference }}</td>

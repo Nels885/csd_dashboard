@@ -74,8 +74,6 @@
 
         $(".tag-xelon-btn").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
 
-        $(".batch-btn").modalForm({formURL: "{% url 'reman:create_batch' %}"});
-
         $(".default-btn").modalForm({formURL: "{% url 'reman:create_default' %}", modalID: "#create-large-modal"});
 
         $(".repair-btn").modalForm({formURL: "{% url 'reman:create_repair' %}"});
@@ -135,6 +133,13 @@
         $(".delete-unlock").each(function () {
             $(this).modalForm({formURL: $(this).data('id')});
         })
+
+        // Batch buttons
+        $(".create-batch").modalForm({formURL: "{% url 'reman:create_batch' %}"});
+
+        $(".bs-batch").each(function () {
+            $(this).modalForm({formURL: $(this).data('form-url')});
+        });
 
         // log file buttons
         $(".log-btn").each(function () {
