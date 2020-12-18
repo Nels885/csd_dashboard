@@ -50,22 +50,24 @@ class Command(BaseCommand):
         nb_created = 0
         for query in queryset:
             start_time = time.time()
-            data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(query.vin)
-            row = xml_parser(data)
-            if row and row.get('donnee_date_entree_montage'):
-                defaults = defaults_dict(Corvet, row, "vin")
-                obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
-                if created:
-                    nb_created += 1
-                query.corvet = obj
-                delay_time = time.time() - start_time
-                self.stdout.write(
-                    self.style.SUCCESS(f"{query.numero_de_dossier} - {query.vin} updated in {delay_time}"))
-            else:
-                query.vin_error = True
-                delay_time = time.time() - start_time
-                self.stdout.write(
-                    self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error VIN in {delay_time}"))
+            for attempt in range(2):
+                data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(query.vin)
+                row = xml_parser(data)
+                if row and row.get('donnee_date_entree_montage'):
+                    defaults = defaults_dict(Corvet, row, "vin")
+                    obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
+                    if created:
+                        nb_created += 1
+                    query.corvet = obj
+                    delay_time = time.time() - start_time
+                    self.stdout.write(
+                        self.style.SUCCESS(f"{query.numero_de_dossier} - {query.vin} updated in {delay_time}"))
+                    break
+                elif attempt:
+                    query.vin_error = True
+                    delay_time = time.time() - start_time
+                    self.stdout.write(
+                        self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error VIN in {delay_time}"))
             query.save()
             if limit and nb_created >= 10:
                 break
