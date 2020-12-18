@@ -7,7 +7,7 @@
 </div>
 <div class="row">
     <section class="col-sm-3">
-        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:email' xelon.pk %}" {% if not xelon.actions.all %}disabled="disabled"{% endif %}>Envoi Email VIN</button>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:email' xelon.pk %}">Envoi Email VIN</button>
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:email' xelon.pk %}" disabled="disabled">Envoi Email BOITIER</button>
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:edit' xelon.pk %}">
             Modification CORVET

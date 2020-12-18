@@ -141,13 +141,14 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/squalaetp_form.html'
     form_class = XelonModalForm
-    success_message = _('Success: Squalaetp data was updated.')
 
     def get_context_data(self, **kwargs):
         context = super(SqualaetpUpdateView, self).get_context_data(**kwargs)
-        file = self.object.numero_de_dossier
-        context['active_import'] = 'false'
-        context['modal_title'] = _('CORVET update for %(file)s' % {'file': file})
+        context.update({
+            'active_import': 'false',
+            'vin_xelon': self.object.vin,
+            'modal_title': _('CORVET update for %(file)s' % {'file': self.object.numero_de_dossier})
+        })
         return context
 
     def form_valid(self, form):
@@ -156,8 +157,11 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
             vin = form.cleaned_data['vin']
             defaults = defaults_dict(Corvet, data, 'vin')
             obj, created = Corvet.objects.update_or_create(vin=vin, defaults=defaults)
-            call_command("exportsqualaetp")
         return super(SqualaetpUpdateView, self).form_valid(form)
+
+    def get_success_message(self, cleaned_data):
+        call_command("exportsqualaetp")
+        return _('Success: Squalaetp data was updated.')
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
@@ -170,7 +174,6 @@ class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/ihm_email_form.html'
     form_class = IhmEmailModalForm
-    success_message = _('Success: The email has been sent.')
 
     def get_initial(self):
         initial = super(IhmEmailFormView, self).get_initial()
@@ -203,6 +206,7 @@ class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
             xelon = Xelon.objects.get(pk=self.kwargs['pk'])
             content = "Envoi Email de modification VIN effectué."
             Action.objects.create(content=content, content_object=xelon)
+            messages.success(self.request, _('Success: The email has been sent.'))
         return super(IhmEmailFormView, self).form_valid(form)
 
     def get_success_url(self):
