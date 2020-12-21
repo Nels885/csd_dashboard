@@ -123,6 +123,12 @@
             </li>
         {% endwith %}
 
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:supplier_links' %}">
+                <i class="fas fa-fw fa-link"></i><span>{% trans "supplier links" %}</span>
+            </a>
+        </li>
+
     {% endif %}
 
     {% if perms.raspeedi.view_unlockproduct %}
@@ -130,7 +136,6 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
                 <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
-
             </a>
         </li>
 

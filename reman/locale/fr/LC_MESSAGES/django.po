@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-07 16:06+0100\n"
+"POT-Creation-Date: 2020-12-21 15:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/forms.py:43
+#: reman/forms.py:49
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:50
+#: reman/forms.py:56
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
@@ -41,6 +41,7 @@ msgstr "Création d'un lot"
 
 #: reman/templates/reman/modal/batch_create.html:41
 #: reman/templates/reman/modal/batch_select.html:38
+#: reman/templates/reman/modal/batch_update.html:41
 #: reman/templates/reman/modal/default_create.html:43
 #: reman/templates/reman/modal/default_update.html:43
 #: reman/templates/reman/modal/repair_create.html:38
@@ -56,9 +57,34 @@ msgstr "Annuler"
 msgid "Create"
 msgstr "Création"
 
+#: reman/templates/reman/modal/batch_delete.html:7
+#, fuzzy
+#| msgid "Create Batch"
+msgid "Delete Batch"
+msgstr "Création d'un lot"
+
+#: reman/templates/reman/modal/batch_delete.html:14
+msgid "Are you sure you want to delete Batch "
+msgstr ""
+
+#: reman/templates/reman/modal/batch_delete.html:18
+msgid "Delete"
+msgstr ""
+
 #: reman/templates/reman/modal/batch_select.html:39
 msgid "Filter"
 msgstr ""
+
+#: reman/templates/reman/modal/batch_update.html:10
+#, fuzzy
+#| msgid "Create Batch"
+msgid "Update Batch"
+msgstr "Création d'un lot"
+
+#: reman/templates/reman/modal/batch_update.html:42
+#: reman/templates/reman/modal/default_update.html:44
+msgid "Update"
+msgstr "Mise à jour"
 
 #: reman/templates/reman/modal/default_create.html:7
 msgid "Create Default"
@@ -67,10 +93,6 @@ msgstr "Ajout panne"
 #: reman/templates/reman/modal/default_update.html:7
 msgid "Update Default"
 msgstr "Mise à jour panne"
-
-#: reman/templates/reman/modal/default_update.html:44
-msgid "Update"
-msgstr "Mise à jour"
 
 #: reman/templates/reman/modal/repair_create.html:7
 msgid "Create Repair"
@@ -131,7 +153,7 @@ msgstr "Ce champ est requis."
 msgid "PSA barcode is invalid"
 msgstr "Code barre PSA n'est pas valide"
 
-#: reman/tests/tests_reman_views.py:123 reman/views.py:248
+#: reman/tests/tests_reman_views.py:123 reman/views.py:265
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
@@ -158,14 +180,26 @@ msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
 #: reman/views.py:149
+#, fuzzy
+#| msgid "Success: Batch was created."
+msgid "Success: Batch was updated."
+msgstr "Succès: le lot a été créé."
+
+#: reman/views.py:157
+#, fuzzy
+#| msgid "Success: Batch was created."
+msgid "Success: Batch was deleted."
+msgstr "Succès: le lot a été créé."
+
+#: reman/views.py:166
 msgid "Success: Reman Default was created."
 msgstr "Succès: La panne REMAN a été créé."
 
-#: reman/views.py:159
+#: reman/views.py:176
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
 
-#: reman/views.py:283
+#: reman/views.py:300
 #, python-format
 msgid "Repair n°%(repair)s to batch n°%(batch)s ready for shipment"
 msgstr "Réparation n°%(repair)s du lot n°%(batch)s prêt pour expédition."

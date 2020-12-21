@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-07 16:06+0100\n"
+"POT-Creation-Date: 2020-12-21 15:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,12 +104,12 @@ msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
-#: templates/nav/nav_reman.html:54 templates/nav/nav_tools.html:23
+#: templates/nav/nav_reman.html:51 templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
 
 #: templates/nav/nav_csd_atelier.html:24 templates/nav/nav_reman.html:27
-#: templates/nav/nav_reman.html:47
+#: templates/nav/nav_reman.html:46
 msgid "Current files"
 msgstr "Dossiers en cours"
 
@@ -125,7 +125,7 @@ msgstr "Dossiers erreur CORVET"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:32 templates/nav/nav_reman.html:48
+#: templates/nav/nav_csd_atelier.html:32 templates/nav/nav_reman.html:47
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -151,7 +151,11 @@ msgstr "Outils & Liens"
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:132 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:128
+msgid "supplier links"
+msgstr "Liens fournisseurs"
+
+#: templates/nav/nav_csd_atelier.html:138 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -179,21 +183,21 @@ msgstr "Réparations"
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:46
+#: templates/nav/nav_reman.html:48
+msgid "ECU to Dump"
+msgstr "ECU à Dumper"
+
+#: templates/nav/nav_reman.html:52
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:50
+#: templates/nav/nav_reman.html:54
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: templates/nav/nav_reman.html:56
+#: templates/nav/nav_reman.html:57
 msgid "ECU ref Base"
 msgstr "Base réf. ECU"
-
-#: templates/nav/nav_reman.html:57
-msgid "ECU to Dump"
-msgstr "ECU à Dumper"
 
 #: templates/nav/nav_reman.html:59
 msgid "Spare Parts"

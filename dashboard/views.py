@@ -275,3 +275,12 @@ class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+@login_required
+def supplier_links(request):
+    title = "CSD Atelier"
+    card_title = "Liens fournisseurs de pièces détachées"
+    web_links = WebLink.objects.filter(type="PARTS_SUPPLIERS")
+    return render(request, 'dashboard/weblink.html', locals())
+

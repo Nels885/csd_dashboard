@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-07 16:06+0100\n"
+"POT-Creation-Date: 2020-12-21 15:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,24 +79,24 @@ msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 
-#: psa/views.py:67
+#: psa/views.py:68
 msgid "CORVET table"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:85
+#: psa/views.py:88
 msgid "Detail Corvet data for the VIN: "
 msgstr "Détail des données Corvet pour le VIN : "
 
-#: psa/views.py:97 psa/views.py:115
+#: psa/views.py:100 psa/views.py:118
 #, fuzzy
 #| msgid "CORVET table"
 msgid "CORVET integration"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:101 psa/views.py:111
+#: psa/views.py:104 psa/views.py:114
 msgid "Modification done successfully!"
 msgstr ""
 
-#: psa/views.py:134
+#: psa/views.py:142
 msgid "Products PSA table"
 msgstr "Tableau des produits PSA"
