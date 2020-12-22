@@ -51,21 +51,24 @@ class Command(BaseCommand):
                 '84A', '94A', 'P4A', 'MOTEUR', 'TRANSMISSION', '10', '14B', '20', '44B', '54B', '64B', '84B', '94B',
                 '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
             ]
-            squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-            xelon_list = list(squalaetp.sheet['numero_de_dossier'])
+            try:
+                squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
+                xelon_list = list(squalaetp.sheet['numero_de_dossier'])
 
-            queryset = Xelon.objects.filter(numero_de_dossier__in=xelon_list).exclude(corvet__isnull=True)
+                queryset = Xelon.objects.filter(numero_de_dossier__in=xelon_list).exclude(corvet__isnull=True)
 
-            corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if field.name != 'vin'])
-            xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
+                corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if field.name != 'vin'])
+                xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
 
-            values_list = xelon_list + corvet_list
-            ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
-                        excel_type='xls').file(path, False)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
-                        queryset.count(), os.path.join(path, filename)
+                values_list = xelon_list + corvet_list
+                ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
+                            excel_type='xls').file(path, False)
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
+                            queryset.count(), os.path.join(path, filename)
+                        )
                     )
                 )
-            )
+            except FileNotFoundError as err:
+                self.stdout.write(self.style.ERROR("[SQUALAETP_EXPORT] {}".format(err)))

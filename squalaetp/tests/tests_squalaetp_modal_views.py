@@ -1,6 +1,4 @@
-from django.contrib.messages import get_messages
-
-from dashboard.tests.base import UnitTest, reverse, UserProfile
+from dashboard.tests.base import UnitTest, reverse
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
@@ -10,8 +8,8 @@ class MixinsTest(UnitTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
-                                     modele_vehicule='peugeot')
+        Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
+                             modele_vehicule='peugeot')
 
     def test_update_squalaetp_ajax_mixin(self):
         """
