@@ -82,26 +82,6 @@ def detail(request, pk):
 
 
 @permission_required('squalaetp.view_xelon')
-def xelon_edit(request, pk):
-    """
-    View for changing Xelon data
-    :param pk:
-        Xelon file id to edit
-    """
-    title = 'Xelon'
-    file = get_object_or_404(Xelon, pk=pk)
-    corvet = Corvet.objects.filter(vin=file.vin).first()
-    card_title = _('Modification data Xelon file: ') + file.numero_de_dossier
-    form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        form.save()
-        context = {'title': _('Modification done successfully!')}
-        return render(request, 'dashboard/done.html', context)
-    errors = form.errors.items()
-    return render(request, 'squalaetp/xelon_edit.html', locals())
-
-
-@permission_required('squalaetp.view_xelon')
 def ajax_xelon(request):
     """
     View for changing Xelon data

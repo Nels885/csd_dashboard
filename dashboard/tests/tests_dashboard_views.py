@@ -119,3 +119,12 @@ class DashboardTestCase(UnitTest):
         self.login('admin')
         response = self.client.get(reverse('dashboard:config_edit'))
         self.assertEqual(response.status_code, 200)
+
+    def test_supplier_links_page(self):
+        url = reverse('dashboard:supplier_links')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

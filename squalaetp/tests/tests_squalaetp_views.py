@@ -27,23 +27,17 @@ class XelonTestCase(UnitTest):
         self.xelonId = str(xelon.id)
 
     def test_xelon_table_page(self):
-        response = self.client.get(reverse('squalaetp:xelon'))
-        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/xelon/', status_code=302)
+        url = reverse('squalaetp:xelon')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.login()
-        response = self.client.get(reverse('squalaetp:xelon'))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_xelon_edit_page(self):
-        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'pk': self.xelonId}))
-        self.assertRedirects(
-            response, '/accounts/login/?next=/squalaetp/xelon/' + self.xelonId + '/edit/', status_code=302)
-        self.login()
-        response = self.client.get(reverse('squalaetp:xelon_edit', kwargs={'pk': self.xelonId}))
-        self.assertEqual(response.status_code, 200)
-
-    def test_xelon_detail_page(self):
-        response = self.client.get(reverse('squalaetp:detail', kwargs={'pk': self.xelonId}))
-        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/' + self.xelonId + '/detail/', status_code=302)
+    def test_squalaetp_detail_page(self):
+        url = reverse('squalaetp:detail', kwargs={'pk': self.xelonId})
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
         # Detail is not found
         self.login()
@@ -51,12 +45,15 @@ class XelonTestCase(UnitTest):
         self.assertEqual(response.status_code, 404)
 
         # Detail is valid
-        response = self.client.get(reverse('squalaetp:detail', kwargs={'pk': self.xelonId}))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_stock_table_page(self):
-        response = self.client.get(reverse('squalaetp:stock_parts'))
-        self.assertRedirects(response, '/accounts/login/?next=/squalaetp/stock-parts/', status_code=302)
+        url = reverse('squalaetp:stock_parts')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.login()
-        response = self.client.get(reverse('squalaetp:stock_parts'))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+
