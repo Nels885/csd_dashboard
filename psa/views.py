@@ -31,7 +31,7 @@ def nac_tools(request):
 def nac_license(request):
     form = NacLicenseForm(request.POST or None)
     if request.POST and form.is_valid():
-        url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=license"
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion={update}&uin={uin}"
         soft = form.cleaned_data['software']
         uin = form.cleaned_data['uin']
         return redirect(url.format(uin=uin, update=soft.update_id))
