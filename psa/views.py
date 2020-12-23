@@ -78,12 +78,9 @@ def corvet_detail(request, vin):
     """
     title = f'Info CORVET : {vin}'
     corvet = get_object_or_404(Corvet, vin=vin)
-    if corvet.electronique_14x:
-        btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14x).first()
+    if corvet.electronique_14x.isdigit():
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-    elif corvet.electronique_14f:
-        btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
-    if corvet.electronique_14a:
+    if corvet.electronique_14a.isdigit():
         cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)

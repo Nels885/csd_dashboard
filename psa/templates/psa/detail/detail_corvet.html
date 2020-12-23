@@ -3,7 +3,11 @@
 <div class="row">
     <section class="col-sm-6">
 
-        {% include 'psa/format/mutimedia_table_format.html' with object=btel %}
+        {% if corvet.btel %}
+            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.btel %}
+        {% else %}
+            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.radio %}
+        {% endif %}
 
         <table class="table table-bordered table-striped">
             <caption style="caption-side: top;">
