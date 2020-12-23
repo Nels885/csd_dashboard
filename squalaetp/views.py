@@ -64,7 +64,7 @@ def stock_table(request):
 def detail(request, pk):
     xelon = get_object_or_404(Xelon, pk=pk)
     title = f"{xelon.numero_de_dossier} - {xelon.modele_vehicule} - {xelon.vin}"
-    select = 'xelon'
+    select = "xelon"
     if xelon.corvet:
         corvet = xelon.corvet
         if corvet.electronique_14x.isdigit():
@@ -73,11 +73,9 @@ def detail(request, pk):
             cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
         select = 'prods'
-    if xelon.vin_error:
-        select = 'ihm'
+    select = request.GET.get('select', select)
     form = IhmForm(instance=xelon.corvet,
                    initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
-    redirect = request.META.get('HTTP_REFERER')
     return render(request, 'squalaetp/detail/detail.html', locals())
 
 

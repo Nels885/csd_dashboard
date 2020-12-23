@@ -46,7 +46,7 @@ $(document).ready(function () {
         let title = $(this).attr('title');
         id = data['id'];
         if (title === 'Modification') {
-            $(this).modalForm({formURL: '/squalaetp/' + id + '/edit/', modalID: "#large-modal"});
+            location.href = '/squalaetp/' + id + '/detail/?select=ihm'
         } else if (title === 'Detail') {
             // Detail button
             location.href = '/squalaetp/' + id + '/detail/'
