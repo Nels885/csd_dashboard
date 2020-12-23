@@ -31,6 +31,12 @@ class Command(BaseCommand):
             help='import Corvet CSV file',
         )
         parser.add_argument(
+            '--relations',
+            action='store_true',
+            dest='relations',
+            help='add the relationship between the corvet and multimedia tables',
+        )
+        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -46,6 +52,9 @@ class Command(BaseCommand):
                 self._update_or_create(Corvet, excel.read())
             else:
                 self.stdout.write("Fichier CSV manquant")
+
+        elif options['relations']:
+            self._foreignkey_relation()
 
         elif options['delete']:
             Corvet.objects.all().delete()
@@ -64,6 +73,17 @@ class Command(BaseCommand):
                 excel = ExcelCorvet(XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE)
 
             self._update_or_create(Corvet, excel.read())
+
+    def _foreignkey_relation(self):
+        self.stdout.write("[CORVET_RELATIONSHIPS] Waiting...")
+        corvets = Corvet.objects.filter(btel__isnull=True, radio__isnull=True)
+        for corvet in corvets:
+            corvet.save()
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[CORVET] Relationships update completed: CORVET/MULTIMEDIA = {}".format(corvets.count())
+            )
+        )
 
     def _update_or_create(self, model, data):
         nb_prod_before = model.objects.count()
