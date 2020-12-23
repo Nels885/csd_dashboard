@@ -8,14 +8,6 @@ from squalaetp.models import ProductCode
 
 class XelonCommandTestCase(TestCase):
 
-    def test_message_of_xelon_commmand_delete(self):
-        out = StringIO()
-        call_command('xelon', '--delete', stdout=out)
-        self.assertIn(
-            "Suppression des données de la table Xelon terminée!",
-            out.getvalue()
-        )
-
     def test_stockparts(self):
         out = StringIO()
         call_command('stockparts', '-f' 'reman/tests/extraction_test.csv', stdout=out)
