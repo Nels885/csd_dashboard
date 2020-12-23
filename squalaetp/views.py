@@ -15,7 +15,7 @@ from django.core.management import call_command
 from constance import config
 
 from .models import Xelon, Stock, Action
-from psa.models import Corvet, Multimedia
+from psa.models import Corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
 from .forms import IhmForm, XelonModalForm, IhmEmailModalForm
@@ -67,11 +67,11 @@ def detail(request, pk):
     select = 'xelon'
     if xelon.corvet:
         corvet = xelon.corvet
-        if corvet.electronique_14x:
-            btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14x).first()
+        if corvet.btel:
+            btel = corvet.btel
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-        elif corvet.electronique_14f:
-            btel = Multimedia.objects.filter(hw_reference=corvet.electronique_14f).first()
+        elif corvet.radio:
+            btel = corvet.radio
         if corvet.electronique_14a:
             cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
