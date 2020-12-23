@@ -28,3 +28,4 @@ django-tempus-dominus = "*"
 paho-mqtt = "*"
 django-constance = {extras = ["database"],version = "*"}
 django-inlinecss = "*"
+requests = "*"
