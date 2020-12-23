@@ -12,6 +12,7 @@ from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
 from django.core.management import call_command
+from django.core.exceptions import ObjectDoesNotExist
 from constance import config
 
 from .models import Xelon, Stock, Action
@@ -119,6 +120,7 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/squalaetp_form.html'
     form_class = XelonModalForm
+    success_message = _('Success: Squalaetp data was updated.')
 
     def get_context_data(self, **kwargs):
         context = super(SqualaetpUpdateView, self).get_context_data(**kwargs)
@@ -134,12 +136,9 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
             data = form.cleaned_data['xml_data']
             vin = form.cleaned_data['vin']
             defaults = defaults_dict(Corvet, data, 'vin')
-            obj, created = Corvet.objects.update_or_create(vin=vin, defaults=defaults)
+            Corvet.objects.update_or_create(vin=vin, defaults=defaults)
+            call_command("exportsqualaetp")
         return super(SqualaetpUpdateView, self).form_valid(form)
-
-    def get_success_message(self, cleaned_data):
-        call_command("exportsqualaetp")
-        return _('Success: Squalaetp data was updated.')
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
@@ -156,17 +155,16 @@ class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super(IhmEmailFormView, self).get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
-        action = xelon.actions.filter(content__contains="OLD_VIN").first()
         initial['to'] = config.CHANGE_VIN_TO_EMAIL_LIST
         initial['cc'] = config.VIN_ERROR_TO_EMAIL_LIST
         initial['subject'] = "[{}] Erreur VIN Xelon".format(xelon.numero_de_dossier)
         message = "Bonjour,\n\n"
         message += "Vous trouverez ci-dessous, le nouveau VIN pour le dossier {} :\n".format(xelon.numero_de_dossier)
-        if action:
-            data = action.content.split('\n')
+        try:
+            data = xelon.actions.get(content__contains="OLD_VIN").content.split('\n')
             message += "- Ancien VIN = {}\n".format(data[0][-17:])
             message += "- Nouveau VIN = {}\n".format(data[1][-17:])
-        else:
+        except ObjectDoesNotExist:
             message += "\n### NOUVEAU VIN NON DISPONIBLE ###\n"
         message += "\nCordialement\n\n"
         message += "{} {}".format(self.request.user.first_name, self.request.user.last_name)
