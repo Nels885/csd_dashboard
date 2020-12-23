@@ -67,12 +67,9 @@ def detail(request, pk):
     select = 'xelon'
     if xelon.corvet:
         corvet = xelon.corvet
-        if corvet.btel:
-            btel = corvet.btel
+        if corvet.electronique_14x.isdigit():
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-        elif corvet.radio:
-            btel = corvet.radio
-        if corvet.electronique_14a:
+        if corvet.electronique_14a.isdigit():
             cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
         select = 'prods'
