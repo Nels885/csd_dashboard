@@ -114,8 +114,8 @@ class Corvet(models.Model):
     electronique_86b = models.CharField('BSM DOTE - Boitier Servitude Moteur', max_length=200, blank=True)
     electronique_96b = models.CharField('BSM SOFT - Boitier Servitude Moteur', max_length=200, blank=True)
 
-    # radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
-    # btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
+    radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
+    btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
     # cmm = models.ForeignKey('psa.EcuType', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
     # bsi = models.ForeignKey('psa.EcuType', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
     # bsm = models.ForeignKey('psa.EcuType'; related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
@@ -123,6 +123,13 @@ class Corvet(models.Model):
     class Meta:
         verbose_name = "données CORVET"
         ordering = ['vin']
+
+    def save(self, *args, **kwargs):
+        if self.electronique_14x.isdigit():
+            self.btel = Multimedia.objects.filter(hw_reference=self.electronique_14x).first()
+        if self.electronique_14f.isdigit():
+            self.radio = Multimedia.objects.filter(hw_reference=self.electronique_14f).first()
+        super(Corvet, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.vin
