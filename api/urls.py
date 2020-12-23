@@ -20,5 +20,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='token_auth'),
-    path('doc/', views.documentation, name='doc')
+    path('doc/', views.documentation, name='doc'),
+    path('nac-license/', views.NacLicenseView.as_view(), name='nac_license')
 ]

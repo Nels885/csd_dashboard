@@ -1,8 +1,11 @@
+import requests
+
 from django.contrib.auth.models import User, Group
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status, authentication
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.views import APIView
 from constance import config
 
 from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
@@ -169,3 +172,19 @@ class RemanCheckOutViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['psa_barcode', 'ecu_type__ecu_ref_base__reman_reference']
     http_method_names = ['get']
+
+
+class NacLicenseView(APIView):
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, format=None):
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
+        payload = {
+            "mediaVersion": request.GET.get('update'),
+            "uin": request.GET.get('uin')
+        }
+        response = requests.get(url, params=payload, allow_redirects=True)
+        if response.status_code == 200:
+            return redirect(response.url)
+        return Response({"error": "Request failed"}, status=response.status_code)
