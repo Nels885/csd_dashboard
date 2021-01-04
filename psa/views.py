@@ -1,4 +1,4 @@
-import requests
+# import requests
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -33,16 +33,20 @@ def nac_tools(request):
 def nac_license(request):
     form = NacLicenseForm(request.POST or None)
     if request.POST and form.is_valid():
-        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
-        payload = {
-            "mediaVersion": form.cleaned_data['software'].update_id,
-            "uin": form.cleaned_data['uin']
-        }
-        response = requests.get(url, params=payload, allow_redirects=True)
-        print(response.url)
-        if response.status_code == 200:
-            return redirect(response.url)
-        messages.warning(request, 'Fichier non trouvé !')
+        # url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
+        # payload = {
+        #     "mediaVersion": form.cleaned_data['software'].update_id,
+        #     "uin": form.cleaned_data['uin']
+        # }
+        # response = requests.get(url, params=payload, allow_redirects=True)
+        # print(response.url)
+        # if response.status_code == 200:
+        #     return redirect(response.url)
+        # messages.warning(request, 'Fichier non trouvé !')
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion={update}&uin={uin}"
+        soft = form.cleaned_data['software']
+        uin = form.cleaned_data['uin']
+        return redirect(url.format(uin=uin, update=soft.update_id))
     for key, error in form.errors.items():
         messages.warning(request, error)
     return redirect('psa:nac_tools')
