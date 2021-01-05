@@ -139,8 +139,8 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
             Corvet.objects.update_or_create(vin=vin, defaults=defaults)
             out = StringIO()
             call_command("exportsqualaetp", stdout=out)
-            for msg in out.getvalue().split("\n"):
-                messages.success(self.request, msg)
+            if "Export error" in out.getvalue():
+                messages.error(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
         return super(SqualaetpUpdateView, self).form_valid(form)
 
     def get_success_url(self):
