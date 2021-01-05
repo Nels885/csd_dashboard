@@ -31,8 +31,10 @@ from utils.django.models import defaults_dict
 def update(request, pk):
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
-    for msg in out.getvalue().split("\n"):
-        messages.success(request, msg)
+    if "Export error" in out.getvalue():
+        messages.warning(request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
+    else:
+        messages.success(request, "Exportation Squalaetp terminée.")
     return redirect('squalaetp:detail', pk=pk)
 
 
@@ -140,7 +142,9 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
             out = StringIO()
             call_command("exportsqualaetp", stdout=out)
             if "Export error" in out.getvalue():
-                messages.error(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
+                messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
+            else:
+                messages.success(self.request, "Exportation Squalaetp terminée.")
         return super(SqualaetpUpdateView, self).form_valid(form)
 
     def get_success_url(self):
