@@ -61,14 +61,23 @@ class Command(BaseCommand):
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
 
                 values_list = xelon_list + corvet_list
-                ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
-                            excel_type='xls').file(path, False)
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
-                            queryset.count(), os.path.join(path, filename)
+                error = ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
+                                    excel_type='xls').file(path, False)
+                if error:
+                    self.stdout.write(
+                        self.style.ERROR(
+                            "[SQUALAETP_EXPORT] Export error because {}.xls file is read-only!".format(
+                                os.path.join(path, filename)
+                            )
                         )
                     )
-                )
+                else:
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
+                                queryset.count(), os.path.join(path, filename)
+                            )
+                        )
+                    )
             except FileNotFoundError as err:
                 self.stdout.write(self.style.ERROR("[SQUALAETP_EXPORT] {}".format(err)))

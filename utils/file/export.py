@@ -111,7 +111,10 @@ class ExportExcel:
         return response
 
     def file(self, path, copy=True):
-        """ Creation file """
+        """
+        Creation file
+        :return True if the file is read-only
+        """
         file = os.path.join(path, "{}.{}".format(self.filename, self.excelType))
         if copy:
             self._file_yesterday(path, file)
@@ -122,8 +125,10 @@ class ExportExcel:
                         self._csv_writer(f)
             else:
                 self._xls_writer(file)
+            return False
         except OSError:
             logger.warning('{} File is read-only.'.format(file))
+        return True
 
     def _csv_writer(self, response):
         """ Formatting data in CSV format """
