@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
@@ -11,7 +12,7 @@ from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
 from utils.django.urls import reverse, reverse_lazy
 
-from utils.conf import string_to_list
+from utils.conf import string_to_list, DICT_YEAR
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
@@ -134,7 +135,8 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     def get_initial(self):
         initial = super(BatchCreateView, self).get_initial()
         try:
-            batchs = Batch.objects.exclude(number__gte=900)
+            date = timezone.now()
+            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
             initial['number'] = batchs.aggregate(Max('number'))['number__max'] + 1
         except TypeError:
             initial['number'] = 1
