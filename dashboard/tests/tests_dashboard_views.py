@@ -104,6 +104,10 @@ class DashboardTestCase(UnitTest):
         for value in [self.vin, self.vin.lower()]:
             response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
+        Xelon.objects.create(numero_de_dossier='A123456780', vin=self.vin, modele_produit='produit',
+                             modele_vehicule='peugeot')
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'ihm'})
+        self.assertEqual(response.status_code, 200)
 
         # Search by Xelon is valid
         for value in ['A123456789', 'a123456789']:
