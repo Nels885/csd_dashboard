@@ -13,6 +13,7 @@ router.register(r'corvet', views.CorvetViewSet, basename='corvet')
 router.register(r'unlock', views.UnlockViewSet, basename='unlock')
 router.register(r'reman/batch', views.RemanBatchViewSet, basename='reman_batch')
 router.register(r'reman/checkout', views.RemanCheckOutViewSet, basename='reman_checkout')
+router.register(r'reman/repair', views.RemanRepairViewSet, basename='reman_repair')
 
 app_name = 'api'
 

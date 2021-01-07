@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
-from reman.models import Batch, EcuModel
+from reman.models import Batch, EcuModel, Repair
 from psa.models import Corvet
 
 
@@ -155,4 +155,19 @@ class RemanCheckOutSerializer(serializers.ModelSerializer):
         fields = (
             'psa_barcode', 'reman_reference', 'ecu_type', 'hw_reference', 'supplier', 'ref_cal_out', 'ref_psa_out',
             'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
+        )
+
+
+class RemanRepairSerializer(serializers.ModelSerializer):
+    batch = serializers.CharField(source='batch.batch_number', read_only=True)
+    technical_data = serializers.CharField(source='batch.ecu_ref_base.ecu_type.technical_data', read_only=True)
+    supplier_oe = serializers.CharField(source='batch.ecu_ref_base.ecu_type.supplier_oe', read_only=True)
+    hw_reference = serializers.CharField(source='batch.ecu_ref_base.ecu_type.hw_reference', read_only=True)
+    created_by = serializers.CharField(source='created_by.username', read_only=True)
+
+    class Meta:
+        model = Repair
+        fields = (
+            'identify_number', 'batch', 'technical_data', 'supplier_oe', 'hw_reference', 'psa_barcode', 'status',
+            'quality_control', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
         )

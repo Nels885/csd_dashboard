@@ -8,14 +8,14 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from constance import config
 
-from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
+from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST, REPAIR_COLUMN_LIST
 from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
-from .serializers import RemanBatchSerializer, RemanCheckOutSerializer
+from .serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
 from psa.models import Corvet
-from reman.models import Batch, EcuModel
+from reman.models import Batch, EcuModel, Repair
 
 from .utils import TokenAuthSupportQueryString
 
@@ -152,6 +152,26 @@ class CorvetViewSet(viewsets.ModelViewSet):
             return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
+class RepairViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Repair.objects.all()
+    serializer_class = RemanRepairSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            corvet = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
+            serializer = self.serializer_class(corvet["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": corvet["draw"],
+                "recordsTotal": corvet["total"],
+                "recordsFiltered": corvet["count"]
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+
 class RemanBatchViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows users to be viewed or edited. """
     authentication_classes = (TokenAuthSupportQueryString,)
@@ -171,6 +191,18 @@ class RemanCheckOutViewSet(viewsets.ModelViewSet):
     serializer_class = RemanCheckOutSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['psa_barcode', 'ecu_type__ecu_ref_base__reman_reference']
+    http_method_names = ['get']
+
+
+class RemanRepairViewSet(viewsets.ModelViewSet):
+    # authentication_classes = (TokenAuthSupportQueryString,)
+    permissions_classes = (permissions.IsAuthenticated,)
+    queryset = Repair.objects.all()
+    serializer_class = RemanRepairSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = [
+        'identify_number', 'batch__batch_number', 'psa_barcode', 'batch__ecu_ref_base__ecu_type__hw_reference'
+    ]
     http_method_names = ['get']
 
 
