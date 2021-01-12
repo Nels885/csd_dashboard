@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.core.exceptions import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.utils import IntegrityError, DataError
 from django.core.management import call_command
 from django.core.exceptions import ObjectDoesNotExist
@@ -130,6 +130,8 @@ class Command(BaseCommand):
                 self.stderr.write(self.style.ERROR("FieldDoesNotExist row {} : {}".format(xelon_number, err)))
             except KeyError as err:
                 self.stderr.write(self.style.ERROR("KeyError row {} : {}".format(xelon_number, err)))
+            except ValidationError as err:
+                self.stderr.write(self.style.ERROR("ValidationError {} : {}".format(xelon_number, err)))
 
         nb_prod_after = model.objects.count()
         self.stdout.write(
