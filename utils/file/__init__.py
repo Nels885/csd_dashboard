@@ -29,11 +29,11 @@ class LogFile:
             'cal_rt6': os.path.join(self.path, 'LOG_CAL_RT6'),
             'calibre': os.path.join(self.path, 'CALIBRE')
         }
-        # self.ecu = self.log_filter('LOG_ECU_IN')
 
     def log_filter(self, dir_name):
-        files = list_dir(os.path.join(self.path, dir_name))
-        return [file.split('/')[-1] for file in files if dir_name in file and "NG" not in file and "SWAP" not in file]
+        path = os.path.join(self.path, dir_name)
+        files = list_dir(path)
+        return [file.replace(path + '/', '').split('/') for file in files]
 
     def vin_err_filter(self, product, file_name):
         keys = [key for key in self.paths.keys() if key in product]
@@ -49,6 +49,7 @@ class LogFile:
         cal_list = []
         path = os.path.join(self.path, 'LOG_ECU_IN')
         files = self.log_filter('LOG_ECU_IN')
+        files = [file[0] for file in self.log_filter('LOG_ECU_IN') if '.txt' in file[0]]
         for file in files:
             with open(os.path.join(path, file), "r") as f:
                 try:
@@ -90,8 +91,8 @@ class LogFile:
 
     def _dataframe(self, path):
         data = {"xelon": [], "cal": []}
-        files = list_dir(os.path.join(self.path, ))
         files = self.log_filter('LOG_ECU_IN')
+        files = [file[0] for file in self.log_filter('LOG_ECU_IN') if '.txt' in file[0]]
         for file in files:
             try:
                 with open(os.path.join(path, file), "r") as f:
