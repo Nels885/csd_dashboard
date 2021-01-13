@@ -124,7 +124,7 @@ class XelonViewSet(viewsets.ModelViewSet):
     def _filter(self, request):
         query = request.query_params.get('filter', None)
         if query and query == 'pending':
-            self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
+            self.queryset = self.queryset.exclude(type_de_cloture__in=['Réparé', 'N/A'])
         elif query and query == "vin-error":
             self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
         elif query and query == "corvet-error":
