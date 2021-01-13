@@ -3,6 +3,7 @@ from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.utils import IntegrityError, DataError
 from django.core.management import call_command
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
@@ -46,7 +47,7 @@ class Command(BaseCommand):
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
 
             self._squalaetp_file(Xelon, squalaetp)
-            self._delay_files(Xelon)
+            self._delay_files(Xelon, squalaetp)
 
         elif options['relations']:
             self._foreignkey_relation()
@@ -104,13 +105,15 @@ class Command(BaseCommand):
             )
         )
 
-    def _delay_files(self, model):
+    def _delay_files(self, model, squalaetp):
         self.stdout.write("[DELAY] Waiting...")
         nb_prod_update = 0
+        xelon_list = list(squalaetp.sheet['numero_de_dossier'])
         excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
         nb_prod_before = model.objects.count()
-        model.objects.exclude(
-            type_de_cloture__in=['Réparé', 'Rebut'], date_retour__isnull=True).update(type_de_cloture='Réparé')
+        model.objects.exclude(Q(numero_de_dossier__in=xelon_list) |
+                              Q(type_de_cloture__in=['Réparé', 'Rebut']) |
+                              Q(date_retour__isnull=True)).update(type_de_cloture='N/A', lieu_de_stockage='N/A')
         model.objects.filter(actions__isnull=True)
         for row in excel.table():
             xelon_number = row.get("numero_de_dossier")
@@ -118,9 +121,6 @@ class Command(BaseCommand):
             try:
                 obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                 if not created:
-                    if not obj.nom_technicien:
-                        obj.type_de_cloture = ''
-                        obj.save()
                     nb_prod_update += 1
             except IntegrityError as err:
                 self.stderr.write(self.style.ERROR("IntegrityError row {} : {}".format(xelon_number, err)))
