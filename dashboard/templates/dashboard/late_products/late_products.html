@@ -1,37 +1,89 @@
 {% extends 'format/datatables_format.html' %}
 
-{% load static %}
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
+
+            <li class="nav-item">
+                <a class="nav-link active" href="#late" role="tab" aria-controls="late" aria-selected="true">
+                    {% trans "Late products" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#tronik" role="tab" aria-controls="tronik" aria-selected="false">
+                    Autotronik
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+{% endblock %}
 
 {% block table_content %}
 
-    <table class="table table-bordered text-nowrap" id="lateProdNewTable" width="100%" cellspacing="0">
-        <thead>
-        <tr>
-            <th>Activité</th>
-            <th>Dossier</th>
-            <th>Modèle</th>
-            <th>Date In</th>
-            <th>Délai</th>
-            <th>Tech</th>
+    <div class="tab-content mt-3">
 
-        </tr>
-        </thead>
-        <tbody>
+    <!-- Late products -->
+    <div class="tab-pane active" id="late" role="tabpanel" aria-labelledby="late-tab">
 
-        {% include 'dashboard/late_products/../email_format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
+        <table class="table table-bordered text-nowrap" id="lateProdNewTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+                <th>Activité</th>
+                <th>Dossier</th>
+                <th>Modèle</th>
+                <th>Date In</th>
+                <th>Délai</th>
+                <th>Tech</th>
 
-        {% include 'dashboard/late_products/../email_format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
+            </tr>
+            </thead>
+            <tbody>
 
-        {% include 'dashboard/late_products/../email_format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
+            {% include 'dashboard/email_format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
 
-        {% include 'dashboard/late_products/../email_format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
+            {% include 'dashboard/email_format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
 
-        {% include 'dashboard/late_products/../email_format/lp_tr_format.html' with prods=etude activity='Etude' %}
+            {% include 'dashboard/email_format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
 
-        {% include 'dashboard/late_products/../email_format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+            {% include 'dashboard/email_format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
 
-        </tbody>
-    </table>
+            {% include 'dashboard/email_format/lp_tr_format.html' with prods=etude activity='Etude' %}
+
+            {% include 'dashboard/email_format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- Detail IHM -->
+    <div class="tab-pane" id="tronik" role="tabpanel" aria-labelledby="tronik-tab">
+
+        <table class="table table-bordered text-nowrap" id="tronikTable" width="100%" cellspacing="0">
+            <thead>
+            <tr>
+                <th>Activité</th>
+                <th>Dossier</th>
+                <th>Modèle</th>
+                <th>Date In</th>
+                <th>Délai</th>
+                <th>Tech</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            {% include 'dashboard/email_format/lp_tr_format.html' with prods=autotronik activity='Autotronik' %}
+
+            </tbody>
+        </table>
+
+    </div>
 
 {% endblock %}
 

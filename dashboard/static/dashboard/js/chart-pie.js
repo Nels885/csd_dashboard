@@ -19,7 +19,7 @@ $.ajax({
                     data: defaultData,
                     backgroundColor: ['#079992', '#0a3d62', '#0c2461', '#b71540',
                         '#e58e26', '#eb2f06', '#1e3799', '#3c6382',
-                        '#38ada9','#78e08f', '#60a3bc', '#4a69bd'],
+                        '#38ada9','#78e08f', '#60a3bc', '#4a69bd', '#0C40FF'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                 }],
             },
@@ -28,6 +28,7 @@ $.ajax({
                 legend: {
                     display: true,
                     position: 'right',
+                    align: 'start'
                 },
                 cutoutPercentage: 0,
             },

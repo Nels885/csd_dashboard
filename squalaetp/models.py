@@ -80,6 +80,8 @@ class Indicator(models.Model):
             data = {key: query.xelons.filter(modele_produit__startswith=key).count() for key in prod_list}
             data['RTx'] = query.xelons.filter(modele_produit__in=['RT3', 'RT4', 'RT5']).count()
             data['CALC_MOT'] = query.xelons.filter(famille_produit__exact="CALC MOT").count()
+            data['AUTOTRONIK'] = Xelon.objects.filter(lieu_de_stockage="ATELIER/AUTOTRONIK").exclude(
+                type_de_cloture__in=['Réparé', 'Admin', 'N/A']).count()
             data['AUTRES'] = query.xelons.all().count() - sum(data.values())
         else:
             data = {}
