@@ -9,9 +9,9 @@ from psa.models import Corvet
 
 
 class ProductAnalysis:
-    LABELS = ["RT6/RNEG2", "SMEG", "NAC", "RNEG", "NG4", "DISPLAY", "RTx", "CALC MOT", "BSI", 'NISSAN', "AUTRES"]
-    # QUERYSET = Xelon.objects.exclude(lieu_de_stockage='MAGATTREPA/ZONECE', ilot='LaboQual')
-    QUERYSET = Xelon.objects.exclude(date_retour__isnull=True)
+    QUERYSET_RETURN = Xelon.objects.exclude(date_retour__isnull=True)
+    QUERYSET = QUERYSET_RETURN.exclude(lieu_de_stockage='ATELIER/AUTOTRONIK')
+    QUERYSET_AUTOTRONIK = QUERYSET_RETURN.filter(lieu_de_stockage='ATELIER/AUTOTRONIK')
 
     def __init__(self):
         """
@@ -21,7 +21,7 @@ class ProductAnalysis:
         self.lateQueryset = self.QUERYSET.filter(Q(delai_au_en_jours_ouvres__gt=3) |
                                                  Q(express=True) |
                                                  Q(famille_produit__startswith='TBORD')).exclude(
-            type_de_cloture__in=['Réparé', 'Admin']).order_by('-delai_au_en_jours_ouvres')
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
         self.late = self.lateQueryset.count()
@@ -52,28 +52,9 @@ class ProductAnalysis:
                                                                    Q(famille_produit__exact='TBORD PSA'))
         calc_mot = self.lateQueryset.filter(famille_produit='CALC MOT')
         defaut = self.lateQueryset.filter(ilot='DEFAUT').exclude(famille_produit='CALC MOT')
+        autotronik = self.QUERYSET_AUTOTRONIK.exclude(
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         return locals()
-
-    def products_count(self):
-        """
-        Function to count the number of products to repair
-        :return:
-            list of name and number of different products
-        """
-        prod_nb, rtx_nb = [], 0
-        pending_prod = self.pendingQueryset
-        for prod in self.LABELS[:-1]:
-            if prod == "RTx":
-                for rtx in ["RT3", "RT4", "RT5"]:
-                    rtx_nb += pending_prod.filter(modele_produit__startswith=rtx).count()
-                prod_nb.append(rtx_nb)
-            elif prod in ["CALC MOT", "BSI"]:
-                prod_nb.append(pending_prod.filter(famille_produit__startswith=prod).count())
-            else:
-                prod_nb.append(pending_prod.filter(modele_produit__startswith=prod).count())
-        labels_nb = sum(prod_nb)
-        prod_nb.append(pending_prod.count() - labels_nb)
-        return {"prodLabels": self.LABELS, "prodDefault": prod_nb}
 
     def corvet_count(self):
         """
