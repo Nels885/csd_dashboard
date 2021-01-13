@@ -1,4 +1,8 @@
+import logging
+
 from utils.microsoft_format import ExcelFormat, pd
+
+logger = logging.getLogger(__name__)
 
 
 class ExcelDelayAnalysis(ExcelFormat):
@@ -20,9 +24,12 @@ class ExcelDelayAnalysis(ExcelFormat):
         """
         dfs = []
         for file in files:
-            super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8)
-            self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
-            dfs.append(self.sheet)
+            try:
+                super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8)
+                self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
+                dfs.append(self.sheet)
+            except FileNotFoundError as err:
+                logger.error(f'FileNotFoundError: {err}')
         self.sheet = pd.concat(dfs).reset_index(drop=True)
         self.nrows = self.sheet.shape[0]
         self._columns_convert(digit=False)
@@ -51,7 +58,7 @@ class ExcelDelayAnalysis(ExcelFormat):
         :return:
             list of dictionnaries that represents the data for table
         """
-        data = [self.key_formatting(dict(self.sheet.loc[line].dropna())) for line in range(self.nrows)]
+        data = [self.key_formatting(dict(self.sheet.loc[line].fillna(''))) for line in range(self.nrows)]
         return data
 
     def key_formatting(self, data):
