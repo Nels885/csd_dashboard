@@ -112,7 +112,7 @@ class Command(BaseCommand):
         excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
         nb_prod_before = model.objects.count()
         model.objects.exclude(Q(numero_de_dossier__in=xelon_list) |
-                              Q(type_de_cloture__in=['Réparé', 'Rebut']) |
+                              Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
                               Q(date_retour__isnull=True)).update(type_de_cloture='N/A', lieu_de_stockage='N/A')
         model.objects.filter(actions__isnull=True)
         for row in excel.table():
