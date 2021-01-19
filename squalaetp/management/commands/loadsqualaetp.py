@@ -110,11 +110,12 @@ class Command(BaseCommand):
         nb_prod_update = 0
         xelon_list = list(squalaetp.sheet['numero_de_dossier'])
         excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
+        delay_list = list(excel.sheet['n_de_dossier'])
+        self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
         nb_prod_before = model.objects.count()
         model.objects.exclude(Q(numero_de_dossier__in=xelon_list) |
                               Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
-                              Q(date_retour__isnull=True)).update(type_de_cloture='N/A', lieu_de_stockage='N/A')
-        model.objects.filter(actions__isnull=True)
+                              Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
         for row in excel.table():
             xelon_number = row.get("numero_de_dossier")
             defaults = defaults_dict(model, row, "numero_de_dossier")
