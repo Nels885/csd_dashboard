@@ -45,7 +45,7 @@ class Command(BaseCommand):
                 html_message=html_message
             )
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en retard terminée!"))
-        elif options['vin_error']:
+        if options['vin_error']:
             last_7_days = timezone.datetime.today() - timezone.timedelta(7)
             subject = "Liste d'erreur de VIN Xelon {}".format(date_joined)
             xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')[:10]
