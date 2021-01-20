@@ -16,7 +16,7 @@ from .models import Xelon, Stock, Action
 from psa.models import Corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
-from .forms import IhmForm, XelonModalForm, IhmEmailModalForm
+from .forms import IhmForm, VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
 from psa.forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.file import LogFile
@@ -118,7 +118,7 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/squalaetp_form.html'
-    form_class = XelonModalForm
+    form_class = VinCorvetModalForm
     success_message = _('Success: Squalaetp data was updated.')
 
     def get_context_data(self, **kwargs):
@@ -143,6 +143,38 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
             else:
                 messages.success(self.request, "Exportation Squalaetp terminée.")
         return super(SqualaetpUpdateView, self).form_valid(form)
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal product update """
+    model = Xelon
+    permission_required = ['squalaetp.change_xelon']
+    template_name = 'squalaetp/modal/product_update.html'
+    form_class = ProductModalForm
+    success_message = _('Success: Xelon was updated.')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'modal_title': _('Product update for %(file)s' % {'file': self.object.numero_de_dossier})
+        })
+        return context
+
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            out = StringIO()
+            call_command("exportsqualaetp", stdout=out)
+            if "Export error" in out.getvalue():
+                messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
+            else:
+                messages.success(self.request, "Exportation Squalaetp terminée.")
+        return super(ProductUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
