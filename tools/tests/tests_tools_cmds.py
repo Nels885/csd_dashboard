@@ -4,7 +4,7 @@ from django.test import TestCase
 from io import StringIO
 
 
-class RemanCommandTestCase(TestCase):
+class ToolsCommandTestCase(TestCase):
 
     def test_clear_TagXelon_table(self):
         out = StringIO()
