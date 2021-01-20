@@ -59,7 +59,13 @@ class ExcelDelayAnalysis(ExcelFormat):
             list of dictionnaries that represents the data for table
         """
         data = [self.key_formatting(dict(self.sheet.loc[line].fillna(''))) for line in range(self.nrows)]
-        return data
+        data1 = []
+        for row in data:
+            for key, value in dict(row).items():
+                if key in self.COLS_DATE and not value:
+                    del row[key]
+            data1.append(row)
+        return data1
 
     def key_formatting(self, data):
         data["numero_de_dossier"] = data.pop("n_de_dossier")
