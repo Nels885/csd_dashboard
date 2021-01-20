@@ -50,8 +50,8 @@ class IhmEmailModalForm(BSModalForm):
         message += f"Vous trouverez ci-dessous, le nouveau modèle produit pour le dossier {model.numero_de_dossier} :\n"
         try:
             data = model.actions.get(content__contains="OLD_PROD").content.split('\n')
-            message += f"- Ancien Modèle = {data[0][-17:]}\n"
-            message += f"- Nouveau Modèle = {data[1][-17:]}\n"
+            message += f"- Ancien Modèle = {data[0][9:]}\n"
+            message += f"- Nouveau Modèle = {data[1][9:]}\n"
         except ObjectDoesNotExist:
             message += "\n### NOUVEAU MODELE PRODUIT NON DISPONIBLE ###\n"
         message += "\nCordialement\n\n"
@@ -81,7 +81,7 @@ class IhmForm(forms.ModelForm):
                 # self.fields[field].widget.attrs['style'] = 'width: 50%;'
 
 
-class XelonModalForm(BSModalModelForm):
+class VinCorvetModalForm(BSModalModelForm):
     xml_data = forms.CharField(
         widget=forms.Textarea(
             attrs={
@@ -126,7 +126,7 @@ class XelonModalForm(BSModalModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super(XelonModalForm, self).clean()
+        cleaned_data = super(VinCorvetModalForm, self).clean()
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
         if vin and data and self.request.is_ajax():
@@ -134,4 +134,23 @@ class XelonModalForm(BSModalModelForm):
                 raise forms.ValidationError(_('VIN error !'))
             elif vin != self.instance.vin:
                 content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)
+                Action.objects.create(content=content, content_object=self.instance)
+
+
+class ProductModalForm(BSModalModelForm):
+
+    class Meta:
+        model = Xelon
+        fields = ['modele_produit', 'modele_vehicule']
+
+    def clean(self):
+        cleaned_data = super(ProductModalForm, self).clean()
+        product = cleaned_data.get('modele_produit')
+        vehicle = cleaned_data.get('modele_vehicule')
+        if product and vehicle and self.request.is_ajax():
+            if product != self.instance.modele_produit:
+                content = "OLD_PROD: {}\nNEW_PROD: {}".format(self.instance.modele_produit, product)
+                Action.objects.create(content=content, content_object=self.instance)
+            if vehicle != self.instance.modele_vehicule:
+                content = "OLD_VEH: {}\nNEW_VEH: {}".format(self.instance.modele_vehicule, vehicle)
                 Action.objects.create(content=content, content_object=self.instance)
