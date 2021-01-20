@@ -6,7 +6,8 @@ app_name = 'squalaetp'
 
 urlpatterns = [
     path('<int:pk>/edit/', views.SqualaetpUpdateView.as_view(), name='edit'),
-    path('<int:pk>/email/', views.IhmEmailFormView.as_view(), name='email'),
+    path('<int:pk>/email/vin/', views.VinEmailFormView.as_view(), name='vin_email'),
+    path('<int:pk>/email/prod/', views.ProdEmailFormView.as_view(), name='prod_email'),
     path('<int:pk>/detail/', views.detail, name='detail'),
     path('<int:pk>/update/', views.update, name='update'),
     path('xelon/', views.xelon_table, name='xelon'),

@@ -5,15 +5,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.core.mail import EmailMessage
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
 from django.core.management import call_command
-from django.core.exceptions import ObjectDoesNotExist
-from constance import config
 
 from .models import Xelon, Stock, Action
 from psa.models import Corvet
@@ -23,7 +20,7 @@ from .forms import IhmForm, XelonModalForm, IhmEmailModalForm
 from psa.forms import CorvetForm
 from dashboard.forms import ParaErrorList
 from utils.file import LogFile
-from utils.conf import CSD_ROOT, string_to_list
+from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
 
 
@@ -154,43 +151,54 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
             return reverse_lazy('index')
 
 
-class IhmEmailFormView(PermissionRequiredMixin, BSModalFormView):
+class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/ihm_email_form.html'
     form_class = IhmEmailModalForm
 
     def get_initial(self):
-        initial = super(IhmEmailFormView, self).get_initial()
+        initial = super(VinEmailFormView, self).get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
-        initial['to'] = config.CHANGE_VIN_TO_EMAIL_LIST
-        initial['cc'] = config.VIN_ERROR_TO_EMAIL_LIST
         initial['subject'] = "[{}] Erreur VIN Xelon".format(xelon.numero_de_dossier)
-        message = "Bonjour,\n\n"
-        message += "Vous trouverez ci-dessous, le nouveau VIN pour le dossier {} :\n".format(xelon.numero_de_dossier)
-        try:
-            data = xelon.actions.get(content__contains="OLD_VIN").content.split('\n')
-            message += "- Ancien VIN = {}\n".format(data[0][-17:])
-            message += "- Nouveau VIN = {}\n".format(data[1][-17:])
-        except ObjectDoesNotExist:
-            message += "\n### NOUVEAU VIN NON DISPONIBLE ###\n"
-        message += "\nCordialement\n\n"
-        message += "{} {}".format(self.request.user.first_name, self.request.user.last_name)
-        initial['message'] = message
+        initial['message'] = self.form_class.vin_message(xelon, self.request)
         return initial
 
     def form_valid(self, form):
         if not self.request.is_ajax():
-            to = form.cleaned_data['to']
-            cc = form.cleaned_data['cc']
-            mail_subject = form.cleaned_data['subject']
-            message = form.cleaned_data['message']
-            email = EmailMessage(mail_subject, message, to=string_to_list(to), cc=string_to_list(cc))
-            email.send()
+            form.send_email()
             xelon = Xelon.objects.get(pk=self.kwargs['pk'])
             content = "Envoi Email de modification VIN effectué."
             Action.objects.create(content=content, content_object=xelon)
             messages.success(self.request, _('Success: The email has been sent.'))
-        return super(IhmEmailFormView, self).form_valid(form)
+        return super(VinEmailFormView, self).form_valid(form)
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
+    permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
+    template_name = 'squalaetp/modal/ihm_email_form.html'
+    form_class = IhmEmailModalForm
+
+    def get_initial(self):
+        initial = super(ProdEmailFormView, self).get_initial()
+        xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+        initial['subject'] = "[{}] Erreur modèle produit Xelon".format(xelon.numero_de_dossier)
+        initial['message'] = self.form_class.prod_message(xelon, self.request)
+        return initial
+
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            form.send_email()
+            xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+            content = "Envoi Email de modification modèle Produit effectué."
+            Action.objects.create(content=content, content_object=xelon)
+            messages.success(self.request, _('Success: The email has been sent.'))
+        return super(ProdEmailFormView, self).form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
