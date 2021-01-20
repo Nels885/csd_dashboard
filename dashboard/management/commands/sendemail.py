@@ -58,4 +58,5 @@ class Command(BaseCommand):
                     html_message=html_message
                 )
                 self.stdout.write(self.style.SUCCESS("Envoi de l'email des erreurs de VIN terminée !"))
-            self.stdout.write(self.style.SUCCESS("Pas d'erreurs de VIN a envoyer !"))
+            else:
+                self.stdout.write(self.style.SUCCESS("Pas d'erreurs de VIN a envoyer !"))
