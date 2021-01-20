@@ -1,9 +1,13 @@
 from django import forms
 from django.utils.translation import ugettext as _
+from django.core.mail import EmailMessage
+from django.core.exceptions import ObjectDoesNotExist
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
+from constance import config
 
 from utils.django.validators import validate_vin, xml_parser
 from utils.file.export import xml_corvet_file
+from utils.conf import string_to_list
 from psa.models import Corvet
 from .models import Xelon, Action
 
@@ -13,6 +17,46 @@ class IhmEmailModalForm(BSModalForm):
     cc = forms.CharField(label='Cc', widget=forms.TextInput())
     subject = forms.CharField(label='Objet', required=True, widget=forms.TextInput())
     message = forms.CharField(widget=forms.Textarea(attrs={'rows': 10}), required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(IhmEmailModalForm, self).__init__(*args, **kwargs)
+        self.fields['to'].initial = config.CHANGE_VIN_TO_EMAIL_LIST
+        self.fields['cc'].initial = config.VIN_ERROR_TO_EMAIL_LIST
+
+    def send_email(self):
+        email = EmailMessage(
+            subject=self.cleaned_data['subject'], body=self.cleaned_data['message'],
+            to=string_to_list(self.cleaned_data['to']), cc=string_to_list(self.cleaned_data['cc'])
+        )
+        email.send()
+
+    @staticmethod
+    def vin_message(model, request):
+        message = "Bonjour,\n\n"
+        message += "Vous trouverez ci-dessous, le nouveau VIN pour le dossier {} :\n".format(model.numero_de_dossier)
+        try:
+            data = model.actions.get(content__contains="OLD_VIN").content.split('\n')
+            message += "- Ancien VIN = {}\n".format(data[0][-17:])
+            message += "- Nouveau VIN = {}\n".format(data[1][-17:])
+        except ObjectDoesNotExist:
+            message += "\n### NOUVEAU VIN NON DISPONIBLE ###\n"
+        message += "\nCordialement\n\n"
+        message += "{} {}".format(request.user.first_name, request.user.last_name)
+        return message
+
+    @staticmethod
+    def prod_message(model, request):
+        message = "Bonjour,\n\n"
+        message += f"Vous trouverez ci-dessous, le nouveau modèle produit pour le dossier {model.numero_de_dossier} :\n"
+        try:
+            data = model.actions.get(content__contains="OLD_PROD").content.split('\n')
+            message += f"- Ancien Modèle = {data[0][-17:]}\n"
+            message += f"- Nouveau Modèle = {data[1][-17:]}\n"
+        except ObjectDoesNotExist:
+            message += "\n### NOUVEAU MODELE PRODUIT NON DISPONIBLE ###\n"
+        message += "\nCordialement\n\n"
+        message += "{} {}".format(request.user.first_name, request.user.last_name)
+        return message
 
 
 class IhmForm(forms.ModelForm):
