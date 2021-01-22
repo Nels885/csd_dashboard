@@ -89,12 +89,12 @@ class Command(BaseCommand):
             xelon_number = row.get("numero_de_dossier")
             defaults = defaults_dict(model, row, "numero_de_dossier")
             try:
-                # if not model.objects.filter(actions__isnull=False):
+                if model.objects.filter(numero_de_dossier=xelon_number, actions__isnull=False):
+                    self.stdout.write(f"[XELON] Xelon file {xelon_number} not modified")
+                    continue
                 obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                 if not created:
                     nb_prod_update += 1
-                # else:
-                #    self.stdout.write(f"[XELON] Xelon file {xelon_number} not modified")
             except IntegrityError as err:
                 self.stderr.write(self.style.ERROR("IntegrityError: {} -{}".format(xelon_number, err)))
             except DataError as err:
