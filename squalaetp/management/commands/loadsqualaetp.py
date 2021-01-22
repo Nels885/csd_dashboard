@@ -116,7 +116,7 @@ class Command(BaseCommand):
         delay_list = list(excel.sheet['n_de_dossier'])
         self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
         nb_prod_before = model.objects.count()
-        model.objects.exclude(Q(numero_de_dossier__in=xelon_list) |
+        model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
                               Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
                               Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
         for row in excel.table():
