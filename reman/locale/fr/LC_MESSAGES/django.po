@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-21 15:21+0100\n"
+"POT-Creation-Date: 2021-01-27 16:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,28 +58,24 @@ msgid "Create"
 msgstr "Création"
 
 #: reman/templates/reman/modal/batch_delete.html:7
-#, fuzzy
-#| msgid "Create Batch"
 msgid "Delete Batch"
-msgstr "Création d'un lot"
+msgstr "Supprimer le lot"
 
 #: reman/templates/reman/modal/batch_delete.html:14
 msgid "Are you sure you want to delete Batch "
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer le lot "
 
 #: reman/templates/reman/modal/batch_delete.html:18
 msgid "Delete"
-msgstr ""
+msgstr "Effacer"
 
 #: reman/templates/reman/modal/batch_select.html:39
 msgid "Filter"
-msgstr ""
+msgstr "Filtre"
 
 #: reman/templates/reman/modal/batch_update.html:10
-#, fuzzy
-#| msgid "Create Batch"
 msgid "Update Batch"
-msgstr "Création d'un lot"
+msgstr "Mettre à jour le lot"
 
 #: reman/templates/reman/modal/batch_update.html:42
 #: reman/templates/reman/modal/default_update.html:44
@@ -153,53 +149,47 @@ msgstr "Ce champ est requis."
 msgid "PSA barcode is invalid"
 msgstr "Code barre PSA n'est pas valide"
 
-#: reman/tests/tests_reman_views.py:123 reman/views.py:265
+#: reman/tests/tests_reman_views.py:123 reman/views.py:267
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: reman/views.py:37 reman/views.py:53
+#: reman/views.py:38 reman/views.py:54
 msgid "Modification customer file"
 msgstr "Modification dossier client"
 
-#: reman/views.py:42 reman/views.py:58
+#: reman/views.py:43 reman/views.py:59
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views.py:67
-#, fuzzy
-#| msgid "Customer files"
+#: reman/views.py:68
 msgid "Detail customer file"
-msgstr "Dossiers client"
+msgstr "Dossier client détaillé"
 
-#: reman/views.py:78
+#: reman/views.py:79
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#: reman/views.py:131
+#: reman/views.py:132
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
-#: reman/views.py:149
-#, fuzzy
-#| msgid "Success: Batch was created."
+#: reman/views.py:151
 msgid "Success: Batch was updated."
-msgstr "Succès: le lot a été créé."
+msgstr "Succès: le lot a été mis à jour."
 
-#: reman/views.py:157
-#, fuzzy
-#| msgid "Success: Batch was created."
+#: reman/views.py:159
 msgid "Success: Batch was deleted."
-msgstr "Succès: le lot a été créé."
+msgstr "Succès: le lot a été supprimé."
 
-#: reman/views.py:166
+#: reman/views.py:168
 msgid "Success: Reman Default was created."
 msgstr "Succès: La panne REMAN a été créé."
 
-#: reman/views.py:176
+#: reman/views.py:178
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
 
-#: reman/views.py:300
+#: reman/views.py:302
 #, python-format
 msgid "Repair n°%(repair)s to batch n°%(batch)s ready for shipment"
 msgstr "Réparation n°%(repair)s du lot n°%(batch)s prêt pour expédition."

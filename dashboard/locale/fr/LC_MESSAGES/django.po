@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-21 15:21+0100\n"
+"POT-Creation-Date: 2021-01-27 16:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,6 +43,10 @@ msgstr "Retour au Tableau de bord"
 #: dashboard/templates/dashboard/modal/post_create.html:7
 msgid "Create Post"
 msgstr "Ajout d'un Post"
+
+#: dashboard/templates/dashboard/late_products/late_products.html:12
+msgid "Late products"
+msgstr "Produits en retard"
 
 #: dashboard/templates/dashboard/modal/login.html:10
 msgid "Welcome Back!"

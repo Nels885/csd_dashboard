@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-21 15:21+0100\n"
+"POT-Creation-Date: 2021-01-27 16:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,18 +36,14 @@ msgstr ""
 msgid "Invalid XML data"
 msgstr ""
 
-#: psa/templates/psa/corvet_detail.html:8
-msgid "Previous page"
-msgstr "Page précédente"
-
 #: psa/templates/psa/corvet_insert.html:40
 #: psa/templates/psa/modal/corvet_form.html:53
 msgid "Submit"
 msgstr ""
 
 #: psa/templates/psa/detail/detail.html:16
-msgid "Corvet data"
-msgstr "Données Corvet"
+msgid "Raw Corvet data"
+msgstr "Données Corvet brute"
 
 #: psa/templates/psa/detail/detail.html:23
 msgid "VIN Barcode"
@@ -79,24 +75,22 @@ msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 
-#: psa/views.py:68
+#: psa/views.py:80
 msgid "CORVET table"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:88
+#: psa/views.py:97
 msgid "Detail Corvet data for the VIN: "
 msgstr "Détail des données Corvet pour le VIN : "
 
-#: psa/views.py:100 psa/views.py:118
-#, fuzzy
-#| msgid "CORVET table"
+#: psa/views.py:109 psa/views.py:127
 msgid "CORVET integration"
-msgstr "Tableau CORVET"
+msgstr "Intégration CORVET"
 
-#: psa/views.py:104 psa/views.py:114
+#: psa/views.py:113 psa/views.py:123
 msgid "Modification done successfully!"
-msgstr ""
+msgstr "Modification réussie !"
 
-#: psa/views.py:142
+#: psa/views.py:151
 msgid "Products PSA table"
 msgstr "Tableau des produits PSA"
