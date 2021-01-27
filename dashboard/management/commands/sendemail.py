@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 
 from constance import config
 
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Indicator
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
 
@@ -36,9 +36,14 @@ class Command(BaseCommand):
             subject = 'Stocks et Retards {}'.format(date_joined)
             prods = ProductAnalysis()
             data = prods.late_products()
+            indicator = Indicator.objects.filter(date=timezone.now()).first()
+            data.update({
+                'products_to_repair': indicator.products_to_repair,
+                'late_products': indicator.late_products,
+                'express_products': indicator.express_products
+            })
 
-            html_message = render_to_string(
-                'dashboard/email_format/lp_email.html', data)
+            html_message = render_to_string('dashboard/email_format/lp_email.html', data)
             plain_message = strip_tags(html_message)
             send_mail(
                 subject, plain_message, None, string_to_list(config.LATE_PRODUCTS_TO_EMAIL_LIST),

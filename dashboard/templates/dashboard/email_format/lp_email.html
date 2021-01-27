@@ -9,6 +9,23 @@
     <table class="table table-bordered text-nowrap">
         <thead>
         <tr>
+            <th>Produits à réparer</th>
+            <th>Produits en retard</th>
+            <th>Produits express</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ products_to_repair }}</td>
+            <td>{{ late_products }}</td>
+            <td>{{ express_products }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <br/>
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
             <th>Activité</th>
             <th>Dossier</th>
             <th>Modèle</th>
