@@ -106,18 +106,9 @@
 
         <!-- Detail Corvert -->
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
-            <table class="table table-striped table-condensed">
-                <tbody>
 
-                {% for key, value in dict_corvet.items %}
-                    <tr>
-                        <td class="text-dark">{{ key }}</td>
-                        <td>{{ value }}</td>
-                    </tr>
-                {% endfor %}
+            {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
 
-                </tbody>
-            </table>
         </div>
 
         <!-- Detail LOGs -->

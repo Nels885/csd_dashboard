@@ -11,7 +11,13 @@
             <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm">Ligne de produit</td>
-                <td>{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }}</td>
+                <td>
+                    {% if corvet.donnee_marque_commerciale == "0P" %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
+                    {% else %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Date de Début de Garantie</td>
