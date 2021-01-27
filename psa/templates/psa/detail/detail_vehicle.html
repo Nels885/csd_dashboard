@@ -35,7 +35,7 @@
                 <th colspan="2">
                     <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneral"
                        aria-expanded="true" aria-controls="collapseGeneral">
-                        <i class="fas fa-minus-square mr-2"></i> Informations générales :
+                        <i class="fas fa-minus-square mr-2"></i>Informations générales :
                     </a>
                 </th>
             </tr>
@@ -51,7 +51,13 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm">LIGNE_DE_PRODUIT</td>
-                <td>{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }}</td>
+                <td>
+                    {% if corvet.donnee_marque_commerciale == "0P" %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
+                    {% else %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">SILHOUETTE</td>
@@ -59,7 +65,7 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm">MOTEUR</td>
-                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT" }}</td>
+                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">TRANSMISSION</td>
@@ -73,9 +79,33 @@
             <thead class="table-primary">
             <tr>
                 <th colspan="2">
+                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMotor"
+                       aria-expanded="true" aria-controls="collapseMotor">
+                        <i class="fas fa-minus-square mr-2"></i>Alimentation moteur :
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="collapse" id="collapseMotor">
+            <tr>
+                <td class="text-dark td-ihm">MOTEUR</td>
+                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">CARBURANT</td>
+                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 1" }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <table class="table table-bordered table-striped table-sm mt-4">
+            <thead class="table-primary">
+            <tr>
+                <th colspan="2">
                     <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInterior"
                        aria-expanded="true" aria-controls="collapseInterior">
-                        <i class="fas fa-minus-square mr-2"></i> Equipement intérieur :
+                        <i class="fas fa-minus-square mr-2"></i>Equipement intérieur :
                     </a>
                 </th>
             </tr>
