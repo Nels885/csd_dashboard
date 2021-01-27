@@ -2,11 +2,11 @@
 
 <div class="row">
     <section class="col-sm-12">
-        <table class="table table-primary table-sm">
+        <table class="table table-secondary table-sm">
             <thead>
-                <tr>
-                    <th colspan="2" class="text-dark">Caractéristiques du véhicule :</th>
-                </tr>
+            <tr>
+                <th colspan="2" class="text-primary">Caractéristiques du véhicule :</th>
+            </tr>
             </thead>
             <tbody class="table-borderless">
             <tr>
@@ -29,11 +29,18 @@
         </table>
 
 
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">Informations générales :</h3>
-            </caption>
-            <tbody>
+        <table class="table table-bordered table-striped table-sm mt-4">
+            <thead class="table-primary">
+            <tr>
+                <th colspan="2">
+                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneral"
+                       aria-expanded="true" aria-controls="collapseGeneral">
+                        <i class="fas fa-minus-square mr-2"></i> Informations générales :
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="collapse" id="collapseGeneral">
             <tr>
                 <td class="text-dark td-ihm">GENRE_DE_PRODUIT</td>
                 <td>{{ corvet.donnee_genre_de_produit|get_corvet:"DON_GEN_PROD" }}</td>
@@ -62,11 +69,18 @@
         </table>
 
 
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">Equipement intérieur :</h3>
-            </caption>
-            <tbody>
+        <table class="table table-bordered table-striped table-sm mt-4">
+            <thead class="table-primary">
+            <tr>
+                <th colspan="2">
+                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInterior"
+                       aria-expanded="true" aria-controls="collapseInterior">
+                        <i class="fas fa-minus-square mr-2"></i> Equipement intérieur :
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="collapse" id="collapseInterior">
             {% if corvet.attribut_dgm %}
                 <tr>
                     <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
@@ -137,11 +151,17 @@
             </tbody>
         </table>
 
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">Divers :</h3>
-            </caption>
-            <tbody>
+        <table class="table table-bordered table-striped table-sm mt-4">
+            <thead class="table-primary">
+            <tr>
+                <th colspan="2" class="collapsed text-dark">
+                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDivers"
+                       aria-expanded="true" aria-controls="collapseDivers">
+                        <i class="fas fa-minus-square mr-2"></i><span>Divers :</span>
+                    </a>
+                </th>
+            </tr>
+            <tbody class="collapse" id="collapseDivers">
             <tr>
                 <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
                 <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
