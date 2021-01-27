@@ -9,25 +9,7 @@
             {% include 'psa/format/mutimedia_table_format.html' with object=corvet.radio %}
         {% endif %}
 
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">PROGRAMMATION :</h3>
-            </caption>
-            <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Dossier PEEDI</td>
-                <td>{{ prog.peedi_path }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Dump PEEDI</td>
-                <td>{{ prog.peedi_dump }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Dump RENESAS</td>
-                <td>{{ prog.renesas_dump }}</td>
-            </tr>
-            </tbody>
-        </table>
+        {% include 'raspeedi/format/prog_table_format.html' with object=prog %}
 
         {% include 'psa/format/cmm_table_format.html' with object=cmm %}
 

@@ -2,11 +2,13 @@
 
 <div class="row">
     <section class="col-sm-6">
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">XELON :</h3>
-            </caption>
-            <tbody>
+        <table class="table table-secondary table-sm">
+            <thead>
+            <tr>
+                <th colspan="2" class="text-primary">Info XELON :</th>
+            </tr>
+            </thead>
+            <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm">Numéro de dossier</td>
                 <td>{{ xelon.numero_de_dossier }}</td>
@@ -32,31 +34,13 @@
             {% include 'psa/format/mutimedia_table_format.html' with object=corvet.radio %}
         {% endif %}
 
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">PROGRAMMATION :</h3>
-            </caption>
-            <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Dossier PEEDI</td>
-                <td>{{ prog.peedi_path }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Dump PEEDI</td>
-                <td>{{ prog.peedi_dump }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Dump RENESAS</td>
-                <td>{{ prog.renesas_dump }}</td>
-            </tr>
-            </tbody>
-        </table>
+        {% include 'raspeedi/format/prog_table_format.html' with object=prog %}
 
         {% include 'psa/format/cmm_table_format.html' with object=cmm %}
 
     </section>
     <section class="col-sm-6">
-        <h3 class="text-gray-800">CORVET :</h3>
+        <h3 class="text-gray-800">Données CORVET :</h3>
 
         {% include 'psa/format/corvet_table_format.html' with object=corvet %}
 

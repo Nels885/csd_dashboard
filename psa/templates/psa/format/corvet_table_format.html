@@ -1,8 +1,15 @@
-<table class="table table-bordered table-striped">
-    <caption style="caption-side: top;">
-        <h5 class="text-gray-500">Affichage</h5>
-    </caption>
-    <tbody>
+<table class="table table-bordered table-striped table-sm">
+    <thead class="table-primary">
+    <tr>
+        <th colspan="2">
+            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDisplay"
+               aria-expanded="true" aria-controls="collapseDisplay">
+                <i class="fas fa-minus-square mr-2"></i>AFFICHAGE :
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody class="collapse" id="collapseDisplay">
     <tr>
         <td class="text-dark td-ihm">Réf HW TDB</td>
         <td>{{ object.electronique_14k }}</td>
@@ -21,11 +28,18 @@
     </tr>
     </tbody>
 </table>
-<table class="table table-bordered table-striped">
-    <caption style="caption-side: top;">
-        <h5 class="text-gray-500">Audio</h5>
-    </caption>
-    <tbody>
+<table class="table table-bordered table-striped table-sm mt-4">
+    <thead class="table-primary">
+    <tr>
+        <th colspan="2">
+            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAudio"
+               aria-expanded="true" aria-controls="collapseAudio">
+                <i class="fas fa-minus-square mr-2"></i>AUDIO :
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody class="collapse" id="collapseAudio">
     <tr>
         <td class="text-dark td-ihm">Réf HW RAD</td>
         <td>{{ object.electronique_14f }}</td>
@@ -52,11 +66,18 @@
     </tr>
     </tbody>
 </table>
-<table class="table table-bordered table-striped">
-    <caption style="caption-side: top;">
-        <h5 class="text-gray-500">Calculateur</h5>
-    </caption>
-    <tbody>
+<table class="table table-bordered table-striped table-sm mt-4">
+    <thead class="table-primary">
+    <tr>
+        <th colspan="2">
+            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEcu"
+               aria-expanded="true" aria-controls="collapseEcu">
+                <i class="fas fa-minus-square mr-2"></i>CALCULATEUR :
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody class="collapse" id="collapseEcu">
     <!-- ECU MOTOR -->
     <tr>
         <td class="text-dark td-ihm">Réf HW ECU moteur</td>

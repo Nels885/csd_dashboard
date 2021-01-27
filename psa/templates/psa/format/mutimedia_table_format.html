@@ -1,8 +1,15 @@
-<table class="table table-bordered table-striped">
-    <caption style="caption-side: top;">
-        <h3 class="text-gray-800">MULTIMEDIA :</h3>
-    </caption>
-    <tbody>
+<table class="table table-bordered table-striped table-sm mt-4">
+    <thead class="table-primary">
+    <tr>
+        <th colspan="2">
+            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMedia"
+               aria-expanded="true" aria-controls="collapseMedia">
+                <i class="fas fa-minus-square mr-2"></i>MULTIMEDIA :
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody class="collapse" id="collapseMedia">
     <tr>
         <td class="text-dark td-ihm">Référence HW</td>
         <td>{{ object.hw_reference }}</td>
@@ -39,17 +46,17 @@
     </tr>
 
     {% if object.jukebox %}
-    <tr>
-        <td class="text-dark td-ihm">Jukebox</td>
-        <td>{% if object.jukebox %}Oui{% else %}Non{% endif %}</td>
-    </tr>
+        <tr>
+            <td class="text-dark td-ihm">Jukebox</td>
+            <td>{% if object.jukebox %}Oui{% else %}Non{% endif %}</td>
+        </tr>
     {% endif %}
 
     {% if object.carplay %}
-    <tr>
-        <td class="text-dark td-ihm">CarPlay</td>
-        <td>{% if object.carplay %}Oui{% else %}Non{% endif %}</td>
-    </tr>
+        <tr>
+            <td class="text-dark td-ihm">CarPlay</td>
+            <td>{% if object.carplay %}Oui{% else %}Non{% endif %}</td>
+        </tr>
     {% endif %}
 
     {% if object.media %}

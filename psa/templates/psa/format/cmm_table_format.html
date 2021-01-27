@@ -1,10 +1,17 @@
 {% if object %}
 
-    <table class="table table-bordered table-striped">
-        <caption style="caption-side: top;">
-            <h3 class="text-gray-800">CALCULATEUR MOTEUR :</h3>
-        </caption>
-        <tbody>
+    <table class="table table-bordered table-striped table-sm mt-4">
+        <thead class="table-primary">
+        <tr>
+            <th colspan="2">
+                <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCmm"
+                   aria-expanded="true" aria-controls="collapseCmm">
+                    <i class="fas fa-minus-square mr-2"></i>CALCULATEUR MOTEUR :
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody class="collapse" id="collapseCmm">
         <tr>
             <td class="text-dark td-ihm">Référence HW</td>
             <td>{{ object.hw_reference }}</td>
