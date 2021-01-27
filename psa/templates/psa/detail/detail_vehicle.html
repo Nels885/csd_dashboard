@@ -2,6 +2,33 @@
 
 <div class="row">
     <section class="col-sm-12">
+        <table class="table table-primary table-sm">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-dark">Caractéristiques du véhicule :</th>
+                </tr>
+            </thead>
+            <tbody class="table-borderless">
+            <tr>
+                <td class="text-dark td-ihm">Ligne de produit</td>
+                <td>{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Date de Début de Garantie</td>
+                <td>{{ corvet.donnee_date_debut_garantie|date:'d/m/Y' }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Numéro de Série du Moteur</td>
+                <td>10{{ corvet.organes_10 }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">P4A</td>
+                <td>{{ corvet.electronique_p4a }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
         <table class="table table-bordered table-striped">
             <caption style="caption-side: top;">
                 <h3 class="text-gray-800">Informations générales :</h3>
@@ -95,15 +122,16 @@
                 </tr>
             {% endif %}
             <tr>
-                <td class="text-dark td-ihm">DÉTECTION D’OBSTACLE </td>
+                <td class="text-dark td-ihm">DÉTECTION D’OBSTACLE</td>
                 <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
             </tr>
             {% if corvet.attribut_dyr %}
                 {% with bta=corvet.electronique_69h %}
-                <tr>
-                    <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
-                    <td>{{ corvet.attribut_dyr|get_corvet:"ATT_DYR" }} {% if bta == "0000000002" %}(BTA MM){% elif bta == "000000000E" %}(BTA Autoliv){% endif %}</td>
-                </tr>
+                    <tr>
+                        <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
+                        <td>{{ corvet.attribut_dyr|get_corvet:"ATT_DYR" }}
+                            {% if bta == "0000000002" %}(BTA MM){% elif bta == "000000000E" %}(BTA Autoliv){% endif %}</td>
+                    </tr>
                 {% endwith %}
             {% endif %}
             </tbody>
