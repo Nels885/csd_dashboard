@@ -46,6 +46,11 @@ div.dtsp-topRow button.dtsp-searchIcon {
   background-size: 12px;
 }
 
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane table thead th,
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane table thead td {
+  width: 100% !important;
+}
+
 div.dt-button-collection {
   z-index: 2002;
 }
@@ -131,6 +136,9 @@ div.dt-button-collection {
 }
 
 div.dtsp-panesContainer {
+  width: 100%;
+}
+div.dtsp-panesContainer div.dataTables_wrapper {
   width: 100%;
 }
 
@@ -290,8 +298,29 @@ div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_
 div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_scrollBody td.dtsp-countColumn {
   text-align: right;
 }
-div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_scrollBody span.dtsp-pill {
-  float: right;
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_scrollBody table {
+  table-layout: fixed;
+}
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_scrollBody table tbody tr td.dtsp-nameColumn {
+  width: 100% !important;
+}
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_scrollBody table tbody tr div.dtsp-nameCont {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+}
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_scrollBody table tbody tr div.dtsp-nameCont span.dtsp-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+  flex-grow: 1;
+}
+div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane div.dataTables_scrollBody table tbody tr div.dtsp-nameCont span.dtsp-pill {
   background-color: #cfcfcf;
   text-align: center;
   border: 1px solid #cfcfcf;
