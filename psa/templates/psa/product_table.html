@@ -4,7 +4,7 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered text-nowrap" id="prodTable" width="100%" cellspacing="0">
+    <table class="table table-bordered table-sm text-nowrap" id="prodTable" width="100%" cellspacing="0">
         <thead>
         <tr>
             <th class="all"></th>
@@ -42,9 +42,9 @@
                 <td class="bg-white">
                     <a href="#" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
-                <td>{{ prod.reference }}</td>
+                <td>{{ prod.hw_reference }}</td>
                 <td>{{ prod.get_name_display }}</td>
-                <td>{{ prod.front }}</td>
+                <td>{{ prod.level }}</td>
                 <td>{{ prod.get_type_display }}</td>
                 <td>{% if prod.dab %}Oui{% else %}Non{% endif %}</td>
                 <td>{% if prod.cam %}Oui{% else %}Non{% endif %}</td>
