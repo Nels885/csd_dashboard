@@ -86,7 +86,6 @@ class SignUpForm(UserCreationForm):
         user.email = clean_email
         if commit:
             user.save()
-            UserProfile(user=user).save()
         return user
 
 
