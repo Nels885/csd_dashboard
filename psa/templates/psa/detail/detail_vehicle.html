@@ -37,9 +37,9 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseGeneral" expanded=collapse.general thead_title="Informations générales :" %}
+            {% include 'format/collapse_thead.html' with id="collapseGeneral" expanded=user.showcollapse.general thead_title="Informations générales :" %}
 
-            <tbody class="collapse {% if collapse.general %}show{% endif %}" id="collapseGeneral">
+            <tbody class="collapse {% if user.showcollapse.general %}show{% endif %}" id="collapseGeneral">
             <tr>
                 <td class="text-dark td-ihm">GENRE_DE_PRODUIT</td>
                 <td>{{ corvet.donnee_genre_de_produit|get_corvet:"DON_GEN_PROD" }}</td>
@@ -76,9 +76,9 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseMotor" expanded=collapse.motor thead_title="Alimentation moteur :" %}
+            {% include 'format/collapse_thead.html' with id="collapseMotor" expanded=user.showcollapse.motor thead_title="Alimentation moteur :" %}
 
-            <tbody class="collapse{% if collapse.motor %}show{% endif %}" id="collapseMotor">
+            <tbody class="collapse{% if user.showcollapse.motor %}show{% endif %}" id="collapseMotor">
             <tr>
                 <td class="text-dark td-ihm">MOTEUR</td>
                 <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
@@ -93,9 +93,9 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseInterior" expanded=collapse.interior thead_title="Equipement intérieur :" %}
+            {% include 'format/collapse_thead.html' with id="collapseInterior" expanded=user.showcollapse.interior thead_title="Equipement intérieur :" %}
 
-            <tbody class="collapse {% if collapse.interior %}show{% endif %}" id="collapseInterior">
+            <tbody class="collapse {% if user.showcollapse.interior %}show{% endif %}" id="collapseInterior">
             {% if corvet.attribut_dgm %}
                 <tr>
                     <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
@@ -168,9 +168,9 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseDivers" exp=collapse.diverse thead_title="Divers :" %}
+            {% include 'format/collapse_thead.html' with id="collapseDivers" exp=user.showcollapse.diverse thead_title="Divers :" %}
 
-            <tbody class="collapse {% if collapse.diverse %}show{% endif %}" id="collapseDivers">
+            <tbody class="collapse {% if user.showcollapse.diverse %}show{% endif %}" id="collapseDivers">
             <tr>
                 <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
                 <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
