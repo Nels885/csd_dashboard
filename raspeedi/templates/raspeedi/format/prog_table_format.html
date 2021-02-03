@@ -1,15 +1,8 @@
 <table class="table table-bordered table-striped table-sm mt-4">
-    <thead class="table-primary">
-    <tr>
-        <th colspan="2">
-            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProg"
-               aria-expanded="true" aria-controls="collapseProg">
-                <i class="fas fa-minus-square mr-2"></i>PROGRAMMATION :
-            </a>
-        </th>
-    </tr>
-    </thead>
-    <tbody class="collapse" id="collapseProg">
+
+    {% include 'format/collapse_thead.html' with id="collapseProg" expanded=collapse.prog thead_title="PROGRAMMATION :" %}
+
+    <tbody class="collapse {% if collapse.prog %}show{% endif %}" id="collapseProg">
     <tr>
         <td class="text-dark td-ihm">Dossier PEEDI</td>
         <td>{{ object.peedi_path }}</td>

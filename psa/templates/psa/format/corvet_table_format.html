@@ -1,15 +1,8 @@
 <table class="table table-bordered table-striped table-sm">
-    <thead class="table-primary">
-    <tr>
-        <th colspan="2">
-            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDisplay"
-               aria-expanded="false" aria-controls="collapseDisplay">
-                <i class="fas fa-minus-square mr-2"></i>AFFICHAGE :
-            </a>
-        </th>
-    </tr>
-    </thead>
-    <tbody class="collapse" id="collapseDisplay">
+
+    {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display thead_title="AFFICHAGE :" %}
+
+    <tbody class="collapse {% if collapse.display %}show{% endif %}" id="collapseDisplay">
     <tr>
         <td class="text-dark td-ihm">Réf HW TDB</td>
         <td>{{ object.electronique_14k }}</td>
@@ -28,18 +21,12 @@
     </tr>
     </tbody>
 </table>
+
 <table class="table table-bordered table-striped table-sm mt-4">
-    <thead class="table-primary">
-    <tr>
-        <th colspan="2">
-            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAudio"
-               aria-expanded="true" aria-controls="collapseAudio">
-                <i class="fas fa-minus-square mr-2"></i>AUDIO :
-            </a>
-        </th>
-    </tr>
-    </thead>
-    <tbody class="collapse" id="collapseAudio">
+
+    {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio thead_title="AUDIO :" %}
+
+    <tbody class="collapse {% if collapse.audio %}show{% endif %}" id="collapseAudio">
     <tr>
         <td class="text-dark td-ihm">Réf HW RAD</td>
         <td>{{ object.electronique_14f }}</td>
@@ -66,18 +53,12 @@
     </tr>
     </tbody>
 </table>
+
 <table class="table table-bordered table-striped table-sm mt-4">
-    <thead class="table-primary">
-    <tr>
-        <th colspan="2">
-            <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEcu"
-               aria-expanded="true" aria-controls="collapseEcu">
-                <i class="fas fa-minus-square mr-2"></i>CALCULATEUR :
-            </a>
-        </th>
-    </tr>
-    </thead>
-    <tbody class="collapse" id="collapseEcu">
+
+    {% include 'format/collapse_thead.html' with id="collapseEcu" expanded=collapse.ecu thead_title="CALCULATEUR :" %}
+
+    <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseEcu">
     <!-- ECU MOTOR -->
     <tr>
         <td class="text-dark td-ihm">Réf HW ECU moteur</td>

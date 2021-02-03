@@ -36,17 +36,10 @@
 
 
         <table class="table table-bordered table-striped table-sm mt-4">
-            <thead class="table-primary">
-            <tr>
-                <th colspan="2">
-                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGeneral"
-                       aria-expanded="false" aria-controls="collapseGeneral">
-                        <i class="fas fa-minus-square mr-2"></i>Informations générales :
-                    </a>
-                </th>
-            </tr>
-            </thead>
-            <tbody class="collapse" id="collapseGeneral">
+
+            {% include 'format/collapse_thead.html' with id="collapseGeneral" expanded=collapse.general thead_title="Informations générales :" %}
+
+            <tbody class="collapse {% if collapse.general %}show{% endif %}" id="collapseGeneral">
             <tr>
                 <td class="text-dark td-ihm">GENRE_DE_PRODUIT</td>
                 <td>{{ corvet.donnee_genre_de_produit|get_corvet:"DON_GEN_PROD" }}</td>
@@ -82,17 +75,10 @@
 
 
         <table class="table table-bordered table-striped table-sm mt-4">
-            <thead class="table-primary">
-            <tr>
-                <th colspan="2">
-                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMotor"
-                       aria-expanded="false" aria-controls="collapseMotor">
-                        <i class="fas fa-minus-square mr-2"></i>Alimentation moteur :
-                    </a>
-                </th>
-            </tr>
-            </thead>
-            <tbody class="collapse" id="collapseMotor">
+
+            {% include 'format/collapse_thead.html' with id="collapseMotor" expanded=collapse.motor thead_title="Alimentation moteur :" %}
+
+            <tbody class="collapse{% if collapse.motor %}show{% endif %}" id="collapseMotor">
             <tr>
                 <td class="text-dark td-ihm">MOTEUR</td>
                 <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
@@ -106,17 +92,10 @@
 
 
         <table class="table table-bordered table-striped table-sm mt-4">
-            <thead class="table-primary">
-            <tr>
-                <th colspan="2">
-                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInterior"
-                       aria-expanded="true" aria-controls="collapseInterior">
-                        <i class="fas fa-minus-square mr-2"></i>Equipement intérieur :
-                    </a>
-                </th>
-            </tr>
-            </thead>
-            <tbody class="collapse show" id="collapseInterior">
+
+            {% include 'format/collapse_thead.html' with id="collapseInterior" expanded=collapse.interior thead_title="Equipement intérieur :" %}
+
+            <tbody class="collapse {% if collapse.interior %}show{% endif %}" id="collapseInterior">
             {% if corvet.attribut_dgm %}
                 <tr>
                     <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
@@ -188,16 +167,10 @@
         </table>
 
         <table class="table table-bordered table-striped table-sm mt-4">
-            <thead class="table-primary">
-            <tr>
-                <th colspan="2" class="collapsed text-dark">
-                    <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDivers"
-                       aria-expanded="false" aria-controls="collapseDivers">
-                        <i class="fas fa-minus-square mr-2"></i><span>Divers :</span>
-                    </a>
-                </th>
-            </tr>
-            <tbody class="collapse" id="collapseDivers">
+
+            {% include 'format/collapse_thead.html' with id="collapseDivers" exp=collapse.diverse thead_title="Divers :" %}
+
+            <tbody class="collapse {% if collapse.diverse %}show{% endif %}" id="collapseDivers">
             <tr>
                 <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
                 <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
