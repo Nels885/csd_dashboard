@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
 
 from bootstrap_modal_forms.forms import BSModalModelForm
-from .models import UserProfile, Post, WebLink
+from .models import UserProfile, Post, WebLink, ShowCollapse
 
 
 class ParaErrorList(ErrorList):
@@ -54,6 +54,19 @@ class UserProfileForm(forms.ModelForm):
             pass
 
         return avatar
+
+
+class ShowCollapseForm(forms.ModelForm):
+
+    class Meta:
+        model = ShowCollapse
+        fields = ['general', 'motor', 'interior', 'diverse']
+        widgets = {
+            'general': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'motor': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'interior': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'diverse': forms.CheckboxInput(attrs={'class': 'form-control'})
+        }
 
 
 class PostForm(BSModalModelForm):

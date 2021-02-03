@@ -28,7 +28,9 @@ from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
 from psa.models import Corvet
 from .models import Post, UserProfile, WebLink
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
+from .forms import (
+    UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm
+)
 
 
 def index(request):
@@ -118,13 +120,19 @@ def user_profile(request):
     title = _("User Profile")
     profil = get_object_or_404(UserProfile, user=request.user.id)
     if request.method == "POST":
-        form = UserProfileForm(request.POST, request.FILES, instance=profil, error_class=ParaErrorList)
-        if form.is_valid():
-            form.save()
-            messages.success(request, _('Success: Modification done!'))
+        if "btn_avatar" in request.POST:
+            form = UserProfileForm(request.POST, request.FILES, instance=profil, error_class=ParaErrorList)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _('Success: Update profile picture!'))
+        elif "btn_collapse":
+            form = ShowCollapseForm(request.POST, instance=request.user.showcollapse, error_class=ParaErrorList)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _('Success: Update display configuration!'))
         errors = form.errors.items()
-    else:
-        form = UserProfileForm(error_class=ParaErrorList)
+    form = UserProfileForm(error_class=ParaErrorList)
+    form_show = ShowCollapseForm(instance=request.user.showcollapse, error_class=ParaErrorList)
     return render(request, 'dashboard/profile.html', locals())
 
 
