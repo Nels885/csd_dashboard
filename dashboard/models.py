@@ -1,17 +1,26 @@
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
 from crum import get_current_user
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
-
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
+
+    def __str__(self):
+        return self.user.username
+
+
+class ShowCollapse(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    general = models.BooleanField('informations générales', default=False)
+    motor = models.BooleanField('alimentation moteur', default=False)
+    interior = models.BooleanField('equipements intérieur', default=False)
+    diverse = models.BooleanField('divers', default=False)
+
+    class Meta:
+        verbose_name = "Affichage detail"
 
     def __str__(self):
         return self.user.username
@@ -31,12 +40,6 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=None, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
 
 
 class WebLink(models.Model):
