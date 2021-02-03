@@ -65,6 +65,7 @@ def detail(request, pk):
     xelon = get_object_or_404(Xelon, pk=pk)
     title = f"{xelon.numero_de_dossier} - {xelon.modele_vehicule} - {xelon.vin}"
     select = "xelon"
+    collapse = {"media": True, "interior": True}
     if xelon.corvet:
         corvet = xelon.corvet
         if corvet.electronique_14x.isdigit():
