@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
@@ -25,37 +26,29 @@ class IhmEmailModalForm(BSModalForm):
 
     def send_email(self):
         email = EmailMessage(
-            subject=self.cleaned_data['subject'], body=self.cleaned_data['message'],
+            subject=self.cleaned_data['subject'], body=self.cleaned_data['message'], from_email=self.request.user.email,
             to=string_to_list(self.cleaned_data['to']), cc=string_to_list(self.cleaned_data['cc'])
         )
         email.send()
 
     @staticmethod
     def vin_message(model, request):
-        message = "Bonjour,\n\n"
-        message += "Vous trouverez ci-dessous, le nouveau VIN pour le dossier {} :\n".format(model.numero_de_dossier)
         try:
             data = model.actions.get(content__contains="OLD_VIN").content.split('\n')
-            message += "- Ancien VIN = {}\n".format(data[0][-17:])
-            message += "- Nouveau VIN = {}\n".format(data[1][-17:])
+            vins = {"old_vin": data[0][-17:], "new_vin": data[1][-17:]}
         except ObjectDoesNotExist:
-            message += "\n### NOUVEAU VIN NON DISPONIBLE ###\n"
-        message += "\nCordialement\n\n"
-        message += "{} {}".format(request.user.first_name, request.user.last_name)
+            vins = None
+        message = render_to_string('squalaetp/email_format/vin_error_email.html', locals())
         return message
 
     @staticmethod
     def prod_message(model, request):
-        message = "Bonjour,\n\n"
-        message += f"Vous trouverez ci-dessous, le nouveau modèle produit pour le dossier {model.numero_de_dossier} :\n"
         try:
             data = model.actions.get(content__contains="OLD_PROD").content.split('\n')
-            message += f"- Ancien Modèle = {data[0][9:]}\n"
-            message += f"- Nouveau Modèle = {data[1][9:]}\n"
+            prods = {"old_prod": data[0][9:], "new_prod": data[1][9:]}
         except ObjectDoesNotExist:
-            message += "\n### NOUVEAU MODELE PRODUIT NON DISPONIBLE ###\n"
-        message += "\nCordialement\n\n"
-        message += "{} {}".format(request.user.first_name, request.user.last_name)
+            prods = None
+        message = render_to_string('squalaetp/email_format/prod_error_email.html', locals())
         return message
 
 
