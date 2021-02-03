@@ -8,8 +8,6 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
 
-from dashboard.models import UserProfile
-
 MAX_WAIT = 10
 
 
@@ -34,7 +32,6 @@ class BaseTest:
         admin.save()
         self.user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
         self.user.save()
-        # UserProfile(user=self.user).save()
         self.redirectUrl = reverse('index')
         self.nextLoginUrl = '/accounts/login/?next='
 

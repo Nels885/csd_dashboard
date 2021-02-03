@@ -1,7 +1,8 @@
 from django.contrib.messages import get_messages
 
-from dashboard.tests.base import UnitTest, reverse, UserProfile
+from dashboard.tests.base import UnitTest, reverse
 
+from dashboard.models import UserProfile
 from squalaetp.models import Xelon
 from raspeedi.models import UnlockProduct
 
