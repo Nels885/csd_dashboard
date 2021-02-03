@@ -34,7 +34,7 @@ class BaseTest:
         admin.save()
         self.user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
         self.user.save()
-        UserProfile(user=self.user).save()
+        # UserProfile(user=self.user).save()
         self.redirectUrl = reverse('index')
         self.nextLoginUrl = '/accounts/login/?next='
 
