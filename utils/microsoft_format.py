@@ -128,7 +128,7 @@ class ExcelFormat(BaseFormat):
 class CsvFormat(BaseFormat):
     """## Base class for formatting CSV files ##"""
 
-    def __init__(self, file, columns, sep=';', encoding='latin-1', dtype=None):
+    def __init__(self, file, columns, sep=';', encoding='latin-1', skiprows=None, dtype=None, usecols=None):
         """
         Initialize CsvFormat class
         :param file:
@@ -137,7 +137,7 @@ class CsvFormat(BaseFormat):
             Number of the last column to be processed
         """
         self.basename = os.path.basename(file[:file.find('.')])
-        df = pd.read_csv(file, sep=sep, encoding=encoding, dtype=dtype)
+        df = pd.read_csv(file, sep=sep, encoding=encoding, skiprows=skiprows, dtype=dtype, usecols=usecols)
         super(CsvFormat, self).__init__(df, columns)
 
     def read_all(self):

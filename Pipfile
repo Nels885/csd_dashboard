@@ -29,3 +29,4 @@ paho-mqtt = "*"
 django-constance = {extras = ["database"],version = "*"}
 django-inlinecss = "*"
 requests = "*"
+openpyxl = "*"
