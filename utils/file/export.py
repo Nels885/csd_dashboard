@@ -6,6 +6,7 @@ import shutil
 import logging
 
 from django.shortcuts import HttpResponse
+# from django.utils.safestring import SafeString
 
 from psa.models import Corvet
 from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
@@ -83,11 +84,12 @@ calibre = Calibre(TAG_PATH, TAG_LOG_PATH)
 class ExportExcel:
     """ class for exporting data in CSV format """
 
-    def __init__(self, queryset, filename, header, values_list=None, excel_type="csv"):
+    def __init__(self, queryset, filename, header, values_list=None, excel_type="csv", novalue="#"):
         self.date = datetime.datetime.now()
         self.queryset = queryset
         self.filename = filename
         self.header = header
+        self.noValue = novalue
         if values_list:
             self.valueSet = self.queryset.values_list(*values_list).distinct()
         else:
@@ -158,7 +160,7 @@ class ExportExcel:
 
         for i, query in enumerate(self.valueSet):
             query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
-            query = tuple(["#" if not value else value for value in query])
+            query = tuple([self.noValue if not value else value for value in query])
             row_num += 1
             for col_num in range(len(query)):
                 sheet.write(row_num, col_num, query[col_num], font_style)
