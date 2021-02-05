@@ -9,7 +9,7 @@ from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
 from utils.file.export import ExportExcel, os
 
-from ._csv_suptech import CsvSuptech
+from ._file_suptech import CsvSuptech, ExcelSuptech
 
 import logging as log
 
@@ -19,24 +19,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-f',
-            '--file',
-            dest='filename',
-            help='Specify import CSV file',
-        )
-        parser.add_argument(
-            '--import_csv',
-            action='store_true',
-            dest='import_csv',
-            help='Import Suptech CSV file',
-        )
-        parser.add_argument(
-            '--export',
-            action='store_true',
-            dest='export',
-            help='Export Suptech XLS file',
-        )
-        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
@@ -45,13 +27,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
-
-        if options['import_csv']:
-            if options['filename'] is not None:
-                excel = CsvSuptech(options['filename'])
-                self._update_or_create(Suptech, excel.read())
-            else:
-                self.stdout.write("Fichier CSV manquant")
+        path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
+        filename = "LOG_SUPTECH"
 
         if options['delete']:
             Suptech.objects.all().delete()
@@ -63,37 +40,12 @@ class Command(BaseCommand):
             for table in ["Suptech"]:
                 self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
-        if options['export']:
-            filename = "LOG_SUPTECH_TEST"
-            path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
-            header = [
-                'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR'
-            ]
-            try:
-                queryset = Suptech.objects.all()
-
-                values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
-
-                error = ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
-                                    excel_type='xls', novalue="").file(path, False)
-                if error:
-                    self.stdout.write(
-                        self.style.ERROR(
-                            "[SUPTECH] Export error because {}.xls file is read-only!".format(
-                                os.path.join(path, filename)
-                            )
-                        )
-                    )
-                else:
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            "[SUPTECH] Export completed: NB_FILE = {} | FILE = {}.xls".format(
-                                queryset.count(), os.path.join(path, filename)
-                            )
-                        )
-                    )
-            except FileNotFoundError as err:
-                self.stdout.write(self.style.ERROR("[SUPTECH] {}".format(err)))
+        else:
+            excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
+            self._update_or_create(Suptech, excel.read())
+            csv = CsvSuptech(os.path.join(path, filename + ".csv"))
+            self._update_or_create(Suptech, csv.read())
+            self._export(path, filename)
 
     def _update_or_create(self, model, data):
         nb_prod_before = model.objects.count()
@@ -127,3 +79,33 @@ class Command(BaseCommand):
                 )
             )
         )
+
+    def _export(self, path, filename):
+        header = [
+            'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR'
+        ]
+        try:
+            queryset = Suptech.objects.all().order_by('date')
+
+            values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
+
+            error = ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
+                                excel_type='xls', novalue="").file(path, False)
+            if error:
+                self.stdout.write(
+                    self.style.ERROR(
+                        "[SUPTECH] Export error because {}.xls file is read-only!".format(
+                            os.path.join(path, filename)
+                        )
+                    )
+                )
+            else:
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "[SUPTECH] Export completed: NB_FILE = {} | FILE = {}.xls".format(
+                            queryset.count(), os.path.join(path, filename)
+                        )
+                    )
+                )
+        except FileNotFoundError as err:
+            self.stdout.write(self.style.ERROR("[SUPTECH] {}".format(err)))
