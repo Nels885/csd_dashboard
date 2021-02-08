@@ -24,6 +24,12 @@ class Command(BaseCommand):
             dest='delete',
             help='Delete all data in Suptech table',
         )
+        parser.add_argument(
+            '--first',
+            action='store_true',
+            dest='first',
+            help='Adding first data in Suptech table',
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
@@ -40,12 +46,46 @@ class Command(BaseCommand):
             for table in ["Suptech"]:
                 self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
-        else:
+        elif options['first']:
             excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
             self._update_or_create(Suptech, excel.read())
             csv = CsvSuptech(os.path.join(path, filename + ".csv"))
             self._update_or_create(Suptech, csv.read())
             self._export(path, filename)
+        else:
+            if os.path.exists(os.path.join(path, filename + ".csv")):
+                csv = CsvSuptech(os.path.join(path, filename + ".csv"))
+                self._create(Suptech, csv.read())
+                os.remove(os.path.join(path, filename + ".csv"))
+            else:
+                self.stdout.write(self.style.WARNING("The file does not exist"))
+            excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
+            self._update_or_create(Suptech, excel.read())
+            self._export(path, filename)
+
+    def _create(self, model, data):
+        nb_prod_before = model.objects.count()
+        nb_prod_update = 0
+        for row in data:
+            log.info(row)
+            try:
+                defaults = defaults_dict(model, row)
+                model.objects.create(**defaults)
+                nb_prod_update += 1
+            except KeyError as err:
+                self.stderr.write(self.style.ERROR("KeyError: {}".format(err)))
+            except IntegrityError as err:
+                self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(row.get('item'), err)))
+            except ValidationError as err:
+                self.stderr.write(self.style.ERROR("ValidationError: {} - {}".format(row.get('item'), err)))
+        nb_prod_after = model.objects.count()
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[SUPTECH] data create completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    len(data), nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                )
+            )
+        )
 
     def _update_or_create(self, model, data):
         nb_prod_before = model.objects.count()
