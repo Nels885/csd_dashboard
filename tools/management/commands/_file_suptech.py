@@ -1,4 +1,4 @@
-from utils.microsoft_format import CsvFormat, ExcelFormat
+from utils.microsoft_format import CsvFormat, ExcelFormat, pd
 
 
 class CsvSuptech(CsvFormat):
@@ -16,10 +16,14 @@ class CsvSuptech(CsvFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super(CsvSuptech, self).__init__(file, columns, dtype=str, usecols=self.COLS.keys())
-        self._columns_rename(self.COLS)
-        self.sheet.replace({"": None}, inplace=True)
-        self._date_converter(self.COLS_DATE)
+        try:
+            super(CsvSuptech, self).__init__(file, columns, dtype=str, usecols=self.COLS.keys())
+            self._columns_rename(self.COLS)
+            self.sheet.replace({"": None}, inplace=True)
+            self._date_converter(self.COLS_DATE)
+            self.error = False
+        except pd.errors.EmptyDataError:
+            self.error = True
 
     def read(self):
         """
@@ -28,8 +32,9 @@ class CsvSuptech(CsvFormat):
             list of dictionnaries that represents the data in the sheet
         """
         data = []
-        for line in range(self.nrows):
-            data.append(dict(self.sheet.loc[line].dropna()))
+        if not self.error:
+            for line in range(self.nrows):
+                data.append(dict(self.sheet.loc[line].dropna()))
         return data
 
 
