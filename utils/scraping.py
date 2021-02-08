@@ -8,6 +8,13 @@ from selenium.common.exceptions import (
     NoSuchElementException, TimeoutException, ElementClickInterceptedException, WebDriverException,
     StaleElementReferenceException
 )
+from constance import config
+
+profile = webdriver.FirefoxProfile()
+if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+    profile.set_preference("network.proxy/type", 1)
+    profile.set_preference("network.proxy.http", config.PROXY_HOST_SCRAPING)
+    profile.set_preference("network.proxy.http_port", config.PROXY_PORT_SCRAPING)
 
 
 class ScrapingCorvet(webdriver.Firefox):
@@ -20,9 +27,9 @@ class ScrapingCorvet(webdriver.Firefox):
         self.username = username
         self.password = password
         options = Options()
-        options.add_argument('-headless')
+        # options.add_argument('-headless')
         try:
-            super(ScrapingCorvet, self).__init__(firefox_options=options)
+            super(ScrapingCorvet, self).__init__(firefox_profile=profile, firefox_options=options)
             self.implicitly_wait(10)
             self.get(self.START_URLS)
         except WebDriverException:
@@ -53,7 +60,6 @@ class ScrapingCorvet(webdriver.Firefox):
             self.logout()
         else:
             data = "Corvet login Error !!!"
-        self.quit()
         return data
 
     def login(self):
