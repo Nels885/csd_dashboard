@@ -27,10 +27,12 @@ class Command(BaseCommand):
         # r'^VF[37]\w{14}$'
         if options['vin']:
             vin = options['vin']
-            data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(vin)
+            scrap = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD)
+            data = scrap.result(vin)
             data = str(xml_parser(data))
             self.stdout.write(data)
-        if options['squalaetp']:
+            scrap.quit()
+        elif options['squalaetp']:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             xelon_list = list(squalaetp.sheet['numero_de_dossier'])
@@ -48,10 +50,11 @@ class Command(BaseCommand):
 
     def _import(self, queryset, limit=False):
         nb_created = 0
+        scrap = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD)
         for query in queryset:
             start_time = time.time()
             for attempt in range(2):
-                data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(query.vin)
+                data = scrap.result(query.vin)
                 row = xml_parser(data)
                 if row and row.get('donnee_date_entree_montage'):
                     defaults = defaults_dict(Corvet, row, "vin")
@@ -71,4 +74,5 @@ class Command(BaseCommand):
             query.save()
             if limit and nb_created >= 10:
                 break
+        scrap.quit()
         return nb_created

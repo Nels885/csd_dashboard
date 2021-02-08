@@ -27,7 +27,7 @@ class ScrapingCorvet(webdriver.Firefox):
         self.username = username
         self.password = password
         options = Options()
-        # options.add_argument('-headless')
+        options.add_argument('-headless')
         try:
             super(ScrapingCorvet, self).__init__(firefox_profile=profile, firefox_options=options)
             self.implicitly_wait(10)
