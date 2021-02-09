@@ -57,8 +57,8 @@ class Command(BaseCommand):
                 csv = CsvSuptech(os.path.join(path, filename + ".csv"))
                 self._create(Suptech, csv.read())
                 # os.remove(os.path.join(path, filename + ".csv"))
-                with open(os.path.join(path, filename + ".csv"), "w"):
-                    pass
+                with open(os.path.join(path, filename + ".csv"), "w") as f:
+                    f.write("DATE;QUI;XELON;ITEM;TIME;INFO;RMQ;;;;;")
             else:
                 self.stdout.write(self.style.WARNING("The file does not exist"))
             excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
