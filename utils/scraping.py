@@ -12,7 +12,6 @@ from constance import config
 
 profile = webdriver.FirefoxProfile()
 if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-    profile.set_preference("network.proxy.type", 1)
     profile.set_preference("network.proxy.http", config.PROXY_HOST_SCRAPING)
     profile.set_preference("network.proxy.http_port", config.PROXY_PORT_SCRAPING)
 
