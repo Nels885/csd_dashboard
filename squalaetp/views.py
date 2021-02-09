@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
@@ -25,14 +25,18 @@ from utils.django.models import defaults_dict
 
 
 @login_required
-def update(request, pk):
+def update(request):
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
     if "Export error" in out.getvalue():
         messages.warning(request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
     else:
         messages.success(request, "Exportation Squalaetp terminée.")
-    return redirect('squalaetp:detail', pk=pk)
+    # return redirect('squalaetp:detail', pk=pk)
+    if 'HTTP_REFERER' in request.META:
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    else:
+        return redirect('index')
 
 
 @login_required
