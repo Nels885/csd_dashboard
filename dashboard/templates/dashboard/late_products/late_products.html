@@ -27,61 +27,63 @@
 
     <div class="tab-content mt-3">
 
-    <!-- Late products -->
-    <div class="tab-pane active" id="late" role="tabpanel" aria-labelledby="late-tab">
+        <!-- Late products -->
+        <div class="tab-pane active" id="late" role="tabpanel" aria-labelledby="late-tab">
 
-        <table class="table table-bordered table-sm text-nowrap" id="lateProdNewTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-                <th>Activité</th>
-                <th>Dossier</th>
-                <th>Modèle</th>
-                <th>Date In</th>
-                <th>Délai</th>
-                <th>Tech</th>
+            <table class="table table-bordered table-sm text-nowrap display" id="lateProdNewTable" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Activité</th>
+                    <th>Dossier</th>
+                    <th>Modèle</th>
+                    <th>Date In</th>
+                    <th>Délai</th>
+                    <th>Tech</th>
 
-            </tr>
-            </thead>
-            <tbody>
+                </tr>
+                </thead>
+                <tbody>
 
-            {% include 'dashboard/email_format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
+                {% include 'dashboard/email_format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
 
-            {% include 'dashboard/email_format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
+                {% include 'dashboard/email_format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
 
-            {% include 'dashboard/email_format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
+                {% include 'dashboard/email_format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
 
-            {% include 'dashboard/email_format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
+                {% include 'dashboard/email_format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
 
-            {% include 'dashboard/email_format/lp_tr_format.html' with prods=etude activity='Etude' %}
+                {% include 'dashboard/email_format/lp_tr_format.html' with prods=etude activity='Etude' %}
 
-            {% include 'dashboard/email_format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+                {% include 'dashboard/email_format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-    </div>
+        </div>
 
-    <!-- Detail IHM -->
-    <div class="tab-pane" id="tronik" role="tabpanel" aria-labelledby="tronik-tab">
+        <!-- Detail IHM -->
+        <div class="tab-pane" id="tronik" role="tabpanel" aria-labelledby="tronik-tab">
 
-        <table class="table table-bordered table-sm text-nowrap" id="tronikTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-                <th>Activité</th>
-                <th>Dossier</th>
-                <th>Modèle</th>
-                <th>Date In</th>
-                <th>Délai</th>
-                <th>Tech</th>
+            <table class="table table-bordered table-sm text-nowrap display" id="tronikTable" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Activité</th>
+                    <th>Dossier</th>
+                    <th>Modèle</th>
+                    <th>Date In</th>
+                    <th>Délai</th>
+                    <th>Tech</th>
 
-            </tr>
-            </thead>
-            <tbody>
+                </tr>
+                </thead>
+                <tbody>
 
-            {% include 'dashboard/email_format/lp_tr_format.html' with prods=autotronik activity='Autotronik' %}
+                {% include 'dashboard/email_format/lp_tr_format.html' with prods=autotronik activity='Autotronik' %}
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+
+        </div>
 
     </div>
 
