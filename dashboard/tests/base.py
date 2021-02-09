@@ -64,7 +64,9 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
     def setUp(self):
         options = Options()
         options.add_argument('-headless')
-        self.driver = webdriver.Firefox(firefox_options=options)
+        profile = webdriver.FirefoxProfile()
+        profile.set_preference("network.proxy.no_proxies_on", "localhost, 127.0.0.1")
+        self.driver = webdriver.Firefox(firefox_profile=profile, firefox_options=options)
         self.driver.implicitly_wait(30)
         StaticLiveServerTestCase.setUp(self)
         BaseTest.__init__(self)

@@ -1,24 +1,10 @@
-from django.test import LiveServerTestCase
-from django.contrib.auth.models import User, Group
-
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from dashboard.tests.base import FunctionalTest
 
 
-class DashboardSeleniumTestCase(LiveServerTestCase):
+class DashboardSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
-        options = Options()
-        options.add_argument('-headless')
-        self.driver = webdriver.Firefox(firefox_options=options)
-        self.driver.implicitly_wait(30)
         super(DashboardSeleniumTestCase, self).setUp()
-        user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
-        user.save()
-
-    def tearDown(self):
-        self.driver.quit()
-        super(DashboardSeleniumTestCase, self).tearDown()
 
     def test_login_page_is_valid(self):
         driver = self.driver
