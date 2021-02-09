@@ -56,8 +56,10 @@ class Command(BaseCommand):
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
                 xelon_list = list(squalaetp.sheet['numero_de_dossier'])
 
-                queryset = Xelon.objects.filter(Q(numero_de_dossier__in=xelon_list) &
-                                                (Q(corvet__isnull=False) | Q(modele_produit__in=['RT4', 'RT5'])))
+                queryset = Xelon.objects.filter(
+                    Q(numero_de_dossier__in=xelon_list) &
+                    (Q(vin__regex=r'^V((F[37])|(R[137]))\w{14}$') | Q(modele_produit__in=['RT4', 'RT5']))
+                )
 
                 corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if field.name != 'vin'])
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
