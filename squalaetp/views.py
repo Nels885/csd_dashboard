@@ -13,6 +13,7 @@ from django.forms.models import model_to_dict
 from django.core.management import call_command
 
 from .models import Xelon, Stock, Action
+from .utils import collapse_select
 from psa.models import Corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
@@ -68,7 +69,7 @@ def detail(request, pk):
     xelon = get_object_or_404(Xelon, pk=pk)
     title = f"{xelon.numero_de_dossier} - {xelon.modele_vehicule} - {xelon.vin}"
     select = "xelon"
-    collapse = {"media": True}
+    collapse = collapse_select(xelon)
     if xelon.corvet:
         corvet = xelon.corvet
         if corvet.electronique_14x.isdigit():
