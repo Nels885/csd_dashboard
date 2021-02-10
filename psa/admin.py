@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices
+from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, BsiModel
 
 
 class CorvetAdmin(admin.ModelAdmin):
@@ -42,8 +42,16 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
     search_fields = ('key', 'value', 'column')
 
 
+class BsiModelAdmin(admin.ModelAdmin):
+    list_display = ('reference', 'name', 'hw', 'sw', 'supplier_oe')
+    list_filter = ('name', 'hw', 'sw', 'supplier_oe')
+    ordering = ('reference',)
+    search_fields = ('reference', 'name',)
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
+admin.site.register(BsiModel, BsiModelAdmin)

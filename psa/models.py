@@ -116,9 +116,9 @@ class Corvet(models.Model):
 
     radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
     btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
-    # cmm = models.ForeignKey('psa.EcuType', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
-    # bsi = models.ForeignKey('psa.EcuType', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
-    # bsm = models.ForeignKey('psa.EcuType'; related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
+    bsi = models.ForeignKey('psa.BsiModel', related_name='corvet_bsi', on_delete=models.SET_NULL, null=True, blank=True)
+    # cmm = models.ForeignKey('psa.CmmType', related_name='corvet_cmm', on_delete=models.SET_NULL, null=True, blank=True)
+    # bsm = models.ForeignKey('psa.BsmType'; related_name='corvet_bsm', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         verbose_name = "données CORVET"
@@ -129,22 +129,18 @@ class Corvet(models.Model):
             self.btel = Multimedia.objects.filter(hw_reference=self.electronique_14x).first()
         if self.electronique_14f.isdigit():
             self.radio = Multimedia.objects.filter(hw_reference=self.electronique_14f).first()
+        if self.electronique_14b.isdigit():
+            self.bsi = BsiModel.objects.filter(reference__startswith=self.electronique_14b).first()
         super(Corvet, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.vin
 
 
-# class EcuType(models.Model):
-#     TYPE_CHOICES = [
-#         ('CMM', 'Calculateur Moteur Multifonction'), ('BSI', 'Boitier Servitude Intelligent'),
-#         ('BSM', 'Boitier Servitude Moteur')
-#     ]
-#
+# class CmmType(models.Model):
 #     hw_reference = models.CharField("hardware", max_length=10, unique=True)
 #     name = models.CharField("modèle produit", max_length=50, blank=True)
 #     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
-#     type = models.CharField("type", max_length=10, choices=TYPE_CHOICES)
 #
 #     def part_name(self):
 #         return self.name + " HW" + self.hw_reference
@@ -247,3 +243,22 @@ class Calibration(models.Model):
 
     def __str__(self):
         return self.factory
+
+
+class BsiModel(models.Model):
+    reference = models.CharField("reference PSA", max_length=13, unique=True)
+    name = models.CharField("modèle", max_length=50)
+    hw = models.CharField('HW', max_length=10, blank=True)
+    sw = models.CharField('SW', max_length=10, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+
+    class Meta:
+        verbose_name = "Données BSI"
+        ordering = ['reference']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return f"{self.reference}_{self.name}"
