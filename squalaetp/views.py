@@ -25,14 +25,13 @@ from utils.django.models import defaults_dict
 
 
 @login_required
-def update(request):
+def generate(request):
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
     if "Export error" in out.getvalue():
         messages.warning(request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
     else:
         messages.success(request, "Exportation Squalaetp terminée.")
-    # return redirect('squalaetp:detail', pk=pk)
     if 'HTTP_REFERER' in request.META:
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
     else:

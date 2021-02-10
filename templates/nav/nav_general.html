@@ -7,6 +7,15 @@
     </a>
 </li>
 
+{% if user.is_authenticated %}
+    <!-- Nav Item - Generate Squalaetp -->
+    <li class="nav-item">
+        <a class="nav-link font-weight-bold text-warning" href="{% url 'squalaetp:generate' %}">
+            <i class="fas fa-fw fa-sync-alt text-warning"></i><span>{% trans "Generate Squalaetp" %}</span>
+        </a>
+    </li>
+{% endif %}
+
 <!-- Nav Item - Thermal Chamber -->
 <li class="nav-item">
     <a class="nav-link" href="{% url 'tools:thermal' %}">
@@ -16,12 +25,6 @@
 
 {% if user.is_authenticated %}
     <!-- Nav Item - Import Export -->
-    <li class="nav-item">
-        <a class="nav-link font-weight-bold text-warning" href="{% url 'squalaetp:update' %}">
-            <i class="fas fa-fw fa-sync-alt text-warning"></i><span>{% trans "Generate Squalaetp" %}</span>
-        </a>
-    </li>
-
     <li class="nav-item">
         <a class="nav-link" href="{% url 'import_export:detail' %}">
             <i class="fas fa-fw fa-sync-alt"></i><span>{% trans "Import / Export" %}</span>

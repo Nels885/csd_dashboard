@@ -18,7 +18,7 @@
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}">Envoi Email PRODUIT</button>
         <hr>
         <button class="log-btn btn btn-secondary btn-block mb-5" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
-        <a class="btn btn-success btn-block" href="{% url 'squalaetp:update' %}">Update Squalaetp</a>
+        <a class="btn btn-success btn-block" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
     </section>
     <section class="col-sm-9">
         {% for field in form %}
