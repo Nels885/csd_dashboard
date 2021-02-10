@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-03 19:28+0100\n"
+"POT-Creation-Date: 2021-02-10 17:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,18 +79,18 @@ msgstr ""
 msgid "CORVET table"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:97
+#: psa/views.py:98
 msgid "Detail Corvet data for the VIN: "
 msgstr "Détail des données Corvet pour le VIN : "
 
-#: psa/views.py:109 psa/views.py:127
+#: psa/views.py:110 psa/views.py:128
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: psa/views.py:113 psa/views.py:123
+#: psa/views.py:114 psa/views.py:124
 msgid "Modification done successfully!"
 msgstr "Modification réussie !"
 
-#: psa/views.py:151
+#: psa/views.py:152
 msgid "Products PSA table"
 msgstr "Tableau des produits PSA"
