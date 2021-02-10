@@ -1,6 +1,8 @@
 import re
 import csv
 import xlwt
+import openpyxl
+from openpyxl.styles import Font
 import datetime
 from . import os
 import shutil
@@ -109,14 +111,20 @@ class ExportExcel:
         """ Creation http response """
         if self.excelType == "csv":
             response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(
-                self.filename, self.date.strftime("%y-%m-%d_%H-%M")
+            response['Content-Disposition'] = 'attachment; filename="{}_{}.{}"'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M"), self.excelType
             )
             self._csv_writer(response)
+        elif self.excelType == "xlsx":
+            response = HttpResponse(content_type='application/ms_excel')
+            response['Content-Disposition'] = 'attachment; filename="{}_{}.{}"'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M"), self.excelType
+            )
+            self._xlsx_writer(response)
         else:
             response = HttpResponse(content_type='application/ms-excel')
-            response['Content-Disposition'] = 'attachement; filename="{}_{}.xls'.format(
-                self.filename, self.date.strftime("%y-%m-%d_%H-%M")
+            response['Content-Disposition'] = 'attachement; filename="{}_{}.{}'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M"), self.excelType
             )
             self._xls_writer(response)
         return response
@@ -134,6 +142,8 @@ class ExportExcel:
                 with open(file, 'w+', newline='', encoding='utf-8') as f:
                     if self.excelType == "csv":
                         self._csv_writer(f)
+            elif self.excelType == "xlsx":
+                self._xlsx_writer(file)
             else:
                 self._xls_writer(file)
             return False
@@ -154,7 +164,7 @@ class ExportExcel:
     def _xls_writer(self, response):
         """ Formatting data in Excel format """
         xldoc = xlwt.Workbook(encoding='utf-8')
-        sheet = xldoc.add_sheet('base')
+        sheet = xldoc.add_sheet('Feuille 1')
 
         # Sheet header, first row
         row_num = 0
@@ -178,13 +188,44 @@ class ExportExcel:
         xldoc.save(response)
         return response
 
+    def _xlsx_writer(self, response):
+        """ Formatting data in Excel 2010 format """
+        wb = openpyxl.Workbook()
+
+        # Get active worksheet/tab
+        ws = wb.active
+        ws.title = 'Feuille 1'
+
+        # Sheet header, first row
+        row_num = 1
+
+        # Assign the titles for each cell of the header
+        for col_num, column_title in enumerate(self.header, 1):
+            cell = ws.cell(row=row_num, column=col_num)
+            cell.font = Font(bold=True)
+            cell.value = column_title
+
+        # Iterate though all values
+        for query in self.valueSet:
+            row_num += 1
+            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
+
+            # Assign the data  for each cell of the row
+            for col_num, cell_value in enumerate(query, 1):
+                cell = ws.cell(row=row_num, column=col_num)
+                cell.value = cell_value
+
+        wb.save(response)
+        return response
+
     def _file_yesterday(self, path, file):
         """ Creation of the backup file d-1 """
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         if os.path.isfile(file):
             file_date = datetime.datetime.fromtimestamp(os.path.getmtime(file)).date()
             if file_date >= yesterday:
-                shutil.copyfile(file, os.path.join(path, "{}J-1.csv".format(self.filename)))
+                shutil.copyfile(file, os.path.join(path, "{}J-1.{}".format(self.filename, self.excelType)))
 
     def _query_format(self, query):
         query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
