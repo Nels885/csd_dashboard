@@ -1,9 +1,11 @@
+import re
 import csv
 import xlwt
 import datetime
 from . import os
 import shutil
 import logging
+from html.parser import HTMLParser
 
 from django.shortcuts import HttpResponse
 # from django.utils.safestring import SafeString
@@ -25,6 +27,13 @@ logger = logging.getLogger(__name__)
 #
 # # add ch to logger
 # logger.addHandler(ch)
+
+
+class HTMLFilter(HTMLParser):
+    text = ""
+
+    def handle_data(self, data):
+        self.text += data
 
 
 def xml_corvet_file(instance, data, vin):
@@ -138,7 +147,8 @@ class ExportExcel:
         writer.writerow(self.header)
 
         for i, query in enumerate(self.valueSet):
-            query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+            query = tuple([self._html_to_string(_, r'[;,]') if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
             writer.writerow(query)
 
     def _xls_writer(self, response):
@@ -159,8 +169,8 @@ class ExportExcel:
         font_style = xlwt.XFStyle()
 
         for i, query in enumerate(self.valueSet):
-            query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
-            query = tuple([self.noValue if not value else value for value in query])
+            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
             row_num += 1
             for col_num in range(len(query)):
                 sheet.write(row_num, col_num, query[col_num], font_style)
@@ -175,3 +185,17 @@ class ExportExcel:
             file_date = datetime.datetime.fromtimestamp(os.path.getmtime(file)).date()
             if file_date >= yesterday:
                 shutil.copyfile(file, os.path.join(path, "{}J-1.csv".format(self.filename)))
+
+    def _query_format(self, query):
+        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+        query = tuple([self.noValue if not value else value for value in query])
+        return query
+
+    @staticmethod
+    def _html_to_string(value, re_sub=None):
+        f = HTMLFilter()
+        f.feed(value)
+        if re_sub:
+            return re.sub(re_sub, ' ', f.text)
+        else:
+            return f.text
