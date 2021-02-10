@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
+from django.db.models import Q
 from django.db import connection
 
 from psa.models import Corvet
@@ -76,7 +77,7 @@ class Command(BaseCommand):
 
     def _foreignkey_relation(self):
         self.stdout.write("[CORVET_RELATIONSHIPS] Waiting...")
-        corvets = Corvet.objects.filter(btel__isnull=True, radio__isnull=True)
+        corvets = Corvet.objects.filter(Q(btel__isnull=True, radio__isnull=True) | Q(bsi__isnull=True))
         for corvet in corvets:
             corvet.save()
         self.stdout.write(
