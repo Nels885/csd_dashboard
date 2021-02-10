@@ -2,24 +2,28 @@
 
     <table class="table table-bordered table-striped table-sm mt-4">
 
-        {% include 'format/collapse_thead.html' with id="collapseCmm" expanded=collapse.cmm thead_title="CALCULATEUR MOTEUR :" %}
+        {% include 'format/collapse_thead.html' with id="collapseBsi" expanded=collapse.bsi thead_title="BSI :" %}
 
-        <tbody class="collapse {% if collapse.cmm %}show{% endif %}" id="collapseCmm">
+        <tbody class="collapse {% if collapse.bsi %}show{% endif %}" id="collapseBsi">
         <tr>
-            <td class="text-dark td-ihm">Référence HW</td>
-            <td>{{ object.hw_reference }}</td>
+            <td class="text-dark td-ihm">Référence PSA</td>
+            <td>{{ object.reference }}</td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">Modèle</td>
-            <td>{{ object.technical_data }}</td>
+            <td>{{ object.name }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">HW</td>
+            <td>{{ object.hw }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">SW</td>
+            <td>{{ object.sw }}</td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">Fabriquant</td>
             <td>{{ object.supplier_oe }}</td>
-        </tr>
-        <tr>
-            <td class="text-dark td-ihm">Pièce Xelon</td>
-            <td>{{ object.spare_part }}</td>
         </tr>
         </tbody>
     </table>
