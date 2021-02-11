@@ -117,6 +117,7 @@ class Corvet(models.Model):
     radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
     btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
     bsi = models.ForeignKey('psa.BsiModel', related_name='corvet_bsi', on_delete=models.SET_NULL, null=True, blank=True)
+    emf = models.ForeignKey('psa.EmfModel', related_name='corvet_emf', on_delete=models.SET_NULL, null=True, blank=True)
     # cmm = models.ForeignKey('psa.CmmType', related_name='corvet_cmm', on_delete=models.SET_NULL, null=True, blank=True)
     # bsm = models.ForeignKey('psa.BsmType'; related_name='corvet_bsm', on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -131,6 +132,8 @@ class Corvet(models.Model):
             self.radio = Multimedia.objects.filter(hw_reference=self.electronique_14f).first()
         if self.electronique_14b.isdigit():
             self.bsi = BsiModel.objects.filter(reference__startswith=self.electronique_14b).first()
+        if self.electronique_14l.isdigit():
+            self.emf = EmfModel.objects.filter(hw_reference__startswith=self.electronique_14l).first()
         super(Corvet, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -262,3 +265,23 @@ class BsiModel(models.Model):
 
     def __str__(self):
         return f"{self.reference}_{self.name}"
+
+
+class EmfModel(models.Model):
+    hw_reference = models.CharField("référence HW", max_length=10, unique=True)
+    name = models.CharField("modèle", max_length=50)
+    hw = models.CharField('HW', max_length=10, blank=True)
+    sw = models.CharField('SW', max_length=10, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    pr_reference = models.CharField("référence PR", max_length=10, blank=True)
+
+    class Meta:
+        verbose_name = "Données EMF"
+        ordering = ['hw_reference']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return f"{self.hw_reference}_{self.name}"
