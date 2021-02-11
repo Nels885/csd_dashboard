@@ -49,16 +49,16 @@ class Command(BaseCommand):
         elif options['first']:
             excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
             self._update_or_create(Suptech, excel.read())
-            csv = CsvSuptech(os.path.join(path, filename + ".csv"))
-            self._update_or_create(Suptech, csv.read())
+            csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
+            self._update_or_create(Suptech, csv_file.read())
             self._export(path, filename)
         else:
             if os.path.exists(os.path.join(path, filename + ".csv")):
-                csv = CsvSuptech(os.path.join(path, filename + ".csv"))
-                self._create(Suptech, csv.read())
+                csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
+                self._create(Suptech, csv_file.read())
                 # os.remove(os.path.join(path, filename + ".csv"))
                 with open(os.path.join(path, filename + ".csv"), "w") as f:
-                    f.write("DATE;QUI;XELON;ITEM;TIME;INFO;RMQ;;;;;")
+                    f.write("DATE;QUI;XELON;ITEM;TIME;INFO;RMQ;;;;;\r\n")
             else:
                 self.stdout.write(self.style.WARNING("The file does not exist"))
             excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
