@@ -100,29 +100,33 @@ class ExcelFormat(BaseFormat):
         :return:
             Temporary Excel file in the 'tmp' directory
         """
-        file1 = io.open(file, 'r', encoding='latin3')
-        data = file1.readlines()
+        try:
+            file1 = io.open(file, 'r', encoding='latin-1')
+            data = file1.readlines()
 
-        # Creating a workbook object
-        xldoc = Workbook()
-        # Adding a sheet to the workbook object
-        sheet = xldoc.add_sheet("Sheet1", cell_overwrite_ok=True)
-        # Iterating and saving the data to sheet
-        for i, row in enumerate(data):
-            # Two things are done here
-            # Removeing the '\n' which comes while reading the file using io.open
-            # Getting the values after splitting using '\t'
-            for j, val in enumerate(row.replace('\n', '').split('\t')):
-                sheet.write(i, j, val)
+            # Creating a workbook object
+            xldoc = Workbook()
+            # Adding a sheet to the workbook object
+            sheet = xldoc.add_sheet("Sheet1", cell_overwrite_ok=True)
+            # Iterating and saving the data to sheet
+            for i, row in enumerate(data):
+                # Two things are done here
+                # Removeing the '\n' which comes while reading the file using io.open
+                # Getting the values after splitting using '\t'
+                for j, val in enumerate(row.replace('\n', '').split('\t')):
+                    sheet.write(i, j, val)
 
-        # Saving the file as an excel file
-        xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
-        df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
-                           dtype=dtype, usecols=usecols)
-        dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
-        dataframe.reset_index(drop=True, inplace=True)
-        # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
-        return dataframe
+            # Saving the file as an excel file
+            xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
+            df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
+                               dtype=dtype, usecols=usecols)
+            dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
+            dataframe.reset_index(drop=True, inplace=True)
+            # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
+            return dataframe
+        except UnicodeDecodeError as err:
+            print(f"UnicodeDecodeError: {err} - file : {file}")
+            return pd.DataFrame()
 
 
 class CsvFormat(BaseFormat):
