@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.db.models import Q
+# from django.db.models import Q
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
@@ -56,10 +56,11 @@ class Command(BaseCommand):
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
                 xelon_list = list(squalaetp.sheet['numero_de_dossier'])
 
-                queryset = Xelon.objects.filter(
-                    Q(numero_de_dossier__in=xelon_list) &
-                    (Q(vin__regex=r'^V((F[37])|(R[137]))\w{14}$') | Q(modele_produit__in=['RT4', 'RT5']))
-                )
+                # queryset = Xelon.objects.filter(
+                #     Q(numero_de_dossier__in=xelon_list) &
+                #     (Q(vin__regex=r'^V((F[37])|(R[137]))\w{14}$') | Q(modele_produit__in=['RT4', 'RT5']))
+                # )
+                queryset = Xelon.objects.filter(numero_de_dossier__in=xelon_list)
 
                 corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if field.name != 'vin'])
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
