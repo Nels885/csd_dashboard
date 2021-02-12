@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
-# from django.db.models import Q
 
+from constance import config
+
+from utils.conf import string_to_list
 from squalaetp.models import Xelon
 from psa.models import Corvet
 
@@ -40,7 +42,6 @@ class Command(BaseCommand):
         else:
             self.stdout.write("[SQUALAETP_EXPORT] Waiting...")
 
-            filename = "squalaetp_test"
             path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
             header = [
                 'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE',
@@ -56,33 +57,30 @@ class Command(BaseCommand):
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
                 xelon_list = list(squalaetp.sheet['numero_de_dossier'])
 
-                # queryset = Xelon.objects.filter(
-                #     Q(numero_de_dossier__in=xelon_list) &
-                #     (Q(vin__regex=r'^V((F[37])|(R[137]))\w{14}$') | Q(modele_produit__in=['RT4', 'RT5']))
-                # )
                 queryset = Xelon.objects.filter(numero_de_dossier__in=xelon_list)
 
                 corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if field.name != 'vin'])
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
 
                 values_list = xelon_list + corvet_list
-                error = ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
-                                    excel_type='xls').file(path, False)
-                if error:
-                    self.stdout.write(
-                        self.style.ERROR(
-                            "[SQUALAETP_EXPORT] Export error because {}.xls file is read-only!".format(
-                                os.path.join(path, filename)
+                for filename in string_to_list(config.SQUALAETP_FILE_LIST):
+                    error = ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
+                                        excel_type='xls').file(path, False)
+                    if error:
+                        self.stdout.write(
+                            self.style.ERROR(
+                                "[SQUALAETP_EXPORT] Export error because {}.xls file is read-only!".format(
+                                    os.path.join(path, filename)
+                                )
                             )
                         )
-                    )
-                else:
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
-                                queryset.count(), os.path.join(path, filename)
+                    else:
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
+                                    queryset.count(), os.path.join(path, filename)
+                                )
                             )
                         )
-                    )
             except FileNotFoundError as err:
                 self.stdout.write(self.style.ERROR("[SQUALAETP_EXPORT] {}".format(err)))

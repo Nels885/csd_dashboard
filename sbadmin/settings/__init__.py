@@ -239,6 +239,7 @@ CONSTANCE_CONFIG = {
     'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN to email list'),
     'CORVET_USER': ('', 'CORVET user for RepairLab'),
     'CORVET_PWD': ('', 'CORVET password for RepairLab'),
+    'SQUALAETP_FILE_LIST': ('squalaetp_cal, squalaetp_ecu', 'Squalaetp file list'),
 
     # REMAN Options
     'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
@@ -285,7 +286,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
     '2. CSD Repair Options': (
         'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
-        'CORVET_USER', 'CORVET_PWD'
+        'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
     ),
     '3. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
