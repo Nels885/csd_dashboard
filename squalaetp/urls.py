@@ -5,7 +5,7 @@ from . import views
 app_name = 'squalaetp'
 
 urlpatterns = [
-    path('<int:pk>/edit/vin/', views.SqualaetpUpdateView.as_view(), name='vin_edit'),
+    path('<int:pk>/edit/vin/', views.VinCorvetUpdateView.as_view(), name='vin_edit'),
     path('<int:pk>/edit/prod/', views.ProductUpdateView.as_view(), name='prod_edit'),
     path('<int:pk>/email/vin/', views.VinEmailFormView.as_view(), name='vin_email'),
     path('<int:pk>/email/prod/', views.ProdEmailFormView.as_view(), name='prod_email'),

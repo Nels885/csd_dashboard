@@ -83,15 +83,15 @@ def detail(request, pk):
     return render(request, 'squalaetp/detail/detail.html', locals())
 
 
-class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = Xelon
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
-    template_name = 'squalaetp/modal/squalaetp_form.html'
+    template_name = 'squalaetp/modal/vin_corvet_update.html'
     form_class = VinCorvetModalForm
     success_message = _('Success: Squalaetp data was updated.')
 
     def get_context_data(self, **kwargs):
-        context = super(SqualaetpUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'active_import': 'false',
             'xelon': self.object,
@@ -111,7 +111,7 @@ class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
                 messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
             else:
                 messages.success(self.request, "Exportation Squalaetp terminée.")
-        return super(SqualaetpUpdateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
@@ -129,7 +129,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     success_message = _('Success: Xelon was updated.')
 
     def get_context_data(self, **kwargs):
-        context = super(ProductUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'modal_title': _('Product update for %(file)s' % {'file': self.object.numero_de_dossier})
         })
@@ -143,7 +143,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
                 messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
             else:
                 messages.success(self.request, "Exportation Squalaetp terminée.")
-        return super(ProductUpdateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
@@ -158,7 +158,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
     form_class = IhmEmailModalForm
 
     def get_initial(self):
-        initial = super(VinEmailFormView, self).get_initial()
+        initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
         initial['subject'] = "[{}] Erreur VIN Xelon".format(xelon.numero_de_dossier)
         initial['message'] = self.form_class.vin_message(xelon, self.request)
@@ -171,7 +171,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
             content = "Envoi Email de modification VIN effectué."
             Action.objects.create(content=content, content_object=xelon)
             messages.success(self.request, _('Success: The email has been sent.'))
-        return super(VinEmailFormView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
@@ -186,7 +186,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
     form_class = IhmEmailModalForm
 
     def get_initial(self):
-        initial = super(ProdEmailFormView, self).get_initial()
+        initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
         initial['subject'] = "[{}] Erreur modèle produit Xelon".format(xelon.numero_de_dossier)
         initial['message'] = self.form_class.prod_message(xelon, self.request)
@@ -199,7 +199,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
             content = "Envoi Email de modification modèle Produit effectué."
             Action.objects.create(content=content, content_object=xelon)
             messages.success(self.request, _('Success: The email has been sent.'))
-        return super(ProdEmailFormView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
@@ -212,7 +212,7 @@ class LogFileView(LoginRequiredMixin, TemplateView):
     template_name = 'squalaetp/modal/log_file.html'
 
     def get_context_data(self, **kwargs):
-        context = super(LogFileView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         file = LogFile(CSD_ROOT)
         xelon = get_object_or_404(Xelon, pk=context['pk'])
         text = file.vin_err_filter(xelon.modele_produit, xelon.numero_de_dossier)
