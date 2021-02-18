@@ -1,11 +1,11 @@
 from io import StringIO
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
@@ -19,7 +19,6 @@ from raspeedi.models import Programing
 from reman.models import EcuType
 from .forms import IhmForm, VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
 from psa.forms import CorvetForm
-from dashboard.forms import ParaErrorList
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
@@ -82,41 +81,6 @@ def detail(request, pk):
     form = IhmForm(instance=xelon.corvet,
                    initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
     return render(request, 'squalaetp/detail/detail.html', locals())
-
-
-@permission_required('squalaetp.view_xelon')
-def ajax_xelon(request):
-    """
-    View for changing Xelon data
-    """
-    pk = request.POST.get('pk')
-    file = get_object_or_404(Xelon, pk=pk)
-    corvet = Corvet.objects.filter(vin=file.vin).first()
-    form = CorvetForm(request.POST or None, instance=corvet, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        # xml_corvet_file(form.cleaned_data['xml_data'], form.cleaned_data['vin'])
-        form.save()
-        context = {'message': _('Modification done successfully!')}
-        messages.success(request, context['message'])
-        return JsonResponse(context, status=200)
-    print(form.errors)
-    return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
-
-
-@permission_required('psa.change_corvet')
-def ajax_corvet(request):
-    """
-    View for import CORVET data
-    """
-    vin = request.GET.get('vin')
-    if request.GET and vin:
-        out = StringIO()
-        call_command("importcorvet", vin, stdout=out)
-        data = out.getvalue()
-        # data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(vin)
-        context = {'xml_data': data}
-        return JsonResponse(context, status=200)
-    return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 
 
 class SqualaetpUpdateView(PermissionRequiredMixin, BSModalUpdateView):

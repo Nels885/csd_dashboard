@@ -14,6 +14,4 @@ urlpatterns = [
     path('xelon/', views.xelon_table, name='xelon'),
     path('stock-parts/', views.stock_table, name='stock_parts'),
     path('log/<int:pk>/detail/', views.LogFileView.as_view(), name='log_detail'),
-    path('ajax/xelon/', views.ajax_xelon, name='ajax_xelon'),
-    path('ajax/corvet/', views.ajax_corvet, name='ajax_corvet')
 ]

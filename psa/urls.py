@@ -14,4 +14,5 @@ urlpatterns = [
     path('corvet/create/', views.CorvetCreateView.as_view(), name='create_corvet'),
     path('corvet/<slug:vin>/detail/', views.corvet_detail, name='corvet_detail'),
     path('product/', views.product_table, name='product'),
+    path('ajax/corvet/', views.ajax_corvet, name='ajax_corvet')
 ]

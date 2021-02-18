@@ -1,4 +1,5 @@
 # import requests
+from io import StringIO
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -6,8 +7,10 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import TemplateView
 from django.utils.translation import ugettext as _
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
+from django.core.management import call_command
 from bootstrap_modal_forms.generic import BSModalCreateView
 
 from utils.django.forms import ParaErrorList
@@ -155,3 +158,19 @@ def product_table(request):
     products = Multimedia.objects.all().order_by('hw_reference')
     context.update(locals())
     return render(request, 'psa/product_table.html', context)
+
+
+@permission_required('psa.change_corvet')
+def ajax_corvet(request):
+    """
+    View for import CORVET data
+    """
+    vin = request.GET.get('vin')
+    if request.GET and vin:
+        out = StringIO()
+        call_command("importcorvet", vin, stdout=out)
+        data = out.getvalue()
+        # data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(vin)
+        context = {'xml_data': data}
+        return JsonResponse(context, status=200)
+    return JsonResponse({"nothing to see": "this isn't happening"}, status=400)

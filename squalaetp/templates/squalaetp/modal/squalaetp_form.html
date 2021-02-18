@@ -70,7 +70,7 @@
             $("#id_xml_data").val("Waiting...");
             $.ajax({
                 method: "get",
-                url: "{% url 'squalaetp:ajax_corvet' %}",
+                url: "{% url 'psa:ajax_corvet' %}",
                 data: {
                     vin: $("#id_vin").val(),
                 },
