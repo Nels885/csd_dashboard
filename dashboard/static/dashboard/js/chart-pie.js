@@ -19,16 +19,21 @@ $.ajax({
                     data: defaultData,
                     backgroundColor: ['#079992', '#0a3d62', '#0c2461', '#b71540',
                         '#e58e26', '#eb2f06', '#1e3799', '#3c6382',
-                        '#38ada9','#78e08f', '#60a3bc', '#4a69bd', '#0C40FF'],
+                        '#38ada9', '#78e08f', '#60a3bc', '#4a69bd', '#0C40FF'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    borderWidth: 1
                 }],
             },
             options: {
                 maintainAspectRatio: false,
                 legend: {
                     display: true,
-                    position: 'right',
-                    align: 'start'
+                    position: 'left',
+                    labels: {
+                        boxWidth: 20,
+                        fontSize: 10,
+                        padding: 5,
+                    }
                 },
                 cutoutPercentage: 0,
             },
