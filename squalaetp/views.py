@@ -219,3 +219,12 @@ class LogFileView(LoginRequiredMixin, TemplateView):
         print(f"Info LOG : {xelon.modele_produit} - {xelon.numero_de_dossier}")
         context['text'] = text
         return context
+
+
+@login_required
+def change_table(request):
+    """ View of SparePart table page """
+    title = 'Xelon'
+    table_title = 'Historique des changements Squalaetp'
+    actions = Action.objects.all()
+    return render(request, 'squalaetp/change_table.html', locals())
