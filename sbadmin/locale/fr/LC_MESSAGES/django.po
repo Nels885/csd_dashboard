@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-10 17:15+0100\n"
+"POT-Creation-Date: 2021-02-18 16:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,24 +91,25 @@ msgid "Login"
 msgstr "S'identifier"
 
 #: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:29
-#: templates/nav/nav_csd_atelier.html:48 templates/nav/nav_csd_atelier.html:81
-#: templates/nav/nav_csd_atelier.html:99 templates/nav/nav_csd_atelier.html:117
-#: templates/nav/nav_tools.html:28 templates/nav/nav_tools.html:82
+#: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_csd_atelier.html:82
+#: templates/nav/nav_csd_atelier.html:100
+#: templates/nav/nav_csd_atelier.html:118 templates/nav/nav_tools.html:28
+#: templates/nav/nav_tools.html:82
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:62
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:63
 #: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:87
 msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
-#: templates/nav/nav_reman.html:51 templates/nav/nav_tools.html:23
+#: templates/nav/nav_reman.html:47 templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:24 templates/nav/nav_reman.html:27
-#: templates/nav/nav_reman.html:46
+#: templates/nav/nav_csd_atelier.html:24 templates/nav/nav_reman.html:23
+#: templates/nav/nav_reman.html:42
 msgid "Current files"
 msgstr "Dossiers en cours"
 
@@ -120,7 +121,7 @@ msgstr "Dossiers erreur VIN"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:47
+#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:43
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -128,29 +129,33 @@ msgstr "Dossiers clients"
 msgid "Stock Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_csd_atelier.html:51
+#: templates/nav/nav_csd_atelier.html:32
+msgid "Change history"
+msgstr "Historique modifications"
+
+#: templates/nav/nav_csd_atelier.html:52
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:55 templates/nav/nav_tools.html:29
+#: templates/nav/nav_csd_atelier.html:56 templates/nav/nav_tools.html:29
 msgid "Products table"
 msgstr "Tableau produits"
 
-#: templates/nav/nav_csd_atelier.html:58 templates/nav/nav_csd_atelier.html:82
-#: templates/nav/nav_csd_atelier.html:100
-#: templates/nav/nav_csd_atelier.html:118
+#: templates/nav/nav_csd_atelier.html:59 templates/nav/nav_csd_atelier.html:83
+#: templates/nav/nav_csd_atelier.html:101
+#: templates/nav/nav_csd_atelier.html:119
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
-#: templates/nav/nav_csd_atelier.html:63
+#: templates/nav/nav_csd_atelier.html:64
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:126
+#: templates/nav/nav_csd_atelier.html:127
 msgid "supplier links"
 msgstr "Liens fournisseurs"
 
-#: templates/nav/nav_csd_atelier.html:136 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:137 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -174,47 +179,47 @@ msgstr ""
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: templates/nav/nav_reman.html:17 templates/nav/nav_reman.html:45
+#: templates/nav/nav_reman.html:17 templates/nav/nav_reman.html:41
 msgid "Repairs"
 msgstr "Réparations"
 
-#: templates/nav/nav_reman.html:24
+#: templates/nav/nav_reman.html:22
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:48
+#: templates/nav/nav_reman.html:44
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: templates/nav/nav_reman.html:52
+#: templates/nav/nav_reman.html:48
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:54
+#: templates/nav/nav_reman.html:50
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: templates/nav/nav_reman.html:57
+#: templates/nav/nav_reman.html:53
 msgid "ECU ref Base"
 msgstr "Base réf. ECU"
 
-#: templates/nav/nav_reman.html:59
+#: templates/nav/nav_reman.html:55
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:69
+#: templates/nav/nav_reman.html:65
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:79
+#: templates/nav/nav_reman.html:75
 msgid "Create Default"
 msgstr "Création panne"
 
-#: templates/nav/nav_reman.html:88
+#: templates/nav/nav_reman.html:84
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:96
+#: templates/nav/nav_reman.html:92
 msgid "check part"
 msgstr "Vérification pièce"
 
