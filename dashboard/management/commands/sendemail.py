@@ -44,11 +44,12 @@ class Command(BaseCommand):
             prods = ProductAnalysis()
             data = prods.late_products()
             indicator = Indicator.objects.filter(date=timezone.now()).first()
-            data.update({
-                'products_to_repair': indicator.products_to_repair,
-                'late_products': indicator.late_products,
-                'express_products': indicator.express_products
-            })
+            if indicator:
+                data.update({
+                    'products_to_repair': indicator.products_to_repair,
+                    'late_products': indicator.late_products,
+                    'express_products': indicator.express_products
+                })
 
             html_message = render_to_string('dashboard/email_format/lp_email.html', data)
             plain_message = strip_tags(html_message)
