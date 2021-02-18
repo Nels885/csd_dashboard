@@ -286,6 +286,15 @@ class EcuModelForm(forms.ModelForm):
         exclude = ['ecu_type']
 
 
+class EcuDumpModelForm(BSModalModelForm):
+    class Meta:
+        model = EcuModel
+        fields = ['psa_barcode', 'to_dump']
+        widgets = {
+            'psa_barcode': forms.TextInput(attrs={"readonly": ""})
+        }
+
+
 class PartEcuModelForm(forms.ModelForm):
     hw_reference = forms.CharField(label="HW référence *", max_length=10, required=True)
 

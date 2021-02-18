@@ -17,7 +17,8 @@ from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
-    DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm
+    DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
+    EcuDumpModelForm
 )
 
 context = {
@@ -368,12 +369,22 @@ def ecu_ref_table(request):
     return render(request, 'reman/ecu_ref_base_table.html', context)
 
 
-@permission_required('reman.view_ecurefbase')
+@login_required()
 def ecu_dump_table(request):
     table_title = 'Dump à réaliser'
     ecus = EcuModel.objects.filter(to_dump=True)
     context.update(locals())
     return render(request, 'reman/ecu_dump_table.html', context)
+
+
+class EcuDumpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal ECU Dump update """
+    model = EcuModel
+    permission_required = 'reman.change_ecumodel'
+    template_name = 'reman/modal/ecu_dump_update.html'
+    form_class = EcuDumpModelForm
+    success_message = _('Success: Reman ECU dump was updated.')
+    success_url = reverse_lazy('reman:ecu_dump_table')
 
 
 @permission_required('reman.view_default')

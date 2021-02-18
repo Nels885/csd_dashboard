@@ -164,7 +164,7 @@ class MixinsTest(UnitTest):
 
     def test_update_default_ajax_mixin(self):
         """
-        Update Post throught BSModalCreateView.
+        Update Default throught BSModalUpdateView.
         """
         self.add_perms_user(Default, 'change_default')
         self.login()
@@ -185,9 +185,6 @@ class MixinsTest(UnitTest):
         self.assertEqual(default.code, 'TEST3')
 
     def test_filter_checkout_ajax_mixin(self):
-        """
-        Create Default through BSModalCreateView.
-        """
         self.add_perms_user(Repair, 'close_repair')
         self.login()
 
@@ -217,3 +214,25 @@ class MixinsTest(UnitTest):
 
         # redirection
         self.assertEqual(response.status_code, 302)
+
+    def test_update_ecu_dump_ajax_mixin(self):
+        """
+        Update ECU Dump throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuModel, 'change_ecumodel')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        ecu_model = EcuModel.objects.first()
+        response = self.client.post(
+            reverse('reman:update_ecu_dump', kwargs={'pk': ecu_model.pk}),
+            data={
+                'psa_barcode': ecu_model.psa_barcode,
+                'to_dump': True,
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('reman:ecu_dump_table'), status_code=302)
+        # Object is updated
+        ecu_model = EcuModel.objects.first()
+        self.assertEqual(ecu_model.to_dump, True)

@@ -102,6 +102,9 @@
         $(".bs-large-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#large-modal"});
         })
+        $(".bs-small-modal").each(function () {
+            $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#small-modal"});
+        })
 
         // log file buttons
         $(".log-btn").each(function () {
