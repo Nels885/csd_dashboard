@@ -44,10 +44,18 @@ class XelonTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_generate_squalaetp_vue(self):
+    def test_generate_squalaetp_view(self):
         url = reverse('squalaetp:generate')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.login()
         response = self.client.get(url)
         self.assertRedirects(response, reverse('index'), status_code=302)
+
+    def test_change_table_page(self):
+        url = reverse('squalaetp:change_table')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
