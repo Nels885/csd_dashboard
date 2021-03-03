@@ -35,35 +35,37 @@ class Command(BaseCommand):
         self.stdout.write("[SUPTECH] Waiting...")
         path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
         filename = "LOG_SUPTECH"
+        try:
+            if options['delete']:
+                Suptech.objects.all().delete()
 
-        if options['delete']:
-            Suptech.objects.all().delete()
+                sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Suptech, ])
+                with connection.cursor() as cursor:
+                    for sql in sequence_sql:
+                        cursor.execute(sql)
+                for table in ["Suptech"]:
+                    self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Suptech, ])
-            with connection.cursor() as cursor:
-                for sql in sequence_sql:
-                    cursor.execute(sql)
-            for table in ["Suptech"]:
-                self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
-
-        elif options['first']:
-            excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
-            self._update_or_create(Suptech, excel.read())
-            csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
-            self._update_or_create(Suptech, csv_file.read())
-            self._export(path, filename)
-        else:
-            if os.path.exists(os.path.join(path, filename + ".csv")):
+            elif options['first']:
+                excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
+                self._update_or_create(Suptech, excel.read())
                 csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
-                self._create(Suptech, csv_file.read())
-                # os.remove(os.path.join(path, filename + ".csv"))
-                with open(os.path.join(path, filename + ".csv"), "w") as f:
-                    f.write("DATE;QUI;XELON;ITEM;TIME;INFO;RMQ;;;;;\r\n")
+                self._update_or_create(Suptech, csv_file.read())
+                self._export(path, filename)
             else:
-                self.stdout.write(self.style.WARNING("The file does not exist"))
-            excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
-            self._update_or_create(Suptech, excel.read())
-            self._export(path, filename)
+                if os.path.exists(os.path.join(path, filename + ".csv")):
+                    csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
+                    self._create(Suptech, csv_file.read())
+                    # os.remove(os.path.join(path, filename + ".csv"))
+                    with open(os.path.join(path, filename + ".csv"), "w") as f:
+                        f.write("DATE;QUI;XELON;ITEM;TIME;INFO;RMQ;;;;;\r\n")
+                else:
+                    self.stdout.write(self.style.WARNING("The file does not exist"))
+                excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
+                self._update_or_create(Suptech, excel.read())
+                self._export(path, filename)
+        except FileNotFoundError as err:
+            self.stderr.write(self.style.ERROR(f"FileNotFoundError: {err}"))
 
     def _create(self, model, data):
         nb_prod_before = model.objects.count()
