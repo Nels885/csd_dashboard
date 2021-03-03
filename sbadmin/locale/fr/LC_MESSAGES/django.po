@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-18 16:27+0100\n"
+"POT-Creation-Date: 2021-03-03 09:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,6 +172,10 @@ msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
 #: templates/nav/nav_general.html:30
+msgid "Other links"
+msgstr "Autres liens"
+
+#: templates/nav/nav_general.html:37
 msgid "Import / Export"
 msgstr ""
 

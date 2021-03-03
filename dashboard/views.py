@@ -291,3 +291,11 @@ def supplier_links(request):
     card_title = "Liens fournisseurs de pièces détachées"
     web_links = WebLink.objects.filter(type="PARTS_SUPPLIERS")
     return render(request, 'dashboard/weblink.html', locals())
+
+
+@login_required
+def other_links(request):
+    title = "CSD Atelier"
+    card_title = "Autres liens"
+    web_links = WebLink.objects.filter(type="AUTRES")
+    return render(request, 'dashboard/weblink.html', locals())
