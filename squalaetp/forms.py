@@ -91,7 +91,9 @@ class VinCorvetModalForm(BSModalModelForm):
         model = Xelon
         fields = ['vin']
         widgets = {
-            'vin': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number")}),
+            'vin': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number"), 'autofocus': ''}
+            ),
         }
 
     def clean_vin(self):

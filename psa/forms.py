@@ -43,7 +43,9 @@ class CorvetForm(forms.ModelForm):
         required=True
     )
     vin = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number")})
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number"), 'autofocus': ''}
+        )
     )
 
     class Meta:

@@ -31,7 +31,7 @@ class AddBatchForm(BSModalModelForm):
         fields = ['number', 'quantity', 'start_date', 'end_date', 'ref_reman']
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
-            'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
+            'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3, 'autofocus': ''}),
             'start_date': DatePicker(
                 attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
                 options={'format': 'DD/MM/YYYY'}
@@ -89,7 +89,8 @@ class AddRepairForm(BSModalModelForm):
         model = Repair
         fields = ['identify_number', 'psa_barcode', 'remark']
         widgets = {
-            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}),
+            'identify_number': forms.TextInput(
+                attrs={'class': 'form-control', 'style': 'width: 50%;', 'autofocus': ''}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
 
