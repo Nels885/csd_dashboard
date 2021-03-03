@@ -11,6 +11,7 @@ from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet
 from .models import Xelon, Action
+from utils.django.forms.fields import ListTextWidget
 
 
 class IhmEmailModalForm(BSModalForm):
@@ -135,6 +136,12 @@ class ProductModalForm(BSModalModelForm):
     class Meta:
         model = Xelon
         fields = ['modele_produit', 'modele_vehicule']
+
+    def __init__(self, *args, **kwargs):
+        xelons = Xelon.objects.exclude(modele_produit="").order_by('modele_produit')
+        _data_list = list(xelons.values_list('modele_produit', flat=True).distinct())
+        super(ProductModalForm, self).__init__(*args, **kwargs)
+        self.fields['modele_produit'].widget = ListTextWidget(data_list=_data_list, name='value-list')
 
     def clean(self):
         cleaned_data = super(ProductModalForm, self).clean()
