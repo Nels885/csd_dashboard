@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db.utils import IntegrityError, DataError
@@ -10,7 +11,7 @@ from utils.django.models import defaults_dict
 
 from ._excel_raspeedi import ExcelPrograming
 
-import logging as log
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -53,7 +54,7 @@ class Command(BaseCommand):
         nb_before = Programing.objects.count()
         nb_update = 0
         for row in data:
-            log.info(row)
+            logger.info(row)
             psa_barcode = row.pop("psa_barcode")
             try:
                 multimedia = Multimedia.objects.filter(hw_reference=psa_barcode).first()
@@ -63,9 +64,9 @@ class Command(BaseCommand):
                 if not created:
                     nb_update += 1
             except IntegrityError as err:
-                self.stderr.write("[PROGRAMING_CMD] IntegrityError: {} - {}".format(psa_barcode, err))
+                logger.error(f"[PROGRAMING_CMD] IntegrityError: {psa_barcode} - {err}")
             except DataError as err:
-                self.stderr.write("[PROGRAMING_CMD] DataError: {} - {}".format(psa_barcode, err))
+                logger.error(f"[PROGRAMING_CMD] DataError: {psa_barcode} - {err}")
         nb_after = Programing.objects.count()
         self.stdout.write(
             self.style.SUCCESS(

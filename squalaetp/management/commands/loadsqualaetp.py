@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.utils import IntegrityError, DataError
@@ -12,6 +13,8 @@ from utils.django.models import defaults_dict
 
 from ._excel_squalaetp import ExcelSqualaetp
 from ._excel_delay_analysis import ExcelDelayAnalysis
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -96,9 +99,9 @@ class Command(BaseCommand):
                 if not created:
                     nb_prod_update += 1
             except IntegrityError as err:
-                self.stderr.write(self.style.ERROR("IntegrityError: {} -{}".format(xelon_number, err)))
+                logger.error(f"[XELON_CMD] IntegrityError: {xelon_number} -{err}")
             except DataError as err:
-                self.stderr.write(self.style.ERROR("DataError: {} - {}".format(xelon_number, err)))
+                logger.error(f"[XELON_CMD] DataError: {xelon_number} - {err}")
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
@@ -127,15 +130,15 @@ class Command(BaseCommand):
                 if not created:
                     nb_prod_update += 1
             except IntegrityError as err:
-                self.stderr.write(self.style.ERROR("IntegrityError row {} : {}".format(xelon_number, err)))
+                logger.error(f"[DELAY_CMD] IntegrityError row {xelon_number} : {err}")
             except DataError as err:
-                self.stderr.write(self.style.ERROR("DataError row {} : {}".format(xelon_number, err)))
+                logger.error(f"[DELAY_CMD] DataError row {xelon_number} : {err}")
             except FieldDoesNotExist as err:
-                self.stderr.write(self.style.ERROR("FieldDoesNotExist row {} : {}".format(xelon_number, err)))
+                logger.error(f"[DELAY_CMD] FieldDoesNotExist row {xelon_number} : {err}")
             except KeyError as err:
-                self.stderr.write(self.style.ERROR("KeyError row {} : {}".format(xelon_number, err)))
+                logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
             except ValidationError as err:
-                self.stderr.write(self.style.ERROR("ValidationError {} : {}".format(xelon_number, err)))
+                logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
 
         nb_prod_after = model.objects.count()
         self.stdout.write(

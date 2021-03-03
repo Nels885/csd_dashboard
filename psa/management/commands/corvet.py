@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.core.exceptions import ValidationError
@@ -12,7 +13,7 @@ from utils.django.models import defaults_dict
 from ._csv_squalaetp_corvet import CsvCorvet
 from ._excel_squalaetp import ExcelCorvet
 
-import logging as log
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -92,7 +93,7 @@ class Command(BaseCommand):
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
         for row in data:
-            log.info(row)
+            logger.info(row)
             vin = row.pop('vin')
             try:
                 defaults = defaults_dict(model, row, 'vin')
@@ -102,11 +103,11 @@ class Command(BaseCommand):
                 if not created:
                     nb_prod_update += 1
             except KeyError as err:
-                self.stderr.write(self.style.ERROR("KeyError: {}".format(err)))
+                logger.error(f"[CORVET_CMD] KeyError: {vin} - {err}")
             except IntegrityError as err:
-                self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(vin, err)))
+                logger.error(f"[CORVET_CMD] IntegrityError: {vin} - {err}")
             except ValidationError as err:
-                self.stderr.write(self.style.ERROR("ValidationError: {} - {}".format(vin, err)))
+                logger.error(f"[CORVET_CMD] ValidationError: {vin} - {err}")
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(

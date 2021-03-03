@@ -1,5 +1,4 @@
 import logging
-
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db.utils import IntegrityError, DataError
@@ -13,7 +12,7 @@ from utils.django.models import defaults_dict
 from ._excel_raspeedi import ExcelRaspeedi
 
 # Get an instance of a logger
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -54,7 +53,7 @@ class Command(BaseCommand):
             nb_before = Raspeedi.objects.count()
             nb_update = 0
             for row in excel.read():
-                log.info(row)
+                logger.info(row)
                 ref_boitier = row.pop("ref_boitier")
                 try:
                     rasp_values = defaults_dict(Raspeedi, row)
@@ -68,9 +67,9 @@ class Command(BaseCommand):
                     values.update(defaults_dict(Multimedia, row))
                     Multimedia.objects.update_or_create(hw_reference=ref_boitier, defaults=values)
                 except IntegrityError as err:
-                    self.stderr.write("[RASPEEDI_CMD] IntegrityError: {} - {}".format(ref_boitier, err))
+                    logger.error(f"[RASPEEDI_CMD] IntegrityError: {ref_boitier} - {err}")
                 except DataError as err:
-                    self.stderr.write("[RASPEEDI_CMD] DataError: {} - {}".format(ref_boitier, err))
+                    logger.error(f"[RASPEEDI_CMD] DataError: {ref_boitier} - {err}")
             nb_after = Raspeedi.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(

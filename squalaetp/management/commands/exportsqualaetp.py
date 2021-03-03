@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 
 from constance import config
@@ -9,6 +10,8 @@ from psa.models import Corvet
 from ._excel_squalaetp import ExcelSqualaetp
 from utils.file.export import ExportExcel, os
 from utils.conf import CSD_ROOT, conf, XLS_SQUALAETP_FILE
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -85,3 +88,4 @@ class Command(BaseCommand):
                         )
             except FileNotFoundError as err:
                 self.stdout.write(self.style.ERROR("[SQUALAETP_EXPORT] {}".format(err)))
+                logger.error(f"FileNotFoundError: {err}")

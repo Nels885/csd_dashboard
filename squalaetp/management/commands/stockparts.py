@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
@@ -8,7 +9,7 @@ from utils.conf import CSV_EXTRACTION_FILE
 
 from ._csv_extraction import CsvSparePart
 
-import logging as log
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -49,7 +50,7 @@ class Command(BaseCommand):
             nb_part_before = ProductCode.objects.count()
             nb_part_update = 0
             for row in extraction.read():
-                log.info(row)
+                logger.info(row)
                 code_magasin = row.pop("code_magasin")
                 code_produit = row.pop("code_produit")
                 code_zone = row.pop("code_zone")
@@ -63,11 +64,11 @@ class Command(BaseCommand):
                     if not created:
                         nb_part_update += 1
                 except IntegrityError as err:
-                    self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(code_produit, err)))
+                    logger.error(f"[STOCKPARTS_CMD] IntegrityError: {code_produit} - {err}")
                 except ProductCode.MultipleObjectsReturned as err:
-                    self.stderr.write(self.style.ERROR("MultipleObjectsReturned: {} - {}".format(code_produit, err)))
+                    logger.error(f"[STOCKPARTS_CMD] MultipleObjectsReturned: {code_produit} - {err}")
                 except DataError as err:
-                    self.stderr.write(self.style.ERROR("DataError: {} - {}".format(code_produit, err)))
+                    logger.error(f"[STOCKPARTS_CMD] DataError: {code_produit} - {err}")
             nb_part_after = ProductCode.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(

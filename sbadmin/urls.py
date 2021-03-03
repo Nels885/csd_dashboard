@@ -24,7 +24,14 @@ from dashboard import views
 
 favicon_view = RedirectView.as_view(url=staticfiles_storage.url('favicon.ico'))
 
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+    return division_by_zero
+
+
 urlpatterns = [
+    path('sentry-debug/', trigger_error),
     path('favicon.ico', favicon_view),
     path('', views.index, name="index"),
     path('api/', include('api.urls')),

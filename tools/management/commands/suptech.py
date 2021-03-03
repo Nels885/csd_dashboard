@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.core.exceptions import ValidationError
@@ -11,7 +12,7 @@ from utils.file.export import ExportExcel, os
 
 from ._file_suptech import CsvSuptech, ExcelSuptech
 
-import logging as log
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -65,13 +66,13 @@ class Command(BaseCommand):
                 self._update_or_create(Suptech, excel.read())
                 self._export(path, filename)
         except FileNotFoundError as err:
-            self.stderr.write(self.style.ERROR(f"FileNotFoundError: {err}"))
+            logger.error(f"[SUPTECH_CMD] FileNotFoundError: {err}")
 
     def _create(self, model, data):
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
         for row in data:
-            log.info(row)
+            logger.info(row)
             try:
                 defaults = defaults_dict(model, row)
                 model.objects.create(**defaults)
@@ -95,7 +96,7 @@ class Command(BaseCommand):
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
         for row in data:
-            log.info(row)
+            logger.info(row)
             date = row.pop('date')
             user = row.pop('user', '')
             xelon = row.pop('xelon', '')
