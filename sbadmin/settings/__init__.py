@@ -350,6 +350,11 @@ LOGGING = {
             'handlers': ['mail_admin'],
             'level': 'ERROR',
             'propagate': False,
+        },
+        'command': {
+            'handlers': ['mail_admin', 'console_verbose'],
+            'level': 'ERROR',
+            'propagate': False,
         }
     },
 }

@@ -12,7 +12,7 @@ from utils.django.models import defaults_dict
 from ._excel_raspeedi import ExcelRaspeedi
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):

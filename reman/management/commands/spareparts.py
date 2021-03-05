@@ -9,7 +9,7 @@ from utils.conf import CSV_EXTRACTION_FILE
 
 from ._csv_extraction import CsvSparePart
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):

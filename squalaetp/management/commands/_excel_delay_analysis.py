@@ -2,7 +2,7 @@ import logging
 
 from utils.microsoft_format import ExcelFormat, pd
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
 
 
 class ExcelDelayAnalysis(ExcelFormat):

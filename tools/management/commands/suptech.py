@@ -12,7 +12,7 @@ from utils.file.export import ExportExcel, os
 
 from ._file_suptech import CsvSuptech, ExcelSuptech
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):

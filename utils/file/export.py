@@ -16,7 +16,7 @@ from psa.models import Corvet
 from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
 
 # # create console handler and set level to debug
 # ch = logging.StreamHandler()

@@ -11,7 +11,7 @@ from ._excel_squalaetp import ExcelSqualaetp
 from utils.file.export import ExportExcel, os
 from utils.conf import CSD_ROOT, conf, XLS_SQUALAETP_FILE
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):

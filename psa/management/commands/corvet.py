@@ -13,7 +13,7 @@ from utils.django.models import defaults_dict
 from ._csv_squalaetp_corvet import CsvCorvet
 from ._excel_squalaetp import ExcelCorvet
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):
