@@ -26,7 +26,10 @@ django-crum = "*"
 django-ckeditor = "*"
 django-tempus-dominus = "*"
 paho-mqtt = "*"
-django-constance = {extras = ["database"],version = "*"}
 django-inlinecss = "*"
 requests = "*"
 openpyxl = "*"
+
+[packages.django-constance]
+extras = [ "database",]
+version = "*"
