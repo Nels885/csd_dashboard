@@ -59,3 +59,15 @@ class XelonTestCase(UnitTest):
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_prog_activate_view(self):
+        url = reverse('squalaetp:prog_activate', kwargs={'pk': self.xelonId})
+        response = self.client.get(url)
+        xelon = Xelon.objects.get(pk=self.xelonId)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.assertEqual(xelon.is_active, False)
+        self.login()
+        response = self.client.get(url)
+        xelon = Xelon.objects.get(pk=self.xelonId)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(xelon.is_active, True)
