@@ -126,6 +126,7 @@ class Command(BaseCommand):
             xelon_number = row.get("numero_de_dossier")
             defaults = defaults_dict(model, row, "numero_de_dossier")
             try:
+                defaults.update({'is_active': True})
                 obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                 if not created:
                     nb_prod_update += 1
