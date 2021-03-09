@@ -7,9 +7,8 @@ from utils.conf import string_to_list
 from squalaetp.models import Xelon
 from psa.models import Corvet
 
-from ._excel_squalaetp import ExcelSqualaetp
 from utils.file.export import ExportExcel, os
-from utils.conf import CSD_ROOT, conf, XLS_SQUALAETP_FILE
+from utils.conf import CSD_ROOT, conf
 
 logger = logging.getLogger('command')
 
@@ -57,10 +56,7 @@ class Command(BaseCommand):
                 '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
             ]
             try:
-                squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-                xelon_list = list(squalaetp.sheet['numero_de_dossier'])
-
-                queryset = Xelon.objects.filter(numero_de_dossier__in=xelon_list)
+                queryset = Xelon.objects.filter(is_active=True).distinct()
 
                 corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if
                                      field.name not in ['vin', 'radio', 'btel', 'bsi', 'emf']])
