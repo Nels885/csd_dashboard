@@ -28,6 +28,7 @@ class Xelon(models.Model):
     express = models.BooleanField('express', default=False)
     ilot = models.CharField('ilot', max_length=100, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
+    is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
     actions = GenericRelation('Action')
 
