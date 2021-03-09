@@ -9,6 +9,7 @@ urlpatterns = [
     path('<int:pk>/edit/prod/', views.ProductUpdateView.as_view(), name='prod_edit'),
     path('<int:pk>/email/vin/', views.VinEmailFormView.as_view(), name='vin_email'),
     path('<int:pk>/email/prod/', views.ProdEmailFormView.as_view(), name='prod_email'),
+    path('<int:pk>/prog/active/', views.prog_activate, name='prog_activate'),
     path('<int:pk>/detail/', views.detail, name='detail'),
     path('generate/', views.generate, name='generate'),
     path('xelon/', views.xelon_table, name='xelon'),

@@ -18,6 +18,11 @@
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}">Envoi Email PRODUIT</button>
         <hr>
         <button class="log-btn btn btn-secondary btn-block mb-5" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
+        {% if xelon.is_active %}
+            <a class="btn btn-secondary btn-block mb-3" href="#">PROG Actif</a>
+        {% else %}
+                <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer PROG</a>
+        {% endif %}
         <a class="btn btn-success btn-block" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
     </section>
     <section class="col-sm-9">

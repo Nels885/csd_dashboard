@@ -39,6 +39,17 @@ def generate(request):
 
 
 @login_required
+def prog_activate(request, pk):
+    xelon = get_object_or_404(Xelon, pk=pk)
+    xelon.is_active = True
+    xelon.save()
+    content = "Activation Programmation (SWAP)."
+    Action.objects.create(content=content, content_object=xelon)
+    messages.success(request, "Programmation active.")
+    return redirect('squalaetp:generate')
+
+
+@login_required
 def xelon_table(request):
     title = 'Xelon'
     form = CorvetForm()
