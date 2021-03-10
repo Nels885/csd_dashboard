@@ -1,0 +1,111 @@
+<table class="table table-bordered table-striped table-sm">
+
+    {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display thead_title="AFFICHAGE :" %}
+
+    <tbody class="collapse {% if collapse.display %}show{% endif %}" id="collapseDisplay">
+    <tr>
+        <td class="text-dark td-ihm">Réf HW TDB</td>
+        <td>{{ object.electronique_14k }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">Réf HW EMF</td>
+        <td>{{ object.electronique_14l }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">SOFT EMF</td>
+        <td>{{ object.electronique_94l }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">N° série EMF</td>
+        <td>{{ object.electronique_54l }}</td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="table table-bordered table-striped table-sm mt-4">
+
+    {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio thead_title="AUDIO :" %}
+
+    <tbody class="collapse {% if collapse.audio %}show{% endif %}" id="collapseAudio">
+    <tr>
+        <td class="text-dark td-ihm">Réf HW RAD</td>
+        <td>{{ object.electronique_14f }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL RAD</td>
+        <td>{{ object.electronique_94f }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">N° série RAD</td>
+        <td>{{ object.electronique_44f }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">Réf HW NAV</td>
+        <td>{{ object.electronique_14x }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL NAV</td>
+        <td>{{ object.electronique_94x }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">N° série NAV</td>
+        <td>{{ object.electronique_44x }}</td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="table table-bordered table-striped table-sm mt-4">
+
+    {% include 'format/collapse_thead.html' with id="collapseEcu" expanded=collapse.ecu thead_title="CALCULATEUR :" %}
+
+    <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseEcu">
+    <!-- ECU MOTOR -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW ECU moteur</td>
+        <td>{{ object.electronique_14a }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL ECU moteur</td>
+        <td>{{ object.electronique_94a }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">N° série ECU moteur</td>
+        <td>{{ object.electronique_44a }}</td>
+    </tr>
+    <!-- BSI -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW BSI</td>
+        <td>{{ object.electronique_14b }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL BSI</td>
+        <td>{{ object.electronique_94b }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">N° série BSI</td>
+        <td>{{ object.electronique_44b }}</td>
+    </tr>
+    <!-- COM200x -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW COM200x</td>
+        <td>{{ object.electronique_16p }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">N° série COM200x</td>
+        <td>{{ object.electronique_46p }}</td>
+    </tr>
+    <!-- BSM -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW BSM</td>
+        <td>{{ object.electronique_16b }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL BSM</td>
+        <td>{{ object.electronique_96b }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">N° série BSM</td>
+        <td>{{ object.electronique_46b }}</td>
+    </tr>
+    </tbody>
+</table>

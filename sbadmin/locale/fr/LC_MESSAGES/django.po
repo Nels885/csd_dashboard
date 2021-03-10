@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 17:55+0200\n"
+"POT-Creation-Date: 2021-03-03 09:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,26 +27,25 @@ msgid "Data Export"
 msgstr "Exportation de données"
 
 #: import_export/templates/import_export/detail_reman.html:50
-#: import_export/templates/import_export/detail_reman.html:88
+#: import_export/templates/import_export/import_export_old.html:113
+msgid "Csv Import"
+msgstr "Importation CSV"
+
+#: import_export/templates/import_export/detail_reman.html:69
 #: import_export/templates/import_export/import_export_old.html:94
 #: import_export/templates/import_export/import_export_old.html:132
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/templates/import_export/detail_reman.html:69
-#: import_export/templates/import_export/import_export_old.html:113
-msgid "Csv Import"
-msgstr "Importation CSV"
-
-#: import_export/views.py:50 import_export/views.py:61
+#: import_export/views.py:45 import_export/views.py:57
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:159 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:160 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:160 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:161 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -91,65 +90,92 @@ msgstr "Invité"
 msgid "Login"
 msgstr "S'identifier"
 
-#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:27
-#: templates/nav/nav_csd_atelier.html:46 templates/nav/nav_csd_atelier.html:73
-#: templates/nav/nav_csd_atelier.html:91 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:81
+#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:29
+#: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_csd_atelier.html:82
+#: templates/nav/nav_csd_atelier.html:100
+#: templates/nav/nav_csd_atelier.html:118 templates/nav/nav_tools.html:28
+#: templates/nav/nav_tools.html:82
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:54
-#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:86
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:63
+#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:87
 msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
-#: templates/nav/nav_reman.html:54 templates/nav/nav_tools.html:23
+#: templates/nav/nav_reman.html:47 templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:24
-msgid "Current folder"
-msgstr "Dossier en cours"
+#: templates/nav/nav_csd_atelier.html:24 templates/nav/nav_reman.html:23
+#: templates/nav/nav_reman.html:42
+msgid "Current files"
+msgstr "Dossiers en cours"
 
-#: templates/nav/nav_csd_atelier.html:25
+#: templates/nav/nav_csd_atelier.html:26
+msgid "VIN Error files"
+msgstr "Dossiers erreur VIN"
+
+#: templates/nav/nav_csd_atelier.html:27
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:28 templates/nav/nav_reman.html:48
+#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:43
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: templates/nav/nav_csd_atelier.html:29
+#: templates/nav/nav_csd_atelier.html:31
 msgid "Stock Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_csd_atelier.html:48
+#: templates/nav/nav_csd_atelier.html:32
+msgid "Change history"
+msgstr "Historique modifications"
+
+#: templates/nav/nav_csd_atelier.html:52
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:50 templates/nav/nav_csd_atelier.html:74
-#: templates/nav/nav_csd_atelier.html:92
+#: templates/nav/nav_csd_atelier.html:56 templates/nav/nav_tools.html:29
+msgid "Products table"
+msgstr "Tableau produits"
+
+#: templates/nav/nav_csd_atelier.html:59 templates/nav/nav_csd_atelier.html:83
+#: templates/nav/nav_csd_atelier.html:101
+#: templates/nav/nav_csd_atelier.html:119
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
-#: templates/nav/nav_csd_atelier.html:55
+#: templates/nav/nav_csd_atelier.html:64
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:104 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:127
+msgid "supplier links"
+msgstr "Liens fournisseurs"
+
+#: templates/nav/nav_csd_atelier.html:137 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
-#: templates/nav/nav_general.html:5
+#: templates/nav/nav_general.html:6
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: templates/nav/nav_general.html:10 templates/nav/nav_tools.html:56
+#: templates/nav/nav_general.html:14
+msgid "Generate Squalaetp"
+msgstr "Générer Squalaetp"
+
+#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:56
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: templates/nav/nav_general.html:16
+#: templates/nav/nav_general.html:30
+msgid "Other links"
+msgstr "Autres liens"
+
+#: templates/nav/nav_general.html:37
 msgid "Import / Export"
 msgstr ""
 
@@ -157,19 +183,19 @@ msgstr ""
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: templates/nav/nav_reman.html:17 templates/nav/nav_reman.html:45
+#: templates/nav/nav_reman.html:17 templates/nav/nav_reman.html:41
 msgid "Repairs"
 msgstr "Réparations"
 
-#: templates/nav/nav_reman.html:24
+#: templates/nav/nav_reman.html:22
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:27 templates/nav/nav_reman.html:47
-msgid "Current files"
-msgstr "Dossier en cours"
+#: templates/nav/nav_reman.html:44
+msgid "ECU to Dump"
+msgstr "ECU à Dumper"
 
-#: templates/nav/nav_reman.html:46
+#: templates/nav/nav_reman.html:48
 msgid "Batch list"
 msgstr "Liste des lots"
 
@@ -177,41 +203,33 @@ msgstr "Liste des lots"
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: templates/nav/nav_reman.html:56
+#: templates/nav/nav_reman.html:53
 msgid "ECU ref Base"
 msgstr "Base réf. ECU"
 
-#: templates/nav/nav_reman.html:57
-msgid "ECU to Dump"
-msgstr "ECU à Dumper"
-
-#: templates/nav/nav_reman.html:59
+#: templates/nav/nav_reman.html:55
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:69
+#: templates/nav/nav_reman.html:65
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:79
+#: templates/nav/nav_reman.html:75
 msgid "Create Default"
 msgstr "Création panne"
 
-#: templates/nav/nav_reman.html:88
+#: templates/nav/nav_reman.html:84
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:96
+#: templates/nav/nav_reman.html:92
 msgid "check part"
 msgstr "Vérification pièce"
 
 #: templates/nav/nav_tools.html:7
 msgid "Tools"
 msgstr "Outils"
-
-#: templates/nav/nav_tools.html:29
-msgid "Products table"
-msgstr "Tableau produits"
 
 #: templates/nav/nav_tools.html:35
 msgid "Add product"
@@ -221,11 +239,15 @@ msgstr "Ajout produit"
 msgid "Unlock table"
 msgstr "Tableau dever. VIN"
 
-#: templates/nav/nav_tools.html:83
+#: templates/nav/nav_tools.html:60
+msgid "tag Xelon table"
+msgstr "Tableau tag Xelon"
+
+#: templates/nav/nav_tools.html:84
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:88
+#: templates/nav/nav_tools.html:89
 msgid "Software Add"
 msgstr "Ajout logiciel"
 
@@ -321,14 +343,14 @@ msgstr ""
 msgid "Reset my password"
 msgstr "Réinitialiser mon mot de passe"
 
-#: utils/django/validators.py:20
+#: utils/django/validators.py:23
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie "
 "des véhicules PSA"
 
-#: utils/django/validators.py:41
+#: utils/django/validators.py:44
 msgid ""
 "The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part "
 "of PSA vehicles"

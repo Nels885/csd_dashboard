@@ -1,0 +1,13 @@
+Bonjour,
+
+Vous trouverez ci-dessous, le nouveau modèle produit à modifier dans le dossier Xelon {{ model.numero_de_dossier }} :
+{% if prods %}
+    - Ancien Modèle   : {{ prods.old_prod }}
+    - Nouveau Modèle  : {{ prods.new_prod }}
+{% else %}
+    - Ancien Modèle   : {{ model.modele_produit }}
+    - Nouveau Modèle  :
+{% endif %}
+Cordialement
+
+{{ request.user.first_name }} {{ request.user.last_name }}

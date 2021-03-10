@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load i18n %}
+{% load i18n widget_tweaks %}
 
 {% block content %}
 
@@ -11,75 +11,107 @@
                     <!-- Nested Row within Card Body -->
                     <div class="row">
                         <!--<div class="col-lg-5 d-none d-lg-block bg-register-image"></div>-->
-                        <div class="col-lg-12">
-                            <div class="p-5">
-                                <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">{{ title }}</h1>
-                                </div>
+                        <div class="col-lg-12 p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">{{ title }}</h1>
+                            </div>
 
-                                <table class="table table-striped table-condensed">
+                            <table class="table table-striped table-condensed">
 
-                                    <tbody>
-                                    <tr>
-                                        <td class="text-dark">{% trans "Profile picture" %} :</td>
-                                        <td align="center"><img width="200" src="{{ user.userprofile.image.url }}"
-                                                                alt=""></td>
-                                        <td class="align-middle">
+                                <tbody>
+                                <tr>
+                                    <td class="align-middle text-dark">{% trans "Profile picture" %} :</td>
+                                    <td><img width="200" src="{{ user.userprofile.image.url }}"
+                                             alt=""></td>
+                                    <td class="align-middle">
 
-                                            <form class="user" method="post" action="{% url 'dashboard:user_profile' %}"
-                                                  enctype="multipart/form-data">
+                                        <form class="user" method="post" action="{% url 'dashboard:user_profile' %}"
+                                              enctype="multipart/form-data">
 
-                                                {% csrf_token %}
+                                            {% csrf_token %}
 
-                                                {{ form.image }}
+                                            {{ form.image }}
 
-                                                <button type="submit" value="Submit" name="_save">Upload</button>
+                                            <button class="btn btn-success" type="submit" value="Submit" name="btn_avatar">Upload</button>
 
-                                            </form>
+                                        </form>
 
-                                            {% if errors %}
-                                                {% for key, error in errors %}
-                                                    {% autoescape off %}
-                                                        {{ error }}
-                                                    {% endautoescape %}
-                                                {% endfor %}
-                                            {% endif %}
+                                        {% if errors %}
+                                            {% for key, error in errors %}
+                                                {% autoescape off %}
+                                                    {{ error }}
+                                                {% endautoescape %}
+                                            {% endfor %}
+                                        {% endif %}
 
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-dark">{% trans "Username" %} :</td>
-                                        <td colspan="2">{{ user.username }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-dark">{% trans "Last name" %} :</td>
-                                        <td colspan="2">{{ user.last_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-dark">{% trans "First name" %} :</td>
-                                        <td colspan="2">{{ user.first_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-dark">{% trans "Password" %} :</td>
-                                        <td colspan="2">
-                                            <a class="small"
-                                               href="{% url 'password_change' %}">{% trans "Change password" %}</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-dark">{% trans "E-mail address" %} :</td>
-                                        <td colspan="2">{{ user.email }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-dark">{% trans "Username" %} :</td>
+                                    <td colspan="2">{{ user.username }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-dark">{% trans "Last name" %} :</td>
+                                    <td colspan="2">{{ user.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-dark">{% trans "First name" %} :</td>
+                                    <td colspan="2">{{ user.first_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-dark">{% trans "Password" %} :</td>
+                                    <td colspan="2">
+                                        <a class="small"
+                                           href="{% url 'password_change' %}">{% trans "Change password" %}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-dark">{% trans "E-mail address" %} :</td>
+                                    <td colspan="2">{{ user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-dark">auth_token :</td>
+                                    <td class="font-weight-bold" colspan="2">{{ user.auth_token.key }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
 
-                                <hr>
-                                <div class="text-center">
-                                    <a class="col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block"
-                                       href="#" data-toggle="modal" data-target="#logoutModal">
-                                        {% trans "Logout" %}
-                                    </a>
-                                </div>
+                            <h5 class="text-gray-800 mt-5">Configuration affichage :</h5>
+                            <hr>
+
+                            <form class="row" method="post" action="">
+
+                                {% csrf_token %}
+
+                                <section class="col-sm-8">
+                                    {% for field in form_show %}
+                                        <div class="form-group row">
+                                            <label for="{{ field.id_for_label }}" class="col-sm-8 form-check-label">{{ field.label }}</label>
+                                            <div class="col-sm-4">
+                                                {% render_field field class="from-check-input" %}
+                                                <div class="{% if field.errors %} invalid{% endif %}">
+                                                    {% for error in field.errors %}
+                                                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </section>
+                                <section class="col-sm-4">
+                                    <div class="h-100 d-flex">
+                                        <div class="align-self-center mx-auto">
+                                            <button class="btn btn-success" type="submit" value="Submit" name="btn_collapse">{% trans 'Update' %}</button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </form>
+
+                            <hr>
+                            <div class="text-center">
+                                <a class="logout-btn col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block" href="#">
+                                    {% trans "Logout" %}
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<li class="nav-item {% if select == 'pending' %}active{% endif %}">
+    <a class="nav-link {% if select == 'pending' %}active{% endif %}" href="{% url 'squalaetp:xelon' %}?filter=pending">
+        {% trans "Current files" %}
+    </a>
+</li>
+<li class="nav-item {% if select == 'vin-error' %}active{% endif %}">
+    <a class="nav-link {% if select == 'vin-error' %}active{% endif %}" href="{% url 'squalaetp:xelon' %}?filter=vin-error">
+        {% trans "VIN Error files" %}
+    </a>
+</li>
+<li class="nav-item {% if select == 'corvet-error' %}active{% endif %}">
+    <a class="nav-link {% if select == 'corvet-error' %}active{% endif %}" href="{% url 'squalaetp:xelon' %}?filter=corvet-error">
+        {% trans "CORVET Error files" %}
+    </a>
+</li>
+<li class="nav-item {% if not select %}active{% endif %}">
+    <a class="nav-link {% if not select %}active{% endif %}" href="{% url 'squalaetp:xelon' %}">
+        {% trans "Customer files" %}
+    </a>
+</li>
+{#<li class="nav-item {% if select == 'late' %}active{% endif %}">#}
+{#    <a class="nav-link {% if select == 'late' %}active{% endif %}" href="{% url 'dashboard:late_prod' %}">#}
+{#        {% trans "Late products" %}#}
+{#    </a>#}
+{#</li>#}

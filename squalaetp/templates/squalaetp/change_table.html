@@ -1,0 +1,43 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block table_content %}
+
+    <table class="table table-bordered table-sm text-nowrap" id="changeTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <td></td>
+            <th class="all">Produit</th>
+            <th>Action</th>
+            <th>Modifier par</th>
+            <th>Modifier le</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for object in actions %}
+
+            <tr>
+                <td class="bg-white">
+                    <a href="{% url 'squalaetp:detail' pk=object.content_object.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                </td>
+                <td>{{ object.content_object }}</td>
+                <td>{{ object.content|linebreaksbr }}</td>
+                <td>{{ object.modified_by.username }}</td>
+                <td>{{ object.modified_at }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'squalaetp/js/change-tables.js' %}"></script>
+
+{% endblock %}

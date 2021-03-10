@@ -1,156 +1,79 @@
-{% load i18n %}
+{% load i18n widget_tweaks %}
 
+<div class="{% if form.non_field_errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
+    {% for error in form.non_field_errors %}
+        {{ error }}
+    {% endfor %}
+</div>
 <div class="row">
-    <section class="col-sm-6">
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">XELON :</h3>
-            </caption>
-            <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Numéro de dossier</td>
-                <td>{{ xelon.numero_de_dossier }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">V.I.N.</td>
-                <td>{{ xelon.vin }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Modèle produit</td>
-                <td>{{ xelon.modele_produit }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Modèle véhicule</td>
-                <td>{{ xelon.modele_vehicule }}</td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h3 class="text-gray-800">RASPEEDI :</h3>
-            </caption>
-            <tbody>
-            {% for field, value in raspeedi %}
-                {% if value %}
-                    <tr>
-                        <td class="text-dark td-ihm-40">{{ field }}</td>
-                        <td>{{ value }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
+    <section class="col-sm-3">
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_edit' xelon.pk %}">
+            Modification VIN / CORVET
+        </button>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_email' xelon.pk %}">Envoi Email VIN</button>
+        <hr>
+        <button class="bs-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_edit' xelon.pk %}">
+            Modification PRODUIT
+        </button>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}">Envoi Email PRODUIT</button>
+        <hr>
+        <button class="log-btn btn btn-secondary btn-block mb-5" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
+        {% if xelon.is_active %}
+            <a class="btn btn-secondary btn-block mb-3" href="#">PROG Actif</a>
+        {% else %}
+                <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer PROG</a>
+        {% endif %}
+        <a class="btn btn-success btn-block" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
     </section>
-    <section class="col-sm-6">
-        <h3 class="text-gray-800">CORVET :</h3>
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h5 class="text-gray-500">Affichage</h5>
-            </caption>
-            <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Réf HW TDB</td>
-                <td>{{ corvet.electronique_14k }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Réf HW EMF</td>
-                <td>{{ corvet.electronique_14l }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">SOFT EMF</td>
-                <td>{{ corvet.electronique_94l }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">N° série EMF</td>
-                <td>{{ corvet.electronique_54l }}</td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h5 class="text-gray-500">Audio</h5>
-            </caption>
-            <tbody>
-            <tr>
-                <td class="text-dark td-ihm">Réf HW RAD</td>
-                <td>{{ corvet.electronique_14f }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">CAL RAD</td>
-                <td>{{ corvet.electronique_94f }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">N° série RAD</td>
-                <td>{{ corvet.electronique_44f }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">Réf HW NAV</td>
-                <td>{{ corvet.electronique_14x }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">CAL NAV</td>
-                <td>{{ corvet.electronique_94x }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">N° série NAV</td>
-                <td>{{ corvet.electronique_44x }}</td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="table table-bordered table-striped">
-            <caption style="caption-side: top;">
-                <h5 class="text-gray-500">Calculateur</h5>
-            </caption>
-            <tbody>
-            <!-- ECU MOTOR -->
-            <tr>
-                <td class="text-dark td-ihm">Réf HW ECU moteur</td>
-                <td>{{ corvet.electronique_14a }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">CAL ECU moteur</td>
-                <td>{{ corvet.electronique_94a }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">N° série ECU moteur</td>
-                <td>{{ corvet.electronique_44a }}</td>
-            </tr>
-            <!-- BSI -->
-            <tr>
-                <td class="text-dark td-ihm">Réf HW BSI</td>
-                <td>{{ corvet.electronique_14b }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">CAL BSI</td>
-                <td>{{ corvet.electronique_94b }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">N° série BSI</td>
-                <td>{{ corvet.electronique_44b }}</td>
-            </tr>
-            <!-- COM200x -->
-            <tr>
-                <td class="text-dark td-ihm">Réf HW COM200x</td>
-                <td>{{ corvet.electronique_16p }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">N° série COM200x</td>
-                <td>{{ corvet.electronique_46p }}</td>
-            </tr>
-            <!-- BSM -->
-            <tr>
-                <td class="text-dark td-ihm">Réf HW BSM</td>
-                <td>{{ corvet.electronique_16b }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">CAL BSM</td>
-                <td>{{ corvet.electronique_96b }}</td>
-            </tr>
-            <tr>
-                <td class="text-dark td-ihm">N° série BSM</td>
-                <td>{{ corvet.electronique_46b }}</td>
-            </tr>
-            </tbody>
-        </table>
+    <section class="col-sm-9">
+        {% for field in form %}
+            <div class="form-group">
+                <div class="form-group row">
+                    <label for="{{ field.id_for_label }}" class="col-sm-7 col-form-label">{{ field.label }}</label>
+                    <div class="col-sm-5">
+                        {% render_field field class="form-control" %}
+                        <div class="{% if field.errors %} invalid{% endif %}">
+                            {% for error in field.errors %}
+                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </section>
 </div>
+
+{% if xelon.actions.all %}
+
+    <div class="row">
+        <section class="col-sm-12 mt-4">
+            <table class="table table-bordered table-condensed text-nowrap">
+                <caption style="caption-side: top;">
+                    <h3 class="text-gray-800">HISTORIQUE MODIFICATIONS :</h3>
+                </caption>
+                <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Modifié le</th>
+                    <th>Modifié par</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for action in xelon.actions.all %}
+
+                    <tr>
+                        <td>{{ action.content|linebreaksbr }}</td>
+                        <td>{{ action.modified_at }}</td>
+                        <td>{{ action.modified_by }}</td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+{% endif %}

@@ -62,19 +62,3 @@ class ExcelSqualaetp(ExcelFormat):
             vin = row['vin']
             data.append({'vin': vin, 'data': row})
         return data
-
-    def _add_attributs(self, df_corvet, attribut_file):
-        nrows, new_columns = df_corvet.shape[0], {}
-        if attribut_file:
-            df_attributs = pd.read_excel(attribut_file, 1, converters={'cle2': str})
-            for col in df_corvet.columns:
-                col_upper = col.upper()
-                if len(df_attributs[df_attributs.cle2 == col_upper]) != 0:
-                    new_columns[col] = list(df_attributs.loc[df_attributs.cle2 == col_upper].cle1)[0] + "_" + col
-                elif len(df_attributs[df_attributs.libelle == col_upper]) != 0:
-                    new_columns[col] = list(df_attributs.loc[df_attributs.libelle == col_upper].cle1)[0] + "_" + col
-                else:
-                    new_columns[col] = col
-            df_corvet.rename(columns=new_columns, inplace=True)
-            df_corvet.rename(str.lower, axis='columns', inplace=True)
-        return df_corvet, nrows

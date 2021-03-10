@@ -1,3 +1,5 @@
+from django.contrib.messages import get_messages
+
 from dashboard.tests.base import UnitTest, reverse
 
 from reman.models import EcuModel, Batch, Repair, EcuRefBase, EcuType, Default
@@ -13,6 +15,7 @@ class MixinsTest(UnitTest):
         batch = Batch.objects.create(year="C", number=1, quantity=1, created_by=self.user, ecu_ref_base=ref_base)
         Default.objects.create(code='TEST1', description='Ceci est le test 1')
         self.ecuId = ecu.id
+        self.refBaseId = ref_base.id
 
     def test_create_batch_ajax_mixin(self):
         """
@@ -59,6 +62,19 @@ class MixinsTest(UnitTest):
         # Object is not created
         batchs = Batch.objects.all()
         self.assertEqual(batchs.count(), 2)
+
+    def test_Delete_batch_ajax_mixin(self):
+        """
+        Delete object through BSModalDeleteView.
+        """
+        self.add_perms_user(Batch, 'delete_batch')
+        self.login()
+
+        # Request to delete view passes message to the response
+        batch = Batch.objects.first()
+        response = self.client.post(reverse('reman:delete_batch', kwargs={'pk': batch.pk}))
+        messages = get_messages(response.wsgi_request)
+        self.assertEqual(len(messages), 1)
 
     def test_create_repair_ajax_mixin(self):
         """
@@ -148,7 +164,7 @@ class MixinsTest(UnitTest):
 
     def test_update_default_ajax_mixin(self):
         """
-        Update Post throught BSModalCreateView.
+        Update Default throught BSModalUpdateView.
         """
         self.add_perms_user(Default, 'change_default')
         self.login()
@@ -169,9 +185,6 @@ class MixinsTest(UnitTest):
         self.assertEqual(default.code, 'TEST3')
 
     def test_filter_checkout_ajax_mixin(self):
-        """
-        Create Default through BSModalCreateView.
-        """
         self.add_perms_user(Repair, 'close_repair')
         self.login()
 
@@ -201,3 +214,25 @@ class MixinsTest(UnitTest):
 
         # redirection
         self.assertEqual(response.status_code, 302)
+
+    def test_update_ecu_dump_ajax_mixin(self):
+        """
+        Update ECU Dump throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuModel, 'change_ecumodel')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        ecu_model = EcuModel.objects.first()
+        response = self.client.post(
+            reverse('reman:update_ecu_dump', kwargs={'pk': ecu_model.pk}),
+            data={
+                'psa_barcode': ecu_model.psa_barcode,
+                'to_dump': True,
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('reman:ecu_dump_table'), status_code=302)
+        # Object is updated
+        ecu_model = EcuModel.objects.first()
+        self.assertEqual(ecu_model.to_dump, True)

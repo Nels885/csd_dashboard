@@ -8,8 +8,6 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
 
-from dashboard.models import UserProfile
-
 MAX_WAIT = 10
 
 
@@ -34,7 +32,6 @@ class BaseTest:
         admin.save()
         self.user = User.objects.create_user(username='toto', email='toto@bibi.com', password='totopassword')
         self.user.save()
-        UserProfile(user=self.user).save()
         self.redirectUrl = reverse('index')
         self.nextLoginUrl = '/accounts/login/?next='
 
@@ -67,7 +64,9 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
     def setUp(self):
         options = Options()
         options.add_argument('-headless')
-        self.driver = webdriver.Firefox(firefox_options=options)
+        profile = webdriver.FirefoxProfile()
+        profile.set_preference("network.proxy.no_proxies_on", "localhost, 127.0.0.1")
+        self.driver = webdriver.Firefox(firefox_profile=profile, firefox_options=options)
         self.driver.implicitly_wait(30)
         StaticLiveServerTestCase.setUp(self)
         BaseTest.__init__(self)

@@ -1,0 +1,62 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Produits à réparer</th>
+            <th>Produits en retard</th>
+            <th>Produits express</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ products_to_repair }}</td>
+            <td>{{ late_products }}</td>
+            <td>{{ express_products }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <br/>
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Activité</th>
+            <th>Dossier</th>
+            <th>Modèle</th>
+            <th>Date In</th>
+            <th>Délai</th>
+            <th>Tech</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        {% include 'dashboard/format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
+
+        {% include 'dashboard/format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
+
+        {% include 'dashboard/format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
+
+        {% include 'dashboard/format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
+
+        {% include 'dashboard/format/lp_tr_format.html' with prods=etude activity='Etude' %}
+
+        {% include 'dashboard/format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+
+        </tbody>
+    </table>
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}

@@ -2,21 +2,23 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.db.models import Max, Q, Count
 
 from constance import config
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
 from utils.django.urls import reverse, reverse_lazy
 
-from utils.conf import string_to_list
+from utils.conf import string_to_list, DICT_YEAR
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .forms import (
-    AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
-    DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm
+    BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
+    DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
+    EcuDumpModelForm
 )
 
 context = {
@@ -134,11 +136,29 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     def get_initial(self):
         initial = super(BatchCreateView, self).get_initial()
         try:
-            batchs = Batch.objects.exclude(number__gte=900)
+            date = timezone.now()
+            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
             initial['number'] = batchs.aggregate(Max('number'))['number__max'] + 1
         except TypeError:
             initial['number'] = 1
         return initial
+
+
+class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    model = Batch
+    permission_required = 'reman.change_batch'
+    template_name = 'reman/modal/batch_update.html'
+    form_class = BatchForm
+    success_message = _('Success: Batch was updated.')
+    success_url = reverse_lazy('reman:batch_table')
+
+
+class BatchDeleteView(PermissionRequiredMixin, BSModalDeleteView):
+    model = Batch
+    permission_required = 'reman.delete_batch'
+    template_name = 'reman/modal/batch_delete.html'
+    success_message = _('Success: Batch was deleted.')
+    success_url = reverse_lazy('reman:batch_table')
 
 
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
@@ -302,7 +322,8 @@ def batch_table(request):
     table_title = 'Liste des lots REMAN ajoutés'
     repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
     packed = Count('repairs', filter=Q(repairs__checkout=True))
-    batchs = Batch.objects.all().annotate(repaired=repaired, packed=packed)
+    batchs = Batch.objects.all().order_by('-created_at')
+    batchs = batchs.annotate(repaired=repaired, packed=packed, total=Count('repairs'))
     context.update(locals())
     return render(request, 'reman/batch_table.html', context)
 
@@ -348,12 +369,22 @@ def ecu_ref_table(request):
     return render(request, 'reman/ecu_ref_base_table.html', context)
 
 
-@permission_required('reman.view_ecurefbase')
+@login_required()
 def ecu_dump_table(request):
     table_title = 'Dump à réaliser'
     ecus = EcuModel.objects.filter(to_dump=True)
     context.update(locals())
     return render(request, 'reman/ecu_dump_table.html', context)
+
+
+class EcuDumpUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal ECU Dump update """
+    model = EcuModel
+    permission_required = 'reman.change_ecumodel'
+    template_name = 'reman/modal/ecu_dump_update.html'
+    form_class = EcuDumpModelForm
+    success_message = _('Success: Reman ECU dump was updated.')
+    success_url = reverse_lazy('reman:ecu_dump_table')
 
 
 @permission_required('reman.view_default')

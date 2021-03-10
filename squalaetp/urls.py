@@ -5,15 +5,15 @@ from . import views
 app_name = 'squalaetp'
 
 urlpatterns = [
+    path('<int:pk>/edit/vin/', views.VinCorvetUpdateView.as_view(), name='vin_edit'),
+    path('<int:pk>/edit/prod/', views.ProductUpdateView.as_view(), name='prod_edit'),
+    path('<int:pk>/email/vin/', views.VinEmailFormView.as_view(), name='vin_email'),
+    path('<int:pk>/email/prod/', views.ProdEmailFormView.as_view(), name='prod_email'),
+    path('<int:pk>/prog/active/', views.prog_activate, name='prog_activate'),
+    path('<int:pk>/detail/', views.detail, name='detail'),
+    path('generate/', views.generate, name='generate'),
     path('xelon/', views.xelon_table, name='xelon'),
-    path('xelon/<int:file_id>/edit/', views.xelon_edit, name='xelon_edit'),
     path('stock-parts/', views.stock_table, name='stock_parts'),
-    path('corvet/', views.corvet_table, name='corvet'),
-    path('corvet/insert/', views.corvet_insert, name='corvet_insert'),
-    path('corvet/<str:vin>/detail/', views.corvet_detail, name='corvet_detail'),
-    path('corvet/create/', views.CorvetCreateView.as_view(), name='create_corvet'),
-    path('corvet/<int:pk>/edit/', views.SqualaetpUpdateView.as_view(), name='corvet_edit'),
-    path('<int:file_id>/detail/', views.detail, name='detail'),
-    path('log/<str:file>/detail/', views.LogFileView.as_view(), name='log_detail'),
-    path('ajax/xelon/', views.ajax_xelon, name='ajax_xelon'),
+    path('log/<int:pk>/detail/', views.LogFileView.as_view(), name='log_detail'),
+    path('change/', views.change_table, name='change_table')
 ]

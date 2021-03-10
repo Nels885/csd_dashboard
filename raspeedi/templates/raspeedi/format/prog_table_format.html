@@ -1,0 +1,19 @@
+<table class="table table-bordered table-striped table-sm mt-4">
+
+    {% include 'format/collapse_thead.html' with id="collapseProg" expanded=collapse.prog thead_title="PROGRAMMATION :" %}
+
+    <tbody class="collapse {% if collapse.prog %}show{% endif %}" id="collapseProg">
+    <tr>
+        <td class="text-dark td-ihm">Dossier PEEDI</td>
+        <td>{{ object.peedi_path }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">Dump PEEDI</td>
+        <td>{{ object.peedi_dump }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">Dump RENESAS</td>
+        <td>{{ object.renesas_dump }}</td>
+    </tr>
+    </tbody>
+</table>

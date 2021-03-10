@@ -13,6 +13,7 @@ urlpatterns = [
     path('thermal/', views.thermal_chamber, name="thermal"),
     path('thermal/table/', views.ThermalChamberList.as_view(), name="thermal_list"),
     path('thermal/full/', views.ThermalFullScreenView.as_view(), name="thermal_full"),
+    path('thermal/ajax/', views.ajax_temp, name="ajax_temp"),
     path('thermal/<int:pk>/disable/', views.thermal_disable, name="thermal_disable"),
     path('thermal/<int:pk>/delete/', views.ThermalDeleteView.as_view(), name="thermal_delete"),
     path('3d-printer/ultimaker/stream/', views.UltimakerStreamView.as_view(), name="ultimaker_stream")

@@ -17,6 +17,12 @@ MANAGER FORMS
 """
 
 
+class BatchForm(BSModalModelForm):
+    class Meta:
+        model = Batch
+        fields = "__all__"
+
+
 class AddBatchForm(BSModalModelForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
 
@@ -25,7 +31,7 @@ class AddBatchForm(BSModalModelForm):
         fields = ['number', 'quantity', 'start_date', 'end_date', 'ref_reman']
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
-            'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
+            'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3, 'autofocus': ''}),
             'start_date': DatePicker(
                 attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
                 options={'format': 'DD/MM/YYYY'}
@@ -83,7 +89,8 @@ class AddRepairForm(BSModalModelForm):
         model = Repair
         fields = ['identify_number', 'psa_barcode', 'remark']
         widgets = {
-            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}),
+            'identify_number': forms.TextInput(
+                attrs={'class': 'form-control', 'style': 'width: 50%;', 'autofocus': ''}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
 
@@ -97,7 +104,7 @@ class AddRepairForm(BSModalModelForm):
         self.queryset = self.queryset.filter(batch_number__exact=batch_number)
         if self.queryset and self.queryset.filter(repairs__identify_number=data):
             self.add_error("identify_number", "Ce numéro éxiste")
-        elif data[-1] == "0":
+        elif data[-3:] == "000":
             self.add_error("identify_number", "Ce numéro n'est pas autorisé")
         return data
 
@@ -278,6 +285,15 @@ class EcuModelForm(forms.ModelForm):
     class Meta:
         model = EcuModel
         exclude = ['ecu_type']
+
+
+class EcuDumpModelForm(BSModalModelForm):
+    class Meta:
+        model = EcuModel
+        fields = ['psa_barcode', 'to_dump']
+        widgets = {
+            'psa_barcode': forms.TextInput(attrs={"readonly": ""})
+        }
 
 
 class PartEcuModelForm(forms.ModelForm):

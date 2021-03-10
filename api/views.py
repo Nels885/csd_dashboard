@@ -1,29 +1,30 @@
+import requests
+
 from django.contrib.auth.models import User, Group
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status, authentication
-from rest_framework.decorators import api_view
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.views import APIView
+from constance import config
 
-from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST
+from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST, REPAIR_COLUMN_LIST
 from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
-from .serializers import RemanBatchSerializer, RemanCheckOutSerializer
+from .serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
-from squalaetp.models import Xelon, Corvet, Indicator
-from reman.models import Batch, EcuModel
-from utils.data.analysis import IndicatorAnalysis
+from squalaetp.models import Xelon
+from psa.models import Corvet
+from reman.models import Batch, EcuModel, Repair
 
-from utils.data.mqtt import MQTTClass
 from .utils import TokenAuthSupportQueryString
-
-MQTT_CLIENT = MQTTClass()
 
 
 def documentation(request):
     """ View of API Documentation page """
     title = "Documentation API"
     card_title = "Documentation"
+    domain = config.WEBSITE_DOMAIN
     return render(request, 'api/doc.html', locals())
 
 
@@ -68,7 +69,7 @@ class ProgViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows prog list to be viewed """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.all().prefetch_related('corvet')
+    queryset = Xelon.objects.all()
     serializer_class = ProgSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['numero_de_dossier', 'vin', 'modele_produit']
@@ -85,7 +86,7 @@ class ProgViewSet(viewsets.ModelViewSet):
             self.serializer_class = RaspeediSerializer
             queryset = Raspeedi.objects.filter(ref_boitier=ref_case)
         else:
-            queryset = Xelon.objects.all().prefetch_related('corvet')
+            queryset = Xelon.objects.all()
         return queryset
 
 
@@ -93,23 +94,11 @@ class CalViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows prog list to be viewed """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.all().prefetch_related('corvet')
+    queryset = Xelon.objects.all()
     serializer_class = CalSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['numero_de_dossier', 'vin']
     http_method_names = ['get']
-
-
-@api_view(['GET'])
-def charts(request):
-    """
-    API endpoint that allows chart data to be viewed
-    """
-    indicator = IndicatorAnalysis()
-    prod = Indicator.count_prods()
-    data = {"prodLabels": prod.keys(), "prodDefault": prod.values()}
-    data.update(indicator.result())
-    return Response(data, status=status.HTTP_200_OK)
 
 
 class XelonViewSet(viewsets.ModelViewSet):
@@ -119,9 +108,7 @@ class XelonViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
-            folder = self.request.query_params.get('folder', None)
-            if folder and folder == 'pending':
-                self.queryset = self.queryset.exclude(type_de_cloture='Réparé')
+            self._filter(request)
             xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
             serializer = self.serializer_class(xelon["items"], many=True)
             data = {
@@ -133,6 +120,16 @@ class XelonViewSet(viewsets.ModelViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+    def _filter(self, request):
+        query = request.query_params.get('filter', None)
+        if query and query == 'pending':
+            self.queryset = self.queryset.exclude(type_de_cloture__in=['Réparé', 'N/A'])
+        elif query and query == "vin-error":
+            self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
+        elif query and query == "corvet-error":
+            self.queryset = self.queryset.filter(
+                vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
 
 
 class CorvetViewSet(viewsets.ModelViewSet):
@@ -155,10 +152,24 @@ class CorvetViewSet(viewsets.ModelViewSet):
             return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['GET'])
-def thermal_temp(request):
-    data = MQTT_CLIENT.result()
-    return Response(data, status=status.HTTP_200_OK, template_name=None, content_type=None)
+class RepairViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Repair.objects.all()
+    serializer_class = RemanRepairSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            corvet = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
+            serializer = self.serializer_class(corvet["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": corvet["draw"],
+                "recordsTotal": corvet["total"],
+                "recordsFiltered": corvet["count"]
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 class RemanBatchViewSet(viewsets.ModelViewSet):
@@ -181,3 +192,31 @@ class RemanCheckOutViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['psa_barcode', 'ecu_type__ecu_ref_base__reman_reference']
     http_method_names = ['get']
+
+
+class RemanRepairViewSet(viewsets.ModelViewSet):
+    # authentication_classes = (TokenAuthSupportQueryString,)
+    permissions_classes = (permissions.IsAuthenticated,)
+    queryset = Repair.objects.all()
+    serializer_class = RemanRepairSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = [
+        'identify_number', 'batch__batch_number', 'psa_barcode', 'batch__ecu_ref_base__ecu_type__hw_reference'
+    ]
+    http_method_names = ['get']
+
+
+class NacLicenseView(APIView):
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, format=None):
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
+        payload = {
+            "mediaVersion": request.GET.get('update'),
+            "uin": request.GET.get('uin')
+        }
+        response = requests.get(url, params=payload, allow_redirects=True)
+        if response.status_code == 200:
+            return redirect(response.url)
+        return Response({"error": "Request failed"}, status=response.status_code)

@@ -39,7 +39,7 @@
 
     <hr>
 
-    <table class="table table-bordered text-nowrap" id="unlockTable" width="100%" cellspacing="0">
+    <table class="table table-bordered text-nowrap" id="unlockDeleteTable" width="100%" cellspacing="0">
         <thead>
         <tr>
             <th></th>
@@ -57,10 +57,11 @@
             <tr>
                 <td>
                     {% if perms.raspeedi.delete_unlockproduct %}
-                        <a href="#" data-id="{% url 'raspeedi:unlock_delete' prod.pk %}" title="Suppression"
-                           class="delete-thermal btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                        <button data-form-url="{% url 'raspeedi:unlock_delete' prod.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     {% else %}
-                        <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-trash-alt"></i>
                     {% endif %}
                 </td>
                 <td>{{ prod.unlock.numero_de_dossier }}</td>

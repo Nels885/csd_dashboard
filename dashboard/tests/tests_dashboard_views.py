@@ -1,3 +1,5 @@
+import json
+
 from django.utils.translation import ugettext as _
 from django.utils import translation
 
@@ -21,6 +23,12 @@ class DashboardTestCase(UnitTest):
     def test_charts_page(self):
         response = self.client.get(reverse('dashboard:charts'))
         self.assertEqual(response.status_code, 200)
+
+    def test_charts_ajax(self):
+        response = self.client.get(reverse('dashboard:charts_ajax'), format='json')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 7)
 
     def test_late_products(self):
         response = self.client.get(reverse('dashboard:late_prod'))
@@ -96,6 +104,10 @@ class DashboardTestCase(UnitTest):
         for value in [self.vin, self.vin.lower()]:
             response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
+        Xelon.objects.create(numero_de_dossier='A123456780', vin=self.vin, modele_produit='produit',
+                             modele_vehicule='peugeot')
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'ihm'})
+        self.assertEqual(response.status_code, 200)
 
         # Search by Xelon is valid
         for value in ['A123456789', 'a123456789']:
@@ -110,4 +122,22 @@ class DashboardTestCase(UnitTest):
     def test_config_edit_page_is_staff(self):
         self.login('admin')
         response = self.client.get(reverse('dashboard:config_edit'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_supplier_links_page(self):
+        url = reverse('dashboard:supplier_links')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_other_links_page(self):
+        url = reverse('dashboard:other_links')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.login()
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)

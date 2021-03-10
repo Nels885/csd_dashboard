@@ -2,10 +2,12 @@ import re
 import xml.etree.ElementTree as ET
 
 from django.utils.translation import ugettext as _
+from django.utils.timezone import make_aware
 
 from datetime import datetime
 
-from squalaetp.models import Xelon, Corvet
+from squalaetp.models import Xelon
+from psa.models import Corvet
 
 
 def validate_vin(value):
@@ -16,7 +18,8 @@ def validate_vin(value):
     :return:
         Error message if not valid
     """
-    if not re.match(r'^VF[37]\w{14}$', str(value)):
+    # if not re.match(r'^VF[37]\w{14}$', str(value)):
+    if not re.match(r'^[VWZ][FLR0]\w{15}$', str(value)):
         return _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles')
     return None
 
@@ -29,7 +32,7 @@ def validate_nac(value):
     :return:
         UIN and Error message if not valid
     """
-    if re.match(r'^VF[37]\w{14}$', str(value)):
+    if re.match(r'^[VW][FR0]\w{15}$', str(value)):
         try:
             uin = Corvet.objects.get(vin=value).electronique_44x
             if not uin:
@@ -86,7 +89,7 @@ def xml_parser(value):
                     elif child.tag in ["DATE_DEBUT_GARANTIE", "DATE_ENTREE_MONTAGE"]:
                         key, value = "DONNEE_{}".format(child.tag), child.text
                         if value:
-                            data[key.lower()] = datetime.strptime(value, "%d/%m/%Y %H:%M:%S")
+                            data[key.lower()] = make_aware(datetime.strptime(value, "%d/%m/%Y %H:%M:%S"))
                     else:
                         key, value = "DONNEE_{}".format(child.tag), child.text
                         # print("{} : {}".format(key, value))

@@ -1,0 +1,181 @@
+{% load i18n corvet_tags %}
+
+<div class="row">
+    <section class="col-sm-12">
+        <table class="table table-secondary table-sm">
+            <thead>
+            <tr>
+                <th colspan="2" class="text-primary">Caractéristiques du véhicule :</th>
+            </tr>
+            </thead>
+            <tbody class="table-borderless">
+            <tr>
+                <td class="text-dark td-ihm">Ligne de produit</td>
+                <td>
+                    {% if corvet.donnee_marque_commerciale == "0P" %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
+                    {% else %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Date de Début de Garantie</td>
+                <td>{{ corvet.donnee_date_debut_garantie|date:'d/m/Y' }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Numéro de Série du Moteur</td>
+                <td>10{{ corvet.organes_10 }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">P4A</td>
+                <td>{{ corvet.electronique_p4a }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <table class="table table-bordered table-striped table-sm mt-4">
+
+            {% include 'format/collapse_thead.html' with id="collapseGeneral" expanded=user.showcollapse.general thead_title="Informations générales :" %}
+
+            <tbody class="collapse {% if user.showcollapse.general %}show{% endif %}" id="collapseGeneral">
+            <tr>
+                <td class="text-dark td-ihm">GENRE_DE_PRODUIT</td>
+                <td>{{ corvet.donnee_genre_de_produit|get_corvet:"DON_GEN_PROD" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">MARQUE_COMMERCIALE</td>
+                <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">LIGNE_DE_PRODUIT</td>
+                <td>
+                    {% if corvet.donnee_marque_commerciale == "0P" %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
+                    {% else %}
+                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">SILHOUETTE</td>
+                <td>{{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">MOTEUR</td>
+                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">TRANSMISSION</td>
+                <td>{{ corvet.donnee_transmission|get_corvet:"DON_TRA" }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <table class="table table-bordered table-striped table-sm mt-4">
+
+            {% include 'format/collapse_thead.html' with id="collapseMotor" expanded=user.showcollapse.motor thead_title="Alimentation moteur :" %}
+
+            <tbody class="collapse{% if user.showcollapse.motor %}show{% endif %}" id="collapseMotor">
+            <tr>
+                <td class="text-dark td-ihm">MOTEUR</td>
+                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">CARBURANT</td>
+                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 1" }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <table class="table table-bordered table-striped table-sm mt-4">
+
+            {% include 'format/collapse_thead.html' with id="collapseInterior" expanded=user.showcollapse.interior thead_title="Equipement intérieur :" %}
+
+            <tbody class="collapse {% if user.showcollapse.interior %}show{% endif %}" id="collapseInterior">
+            {% if corvet.attribut_dgm %}
+                <tr>
+                    <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
+                    <td>{{ corvet.attribut_dgm|get_corvet:"ATT_DGM" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dhb %}
+                <tr>
+                    <td class="text-dark td-ihm">HAUT PARLEUR</td>
+                    <td>{{ corvet.attribut_dhb|get_corvet:"ATT_DHB" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dhg %}
+                <tr>
+                    <td class="text-dark td-ihm">COMMANDE AUTO-RADIO</td>
+                    <td>{{ corvet.attribut_dhg|get_corvet:"ATT_DHG" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_djy %}
+                <tr>
+                    <td class="text-dark td-ihm">SYSTEME NAVIGATION</td>
+                    <td>{{ corvet.attribut_djy|get_corvet:"ATT_DJY" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dlx %}
+                <tr>
+                    <td class="text-dark td-ihm">AFFICHEUR AV</td>
+                    <td>{{ corvet.attribut_dlx|get_corvet:"ATT_DLX" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dym %}
+                <tr>
+                    <td class="text-dark td-ihm">PRISE AUXILIAIRE PACK AUDIO</td>
+                    <td>{{ corvet.attribut_dym|get_corvet:"ATT_DYM" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dat %}
+                <tr>
+                    <td class="text-dark td-ihm">ANTENNE</td>
+                    <td>{{ corvet.attribut_dat|get_corvet:"ATT_DAT" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dqs %}
+                <tr>
+                    <td class="text-dark td-ihm">WIFI</td>
+                    <td>{% if corvet.attribut_dqs == "01" %}AVEC{% else %}SANS{% endif %} WIFI</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dun %}
+                <tr>
+                    <td class="text-dark td-ihm">AMPLI EQUALISEUR</td>
+                    <td>{% if corvet.attribut_dun == "01" %}AVEC{% else %}SANS{% endif %} AMPLI EQUALISEUR</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td class="text-dark td-ihm">DÉTECTION D’OBSTACLE</td>
+                <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
+            </tr>
+            {% if corvet.attribut_dyr %}
+                {% with bta=corvet.electronique_69h %}
+                    <tr>
+                        <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
+                        <td>{{ corvet.attribut_dyr|get_corvet:"ATT_DYR" }}
+                            {% if bta == "0000000002" %}(BTA MM){% elif bta == "000000000E" %}(BTA Autoliv){% endif %}</td>
+                    </tr>
+                {% endwith %}
+            {% endif %}
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-striped table-sm mt-4">
+
+            {% include 'format/collapse_thead.html' with id="collapseDivers" exp=user.showcollapse.diverse thead_title="Divers :" %}
+
+            <tbody class="collapse {% if user.showcollapse.diverse %}show{% endif %}" id="collapseDivers">
+            <tr>
+                <td class="text-dark td-ihm">COTE CONDUITE/POSTE CONDUITE</td>
+                <td>{{ corvet.attribut_dcx|get_corvet:"ATT_DCX" }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>

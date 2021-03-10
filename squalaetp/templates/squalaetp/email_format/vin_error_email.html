@@ -1,0 +1,15 @@
+Bonjour,
+{% if vins %}
+Vous trouverez ci-dessous, le nouveau VIN à modifier dans le dossier Xelon {{ model.numero_de_dossier }} :
+
+    - Ancien VIN   : {{ vins.old_vin }}
+    - Nouveau VIN  : {{ vins.new_vin }}
+{% else %}
+Nous constatons qu'il y a une erreur dans le VIN du dossier Xelon {{ model.numero_de_dossier }}.
+Pouvez-vous demander au client de vérifier s'il n'y aurait pas une erreur ?
+
+    - VIN actuel   : {{ model.vin }}
+{% endif %}
+Cordialement
+
+{{ request.user.first_name }} {{ request.user.last_name }}

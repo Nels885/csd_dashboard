@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'psa.apps.PsaConfig',
     'ford.apps.FordConfig',
     'renault.apps.RenaultConfig',
+    'vag.apps.VagConfig',
 ]
 
 MIDDLEWARE = [
@@ -230,7 +231,15 @@ CONSTANCE_CONFIG = {
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
-    'TO_LATE_PRODUCTS_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
+    'WEBSITE_DOMAIN': ('', 'Webside domain name'),
+
+    # CSD Repair Options
+    'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error to email list'),
+    'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
+    'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN to email list'),
+    'CORVET_USER': ('', 'CORVET user for RepairLab'),
+    'CORVET_PWD': ('', 'CORVET password for RepairLab'),
+    'SQUALAETP_FILE_LIST': ('squalaetp_cal, squalaetp_ecu', 'Squalaetp file list'),
 
     # REMAN Options
     'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
@@ -268,23 +277,84 @@ CONSTANCE_CONFIG = {
     'KEEP_ALIVE': (45, 'Keep alive', int),
 
     # tools Options
-    'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL')
+    'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL'),
+    'PROXY_HOST_SCRAPING': ('', 'Proxy HOST for Scraping'),
+    'PROXY_PORT_SCRAPING': ('', 'Proxy PORT for Scraping'),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    'General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'TO_LATE_PRODUCTS_EMAIL_LIST'),
-    'REMAN Options': (
+    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
+    '2. CSD Repair Options': (
+        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
+        'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
+    ),
+    '3. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
         'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE', 'DICT_YEAR'
     ),
-    'Network Options': (
+    '4. Tools Options': (
+        'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING', 'PROXY_PORT_SCRAPING'
+    ),
+    '5. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'
     ),
-    'MQTT Options': (
+    '6. MQTT Options': (
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
-    ),
-    'Tools Options': (
-        'PRINTER_STREAM_URL',
     )
+}
+
+###############################
+# DJANGO LOGGER CONFIGURATION
+###############################
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] [{process:d}] [{levelname}] {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'console_verbose': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'mail_admin': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        }
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console_verbose'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'WARNING'),
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['mail_admin'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'command': {
+            'handlers': ['mail_admin', 'console_verbose'],
+            'level': 'ERROR',
+            'propagate': False,
+        }
+    },
 }

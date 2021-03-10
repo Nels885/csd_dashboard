@@ -1,6 +1,6 @@
 from django import forms
 
-FORMAT_CHOICES = [('csv', 'CSV'), ('xls', 'XLS')]
+FORMAT_CHOICES = [('csv', 'CSV'), ('xls', 'XLS'), ('xlsx', 'XLSX')]
 
 
 class ExportCorvetForm(forms.Form):

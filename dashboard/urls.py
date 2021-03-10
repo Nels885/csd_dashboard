@@ -7,6 +7,7 @@ app_name = 'dashboard'
 urlpatterns = [
     path('', views.index, name='index'),
     path('charts/', views.charts, name='charts'),
+    path('charts/ajax/', views.charts_ajax, name='charts_ajax'),
     path('late-prod/', views.late_products, name='late_prod'),
     path('set_language/<str:user_language>/', views.set_language, name="set_lang"),
     path('profile/', views.user_profile, name="user_profile"),
@@ -23,4 +24,6 @@ urlpatterns = [
     path('weblink/create/', views.WebLinkCreateView.as_view(), name='create_weblink'),
     path('weblink/<int:pk>/update/', views.WebLinkUpdateView.as_view(), name='update_weblink'),
     path('weblink/<int:pk>/delete/', views.WebLinkDeleteView.as_view(), name='delete_weblink'),
+    path('weblink/parts-suppliers/', views.supplier_links, name='supplier_links'),
+    path('weblink/other/', views.other_links, name='other_links')
 ]

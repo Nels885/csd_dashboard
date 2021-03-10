@@ -6,9 +6,9 @@ from io import StringIO
 
 class RaspeediCommandTestCase(TestCase):
 
-    def test_message_of_raspeedi_commmand_delete(self):
+    def test_message_of_importraspeedi_commmand_delete(self):
         out = StringIO()
-        call_command('raspeedi', '--delete', stdout=out)
+        call_command('loadraspeedi', '--delete', stdout=out)
         self.assertIn(
             "Suppression des données de la table Raspeedi terminée!",
             out.getvalue()

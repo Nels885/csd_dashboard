@@ -3,8 +3,6 @@ from functools import reduce
 from model_utils import Choices
 from django.db.models import Q
 
-from squalaetp.models import Xelon, Corvet
-
 XELON_COLUMN_LIST = [
     'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture', 'nom_technicien'
 ]
@@ -12,6 +10,10 @@ XELON_COLUMN_LIST = [
 CORVET_COLUMN_LIST = [
     'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
     'electronique_94a', 'electronique_14b', 'electronique_94b'
+]
+
+REPAIR_COLUMN_LIST = [
+    'identify_number', 'batch', 'batch.ecu_ref_base.ecu_type.technical_data', 'batch.ecu_ref_base.ecu_type.supplier_oe'
 ]
 
 

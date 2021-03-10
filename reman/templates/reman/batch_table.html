@@ -19,6 +19,8 @@
     <table class="table table-bordered text-nowrap" id="batchTable" width="100%" cellspacing="0">
         <thead>
         <tr>
+            <th></th>
+            <th></th>
             <th>Numéro de lot</th>
             <th>Quantité</th>
             <th>Réf. REMAN</th>
@@ -44,12 +46,26 @@
             {% with ecus=batch.ecu_ref_base.ecu_type.ecumodel_set.all %}
 
                 <tr>
+                    <td>
+                        {% if perms.reman.change_batch %}
+                            <button data-form-url="{% url 'reman:update_batch' batch.id %}" class="bs-modal btn btn-success btn-circle btn-sm" title="Modification dossier" ><i class="fas fa-edit"></i></button>
+                        {% else %}
+                            <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if perms.reman.delete_batch and not batch.total %}
+                            <button data-form-url="{% url 'reman:delete_batch' batch.id %}" class="bs-modal btn btn-danger btn-circle btn-sm" title="Suppression"><i class="fas fa-trash-alt"></i></button>
+                        {% else %}
+                            <i class="btn btn-dark btn-circle btn-sm fas fa-trash-alt"></i>
+                        {% endif %}
+                    </td>
                     <td>{{ batch }}</td>
                     <td>{{ batch.quantity }}</td>
                     <td>{{ batch.ecu_ref_base.reman_reference }}</td>
                     <td>{{ batch.repaired }}</td>
                     <td>{{ batch.packed }}</td>
-                    <td>{{ batch.repairs.count }}</td>
+                    <td>{{ batch.total }}</td>
                     <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
                     <td>

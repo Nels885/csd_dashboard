@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
@@ -8,7 +9,7 @@ from utils.conf import CSV_EXTRACTION_FILE
 
 from ._csv_extraction import CsvSparePart
 
-import logging as log
+logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):
@@ -48,7 +49,7 @@ class Command(BaseCommand):
             nb_part_before = SparePart.objects.count()
             nb_part_update = 0
             for row in extraction.read():
-                log.info(row)
+                logger.info(row)
                 code_produit = row.pop("code_produit")
                 try:
                     if "REMAN PSA" in row['code_zone']:
@@ -58,9 +59,9 @@ class Command(BaseCommand):
                         if not created:
                             nb_part_update += 1
                 except IntegrityError as err:
-                    print("IntegrityError: {} - {}".format(code_produit, err))
+                    logger.error(f"[SPAREPARTS_CMD] IntegrityError: {code_produit} - {err}")
                 except SparePart.MultipleObjectsReturned as err:
-                    print("MultipleObjectsReturned: {} - {}".format(code_produit, err))
+                    logger.error(f"[SPAREPARTS_CMD] MultipleObjectsReturned: {code_produit} - {err}")
             nb_part_after = SparePart.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(

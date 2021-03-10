@@ -1,0 +1,27 @@
+{% load i18n corvet_tags %}
+
+<div class="row">
+    <section class="col-sm-6">
+
+        {% if corvet.btel %}
+            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.btel %}
+        {% else %}
+            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.radio %}
+        {% endif %}
+
+        {% include 'raspeedi/format/prog_table_format.html' with object=prog %}
+
+        {% include 'psa/format/emf_table_format.html' with object=corvet.emf %}
+
+        {% include 'psa/format/cmm_table_format.html' with object=cmm %}
+
+        {% include 'psa/format/bsi_table_format.html' with object=corvet.bsi %}
+
+    </section>
+    <section class="col-sm-6">
+        <h3 class="text-gray-800">CORVET :</h3>
+
+        {% include 'psa/format/corvet_table_format.html' with object=corvet %}
+
+    </section>
+</div>

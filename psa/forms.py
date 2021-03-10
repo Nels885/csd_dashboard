@@ -1,17 +1,15 @@
 from django import forms
+from django.utils.translation import ugettext as _
+from bootstrap_modal_forms.forms import BSModalModelForm
 
-from utils.django.validators import validate_nac
+from utils.django.validators import validate_vin, validate_nac, xml_parser
+from .models import Corvet, Firmware
 
 
 class NacLicenseForm(forms.Form):
-    SOFTWARES = [
-        ('001315031548167166', '7-3-1-r1_WAVE1'), ('001315031579159852', '21-08-25-12_NAC-r0_WAVE2'),
-        ('001315031542612351', '31-09-46-62_NAC-r0_WAVE3'),
-    ]
-
-    software = forms.ChoiceField(
-        label='Version Software', required=True, choices=SOFTWARES,
-        widget=forms.Select(attrs={'class': 'custom-select form-control mx-sm-3 mb-2'})
+    software = forms.ModelChoiceField(
+        queryset=Firmware.objects.filter(is_active=True), label='Version Software',
+        required=True, widget=forms.Select(attrs={'class': 'custom-select form-control mx-sm-3 mb-2'})
     )
     uin = forms.CharField(
         label='V.I.N. ou UIN', required=True,
@@ -27,15 +25,60 @@ class NacLicenseForm(forms.Form):
 
 
 class NacUpdateForm(forms.Form):
-    SOFTWARES = [('001315031548167166', '7-3-1-r1_WAVE1'), ('001315031579159852', '21-08-25-12_NAC-r0_WAVE2'),
-                 ('001315031542612351', '31-09-46-62_NAC-r0_WAVE3'),
-                 ('001315031576311163', '21-08-24-12_NAC-r1_WAVE2'), ('001315031563976162', '21-08-22-32_NAC-r1_WAVE2'),
-                 ('001315031560945905', '21-07-67-32_NAC-r0_WAVE2'), ('001315031551279802', '21-07-67-32_NAC-r0_WAVE2'),
-                 ('001315031524207679', '21-07-16-32_NAC-r0_WAVE2'), ('001315031511946541', '21-06-47-34_NAC-r0_WAVE2'),
-                 ('001315031487843893', '21-05-68-24_NAC-r0_WAVE2'), ('001315031486085746', '21-04-62-54-R0_WAVE2'),
-                 ('001315031475762081', '7-3-1-R0_WAVE1')]
-
-    software = forms.ChoiceField(
-        label='Version Software', required=True, choices=SOFTWARES,
+    software = forms.ModelChoiceField(
+        queryset=Firmware.objects.all(), label='Version Software', required=True,
         widget=forms.Select(attrs={'class': 'custom-select form-control mx-sm-3 mb-2'})
     )
+
+
+class CorvetForm(forms.ModelForm):
+    xml_data = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _("Data in XML format available on the RepairNAV site during CORVET extraction..."),
+                'rows': 10,
+            }
+        ),
+        required=True
+    )
+    vin = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': _("Enter the VIN number"), 'autofocus': ''}
+        )
+    )
+
+    class Meta:
+        model = Corvet
+        fields = "__all__"
+
+    def clean_vin(self):
+        data = self.cleaned_data['vin']
+        message = validate_vin(data)
+        if message:
+            raise forms.ValidationError(
+                _(message),
+                code='invalid',
+                params={'value': data},
+            )
+        return data
+
+    def clean_xml_data(self):
+        xml_data = self.cleaned_data['xml_data']
+        data = xml_parser(xml_data)
+        vin = self.cleaned_data.get("vin")
+        if data and data['vin'] == vin:
+            for field, value in data.items():
+                self.cleaned_data[field] = value
+        elif data and data['vin'] != vin:
+            self.add_error('xml_data', _('XML data does not match VIN'))
+        else:
+            self.add_error('xml_data', _('Invalid XML data'))
+        return xml_data
+
+
+class CorvetModalForm(CorvetForm, BSModalModelForm):
+
+    class Meta(CorvetForm):
+        model = Corvet
+        fields = '__all__'

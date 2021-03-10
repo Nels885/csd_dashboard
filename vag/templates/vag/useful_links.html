@@ -1,0 +1,15 @@
+{% extends 'dashboard/weblink.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'vag/tab_select.html' with select='links' %}
+
+        </ul>
+    </div>
+
+{% endblock %}

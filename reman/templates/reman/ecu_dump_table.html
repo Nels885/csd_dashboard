@@ -36,8 +36,9 @@
             <tr>
                 <td class="bg-white">
                     {% if perms.reman.change_ecumodel %}
-                        <a href="#" title="Modification dossier" class="btn btn-success btn-circle btn-sm"><i
-                                class="fas fa-edit"></i></a>
+                        <button title="Modification" class="bs-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:update_ecu_dump' ecu.pk %}">
+                            <i class="fas fa-edit"></i>
+                        </button>
                     {% else %}
                         <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                     {% endif %}

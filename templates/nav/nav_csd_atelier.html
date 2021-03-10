@@ -21,12 +21,15 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
                         <a class="collapse-item"
-                           href="{% url 'squalaetp:xelon' %}?filter=pending">{% trans "Current folder" %}</a>
+                           href="{% url 'squalaetp:xelon' %}?filter=pending">{% trans "Current files" %}</a>
+                        <a class="collapse-item"
+                           href="{% url 'squalaetp:xelon' %}?filter=vin-error">{% trans "VIN Error files" %}</a>
                         <a class="collapse-item" href="{% url 'dashboard:late_prod' %}">{% trans "Late products" %}</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                         <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
                         <a class="collapse-item" href="{% url 'squalaetp:stock_parts' %}">{% trans "Stock Parts" %}</a>
+                        <a class="collapse-item" href="{% url 'squalaetp:change_table' %}">{% trans "Change history" %}</a>
                     </div>
                 </div>
             </li>
@@ -44,12 +47,18 @@
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                        {% if perms.squalaetp %}
+
+                        {% if perms.psa.view_corvet %}
                             <a class="collapse-item" href="{% url 'psa:corvet' %}">{% trans "Corvet table" %}</a>
                         {% endif %}
+
+                        {% if perms.psa.view_product %}
+                            <a class="collapse-item" href="{% url 'psa:product' %}">{% trans "Products table" %}</a>
+                        {% endif %}
+
                         <a class="collapse-item" href="{% url 'psa:useful_links' %}">{% trans "Tools & Links" %}</a>
 
-                        {% if perms.squalaetp.add_corvet %}
+                        {% if perms.psa.add_corvet %}
                             <div class="collapse-divider"></div>
                             <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                             <a class="corvet-btn collapse-item" href="#">{% trans "Add Corvet" %}</a>
@@ -95,6 +104,30 @@
             </li>
         {% endwith %}
 
+        <!-- Nav Item - Info VAG Settings Menu -->
+        {% with name="VAG" icon="fa-info-circle" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>Info {{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                        <a class="collapse-item" href="{% url 'vag:useful_links' %}">{% trans "Tools & Links" %}</a>
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:supplier_links' %}">
+                <i class="fas fa-fw fa-link"></i><span>{% trans "supplier links" %}</span>
+            </a>
+        </li>
+
     {% endif %}
 
     {% if perms.raspeedi.view_unlockproduct %}
@@ -102,7 +135,6 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'raspeedi:unlock_prods' %}">
                 <i class="fas fa-fw fa-unlock"></i><span>{% trans "Unlock VIN" %}</span>
-
             </a>
         </li>
 

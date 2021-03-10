@@ -45,6 +45,13 @@ class BaseFormat:
         self.sheet.rename(columns=new_columns, inplace=True)
         self.columns = list(self.sheet.columns)
 
+    def _columns_rename(self, col_dict):
+        new_columns = {}
+        for i, column in enumerate(self.columns):
+            new_columns[column] = list(col_dict.values())[i]
+        self.sheet.rename(columns=new_columns, inplace=True)
+        self.columns = list(self.sheet.columns)
+
 
 class ExcelFormat(BaseFormat):
     """## Base class for formatting Excel files ##"""
@@ -93,35 +100,56 @@ class ExcelFormat(BaseFormat):
         :return:
             Temporary Excel file in the 'tmp' directory
         """
-        file1 = io.open(file, 'r', encoding='latin3')
-        data = file1.readlines()
+        try:
+            file1 = io.open(file, 'r', encoding='latin-1')
+            data = file1.readlines()
 
-        # Creating a workbook object
-        xldoc = Workbook()
-        # Adding a sheet to the workbook object
-        sheet = xldoc.add_sheet("Sheet1", cell_overwrite_ok=True)
-        # Iterating and saving the data to sheet
-        for i, row in enumerate(data):
-            # Two things are done here
-            # Removeing the '\n' which comes while reading the file using io.open
-            # Getting the values after splitting using '\t'
-            for j, val in enumerate(row.replace('\n', '').split('\t')):
-                sheet.write(i, j, val)
+            # Creating a workbook object
+            xldoc = Workbook()
+            # Adding a sheet to the workbook object
+            sheet = xldoc.add_sheet("Sheet1", cell_overwrite_ok=True)
+            # Iterating and saving the data to sheet
+            for i, row in enumerate(data):
+                # Two things are done here
+                # Removeing the '\n' which comes while reading the file using io.open
+                # Getting the values after splitting using '\t'
+                for j, val in enumerate(row.replace('\n', '').split('\t')):
+                    sheet.write(i, j, val)
 
-        # Saving the file as an excel file
-        xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
-        df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
-                           dtype=dtype, usecols=usecols)
-        dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
-        dataframe.reset_index(drop=True, inplace=True)
-        # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
-        return dataframe
+            # Saving the file as an excel file
+            xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
+            df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
+                               dtype=dtype, usecols=usecols)
+            dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
+            dataframe.reset_index(drop=True, inplace=True)
+            # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
+            return dataframe
+        except UnicodeDecodeError as err:
+            print(f"UnicodeDecodeError: {err} - file : {file}")
+            return pd.DataFrame()
+
+    @staticmethod
+    def _add_attributs(df_corvet, attribut_file):
+        nrows, new_columns = df_corvet.shape[0], {}
+        if attribut_file:
+            df_attributs = pd.read_excel(attribut_file, 1, converters={'cle2': str})
+            for col in df_corvet.columns:
+                col_upper = col.upper()
+                if len(df_attributs[df_attributs.cle2 == col_upper]) != 0:
+                    new_columns[col] = list(df_attributs.loc[df_attributs.cle2 == col_upper].cle1)[0] + "_" + col
+                elif len(df_attributs[df_attributs.libelle == col_upper]) != 0:
+                    new_columns[col] = list(df_attributs.loc[df_attributs.libelle == col_upper].cle1)[0] + "_" + col
+                else:
+                    new_columns[col] = col
+            df_corvet.rename(columns=new_columns, inplace=True)
+            df_corvet.rename(str.lower, axis='columns', inplace=True)
+        return df_corvet, nrows
 
 
 class CsvFormat(BaseFormat):
     """## Base class for formatting CSV files ##"""
 
-    def __init__(self, file, columns, sep=';', encoding='latin-1', dtype=None):
+    def __init__(self, file, columns, sep=';', encoding='latin-1', skiprows=None, dtype=None, usecols=None):
         """
         Initialize CsvFormat class
         :param file:
@@ -130,7 +158,7 @@ class CsvFormat(BaseFormat):
             Number of the last column to be processed
         """
         self.basename = os.path.basename(file[:file.find('.')])
-        df = pd.read_csv(file, sep=sep, encoding=encoding, dtype=dtype)
+        df = pd.read_csv(file, sep=sep, encoding=encoding, skiprows=skiprows, dtype=dtype, usecols=usecols)
         super(CsvFormat, self).__init__(df, columns)
 
     def read_all(self):

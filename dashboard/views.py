@@ -12,6 +12,7 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.db.models import Q
+from django.http import JsonResponse
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -21,12 +22,15 @@ from django.utils.encoding import force_bytes, force_text
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
-from utils.data.analysis import ProductAnalysis
+from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
 from utils.django.tokens import account_activation_token
-from .models import Post, UserProfile, WebLink
-from .forms import UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
+from psa.models import Corvet
+from .models import Post, UserProfile, WebLink
+from .forms import (
+    UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm
+)
 
 
 def index(request):
@@ -44,18 +48,24 @@ def charts(request):
     return render(request, 'dashboard/charts.html', locals())
 
 
+def charts_ajax(request):
+    """
+    API endpoint that allows chart data to be viewed
+    """
+    indicator = IndicatorAnalysis()
+    prod = Indicator.count_prods()
+    data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
+    data.update(indicator.new_result())
+    return JsonResponse(data)
+
+
 @login_required
 def late_products(request):
     """ View of Late products page """
-    title = _("Late Products")
+    data = {'title': _("Late Products")}
     prods = ProductAnalysis()
-    prods = prods.late_products().order_by('-delai_au_en_jours_ouvres')
-    psa = prods.filter(ilot='PSA')
-    clarion = prods.filter(ilot='CLARION')
-    labo_qual = prods.filter(ilot='LaboQual')
-    ilot_autre = prods.filter(ilot='ILOTAUTRE')
-    defaut = prods.filter(ilot='DEFAUT')
-    return render(request, 'dashboard/late_products/late_products.html', locals())
+    data.update(prods.late_products())
+    return render(request, 'dashboard/late_products/late_products.html', data)
 
 
 @login_required
@@ -63,19 +73,23 @@ def search(request):
     """ View of search page """
     query = request.GET.get('query')
     if query:
-        query = query.upper()
+        query = query.upper().strip()
         # select = request.GET.get('select')
         files = Xelon.objects.filter(Q(numero_de_dossier=query) |
                                      Q(vin=query) |
-                                     Q(corvet__electronique_44l=query) |
-                                     Q(corvet__electronique_44x=query) |
-                                     Q(corvet__electronique_44a=query))
+                                     Q(corvet__electronique_44l__contains=query) |
+                                     Q(corvet__electronique_44x__contains=query) |
+                                     Q(corvet__electronique_44a__contains=query))
         if files and len(files) > 1:
             title = _('Search')
             table_title = _('Xelon files')
             return render(request, 'squalaetp/xelon_table.html', locals())
         elif files:
-            return redirect('squalaetp:detail', file_id=files.first().id)
+            return redirect('squalaetp:detail', pk=files.first().pk)
+        else:
+            corvets = Corvet.objects.filter(vin=query)
+            if corvets:
+                return redirect('psa:corvet_detail', vin=corvets.first().vin)
         messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
@@ -106,13 +120,19 @@ def user_profile(request):
     title = _("User Profile")
     profil = get_object_or_404(UserProfile, user=request.user.id)
     if request.method == "POST":
-        form = UserProfileForm(request.POST, request.FILES, instance=profil, error_class=ParaErrorList)
-        if form.is_valid():
-            form.save()
-            messages.success(request, _('Success: Modification done!'))
+        if "btn_avatar" in request.POST:
+            form = UserProfileForm(request.POST, request.FILES, instance=profil, error_class=ParaErrorList)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _('Success: Update profile picture!'))
+        elif "btn_collapse":
+            form = ShowCollapseForm(request.POST, instance=request.user.showcollapse, error_class=ParaErrorList)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _('Success: Update display configuration!'))
         errors = form.errors.items()
-    else:
-        form = UserProfileForm(error_class=ParaErrorList)
+    form = UserProfileForm(error_class=ParaErrorList)
+    form_show = ShowCollapseForm(instance=request.user.showcollapse, error_class=ParaErrorList)
     return render(request, 'dashboard/profile.html', locals())
 
 
@@ -263,3 +283,19 @@ class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+@login_required
+def supplier_links(request):
+    title = "CSD Atelier"
+    card_title = "Liens fournisseurs de pièces détachées"
+    web_links = WebLink.objects.filter(type="PARTS_SUPPLIERS")
+    return render(request, 'dashboard/weblink.html', locals())
+
+
+@login_required
+def other_links(request):
+    title = "CSD Atelier"
+    card_title = "Autres liens"
+    web_links = WebLink.objects.filter(type="AUTRES")
+    return render(request, 'dashboard/weblink.html', locals())

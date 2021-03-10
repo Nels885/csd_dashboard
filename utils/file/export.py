@@ -1,32 +1,53 @@
+import re
 import csv
 import xlwt
+import openpyxl
+from openpyxl.styles import Font
 import datetime
 from . import os
 import shutil
 import logging
+from html.parser import HTMLParser
 
 from django.shortcuts import HttpResponse
+# from django.utils.safestring import SafeString
 
-from squalaetp.models import Corvet
+from psa.models import Corvet
 from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
 
 # Get an instance of a logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('command')
+
+# # create console handler and set level to debug
+# ch = logging.StreamHandler()
+#
+# # create formatter
+# formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
+#
+# # add formatter to ch
+# ch.setFormatter(formatter)
+#
+# # add ch to logger
+# logger.addHandler(ch)
 
 
-def xml_corvet_file(data, vin):
+class HTMLFilter(HTMLParser):
+    text = ""
+
+    def handle_data(self, data):
+        self.text += data
+
+
+def xml_corvet_file(instance, data, vin):
     try:
-        xelons = Corvet.objects.get(vin=vin).xelons.all()
-
-        for queryset in xelons:
-            xelon_nb = queryset.numero_de_dossier
-            os.makedirs(XML_PATH, exist_ok=True)
-            file = os.path.join(XML_PATH, xelon_nb + ".xml")
-            if not os.path.isfile(file):
-                with open(file, "w", encoding='utf-8') as f:
-                    f.write(str(data))
-            else:
-                logger.warning("{} File exists.".format(xelon_nb))
+        xelon_nb = instance.numero_de_dossier
+        os.makedirs(XML_PATH, exist_ok=True)
+        file = os.path.join(XML_PATH, xelon_nb + ".xml")
+        if not os.path.isfile(file):
+            with open(file, "w", encoding='utf-8') as f:
+                f.write(str(data))
+        else:
+            logger.warning("{} File exists.".format(xelon_nb))
     except Corvet.DoesNotExist:
         logger.warning("Xelon number not found")
 
@@ -74,11 +95,12 @@ calibre = Calibre(TAG_PATH, TAG_LOG_PATH)
 class ExportExcel:
     """ class for exporting data in CSV format """
 
-    def __init__(self, queryset, filename, header, values_list=None, excel_type="csv"):
+    def __init__(self, queryset, filename, header, values_list=None, excel_type="csv", novalue="#"):
         self.date = datetime.datetime.now()
         self.queryset = queryset
         self.filename = filename
         self.header = header
+        self.noValue = novalue
         if values_list:
             self.valueSet = self.queryset.values_list(*values_list).distinct()
         else:
@@ -89,31 +111,45 @@ class ExportExcel:
         """ Creation http response """
         if self.excelType == "csv":
             response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="{}_{}.csv"'.format(
-                self.filename, self.date.strftime("%y-%m-%d_%H-%M")
+            response['Content-Disposition'] = 'attachment; filename="{}_{}.{}"'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M"), self.excelType
             )
             self._csv_writer(response)
+        elif self.excelType == "xlsx":
+            response = HttpResponse(content_type='application/ms_excel')
+            response['Content-Disposition'] = 'attachment; filename="{}_{}.{}"'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M"), self.excelType
+            )
+            self._xlsx_writer(response)
         else:
             response = HttpResponse(content_type='application/ms-excel')
-            response['Content-Disposition'] = 'attachement; filename="{}_{}.xls'.format(
-                self.filename, self.date.strftime("%y-%m-%d_%H-%M")
+            response['Content-Disposition'] = 'attachement; filename="{}_{}.{}'.format(
+                self.filename, self.date.strftime("%y-%m-%d_%H-%M"), self.excelType
             )
             self._xls_writer(response)
         return response
 
     def file(self, path, copy=True):
-        """ Creation file """
+        """
+        Creation file
+        :return True if the file is read-only
+        """
         file = os.path.join(path, "{}.{}".format(self.filename, self.excelType))
         if copy:
             self._file_yesterday(path, file)
         try:
-            with open(file, 'w', newline='', encoding='utf-8') as f:
-                if self.excelType == "csv":
-                    self._csv_writer(f)
-                else:
-                    self._xls_writer(f)
+            if self.excelType == "csv":
+                with open(file, 'w+', newline='', encoding='utf-8') as f:
+                    if self.excelType == "csv":
+                        self._csv_writer(f)
+            elif self.excelType == "xlsx":
+                self._xlsx_writer(file)
+            else:
+                self._xls_writer(file)
+            return False
         except OSError:
-            logger.warning('File is read-only.')
+            logger.warning('{} File is read-only.'.format(file))
+        return True
 
     def _csv_writer(self, response):
         """ Formatting data in CSV format """
@@ -121,13 +157,14 @@ class ExportExcel:
         writer.writerow(self.header)
 
         for i, query in enumerate(self.valueSet):
-            query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+            query = tuple([self._html_to_string(_, r'[;,]') if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
             writer.writerow(query)
 
     def _xls_writer(self, response):
         """ Formatting data in Excel format """
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('base')
+        xldoc = xlwt.Workbook(encoding='utf-8')
+        sheet = xldoc.add_sheet('Feuille 1')
 
         # Sheet header, first row
         row_num = 0
@@ -136,16 +173,48 @@ class ExportExcel:
         font_style.font.bold = True
 
         for col_num in range(len(self.header)):
-            ws.write(row_num, col_num, self.header[col_num], font_style)
+            sheet.write(row_num, col_num, self.header[col_num], font_style)
 
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
 
         for i, query in enumerate(self.valueSet):
-            query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
             row_num += 1
             for col_num in range(len(query)):
-                ws.write(row_num, col_num, query[col_num], font_style)
+                sheet.write(row_num, col_num, query[col_num], font_style)
+
+        xldoc.save(response)
+        return response
+
+    def _xlsx_writer(self, response):
+        """ Formatting data in Excel 2010 format """
+        wb = openpyxl.Workbook()
+
+        # Get active worksheet/tab
+        ws = wb.active
+        ws.title = 'Feuille 1'
+
+        # Sheet header, first row
+        row_num = 1
+
+        # Assign the titles for each cell of the header
+        for col_num, column_title in enumerate(self.header, 1):
+            cell = ws.cell(row=row_num, column=col_num)
+            cell.font = Font(bold=True)
+            cell.value = column_title
+
+        # Iterate though all values
+        for query in self.valueSet:
+            row_num += 1
+            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
+
+            # Assign the data  for each cell of the row
+            for col_num, cell_value in enumerate(query, 1):
+                cell = ws.cell(row=row_num, column=col_num)
+                cell.value = cell_value
 
         wb.save(response)
         return response
@@ -156,4 +225,18 @@ class ExportExcel:
         if os.path.isfile(file):
             file_date = datetime.datetime.fromtimestamp(os.path.getmtime(file)).date()
             if file_date >= yesterday:
-                shutil.copyfile(file, os.path.join(path, "{}J-1.csv".format(self.filename)))
+                shutil.copyfile(file, os.path.join(path, "{}J-1.{}".format(self.filename, self.excelType)))
+
+    def _query_format(self, query):
+        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+        query = tuple([self.noValue if not value else value for value in query])
+        return query
+
+    @staticmethod
+    def _html_to_string(value, re_sub=None):
+        f = HTMLFilter()
+        f.feed(value)
+        if re_sub:
+            return re.sub(re_sub, ' ', f.text)
+        else:
+            return f.text

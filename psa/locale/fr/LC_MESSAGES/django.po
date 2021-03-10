@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 17:55+0200\n"
+"POT-Creation-Date: 2021-03-03 09:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,41 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: psa/forms.py:39
+msgid ""
+"Data in XML format available on the RepairNAV site during CORVET "
+"extraction..."
+msgstr ""
+
+#: psa/forms.py:46
+msgid "Enter the VIN number"
+msgstr ""
+
+#: psa/forms.py:72
+msgid "XML data does not match VIN"
+msgstr ""
+
+#: psa/forms.py:74 psa/tests/tests_corvet_views.py:66
+msgid "Invalid XML data"
+msgstr ""
+
+#: psa/templates/psa/corvet_insert.html:40
+#: psa/templates/psa/modal/corvet_form.html:53
+msgid "Submit"
+msgstr ""
+
+#: psa/templates/psa/detail/detail.html:16
+msgid "Raw Corvet data"
+msgstr "Données Corvet brute"
+
+#: psa/templates/psa/detail/detail.html:23
+msgid "VIN Barcode"
+msgstr "code barre VIN"
+
+#: psa/templates/psa/modal/corvet_form.html:52
+msgid "Cancel"
+msgstr ""
 
 #: psa/templates/psa/nac_tools.html:33 psa/templates/psa/nac_tools.html:54
 msgid "Download"
@@ -29,3 +64,33 @@ msgstr "Liens utiles"
 #: psa/templates/psa/tab_select.html:10
 msgid "NAC tools"
 msgstr "Outils NAC"
+
+#: psa/tests/tests_corvet_views.py:39 psa/tests/tests_psa_views.py:30
+#: psa/tests/tests_psa_views.py:45
+msgid "This field is required."
+msgstr "Ce champ est requis."
+
+#: psa/tests/tests_corvet_views.py:52
+msgid ""
+"The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
+msgstr ""
+
+#: psa/views.py:83
+msgid "CORVET table"
+msgstr "Tableau CORVET"
+
+#: psa/views.py:103
+msgid "Detail Corvet data for the VIN: "
+msgstr "Détail des données Corvet pour le VIN : "
+
+#: psa/views.py:115 psa/views.py:133
+msgid "CORVET integration"
+msgstr "Intégration CORVET"
+
+#: psa/views.py:119 psa/views.py:129
+msgid "Modification done successfully!"
+msgstr "Modification réussie !"
+
+#: psa/views.py:157
+msgid "Products PSA table"
+msgstr "Tableau des produits PSA"

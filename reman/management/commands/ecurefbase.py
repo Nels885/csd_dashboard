@@ -1,3 +1,4 @@
+import logging
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
@@ -11,7 +12,7 @@ from utils.django.models import defaults_dict
 
 from ._excel_reman import ExcelEcuRefBase
 
-import logging as log
+logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):
@@ -72,7 +73,7 @@ class Command(BaseCommand):
         nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
         nb_base_update, nb_ecu_update, nb_part_update, nb_type_update = 0, 0, 0, 0
         for row in data:
-            log.info(row)
+            logger.info(row)
             code_produit = reman_reference = None
             try:
                 code_produit, reman_reference = row["code_produit"], row["reman_reference"]
@@ -120,13 +121,13 @@ class Command(BaseCommand):
                 if not ecu_created:
                     nb_ecu_update += 1
             except KeyError as err:
-                self.stderr.write(self.style.ERROR("KeyError: {}".format(err)))
+                logger.error(f"[ECUREBASE_CMD] KeyError: {err}")
             except DataError as err:
-                self.stderr.write(self.style.ERROR("DataError: {} - {}".format(reman_reference, err)))
+                logger.error(f"[ECUREFBASE_CMD] DataError: {reman_reference} - {err}")
             except IntegrityError as err:
-                self.stderr.write(self.style.ERROR("IntegrityError: {} - {}".format(reman_reference, err)))
+                logger.error(f"[ECUREFBASE_CMD] IntegrityError: {reman_reference} - {err}")
             except Stock.MultipleObjectsReturned as err:
-                self.stderr.write(self.style.ERROR("MultipleObjectsReturned: {} - {}".format(code_produit, err)))
+                logger.error(f"[ECUREFBASE_CMD] MultipleObjectsReturned: {code_produit} - {err}")
 
         nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
         self.stdout.write(

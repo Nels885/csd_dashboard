@@ -1,8 +1,8 @@
 from django.contrib.messages import get_messages
 
-from .base import UnitTest, reverse, UserProfile
+from .base import UnitTest, reverse
 
-from dashboard.models import Post, WebLink
+from dashboard.models import Post, WebLink, UserProfile
 
 
 class MixinsTest(UnitTest):

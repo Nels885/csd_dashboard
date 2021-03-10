@@ -1,0 +1,8 @@
+{% load i18n %}
+
+<li class="nav-item {% if select == 'links' %}active{% endif %}">
+    <a class="nav-link {% if select == 'links' %}active{% endif %}" href="{% url 'vag:useful_links' %}">
+        {% trans "Useful links" %}
+    </a>
+</li>
+

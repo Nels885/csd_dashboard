@@ -1,0 +1,53 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static %}
+
+{% block table_content %}
+
+    <table class="table table-bordered table-sm text-nowrap" id="prodTable" style="width:100%">
+        <thead>
+        <tr>
+            <th class="all"></th>
+            <th class="all"></th>
+            <th class="all">Code barre PSA</th>
+            <th>Modèle</th>
+            <th>Façade</th>
+            <th>Type</th>
+            <th>DAB</th>
+            <th>Caméra recul</th>
+            <th>Type média</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for prod in products %}
+
+            <tr {% if prod.dump_renesas %}class="bg-success text-gray-700"{% endif %}>
+                <td class="bg-white">
+                    <a href="#" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                </td>
+                <td class="bg-white">
+                    <a href="#" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                </td>
+                <td>{{ prod.hw_reference }}</td>
+                <td>{{ prod.get_name_display }}</td>
+                <td>{{ prod.level }}</td>
+                <td>{{ prod.get_type_display }}</td>
+                <td>{% if prod.dab %}Oui{% else %}Non{% endif %}</td>
+                <td>{% if prod.cam %}Oui{% else %}Non{% endif %}</td>
+                <td>{{ prod.get_media_display }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'psa/js/product-tables.js' %}"></script>
+
+{% endblock %}

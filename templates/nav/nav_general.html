@@ -2,18 +2,40 @@
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'dashboard:charts' %}"><i class=" fas fa-fw fa-tachometer-alt"></i><span>{% trans "Dashboard" %}</span></a>
-</li>
-
-<!-- Nav Item - Thermal Chamber -->
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'tools:thermal' %}"><i class=" fas fa-fw fa-thermometer"></i><span>{% trans "Thermal chamber" %}</span></a>
+    <a class="nav-link" href="{% url 'dashboard:charts' %}">
+        <i class=" fas fa-fw fa-tachometer-alt"></i><span>{% trans "Dashboard" %}</span>
+    </a>
 </li>
 
 {% if user.is_authenticated %}
+    <!-- Nav Item - Generate Squalaetp -->
+    <li class="nav-item">
+        <a class="nav-link font-weight-bold text-warning" href="{% url 'squalaetp:generate' %}">
+            <i class="fas fa-fw fa-sync-alt text-warning"></i><span>{% trans "Generate Squalaetp" %}</span>
+        </a>
+    </li>
+{% endif %}
+
+<!-- Nav Item - Thermal Chamber -->
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'tools:thermal' %}">
+        <i class="fas fa-fw fa-thermometer"></i><span>{% trans "Thermal chamber" %}</span>
+    </a>
+</li>
+
+{% if user.is_authenticated %}
+    <!-- Nav Item - Other links -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'dashboard:other_links' %}">
+            <i class="fas fa-fw fa-link"></i><span>{% trans "Other links" %}</span>
+        </a>
+    </li>
+
     <!-- Nav Item - Import Export -->
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'import_export:detail' %}"><i class=" fas fa-fw fa-sync-alt"></i><span>{% trans "Import / Export" %}</span></a>
+        <a class="nav-link" href="{% url 'import_export:detail' %}">
+            <i class="fas fa-fw fa-sync-alt"></i><span>{% trans "Import / Export" %}</span>
+        </a>
     </li>
 {% endif %}
 

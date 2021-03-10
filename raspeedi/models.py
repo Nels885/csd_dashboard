@@ -1,6 +1,6 @@
 from django.db import models
 
-from squalaetp.models import Corvet, Xelon
+from squalaetp.models import Xelon
 from dashboard.models import UserProfile, User
 
 
@@ -38,7 +38,6 @@ class Raspeedi(models.Model):
     dump_renesas = models.CharField('dump RENESAS', max_length=50, blank=True)
     ref_mm = models.CharField('référence MM', max_length=200, blank=True)
     connecteur_ecran = models.IntegerField("nombre de connecteur d'écran", choices=CON_CHOICES, null=True, blank=True)
-    corvets = models.ManyToManyField(Corvet, related_name='raspeedi', blank=True)
 
     class Meta:
         verbose_name = "Données RASPEEDI"
@@ -50,6 +49,25 @@ class Raspeedi(models.Model):
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.ref_boitier, self.produit, self.facade, self.type)
+
+
+class Programing(models.Model):
+    psa_barcode = models.BigIntegerField('référence boîtier', primary_key=True)
+    peedi_path = models.CharField('dossier PEEDI', max_length=20)
+    peedi_dump = models.CharField('dump PEEDI', max_length=25, blank=True)
+    renesas_dump = models.CharField('dump RENESAS', max_length=50, blank=True)
+    multimedia = models.OneToOneField('psa.Multimedia', on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = "Données Programmation"
+        ordering = ['psa_barcode']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return str(self.psa_barcode)
 
 
 class AddReference(models.Model):
@@ -64,6 +82,10 @@ class UnlockProduct(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
     modified_at = models.DateTimeField('modifié le', auto_now=True)
+
+    class Meta:
+        verbose_name = "Déverrouillage VIN"
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.unlock.numero_de_dossier

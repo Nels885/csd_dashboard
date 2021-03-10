@@ -22,4 +22,17 @@ $(document).ready(function () {
             orderable: false,
         }],
     });
+    $('#tronikTable').DataTable({
+        paging: false,
+        order: false,
+        scrollX: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        columnDefs: [{
+            targets: "_all",
+            orderable: false,
+        }],
+    });
 });

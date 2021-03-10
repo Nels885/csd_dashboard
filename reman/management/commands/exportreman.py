@@ -60,7 +60,7 @@ class Command(BaseCommand):
                     )
                 )
             )
-        elif options['repair']:
+        if options['repair']:
             self.stdout.write("[REPAIR] Waiting...")
 
             filename = conf.REPAIR_EXPORT_FILE
@@ -76,7 +76,7 @@ class Command(BaseCommand):
                     )
                 )
             )
-        elif options['cal_ecu']:
+        if options['cal_ecu']:
             self.stdout.write("[ECU_CAL] Waiting...")
 
             log_file = LogFile(CSD_ROOT)
@@ -85,7 +85,7 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS("[ECU_CAL] Export completed: NB_CAL = {} | FILE = {}".format(nb_cal, file_name))
             )
-        elif options['check_out']:
+        if options['check_out']:
             self.stdout.write("[CHECK_OUT] Waiting...")
 
             filename = conf.CHECKOUT_EXPORT_FILE

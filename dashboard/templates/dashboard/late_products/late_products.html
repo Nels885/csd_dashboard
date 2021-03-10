@@ -1,42 +1,95 @@
 {% extends 'format/datatables_format.html' %}
 
-{% load static %}
-
-{% block table_content %}
-
-    <table class="table table-bordered text-nowrap" id="lateProdNewTable" width="100%" cellspacing="0">
-        <thead>
-        <tr>
-            <th>Activité</th>
-            <th>Dossier</th>
-            <th>Modèle</th>
-            <th>Date In</th>
-            <th>Délai</th>
-            <th>Tech</th>
-
-        </tr>
-        </thead>
-        <tbody>
-
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=psa total_title='Total PSA' %}
-
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=ilot_autre total_title='Total Autres' %}
-
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=clarion total_title='Total Clarion' %}
-
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=labo_qual total_title='Total LaboQual' %}
-
-        {% include 'dashboard/late_products/lp_tr_format.html' with prods=defaut total_title='Total Defaut' %}
-
-        </tbody>
-    </table>
-
-{% endblock %}
+{% load static i18n %}
 
 {% block tablecss %}
 
-    <link rel="stylesheet" type="text/css"
-          href="{% static 'vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
+
+{% endblock %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
+
+            <li class="nav-item">
+                <a class="nav-link active" href="#late" role="tab" aria-controls="late" aria-selected="true">
+                    {% trans "Late products" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#tronik" role="tab" aria-controls="tronik" aria-selected="false">
+                    Autotronik
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <div class="tab-content mt-3">
+
+        <!-- Late products -->
+        <div class="tab-pane active" id="late" role="tabpanel" aria-labelledby="late-tab">
+
+            <table class="table table-bordered table-sm text-nowrap display" id="lateProdNewTable" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Activité</th>
+                    <th>Dossier</th>
+                    <th>Modèle</th>
+                    <th>Date In</th>
+                    <th>Délai</th>
+                    <th>Tech</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% include 'dashboard/format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
+
+                {% include 'dashboard/format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
+
+                {% include 'dashboard/format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
+
+                {% include 'dashboard/format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
+
+                {% include 'dashboard/format/lp_tr_format.html' with prods=etude activity='Etude' %}
+
+                {% include 'dashboard/format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Autotronik -->
+        <div class="tab-pane" id="tronik" role="tabpanel" aria-labelledby="tronik-tab">
+
+            <table class="table table-bordered table-sm text-nowrap display" id="tronikTable" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Activité</th>
+                    <th>Dossier</th>
+                    <th>Modèle</th>
+                    <th>Date In</th>
+                    <th>Délai</th>
+                    <th>Tech</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% include 'dashboard/format/lp_tr_format.html' with prods=autotronik activity='Autotronik' %}
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
 
 {% endblock %}
 

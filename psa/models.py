@@ -1,10 +1,35 @@
 from django.db import models
 
 
+class CorvetChoices(models.Model):
+    COL_CHOICES = [
+        ('DON_LIN_PROD', 'donnee_ligne_de_produit'), ('DON_MAR_COMM', 'donnee_marque_commerciale'),
+        ('DON_SIL', 'donnee_silhouette'), ('DON_GEN_PROD', 'donnee_genre_de_produit'),
+        ('ATT_DGM', 'COMBINE (CARACTERISTIQUES)'), ('ATT_DHB', 'HAUT PARLEUR'), ('ATT_DHG', 'COMMANDE AUTO-RADIO'),
+        ('ATT_DJY', 'SYSTEME NAVIGATION'), ('ATT_DLX', 'AFFICHEUR AV'), ('ATT_DYM', 'PRISE AUXILIAIRE PACK AUDIO'),
+        ('ATT_DYR', 'BOITIER TELEMATIQUE'), ('ATT_DAT', 'ANTENNE'), ('ATT_DCX', 'COTE CONDUITE/POSTE CONDUITE'),
+        ('DON_MOT', 'MOTEUR'), ('DON_TRA', 'TRANSMISSION'), ('ELE_14R', 'AAS HARD - Aide Au Stationnement')
+    ]
+
+    key = models.CharField('clé', max_length=10)
+    value = models.CharField('valeur', max_length=200)
+    column = models.CharField('colonne', max_length=100, choices=COL_CHOICES)
+
+    class Meta:
+        verbose_name = "Convertion données CORVET"
+        ordering = ['pk']
+        constraints = [
+            models.UniqueConstraint(fields=['key', 'column'], name='key_column_unique')
+        ]
+
+    def __str__(self):
+        return f"{self.key} - {self.value} - {self.column}"
+
+
 class Corvet(models.Model):
     vin = models.CharField('V.I.N.', max_length=17, primary_key=True)
-    donnee_date_debut_garantie = models.DateTimeField('Date d?but garantie', null=True, blank=True)
-    donnee_date_entree_montage = models.DateTimeField('Date entr?e montage', null=True, blank=True)
+    donnee_date_debut_garantie = models.DateTimeField('Date début garantie', null=True, blank=True)
+    donnee_date_entree_montage = models.DateTimeField('Date entrée montage', null=True, blank=True)
     donnee_ligne_de_produit = models.CharField('LIGNE_DE_PRODUIT', max_length=200, blank=True)
     donnee_marque_commerciale = models.CharField('MARQUE_COMMERCIALE', max_length=200, blank=True)
     donnee_silhouette = models.CharField('SILHOUETTE', max_length=200, blank=True)
@@ -52,7 +77,7 @@ class Corvet(models.Model):
     electronique_94l = models.CharField('EMF SOFT - Ecran Multifonctions', max_length=200, blank=True)
     electronique_94x = models.CharField('BTEL SOFT - Boitier Telematique (radio telephone)', max_length=200, blank=True)
     attribut_dat = models.CharField('ANTENNE', max_length=200, blank=True)
-    attribut_dcx = models.CharField('COTE  CONDUITE/POSTE CONDUITE', max_length=200, blank=True)
+    attribut_dcx = models.CharField('COTE CONDUITE/POSTE CONDUITE', max_length=200, blank=True)
     electronique_19h = models.CharField('MDS HARD - Module de service telematique', max_length=200, blank=True)
     electronique_49h = models.CharField('MDS FOURN.NO.SERIE - Module de service telematique', max_length=200, blank=True)
     electronique_64f = models.CharField('RADIO FOURN.CODE - Recepteur Radio', max_length=200, blank=True)
@@ -89,9 +114,174 @@ class Corvet(models.Model):
     electronique_86b = models.CharField('BSM DOTE - Boitier Servitude Moteur', max_length=200, blank=True)
     electronique_96b = models.CharField('BSM SOFT - Boitier Servitude Moteur', max_length=200, blank=True)
 
+    radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
+    btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
+    bsi = models.ForeignKey('psa.BsiModel', related_name='corvet_bsi', on_delete=models.SET_NULL, null=True, blank=True)
+    emf = models.ForeignKey('psa.EmfModel', related_name='corvet_emf', on_delete=models.SET_NULL, null=True, blank=True)
+    # cmm = models.ForeignKey('psa.CmmType', related_name='corvet_cmm', on_delete=models.SET_NULL, null=True, blank=True)
+    # bsm = models.ForeignKey('psa.BsmType'; related_name='corvet_bsm', on_delete=models.SET_NULL, null=True, blank=True)
+
     class Meta:
         verbose_name = "données CORVET"
         ordering = ['vin']
 
+    def save(self, *args, **kwargs):
+        if self.electronique_14x.isdigit():
+            self.btel = Multimedia.objects.filter(hw_reference=self.electronique_14x).first()
+        if self.electronique_14f.isdigit():
+            self.radio = Multimedia.objects.filter(hw_reference=self.electronique_14f).first()
+        if self.electronique_14b.isdigit():
+            self.bsi = BsiModel.objects.filter(reference__startswith=self.electronique_14b).first()
+        if self.electronique_14l.isdigit():
+            self.emf = EmfModel.objects.filter(hw_reference__startswith=self.electronique_14l).first()
+        super(Corvet, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.vin
+
+
+# class CmmType(models.Model):
+#     hw_reference = models.CharField("hardware", max_length=10, unique=True)
+#     name = models.CharField("modèle produit", max_length=50, blank=True)
+#     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+#
+#     def part_name(self):
+#         return self.name + " HW" + self.hw_reference
+#
+#     def __str__(self):
+#         return f"HW_{self.hw_reference} - MODEL_{self.name} - TYPE_{self.type}"
+
+
+class Multimedia(models.Model):
+    TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
+    MEDIA_CHOICES = [
+        ('N/A', 'Vide'),
+        ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'), ('external SD', 'Carte SD Externe'),
+        ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
+    ]
+    PRODUCT_CHOICES = [
+        ('RD3', 'RD3'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
+        ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
+        ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
+        ('NG4', 'NG4'), ('RNEG', 'RNEG'),
+        ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
+    ]
+    LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
+    USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
+    ANT_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
+
+    hw_reference = models.BigIntegerField('référence HW', primary_key=True)
+    hw_type = models.CharField('type HW', max_length=10, blank=True)
+    label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
+    name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES)
+    oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    level = models.CharField('niveau', max_length=2, blank=True)
+    extra = models.CharField('supplément', max_length=100, blank=True)
+    dab = models.BooleanField('DAB', default=False)
+    cam = models.BooleanField('caméra de recul', default=False)
+    cd_player = models.BooleanField('lecteur CD', default=False)
+    jukebox = models.BooleanField('jukebox', null=True)
+    carplay = models.BooleanField('CarPlay', null=True)
+    media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, blank=True)
+    lvds_con = models.IntegerField("nombre d'LVDS", choices=LVDS_CON_CHOICES, null=True, blank=True)
+    ant_con = models.IntegerField("Nombre d'antenne", choices=ANT_CON_CHOICES, null=True, blank=True)
+    usb_con = models.IntegerField("nombre d'USB", choices=USB_CON_CHOICES,  null=True, blank=True)
+    front_pic = models.ImageField(upload_to='psa', blank=True)
+    setplate_pic = models.ImageField(upload_to='psa', blank=True)
+    rear_pic = models.ImageField(upload_to='psa', blank=True)
+
+    class Meta:
+        verbose_name = "Données Multimédia"
+        ordering = ['hw_reference']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return f"{self.hw_reference}_{self.name}_{self.level}_{self.type}"
+
+
+class Firmware(models.Model):
+    ECU_TYPE_CHOICES = [
+        ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
+        ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
+        ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
+        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4')
+    ]
+
+    update_id = models.CharField('SWL(UpdateID)', max_length=18, unique=True)
+    version = models.CharField('UpdateVersion', max_length=200)
+    type = models.CharField('UpdateType', max_length=100, blank=True)
+    version_date = models.DateField('MediaVersionDate', null=True, blank=True)
+    ecu_type = models.CharField('EcuType', max_length=50, choices=ECU_TYPE_CHOICES)
+    url = models.URLField('lien de téléchargement', max_length=500, blank=True)
+    is_active = models.BooleanField('actif', default=False)
+
+    class Meta:
+        verbose_name = "Firmwares Télématique"
+        ordering = ['-update_id']
+
+    def __str__(self):
+        return f"{self.version}_{self.ecu_type}"
+
+
+class Calibration(models.Model):
+    TYPE_CHOICES = [
+        ('94B', 'BSI SOFT - Boitier Servitude Intelligent'), ('94A', 'CMM SOFT - Calculateur Moteur Multifonction'),
+        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94L', 'EMF SOFT - Ecran Multifonctions'),
+        ('94X', 'BTEL SOFT - Boitier Telematique'), ('96B', 'BSM SOFT - Boitier Servitude Moteur'),
+        ('99H', 'MDS SOFT - Module de service telematique')
+    ]
+
+    factory = models.CharField('version usine', max_length=10, unique=True)
+    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    current = models.CharField('version actuelle', max_length=10, blank=True)
+
+    class Meta:
+        verbose_name = "Calibration"
+        ordering = ['-factory']
+
+    def __str__(self):
+        return self.factory
+
+
+class BsiModel(models.Model):
+    reference = models.CharField("reference PSA", max_length=13, unique=True)
+    name = models.CharField("modèle", max_length=50)
+    hw = models.CharField('HW', max_length=10, blank=True)
+    sw = models.CharField('SW', max_length=10, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+
+    class Meta:
+        verbose_name = "Données BSI"
+        ordering = ['reference']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return f"{self.reference}_{self.name}"
+
+
+class EmfModel(models.Model):
+    hw_reference = models.CharField("référence HW", max_length=10, unique=True)
+    name = models.CharField("modèle", max_length=50)
+    hw = models.CharField('HW', max_length=10, blank=True)
+    sw = models.CharField('SW', max_length=10, blank=True)
+    supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    pr_reference = models.CharField("référence PR", max_length=10, blank=True)
+
+    class Meta:
+        verbose_name = "Données EMF"
+        ordering = ['hw_reference']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name.capitalize(), field.value_to_string(self)
+
+    def __str__(self):
+        return f"{self.hw_reference}_{self.name}"

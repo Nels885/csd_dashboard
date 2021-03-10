@@ -4,10 +4,10 @@ from dashboard.tests.base import FunctionalTest
 from tools.models import CsdSoftware
 
 
-class DashboardSeleniumTestCase(FunctionalTest):
+class ToolsSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
-        super(DashboardSeleniumTestCase, self).setUp()
+        super(ToolsSeleniumTestCase, self).setUp()
         self.add_perms_user(CsdSoftware, 'add_csdsoftware')
 
     def test_soft_add_is_valid(self):

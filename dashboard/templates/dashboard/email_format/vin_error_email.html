@@ -1,0 +1,42 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    <p> Vous trouvez ci-dessous la liste des dossiers Xelon ayant une erreur de VIN.</p>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Dossier</th>
+            <th>Modèle</th>
+            <th>V.I.N.</th>
+            <th>Date In</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for xelon in xelons %}
+
+            <tr>
+                <td>{{ xelon.numero_de_dossier }}</td>
+                <td>{{ xelon.modele_produit }}</td>
+                <td>{{ xelon.vin }}</td>
+                <td>{{ xelon.date_retour }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}

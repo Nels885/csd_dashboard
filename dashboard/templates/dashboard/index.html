@@ -44,12 +44,12 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                              aria-labelledby="dropdownMenuLink">
-                                            <a class="update-post dropdown-item"
-                                               href="#" data-id="{% url 'dashboard:update_post' post.pk %}">
+                                            <a class="bs-large-modal dropdown-item"
+                                               href="#" data-form-url="{% url 'dashboard:update_post' post.pk %}">
                                                 <i class="fas fa-edit mr-2 text-gray-400"></i>{% trans 'Edit' %}
                                             </a>
-                                            <a class="delete-post dropdown-item text-danger"
-                                               href="#" data-id="{% url 'dashboard:delete_post' post.pk %}">
+                                            <a class="bs-modal dropdown-item text-danger"
+                                               href="#" data-form-url="{% url 'dashboard:delete_post' post.pk %}">
                                                 <i class="fas fa-trash-alt mr-2 text-gray-400"></i>{% trans 'Delete' %}
                                             </a>
                                         </div>
@@ -93,7 +93,7 @@
                     <!-- Facebook HTML code -->
                     <div id="fb-root"></div>
                     <div class="fb-page" data-href="https://www.facebook.com/reparlabbyclarion/" data-tabs="timeline"
-                         data-width="500" data-height="800" data-small-header="true" data-adapt-container-width="false"
+                         data-width="500" data-height="800" data-small-header="true" data-adapt-container-width="true"
                          data-hide-cover="false" data-show-facepile="false">
                         <blockquote cite="https://www.facebook.com/reparlabbyclarion/" class="fb-xfbml-parse-ignore"><a
                                 href="https://www.facebook.com/reparlabbyclarion/">Reparlab</a></blockquote>
@@ -110,8 +110,6 @@
 {% block customjs %}
 
     <!-- Facebook Plugin Pages scripts -->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v8.0"
-            nonce="5fvF9Vs1">
-    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v9.0" nonce="cm5iVIol"></script>
 
 {% endblock %}

@@ -59,11 +59,6 @@ class ApiTestCase(APITestCase):
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
-    def test_charts_is_valid(self):
-        response = self.client.get(reverse('api:charts'), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 6)
-
     def test_xelon_view_set_is_disconnected(self):
         response = self.client.get(reverse('api:xelon-list'), format='json')
         self.assertEqual(response.status_code, 403)
@@ -79,8 +74,3 @@ class ApiTestCase(APITestCase):
         response = self.client.get(reverse('api:corvet-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
-
-    def test_thermal_chamber(self):
-        response = self.client.get(reverse('api:temp'), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, {"temp": "Hors ligne"})

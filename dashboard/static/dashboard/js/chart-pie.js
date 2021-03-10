@@ -17,31 +17,23 @@ $.ajax({
                 labels: labels,
                 datasets: [{
                     data: defaultData,
-                    // backgroundColor: ['#4e73df', '#1cc88a', '#E74A3B', '#848696',
-                    //     '#5A5B68', '#36b9cc', '#F6C23E', '#99FF33',
-                    //     '#FF7733'],
                     backgroundColor: ['#079992', '#0a3d62', '#0c2461', '#b71540',
                         '#e58e26', '#eb2f06', '#1e3799', '#3c6382',
-                        '#38ada9','#78e08f', '#60a3bc', '#4a69bd'],
-                    // hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                        '#38ada9', '#78e08f', '#60a3bc', '#4a69bd', '#0C40FF'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    borderWidth: 1
                 }],
             },
             options: {
                 maintainAspectRatio: false,
-                // tooltips: {
-                //     backgroundColor: "rgb(255,255,255)",
-                //     bodyFontColor: "#858796",
-                //     borderColor: '#dddfeb',
-                //     borderWidth: 1,
-                //     xPadding: 15,
-                //     yPadding: 15,
-                //     displayColors: false,
-                //     caretPadding: 10,
-                // },
                 legend: {
                     display: true,
-                    position: 'right',
+                    position: 'left',
+                    labels: {
+                        boxWidth: 20,
+                        fontSize: 10,
+                        padding: 5,
+                    }
                 },
                 cutoutPercentage: 0,
             },

@@ -2,7 +2,8 @@ from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 from django.http import Http404
 
-from squalaetp.models import Corvet, Xelon
+from squalaetp.models import Xelon
+from psa.models import Corvet
 from reman.models import Batch, Repair, EcuModel
 from utils.file.export import ExportExcel
 
@@ -26,7 +27,7 @@ def extract_ecu(vin_list=None):
     corvets = Corvet.objects.filter(vin__in=vin_list)
 
     values_list = (
-        'xelons__numero_de_dossier', 'vin', 'xelons__modele_produit', 'xelons__modele_vehicule',
+        'xelon__numero_de_dossier', 'vin', 'xelon__modele_produit', 'xelon__modele_vehicule',
         'donnee_date_debut_garantie', 'electronique_14a', 'electronique_34a', 'electronique_94a', 'electronique_44a',
         'electronique_54a', 'electronique_64a', 'electronique_84a', 'electronique_p4a'
     )

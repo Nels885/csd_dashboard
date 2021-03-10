@@ -1,0 +1,27 @@
+{% if object %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseCmm" expanded=collapse.cmm thead_title="CALCULATEUR MOTEUR :" %}
+
+        <tbody class="collapse {% if collapse.cmm %}show{% endif %}" id="collapseCmm">
+        <tr>
+            <td class="text-dark td-ihm">Référence HW</td>
+            <td>{{ object.hw_reference }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Modèle</td>
+            <td>{{ object.technical_data }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Fabriquant</td>
+            <td>{{ object.supplier_oe }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Pièce Xelon</td>
+            <td>{{ object.spare_part }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+{% endif %}
