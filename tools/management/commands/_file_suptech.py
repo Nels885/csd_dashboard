@@ -1,4 +1,8 @@
+import openpyxl
+from openpyxl.styles import Font
+
 from utils.microsoft_format import CsvFormat, ExcelFormat, pd
+from utils.file.export import ExportExcel
 
 
 class CsvSuptech(CsvFormat):
@@ -70,3 +74,43 @@ class ExcelSuptech(ExcelFormat):
             row = self.sheet.loc[line]  # get the data in the ith row
             data.append(dict(row.dropna()))
         return data
+
+
+class ExportExcelSuptech(ExportExcel):
+
+    def __init__(self, queryset, filename, header, values_list=None, excel_type="csv", novalue="#"):
+        super().__init__(queryset, filename, header, values_list, excel_type, novalue)
+
+    def _xlsx_writer(self, response):
+        """ Formatting data in Excel 2010 format """
+        wb = openpyxl.Workbook()
+
+        # Get active worksheet/tab
+        ws = wb.active
+        ws.title = 'Feuille 1'
+        col_dimensions = {'A': 20, 'B': 12, 'C': 13, 'D': 25, 'E': 8, 'F': 80, 'G': 60, 'H': 60}
+        for key, value in col_dimensions.items():
+            ws.column_dimensions[key].width = value
+
+        # Sheet header, first row
+        row_num = 1
+
+        # Assign the titles for each cell of the header
+        for col_num, column_title in enumerate(self.header, 1):
+            cell = ws.cell(row=row_num, column=col_num)
+            cell.font = Font(bold=True)
+            cell.value = column_title
+
+        # Iterate though all values
+        for query in self.valueSet:
+            row_num += 1
+            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
+
+            # Assign the data  for each cell of the row
+            for col_num, cell_value in enumerate(query, 1):
+                cell = ws.cell(row=row_num, column=col_num)
+                cell.value = cell_value
+
+        wb.save(response)
+        return response
