@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class CorvetChoices(models.Model):
@@ -195,6 +196,11 @@ class Multimedia(models.Model):
     class Meta:
         verbose_name = "Données Multimédia"
         ordering = ['hw_reference']
+
+    def save(self, *args, **kwargs):
+        Corvet.objects.filter(electronique_14x__exact=self.hw_reference).update(btel=self.pk)
+        Corvet.objects.filter(electronique_14f__exact=self.hw_reference).update(radio=self.pk)
+        super(Multimedia, self).save(*args, **kwargs)
 
     def __iter__(self):
         for field in self._meta.fields:
