@@ -4,7 +4,7 @@ from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.validators import validate_xelon
 
-from .models import TagXelon, CsdSoftware, ThermalChamber
+from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech
 
 
 class TagXelonForm(BSModalModelForm):
@@ -54,3 +54,9 @@ class ThermalFrom(forms.ModelForm):
             'operating_mode': forms.Select(attrs={'class': 'custom-select form-control'}),
             'xelon_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class SuptechModalForm(BSModalModelForm):
+    class Meta:
+        model = Suptech
+        fields = ['xelon', 'item', 'time', 'info', 'rmq']

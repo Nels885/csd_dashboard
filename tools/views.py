@@ -12,7 +12,7 @@ from constance import config
 
 from .models import CsdSoftware, ThermalChamber, TagXelon
 from dashboard.forms import ParaErrorList
-from .forms import TagXelonForm, SoftwareForm, ThermalFrom
+from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm
 from utils.data.mqtt import MQTTClass
 
 MQTT_CLIENT = MQTTClass()
@@ -149,3 +149,16 @@ class ThermalDeleteView(LoginRequiredMixin, BSModalDeleteView):
     template_name = 'tools/modal/thermal_delete.html'
     success_message = _('Success: Input was deleted.')
     success_url = reverse_lazy('tools:thermal')
+
+
+class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'tools.add_suptech'
+    template_name = 'tools/modal/tag_xelon.html'
+    form_class = SuptechModalForm
+    success_message = "Success: Création d'un SupTech avec succès !"
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
