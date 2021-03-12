@@ -90,6 +90,8 @@
 
         $(".create-batch").modalForm({formURL: "{% url 'reman:create_batch' %}"});
 
+        $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});
+
         // Filter Batch buttons
         $(".out-filter-btn").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url')});

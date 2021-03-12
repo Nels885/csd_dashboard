@@ -153,7 +153,7 @@ class ThermalDeleteView(LoginRequiredMixin, BSModalDeleteView):
 
 class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'tools.add_suptech'
-    template_name = 'tools/modal/tag_xelon.html'
+    template_name = 'tools/modal/suptech_create.html'
     form_class = SuptechModalForm
     success_message = "Success: Création d'un SupTech avec succès !"
 
