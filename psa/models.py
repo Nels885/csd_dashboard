@@ -265,6 +265,10 @@ class BsiModel(models.Model):
         verbose_name = "Données BSI"
         ordering = ['reference']
 
+    def save(self, *args, **kwargs):
+        Corvet.objects.filter(electronique_14b_exact=self.reference[:10]).update(bsi=self.pk)
+        super(BsiModel, self).save(*args, **kwargs)
+
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
@@ -284,6 +288,10 @@ class EmfModel(models.Model):
     class Meta:
         verbose_name = "Données EMF"
         ordering = ['hw_reference']
+
+    def save(self, *args, **kwargs):
+        Corvet.objects.filter(electronique_14l__exact=self.hw_reference).update(emf=self.pk)
+        super(EmfModel, self).save(*args, **kwargs)
 
     def __iter__(self):
         for field in self._meta.fields:
