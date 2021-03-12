@@ -235,16 +235,17 @@ CONSTANCE_CONFIG = {
     'WEBSITE_DOMAIN': ('', 'Webside domain name'),
 
     # CSD Repair Options
-    'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error to email list'),
-    'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products to email list'),
-    'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN to email list'),
+    'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error TO email list'),
+    'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products TO email list'),
+    'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN TO email list'),
+    'CSD_CC_EMAIL_LIST': ('test1@test.com; test2@test.com', 'CSD Atelier CC email list'),
     'CORVET_USER': ('', 'CORVET user for RepairLab'),
     'CORVET_PWD': ('', 'CORVET password for RepairLab'),
     'SQUALAETP_FILE_LIST': ('squalaetp_cal, squalaetp_ecu', 'Squalaetp file list'),
 
     # REMAN Options
-    'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN to email list'),
-    'ECU_CC_EMAIL_LIST': ('', 'REMAN Cc email list'),
+    'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN TO email list'),
+    'ECU_CC_EMAIL_LIST': ('', 'REMAN CC email list'),
     'EXPORT_PATH': ('EXTS', 'Export path'),
     'BATCH_EXPORT_FILE': ('reman_lots', 'File name for exporting batch'),
     'REPAIR_EXPORT_FILE': ('reman_repairs', 'File name for exporting repairs'),
@@ -286,7 +287,7 @@ CONSTANCE_CONFIG = {
 CONSTANCE_CONFIG_FIELDSETS = {
     '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
     '2. CSD Repair Options': (
-        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
+        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
         'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
     ),
     '3. REMAN Options': (
