@@ -37,4 +37,10 @@ $(document).ready(function () {
         scrollX: true,
         order: []
     });
+
+    $('#suptechTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
+        order: []
+    });
 });

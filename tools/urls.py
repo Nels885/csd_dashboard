@@ -17,5 +17,6 @@ urlpatterns = [
     path('thermal/<int:pk>/disable/', views.thermal_disable, name="thermal_disable"),
     path('thermal/<int:pk>/delete/', views.ThermalDeleteView.as_view(), name="thermal_delete"),
     path('3d-printer/ultimaker/stream/', views.UltimakerStreamView.as_view(), name="ultimaker_stream"),
+    path('suptech/', views.suptech_list, name='suptech_list'),
     path('suptech/add/', views.SupTechCreateView.as_view(), name="suptech_add"),
 ]

@@ -10,7 +10,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber, TagXelon
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm
 from utils.data.mqtt import MQTTClass
@@ -162,3 +162,11 @@ class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+def suptech_list(request):
+    """ View of Software list page """
+    title = _('Tools')
+    table_title = _('Support Tech list')
+    objects = Suptech.objects.all().order_by('-date')
+    return render(request, 'tools/suptech_table.html', locals())
