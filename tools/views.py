@@ -155,7 +155,13 @@ class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'tools.add_suptech'
     template_name = 'tools/modal/suptech_create.html'
     form_class = SuptechModalForm
-    success_message = "Success: Création d'un SupTech avec succès !"
+    success_message = "Succès : Création d'un SupTech avec succès !"
+
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            form.send_email()
+            messages.success(self.request, _('Success: The email has been sent.'))
+        return super().form_valid(form)
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:

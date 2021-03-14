@@ -279,6 +279,7 @@ CONSTANCE_CONFIG = {
     'KEEP_ALIVE': (45, 'Keep alive', int),
 
     # tools Options
+    'SUPTECH_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Suptech TO email list'),
     'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL'),
     'PROXY_HOST_SCRAPING': ('', 'Proxy HOST for Scraping'),
     'PROXY_PORT_SCRAPING': ('', 'Proxy PORT for Scraping'),
@@ -295,7 +296,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE', 'DICT_YEAR'
     ),
     '4. Tools Options': (
-        'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING', 'PROXY_PORT_SCRAPING'
+        'SUPTECH_TO_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING', 'PROXY_PORT_SCRAPING'
     ),
     '5. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',

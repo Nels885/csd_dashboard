@@ -1,9 +1,13 @@
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
+from constance import config
 
+from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 
 from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech
@@ -63,11 +67,23 @@ class SuptechModalForm(BSModalModelForm):
         model = Suptech
         fields = ['xelon', 'item', 'time', 'info', 'rmq']
 
+    def send_email(self):
+        subject = f"!!! Info Support Tech : {self.cleaned_data['item']} !!!"
+        context = {"email": self.request.user.email, "suptech": self.instance}
+        message = render_to_string('tools/email_format/suptech_email.html', context)
+        email = EmailMessage(
+            subject=subject, body=message, from_email=self.request.user.email,
+            to=string_to_list(config.CHANGE_VIN_TO_EMAIL_LIST)
+        )
+        email.send()
+
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
         user = get_current_user()
         suptech.date = timezone.now()
         suptech.user = f"{user.first_name} {user.last_name}"
+        suptech.created_by = user
+        suptech.created_at = timezone.now()
         if commit and self.request.is_ajax():
             suptech.save()
         return suptech
