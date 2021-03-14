@@ -39,22 +39,9 @@
 
 {% endblock %}
 
-{% block tablecss %}
-
-    <link rel="stylesheet" type="text/css"
-          href="{% static 'vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
-
-{% endblock %}
-
 {% block tablejs %}
 
     <!-- Page level custom scripts -->
     <script src="{% static 'tools/js/tools-tables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/JSZip/jszip.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/pdfmake/pdfmake.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/pdfmake/vfs_fonts.js' %}"></script>
-    <script src="{% static 'vendor/datatables/Buttons/js/buttons.html5.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/Buttons/js/buttons.print.min.js' %}"></script>
 
 {% endblock %}
