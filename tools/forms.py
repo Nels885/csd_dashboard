@@ -1,6 +1,8 @@
 from django import forms
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm
+from crum import get_current_user
 
 from utils.django.validators import validate_xelon
 
@@ -60,3 +62,12 @@ class SuptechModalForm(BSModalModelForm):
     class Meta:
         model = Suptech
         fields = ['xelon', 'item', 'time', 'info', 'rmq']
+
+    def save(self, commit=True):
+        suptech = super(SuptechModalForm, self).save(commit=False)
+        user = get_current_user()
+        suptech.date = timezone.now()
+        suptech.user = f"{user.first_name} {user.last_name}"
+        if commit and self.request.is_ajax():
+            suptech.save()
+        return suptech

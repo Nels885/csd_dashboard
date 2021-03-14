@@ -21,17 +21,64 @@
             {% endfor %}
         </div>
 
-        {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}" class="sr-only">{{ field.label }}</label>
-                {% render_field field class="form-control form-control-user" placeholder=field.label %}
-                <div class=" text-danger {% if field.errors %} invalid{% endif %}">
-                    {% for error in field.errors %}
-                        <p class="help-block">{{ error }}</p>
+        <div class="form-group row">
+            <label for="{{ form.xelon.id_for_label }}" class="col-form-label col-sm-2">N° XELON *</label>
+            <div class="col-sm-4">
+                {% render_field form.xelon class="form-control" %}
+                <div class="{% if form.xelon.errors %} invalid{% endif %}">
+                    {% for error in form.xelon.errors %}
+                        <p class="help-block text-danger">* {{ error }}</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.item.id_for_label }}" class="col-form-label col-sm-2">Objet *</label>
+            <div class="col-sm-4 mb-3 mb-sm-0">
+                {% render_field form.item class="custom-select form-control" %}
+                <div class="{% if form.item.errors %} invalid{% endif %}">
+                    {% for error in form.item.errors %}
+                        <p class="help-block text-danger">* {{ error }}</p>
                     {% endfor %}
                 </div>
             </div>
-        {% endfor %}
+            <label for="{{ form.time.id_for_label }}" class="col-form-label col-sm-3">Temps/Durée (en min) *</label>
+            <div class="col-sm-3 mb-3 mb-sm-0">
+                {% render_field form.time class="form-control" %}
+                <div class="{% if form.time.errors %} invalid{% endif %}">
+                    {% for error in form.time.errors %}
+                        <p class="help-block text-danger">* {{ error }}</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.info.id_for_label }}" class="col-form-label col-sm-2">Infos *</label>
+            <div class="col-sm-10">
+                {% render_field form.info class="form-control" rows=5 %}
+                <div class="{% if form.info.errors %} invalid{% endif %}">
+                    {% for error in form.info.errors %}
+                        <p class="help-block text-danger">* {{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.rmq.id_for_label }}" class="col-form-label col-sm-2">Rmqs</label>
+            <div class="col-sm-10">
+                {% render_field form.rmq class="form-control" rows=5 %}
+                <div class="{% if form.rmq.errors %} invalid{% endif %}">
+                    {% for error in form.rmq.errors %}
+                        <p class="help-block text-danger">* {{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
