@@ -115,6 +115,12 @@ class Suptech(models.Model):
     info = models.TextField('INFO', max_length=2000)
     rmq = models.TextField('RMQ', max_length=2000, blank=True)
     action = models.TextField('ACTION/RETOUR', max_length=2000, blank=True)
+    created_at = models.DateTimeField('ajouté le', editable=False, null=True)
+    created_by = models.ForeignKey(User, related_name="suptechs_created", editable=False, on_delete=models.SET_NULL,
+                                   null=True, blank=True)
+    modified_at = models.DateTimeField('modifié le', null=True)
+    modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
+                                    blank=True)
 
     class Meta:
         verbose_name = "Logs SupTech"
