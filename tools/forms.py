@@ -73,7 +73,7 @@ class SuptechModalForm(BSModalModelForm):
         message = render_to_string('tools/email_format/suptech_email.html', context)
         email = EmailMessage(
             subject=subject, body=message, from_email=self.request.user.email,
-            to=string_to_list(config.CHANGE_VIN_TO_EMAIL_LIST)
+            to=string_to_list(config.SUPTECH_TO_EMAIL_LIST), cc=[self.request.user.email]
         )
         email.send()
 
