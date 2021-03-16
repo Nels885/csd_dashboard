@@ -63,6 +63,15 @@ class ThermalFrom(forms.ModelForm):
 
 
 class SuptechModalForm(BSModalModelForm):
+    ITEM_CHOICES = [
+        ('Hot Line Tech', 'Hot Line Tech'), ('Support Admin', 'Support Admin'), ('R.M.', 'R.M.'),
+        ('Temps Annexe', 'Temps Annexe'), ('Validation Tech', 'Validation Tech'),
+        ('Retour Autotronik', 'Retour Autotronik'), ('Probleme process', 'Probleme process'),
+        ('Informatique/Reseau', 'Informatique/Reseau'), ('Inter Maintenance(AF/YM)', 'Inter Maintenance(AF/YM)'),
+        ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
+    ]
+    item = forms.ChoiceField(choices=ITEM_CHOICES)
+
     class Meta:
         model = Suptech
         fields = ['xelon', 'item', 'time', 'info', 'rmq']

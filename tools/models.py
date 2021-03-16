@@ -99,18 +99,10 @@ class EtudeProject(models.Model):
 
 
 class Suptech(models.Model):
-    ITEM_CHOICES = [
-        ('Hot Line Tech', 'Hot Line Tech'), ('Support Admin', 'Support Admin'), ('R.M.', 'R.M.'),
-        ('Temps Annexe', 'Temps Annexe'), ('Validation Tech', 'Validation Tech'),
-        ('Retour Autotronik', 'Retour Autotronik'), ('Probleme process', 'Probleme process'),
-        ('Informatique/Reseau', 'Informatique/Reseau'), ('Inter Maintenance(AF/YM)', 'Inter Maintenance(AF/YM)'),
-        ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
-    ]
-
     date = models.DateField('DATE')
     user = models.CharField('QUI', max_length=50)
     xelon = models.CharField('XELON', max_length=10, blank=True)
-    item = models.CharField('ITEM', max_length=100, choices=ITEM_CHOICES)
+    item = models.CharField('ITEM', max_length=100)
     time = models.CharField('TIME', max_length=10)
     info = models.TextField('INFO', max_length=2000)
     rmq = models.TextField('RMQ', max_length=2000, blank=True)
