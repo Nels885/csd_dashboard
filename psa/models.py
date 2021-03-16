@@ -266,7 +266,7 @@ class BsiModel(models.Model):
         ordering = ['reference']
 
     def save(self, *args, **kwargs):
-        Corvet.objects.filter(electronique_14b_exact=self.reference[:10]).update(bsi=self.pk)
+        Corvet.objects.filter(electronique_14b__startswith=self.reference[:10]).update(bsi=self.id)
         super(BsiModel, self).save(*args, **kwargs)
 
     def __iter__(self):
@@ -290,7 +290,7 @@ class EmfModel(models.Model):
         ordering = ['hw_reference']
 
     def save(self, *args, **kwargs):
-        Corvet.objects.filter(electronique_14l__exact=self.hw_reference).update(emf=self.pk)
+        Corvet.objects.filter(electronique_14l__startswith=self.hw_reference).update(emf=self.id)
         super(EmfModel, self).save(*args, **kwargs)
 
     def __iter__(self):
