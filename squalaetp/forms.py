@@ -114,7 +114,8 @@ class VinCorvetModalForm(BSModalModelForm):
         xml_data = self.cleaned_data['xml_data']
         data = xml_parser(xml_data)
         no_fields = ['vin', 'btel', 'radio', 'bsi', 'emf', 'cmm', 'bsm']
-        all_data = {key: "" for key in [f.name for f in Corvet._meta.local_fields if f.name not in no_fields]}
+        all_data = {key: '' for key in [f.name for f in Corvet._meta.local_fields if f.name not in no_fields]}
+        all_data.update({'donnee_date_debut_garantie': None, 'donnee_date_entree_montage': None})
         vin = self.cleaned_data.get("vin")
         if data:
             all_data.update(data)
