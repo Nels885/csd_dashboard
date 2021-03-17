@@ -1,4 +1,3 @@
-{% autoescape off %}
 Qui: {{ email }}
 ==========================================================
 N°XELON: {{ suptech.xelon }}
@@ -11,4 +10,6 @@ Temps={{ suptech.time }}
 ==========================================================
 {{ suptech.rmq }}
 ======================== E.O.Mail =========================
-{% endautoescape %}
+
+Répondre :
+http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}

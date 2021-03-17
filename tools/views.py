@@ -5,14 +5,14 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import JsonResponse
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, UpdateView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
 from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech
 from dashboard.forms import ParaErrorList
-from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm
+from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
 from utils.data.mqtt import MQTTClass
 
 MQTT_CLIENT = MQTTClass()
@@ -161,7 +161,6 @@ class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
 
     def form_valid(self, form):
         if not self.request.is_ajax():
-            form.send_email()
             messages.success(self.request, _('Success: The email has been sent.'))
         return super().form_valid(form)
 
@@ -179,3 +178,21 @@ def suptech_list(request):
     table_title = _('Support Tech list')
     objects = Suptech.objects.all().order_by('-date')
     return render(request, 'tools/suptech_table.html', locals())
+
+
+class SuptechResponseView(UpdateView):
+    model = Suptech
+    form_class = SuptechResponseForm
+    template_name = 'tools/suptech_update.html'
+    success_url = reverse_lazy('tools:suptech_list')
+
+    def get_context_data(self, **kwargs):
+        context = super(SuptechResponseView, self).get_context_data(**kwargs)
+        context['title'] = "Tools"
+        context['card_title'] = _("Support Tech Response")
+        return context
+
+    def form_valid(self, form):
+        form.send_email(self.request)
+        messages.success(self.request, _('Success: The email has been sent.'))
+        return super().form_valid(form)

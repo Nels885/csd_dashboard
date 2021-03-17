@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 from constance import config
@@ -79,11 +80,10 @@ class SuptechModalForm(BSModalModelForm):
         fields = ['xelon', 'item', 'custom_item', 'time', 'info', 'rmq']
 
     def send_email(self):
-        if self.cleaned_data['custom_item']:
-            self.instance.item = self.cleaned_data['custom_item']
+        current_site = get_current_site(self.request)
         subject = f"!!! Info Support Tech : {self.instance.item} !!!"
-        context = {"email": self.request.user.email, "suptech": self.instance}
-        message = render_to_string('tools/email_format/suptech_email.html', context)
+        context = {"email": self.request.user.email, "suptech": self.instance, 'domain': current_site.domain}
+        message = render_to_string('tools/email_format/suptech_request_email.html', context)
         email = EmailMessage(
             subject=subject, body=message, from_email=self.request.user.email,
             to=string_to_list(config.SUPTECH_TO_EMAIL_LIST), cc=[self.request.user.email]
@@ -102,4 +102,23 @@ class SuptechModalForm(BSModalModelForm):
             if self.cleaned_data['custom_item']:
                 suptech.item = self.cleaned_data['custom_item']
             suptech.save()
+            self.send_email()
         return suptech
+
+
+class SuptechResponseForm(forms.ModelForm):
+    action = forms.CharField(widget=forms.Textarea(), required=True)
+
+    class Meta:
+        model = Suptech
+        fields = ['xelon', 'item', 'time', 'info', 'rmq', 'action']
+
+    def send_email(self, request):
+        subject = f"!!! Info Support Tech : {self.instance.item} !!!"
+        context = {"user": request.user, "suptech": self.instance}
+        message = render_to_string('tools/email_format/suptech_response_email.html', context)
+        email = EmailMessage(
+            subject=subject, body=message, from_email=request.user.email,
+            to=[self.instance.created_by.email], cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
+        )
+        email.send()

@@ -19,4 +19,5 @@ urlpatterns = [
     path('3d-printer/ultimaker/stream/', views.UltimakerStreamView.as_view(), name="ultimaker_stream"),
     path('suptech/', views.suptech_list, name='suptech_list'),
     path('suptech/add/', views.SupTechCreateView.as_view(), name="suptech_add"),
+    path('suptech/<int:pk>/update/', views.SuptechResponseView.as_view(), name="suptech_update"),
 ]

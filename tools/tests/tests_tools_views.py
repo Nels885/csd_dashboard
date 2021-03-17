@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from tools.models import CsdSoftware, ThermalChamber, Suptech
+from tools.models import CsdSoftware, ThermalChamber
 
 
 class ToolsTestCase(UnitTest):
