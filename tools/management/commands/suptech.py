@@ -1,3 +1,4 @@
+import os
 import logging
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
@@ -8,9 +9,8 @@ from django.db import connection
 from tools.models import Suptech
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
-from utils.file.export import ExportExcel, os
 
-from ._file_suptech import CsvSuptech, ExcelSuptech
+from ._file_suptech import CsvSuptech, ExcelSuptech, ExportExcelSuptech
 
 logger = logging.getLogger('command')
 
@@ -134,8 +134,8 @@ class Command(BaseCommand):
 
             values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
 
-            error = ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
-                                excel_type='xls', novalue="").file(path, False)
+            error = ExportExcelSuptech(queryset=queryset, filename=filename, header=header, values_list=values_list,
+                                       excel_type='xls', novalue="").file(path, False)
             if error:
                 self.stdout.write(
                     self.style.ERROR(

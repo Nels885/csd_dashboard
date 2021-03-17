@@ -22,8 +22,11 @@ class IhmEmailModalForm(BSModalForm):
 
     def __init__(self, *args, **kwargs):
         super(IhmEmailModalForm, self).__init__(*args, **kwargs)
+        cc_email_list = config.CSD_CC_EMAIL_LIST
+        if self.request.user.email not in cc_email_list:
+            cc_email_list = f"{self.request.user.email}; {cc_email_list}"
         self.fields['to'].initial = config.CHANGE_VIN_TO_EMAIL_LIST
-        self.fields['cc'].initial = config.VIN_ERROR_TO_EMAIL_LIST
+        self.fields['cc'].initial = cc_email_list
 
     def send_email(self):
         email = EmailMessage(
@@ -110,8 +113,12 @@ class VinCorvetModalForm(BSModalModelForm):
     def clean_xml_data(self):
         xml_data = self.cleaned_data['xml_data']
         data = xml_parser(xml_data)
+        no_fields = ['vin', 'btel', 'radio', 'bsi', 'emf', 'cmm', 'bsm']
+        all_data = {key: '' for key in [f.name for f in Corvet._meta.local_fields if f.name not in no_fields]}
+        all_data.update({'donnee_date_debut_garantie': None, 'donnee_date_entree_montage': None})
         vin = self.cleaned_data.get("vin")
         if data:
+            all_data.update(data)
             if data.get('vin') == vin and data.get('donnee_date_entree_montage'):
                 if self.request.is_ajax():
                     xml_corvet_file(self.instance, xml_data, vin)
@@ -119,7 +126,8 @@ class VinCorvetModalForm(BSModalModelForm):
                 self.add_error('xml_data', _('XML data does not match VIN'))
         else:
             self.add_error('xml_data', _('Invalid XML data'))
-        return data
+            all_data = data
+        return all_data
 
     def clean(self):
         cleaned_data = super(VinCorvetModalForm, self).clean()

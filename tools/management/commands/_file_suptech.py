@@ -1,4 +1,8 @@
+import openpyxl
+from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
+
 from utils.microsoft_format import CsvFormat, ExcelFormat, pd
+from utils.file.export import ExportExcel
 
 
 class CsvSuptech(CsvFormat):
@@ -70,3 +74,55 @@ class ExcelSuptech(ExcelFormat):
             row = self.sheet.loc[line]  # get the data in the ith row
             data.append(dict(row.dropna()))
         return data
+
+
+class ExportExcelSuptech(ExportExcel):
+
+    def __init__(self, queryset, filename, header, values_list=None, excel_type="xls", novalue="#"):
+        super().__init__(queryset, filename, header, values_list, excel_type, novalue)
+
+    def _xlsx_writer(self, response):
+        """ Formatting data in Excel 2010 format """
+        wb = openpyxl.Workbook()
+
+        # Get active worksheet/tab
+        ws = wb.active
+        ws.title = 'Feuille 1'
+        col_dimensions = {'A': 20, 'B': 12, 'C': 13, 'D': 25, 'E': 8, 'F': 80, 'G': 60, 'H': 60}
+        for key, value in col_dimensions.items():
+            ws.column_dimensions[key].width = value
+        ws['F2'].alignment = Alignment(wrap_text=True)
+
+        # Sheet header, first row
+        row_num = 1
+
+        thin_border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
+
+        # Assign the titles for each cell of the header
+        for col_num, column_title in enumerate(self.header, 1):
+            cell = ws.cell(row=row_num, column=col_num)
+            cell.alignment = Alignment(horizontal='center')
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="b2b2b2", end_color="b2b2b2", fill_type="solid")
+            cell.border = thin_border
+            cell.value = column_title
+
+        # Iterate though all values
+        for query in self.valueSet:
+            row_num += 1
+            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+            query = self._query_format(query)
+
+            # Assign the data  for each cell of the row
+            for col_num, cell_value in enumerate(query, 1):
+                cell = ws.cell(row=row_num, column=col_num)
+                cell.value = cell_value
+                cell.alignment = Alignment(wrap_text=True, vertical='center')
+                cell.border = thin_border
+            ws.row_dimensions[row_num].height = 75
+
+        wb.save(response)
+        return response

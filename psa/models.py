@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class CorvetChoices(models.Model):
@@ -196,6 +197,11 @@ class Multimedia(models.Model):
         verbose_name = "Données Multimédia"
         ordering = ['hw_reference']
 
+    def save(self, *args, **kwargs):
+        Corvet.objects.filter(electronique_14x__exact=self.hw_reference).update(btel=self.pk)
+        Corvet.objects.filter(electronique_14f__exact=self.hw_reference).update(radio=self.pk)
+        super(Multimedia, self).save(*args, **kwargs)
+
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
@@ -259,6 +265,10 @@ class BsiModel(models.Model):
         verbose_name = "Données BSI"
         ordering = ['reference']
 
+    def save(self, *args, **kwargs):
+        Corvet.objects.filter(electronique_14b__startswith=self.reference[:10]).update(bsi=self.id)
+        super(BsiModel, self).save(*args, **kwargs)
+
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
@@ -278,6 +288,10 @@ class EmfModel(models.Model):
     class Meta:
         verbose_name = "Données EMF"
         ordering = ['hw_reference']
+
+    def save(self, *args, **kwargs):
+        Corvet.objects.filter(electronique_14l__startswith=self.hw_reference).update(emf=self.id)
+        super(EmfModel, self).save(*args, **kwargs)
 
     def __iter__(self):
         for field in self._meta.fields:

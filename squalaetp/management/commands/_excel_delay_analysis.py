@@ -8,7 +8,7 @@ logger = logging.getLogger('command')
 class ExcelDelayAnalysis(ExcelFormat):
     """## Read data in Excel file for Delay Analysis ##"""
 
-    DROP_COLS = ['ref_produit_clarion', 'code_pdv', 'nom_pdv',
+    DROP_COLS = ['ref_produit_commerciale', 'ref_produit_clarion', 'code_pdv', 'nom_pdv',
                  'date_daccord_de_la_demande', 'delai_prevu_sp', 'nom_equipe', 'n_commande_de_travaux']
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S"}
 
@@ -69,5 +69,4 @@ class ExcelDelayAnalysis(ExcelFormat):
 
     def key_formatting(self, data):
         data["numero_de_dossier"] = data.pop("n_de_dossier")
-        data["modele_produit"] = data.pop("ref_produit_commerciale")
         return data

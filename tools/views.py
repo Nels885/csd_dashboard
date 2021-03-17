@@ -5,19 +5,20 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import JsonResponse
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, UpdateView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber, TagXelon
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech
 from dashboard.forms import ParaErrorList
-from .forms import TagXelonForm, SoftwareForm, ThermalFrom
+from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
 from utils.data.mqtt import MQTTClass
 
 MQTT_CLIENT = MQTTClass()
 
 
+@login_required
 def soft_list(request):
     """ View of Software list page """
     title = 'Software'
@@ -26,6 +27,7 @@ def soft_list(request):
     return render(request, 'tools/soft_table.html', locals())
 
 
+@login_required
 def tag_xelon_list(request):
     """ View of Software list page """
     title = _('Tools')
@@ -149,3 +151,49 @@ class ThermalDeleteView(LoginRequiredMixin, BSModalDeleteView):
     template_name = 'tools/modal/thermal_delete.html'
     success_message = _('Success: Input was deleted.')
     success_url = reverse_lazy('tools:thermal')
+
+
+class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'tools.add_suptech'
+    template_name = 'tools/modal/suptech_create.html'
+    form_class = SuptechModalForm
+    success_message = "Succès : Création d'un SupTech avec succès !"
+
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            messages.success(self.request, _('Success: The email has been sent.'))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
+
+
+@login_required
+def suptech_list(request):
+    """ View of Software list page """
+    title = _('Tools')
+    table_title = _('Support Tech list')
+    objects = Suptech.objects.all().order_by('-date')
+    return render(request, 'tools/suptech_table.html', locals())
+
+
+class SuptechResponseView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'tools.change_suptech'
+    model = Suptech
+    form_class = SuptechResponseForm
+    template_name = 'tools/suptech_update.html'
+    success_url = reverse_lazy('tools:suptech_list')
+
+    def get_context_data(self, **kwargs):
+        context = super(SuptechResponseView, self).get_context_data(**kwargs)
+        context['title'] = "Tools"
+        context['card_title'] = _("Support Tech Response")
+        return context
+
+    def form_valid(self, form):
+        form.send_email(self.request)
+        messages.success(self.request, _('Success: The email has been sent.'))
+        return super().form_valid(form)

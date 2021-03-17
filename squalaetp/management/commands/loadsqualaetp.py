@@ -58,7 +58,7 @@ class Command(BaseCommand):
         else:
             call_command("loadraspeedi")
             call_command("programing")
-            call_command("corvet")
+            # call_command("corvet")
             call_command("loadsqualaetp", "--xelon_update")
             call_command("indicator")
             call_command("importcorvet", "--squalaetp")

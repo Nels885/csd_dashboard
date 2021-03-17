@@ -159,13 +159,13 @@ class RepairViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
-            corvet = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
-            serializer = self.serializer_class(corvet["items"], many=True)
+            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
+            serializer = self.serializer_class(repair["items"], many=True)
             data = {
                 "data": serializer.data,
-                "draw": corvet["draw"],
-                "recordsTotal": corvet["total"],
-                "recordsFiltered": corvet["count"]
+                "draw": repair["draw"],
+                "recordsTotal": repair["total"],
+                "recordsFiltered": repair["count"]
             }
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:

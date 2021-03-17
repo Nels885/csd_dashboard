@@ -1,10 +1,17 @@
 from django import forms
+from django.utils import timezone
 from django.utils.translation import ugettext as _
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 from bootstrap_modal_forms.forms import BSModalModelForm
+from crum import get_current_user
+from constance import config
 
+from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 
-from .models import TagXelon, CsdSoftware, ThermalChamber
+from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech
 
 
 class TagXelonForm(BSModalModelForm):
@@ -54,3 +61,64 @@ class ThermalFrom(forms.ModelForm):
             'operating_mode': forms.Select(attrs={'class': 'custom-select form-control'}),
             'xelon_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class SuptechModalForm(BSModalModelForm):
+    ITEM_CHOICES = [
+        ('', '---------'),
+        ('Hot Line Tech', 'Hot Line Tech'), ('Support Admin', 'Support Admin'), ('R.M.', 'R.M.'),
+        ('Temps Annexe', 'Temps Annexe'), ('Validation Tech', 'Validation Tech'),
+        ('Retour Autotronik', 'Retour Autotronik'), ('Probleme process', 'Probleme process'),
+        ('Informatique/Reseau', 'Informatique/Reseau'), ('Inter Maintenance(AF/YM)', 'Inter Maintenance(AF/YM)'),
+        ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
+    ]
+    item = forms.ChoiceField(choices=ITEM_CHOICES)
+    custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
+
+    class Meta:
+        model = Suptech
+        fields = ['xelon', 'item', 'custom_item', 'time', 'info', 'rmq']
+
+    def send_email(self):
+        current_site = get_current_site(self.request)
+        subject = f"!!! Info Support Tech : {self.instance.item} !!!"
+        context = {"email": self.request.user.email, "suptech": self.instance, 'domain': current_site.domain}
+        message = render_to_string('tools/email_format/suptech_request_email.html', context)
+        email = EmailMessage(
+            subject=subject, body=message, from_email=self.request.user.email,
+            to=string_to_list(config.SUPTECH_TO_EMAIL_LIST), cc=[self.request.user.email]
+        )
+        email.send()
+
+    def save(self, commit=True):
+        suptech = super(SuptechModalForm, self).save(commit=False)
+        user = get_current_user()
+        suptech.date = timezone.now()
+        suptech.user = f"{user.first_name} {user.last_name}"
+        suptech.created_by = user
+        suptech.created_at = timezone.now()
+        if commit and not self.request.is_ajax():
+            del self.fields['custom_item']
+            if self.cleaned_data['custom_item']:
+                suptech.item = self.cleaned_data['custom_item']
+            suptech.save()
+            self.send_email()
+        return suptech
+
+
+class SuptechResponseForm(forms.ModelForm):
+    action = forms.CharField(widget=forms.Textarea(), required=True)
+
+    class Meta:
+        model = Suptech
+        fields = ['xelon', 'item', 'time', 'info', 'rmq', 'action']
+
+    def send_email(self, request):
+        subject = f"!!! Info Support Tech : {self.instance.item} !!!"
+        context = {"user": request.user, "suptech": self.instance}
+        message = render_to_string('tools/email_format/suptech_response_email.html', context)
+        email = EmailMessage(
+            subject=subject, body=message, from_email=request.user.email,
+            to=[self.instance.created_by.email], cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
+        )
+        email.send()

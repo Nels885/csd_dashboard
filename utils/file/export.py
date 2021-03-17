@@ -18,18 +18,6 @@ from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
 # Get an instance of a logger
 logger = logging.getLogger('command')
 
-# # create console handler and set level to debug
-# ch = logging.StreamHandler()
-#
-# # create formatter
-# formatter = logging.Formatter("[%(asctime)s] [%(levelname)s] %(message)s")
-#
-# # add formatter to ch
-# ch.setFormatter(formatter)
-#
-# # add ch to logger
-# logger.addHandler(ch)
-
 
 class HTMLFilter(HTMLParser):
     text = ""
@@ -126,7 +114,7 @@ class ExportExcel:
             response['Content-Disposition'] = 'attachement; filename="{}_{}.{}'.format(
                 self.filename, self.date.strftime("%y-%m-%d_%H-%M"), self.excelType
             )
-            self._xls_writer(response)
+            self._xlsx_writer(response)
         return response
 
     def file(self, path, copy=True):
@@ -145,7 +133,7 @@ class ExportExcel:
             elif self.excelType == "xlsx":
                 self._xlsx_writer(file)
             else:
-                self._xls_writer(file)
+                self._xlsx_writer(file)
             return False
         except OSError:
             logger.warning('{} File is read-only.'.format(file))
