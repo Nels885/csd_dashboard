@@ -17,15 +17,20 @@ class ToolsTestCase(UnitTest):
         }
 
     def test_soft_list_page(self):
-        response = self.client.get(reverse('tools:soft_list'))
+        url = reverse('tools:soft_list')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_soft_add_page(self):
-        response = self.client.get(reverse('tools:soft_add'))
-        self.assertRedirects(response, '/accounts/login/?next=/tools/soft/add/', status_code=302)
+        url = reverse('tools:soft_add')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.add_perms_user(CsdSoftware, 'add_csdsoftware', 'change_csdsoftware')
         self.login()
-        response = self.client.get(reverse('tools:soft_add'))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         # Adding Software is valid
@@ -41,7 +46,11 @@ class ToolsTestCase(UnitTest):
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
     def test_tag_xelon_list_page(self):
-        response = self.client.get(reverse('tools:tag_xelon_list'))
+        url = reverse('tools:tag_xelon_list')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_thermal_chamber_page(self):
@@ -90,10 +99,11 @@ class ToolsTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_thermal_chamber_list_page(self):
-        response = self.client.get(reverse('tools:thermal_list'))
-        self.assertRedirects(response, '/accounts/login/?next=/tools/thermal/table/', status_code=302)
+        url = reverse('tools:thermal_list')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.login()
-        response = self.client.get(reverse('tools:thermal_list'))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_ajax_temp(self):
@@ -108,5 +118,8 @@ class ToolsTestCase(UnitTest):
 
     def test_suptech_list_page(self):
         url = reverse('tools:suptech_list')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)

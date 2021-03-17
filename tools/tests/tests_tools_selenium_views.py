@@ -40,5 +40,13 @@ class ToolsSeleniumTestCase(FunctionalTest):
 
     def test_soft_list_page(self):
         driver = self.driver
+
+        # Creating session cookie for to access Software add form
+        self.login()
+        cookie = self.client.cookies['sessionid']
         driver.get(self.live_server_url + '/tools/soft/')
+        driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
+        driver.refresh()
+        driver.get(self.live_server_url + '/tools/soft/')
+
         self.assertEqual(driver.current_url, self.live_server_url + '/tools/soft/')

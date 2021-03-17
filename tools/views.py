@@ -18,6 +18,7 @@ from utils.data.mqtt import MQTTClass
 MQTT_CLIENT = MQTTClass()
 
 
+@login_required
 def soft_list(request):
     """ View of Software list page """
     title = 'Software'
@@ -26,6 +27,7 @@ def soft_list(request):
     return render(request, 'tools/soft_table.html', locals())
 
 
+@login_required
 def tag_xelon_list(request):
     """ View of Software list page """
     title = _('Tools')
@@ -170,6 +172,7 @@ class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
             return reverse_lazy('index')
 
 
+@login_required
 def suptech_list(request):
     """ View of Software list page """
     title = _('Tools')
