@@ -180,7 +180,8 @@ def suptech_list(request):
     return render(request, 'tools/suptech_table.html', locals())
 
 
-class SuptechResponseView(UpdateView):
+class SuptechResponseView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'tools.change_suptech'
     model = Suptech
     form_class = SuptechResponseForm
     template_name = 'tools/suptech_update.html'

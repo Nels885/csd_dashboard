@@ -5,16 +5,17 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from tools.models import CsdSoftware, ThermalChamber
+from tools.models import CsdSoftware, ThermalChamber, Suptech
 
 
 class ToolsTestCase(UnitTest):
 
     def setUp(self):
         super(ToolsTestCase, self).setUp()
-        self.form_data = {
-            'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test',
-        }
+        Suptech.objects.create(
+            date=timezone.now(), user='test', xelon='A123456789', item='Hot Line Tech', time='5', info='test',
+            rmq='test', created_by=self.user
+        )
 
     def test_soft_list_page(self):
         url = reverse('tools:soft_list')
@@ -26,6 +27,7 @@ class ToolsTestCase(UnitTest):
 
     def test_soft_add_page(self):
         url = reverse('tools:soft_add')
+        form_data = {'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test'}
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.add_perms_user(CsdSoftware, 'add_csdsoftware', 'change_csdsoftware')
@@ -35,7 +37,7 @@ class ToolsTestCase(UnitTest):
 
         # Adding Software is valid
         old_soft = CsdSoftware.objects.count()
-        response = self.client.post(reverse('tools:soft_add'), self.form_data)
+        response = self.client.post(reverse('tools:soft_add'), form_data)
         new_soft = CsdSoftware.objects.count()
         self.assertEqual(new_soft, old_soft + 1)
         self.assertEqual(response.status_code, 302)
@@ -123,3 +125,16 @@ class ToolsTestCase(UnitTest):
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_response_suptech_page(self):
+        suptech = Suptech.objects.first()
+        url = reverse('tools:suptech_update', kwargs={'pk': suptech.pk})
+        form_data = {'xelon': 'A123456789', 'item': 'Hot Line Tech', 'time': '5', 'info': 'test', 'rmq': 'test', 'action': 'test'}
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(Suptech, 'change_suptech')
+        self.login()
+
+        response = self.client.post(url, form_data)
+        self.assertRedirects(response, reverse('tools:suptech_list'), status_code=302)
