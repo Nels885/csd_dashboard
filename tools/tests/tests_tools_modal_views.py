@@ -1,7 +1,7 @@
 from dashboard.tests.base import UnitTest, reverse
 
 from squalaetp.models import Xelon
-from tools.models import TagXelon
+from tools.models import TagXelon, Suptech
 
 
 class MixinsTest(UnitTest):
@@ -10,13 +10,13 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                                      modele_vehicule='peugeot')
-        self.add_perms_user(TagXelon, 'add_tagxelon')
         self.xelonId = str(xelon.id)
 
     def test_create_Tag_xelon_ajax_mixin(self):
         """
         Create TagXelon through BSModalCreateView.
         """
+        self.add_perms_user(TagXelon, 'add_tagxelon')
         self.login()
 
         # First post request = ajax request checking if form in view is valid
@@ -51,3 +51,45 @@ class MixinsTest(UnitTest):
         # Object is not created
         tags = TagXelon.objects.all()
         self.assertEqual(tags.count(), 1)
+
+    def test_create_suptech_ajax_mixin(self):
+        """
+        Create Suptech through BSModalCreateView.
+        """
+        self.add_perms_user(Suptech, 'add_suptech')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('tools:suptech_add'),
+            data={
+                'xelon': 'A123456789',
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        suptechs = Suptech.objects.all()
+        self.assertEqual(suptechs.count(), 0)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('tools:suptech_add'),
+            data={
+                'xelon': 'A123456789',
+                'item': 'Hot Line Tech',
+                'time': '5',
+                'info': 'test',
+                'rmq': 'test',
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        suptechs = Suptech.objects.all()
+        self.assertEqual(suptechs.count(), 1)

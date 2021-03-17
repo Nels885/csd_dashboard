@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from tools.models import CsdSoftware, ThermalChamber
+from tools.models import CsdSoftware, ThermalChamber, Suptech
 
 
 class ToolsTestCase(UnitTest):
@@ -15,7 +15,6 @@ class ToolsTestCase(UnitTest):
         self.form_data = {
             'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test',
         }
-        self.add_perms_user(CsdSoftware, 'add_csdsoftware', 'change_csdsoftware')
 
     def test_soft_list_page(self):
         response = self.client.get(reverse('tools:soft_list'))
@@ -24,6 +23,7 @@ class ToolsTestCase(UnitTest):
     def test_soft_add_page(self):
         response = self.client.get(reverse('tools:soft_add'))
         self.assertRedirects(response, '/accounts/login/?next=/tools/soft/add/', status_code=302)
+        self.add_perms_user(CsdSoftware, 'add_csdsoftware', 'change_csdsoftware')
         self.login()
         response = self.client.get(reverse('tools:soft_add'))
         self.assertEqual(response.status_code, 200)
@@ -100,3 +100,13 @@ class ToolsTestCase(UnitTest):
         response = self.client.get(reverse('tools:ajax_temp'), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"temp": "Hors ligne"})
+
+    def test_create_suptech_is_disconnected(self):
+        url = reverse('tools:suptech_add')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+    def test_suptech_list_page(self):
+        url = reverse('tools:suptech_list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

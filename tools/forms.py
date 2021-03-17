@@ -64,6 +64,7 @@ class ThermalFrom(forms.ModelForm):
 
 class SuptechModalForm(BSModalModelForm):
     ITEM_CHOICES = [
+        ('', '---------'),
         ('Hot Line Tech', 'Hot Line Tech'), ('Support Admin', 'Support Admin'), ('R.M.', 'R.M.'),
         ('Temps Annexe', 'Temps Annexe'), ('Validation Tech', 'Validation Tech'),
         ('Retour Autotronik', 'Retour Autotronik'), ('Probleme process', 'Probleme process'),
@@ -93,6 +94,6 @@ class SuptechModalForm(BSModalModelForm):
         suptech.user = f"{user.first_name} {user.last_name}"
         suptech.created_by = user
         suptech.created_at = timezone.now()
-        if commit and self.request.is_ajax():
+        if commit and not self.request.is_ajax():
             suptech.save()
         return suptech
