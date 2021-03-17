@@ -2,7 +2,7 @@
 
 {% load widget_tweaks %}
 
-<form method="post" action="">
+<form id="suptechForm" method="post" action="">
 
     {% csrf_token %}
 
@@ -22,11 +22,20 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.xelon.id_for_label }}" class="col-form-label col-sm-2">N° XELON *</label>
+            <label for="{{ form.xelon.id_for_label }}" class="col-form-label col-sm-2">N° XELON</label>
             <div class="col-sm-4">
                 {% render_field form.xelon class="form-control" %}
                 <div class="{% if form.xelon.errors %} invalid{% endif %}">
                     {% for error in form.xelon.errors %}
+                        <p class="help-block text-danger">* {{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <label for="{{ form.time.id_for_label }}" class="col-form-label col-sm-3">Temps/Durée (en min) *</label>
+            <div class="col-sm-3 mb-3 mb-sm-0">
+                {% render_field form.time class="form-control" %}
+                <div class="{% if form.time.errors %} invalid{% endif %}">
+                    {% for error in form.time.errors %}
                         <p class="help-block text-danger">* {{ error }}</p>
                     {% endfor %}
                 </div>
@@ -44,15 +53,13 @@
                     {% endfor %}
                 </div>
             </div>
-            <label for="{{ form.time.id_for_label }}" class="col-form-label col-sm-3">Temps/Durée (en min) *</label>
-            <div class="col-sm-3 mb-3 mb-sm-0">
-                {% render_field form.time class="form-control" %}
-                <div class="{% if form.time.errors %} invalid{% endif %}">
-                    {% for error in form.time.errors %}
+            <div class="col-sm-offset-2 col-sm-6 mb-3 mb-sm-0">
+                {% render_field form.custom_item class="form-control" %}
+                <div class="{% if form.custom_item.errors %} invalid{% endif %}">
+                    {% for error in form.custom_item.errors %}
                         <p class="help-block text-danger">* {{ error }}</p>
                     {% endfor %}
                 </div>
-
             </div>
         </div>
 
@@ -86,3 +93,14 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    $('#id_item').on('change', function () {
+        if ($(this).val() === 'Autres... (Avec resumé)') {
+            console.log($(this).val());
+            $('#id_custom_item').attr({'readonly': false, 'required': true});
+        } else {
+            $('#id_custom_item').attr({'readonly': true, 'required': false});
+        }
+    });
+</script>

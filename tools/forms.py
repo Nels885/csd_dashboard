@@ -72,13 +72,16 @@ class SuptechModalForm(BSModalModelForm):
         ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
     ]
     item = forms.ChoiceField(choices=ITEM_CHOICES)
+    custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
 
     class Meta:
         model = Suptech
-        fields = ['xelon', 'item', 'time', 'info', 'rmq']
+        fields = ['xelon', 'item', 'custom_item', 'time', 'info', 'rmq']
 
     def send_email(self):
-        subject = f"!!! Info Support Tech : {self.cleaned_data['item']} !!!"
+        if self.cleaned_data['custom_item']:
+            self.instance.item = self.cleaned_data['custom_item']
+        subject = f"!!! Info Support Tech : {self.instance.item} !!!"
         context = {"email": self.request.user.email, "suptech": self.instance}
         message = render_to_string('tools/email_format/suptech_email.html', context)
         email = EmailMessage(
@@ -95,5 +98,8 @@ class SuptechModalForm(BSModalModelForm):
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
+            del self.fields['custom_item']
+            if self.cleaned_data['custom_item']:
+                suptech.item = self.cleaned_data['custom_item']
             suptech.save()
         return suptech
