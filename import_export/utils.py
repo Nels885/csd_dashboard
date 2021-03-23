@@ -1,6 +1,7 @@
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 from django.http import Http404
+from django.db.models import Q
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
@@ -98,6 +99,21 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_16b', 'corvet__electronique_46b', 'corvet__electronique_56b',
             'corvet__electronique_66b',
             'corvet__electronique_86b', 'corvet__electronique_96b'
+        )
+    elif product == "nac":
+        header = [
+            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
+            'DATE_DEBUT_GARANTIE', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE', '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE',
+            '94X_BTEL_SOFT'
+        ]
+
+        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__contains="NAC")).annotate(
+            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
+        )
+        values_list = (
+            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
+            'corvet__btel__extra', 'date_debut_garantie', 'corvet__electronique_14x', 'corvet__electronique_44x',
+            'corvet__electronique_64x', 'corvet__electronique_84x', 'corvet__electronique_94x'
         )
     elif product == 'corvet':
         header = [
