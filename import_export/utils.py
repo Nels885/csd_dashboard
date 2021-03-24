@@ -6,6 +6,7 @@ from django.db.models import Q
 from squalaetp.models import Xelon
 from psa.models import Corvet
 from reman.models import Batch, Repair, EcuModel
+from tools.models import Suptech
 from utils.file.export import ExportExcel
 
 
@@ -186,6 +187,30 @@ def extract_reman(model, excel_type='csv'):
 
         )
 
+    if queryset:
+        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
+    else:
+        raise Http404("No data matches")
+
+
+"""
+##################################
+
+Export CORVET data to excel format
+
+##################################
+"""
+
+
+def extract_tools(model='all', excel_type='csv'):
+    filename = model
+    header = queryset = values_list = None
+    if model == "suptech":
+        header = [
+            'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR'
+        ]
+        queryset = Suptech.objects.all().order_by('date')
+        values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
     if queryset:
         return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
     else:

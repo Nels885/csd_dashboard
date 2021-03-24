@@ -1,14 +1,14 @@
 from io import StringIO
 
 from django.shortcuts import redirect, render
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 
-from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm
-from .utils import extract_ecu, extract_corvet, extract_reman
+from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm, ExportToolsForm
+from .utils import extract_ecu, extract_corvet, extract_reman, extract_tools
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 
@@ -24,6 +24,7 @@ def import_export(request):
     form_corvet = ExportCorvetForm()
     form_corvet_vin = ExportCorvetVinListForm()
     form_reman = ExportRemanForm()
+    form_tools = ExportToolsForm()
     context.update(locals())
     return render(request, 'import_export/import_export.html', context)
 
@@ -58,9 +59,20 @@ def export_reman(request):
     return redirect('import_export:detail')
 
 
-@permission_required('reman.add_sparepart', 'reman.change_sparepart')
+def export_tools(request):
+    if request.user.has_perm('tools.view_suptech') and request.POST:
+        form = ExportToolsForm(request.POST or None)
+        if form.is_valid():
+            table = form.cleaned_data['tables']
+            excel_type = form.cleaned_data['formats']
+            return extract_tools(table, excel_type)
+    else:
+        messages.warning(request, _('You do not have the required permissions'))
+    return redirect('import_export:detail')
+
+
 def import_sparepart(request):
-    if request.method == 'POST':
+    if request.user.has_perms(['reman.add_sparepart', 'reman.change_sparepart']) and request.method == 'POST':
         try:
             if request.FILES["myfile"]:
                 my_file = request.FILES["myfile"]
@@ -77,12 +89,13 @@ def import_sparepart(request):
             messages.warning(request, 'Format de fichier incorrect !')
         except KeyError:
             messages.warning(request, "Le fichier n'est pas correctement formaté")
+    else:
+        messages.warning(request, _('You do not have the required permissions'))
     return redirect('import_export:detail')
 
 
-@permission_required('reman.add_ecurefbase', 'reman.change_ecurefbase')
 def import_ecurefbase(request):
-    if request.method == 'POST':
+    if request.user.has_perms(['reman.add_ecurefbase', 'reman.change_ecurefbase']) and request.method == 'POST':
         try:
             if request.FILES["myfile"]:
                 my_file = request.FILES["myfile"]
@@ -99,4 +112,6 @@ def import_ecurefbase(request):
             messages.warning(request, 'Format de fichier incorrect !')
         except KeyError:
             messages.warning(request, "Le fichier n'est pas correctement formaté")
+    else:
+        messages.warning(request, _('You do not have the required permissions'))
     return redirect('import_export:detail')
