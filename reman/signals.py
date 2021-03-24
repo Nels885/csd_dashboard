@@ -1,6 +1,5 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.core.management import call_command
 from crum import get_current_user
 
 from .models import Repair, Batch
@@ -8,7 +7,6 @@ from .models import Repair, Batch
 
 @receiver(post_save, sender=Repair)
 def post_save_repair(sender, instance, **kwargs):
-    call_command('exportreman', '--repair')
     prod_ok = Repair.objects.exclude(status="Rebut").filter(batch=instance.batch).count()
     if prod_ok >= instance.batch.quantity:
         instance.batch.active = False
@@ -25,6 +23,8 @@ def pre_save_repair(sender, instance, **kwargs):
             instance.created_by = user
         batch_number = instance.identify_number[:-3] + "000"
         instance.batch = Batch.objects.get(batch_number__exact=batch_number)
+    if instance.status != "Réparé":
+        instance.quality_control = False
     instance.modified_by = user
 
 

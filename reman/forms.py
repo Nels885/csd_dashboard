@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db.models import Q, Count
+from django.core.management import call_command
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
@@ -125,6 +126,13 @@ class AddRepairForm(BSModalModelForm):
             elif not self.queryset.first().active:
                 raise forms.ValidationError("Ce lot n'est plus actif")
 
+    def save(self, commit=True):
+        instance = super(AddRepairForm, self).save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+            call_command('exportreman', '--repair')
+        return instance
+
 
 class EditRepairForm(forms.ModelForm):
     default = forms.ModelChoiceField(queryset=Default.objects.all(), required=True, label="Panne",
@@ -144,6 +152,13 @@ class EditRepairForm(forms.ModelForm):
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
         }
+
+    def save(self, commit=True):
+        instance = super(EditRepairForm, self).save(commit=False)
+        if commit:
+            instance.save()
+            call_command('exportreman', '--repair')
+        return instance
 
 
 class CloseRepairForm(forms.ModelForm):
@@ -171,9 +186,8 @@ class CloseRepairForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super(CloseRepairForm, self).save(commit=False)
         if commit:
-            if instance.status != "Réparé":
-                instance.quality_control = False
             instance.save()
+            call_command('exportreman', '--repair')
         return instance
 
 

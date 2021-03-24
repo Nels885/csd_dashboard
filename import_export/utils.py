@@ -196,7 +196,7 @@ def extract_reman(model, excel_type='csv'):
 """
 ##################################
 
-Export CORVET data to excel format
+Export Tools data to excel format
 
 ##################################
 """
