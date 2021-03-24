@@ -16,14 +16,8 @@ class ExportCorvetForm(forms.Form):
 class ExportRemanForm(forms.Form):
     TABLES = [('batch', 'BATCH'), ('repair_reman', 'REPAIR'), ('base_ref_reman', 'BASE REF REMAN')]
 
-    formats = forms.ChoiceField(
-        label='Formats', required=False, choices=FORMAT_CHOICES,
-        widget=forms.Select(attrs={'style': 'width:100px', 'class': 'custom-select form-control mx-sm-3 mb-2'})
-    )
-    tables = forms.ChoiceField(
-        label='Tableaux', required=False, choices=TABLES,
-        widget=forms.Select(attrs={'style': 'width:200px', 'class': 'custom-select form-control mx-sm-3 mb-2'}),
-    )
+    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    tables = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
 
 
 class ExportCorvetVinListForm(forms.Form):

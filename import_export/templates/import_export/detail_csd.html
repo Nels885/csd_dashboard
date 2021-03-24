@@ -25,9 +25,7 @@
     </div>
 </form>
 
-<br>
-
-<form method="post" action="{% url 'import_export:corvet' %}">
+<form class="mt-4" method="post" action="{% url 'import_export:corvet' %}">
 
     {% csrf_token %}
 
