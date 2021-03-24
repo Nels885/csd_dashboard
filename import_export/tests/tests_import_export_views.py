@@ -1,11 +1,13 @@
 import csv
 import io
 from django.urls import reverse
+from django.utils import timezone
 
 from dashboard.tests.base import UnitTest
 from squalaetp.models import Xelon
 from psa.models import Corvet
 from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase, EcuType
+from tools.models import Suptech
 
 
 class ImportExportTestCase(UnitTest):
@@ -17,8 +19,7 @@ class ImportExportTestCase(UnitTest):
             vin=self.vin, electronique_14x='9812345680', electronique_14a='9812345680', electronique_14b='9812345680',
             electronique_16p='9812345680', electronique_16b='9812345680'
         )
-        xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, corvet=corvet)
-        # corvet.xelons.add(xelon)
+        Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, corvet=corvet)
         psaBarcode = '9612345678'
         spare_part = SparePart.objects.create(code_produit='test HW_9876543210')
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test', spare_part=spare_part)
@@ -26,6 +27,10 @@ class ImportExportTestCase(UnitTest):
         ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_type=ecu_type, psa_barcode=psaBarcode)
         batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
+        Suptech.objects.create(
+            date=timezone.now(), user='test', xelon='A123456789', item='Hot Line Tech', time='5', info='test',
+            rmq='test', created_by=self.user
+        )
 
     def _http_content(self, response):
         content = response.content.decode('utf-8')
@@ -73,6 +78,19 @@ class ImportExportTestCase(UnitTest):
         self.login()
 
         for table in ['batch', 'repair_reman', 'base_ref_reman']:
+            response = self.client.post(url, {'formats': 'csv', 'tables': table})
+            self.assertEqual(response.status_code, 200)
+            self._http_content(response)
+
+    def test_export_tools_page(self):
+        url = reverse('import_export:tools')
+        response = self.client.post(url, {'formats': 'csv', 'tables': 'suptech'})
+        self.assertEqual(response.status_code, 302)
+
+        self.add_perms_user(Suptech, 'view_suptech')
+        self.login()
+
+        for table in ['suptech']:
             response = self.client.post(url, {'formats': 'csv', 'tables': table})
             self.assertEqual(response.status_code, 200)
             self._http_content(response)

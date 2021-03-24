@@ -7,6 +7,8 @@
     <table class="table table-bordered display" id="suptechTable" style="width:100%">
         <thead>
         <tr>
+            <td></td>
+            <td></td>
             <th style="min-width: 8rem;">Date</th>
             <th>Qui</th>
             <th>N° XELON</th>
@@ -22,6 +24,16 @@
         {% for obj in objects %}
 
             <tr>
+                <td class="bg-white">
+                    {% if perms.tools.change_suptech %}
+                        <a href="{% url 'tools:suptech_update' pk=obj.pk %}" title="Actions réalisées" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                    {% endif %}
+                </td>
+                <td class="bg-white">
+                    <a href="#" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                </td>
                 <td>{{ obj.date }}</td>
                 <td>{{ obj.user }}</td>
                 <td>{{ obj.xelon }}</td>

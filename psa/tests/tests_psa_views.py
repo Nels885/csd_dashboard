@@ -12,6 +12,7 @@ class PsaTestCase(UnitTest):
     def setUp(self):
         super(PsaTestCase, self).setUp()
         self.psa_url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={}&updateId={}"
+        self.authError = {"detail": "Informations d'authentification non fournies."}
 
     def test_nac_tools_page(self):
         response = self.client.get(reverse('psa:nac_tools'))
@@ -78,3 +79,8 @@ class PsaTestCase(UnitTest):
         # self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
         # response = self.client.get(url)
         # self.assertEqual(response.status_code, 200)
+
+    def test_corvet_view_set_is_disconnected(self):
+        response = self.client.get(reverse('psa:api_corvet-list'), format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, self.authError)

@@ -8,13 +8,12 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from constance import config
 
-from .models import QueryTableByArgs, CORVET_COLUMN_LIST, XELON_COLUMN_LIST, REPAIR_COLUMN_LIST
+from .models import QueryTableByArgs, XELON_COLUMN_LIST
 from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from .serializers import XelonSerializer, CorvetSerializer, UnlockSerializer, UnlockUpdateSerializer
-from .serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer
+from .serializers import XelonSerializer, UnlockSerializer, UnlockUpdateSerializer
+from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
-from psa.models import Corvet
 from reman.models import Batch, EcuModel, Repair
 
 from .utils import TokenAuthSupportQueryString
@@ -130,46 +129,6 @@ class XelonViewSet(viewsets.ModelViewSet):
         elif query and query == "corvet-error":
             self.queryset = self.queryset.filter(
                 vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
-
-
-class CorvetViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Corvet.objects.all()
-    serializer_class = CorvetSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            corvet = QueryTableByArgs(self.queryset, CORVET_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(corvet["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": corvet["draw"],
-                "recordsTotal": corvet["total"],
-                "recordsFiltered": corvet["count"]
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
-
-
-class RepairViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Repair.objects.all()
-    serializer_class = RemanRepairSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
-            serializer = self.serializer_class(repair["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": repair["draw"],
-                "recordsTotal": repair["total"],
-                "recordsFiltered": repair["count"]
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 class RemanBatchViewSet(viewsets.ModelViewSet):

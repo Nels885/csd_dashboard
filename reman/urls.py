@@ -1,10 +1,14 @@
-from django.urls import path
-
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
+
+router = DefaultRouter()
+router.register(r'api/repair', views.RepairViewSet, basename='api_repair')
 
 app_name = 'reman'
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('repair/table/', views.repair_table, name='repair_table'),
     path('repair/create/', views.RepairCreateView.as_view(), name='create_repair'),
     path('repair/<int:pk>/edit/', views.repair_edit, name='edit_repair'),

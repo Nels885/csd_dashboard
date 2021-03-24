@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.core.mail import EmailMessage
+from django.core.management import call_command
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from bootstrap_modal_forms.forms import BSModalModelForm
@@ -74,10 +75,15 @@ class SuptechModalForm(BSModalModelForm):
     ]
     item = forms.ChoiceField(choices=ITEM_CHOICES)
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
+    to = forms.CharField(max_length=200, widget=forms.TextInput(), required=False)
 
     class Meta:
         model = Suptech
-        fields = ['xelon', 'item', 'custom_item', 'time', 'info', 'rmq']
+        fields = ['xelon', 'item', 'custom_item', 'time', 'to', 'info', 'rmq']
+
+    def __init__(self, *args, **kwargs):
+        super(SuptechModalForm, self).__init__(*args, **kwargs)
+        self.fields['to'].initial = config.SUPTECH_TO_EMAIL_LIST
 
     def send_email(self):
         current_site = get_current_site(self.request)
@@ -86,7 +92,7 @@ class SuptechModalForm(BSModalModelForm):
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
         email = EmailMessage(
             subject=subject, body=message, from_email=self.request.user.email,
-            to=string_to_list(config.SUPTECH_TO_EMAIL_LIST), cc=[self.request.user.email]
+            to=string_to_list(self.cleaned_data['to']), cc=[self.request.user.email]
         )
         email.send()
 
@@ -98,10 +104,12 @@ class SuptechModalForm(BSModalModelForm):
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
-            del self.fields['custom_item']
+            for field in ['custom_item', 'to']:
+                del self.fields[field]
             if self.cleaned_data['custom_item']:
                 suptech.item = self.cleaned_data['custom_item']
             suptech.save()
+            call_command('suptech')
             self.send_email()
         return suptech
 
@@ -122,3 +130,13 @@ class SuptechResponseForm(forms.ModelForm):
             to=[self.instance.created_by.email], cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
         )
         email.send()
+
+    def save(self, commit=True):
+        suptech = super(SuptechResponseForm, self).save(commit=False)
+        user = get_current_user()
+        suptech.modified_by = user
+        suptech.modified_at = timezone.now()
+        if commit:
+            suptech.save()
+            call_command('suptech')
+        return suptech

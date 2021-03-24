@@ -4,7 +4,7 @@ let table = $('#corvetNewTable').DataTable({
     scrollX: true,
     order: [[1, 'asc']],
     ajax: {
-        url: "/api/corvet/",
+        url: URL_AJAX,
         type: "GET",
     },
     columns: [

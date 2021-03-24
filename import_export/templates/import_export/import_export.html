@@ -17,6 +17,11 @@
                     REMAN
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#tools" role="tab" aria-controls="tools" aria-selected="false">
+                    Outils
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -43,6 +48,13 @@
         <div class="tab-pane" id="reman" role="tabpanel" aria-labelledby="reman-tab">
 
             {% include 'import_export/detail_reman.html' %}
+
+        </div>
+
+        <!-- Detail Tools -->
+        <div class="tab-pane" id="tools" role="tabpanel" aria-labelledby="tools-tab">
+
+            {% include 'import_export/detail_tools.html' %}
 
         </div>
     </div>

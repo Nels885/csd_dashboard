@@ -1,0 +1,28 @@
+{% load i18n widget_tweaks %}
+
+<h3 class="mb-4 mt-3 text-gray-800">Exportation des données :</h3>
+
+<form method="post" action="{% url 'import_export:tools' %}">
+
+    {% csrf_token %}
+
+    <div class="form-group row">
+        <label for="{{ form_tools.formats.id_for_label }}" class="col-form-label col-sm-2">Format :</label>
+        <div class="col-sm-2">
+            {% render_field form_tools.formats class="custom-select form-control" %}
+        </div>
+        <label for="{{ form_tools.tables.id_for_label }}" class="col-form-label col-sm-1">Tableau :</label>
+
+        <div class="col-sm-2">
+            {% render_field form_tools.tables class="custom-select form-control" %}
+        </div>
+        <div class="col-sm-auto">
+            <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
+            </button>
+        </div>
+
+    </div>
+</form>
+
+<hr>
