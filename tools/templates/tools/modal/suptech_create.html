@@ -62,6 +62,18 @@
         </div>
 
         <div class="form-group row">
+            <label for="{{ form.to.id_for_label }}" class="col-form-label col-sm-2">À *</label>
+            <div class="col-sm-10 mb-3 mb-sm-0">
+                {% render_field form.to class="form-control" %}
+                <div class="{% if form.to.errors %} invalid{% endif %}">
+                    {% for error in form.to.errors %}
+                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
             <label for="{{ form.info.id_for_label }}" class="col-form-label col-sm-2">Infos *</label>
             <div class="col-sm-10">
                 {% render_field form.info class="form-control" rows=5 %}
