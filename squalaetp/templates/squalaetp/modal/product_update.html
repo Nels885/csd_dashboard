@@ -15,7 +15,7 @@
 
     <div class="modal-body">
 
-        <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
             {% for error in form.non_field_errors %}
                 {{ error }}
             {% endfor %}
@@ -29,7 +29,7 @@
                         {% render_field field class="form-control form-control-user" placeholder=field.label %}
                         <div class=" text-danger {% if field.errors %} invalid{% endif %}">
                             {% for error in field.errors %}
-                                <p class="help-block">{{ error }}</p>
+                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
                             {% endfor %}
                         </div>
                     </div>
