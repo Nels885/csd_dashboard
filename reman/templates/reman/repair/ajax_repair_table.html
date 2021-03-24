@@ -1,0 +1,55 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'reman/tab_select.html' with select=select_tab %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <table class="table table-bordered text-nowrap" id="repairTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Numéro d'identification</th>
+            <th>Numéro de lot</th>
+            <th>Modèle produit</th>
+            <th>Fabriquant</th>
+            <th>Réf. Hardware</th>
+            <th>Code barre PSA</th>
+            <th>Status</th>
+            <th>Contrôle qualité</th>
+            <th>Date de cloture</th>
+            <th>Modifié par</th>
+            <th>Modifié le</th>
+            <th>Créé par</th>
+            <th>Créé le</th>
+        </tr>
+        </thead>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript">
+        let BTN_EDIT = '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>';
+        {% if perms.reman.change_repair and not file.checkout %}
+            BTN_EDIT = '<button title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>';
+        {% endif %}
+        const URL_AJAX = '/reman/api/repair/?filter={{ query_param }}';
+    </script>
+    <script type="text/javascript" src="{% static 'reman/js/ajax-reman-tables.js' %}"></script>
+
+{% endblock %}

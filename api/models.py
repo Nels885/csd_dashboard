@@ -12,10 +12,6 @@ CORVET_COLUMN_LIST = [
     'electronique_94a', 'electronique_14b', 'electronique_94b'
 ]
 
-REPAIR_COLUMN_LIST = [
-    'identify_number', 'batch', 'batch.ecu_ref_base.ecu_type.technical_data', 'batch.ecu_ref_base.ecu_type.supplier_oe'
-]
-
 
 class QueryTableByArgs:
 

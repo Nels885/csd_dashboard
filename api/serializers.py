@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
-from reman.models import Batch, EcuModel, Repair
 from psa.models import Corvet
 
 
@@ -120,54 +119,3 @@ class UnlockUpdateSerializer(UnlockSerializer):
     class Meta:
         model = UnlockProduct
         fields = UnlockSerializer.Meta.fields + ('active',)
-
-
-class RemanBatchSerializer(serializers.ModelSerializer):
-    reman_reference = serializers.CharField(source='ecu_ref_base.reman_reference', read_only=True)
-    ecu_type = serializers.CharField(source='ecu_ref_base.ecu_type.technical_data')
-    hw_reference = serializers.CharField(source='ecu_ref_base.ecu_type.hw_reference', read_only=True)
-    supplier = serializers.CharField(source='ecu_ref_base.ecu_type.supplier_oe', read_only=True)
-    created_by = serializers.CharField(source='created_by.username', read_only=True)
-
-    class Meta:
-        model = Batch
-        fields = (
-            'batch_number', 'quantity', 'reman_reference', 'ecu_type', 'hw_reference', 'supplier', 'start_date',
-            'end_date', 'active', 'created_by', 'created_at'
-        )
-
-
-class RemanCheckOutSerializer(serializers.ModelSerializer):
-    reman_reference = serializers.CharField(source='ecu_type.ecu_ref_base.reman_reference', read_only=True)
-    ecu_type = serializers.CharField(source='ecu_type.technical_data')
-    hw_reference = serializers.CharField(source='ecu_type.hw_reference', read_only=True)
-    supplier = serializers.CharField(source='ecu_type.supplier_oe', read_only=True)
-    ref_cal_out = serializers.CharField(source='ecu_type.ecu_ref_base.ref_cal_out', read_only=True)
-    ref_psa_out = serializers.CharField(source='ecu_type.ecu_ref_base.ref_psa_out', read_only=True)
-    open_diag = serializers.CharField(source='ecu_type.ecu_ref_base.open_diag', read_only=True)
-    ref_mat = serializers.CharField(source='ecu_type.ecu_ref_base.ref_mat', read_only=True)
-    ref_comp = serializers.CharField(source='ecu_type.ecu_ref_base.ref_comp', read_only=True)
-    cal_ktag = serializers.CharField(source='ecu_type.ecu_ref_base.cal_ktag', read_only=True)
-    status = serializers.CharField(source='ecu_type.ecu_ref_base.status', read_only=True)
-
-    class Meta:
-        model = EcuModel
-        fields = (
-            'psa_barcode', 'reman_reference', 'ecu_type', 'hw_reference', 'supplier', 'ref_cal_out', 'ref_psa_out',
-            'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
-        )
-
-
-class RemanRepairSerializer(serializers.ModelSerializer):
-    batch = serializers.CharField(source='batch.batch_number', read_only=True)
-    technical_data = serializers.CharField(source='batch.ecu_ref_base.ecu_type.technical_data', read_only=True)
-    supplier_oe = serializers.CharField(source='batch.ecu_ref_base.ecu_type.supplier_oe', read_only=True)
-    hw_reference = serializers.CharField(source='batch.ecu_ref_base.ecu_type.hw_reference', read_only=True)
-    created_by = serializers.CharField(source='created_by.username', read_only=True)
-
-    class Meta:
-        model = Repair
-        fields = (
-            'identify_number', 'batch', 'technical_data', 'supplier_oe', 'hw_reference', 'psa_barcode', 'status',
-            'quality_control', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
-        )

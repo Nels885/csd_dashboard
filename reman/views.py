@@ -7,14 +7,18 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.db.models import Max, Q, Count
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, status
 
 from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
 from utils.django.urls import reverse, reverse_lazy
 
 from utils.conf import string_to_list, DICT_YEAR
+from api.models import QueryTableByArgs
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
+from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
@@ -349,6 +353,34 @@ def repair_table(request):
         'select_tab': select_tab
     })
     return render(request, 'reman/repair/repair_table.html', context)
+
+
+class RepairViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Repair.objects.all()
+    serializer_class = RemanRepairSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            self._filter(request)
+            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
+            serializer = self.serializer_class(repair["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": repair["draw"],
+                "recordsTotal": repair["total"],
+                "recordsFiltered": repair["count"]
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+    def _filter(self, request):
+        query = request.query_params.get('filter', None)
+        if query and query == 'pending':
+            self.queryset = self.queryset.exclude(status="Rebut").filter(checkout=False)
+        elif query and query == 'checkout':
+            self.queryset = self.queryset.filter(status="Réparé", quality_control=True, checkout=False)
 
 
 @login_required()
