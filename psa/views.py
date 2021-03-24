@@ -12,8 +12,12 @@ from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 from django.core.management import call_command
 from bootstrap_modal_forms.generic import BSModalCreateView
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, status
 
 from utils.django.forms import ParaErrorList
+from api.models import QueryTableByArgs
+from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
 from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Multimedia
 from dashboard.models import WebLink
@@ -82,6 +86,26 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
         context['title'] = 'Info PSA'
         context['table_title'] = _('CORVET table')
         return context
+
+
+class CorvetViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Corvet.objects.all()
+    serializer_class = CorvetSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            corvet = QueryTableByArgs(self.queryset, CORVET_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(corvet["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": corvet["draw"],
+                "recordsTotal": corvet["total"],
+                "recordsFiltered": corvet["count"]
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @permission_required('psa.view_corvet')

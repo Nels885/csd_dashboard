@@ -7,11 +7,6 @@ XELON_COLUMN_LIST = [
     'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture', 'nom_technicien'
 ]
 
-CORVET_COLUMN_LIST = [
-    'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
-    'electronique_94a', 'electronique_14b', 'electronique_94b'
-]
-
 
 class QueryTableByArgs:
 

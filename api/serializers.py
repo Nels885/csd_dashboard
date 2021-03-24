@@ -1,30 +1,9 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
+from psa.serializers import CorvetSerializer
 from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
-from psa.models import Corvet
-
-
-class DynamicFieldsModelSerializer(serializers.ModelSerializer):
-    """
-    A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed.
-    """
-
-    def __init__(self, *args, **kwargs):
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop('fields', None)
-
-        # Instantiate the superclass normally
-        super(DynamicFieldsModelSerializer, self).__init__(*args, **kwargs)
-
-        if fields is not None:
-            # Drop any fields that are not specified in the `fields` argument.
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -52,25 +31,6 @@ class RaspeediSerializer(serializers.ModelSerializer):
     class Meta:
         model = Raspeedi
         fields = ('ref_boitier', 'produit', 'facade', 'dump_peedi', 'media', 'dump_renesas',)
-
-
-class CorvetSerializer(DynamicFieldsModelSerializer):
-    """
-    Serializer for the Corvet table with conversion of column names
-    """
-    rad_ref = serializers.CharField(source='electronique_14f')
-    rad_cal = serializers.CharField(source='electronique_94f')
-    nav_ref = serializers.CharField(source='electronique_14x')
-    nav_cal = serializers.CharField(source='electronique_94x')
-    cmm_ref = serializers.CharField(source='electronique_14a')
-    cmm_cal = serializers.CharField(source='electronique_94a')
-    bsi_ref = serializers.CharField(source='electronique_14b')
-    bsi_cal = serializers.CharField(source='electronique_94b')
-
-    class Meta:
-        model = Corvet
-        fields = ('vin', 'rad_ref', 'rad_cal', 'nav_ref', 'nav_cal',
-                  'cmm_ref', 'cmm_cal', 'bsi_ref', 'bsi_cal')
 
 
 class ProgSerializer(serializers.ModelSerializer):
