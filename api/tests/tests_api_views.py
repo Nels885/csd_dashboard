@@ -70,7 +70,4 @@ class ApiTestCase(APITestCase):
     #     self.assertEqual(response.status_code, 200)
     #     self.assertEqual(len(response.data), 4)
 
-    def test_corvet_view_set_is_disconnected(self):
-        response = self.client.get(reverse('api:corvet-list'), format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.data, self.authError)
+
