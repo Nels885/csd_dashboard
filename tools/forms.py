@@ -75,7 +75,7 @@ class SuptechModalForm(BSModalModelForm):
     ]
     item = forms.ChoiceField(choices=ITEM_CHOICES)
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
-    to = forms.CharField(max_length=200, widget=forms.TextInput(), required=False)
+    to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
 
     class Meta:
         model = Suptech
