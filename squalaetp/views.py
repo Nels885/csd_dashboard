@@ -29,7 +29,9 @@ def generate(request):
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
     if "Export error" in out.getvalue():
-        messages.warning(request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
+        for msg in out.getvalue().split('\n'):
+            if "Export error" in msg:
+                messages.warning(request, msg)
     else:
         messages.success(request, "Exportation Squalaetp terminée.")
     if 'HTTP_REFERER' in request.META:
