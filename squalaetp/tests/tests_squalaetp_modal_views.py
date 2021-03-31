@@ -34,6 +34,28 @@ class MixinsTest(UnitTest):
         xelon = Xelon.objects.first()
         self.assertEqual(xelon.vin, self.vin)
 
+    def test_vin_email_ajax_mixin(self):
+        """
+        Send email for VIN data update.
+        """
+        self.add_perms_user(Xelon, 'change_xelon')
+        self.add_perms_user(Corvet, 'change_corvet')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        xelon = Xelon.objects.first()
+        response = self.client.post(
+            reverse('squalaetp:vin_email', kwargs={'pk': xelon.pk}),
+            data={
+                'to': 'test@test.com',
+                'cc': 'test@test.com',
+                'subject': 'test',
+                'message': 'test'
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('squalaetp:detail', kwargs={'pk': xelon.pk}), status_code=302)
+
     def test_product_update_ajax_mixin(self):
         """
         Update Product throught BSModalCreateView.
@@ -55,3 +77,25 @@ class MixinsTest(UnitTest):
         # Object is updated
         xelon = Xelon.objects.first()
         self.assertEqual(xelon.modele_produit, 'test')
+
+    def test_prod_email_ajax_mixin(self):
+        """
+        Send email for Product data update.
+        """
+        self.add_perms_user(Xelon, 'change_xelon')
+        self.add_perms_user(Corvet, 'change_corvet')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        xelon = Xelon.objects.first()
+        response = self.client.post(
+            reverse('squalaetp:prod_email', kwargs={'pk': xelon.pk}),
+            data={
+                'to': 'test@test.com',
+                'cc': 'test@test.com',
+                'subject': 'test',
+                'message': 'test'
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('squalaetp:detail', kwargs={'pk': xelon.pk}), status_code=302)

@@ -181,10 +181,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -209,10 +206,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class LogFileView(LoginRequiredMixin, TemplateView):
