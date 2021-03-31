@@ -127,10 +127,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
 
 
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -159,10 +156,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
 
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
