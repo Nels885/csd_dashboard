@@ -29,7 +29,9 @@ def generate(request):
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
     if "Export error" in out.getvalue():
-        messages.warning(request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
+        for msg in out.getvalue().split('\n'):
+            if "Export error" in msg:
+                messages.warning(request, msg)
     else:
         messages.success(request, "Exportation Squalaetp terminée.")
     if 'HTTP_REFERER' in request.META:
@@ -125,10 +127,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
 
 
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -157,10 +156,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
 
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -185,10 +181,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -213,10 +206,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class LogFileView(LoginRequiredMixin, TemplateView):

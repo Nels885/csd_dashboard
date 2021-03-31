@@ -116,6 +116,22 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__btel__extra', 'date_debut_garantie', 'corvet__electronique_14x', 'corvet__electronique_44x',
             'corvet__electronique_64x', 'corvet__electronique_84x', 'corvet__electronique_94x'
         )
+    elif product == "rtx":
+        header = [
+            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
+            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
+            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
+        ]
+
+        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="RT")).annotate(
+            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
+        )
+        values_list = (
+            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
+            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
+            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
+            'corvet__electronique_94x'
+        )
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',

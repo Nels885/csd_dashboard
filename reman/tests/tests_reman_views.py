@@ -16,8 +16,9 @@ class RemanTestCase(UnitTest):
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test', spare_part=spare_part)
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
         ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_type=ecu_type, psa_barcode=self.psaBarcode)
-        batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
-        self.repair = Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
+        self.batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
+        self.repair = Repair.objects.create(
+            batch=self.batch, identify_number="C001010001", created_by=self.user, status="Réparé", quality_control=True)
 
     def test_repair_table_page(self):
         url = reverse('reman:repair_table')
@@ -68,7 +69,7 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_out_table(self):
-        url = reverse('reman:out_table')
+        url = reverse('reman:out_table') + '?filter=' + self.batch.batch_number
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -80,9 +81,12 @@ class RemanTestCase(UnitTest):
         # Invalid form
         response = self.client.post(url, {'identify_number': ''})
         self.assertFormError(response, 'form', 'identify_number', _('This field is required.'))
-        for identify_number in ['C001010001', 'C001010001R']:
+        for identify_number in ['C001010001', 'C001010002R']:
             response = self.client.post(url, {'identify_number': identify_number})
             self.assertFormError(response, 'form', 'identify_number', "N° d'identification invalide")
+        Repair.objects.create(batch=self.batch, identify_number="C001010002", created_by=self.user, status="Réparé")
+        response = self.client.post(url, {'identify_number': 'C001010002R'})
+        self.assertFormError(response, 'form', 'identify_number', "Contrôle qualité non validé, voir avec Atelier.")
 
     def test_check_part(self):
         url = reverse('reman:part_check')

@@ -49,6 +49,11 @@ class PsaTestCase(UnitTest):
         response = self.client.post(url, {'software': '001315031548167166'})
         self.assertEqual(response.status_code, 302)
 
+    def test_majestic_web(self):
+        url = reverse('psa:majestic_web')
+        response = self.client.get(url)
+        self.assertRedirects(response, reverse('index'), status_code=302)
+
     def test_useful_links_page(self):
         response = self.client.get(reverse('psa:useful_links'))
         self.assertEqual(response.status_code, 200)

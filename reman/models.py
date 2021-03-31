@@ -13,7 +13,7 @@ STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 
 
 
 class EcuType(models.Model):
-    hw_reference = models.CharField("hardware", max_length=10, unique=True)
+    hw_reference = models.CharField("hardware", max_length=20, unique=True)
     technical_data = models.CharField("modèle produit", max_length=50, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
@@ -26,7 +26,7 @@ class EcuType(models.Model):
 
 
 class EcuModel(models.Model):
-    psa_barcode = models.CharField("code barre PSA", max_length=10, unique=True)
+    psa_barcode = models.CharField("code barre PSA", max_length=20, unique=True)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
@@ -75,6 +75,8 @@ class EcuRefBase(models.Model):
     status = models.CharField("STATUT", max_length=16, blank=True)
     ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.SET_NULL, null=True,
                                     blank=True)
+    # ecu_types = models.ManyToManyField("EcuType", related_name="ecu_ref_bases", on_delete=models.SET_NULL, null=True,
+    #                                    blank=True)
 
     def __str__(self):
         return self.reman_reference

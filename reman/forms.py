@@ -242,12 +242,14 @@ class CheckOutRepairForm(forms.Form):
             batch = Batch.objects.filter(batch_number=batch_number).first()
         else:
             batch = None
-        self.repairs = Repair.objects.filter(quality_control=True, checkout=False, batch=batch)
+        self.repairs = Repair.objects.filter(checkout=False, batch=batch)
 
     def clean_identify_number(self):
         data = self.cleaned_data["identify_number"]
         if data[-1] != "R" or not self.repairs.filter(identify_number=data[:-1]):
             self.add_error('identify_number', "N° d'identification invalide")
+        elif not self.repairs.filter(identify_number=data[:-1], quality_control=True):
+            self.add_error('identify_number', "Contrôle qualité non validé, voir avec Atelier.")
         return data
 
     def save(self, commit=True):

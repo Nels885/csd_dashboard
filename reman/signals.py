@@ -18,14 +18,14 @@ def post_save_repair(sender, instance, **kwargs):
 @receiver(pre_save, sender=Repair)
 def pre_save_repair(sender, instance, **kwargs):
     user = get_current_user()
-    if not instance.pk:
-        if user and user.pk:
+    if user and user.pk:
+        if not instance.pk:
             instance.created_by = user
-        batch_number = instance.identify_number[:-3] + "000"
-        instance.batch = Batch.objects.get(batch_number__exact=batch_number)
-    if instance.status != "Réparé":
-        instance.quality_control = False
-    instance.modified_by = user
+            batch_number = instance.identify_number[:-3] + "000"
+            instance.batch = Batch.objects.get(batch_number__exact=batch_number)
+        if instance.status != "Réparé":
+            instance.quality_control = False
+        instance.modified_by = user
 
 
 @receiver(pre_save, sender=Batch)
