@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 
 
 class CorvetChoices(models.Model):
@@ -145,6 +144,7 @@ class Corvet(models.Model):
 #     hw_reference = models.CharField("hardware", max_length=10, unique=True)
 #     name = models.CharField("modèle produit", max_length=50, blank=True)
 #     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+#     pr_reference = models.CharField("référence PR", max_length=10, blank=True)
 #
 #     def part_name(self):
 #         return self.name + " HW" + self.hw_reference
@@ -177,6 +177,7 @@ class Multimedia(models.Model):
     name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    pr_reference = models.CharField("référence PR", max_length=10, blank=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
     level = models.CharField('niveau', max_length=2, blank=True)
     extra = models.CharField('supplément', max_length=100, blank=True)
@@ -260,6 +261,7 @@ class BsiModel(models.Model):
     hw = models.CharField('HW', max_length=10, blank=True)
     sw = models.CharField('SW', max_length=10, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    pr_reference = models.CharField("référence PR", max_length=10, blank=True)
 
     class Meta:
         verbose_name = "Données BSI"
