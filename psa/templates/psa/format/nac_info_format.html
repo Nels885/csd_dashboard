@@ -1,0 +1,30 @@
+{% with update_id=firmware.update_id %}
+
+    <p>Vous trouverez ci-dessous les liens vers le serveur PSA pour le fichier de License et la Mise à jours du produit :</p>
+    <div class="text-center mt-4 mb-5">
+        {% if not firmware %}
+            <a class="btn btn-secondary mr-5 col-sm-2" href="#">Téléchargement License</a>
+            <a class="btn btn-secondary col-sm-2" href="#">Téléchargement MAJ</a>
+        {% else %}
+            <a class="btn btn-primary mr-5 col-sm-2" href="{% url 'psa:majestic_web' %}?type=license&uin={{ uin }}&updateId={{ update_id }}">Téléchargement license</a>
+            <a class="btn btn-primary col-sm-2" href="{% url 'psa:majestic_web' %}?type=fw&updateId={{ update_id }}">Téléchargement MAJ</a>
+        {% endif %}
+        <p class="text-center font-italic mt-2">{{ firmware|default:"-----" }}</p>
+    </div>
+
+    <hr>
+    <p>Liens utiles :</p>
+    <a class="nav-link" role="tab" aria-selected="false" target="_blank"
+       href="https://www.peugeot.fr/marque-et-technologie/services_connectes/mise-a-jour-cartographie-gps.html">
+        * Mise à jour cartographie et système pour les produits NAC
+    </a>
+    <a class="nav-link" role="tab" aria-selected="false" target="_blank"
+       href="https://peugeot.navigation.com/home/fr_FR/PeugeotEMEA/EUR">
+        * Boutique Navigation Peugeot
+    </a>
+    <a class="nav-link" role="tab" aria-selected="false" target="_blank"
+       href="https://citroen.navigation.com/home/fr_FR/CitroenEMEA/EUR">
+        * Boutique Navigation Citroën
+    </a>
+
+{% endwith %}

@@ -71,6 +71,23 @@ def nac_update(request):
     return redirect('psa:nac_tools')
 
 
+def majestic_web(request):
+    type = request.GET.get('type')
+    update_id = request.GET.get('updateId')
+    uin = request.GET.get('uin')
+    if type == 'license':
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion={update}&uin={uin}"
+        return redirect(url.format(uin=uin, update=update_id))
+    elif type == 'fw':
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=fw"
+        uin = "00000000000000000000"
+        return redirect(url.format(uin=uin, update=update_id))
+    if 'HTTP_REFERER' in request.META:
+        return request.META['HTTP_REFERER']
+    else:
+        return redirect('index')
+
+
 def useful_links(request):
     web_links = WebLink.objects.filter(type="PSA")
     context.update(locals())
