@@ -193,6 +193,7 @@ class Multimedia(models.Model):
     front_pic = models.ImageField(upload_to='psa', blank=True)
     setplate_pic = models.ImageField(upload_to='psa', blank=True)
     rear_pic = models.ImageField(upload_to='psa', blank=True)
+    firmware = models.ForeignKey('Firmware', on_delete=models.SET_NULL, limit_choices_to={'is_active': True}, null=True, blank=True)
 
     class Meta:
         verbose_name = "Données Multimédia"
