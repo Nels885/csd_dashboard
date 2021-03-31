@@ -75,6 +75,8 @@ class EcuRefBase(models.Model):
     status = models.CharField("STATUT", max_length=16, blank=True)
     ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.SET_NULL, null=True,
                                     blank=True)
+    # ecu_types = models.ManyToManyField("EcuType", related_name="ecu_ref_bases", on_delete=models.SET_NULL, null=True,
+    #                                    blank=True)
 
     def __str__(self):
         return self.reman_reference
