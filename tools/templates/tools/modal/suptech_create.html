@@ -20,6 +20,18 @@
         </div>
 
         <div class="form-group row">
+            <label for="{{ form.username.id_for_label }}" class="col-form-label col-sm-2">QUI *</label>
+            <div class="col-sm-4">
+                {% render_field form.username class="form-control" %}
+                <div class="{% if form.username.errors %} invalid{% endif %}">
+                    {% for error in form.username.errors %}
+                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
             <label for="{{ form.xelon.id_for_label }}" class="col-form-label col-sm-2">N° XELON</label>
             <div class="col-sm-4">
                 {% render_field form.xelon class="form-control" %}
