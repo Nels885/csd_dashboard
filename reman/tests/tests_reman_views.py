@@ -19,6 +19,8 @@ class RemanTestCase(UnitTest):
         self.batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         self.repair = Repair.objects.create(
             batch=self.batch, identify_number="C001010001", created_by=self.user, status="Réparé", quality_control=True)
+        self.authError = {"detail": "Informations d'authentification non fournies."}
+
 
     def test_repair_table_page(self):
         url = reverse('reman:repair_table')
@@ -156,3 +158,8 @@ class RemanTestCase(UnitTest):
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_repair_view_set_is_disconnected(self):
+        response = self.client.get(reverse('reman:api_repair-list'), format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, self.authError)
