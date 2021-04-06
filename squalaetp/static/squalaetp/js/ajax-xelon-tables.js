@@ -7,12 +7,18 @@ $(document).ready(function () {
         ajax: URL_AJAX,
         columns: [
             {
-                data: null,
-                defaultContent: '<button title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>',
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/squalaetp/' + full.id + '/detail/?select=ihm';
+                    return '<a href="' + url + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>';
+                }
             },
             {
-                data: null,
-                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/squalaetp/' + full.id + '/detail/';
+                    return '<a  href="' + url + '" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
+                },
             },
             {data: "numero_de_dossier"},
             {data: "vin"},
@@ -35,19 +41,5 @@ $(document).ready(function () {
                 orderable: false,
             },
         ],
-    });
-
-    let id = 0;
-
-    $('#xelonTable tbody').on('click', 'button', function () {
-        let data = table.row($(this).parents('tr')).data();
-        let title = $(this).attr('title');
-        id = data['id'];
-        if (title === 'Modification') {
-            location.href = '/squalaetp/' + id + '/detail/?select=ihm'
-        } else if (title === 'Detail') {
-            // Detail button
-            location.href = '/squalaetp/' + id + '/detail/'
-        }
     });
 });
