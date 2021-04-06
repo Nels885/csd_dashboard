@@ -7,12 +7,22 @@ $(document).ready(function () {
         ajax: URL_AJAX,
         columns: [
             {
-                data: null,
-                defaultContent: BTN_EDIT,
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/reman/repair/' + full.id + '/edit/';
+                    if (PERM && !full.checkout) {
+                        return '<a href="' + url + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>';
+                    } else {
+                        return '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>';
+                    }
+                },
             },
             {
-                data: null,
-                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/reman/repair/' + full.id + '/detail/'
+                    return '<a href="' + url + '" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>';
+                }
             },
             {data: "identify_number"},
             {data: "batch"},
@@ -36,19 +46,5 @@ $(document).ready(function () {
                 orderable: false,
             },
         ],
-    });
-
-    let id = 0;
-
-    $('#repairTable tbody').on('click', 'button', function () {
-        let data = table.row($(this).parents('tr')).data();
-        let title = $(this).attr('title');
-        id = data['id'];
-        if (title === 'Modification') {
-            location.href = '/reman/repair/' + id + '/edit/'
-        } else if (title === 'Detail') {
-            // Detail button
-            location.href = '/reman/repair/' + id + '/detail/'
-        }
     });
 });

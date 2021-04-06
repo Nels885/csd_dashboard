@@ -334,24 +334,17 @@ def batch_table(request):
 @login_required()
 def repair_table(request):
     """ View of Reman Repair table page """
-    query = request.GET.get('filter')
+    query_param = request.GET.get('filter')
     select_tab = 'repair'
-    if query and query == 'pending':
-        files = Repair.objects.exclude(status="Rebut").filter(checkout=False)
+    if query_param and query_param == 'pending':
         table_title = 'Dossiers en cours de réparation'
         select_tab = 'repair_pending'
-    elif query and query == 'checkout':
-        files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
+    elif query_param and query_param == 'checkout':
         table_title = "Dossiers en attente d'expédition"
     else:
-        files = Repair.objects.all()
         table_title = 'Dossiers de réparation'
-    context.update({
-        'table_title': table_title,
-        'files': files,
-        'select_tab': select_tab
-    })
-    return render(request, 'reman/repair/repair_table.html', context)
+    context.update(locals())
+    return render(request, 'reman/repair/ajax_repair_table.html', context)
 
 
 class RepairViewSet(viewsets.ModelViewSet):

@@ -16,7 +16,7 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered text-nowrap" id="repairTable" style="width: 100%;">
+    <table class="table table-bordered text-nowrap display" id="repairTable" style="width: 100%;">
         <thead>
         <tr>
             <th></th>
@@ -44,9 +44,9 @@
 
     <!-- Page level custom scripts -->
     <script type="text/javascript">
-        let BTN_EDIT = '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>';
-        {% if perms.reman.change_repair and not file.checkout %}
-            BTN_EDIT = '<button title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>';
+        let PERM;
+        {% if perms.reman.change_repair %}
+            PERM = true;
         {% endif %}
         const URL_AJAX = '/reman/api/repair/?filter={{ query_param }}';
     </script>
