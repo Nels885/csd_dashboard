@@ -6,8 +6,14 @@ $(document).ready(function () {
         order: [[2, "asc"]],
         ajax: URL_AJAX,
         columns: [
-            {data: null},
-            {data: null},
+            {
+                data: null,
+                defaultContent: BTN_EDIT,
+            },
+            {
+                data: null,
+                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
+            },
             {data: "identify_number"},
             {data: "batch"},
             {data: "technical_data"},
@@ -29,14 +35,6 @@ $(document).ready(function () {
                 searchable: false,
                 orderable: false,
             },
-            {
-                defaultContent: BTN_EDIT,
-                targets: 0
-            },
-            {
-                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
-                targets: 1
-            }
         ],
     });
 

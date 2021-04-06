@@ -9,8 +9,12 @@ let table = $('#corvetNewTable').DataTable({
     },
     columns: [
         {
-            data: null,
-            defaultContent: '<button type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>'
+            sortable: false,
+            render: function (data, type, full, meta) {
+                let vin = full.vin;
+                let url = '/psa/corvet/' + vin + '/detail/';
+                return '<a  href="' + url + '" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
+            },
         },
         {data: "vin"},
         {data: "rad_ref"},
@@ -27,15 +31,4 @@ let table = $('#corvetNewTable').DataTable({
         searchable: false,
         orderable: false,
     }],
-});
-
-let vin = 0;
-
-$('#corvetNewTable tbody').on('click', 'button', function () {
-    let data = table.row($(this).parents('tr')).data();
-    let class_name = $(this).attr('class');
-    vin = data['vin'];
-    if (class_name === 'btn btn-info btn-circle btn-sm') {
-        location.href = '/psa/corvet/' + vin + '/detail/'
-    }
 });

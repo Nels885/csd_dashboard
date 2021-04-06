@@ -6,8 +6,14 @@ $(document).ready(function () {
         order: [[6, 'desc']],
         ajax: URL_AJAX,
         columns: [
-            {data: null},
-            {data: null},
+            {
+                data: null,
+                defaultContent: '<button title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>',
+            },
+            {
+                data: null,
+                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
+            },
             {data: "numero_de_dossier"},
             {data: "vin"},
             {data: "modele_produit"},
@@ -28,14 +34,6 @@ $(document).ready(function () {
                 searchable: false,
                 orderable: false,
             },
-            {
-                defaultContent: '<button title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>',
-                targets: 0
-            },
-            {
-                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
-                targets: 1
-            }
         ],
     });
 
