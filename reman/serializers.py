@@ -57,5 +57,5 @@ class RemanRepairSerializer(serializers.ModelSerializer):
         model = Repair
         fields = (
             'id', 'identify_number', 'batch', 'technical_data', 'supplier_oe', 'hw_reference', 'psa_barcode', 'status',
-            'quality_control', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
+            'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
         )
