@@ -14,7 +14,7 @@ from django.core.management import call_command
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
-from api.models import QueryTableByArgs
+from utils.django.datatables import QueryTableByArgs
 from .serializers import XelonSerializer, XELON_COLUMN_LIST
 from .models import Xelon, Stock, Action
 from .utils import collapse_select

@@ -15,7 +15,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, 
 from utils.django.urls import reverse, reverse_lazy
 
 from utils.conf import string_to_list, DICT_YEAR
-from api.models import QueryTableByArgs
+from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
 from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
