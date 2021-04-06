@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
@@ -26,6 +25,7 @@ from psa.forms import CorvetForm
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
+from utils.django.urls import reverse_lazy
 
 
 @login_required
@@ -131,7 +131,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -160,7 +160,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -185,7 +185,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('squalaetp:detail', args=[self.kwargs['pk']], get={'select': 'ihm'})
 
 
 class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -210,7 +210,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('squalaetp:detail', args=[self.kwargs['pk']], get={'select': 'ihm'})
 
 
 class LogFileView(LoginRequiredMixin, TemplateView):
