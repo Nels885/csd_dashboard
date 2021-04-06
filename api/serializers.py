@@ -57,15 +57,6 @@ class CalSerializer(serializers.ModelSerializer):
         fields = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet')
 
 
-class XelonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Xelon
-        fields = (
-            'id', 'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture',
-            'nom_technicien', 'corvet'
-        )
-
-
 class UnlockSerializer(serializers.ModelSerializer):
     xelon = serializers.CharField(source='unlock.numero_de_dossier', read_only=True)
     vin = serializers.CharField(source='unlock.vin', read_only=True)

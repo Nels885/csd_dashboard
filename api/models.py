@@ -3,10 +3,6 @@ from functools import reduce
 from model_utils import Choices
 from django.db.models import Q
 
-XELON_COLUMN_LIST = [
-    'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture', 'nom_technicien'
-]
-
 
 class QueryTableByArgs:
 

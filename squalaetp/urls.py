@@ -1,10 +1,14 @@
-from django.urls import path
-
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
+
+router = DefaultRouter()
+router.register(r'api/xelon', views.XelonViewSet, basename='api_xelon')
 
 app_name = 'squalaetp'
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('<int:pk>/detail/', views.detail, name='detail'),
     path('<int:pk>/vin/edit/', views.VinCorvetUpdateView.as_view(), name='vin_edit'),
     path('<int:pk>/vin/email/', views.VinEmailFormView.as_view(), name='vin_email'),

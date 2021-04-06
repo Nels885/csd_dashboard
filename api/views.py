@@ -3,14 +3,13 @@ import requests
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status, authentication
+from rest_framework import viewsets, permissions, authentication
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from constance import config
 
-from .models import QueryTableByArgs, XELON_COLUMN_LIST
 from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from .serializers import XelonSerializer, UnlockSerializer, UnlockUpdateSerializer
+from .serializers import UnlockSerializer, UnlockUpdateSerializer
 from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
@@ -98,37 +97,6 @@ class CalViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['numero_de_dossier', 'vin']
     http_method_names = ['get']
-
-
-class XelonViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.filter(date_retour__isnull=False)
-    serializer_class = XelonSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            self._filter(request)
-            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
-            serializer = self.serializer_class(xelon["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": xelon["draw"],
-                "recordsTotal": xelon["total"],
-                "recordsFiltered": xelon["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
-
-    def _filter(self, request):
-        query = request.query_params.get('filter', None)
-        if query and query == 'pending':
-            self.queryset = self.queryset.exclude(type_de_cloture__in=['Réparé', 'N/A'])
-        elif query and query == "vin-error":
-            self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
-        elif query and query == "corvet-error":
-            self.queryset = self.queryset.filter(
-                vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
 
 
 class RemanBatchViewSet(viewsets.ModelViewSet):
