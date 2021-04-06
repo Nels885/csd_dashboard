@@ -79,10 +79,11 @@ class SuptechModalForm(BSModalModelForm):
     item = forms.ChoiceField(choices=ITEM_CHOICES)
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
     to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
+    attach = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
     class Meta:
         model = Suptech
-        fields = ['username', 'xelon', 'item', 'custom_item', 'time', 'to', 'info', 'rmq']
+        fields = ['username', 'xelon', 'item', 'custom_item', 'time', 'to', 'info', 'rmq', 'attach']
 
     def __init__(self, *args, **kwargs):
         users = User.objects.all()
@@ -111,6 +112,10 @@ class SuptechModalForm(BSModalModelForm):
             subject=subject, body=message, from_email=from_email,
             to=string_to_list(self.cleaned_data['to']), cc=[from_email]
         )
+        files = self.request.FILES.getlist('attach')
+        if files:
+            for f in files:
+                email.attach(f.name, f.read(), f.content_type)
         email.send()
 
     def save(self, commit=True):
@@ -121,13 +126,13 @@ class SuptechModalForm(BSModalModelForm):
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
-            for field in ['username', 'custom_item', 'to']:
+            for field in ['username', 'custom_item', 'to', 'attach']:
                 del self.fields[field]
             if self.cleaned_data['custom_item']:
                 suptech.item = self.cleaned_data['custom_item']
             suptech.save()
-            call_command('suptech')
             self.send_email()
+            call_command('suptech')
         return suptech
 
 
