@@ -86,10 +86,8 @@ class Command(BaseCommand):
 
     def _squalaetp_file(self, model, excel):
         self.stdout.write("[XELON] Waiting...")
-        nb_prod_before = model.objects.count()
-        nb_prod_update = 0
-        model.objects.filter(is_active=True).update(is_active=False)
-        model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
+        nb_prod_before, nb_prod_update = model.objects.count(), 0
+        model.objects.exclude(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=False)
         for row in excel.xelon_table():
             xelon_number = row.get("numero_de_dossier")
             defaults = defaults_dict(model, row, "numero_de_dossier")
@@ -104,6 +102,7 @@ class Command(BaseCommand):
                 logger.error(f"[XELON_CMD] IntegrityError: {xelon_number} -{err}")
             except DataError as err:
                 logger.error(f"[XELON_CMD] DataError: {xelon_number} - {err}")
+        model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
         nb_prod_after = model.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
@@ -115,12 +114,10 @@ class Command(BaseCommand):
 
     def _delay_files(self, model, squalaetp):
         self.stdout.write("[DELAY] Waiting...")
-        nb_prod_update = 0
-        xelon_list = list(squalaetp.sheet['numero_de_dossier'])
+        nb_prod_before, nb_prod_update = model.objects.count(), 0
         excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
-        delay_list = list(excel.sheet['n_de_dossier'])
+        xelon_list, delay_list = list(squalaetp.sheet['numero_de_dossier']), list(excel.sheet['n_de_dossier'])
         self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
-        nb_prod_before = model.objects.count()
         model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
                               Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
                               Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
