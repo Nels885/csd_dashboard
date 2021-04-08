@@ -59,3 +59,20 @@ class RemanRepairSerializer(serializers.ModelSerializer):
             'id', 'identify_number', 'batch', 'technical_data', 'supplier_oe', 'hw_reference', 'psa_barcode', 'status',
             'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
         )
+
+
+class EcuRefBaseSerializer(serializers.ModelSerializer):
+    reman_reference = serializers.CharField(source='ecu_type.ecu_ref_base.reman_reference', read_only=True)
+    technical_data = serializers.CharField(source='ecu_type.technical_data', read_only=True)
+    hw_reference = serializers.CharField(source='ecu_type.hw_reference', read_only=True)
+    supplier_oe = serializers.CharField(source='ecu_type.supplier_oe', read_only=True)
+    code_produit = serializers.CharField(source='ecu_type.spare_part.code_produit', read_only=True)
+    code_emplacement = serializers.CharField(source='ecu_type.spare_part.code_emplacement', read_only=True)
+    cumul_dispo = serializers.CharField(source='ecu_type.spare_part.cumul_dispo', read_only=True)
+
+    class Meta:
+        model = EcuModel
+        fields = (
+            'id', 'reman_reference', 'technical_data', 'hw_reference', 'supplier_oe', 'psa_barcode', 'code_produit',
+            'code_emplacement', 'cumul_dispo'
+        )

@@ -12,6 +12,7 @@ router.register(r'unlock', views.UnlockViewSet, basename='unlock')
 router.register(r'reman/batch', views.RemanBatchViewSet, basename='reman_batch')
 router.register(r'reman/checkout', views.RemanCheckOutViewSet, basename='reman_checkout')
 router.register(r'reman/repair', views.RemanRepairViewSet, basename='reman_repair')
+router.register(r'reman/ecurefbase', views.RemanEcuRefBaseViewSet, basename='reman_ecurefbase')
 
 app_name = 'api'
 

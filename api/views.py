@@ -10,7 +10,7 @@ from constance import config
 
 from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
 from .serializers import UnlockSerializer, UnlockUpdateSerializer
-from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer
+from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, EcuRefBaseSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair
@@ -130,6 +130,15 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
     search_fields = [
         'identify_number', 'batch__batch_number', 'psa_barcode', 'batch__ecu_ref_base__ecu_type__hw_reference'
     ]
+    http_method_names = ['get']
+
+
+class RemanEcuRefBaseViewSet(viewsets.ModelViewSet):
+    # authentication_classes = (TokenAuthSupportQueryString,)
+    permissions_classes = (permissions.IsAuthenticated,)
+    queryset = EcuModel.objects.all().order_by('id')
+    serializer_class = EcuRefBaseSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
     http_method_names = ['get']
 
 
