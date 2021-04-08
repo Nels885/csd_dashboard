@@ -48,7 +48,7 @@
         {% if perms.reman.change_repair %}
             PERM = true;
         {% endif %}
-        const URL_AJAX = '/reman/api/repair/?filter={{ query_param }}';
+        const URL_AJAX = "{% url 'reman:api_repair-list' %}?filter={{ query_param }}";
     </script>
     <script type="text/javascript" src="{% static 'reman/js/ajax-reman-tables.js' %}"></script>
 

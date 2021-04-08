@@ -163,3 +163,8 @@ class RemanTestCase(UnitTest):
         response = self.client.get(reverse('reman:api_repair-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
+
+    def test_ecu_ref_base_view_set_is_disconnected(self):
+        response = self.client.get(reverse('reman:api_ecurefbase-list'), format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, self.authError)
