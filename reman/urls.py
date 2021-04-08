@@ -4,6 +4,7 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'api/repair', views.RepairViewSet, basename='api_repair')
+router.register(r'api/ecurefbase', views.EcuRefBaseViewSet, basename='api_ecurefbase')
 
 app_name = 'reman'
 

@@ -1,0 +1,49 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tab" role="tablist">
+
+            {% include 'reman/tab_select.html' with select='ecu' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <table class="table table-bordered text-nowrap display" id="ecuRefBaseTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Référence REMAN</th>
+            <th>Module Moteur</th>
+            <th>Réf. Hardware</th>
+            <th>Fournisseur</th>
+            <th>Code barre PSA</th>
+            <th>XELON - Code produit</th>
+            <th>XELON - Emplacement</th>
+            <th>XELON - Dispo</th>
+        </tr>
+        </thead>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript">
+        let PERM;
+        {% if perms.reman.change_ecumodel %}
+            PERM = true;
+        {% endif %}
+        const URL_AJAX = '/reman/api/ecurefbase/';
+    </script>
+    <script type="text/javascript" src="{% static 'reman/js/ajax-reman-tables.js' %}"></script>
+
+{% endblock %}

@@ -18,7 +18,7 @@ from utils.conf import string_to_list, DICT_YEAR
 from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
-from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
+from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST, EcuRefBaseSerializer, ECU_REF_BASE_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
@@ -388,9 +388,29 @@ def part_table(request):
 def ecu_ref_table(request):
     """ View of EcuRefBase table page """
     table_title = 'Base ECU Reman'
-    ecus = EcuModel.objects.all()
+    # ecus = EcuModel.objects.all()
     context.update(locals())
-    return render(request, 'reman/ecu_ref_base_table.html', context)
+    return render(request, 'reman/ajax_ecu_ref_base_table.html', context)
+
+
+class EcuRefBaseViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = EcuModel.objects.all()
+    serializer_class = EcuRefBaseSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            ecu = QueryTableByArgs(self.queryset, ECU_REF_BASE_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(ecu["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": ecu["draw"],
+                "recordsTotal": ecu["total"],
+                "recordsFiltered": ecu["count"]
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required()
