@@ -171,7 +171,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
-        initial['subject'] = "[{}] Erreur VIN Xelon".format(xelon.numero_de_dossier)
+        initial['subject'] = f"[{xelon.numero_de_dossier}] {xelon.modele_produit} Erreur VIN Xelon"
         initial['message'] = self.form_class.vin_message(xelon, self.request)
         return initial
 
@@ -196,7 +196,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
-        initial['subject'] = "[{}] Erreur modèle produit Xelon".format(xelon.numero_de_dossier)
+        initial['subject'] = f"[{xelon.numero_de_dossier}] Erreur modèle produit Xelon"
         initial['message'] = self.form_class.prod_message(xelon, self.request)
         return initial
 
