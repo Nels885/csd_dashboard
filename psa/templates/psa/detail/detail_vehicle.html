@@ -147,7 +147,8 @@
             {% if corvet.attribut_dun %}
                 <tr>
                     <td class="text-dark td-ihm">AMPLI EQUALISEUR</td>
-                    <td>{% if corvet.attribut_dun == "01" %}AVEC{% else %}SANS{% endif %} AMPLI EQUALISEUR</td>
+{#                    <td>{% if corvet.attribut_dun == "01" %}AVEC{% else %}SANS{% endif %} AMPLI EQUALISEUR</td>#}
+                    <td>{{ corvet.attribut_dun|get_corvet:"ATT_DAT" }}</td>
                 </tr>
             {% endif %}
             <tr>
@@ -159,7 +160,8 @@
                     <tr>
                         <td class="text-dark td-ihm">BOITIER TELEMATIQUE</td>
                         <td>{{ corvet.attribut_dyr|get_corvet:"ATT_DYR" }}
-                            {% if bta == "0000000002" %}(BTA MM){% elif bta == "000000000E" %}(BTA Autoliv){% endif %}</td>
+                            {% if bta == "0000000002" %}(BTA MM){% elif bta == "000000000E" %}(BTA
+                                Autoliv){% endif %}</td>
                     </tr>
                 {% endwith %}
             {% endif %}

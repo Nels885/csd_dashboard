@@ -6,9 +6,10 @@ class CorvetChoices(models.Model):
         ('DON_LIN_PROD', 'donnee_ligne_de_produit'), ('DON_MAR_COMM', 'donnee_marque_commerciale'),
         ('DON_SIL', 'donnee_silhouette'), ('DON_GEN_PROD', 'donnee_genre_de_produit'),
         ('ATT_DGM', 'COMBINE (CARACTERISTIQUES)'), ('ATT_DHB', 'HAUT PARLEUR'), ('ATT_DHG', 'COMMANDE AUTO-RADIO'),
-        ('ATT_DJY', 'SYSTEME NAVIGATION'), ('ATT_DLX', 'AFFICHEUR AV'), ('ATT_DYM', 'PRISE AUXILIAIRE PACK AUDIO'),
-        ('ATT_DYR', 'BOITIER TELEMATIQUE'), ('ATT_DAT', 'ANTENNE'), ('ATT_DCX', 'COTE CONDUITE/POSTE CONDUITE'),
-        ('DON_MOT', 'MOTEUR'), ('DON_TRA', 'TRANSMISSION'), ('ELE_14R', 'AAS HARD - Aide Au Stationnement')
+        ('ATT_DJY', 'SYSTEME NAVIGATION'), ('ATT_DLX', 'AFFICHEUR AV'), ('ATT_DUN', 'AMPLI EQUALISEUR'),
+        ('ATT_DYM', 'PRISE AUXILIAIRE PACK AUDIO'), ('ATT_DYR', 'BOITIER TELEMATIQUE'), ('ATT_DAT', 'ANTENNE'),
+        ('ATT_DCX', 'COTE CONDUITE/POSTE CONDUITE'), ('DON_MOT', 'MOTEUR'), ('DON_TRA', 'TRANSMISSION'),
+        ('ELE_14R', 'AAS HARD - Aide Au Stationnement')
     ]
 
     key = models.CharField('clé', max_length=10)
