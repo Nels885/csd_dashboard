@@ -92,7 +92,9 @@ class Command(BaseCommand):
             xelon_number = row.get("numero_de_dossier")
             defaults = defaults_dict(model, row, "numero_de_dossier")
             try:
-                if model.objects.filter(numero_de_dossier=xelon_number, actions__isnull=False):
+                action_filter = Q(content__startswith='OLD_VIN') | Q(content__startswith='OLD_PROD')
+                queryset = model.objects.filter(numero_de_dossier=xelon_number, actions__isnull=False).first()
+                if queryset and queryset.actions.filter(action_filter):
                     self.stdout.write(f"[XELON] Xelon file {xelon_number} not modified")
                     continue
                 obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
