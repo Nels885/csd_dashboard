@@ -2,9 +2,9 @@
 
     <table class="table table-bordered table-striped table-sm mt-4">
 
-        {% include 'format/collapse_thead.html' with id="collapseBsi" expanded=collapse.bsi thead_title="BSI :" %}
+        {% include 'format/collapse_thead.html' with id="collapseHdc" expanded=collapse.hbc thead_title="COM200x :" %}
 
-        <tbody class="collapse {% if collapse.bsi %}show{% endif %}" id="collapseBsi">
+        <tbody class="collapse {% if collapse.hdc %}show{% endif %}" id="collapseHdc">
         <tr>
             <td class="text-dark td-ihm">Référence Comp. Mat.</td>
             <td>{{ object.comp_ref }}</td>
