@@ -119,6 +119,7 @@ class Corvet(models.Model):
     btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
     bsi = models.ForeignKey('psa.Ecu', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
     emf = models.ForeignKey('psa.EmfModel', related_name='corvet_emf', on_delete=models.SET_NULL, null=True, blank=True)
+    # emf = models.ForeignKey('psa.Ecu', related_name='corvet_emf', on_delete=models.SET_NULL, limit_choices_to={'type': 'EMF'}, null=True, blank=True)
     cmm = models.ForeignKey('psa.Ecu', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
     bsm = models.ForeignKey('psa.Ecu', related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
     # hdc = models.ForeignKey('psa.Ecu', related_name='corvet_hdc', on_delete=models.SET_NULL, limit_choices_to={'type': 'HDC'}, null=True, blank=True)
@@ -134,8 +135,10 @@ class Corvet(models.Model):
             self.radio = Multimedia.objects.filter(hw_reference=self.electronique_14f).first()
         if self.electronique_14b.isdigit():
             self.bsi = Ecu.objects.filter(comp_ref__startswith=self.electronique_14b, type='BSI').first()
+        # if self.electronique_14l.isdigit():
+        #     self.emf = EmfModel.objects.filter(hw_reference__startswith=self.electronique_14l).first()
         if self.electronique_14l.isdigit():
-            self.emf = EmfModel.objects.filter(hw_reference__startswith=self.electronique_14l).first()
+            self.emf = Ecu.objects.filter(comp_ref__startswith=self.electronique_14l, type='EMF').first()
         if self.electronique_14a.isdigit():
             self.cmm = Ecu.objects.filter(comp_ref__startswith=self.electronique_14a, type='CMM').first()
         if self.electronique_16b.isdigit():

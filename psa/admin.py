@@ -51,7 +51,7 @@ class EmfModelAdmin(admin.ModelAdmin):
 
 class EcuAdmin(admin.ModelAdmin):
     list_display = ('comp_ref', 'mat_ref', 'name', 'type', 'hw', 'sw', 'supplier_oe', 'pr_reference')
-    list_filter = ('name', 'type', 'hw', 'sw', 'supplier_oe')
+    list_filter = ('type', 'supplier_oe')
     ordering = ('comp_ref',)
     search_fields = ('comp_ref', 'mat_ref', 'name', 'type')
 
