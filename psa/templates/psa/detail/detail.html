@@ -17,6 +17,14 @@
                 </a>
             </li>
 
+            {% if 'NAC' in corvet.btel.get_name_display %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#nac" role="tab" aria-selected="false">
+                        {% trans "Info NAC" %}
+                    </a>
+                </li>
+            {% endif %}
+
             <li class="nav-item">
                 <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
                    aria-selected="false">
@@ -59,6 +67,13 @@
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
             {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
+
+        </div>
+
+        <!-- Info NAC -->
+        <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
+
+            {% include 'psa/format/nac_info_format.html' with firmware=corvet.btel.firmware uin=corvet.electronique_44x %}
 
         </div>
 
