@@ -135,8 +135,8 @@ class Corvet(models.Model):
             self.radio = Multimedia.objects.filter(hw_reference=self.electronique_14f).first()
         if self.electronique_14b.isdigit():
             self.bsi = Ecu.objects.filter(comp_ref__startswith=self.electronique_14b, type='BSI').first()
-        if self.electronique_14l.isdigit():
-            self.emf = EmfModel.objects.filter(hw_reference__startswith=self.electronique_14l).first()
+        # if self.electronique_14l.isdigit():
+        #     self.emf = EmfModel.objects.filter(hw_reference__startswith=self.electronique_14l).first()
         if self.electronique_14l.isdigit():
             self.emf = Ecu.objects.filter(comp_ref__startswith=self.electronique_14l, type='EMF').first()
         if self.electronique_14a.isdigit():
