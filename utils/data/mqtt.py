@@ -39,7 +39,7 @@ class MQTTClass(mqtt.Client):
         self.run()
         self.cntMessage += 1
         print("no result: {} - connected: {}".format(self.cntMessage, self.is_connected()))
-        if self.cntMessage >= 10:
+        if self.cntMessage >= 2:
             self.PAYLOAD = {'temp': 'Hors ligne'}
             self.stop()
             self.cntMessage = 0
