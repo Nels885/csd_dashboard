@@ -39,7 +39,7 @@
     <script type="text/javascript" src="{% static 'tools/js/thermal-chamber.js' %}"></script>
     <script type="text/javascript">
         getTempFull("{% url 'tools:ajax_temp' %}");
-        setInterval(getTempFull, 30000);
+        setInterval(getTempFull, 5000);
     </script>
 
 {% endblock %}

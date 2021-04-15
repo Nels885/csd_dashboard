@@ -21,13 +21,16 @@ class MQTTClass(mqtt.Client):
 
     def on_message(self, client, userdata, message):
         # print(message.topic + " " + str(message.qos) + " " + (message.payload.decode("utf8")))
-        temp_val = int(message.payload.decode("utf8"))
-        volts = temp_val / 1023
-        temp = "{:.1f}°C".format(((volts - 0.5) * 100) + config.MQTT_TEMP_ADJ)
-        self.cntMessage = 0
-        thermal_chamber_use(temp)
-        print("on_message : {}".format(temp))
-        self.PAYLOAD = {'temp': temp}
+        try:
+            temp_val = int(message.payload.decode("utf8"))
+            volts = temp_val / 1023
+            temp = "{:.1f}°C".format(((volts - 0.5) * 100) + config.MQTT_TEMP_ADJ)
+            self.cntMessage = 0
+            thermal_chamber_use(temp)
+            print("on_message : {}".format(temp))
+            self.PAYLOAD = {'temp': temp}
+        except ValueError:
+            self.PAYLOAD = {'temp': 'Hors ligne'}
 
     def on_subscribe(self, client, userdata, mid, granted_qos):
         print("Subscribed: "+str(mid)+" "+str(granted_qos))
@@ -36,7 +39,7 @@ class MQTTClass(mqtt.Client):
         self.run()
         self.cntMessage += 1
         print("no result: {} - connected: {}".format(self.cntMessage, self.is_connected()))
-        if self.cntMessage >= 10:
+        if self.cntMessage >= 2:
             self.PAYLOAD = {'temp': 'Hors ligne'}
             self.stop()
             self.cntMessage = 0
