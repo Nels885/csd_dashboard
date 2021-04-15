@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-03 09:50+0100\n"
+"POT-Creation-Date: 2021-04-15 14:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,15 +24,15 @@ msgid ""
 "extraction..."
 msgstr ""
 
-#: psa/forms.py:46
+#: psa/forms.py:47
 msgid "Enter the VIN number"
 msgstr ""
 
-#: psa/forms.py:72
+#: psa/forms.py:74
 msgid "XML data does not match VIN"
 msgstr ""
 
-#: psa/forms.py:74 psa/tests/tests_corvet_views.py:66
+#: psa/forms.py:76 psa/tests/tests_corvet_views.py:66
 msgid "Invalid XML data"
 msgstr ""
 
@@ -46,6 +46,10 @@ msgid "Raw Corvet data"
 msgstr "Données Corvet brute"
 
 #: psa/templates/psa/detail/detail.html:23
+msgid "Info NAC"
+msgstr ""
+
+#: psa/templates/psa/detail/detail.html:31
 msgid "VIN Barcode"
 msgstr "code barre VIN"
 
@@ -65,8 +69,8 @@ msgstr "Liens utiles"
 msgid "NAC tools"
 msgstr "Outils NAC"
 
-#: psa/tests/tests_corvet_views.py:39 psa/tests/tests_psa_views.py:30
-#: psa/tests/tests_psa_views.py:45
+#: psa/tests/tests_corvet_views.py:39 psa/tests/tests_psa_views.py:31
+#: psa/tests/tests_psa_views.py:46
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
@@ -75,22 +79,22 @@ msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 
-#: psa/views.py:83
+#: psa/views.py:104
 msgid "CORVET table"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:103
+#: psa/views.py:144
 msgid "Detail Corvet data for the VIN: "
 msgstr "Détail des données Corvet pour le VIN : "
 
-#: psa/views.py:115 psa/views.py:133
+#: psa/views.py:156 psa/views.py:174
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: psa/views.py:119 psa/views.py:129
+#: psa/views.py:160 psa/views.py:170
 msgid "Modification done successfully!"
 msgstr "Modification réussie !"
 
-#: psa/views.py:157
+#: psa/views.py:198
 msgid "Products PSA table"
 msgstr "Tableau des produits PSA"

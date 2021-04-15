@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-03 09:50+0100\n"
+"POT-Creation-Date: 2021-04-15 14:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/forms.py:49
+#: reman/forms.py:59
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:56
+#: reman/forms.py:66
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/models.py:100
+#: reman/models.py:102
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
@@ -93,10 +93,8 @@ msgid "Update Default"
 msgstr "Mise à jour panne"
 
 #: reman/templates/reman/modal/ecu_dump_update.html:7
-#, fuzzy
-#| msgid "Update Default"
 msgid "Update ECU Dump"
-msgstr "Mise à jour panne"
+msgstr "Mise à jour Dump ECU"
 
 #: reman/templates/reman/modal/repair_create.html:7
 msgid "Create Repair"
@@ -122,78 +120,86 @@ msgid "Send email"
 msgstr "Envoi email"
 
 #: reman/templates/reman/tab_select.html:5
-msgid "batch list"
-msgstr "Liste des lots"
+msgid "Current batches"
+msgstr "Lots en cours"
 
 #: reman/templates/reman/tab_select.html:11
+msgid "Batch list"
+msgstr "Liste des lots"
+
+#: reman/templates/reman/tab_select.html:17
+msgid "Etude batches"
+msgstr "Lots en Etude"
+
+#: reman/templates/reman/tab_select.html:23
 msgid "Current files"
 msgstr "Dossiers client"
 
-#: reman/templates/reman/tab_select.html:17
+#: reman/templates/reman/tab_select.html:29
 msgid "Customer files"
 msgstr "Dossiers client"
 
-#: reman/templates/reman/tab_select.html:24
+#: reman/templates/reman/tab_select.html:36
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: reman/templates/reman/tab_select.html:32
+#: reman/templates/reman/tab_select.html:44
 msgid "Base ECU Reman"
 msgstr "ECU Référence de base"
 
-#: reman/templates/reman/tab_select.html:38
+#: reman/templates/reman/tab_select.html:50
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: reman/templates/reman/tab_select.html:45
+#: reman/templates/reman/tab_select.html:57
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: reman/tests/tests_reman_views.py:82 reman/tests/tests_reman_views.py:99
+#: reman/tests/tests_reman_views.py:85 reman/tests/tests_reman_views.py:105
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: reman/tests/tests_reman_views.py:102
+#: reman/tests/tests_reman_views.py:108
 msgid "PSA barcode is invalid"
 msgstr "Code barre PSA n'est pas valide"
 
-#: reman/tests/tests_reman_views.py:123 reman/views.py:268
+#: reman/tests/tests_reman_views.py:129 reman/views.py:269
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: reman/views.py:39 reman/views.py:55
+#: reman/views.py:42 reman/views.py:58
 msgid "Modification customer file"
 msgstr "Modification dossier client"
 
-#: reman/views.py:44 reman/views.py:60
+#: reman/views.py:47 reman/views.py:63
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views.py:69
+#: reman/views.py:72
 msgid "Detail customer file"
 msgstr "Dossier client détaillé"
 
-#: reman/views.py:80
+#: reman/views.py:83
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#: reman/views.py:133
+#: reman/views.py:136 reman/views.py:144
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
-#: reman/views.py:152
+#: reman/views.py:153
 msgid "Success: Batch was updated."
 msgstr "Succès: le lot a été mis à jour."
 
-#: reman/views.py:160
+#: reman/views.py:161
 msgid "Success: Batch was deleted."
 msgstr "Succès: le lot a été supprimé."
 
-#: reman/views.py:169
+#: reman/views.py:170
 msgid "Success: Reman Default was created."
 msgstr "Succès: La panne REMAN a été créé."
 
-#: reman/views.py:179
+#: reman/views.py:180
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
 
@@ -202,8 +208,6 @@ msgstr "Succès: La panne REMAN a été mise à jour."
 msgid "Repair n°%(repair)s to batch n°%(batch)s ready for shipment"
 msgstr "Réparation n°%(repair)s du lot n°%(batch)s prêt pour expédition."
 
-#: reman/views.py:386
-#, fuzzy
-#| msgid "Success: Reman Default was updated."
+#: reman/views.py:436
 msgid "Success: Reman ECU dump was updated."
-msgstr "Succès: La panne REMAN a été mise à jour."
+msgstr "Succès: La dump ECU Reman a été mise à jour."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-03 09:50+0100\n"
+"POT-Creation-Date: 2021-04-15 14:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,36 +18,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: import_export/templates/import_export/detail_csd.html:24
-#: import_export/templates/import_export/detail_csd.html:43
-#: import_export/templates/import_export/detail_reman.html:26
+#: import_export/templates/import_export/detail_csd.html:21
+#: import_export/templates/import_export/detail_csd.html:39
+#: import_export/templates/import_export/detail_reman.html:21
+#: import_export/templates/import_export/detail_tools.html:21
 #: import_export/templates/import_export/import_export_old.html:40
 #: import_export/templates/import_export/import_export_old.html:70
 msgid "Data Export"
 msgstr "Exportation de données"
 
-#: import_export/templates/import_export/detail_reman.html:50
+#: import_export/templates/import_export/detail_reman.html:48
 #: import_export/templates/import_export/import_export_old.html:113
 msgid "Csv Import"
 msgstr "Importation CSV"
 
-#: import_export/templates/import_export/detail_reman.html:69
+#: import_export/templates/import_export/detail_reman.html:72
 #: import_export/templates/import_export/import_export_old.html:94
 #: import_export/templates/import_export/import_export_old.html:132
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/views.py:45 import_export/views.py:57
+#: import_export/views.py:46 import_export/views.py:58
+#: import_export/views.py:70 import_export/views.py:93
+#: import_export/views.py:116
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:160 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:163 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:161 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:164 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
+
+#: templates/base.html:21
+msgid "release"
+msgstr "version"
 
 #: templates/base/top_bar.html:24
 msgid "Search Xelon, VIN or SN..."
@@ -94,12 +101,12 @@ msgstr "S'identifier"
 #: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_csd_atelier.html:82
 #: templates/nav/nav_csd_atelier.html:100
 #: templates/nav/nav_csd_atelier.html:118 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:82
+#: templates/nav/nav_tools.html:83
 msgid "Informations"
 msgstr ""
 
 #: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:63
-#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:87
+#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:88
 msgid "Editing"
 msgstr "Edition"
 
@@ -196,34 +203,46 @@ msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
 #: templates/nav/nav_reman.html:48
+msgid "Current batches"
+msgstr "Lots en cours"
+
+#: templates/nav/nav_reman.html:49
 msgid "Batch list"
 msgstr "Liste des lots"
 
 #: templates/nav/nav_reman.html:50
+msgid "Etude batches"
+msgstr "Lots en Etude"
+
+#: templates/nav/nav_reman.html:52
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: templates/nav/nav_reman.html:53
+#: templates/nav/nav_reman.html:55
 msgid "ECU ref Base"
 msgstr "Base réf. ECU"
 
-#: templates/nav/nav_reman.html:55
+#: templates/nav/nav_reman.html:57
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:65
+#: templates/nav/nav_reman.html:67
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:75
+#: templates/nav/nav_reman.html:73
+msgid "Create Etude Batch"
+msgstr "Création lot Etude"
+
+#: templates/nav/nav_reman.html:83
 msgid "Create Default"
 msgstr "Création panne"
 
-#: templates/nav/nav_reman.html:84
+#: templates/nav/nav_reman.html:92
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:92
+#: templates/nav/nav_reman.html:100
 msgid "check part"
 msgstr "Vérification pièce"
 
@@ -243,11 +262,15 @@ msgstr "Tableau dever. VIN"
 msgid "tag Xelon table"
 msgstr "Tableau tag Xelon"
 
-#: templates/nav/nav_tools.html:84
+#: templates/nav/nav_tools.html:61
+msgid "Suptech table"
+msgstr "Tableau Suptech"
+
+#: templates/nav/nav_tools.html:85
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:89
+#: templates/nav/nav_tools.html:90
 msgid "Software Add"
 msgstr "Ajout logiciel"
 
