@@ -132,7 +132,6 @@ def corvet_detail(request, vin):
     :param vin:
         VIN for Corvet data
     """
-    title = f'Info CORVET : {vin}'
     collapse = {
         "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True
     }

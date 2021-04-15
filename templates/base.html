@@ -65,7 +65,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid mt-4">
 
-                    {% include 'base/_header.html' %}
+                    {% block header %} {% include 'base/_header.html' %} {% endblock %}
 
                     {% block content %} {% endblock %}
 
