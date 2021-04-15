@@ -1,7 +1,7 @@
 def derive_precode(precode):
-    if not len(precode):
+    if not len(precode) == 4:
         # raise ValueError("Could not compute the code with a empty precode !")
-        return None
+        return {'result': 'ERROR', 'message': 'Could not compute the code with a empty precode !'}
 
     precode = precode.upper()
 
@@ -12,4 +12,4 @@ def derive_precode(precode):
     computed_code = (z // 10) + (z % 10) * 5 * 2 + ((0x103 % x) % 100) * 5 * 5 * 4
     computed_code = "%04d" % computed_code
 
-    return computed_code
+    return {'result': 'OK', 'code': computed_code}
