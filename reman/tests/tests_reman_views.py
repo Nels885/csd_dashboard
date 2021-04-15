@@ -167,3 +167,29 @@ class RemanTestCase(UnitTest):
         response = self.client.get(reverse('reman:api_ecurefbase-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
+
+    def test_ref_base_create_view(self):
+        psa_barcode = '9676543210'
+        url = reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode})
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(EcuModel, 'add_ecumodel')
+        self.login()
+        for nb in range(2):
+            response = self.client.get(url + f"?next={nb}")
+            if nb == 2:
+                self.assertEqual(response.status_code, 404)
+            else:
+                self.assertEqual(response.status_code, 200)
+
+    def test_ref_base_edit_view(self):
+        url = reverse('reman:edit_ref_base', kwargs={'psa_barcode': self.psaBarcode})
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(EcuModel, 'change_ecumodel')
+        self.login()
+        for nb in range(2):
+            response = self.client.get(url + f"?next={nb}")
+            self.assertEqual(response.status_code, 200)
