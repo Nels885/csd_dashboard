@@ -322,7 +322,16 @@ def batch_table(request):
     table_title = 'Liste des lots REMAN ajoutés'
     repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
     packed = Count('repairs', filter=Q(repairs__checkout=True))
-    batchs = Batch.objects.all().order_by('-created_at')
+    query_param = request.GET.get('filter', None)
+    select_tab = 'batch'
+    if query_param and query_param == "pending":
+        batchs = Batch.objects.filter(active=True, number__lt=900).order_by('-created_at')
+        select_tab = 'batch_pending'
+    elif query_param and query_param == "etude":
+        select_tab = 'batch_etude'
+        batchs = Batch.objects.filter(number__gte=900).order_by('-created_at')
+    else:
+        batchs = Batch.objects.filter(number__lt=900).order_by('-created_at')
     batchs = batchs.annotate(repaired=repaired, packed=packed, total=Count('repairs'))
     context.update(locals())
     return render(request, 'reman/batch_table.html', context)
