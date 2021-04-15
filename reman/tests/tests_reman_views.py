@@ -21,7 +21,6 @@ class RemanTestCase(UnitTest):
             batch=self.batch, identify_number="C001010001", created_by=self.user, status="Réparé", quality_control=True)
         self.authError = {"detail": "Informations d'authentification non fournies."}
 
-
     def test_repair_table_page(self):
         url = reverse('reman:repair_table')
         response = self.client.get(url)

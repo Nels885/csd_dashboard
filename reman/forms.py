@@ -55,6 +55,8 @@ class AddBatchForm(BSModalModelForm):
     def clean_number(self):
         data = self.cleaned_data['number']
         date = timezone.now()
+        if data >= 900:
+            self.add_error('number', _('Unauthorized batch number!'))
         if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
             self.add_error('number', _('The batch already exists!'))
         return data
@@ -88,6 +90,15 @@ class AddEtudeBatchForm(AddBatchForm):
             self.fields["number"].initial = batchs.aggregate(Max('number'))['number__max'] + 1
         except TypeError:
             self.fields['number'].initial = 901
+
+    def clean_number(self):
+        data = self.cleaned_data['number']
+        date = timezone.now()
+        if data <= 900:
+            self.add_error('number', _('Unauthorized batch number!'))
+        if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
+            self.add_error('number', _('The batch already exists!'))
+        return data
 
     def save(self, commit=True):
         batch = super(AddEtudeBatchForm, self).save(commit=False)
