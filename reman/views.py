@@ -2,11 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
-from django.utils import timezone
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from django.db.models import Max, Q, Count
+from django.db.models import Q, Count
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
@@ -14,7 +13,7 @@ from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
 from utils.django.urls import reverse, reverse_lazy
 
-from utils.conf import string_to_list, DICT_YEAR
+from utils.conf import string_to_list
 from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
@@ -22,7 +21,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST, EcuRefBaseSe
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm
+    EcuDumpModelForm, AddEtudeBatchForm
 )
 
 context = {
@@ -137,15 +136,13 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = _('Success: Batch was created.')
     success_url = reverse_lazy('reman:batch_table')
 
-    def get_initial(self):
-        initial = super(BatchCreateView, self).get_initial()
-        try:
-            date = timezone.now()
-            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
-            initial['number'] = batchs.aggregate(Max('number'))['number__max'] + 1
-        except TypeError:
-            initial['number'] = 1
-        return initial
+
+class BatchEtudeCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'reman.add_batch'
+    template_name = 'reman/modal/batch_create.html'
+    form_class = AddEtudeBatchForm
+    success_message = _('Success: Batch was created.')
+    success_url = reverse_lazy('reman:batch_table')
 
 
 class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
