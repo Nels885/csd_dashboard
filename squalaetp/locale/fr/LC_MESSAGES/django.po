@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-03 09:50+0100\n"
+"POT-Creation-Date: 2021-04-15 14:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/forms.py:82
+#: squalaetp/forms.py:86
 msgid ""
 "Data in XML format available on the RepairNAV site during CORVET "
 "extraction..."
@@ -26,19 +26,19 @@ msgstr ""
 "Données au format XML disponible sur le site RepairNAV lors de l'extraction "
 "CORVET..."
 
-#: squalaetp/forms.py:93
+#: squalaetp/forms.py:98
 msgid "Enter the VIN number"
 msgstr "Entrez le numéro de VIN"
 
-#: squalaetp/forms.py:116
+#: squalaetp/forms.py:126
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:118
+#: squalaetp/forms.py:128
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
-#: squalaetp/forms.py:127
+#: squalaetp/forms.py:138
 msgid "VIN error !"
 msgstr "Erreur VIN"
 
@@ -89,24 +89,24 @@ msgstr "Dossiers erreur CORVET"
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: squalaetp/views.py:91
+#: squalaetp/views.py:108
 msgid "Success: Squalaetp data was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:98
+#: squalaetp/views.py:115
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
 
-#: squalaetp/views.py:129
+#: squalaetp/views.py:143
 msgid "Success: Xelon was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:134
+#: squalaetp/views.py:148
 #, python-format
 msgid "Product update for %(file)s"
 msgstr "MAJ du produit pour %(file)s"
 
-#: squalaetp/views.py:173 squalaetp/views.py:201
+#: squalaetp/views.py:184 squalaetp/views.py:209
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."

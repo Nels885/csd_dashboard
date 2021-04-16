@@ -6,12 +6,15 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
 from django.core.management import call_command
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, status
 
+from utils.django.datatables import QueryTableByArgs
+from .serializers import XelonSerializer, XELON_COLUMN_LIST
 from .models import Xelon, Stock, Action
 from .utils import collapse_select
 from psa.models import Corvet
@@ -22,6 +25,7 @@ from psa.forms import CorvetForm
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
+from utils.django.urls import reverse_lazy
 
 
 @login_required
@@ -127,7 +131,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -156,7 +160,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.object.id})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -167,7 +171,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
-        initial['subject'] = "[{}] Erreur VIN Xelon".format(xelon.numero_de_dossier)
+        initial['subject'] = f"[{xelon.numero_de_dossier}] {xelon.modele_produit} Erreur VIN Xelon"
         initial['message'] = self.form_class.vin_message(xelon, self.request)
         return initial
 
@@ -181,7 +185,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('squalaetp:detail', args=[self.kwargs['pk']], get={'select': 'ihm'})
 
 
 class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -192,7 +196,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
-        initial['subject'] = "[{}] Erreur modèle produit Xelon".format(xelon.numero_de_dossier)
+        initial['subject'] = f"[{xelon.numero_de_dossier}] Erreur modèle produit Xelon"
         initial['message'] = self.form_class.prod_message(xelon, self.request)
         return initial
 
@@ -206,7 +210,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('squalaetp:detail', args=[self.kwargs['pk']], get={'select': 'ihm'})
 
 
 class LogFileView(LoginRequiredMixin, TemplateView):
@@ -229,3 +233,34 @@ def change_table(request):
     table_title = 'Historique des changements Squalaetp'
     actions = Action.objects.all()
     return render(request, 'squalaetp/change_table.html', locals())
+
+
+class XelonViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Xelon.objects.filter(date_retour__isnull=False)
+    serializer_class = XelonSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            self._filter(request)
+            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
+            serializer = self.serializer_class(xelon["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": xelon["draw"],
+                "recordsTotal": xelon["total"],
+                "recordsFiltered": xelon["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+    def _filter(self, request):
+        query = request.query_params.get('filter', None)
+        if query and query == 'pending':
+            self.queryset = self.queryset.exclude(type_de_cloture__in=['Réparé', 'N/A'])
+        elif query and query == "vin-error":
+            self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
+        elif query and query == "corvet-error":
+            self.queryset = self.queryset.filter(
+                vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')

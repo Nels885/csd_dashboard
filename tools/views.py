@@ -153,8 +153,8 @@ class ThermalDeleteView(LoginRequiredMixin, BSModalDeleteView):
     success_url = reverse_lazy('tools:thermal')
 
 
-class SupTechCreateView(PermissionRequiredMixin, BSModalCreateView):
-    permission_required = 'tools.add_suptech'
+class SupTechCreateView(BSModalCreateView):
+    # permission_required = 'tools.add_suptech'
     template_name = 'tools/modal/suptech_create.html'
     form_class = SuptechModalForm
     success_message = "Succès : Création d'un SupTech avec succès !"

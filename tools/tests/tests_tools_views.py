@@ -116,7 +116,7 @@ class ToolsTestCase(UnitTest):
     def test_create_suptech_is_disconnected(self):
         url = reverse('tools:suptech_add')
         response = self.client.get(url)
-        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.assertEqual(response.status_code, 200)
 
     def test_suptech_list_page(self):
         url = reverse('tools:suptech_list')

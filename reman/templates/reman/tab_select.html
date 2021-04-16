@@ -1,8 +1,20 @@
 {% load i18n %}
 
+<li class="nav-item {% if select == 'batch_pending' %}active{% endif %}">
+    <a class="nav-link {% if select == 'batch_pending' %}active{% endif %}" href="{% url 'reman:batch_table' %}?filter=pending">
+        {% trans "Current batches" %}
+    </a>
+</li>
+
 <li class="nav-item {% if select == 'batch' %}active{% endif %}">
     <a class="nav-link {% if select == 'batch' %}active{% endif %}" href="{% url 'reman:batch_table' %}">
-        {% trans "batch list" %}
+        {% trans "Batch list" %}
+    </a>
+</li>
+
+<li class="nav-item {% if select == 'batch_etude' %}active{% endif %}">
+    <a class="nav-link {% if select == 'batch_etude' %}active{% endif %}" href="{% url 'reman:batch_table' %}?filter=etude">
+        {% trans "Etude batches" %}
     </a>
 </li>
 

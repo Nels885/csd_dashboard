@@ -56,8 +56,6 @@ class MixinsTest(UnitTest):
         """
         Create Suptech through BSModalCreateView.
         """
-        self.add_perms_user(Suptech, 'add_suptech')
-        self.login()
 
         # First post request = ajax request checking if form in view is valid
         response = self.client.post(
@@ -80,6 +78,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('tools:suptech_add'),
             data={
+                'username': self.user.username,
                 'xelon': 'A123456789',
                 'item': 'Hot Line Tech',
                 'time': '5',

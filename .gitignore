@@ -1,5 +1,6 @@
 .idea/
 .coverage
+.env
 htmlcov/
 __pycache__
 *.sqlite3

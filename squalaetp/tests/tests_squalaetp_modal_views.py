@@ -2,6 +2,7 @@ from dashboard.tests.base import UnitTest, reverse
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
+from utils.django.urls import reverse
 
 
 class MixinsTest(UnitTest):
@@ -29,7 +30,8 @@ class MixinsTest(UnitTest):
             }
         )
         # redirection
-        self.assertRedirects(response, reverse('squalaetp:detail', kwargs={'pk': xelon.pk}), status_code=302)
+        self.assertRedirects(
+            response, reverse('squalaetp:detail', args=[xelon.pk], get={'select': 'ihm'}), status_code=302)
         # Object is updated
         xelon = Xelon.objects.first()
         self.assertEqual(xelon.vin, self.vin)
@@ -54,7 +56,8 @@ class MixinsTest(UnitTest):
             }
         )
         # redirection
-        self.assertRedirects(response, reverse('squalaetp:detail', kwargs={'pk': xelon.pk}), status_code=302)
+        self.assertRedirects(
+            response, reverse('squalaetp:detail', args=[xelon.pk], get={'select': 'ihm'}), status_code=302)
 
     def test_product_update_ajax_mixin(self):
         """
@@ -73,7 +76,8 @@ class MixinsTest(UnitTest):
             }
         )
         # redirection
-        self.assertRedirects(response, reverse('squalaetp:detail', kwargs={'pk': xelon.pk}), status_code=302)
+        self.assertRedirects(
+            response, reverse('squalaetp:detail', args=[xelon.pk], get={'select': 'ihm'}), status_code=302)
         # Object is updated
         xelon = Xelon.objects.first()
         self.assertEqual(xelon.modele_produit, 'test')
@@ -98,4 +102,5 @@ class MixinsTest(UnitTest):
             }
         )
         # redirection
-        self.assertRedirects(response, reverse('squalaetp:detail', kwargs={'pk': xelon.pk}), status_code=302)
+        self.assertRedirects(
+            response, reverse('squalaetp:detail', args=[xelon.pk], get={'select': 'ihm'}), status_code=302)

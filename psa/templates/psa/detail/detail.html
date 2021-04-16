@@ -2,6 +2,17 @@
 
 {% load static i18n corvet_tags %}
 
+{% block header %}
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ corvet.vin }} - {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger create-suptech shadow-sm">
+            <i class="fas fa-radiation fa-sm text-white-50"></i> Support Tech</a>
+    </div>
+
+{% endblock %}
+
 {% block card_header %}
 
     <div class="card-header">
@@ -16,6 +27,14 @@
                     {% trans "Raw Corvet data" %}
                 </a>
             </li>
+
+            {% if 'NAC' in corvet.btel.get_name_display %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#nac" role="tab" aria-selected="false">
+                        {% trans "Info NAC" %}
+                    </a>
+                </li>
+            {% endif %}
 
             <li class="nav-item">
                 <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
@@ -59,6 +78,13 @@
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
             {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
+
+        </div>
+
+        <!-- Info NAC -->
+        <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
+
+            {% include 'psa/format/nac_info_format.html' with firmware=corvet.btel.firmware uin=corvet.electronique_44x %}
 
         </div>
 

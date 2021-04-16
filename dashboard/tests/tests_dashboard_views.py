@@ -5,6 +5,7 @@ from django.utils import translation
 
 from .base import UnitTest, User, reverse
 
+from dashboard.models import ShowCollapse
 from squalaetp.models import Xelon
 
 
@@ -50,6 +51,18 @@ class DashboardTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('dashboard:user_profile'))
         self.assertEqual(response.status_code, 200)
+
+        # Testing the collapse activation form
+        response = self.client.post(
+            reverse('dashboard:user_profile'),
+            data={
+                'user': self.user, 'general': True, 'motor': True, 'interior': True, 'diverse': True,
+                'btn_collapse': 'Submit'
+            }
+        )
+        collapse = ShowCollapse.objects.get(user=self.user)
+        for field in [collapse.general, collapse.motor, collapse.interior, collapse.diverse]:
+            self.assertEqual(field, True)
 
     def test_signup_page(self):
         # Signug is not staff

@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Max
 from django.core.management import call_command
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
@@ -43,9 +43,20 @@ class AddBatchForm(BSModalModelForm):
             )
         }
 
+    def __init__(self, *args, **kwargs):
+        super(AddBatchForm, self).__init__(*args, **kwargs)
+        try:
+            date = timezone.now()
+            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
+            self.fields["number"].initial = batchs.aggregate(Max('number'))['number__max'] + 1
+        except TypeError:
+            self.fields['number'].initial = 1
+
     def clean_number(self):
         data = self.cleaned_data['number']
         date = timezone.now()
+        if data >= 900:
+            self.add_error('number', _('Unauthorized batch number!'))
         if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
             self.add_error('number', _('The batch already exists!'))
         return data
@@ -67,6 +78,34 @@ class AddBatchForm(BSModalModelForm):
         except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
         return data
+
+
+class AddEtudeBatchForm(AddBatchForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AddEtudeBatchForm, self).__init__(*args, **kwargs)
+        try:
+            date = timezone.now()
+            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
+            self.fields["number"].initial = batchs.aggregate(Max('number'))['number__max'] + 1
+        except TypeError:
+            self.fields['number'].initial = 901
+
+    def clean_number(self):
+        data = self.cleaned_data['number']
+        date = timezone.now()
+        if data <= 900:
+            self.add_error('number', _('Unauthorized batch number!'))
+        if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
+            self.add_error('number', _('The batch already exists!'))
+        return data
+
+    def save(self, commit=True):
+        batch = super(AddEtudeBatchForm, self).save(commit=False)
+        if commit and not self.request.is_ajax():
+            batch.active = False
+            batch.save()
+        return batch
 
 
 class DefaultForm(BSModalModelForm):

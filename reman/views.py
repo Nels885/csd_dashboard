@@ -2,11 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
-from django.utils import timezone
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from django.db.models import Max, Q, Count
+from django.db.models import Q, Count
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
@@ -14,15 +13,15 @@ from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
 from utils.django.urls import reverse, reverse_lazy
 
-from utils.conf import string_to_list, DICT_YEAR
-from api.models import QueryTableByArgs
+from utils.conf import string_to_list
+from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
-from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
+from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST, EcuRefBaseSerializer, ECU_REF_BASE_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm
+    EcuDumpModelForm, AddEtudeBatchForm
 )
 
 context = {
@@ -137,15 +136,13 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = _('Success: Batch was created.')
     success_url = reverse_lazy('reman:batch_table')
 
-    def get_initial(self):
-        initial = super(BatchCreateView, self).get_initial()
-        try:
-            date = timezone.now()
-            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
-            initial['number'] = batchs.aggregate(Max('number'))['number__max'] + 1
-        except TypeError:
-            initial['number'] = 1
-        return initial
+
+class BatchEtudeCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'reman.add_batch'
+    template_name = 'reman/modal/batch_create.html'
+    form_class = AddEtudeBatchForm
+    success_message = _('Success: Batch was created.')
+    success_url = reverse_lazy('reman:batch_table')
 
 
 class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -325,7 +322,16 @@ def batch_table(request):
     table_title = 'Liste des lots REMAN ajoutés'
     repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
     packed = Count('repairs', filter=Q(repairs__checkout=True))
-    batchs = Batch.objects.all().order_by('-created_at')
+    query_param = request.GET.get('filter', None)
+    select_tab = 'batch'
+    if query_param and query_param == "pending":
+        batchs = Batch.objects.filter(active=True, number__lt=900).order_by('-created_at')
+        select_tab = 'batch_pending'
+    elif query_param and query_param == "etude":
+        select_tab = 'batch_etude'
+        batchs = Batch.objects.filter(number__gte=900).order_by('-created_at')
+    else:
+        batchs = Batch.objects.filter(number__lt=900).order_by('-created_at')
     batchs = batchs.annotate(repaired=repaired, packed=packed, total=Count('repairs'))
     context.update(locals())
     return render(request, 'reman/batch_table.html', context)
@@ -334,24 +340,17 @@ def batch_table(request):
 @login_required()
 def repair_table(request):
     """ View of Reman Repair table page """
-    query = request.GET.get('filter')
+    query_param = request.GET.get('filter')
     select_tab = 'repair'
-    if query and query == 'pending':
-        files = Repair.objects.exclude(status="Rebut").filter(checkout=False)
+    if query_param and query_param == 'pending':
         table_title = 'Dossiers en cours de réparation'
         select_tab = 'repair_pending'
-    elif query and query == 'checkout':
-        files = Repair.objects.filter(status="Réparé", quality_control=True, checkout=False)
+    elif query_param and query_param == 'checkout':
         table_title = "Dossiers en attente d'expédition"
     else:
-        files = Repair.objects.all()
         table_title = 'Dossiers de réparation'
-    context.update({
-        'table_title': table_title,
-        'files': files,
-        'select_tab': select_tab
-    })
-    return render(request, 'reman/repair/repair_table.html', context)
+    context.update(locals())
+    return render(request, 'reman/repair/ajax_repair_table.html', context)
 
 
 class RepairViewSet(viewsets.ModelViewSet):
@@ -395,9 +394,29 @@ def part_table(request):
 def ecu_ref_table(request):
     """ View of EcuRefBase table page """
     table_title = 'Base ECU Reman'
-    ecus = EcuModel.objects.all()
+    # ecus = EcuModel.objects.all()
     context.update(locals())
-    return render(request, 'reman/ecu_ref_base_table.html', context)
+    return render(request, 'reman/ajax_ecu_ref_base_table.html', context)
+
+
+class EcuRefBaseViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = EcuModel.objects.all()
+    serializer_class = EcuRefBaseSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            ecu = QueryTableByArgs(self.queryset, ECU_REF_BASE_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(ecu["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": ecu["draw"],
+                "recordsTotal": ecu["total"],
+                "recordsFiltered": ecu["count"]
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required()

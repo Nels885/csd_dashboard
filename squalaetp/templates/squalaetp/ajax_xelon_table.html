@@ -16,7 +16,7 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered table-sm text-nowrap" id="xelonTable" style="width: 100%;">
+    <table class="table table-bordered table-sm text-nowrap display" id="xelonTable" style="width: 100%;">
         <thead>
         <tr>
             <th></th>
@@ -38,7 +38,11 @@
 
     <!-- Page level custom scripts -->
     <script type="text/javascript">
-        const URL_AJAX = '{% url 'api:xelon-list' %}?filter={{ query_param }}';
+        let PERM;
+        {% if perms.squalaetp.change_xelon and perms.psa.change_corvet%}
+            PERM = true;
+        {% endif %}
+        const URL_AJAX = "{% url 'squalaetp:api_xelon-list' %}?filter={{ query_param }}";
     </script>
     <script type="text/javascript" src="{% static 'squalaetp/js/ajax-xelon-tables.js' %}"></script>
 

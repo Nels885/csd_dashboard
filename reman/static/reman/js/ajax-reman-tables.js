@@ -1,13 +1,29 @@
 $(document).ready(function () {
-    let table = $('#repairTable').DataTable({
+    $('#repairTable').DataTable({
         processing: true,
         serverSide: true,
         scrollX: true,
         order: [[2, "asc"]],
         ajax: URL_AJAX,
         columns: [
-            {data: null},
-            {data: null},
+            {
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/reman/repair/' + full.id + '/edit/';
+                    if (PERM && !full.checkout) {
+                        return '<a href="' + url + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>';
+                    } else {
+                        return '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>';
+                    }
+                },
+            },
+            {
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/reman/repair/' + full.id + '/detail/'
+                    return '<a href="' + url + '" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>';
+                }
+            },
             {data: "identify_number"},
             {data: "batch"},
             {data: "technical_data"},
@@ -29,28 +45,43 @@ $(document).ready(function () {
                 searchable: false,
                 orderable: false,
             },
-            {
-                defaultContent: BTN_EDIT,
-                targets: 0
-            },
-            {
-                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
-                targets: 1
-            }
         ],
     });
 
-    let id = 0;
-
-    $('#repairTable tbody').on('click', 'button', function () {
-        let data = table.row($(this).parents('tr')).data();
-        let title = $(this).attr('title');
-        id = data['id'];
-        if (title === 'Modification') {
-            location.href = '/reman/repair/' + id + '/edit/'
-        } else if (title === 'Detail') {
-            // Detail button
-            location.href = '/reman/repair/' + id + '/detail/'
-        }
+    $('#ecuRefBaseTable').DataTable({
+        processing: true,
+        serverSide: true,
+        scrollX: true,
+        order: [[1, "asc"]],
+        ajax: URL_AJAX,
+        columns: [
+            {
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/reman/ecu/' + full.psa_barcode + '/edit/';
+                    if (PERM) {
+                        return '<a href="' + url + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>';
+                    } else {
+                        return '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>';
+                    }
+                },
+            },
+            {data: "reman_reference"},
+            {data: "technical_data"},
+            {data: "hw_reference"},
+            {data: "supplier_oe"},
+            {data: "psa_barcode"},
+            {data: "code_produit"},
+            {data: "code_emplacement"},
+            {data: "cumul_dispo"}
+        ],
+        // Disable sorting for the Tags and Actions columns.
+        columnDefs: [
+            {
+                targets: 0,
+                searchable: false,
+                orderable: false,
+            },
+        ],
     });
 });

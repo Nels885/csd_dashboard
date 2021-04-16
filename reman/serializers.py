@@ -8,6 +8,12 @@ REPAIR_COLUMN_LIST = [
     'status', 'quality_control', 'closing_date', 'modified_by', 'modified_at', 'created_by__username', 'created_at'
 ]
 
+ECU_REF_BASE_COLUMN_LIST = [
+    'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data', 'ecu_type__hw_reference',
+    'ecu_type__supplier_oe', 'psa_barcode', 'ecu_type__spare_part__code_produit',
+    'ecu_type__spare_part__code_emplacement', 'ecu_type__spare_part__cumul_dispo'
+]
+
 
 class RemanBatchSerializer(serializers.ModelSerializer):
     reman_reference = serializers.CharField(source='ecu_ref_base.reman_reference', read_only=True)
@@ -57,5 +63,22 @@ class RemanRepairSerializer(serializers.ModelSerializer):
         model = Repair
         fields = (
             'id', 'identify_number', 'batch', 'technical_data', 'supplier_oe', 'hw_reference', 'psa_barcode', 'status',
-            'quality_control', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
+            'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
+        )
+
+
+class EcuRefBaseSerializer(serializers.ModelSerializer):
+    reman_reference = serializers.CharField(source='ecu_type.ecu_ref_base.reman_reference', read_only=True, default="")
+    technical_data = serializers.CharField(source='ecu_type.technical_data', read_only=True, default="")
+    hw_reference = serializers.CharField(source='ecu_type.hw_reference', read_only=True, default="")
+    supplier_oe = serializers.CharField(source='ecu_type.supplier_oe', read_only=True, default="")
+    code_produit = serializers.CharField(source='ecu_type.spare_part.code_produit', read_only=True, default="")
+    code_emplacement = serializers.CharField(source='ecu_type.spare_part.code_emplacement', read_only=True, default="")
+    cumul_dispo = serializers.CharField(source='ecu_type.spare_part.cumul_dispo', read_only=True, default="")
+
+    class Meta:
+        model = EcuModel
+        fields = (
+            'id', 'reman_reference', 'technical_data', 'hw_reference', 'supplier_oe', 'psa_barcode', 'code_produit',
+            'code_emplacement', 'cumul_dispo'
         )

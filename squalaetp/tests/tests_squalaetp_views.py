@@ -13,6 +13,7 @@ class XelonTestCase(UnitTest):
         xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                                      modele_vehicule='peugeot')
         self.xelonId = str(xelon.id)
+        self.authError = {"detail": "Informations d'authentification non fournies."}
 
     def test_xelon_table_page(self):
         url = reverse('squalaetp:xelon')
@@ -71,3 +72,14 @@ class XelonTestCase(UnitTest):
         xelon = Xelon.objects.get(pk=self.xelonId)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(xelon.is_active, True)
+
+    def test_xelon_view_set_is_disconnected(self):
+        response = self.client.get(reverse('squalaetp:api_xelon-list'), format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data, self.authError)
+
+    # def test_xelon_view_set_is_connected(self):
+    #     self.login('admin')
+    #     response = self.client.get(reverse('squalaetp:api_xelon-list'), format='json')
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(len(response.data), 4)

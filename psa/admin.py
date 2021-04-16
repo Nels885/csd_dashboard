@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, BsiModel, EmfModel
+from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, EmfModel, Ecu
 
 
 class CorvetAdmin(admin.ModelAdmin):
@@ -42,13 +42,6 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
     search_fields = ('key', 'value', 'column')
 
 
-class BsiModelAdmin(admin.ModelAdmin):
-    list_display = ('reference', 'name', 'hw', 'sw', 'supplier_oe')
-    list_filter = ('name', 'hw', 'sw', 'supplier_oe')
-    ordering = ('reference',)
-    search_fields = ('reference', 'name',)
-
-
 class EmfModelAdmin(admin.ModelAdmin):
     list_display = ('hw_reference', 'name', 'hw', 'sw', 'supplier_oe', 'pr_reference')
     list_filter = ('name', 'hw', 'sw', 'supplier_oe')
@@ -56,10 +49,17 @@ class EmfModelAdmin(admin.ModelAdmin):
     search_fields = ('hw_reference', 'name')
 
 
+class EcuAdmin(admin.ModelAdmin):
+    list_display = ('comp_ref', 'mat_ref', 'name', 'type', 'hw', 'sw', 'supplier_oe', 'pr_reference')
+    list_filter = ('type', 'supplier_oe')
+    ordering = ('comp_ref',)
+    search_fields = ('comp_ref', 'mat_ref', 'name', 'type')
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
-admin.site.register(BsiModel, BsiModelAdmin)
 admin.site.register(EmfModel, EmfModelAdmin)
+admin.site.register(Ecu, EcuAdmin)

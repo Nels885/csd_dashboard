@@ -6,8 +6,24 @@ $(document).ready(function () {
         order: [[6, 'desc']],
         ajax: URL_AJAX,
         columns: [
-            {data: null},
-            {data: null},
+            {
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/squalaetp/' + full.id + '/detail/?select=ihm';
+                    if (PERM) {
+                        return '<a href="' + url + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>';
+                    } else {
+                        return '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>';
+                    }
+                }
+            },
+            {
+                sortable: false,
+                render: function (data, type, full, meta) {
+                    let url = '/squalaetp/' + full.id + '/detail/';
+                    return '<a  href="' + url + '" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
+                },
+            },
             {data: "numero_de_dossier"},
             {data: "vin"},
             {data: "modele_produit"},
@@ -28,28 +44,6 @@ $(document).ready(function () {
                 searchable: false,
                 orderable: false,
             },
-            {
-                defaultContent: '<button title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></button>',
-                targets: 0
-            },
-            {
-                defaultContent: '<button title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></button>',
-                targets: 1
-            }
         ],
-    });
-
-    let id = 0;
-
-    $('#xelonTable tbody').on('click', 'button', function () {
-        let data = table.row($(this).parents('tr')).data();
-        let title = $(this).attr('title');
-        id = data['id'];
-        if (title === 'Modification') {
-            location.href = '/squalaetp/' + id + '/detail/?select=ihm'
-        } else if (title === 'Detail') {
-            // Detail button
-            location.href = '/squalaetp/' + id + '/detail/'
-        }
     });
 });

@@ -45,7 +45,9 @@
 
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+                    <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=pending">{% trans "Current batches" %}</a>
                     <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "Batch list" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=etude">{% trans "Etude batches" %}</a>
                     {% if perms.reman.view_default %}
                         <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
                     {% endif %}
@@ -63,6 +65,12 @@
         <li class="nav-item">
             <a class="create-batch nav-link" href="#">
                 <i class="fas fa-fw fa-box"></i><span>{% trans "Create Batch" %}</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="create-etude-batch nav-link" href="#">
+                <i class="fas fa-fw fa-box"></i><span>{% trans "Create Etude Batch" %}</span>
             </a>
         </li>
 

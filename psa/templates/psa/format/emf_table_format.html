@@ -2,12 +2,12 @@
 
     <table class="table table-bordered table-striped table-sm mt-4">
 
-        {% include 'format/collapse_thead.html' with id="collapseEmf" expanded=collapse.bsi thead_title="ECRAN MULTIFONCTION :" %}
+        {% include 'format/collapse_thead.html' with id="collapseEmf" expanded=collapse.emf thead_title="ECRAN MULTIFONCTION :" %}
 
         <tbody class="collapse {% if collapse.emf %}show{% endif %}" id="collapseEmf">
         <tr>
-            <td class="text-dark td-ihm">Référence HW</td>
-            <td>{{ object.hw_reference }}</td>
+            <td class="text-dark td-ihm">Référence Comp. Mat.</td>
+            <td>{{ object.comp_ref }}</td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">Modèle</td>

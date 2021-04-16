@@ -6,3 +6,8 @@
     </a>
 </li>
 
+<li class="nav-item {% if select == 'tools' %}active{% endif %}">
+    <a class="nav-link {% if select == 'tools' %}active{% endif %}" href="{% url 'renault:tools' %}">
+        {% trans "Tools" %}
+    </a>
+</li>

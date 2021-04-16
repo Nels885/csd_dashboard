@@ -63,6 +63,53 @@ class MixinsTest(UnitTest):
         batchs = Batch.objects.all()
         self.assertEqual(batchs.count(), 2)
 
+    def test_create_etude_batch_ajax_mixin(self):
+        """
+        Create Batch through BSModalCreateView.
+        """
+        self.add_perms_user(Batch, 'add_batch')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('reman:create_etude_batch'),
+            data={
+                'number': '2',
+                'quantity': '20',
+                'start_date': '01/01/1970',
+                'end_date': '01/01/1970',
+                'ref_reman': '1234567890'
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        batchs = Batch.objects.all()
+        self.assertEqual(batchs.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:create_etude_batch'),
+            data={
+                'number': '901',
+                'quantity': '20',
+                'start_date': '01/01/1970',
+                'end_date': '01/01/1970',
+                'ref_reman': '1234567890'
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        batchs = Batch.objects.all()
+        self.assertEqual(batchs.count(), 2)
+        self.assertEqual(batchs.last().number, 901)
+
     def test_Delete_batch_ajax_mixin(self):
         """
         Delete object through BSModalDeleteView.

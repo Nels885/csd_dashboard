@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
 from utils.django.forms import ParaErrorList
-from api.models import QueryTableByArgs
+from utils.django.datatables import QueryTableByArgs
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
 from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Multimedia
@@ -132,7 +132,6 @@ def corvet_detail(request, vin):
     :param vin:
         VIN for Corvet data
     """
-    title = f'Info CORVET : {vin}'
     collapse = {
         "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True
     }
