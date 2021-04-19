@@ -259,12 +259,12 @@ class CheckOutSelectBatchForm(BSModalForm):
             self.add_error("batch", "Pas de lot associé")
         elif len(batchs) > 1:
             self.add_error("batch", "Il y a plusieurs lots associés")
-        else:
-            batch = batchs.first()
-            if batch.repaired != batch.quantity:
-                self.add_error(
-                    "batch", "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
-                )
+        # else:
+        #     batch = batchs.first()
+        #     if batch.repaired != batch.quantity:
+        #         self.add_error(
+        #             "batch", "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
+        #         )
         return data
 
 
