@@ -125,11 +125,15 @@ class Command(BaseCommand):
                               Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
         for row in excel.table():
             xelon_number = row.get("numero_de_dossier")
-            defaults = defaults_dict(model, row, "numero_de_dossier")
+            product_model = row.get("modele_produit")
+            defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
             try:
                 obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                 if not created:
                     nb_prod_update += 1
+                if product_model and not obj.modele_produit:
+                    obj.modele_produit = product_model
+                    obj.save()
             except IntegrityError as err:
                 logger.error(f"[DELAY_CMD] IntegrityError row {xelon_number} : {err}")
             except DataError as err:
