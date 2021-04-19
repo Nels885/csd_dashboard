@@ -117,39 +117,42 @@ class Command(BaseCommand):
     def _delay_files(self, model, squalaetp):
         self.stdout.write("[DELAY] Waiting...")
         nb_prod_before, nb_prod_update = model.objects.count(), 0
-        excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
-        xelon_list, delay_list = list(squalaetp.sheet['numero_de_dossier']), list(excel.sheet['n_de_dossier'])
-        self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
-        model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
-                              Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
-                              Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
-        for row in excel.table():
-            xelon_number = row.get("numero_de_dossier")
-            product_model = row.get("modele_produit")
-            defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
-            try:
-                obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
-                if not created:
-                    nb_prod_update += 1
-                if product_model and not obj.modele_produit:
-                    obj.modele_produit = product_model
-                    obj.save()
-            except IntegrityError as err:
-                logger.error(f"[DELAY_CMD] IntegrityError row {xelon_number} : {err}")
-            except DataError as err:
-                logger.error(f"[DELAY_CMD] DataError row {xelon_number} : {err}")
-            except FieldDoesNotExist as err:
-                logger.error(f"[DELAY_CMD] FieldDoesNotExist row {xelon_number} : {err}")
-            except KeyError as err:
-                logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
-            except ValidationError as err:
-                logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
+        try:
+            excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
+            xelon_list, delay_list = list(squalaetp.sheet['numero_de_dossier']), list(excel.sheet['n_de_dossier'])
+            self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
+            model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
+                                  Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
+                                  Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
+            for row in excel.table():
+                xelon_number = row.get("numero_de_dossier")
+                product_model = row.get("modele_produit")
+                defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
+                try:
+                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
+                    if not created:
+                        nb_prod_update += 1
+                    if product_model and not obj.modele_produit:
+                        obj.modele_produit = product_model
+                        obj.save()
+                except IntegrityError as err:
+                    logger.error(f"[DELAY_CMD] IntegrityError row {xelon_number} : {err}")
+                except DataError as err:
+                    logger.error(f"[DELAY_CMD] DataError row {xelon_number} : {err}")
+                except FieldDoesNotExist as err:
+                    logger.error(f"[DELAY_CMD] FieldDoesNotExist row {xelon_number} : {err}")
+                except KeyError as err:
+                    logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
+                except ValidationError as err:
+                    logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
 
-        nb_prod_after = model.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+            nb_prod_after = model.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                    )
                 )
             )
-        )
+        except ValueError as err:
+            logger.error(f"[DELAY_CMD] ValueError: {err}")

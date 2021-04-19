@@ -28,6 +28,7 @@ from utils.django.models import defaults_dict
 from utils.django.urls import reverse_lazy
 
 
+@login_required
 def generate(request):
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
