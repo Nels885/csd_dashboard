@@ -28,7 +28,6 @@ from utils.django.models import defaults_dict
 from utils.django.urls import reverse_lazy
 
 
-@login_required
 def generate(request):
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
@@ -53,6 +52,16 @@ def prog_activate(request, pk):
     Action.objects.create(content=content, content_object=xelon)
     messages.success(request, "Programmation active.")
     return redirect('squalaetp:generate')
+
+
+def excel_import(request):
+    if request.user.is_staff:
+        call_command("loadsqualaetp", "--xelon_update")
+        messages.success(request, "Importation Squalaetp terminée.")
+    if 'HTTP_REFERER' in request.META:
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    else:
+        return redirect('index')
 
 
 @login_required
