@@ -220,13 +220,6 @@ CKEDITOR_CONFIGS = {
 TEMPUS_DOMINUS_LOCALIZE = True
 TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 
-# Configuration files for Clarion
-CONF_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/current.py')
-CONF_DEFAULT_FILE = os.path.join(os.path.dirname(BASE_DIR), 'utils/conf/default.py')
-
-if not os.path.exists(CONF_FILE):
-    shutil.copyfile(CONF_DEFAULT_FILE, CONF_FILE)
-
 # Configuration DJANGO-CONSTANCE
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
@@ -269,6 +262,9 @@ CONSTANCE_CONFIG = {
     'XLS_DELAY_FILES': (
         'PSA.xls, ILOTAUTRE.xls, LaboQual.xls, DEFAUT.xls, CLARION.xls', 'List of xls delay file'
     ),
+    'XML_CORVET_PATH': ('LOGS/CORVET_XML_TEST', 'xml Corvet path'),
+    'TAG_XELON_PATH': ('LOGS/CALIBRE', 'tag xelon path'),
+    'TAG_XELON_LOG_PATH': ('LOGS/LOG_CONFIG_PROD', 'tag xelon log path'),
 
     # MQTT Options
     "MQTT_TOPIC": ('TEMP/TC-01', 'Topic subcribe'),
@@ -302,7 +298,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ),
     '5. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
-        'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES'
+        'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
+        'TAG_XELON_LOG_PATH'
     ),
     '6. MQTT Options': (
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'

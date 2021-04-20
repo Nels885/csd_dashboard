@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import login
 from django.contrib import messages
-from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.db.models import Q
@@ -184,23 +183,6 @@ def activate(request, uidb64, token):
     else:
         context = {'title': _('Activation link is invalid!')}
     return render(request, 'dashboard/done.html', context)
-
-
-@staff_member_required(login_url='login')
-def config_edit(request):
-    """ View for changing the configuration """
-    title = 'Configuration'
-    card_title = 'Modification du fichier de configuration'
-    if request.method == 'POST':
-        query = request.POST.get('config')
-        with open(settings.CONF_FILE, 'w+') as file:
-            file.write(query)
-        messages.success(request, _('Success: Modification done!'))
-
-    with open(settings.CONF_FILE, 'r') as file:
-        config = file.read()
-    nb_lines = len(open(settings.CONF_FILE, 'r').readlines()) + 1
-    return render(request, 'dashboard/config.html', locals())
 
 
 class CustomLoginView(BSModalLoginView):

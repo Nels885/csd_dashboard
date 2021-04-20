@@ -13,7 +13,6 @@ urlpatterns = [
     path('profile/', views.user_profile, name="user_profile"),
     path('activity_log/', views.activity_log, name="activity_log"),
     path('search/', views.search, name="search"),
-    path('config/edit/', views.config_edit, name="config_edit"),
     path('signup/', views.signup, name='signup'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
