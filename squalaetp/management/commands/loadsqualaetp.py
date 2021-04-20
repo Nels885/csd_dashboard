@@ -117,8 +117,8 @@ class Command(BaseCommand):
     def _delay_files(self, model, squalaetp):
         self.stdout.write("[DELAY] Waiting...")
         nb_prod_before, nb_prod_update = model.objects.count(), 0
-        try:
-            excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
+        excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
+        if not excel.ERROR:
             xelon_list, delay_list = list(squalaetp.sheet['numero_de_dossier']), list(excel.sheet['n_de_dossier'])
             self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
             model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
@@ -154,5 +154,5 @@ class Command(BaseCommand):
                     )
                 )
             )
-        except ValueError as err:
-            logger.error(f"[DELAY_CMD] ValueError: {err}")
+        else:
+            self.stdout.write(self.style.WARNING("[DELAY] No delay files found"))
