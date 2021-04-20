@@ -8,7 +8,7 @@ from squalaetp.models import ProductCode
 
 class XelonCommandTestCase(TestCase):
 
-    def test_stockparts(self):
+    def test_stockparts_cmd(self):
         out = StringIO()
         call_command('stockparts', '-f' 'reman/tests/extraction_test.csv', stdout=out)
         self.assertIn(
@@ -24,3 +24,16 @@ class XelonCommandTestCase(TestCase):
             out.getvalue(),
         )
         self.assertEqual(ProductCode.objects.count(), 0)
+
+    def test_squalaetp_cmd(self):
+        out = StringIO()
+
+        # Test for files not found
+        call_command('loadsqualaetp', '--xelon_update', '-S', 'test.xls', '-D' 'test.xls, test.xls', stdout=out)
+        self.assertIn("[XELON] No squalaetp file found", out.getvalue())
+        self.assertIn("[DELAY] No delay files found", out.getvalue())
+
+    def test_importcorvet_cmd(self):
+        out = StringIO()
+        call_command('importcorvet', '--squalaetp', stdout=out)
+        self.assertIn("[IMPORT_CORVET] Import completed:", out.getvalue())

@@ -2,13 +2,12 @@ import logging
 from django.core.management.base import BaseCommand
 from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.utils import IntegrityError, DataError
-from django.core.management import call_command
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
-from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES
+from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
 from utils.django.models import defaults_dict
 
 from ._excel_squalaetp import ExcelSqualaetp
@@ -22,10 +21,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-f',
-            '--file',
-            dest='filename',
-            help='Specify import Excel file',
+            '-S',
+            '--squalaetp_file',
+            dest='squalaetp_file',
+            help='Specify import Excel Squalaetp file',
+        )
+        parser.add_argument(
+            '-D',
+            '--delay_files',
+            dest='delay_files',
+            help='Specify import Excel Delay files',
         )
         parser.add_argument(
             '--xelon_update',
@@ -37,32 +42,28 @@ class Command(BaseCommand):
             '--relations',
             action='store_true',
             dest='relations',
-            help='add the relationship between the xelon and corvet tables',
+            help='Add the relationship between the xelon and corvet tables',
         )
 
     def handle(self, *args, **options):
         self.stdout.write("[SQUALAETP] Waiting...")
 
         if options['xelon_update']:
-            if options['filename'] is not None:
-                squalaetp = ExcelSqualaetp(options['filename'])
+            delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
+            if options['squalaetp_file'] is not None:
+                squalaetp = ExcelSqualaetp(options['squalaetp_file'])
             else:
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
+            if options['delay_files']:
+                delay_list = string_to_list(options['delay_files'])
+                delay = ExcelDelayAnalysis(delay_list)
+            else:
+                delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
 
             self._squalaetp_file(Xelon, squalaetp)
-            self._delay_files(Xelon, squalaetp)
+            self._delay_files(Xelon, squalaetp, delay)
 
         elif options['relations']:
-            self._foreignkey_relation()
-
-        else:
-            call_command("loadraspeedi")
-            call_command("programing")
-            # call_command("corvet")
-            call_command("loadsqualaetp", "--xelon_update")
-            call_command("indicator")
-            call_command("importcorvet", "--squalaetp")
-            call_command("exportsqualaetp")
             self._foreignkey_relation()
 
     def _foreignkey_relation(self):
@@ -87,44 +88,46 @@ class Command(BaseCommand):
     def _squalaetp_file(self, model, excel):
         self.stdout.write("[XELON] Waiting...")
         nb_prod_before, nb_prod_update = model.objects.count(), 0
-        model.objects.exclude(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=False)
-        for row in excel.xelon_table():
-            xelon_number = row.get("numero_de_dossier")
-            defaults = defaults_dict(model, row, "numero_de_dossier")
-            try:
-                action_filter = Q(content__startswith='OLD_VIN') | Q(content__startswith='OLD_PROD')
-                queryset = model.objects.filter(numero_de_dossier=xelon_number, actions__isnull=False).first()
-                if queryset and queryset.actions.filter(action_filter):
-                    self.stdout.write(f"[XELON] Xelon file {xelon_number} not modified")
-                    continue
-                obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
-                if not created:
-                    nb_prod_update += 1
-            except IntegrityError as err:
-                logger.error(f"[XELON_CMD] IntegrityError: {xelon_number} -{err}")
-            except DataError as err:
-                logger.error(f"[XELON_CMD] DataError: {xelon_number} - {err}")
-        model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
-        nb_prod_after = model.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[XELON] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+        if not excel.ERROR:
+            model.objects.exclude(numero_de_dossier__in=excel.xelon_number_list()).update(is_active=False)
+            for row in excel.xelon_table():
+                xelon_number = row.get("numero_de_dossier")
+                defaults = defaults_dict(model, row, "numero_de_dossier")
+                try:
+                    action_filter = Q(content__startswith='OLD_VIN') | Q(content__startswith='OLD_PROD')
+                    queryset = model.objects.filter(numero_de_dossier=xelon_number, actions__isnull=False).first()
+                    if queryset and queryset.actions.filter(action_filter):
+                        self.stdout.write(f"[XELON] Xelon file {xelon_number} not modified")
+                        continue
+                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
+                    if not created:
+                        nb_prod_update += 1
+                except IntegrityError as err:
+                    logger.error(f"[XELON_CMD] IntegrityError: {xelon_number} -{err}")
+                except DataError as err:
+                    logger.error(f"[XELON_CMD] DataError: {xelon_number} - {err}")
+            model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
+            nb_prod_after = model.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[XELON] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                    )
                 )
             )
-        )
+        else:
+            self.stdout.write(self.style.WARNING("[XELON] No squalaetp file found"))
 
-    def _delay_files(self, model, squalaetp):
+    def _delay_files(self, model, squalaetp, delay):
         self.stdout.write("[DELAY] Waiting...")
         nb_prod_before, nb_prod_update = model.objects.count(), 0
-        excel = ExcelDelayAnalysis(XLS_DELAY_FILES)
-        if not excel.ERROR:
-            xelon_list, delay_list = list(squalaetp.sheet['numero_de_dossier']), list(excel.sheet['n_de_dossier'])
+        xelon_list, delay_list = squalaetp.xelon_number_list(), delay.xelon_number_list()
+        if not delay.ERROR:
             self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
             model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
                                   Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
                                   Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
-            for row in excel.table():
+            for row in delay.table():
                 xelon_number = row.get("numero_de_dossier")
                 product_model = row.get("modele_produit")
                 defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
@@ -150,7 +153,7 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS(
                     "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                        excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                        delay.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
                     )
                 )
             )
