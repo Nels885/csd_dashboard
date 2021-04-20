@@ -49,7 +49,6 @@ class Command(BaseCommand):
         self.stdout.write("[SQUALAETP] Waiting...")
 
         if options['xelon_update']:
-            delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
             if options['squalaetp_file'] is not None:
                 squalaetp = ExcelSqualaetp(options['squalaetp_file'])
             else:
