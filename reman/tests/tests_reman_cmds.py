@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from io import StringIO
 
-from reman.models import SparePart, EcuRefBase, EcuModel, EcuType
+from reman.models import EcuRefBase, EcuModel, EcuType
 
 
 class RemanCommandTestCase(TestCase):
@@ -29,7 +29,6 @@ class RemanCommandTestCase(TestCase):
         )
         self.assertEqual(EcuRefBase.objects.count(), 4)
         self.assertEqual(EcuModel.objects.count(), 5)
-        self.assertEqual(SparePart.objects.count(), 4)
         self.assertEqual(EcuType.objects.count(), 4)
 
         out = StringIO()
@@ -38,21 +37,3 @@ class RemanCommandTestCase(TestCase):
             "Suppression des données de la table EcuRefBase terminée!",
             out.getvalue()
         )
-
-    def test_spareparts(self):
-        out = StringIO()
-        call_command('spareparts', '-f', 'reman/tests/extraction_test.csv', stdout=out)
-        self.assertIn(
-            "[SPAREPARTS] Data update completed: CSV_LINES = 2 | ADD = 2 | UPDATE = 0 | TOTAL = 2",
-            out.getvalue()
-        )
-        self.assertEqual(SparePart.objects.count(), 2)
-
-        out = StringIO()
-        SparePart.objects.create(code_produit='test')
-        call_command('spareparts', '--delete', stdout=out)
-        self.assertIn(
-            "Suppression des données de la table SparePart terminée!",
-            out.getvalue()
-        )
-        self.assertEqual(SparePart.objects.count(), 0)

@@ -4,8 +4,8 @@ from django.core.management.color import no_style
 from django.db import connection
 from django.db.utils import DataError, IntegrityError
 
-from squalaetp.models import ProductCode, Stock
-from reman.models import EcuRefBase, EcuModel, SparePart, EcuType
+from squalaetp.models import ProductCode, SparePart
+from reman.models import EcuRefBase, EcuModel, EcuType
 from utils.conf import XLS_ECU_REF_BASE, CSD_ROOT, conf
 from utils.file.export import ExportExcel, os
 from utils.django.models import defaults_dict
@@ -71,32 +71,23 @@ class Command(BaseCommand):
     def _update_or_create(self, data):
 
         nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
-        nb_base_update, nb_ecu_update, nb_part_update, nb_type_update = 0, 0, 0, 0
+        nb_base_update, nb_ecu_update, nb_type_update = 0, 0, 0
         for row in data:
             logger.info(row)
             code_produit = reman_reference = None
             try:
                 code_produit, reman_reference = row["code_produit"], row["reman_reference"]
 
-                # Update or Create SpareParts
-                part_obj, part_created = SparePart.objects.update_or_create(
-                    code_produit=code_produit, defaults={
-                        "code_zone": "REMAN PSA", "code_magasin": "MAGREM PSA"
-                    }
-                )
-                if not part_created:
-                    nb_part_update += 1
-
-                # Update or create StockParts
+                # Update or create SpareParts
                 prod_obj, part_created = ProductCode.objects.get_or_create(
                     name=code_produit)
-                stock_obj, stock_created = Stock.objects.update_or_create(
+                stock_obj, stock_created = SparePart.objects.get_or_create(
                     code_magasin="MAGREM PSA", code_zone="REMAN PSA", code_produit=prod_obj
                 )
 
                 # Update or Create EcuType
                 type_values = defaults_dict(EcuType, row, "hw_reference")
-                type_values['spare_part'] = part_obj
+                # type_values['spare_part'] = part_obj
                 type_obj, type_created = EcuType.objects.update_or_create(
                     hw_reference=row['hw_reference'], defaults=type_values
                 )
@@ -126,7 +117,7 @@ class Command(BaseCommand):
                 logger.error(f"[ECUREFBASE_CMD] DataError: {reman_reference} - {err}")
             except IntegrityError as err:
                 logger.error(f"[ECUREFBASE_CMD] IntegrityError: {reman_reference} - {err}")
-            except Stock.MultipleObjectsReturned as err:
+            except SparePart.MultipleObjectsReturned as err:
                 logger.error(f"[ECUREFBASE_CMD] MultipleObjectsReturned: {code_produit} - {err}")
 
         nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
