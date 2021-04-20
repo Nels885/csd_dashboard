@@ -78,11 +78,11 @@ def import_sparepart(request):
                 my_file = request.FILES["myfile"]
                 file_url = handle_uploaded_file(my_file)
                 out = StringIO()
-                call_command("spareparts", "--file", file_url, stdout=out)
+                call_command("loadsparepart", "--file", file_url, stdout=out)
                 for msg in out.getvalue().split("\n"):
                     messages.success(request, msg)
                 # messages.success(request, 'Upload terminé !')
-                return redirect('reman:part_table')
+                return redirect('squalaetp:stock_parts')
         except MultiValueDictKeyError:
             messages.warning(request, 'Le fichier est absent !')
         except (UnicodeDecodeError, ParserError):
