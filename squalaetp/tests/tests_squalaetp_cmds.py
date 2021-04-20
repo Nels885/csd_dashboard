@@ -8,24 +8,24 @@ from squalaetp.models import ProductCode
 
 class XelonCommandTestCase(TestCase):
 
-    def test_stockparts_cmd(self):
+    def test_loadsparepart_cmd(self):
         out = StringIO()
-        call_command('stockparts', '-f' 'reman/tests/extraction_test.csv', stdout=out)
+        call_command('loadsparepart', '-f' 'reman/tests/extraction_test.csv', stdout=out)
         self.assertIn(
-            "[STOCKPARTS] Data update completed: CSV_LINES = 2 | ADD = 2 | UPDATE = 0 | TOTAL = 2",
+            "[SPAREPART] Data update completed: CSV_LINES = 2 | ADD = 2 | UPDATE = 0 | TOTAL = 2",
             out.getvalue()
         )
         self.assertEqual(ProductCode.objects.count(), 2)
 
         out = StringIO()
-        call_command('stockparts', '--delete', stdout=out)
+        call_command('loadsparepart', '--delete', stdout=out)
         self.assertIn(
             "Suppression des données de la table SparePart terminée!",
             out.getvalue(),
         )
         self.assertEqual(ProductCode.objects.count(), 0)
 
-    def test_squalaetp_cmd(self):
+    def test_loadsqualaetp_cmd(self):
         out = StringIO()
 
         # Test for files not found

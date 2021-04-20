@@ -56,7 +56,7 @@ class ProductCode(models.Model):
         return self.name
 
 
-class Stock(models.Model):
+class SparePart(models.Model):
     code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
     code_zone = models.CharField('code Zone', max_length=50, blank=True)
     code_site = models.IntegerField('code Site', null=True, blank=True)

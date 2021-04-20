@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Xelon, Stock, Indicator, Action
+from .models import Xelon, SparePart, Indicator, Action
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -10,7 +10,7 @@ class XelonAdmin(admin.ModelAdmin):
     search_fields = ('numero_de_dossier', 'vin')
 
 
-class StockAdmin(admin.ModelAdmin):
+class SparePartAdmin(admin.ModelAdmin):
     list_display = ('get_code_produit', 'code_magasin', 'code_zone', 'code_site', 'code_emplacement', 'cumul_dispo')
     ordering = ('code_produit__name',)
     search_fields = ('code_produit__name', 'code_magasin', 'code_zone', 'code_emplacement')
@@ -31,6 +31,6 @@ class ActionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Xelon, XelonAdmin)
-admin.site.register(Stock, StockAdmin)
+admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(Indicator, IndicatorAdmin)
 admin.site.register(Action, ActionAdmin)

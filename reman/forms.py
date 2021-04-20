@@ -335,7 +335,7 @@ class CheckPartForm(forms.Form):
 
 
 class EcuModelForm(forms.ModelForm):
-    hw_reference = forms.CharField(label="HW référence", max_length=10, required=True)
+    hw_reference = forms.CharField(label="HW référence", max_length=20, required=True)
 
     class Meta:
         model = EcuModel
@@ -352,7 +352,7 @@ class EcuDumpModelForm(BSModalModelForm):
 
 
 class PartEcuModelForm(forms.ModelForm):
-    hw_reference = forms.CharField(label="HW référence *", max_length=10, required=True)
+    hw_reference = forms.CharField(label="HW référence *", max_length=20, required=True)
 
     class Meta:
         model = EcuModel

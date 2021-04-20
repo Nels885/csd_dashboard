@@ -15,7 +15,7 @@ from rest_framework import viewsets, permissions, status
 
 from utils.django.datatables import QueryTableByArgs
 from .serializers import XelonSerializer, XELON_COLUMN_LIST
-from .models import Xelon, Stock, Action
+from .models import Xelon, SparePart, Action
 from .utils import collapse_select
 from psa.models import Corvet
 from raspeedi.models import Programing
@@ -86,7 +86,7 @@ def stock_table(request):
     """ View of SparePart table page """
     title = 'Xelon'
     table_title = 'Pièces détachées'
-    stocks = Stock.objects.all()
+    stocks = SparePart.objects.all()
     return render(request, 'squalaetp/stock_table.html', locals())
 
 
