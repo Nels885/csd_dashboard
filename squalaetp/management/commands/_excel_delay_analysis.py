@@ -26,6 +26,7 @@ class ExcelDelayAnalysis(ExcelFormat):
         for file in files:
             try:
                 super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8)
+                self._drop_lines()
                 self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
                 dfs.append(self.sheet)
             except FileNotFoundError as err:
@@ -64,6 +65,12 @@ class ExcelDelayAnalysis(ExcelFormat):
                 data1.append(row)
         return data1
 
+    def xelon_number_list(self):
+        if not self.ERROR:
+            return self.sheet["n_de_dossier"]
+        else:
+            return []
+
     def _concat_files(self, dfs):
         if dfs:
             self.sheet = pd.concat(dfs).reset_index(drop=True)
@@ -82,8 +89,8 @@ class ExcelDelayAnalysis(ExcelFormat):
         data["modele_produit"] = data.pop("ref_produit_commerciale")
         return data
 
-    def xelon_number_list(self):
-        if not self.ERROR:
-            return self.sheet["n_de_dossier"]
-        else:
-            return []
+    def _drop_lines(self):
+        df = self.sheet
+        self.sheet = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
+        self.sheet.reset_index(drop=True, inplace=True)
+        self.nrows = self.sheet.shape[0]
