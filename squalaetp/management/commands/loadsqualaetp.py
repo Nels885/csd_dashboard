@@ -147,6 +147,8 @@ class Command(BaseCommand):
                     logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
                 except ValidationError as err:
                     logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
+                except ValueError as err:
+                    logger.error(f"[DELAY_CMD] ValueError row {xelon_number} : {err}")
 
             nb_prod_after = model.objects.count()
             self.stdout.write(
