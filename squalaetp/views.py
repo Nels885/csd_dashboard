@@ -30,6 +30,7 @@ from utils.django.urls import reverse_lazy
 
 @login_required
 def generate(request):
+    """ Generating squalaetp EXCEL files """
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
     if "Export error" in out.getvalue():
@@ -46,6 +47,7 @@ def generate(request):
 
 @login_required
 def prog_activate(request, pk):
+    """ Activating a Xelon number for programming """
     xelon = get_object_or_404(Xelon, pk=pk)
     xelon.is_active = True
     xelon.save()
@@ -67,6 +69,7 @@ def excel_import(request):
 
 @login_required
 def xelon_table(request):
+    """ View of Xelon table page """
     title = 'Xelon'
     form = CorvetForm()
     query_param = request.GET.get('filter', None)
@@ -92,6 +95,7 @@ def stock_table(request):
 
 @login_required
 def detail(request, pk):
+    """ Detailed view of the selected Xelon number """
     xelon = get_object_or_404(Xelon, pk=pk)
     title = f"{xelon.numero_de_dossier} - {xelon.modele_vehicule} - {xelon.vin}"
     select = "xelon"
@@ -111,6 +115,7 @@ def detail(request, pk):
 
 
 class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for updating Corvet and VIN data """
     model = Xelon
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/vin_corvet_update.html'
@@ -145,7 +150,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
 
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
-    """ View of modal product update """
+    """ Modal view for product update """
     model = Xelon
     permission_required = ['squalaetp.change_xelon']
     template_name = 'squalaetp/modal/product_update.html'
@@ -174,6 +179,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
+    """ Modal view for sending email for VIN errors """
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/ihm_email_form.html'
     form_class = IhmEmailModalForm
@@ -199,6 +205,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
 
 
 class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
+    """ Modal view for  sending email for Product errors """
     permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
     template_name = 'squalaetp/modal/ihm_email_form.html'
     form_class = IhmEmailModalForm
@@ -224,6 +231,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
 
 
 class LogFileView(LoginRequiredMixin, TemplateView):
+    """ Modal view for displaying product log files """
     template_name = 'squalaetp/modal/log_file.html'
 
     def get_context_data(self, **kwargs):
@@ -238,7 +246,7 @@ class LogFileView(LoginRequiredMixin, TemplateView):
 
 @login_required
 def change_table(request):
-    """ View of SparePart table page """
+    """ View of change table page """
     title = 'Xelon'
     table_title = 'Historique des changements Squalaetp'
     actions = Action.objects.all()
