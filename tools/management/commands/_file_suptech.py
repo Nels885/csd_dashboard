@@ -78,8 +78,8 @@ class ExcelSuptech(ExcelFormat):
 
 class ExportExcelSuptech(ExportExcel):
 
-    def __init__(self, queryset, filename, header, values_list=None, excel_type="xls", novalue="#"):
-        super().__init__(queryset, filename, header, values_list, excel_type, novalue)
+    def __init__(self, values_list, filename, header, excel_type="xls", novalue="#"):
+        super().__init__(values_list, filename, header, excel_type, novalue)
 
     def _xlsx_writer(self, response):
         """ Formatting data in Excel 2010 format """

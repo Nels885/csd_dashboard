@@ -47,12 +47,12 @@ class Command(BaseCommand):
                 'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
             ]
             batch = Batch.objects.all().order_by('batch_number')
-            values_list = (
+            values_list = batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
                 'active', 'created_by__username', 'created_at'
-            )
-            ExportExcel(queryset=batch, filename=filename, header=header, values_list=values_list).file(path)
+            ).distinct()
+            ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(
@@ -67,8 +67,8 @@ class Command(BaseCommand):
             path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
             header = ['Numero_Identification', 'Code_Barre_PSA', 'Status', 'Controle_Qualite']
             repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
-            values_list = ('identify_number', 'psa_barcode', 'status', 'quality_control')
-            ExportExcel(queryset=repairs, filename=filename, header=header, values_list=values_list).file(path, False)
+            values_list = repairs.values_list('identify_number', 'psa_barcode', 'status', 'quality_control').distinct()
+            ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}.csv".format(
@@ -95,12 +95,12 @@ class Command(BaseCommand):
                 'OPEN_DIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUS'
             ]
             ecu = EcuRefBase.objects.exclude(ref_cal_out__exact='').order_by('reman_reference')
-            values_list = (
+            values_list = ecu.values_list(
                 'reman_reference', 'ecu_type__hw_reference', 'ecu_type__technical_data', 'ecu_type__supplier_oe',
                 'ecu_type__ecumodel__psa_barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
                 'cal_ktag', 'status'
-            )
-            ExportExcel(queryset=ecu, filename=filename, header=header, values_list=values_list).file(path, False)
+            ).distinct()
+            ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}.csv".format(

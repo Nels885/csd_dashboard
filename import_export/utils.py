@@ -1,7 +1,6 @@
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 from django.http import Http404
-from django.db.models import Q
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
@@ -28,18 +27,19 @@ def extract_ecu(vin_list=None):
     ]
     corvets = Corvet.objects.filter(vin__in=vin_list)
 
-    values_list = (
+    values_list = corvets.values_list(
         'xelon__numero_de_dossier', 'vin', 'xelon__modele_produit', 'xelon__modele_vehicule',
         'donnee_date_debut_garantie', 'electronique_14a', 'electronique_34a', 'electronique_94a', 'electronique_44a',
         'electronique_54a', 'electronique_64a', 'electronique_84a', 'electronique_p4a'
-    )
+    ).distinct()
 
-    return ExportExcel(queryset=corvets, filename=filename, header=header, values_list=values_list).http_response()
+    return ExportExcel(values_list=values_list, filename=filename, header=header).http_response()
 
 
 def extract_corvet(product='corvet', excel_type='csv'):
     filename = product
     header = queryset = values_list = None
+    xelons = Xelon.objects.filter(corvet__isnull=False)
     if product == "ecu":
         header = [
             'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD',
@@ -47,7 +47,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '64A_CMM_FOURN.CODE',
             '84A_CMM_DOTE', 'P4A_CMM_EOBD'
         ]
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14a__exact='').annotate(
+        queryset = xelons.exclude(corvet__electronique_14a__exact='').annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -63,7 +63,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '94B_BSI_SOFT', '44B_BSI_FOURN.NO.SERIE', '54B_BSI_FOURN.DATE.FAB', '64B_BSI_FOURN.CODE', '84B_BSI_DOTE'
         ]
 
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14b__exact='').annotate(
+        queryset = xelons.exclude(corvet__electronique_14b__exact='').annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -78,7 +78,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '46P_HDC_FOURN.NO.SERIE', '56P_HDC_FOURN.DATE.FAB', '66P_HDC_FOURN.CODE'
         ]
 
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_16p__exact='').annotate(
+        queryset = xelons.exclude(corvet__electronique_16p__exact='').annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -92,7 +92,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '46B_BSM_FOURN.NO.SERIE', '56B_BSM_FOURN.DATE.FAB', '66B_BSM_FOURN.CODE', '86B_BSM_DOTE', '96B_BSM_SOFT'
         ]
 
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_16p__exact='').annotate(
+        queryset = xelons.exclude(corvet__electronique_16p__exact='').annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -107,8 +107,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'DATE_DEBUT_GARANTIE', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE', '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE',
             '94X_BTEL_SOFT'
         ]
-
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__contains="NAC")).annotate(
+        queryset = xelons.filter(modele_produit__contains="NAC").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -123,7 +122,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
         ]
 
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="RT")).annotate(
+        queryset = xelons.filter(modele_produit__startswith="RT").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -139,7 +138,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
         ]
 
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="SMEG")).annotate(
+        queryset = xelons.filter(modele_produit__startswith="SMEG").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -155,7 +154,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
         ]
 
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="RNEG")).annotate(
+        queryset = xelons.filter(modele_produit__startswith="RNEG").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -171,7 +170,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
         ]
 
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="NG4")).annotate(
+        queryset = xelons.filter(modele_produit__startswith="NG4").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
@@ -191,9 +190,10 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
         ]
         queryset = Corvet.objects.all()
-        values_list = None
+        values_list = ()
     if queryset:
-        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
+        values_list = queryset.values_list(*values_list).distinct()
+        return ExportExcel(values_list, filename, header, excel_type).http_response()
     else:
         raise Http404("No data matches")
 
@@ -252,7 +252,8 @@ def extract_reman(model, excel_type='csv'):
         )
 
     if queryset:
-        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
+        values_list = queryset.values_list(*values_list).distinct()
+        return ExportExcel(values_list, filename, header, excel_type).http_response()
     else:
         raise Http404("No data matches")
 
@@ -274,8 +275,8 @@ def extract_tools(model='all', excel_type='csv'):
             'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR'
         ]
         queryset = Suptech.objects.all().order_by('date')
-        values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
+        values_list = queryset.values_list('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action').distinct()
     if queryset:
-        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
+        return ExportExcel(values_list, filename, header, excel_type).http_response()
     else:
         raise Http404("No data matches")

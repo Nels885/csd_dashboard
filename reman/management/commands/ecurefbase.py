@@ -144,7 +144,7 @@ class Command(BaseCommand):
             'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
         ]
         queryset = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
-        values_list = (
+        values_list = queryset.values_list(
             'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
             'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference',
             'ecu_type__ecu_ref_base__ref_cal_out', 'ecu_type__spare_part__code_produit',
@@ -152,9 +152,8 @@ class Command(BaseCommand):
             'ecu_type__ecu_ref_base__ref_mat', 'ecu_type__ecu_ref_base__ref_comp',
             'ecu_type__ecu_ref_base__cal_ktag',
             'ecu_type__ecu_ref_base__status'
-
-        )
-        ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list).file(path, False)
+        ).distinct()
+        ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
         self.stdout.write(
             self.style.SUCCESS(
                 "Export ECU_REF_BASE completed: NB_REF = {} | FILE = {}.csv".format(
