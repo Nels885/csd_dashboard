@@ -3,10 +3,26 @@ from django.db.models import DateTimeField, CharField
 from django.http import Http404
 
 from squalaetp.models import Xelon
-from psa.models import Corvet
+from psa.models import Corvet, Multimedia
+# from psa.templatetags.corvet_tags import get_corvet
 from reman.models import Batch, Repair, EcuModel
 from tools.models import Suptech
 from utils.file.export import ExportExcel
+
+
+def get_multimedia_display(values_list, position=None):
+    if position:
+        new_list = []
+        for data_tuple in values_list:
+            data_list = [value for value in data_tuple]
+            for prod in Multimedia.PRODUCT_CHOICES:
+                if prod[0] == data_list[position]:
+                    data_list[position] = prod[1]
+                    break
+            new_list.append(data_list)
+        return new_list
+    else:
+        return values_list
 
 
 """
@@ -38,7 +54,8 @@ def extract_ecu(vin_list=None):
 
 def extract_corvet(product='corvet', excel_type='csv'):
     filename = product
-    header = queryset = values_list = None
+    values_list = ()
+    header = queryset = position = None
     xelons = Xelon.objects.filter(corvet__isnull=False)
     if product == "ecu":
         header = [
@@ -103,21 +120,23 @@ def extract_corvet(product='corvet', excel_type='csv'):
         )
     elif product == "nac":
         header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE', '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE',
-            '94X_BTEL_SOFT'
+            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'Réf. Setplate', 'Niv.',
+            'HW variant', 'DATE_DEBUT_GARANTIE', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE', '64X_BTEL_FOURN.CODE',
+            '84X_BTEL_DOTE', '94X_BTEL_SOFT'
         ]
         queryset = xelons.filter(modele_produit__contains="NAC").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
         values_list = (
             'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__electronique_14x', 'corvet__electronique_44x',
-            'corvet__electronique_64x', 'corvet__electronique_84x', 'corvet__electronique_94x'
+            'corvet__btel__label_ref', 'corvet__btel__level', 'corvet__btel__extra', 'date_debut_garantie',
+            'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
+            'corvet__electronique_84x', 'corvet__electronique_94x'
         )
+        position = 4
     elif product == "rtx":
         header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
+            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'Niv.', 'HW variant',
             'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
             '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
         ]
@@ -127,13 +146,14 @@ def extract_corvet(product='corvet', excel_type='csv'):
         )
         values_list = (
             'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
+            'corvet__btel__level', 'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit',
+            'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
+            'corvet__electronique_84x', 'corvet__electronique_94x'
         )
+        position = 4
     elif product == "smeg":
         header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
+            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'Niv.', 'HW variant',
             'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
             '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
         ]
@@ -143,10 +163,11 @@ def extract_corvet(product='corvet', excel_type='csv'):
         )
         values_list = (
             'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
+            'corvet__btel__level', 'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit',
+            'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
+            'corvet__electronique_84x', 'corvet__electronique_94x'
         )
+        position = 4
     elif product == "rneg":
         header = [
             'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
@@ -163,6 +184,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
             'corvet__electronique_94x'
         )
+        position = 4
     elif product == "ng4":
         header = [
             'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
@@ -179,6 +201,7 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
             'corvet__electronique_94x'
         )
+        position = 4
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
@@ -190,9 +213,9 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
         ]
         queryset = Corvet.objects.all()
-        values_list = ()
     if queryset:
         values_list = queryset.values_list(*values_list).distinct()
+        values_list = get_multimedia_display(values_list, position=position)
         return ExportExcel(values_list, filename, header, excel_type).http_response()
     else:
         raise Http404("No data matches")
