@@ -19,6 +19,7 @@ def get_corvet(value, args):
                 return data_list[select_value]
             elif arg_list[0] == "DON_MOT" and select_value == 1:
                 return f"* {value} *"
-        return data_list[0]
+            return data_list[0]
+        return data
     except (CorvetChoices.DoesNotExist, IndexError):
         return f"* {value} *"

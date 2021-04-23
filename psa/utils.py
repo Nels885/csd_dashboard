@@ -27,6 +27,11 @@ class ExportCorvetExcel(ExportExcel):
 
     def get_corvet_display(self, data_list):
         if 'corvet__donnee_ligne_de_produit' in self.fields:
+            don_lin_prod = 'DON_LIN_PROD'
             position = self.fields.index('corvet__donnee_ligne_de_produit')
-            data_list[position] = f"{data_list[position]} - {get_corvet(data_list[position], 'DON_LIN_PROD')}"
+            if 'vin' in self.fields and 'VF3' in data_list[self.fields.index('vin')]:
+                don_lin_prod = 'DON_LIN_PROD 0'
+            elif 'vin' in self.fields and 'VF3' in data_list[self.fields.index('vin')]:
+                don_lin_prod = 'DON_LIN_PROD 1'
+            data_list[position] = f"{data_list[position]} - {get_corvet(data_list[position], don_lin_prod)}"
         return data_list
