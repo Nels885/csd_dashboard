@@ -3,26 +3,11 @@ from django.db.models import DateTimeField, CharField
 from django.http import Http404
 
 from squalaetp.models import Xelon
-from psa.models import Corvet, Multimedia
-# from psa.templatetags.corvet_tags import get_corvet
+from psa.models import Corvet
+from psa.utils import ExportCorvetExcel
 from reman.models import Batch, Repair, EcuModel
 from tools.models import Suptech
 from utils.file.export import ExportExcel
-
-
-def get_multimedia_display(values_list, position=None):
-    if position:
-        new_list = []
-        for data_tuple in values_list:
-            data_list = [value for value in data_tuple]
-            for prod in Multimedia.PRODUCT_CHOICES:
-                if prod[0] == data_list[position]:
-                    data_list[position] = prod[1]
-                    break
-            new_list.append(data_list)
-        return new_list
-    else:
-        return values_list
 
 
 """
@@ -55,7 +40,7 @@ def extract_ecu(vin_list=None):
 def extract_corvet(product='corvet', excel_type='csv'):
     filename = product
     values_list = ()
-    header = queryset = position = None
+    header = queryset = None
     xelons = Xelon.objects.filter(corvet__isnull=False)
     if product == "ecu":
         header = [
@@ -133,7 +118,6 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
             'corvet__electronique_84x', 'corvet__electronique_94x'
         )
-        position = 4
     elif product == "rtx":
         header = [
             'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'Niv.', 'HW variant',
@@ -150,7 +134,6 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
             'corvet__electronique_84x', 'corvet__electronique_94x'
         )
-        position = 4
     elif product == "smeg":
         header = [
             'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'Niv.', 'HW variant',
@@ -167,7 +150,6 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
             'corvet__electronique_84x', 'corvet__electronique_94x'
         )
-        position = 4
     elif product == "rneg":
         header = [
             'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
@@ -184,7 +166,6 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
             'corvet__electronique_94x'
         )
-        position = 4
     elif product == "ng4":
         header = [
             'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
@@ -201,7 +182,6 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
             'corvet__electronique_94x'
         )
-        position = 4
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
@@ -214,9 +194,9 @@ def extract_corvet(product='corvet', excel_type='csv'):
         ]
         queryset = Corvet.objects.all()
     if queryset:
+        fields = values_list
         values_list = queryset.values_list(*values_list).distinct()
-        values_list = get_multimedia_display(values_list, position=position)
-        return ExportExcel(values_list, filename, header, excel_type).http_response()
+        return ExportCorvetExcel(values_list, fields, filename, header, excel_type).http_response()
     else:
         raise Http404("No data matches")
 
