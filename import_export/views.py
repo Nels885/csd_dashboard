@@ -6,11 +6,13 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
+from django.http import JsonResponse
 
 from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm, ExportToolsForm
 from .utils import extract_ecu, extract_corvet, extract_reman, extract_tools
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
+from .tasks import export_corvet_task
 
 context = {
     'title': 'Import / Export'
@@ -115,3 +117,8 @@ def import_ecurefbase(request):
     else:
         messages.warning(request, _('You do not have the required permissions'))
     return redirect('import_export:detail')
+
+
+def export_corvet_async(request):
+    task = export_corvet_task.delay()
+    return JsonResponse({"task_id": task.id})

@@ -60,3 +60,56 @@
     </div>
 
 {% endblock %}
+
+{% block customjs %}
+
+    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+
+    <script type="application/javascript">
+        $(function () {
+            runExportData = () => {
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'import_export:export' %}",
+                    success: (res) => {
+                        getProgress(
+                            res.task_id,
+                            progressBarId = "export-progress-bar",
+                            progressBarMessageId = "export-progress-message",
+                            isDownloadFile = true
+                        )
+                    },
+                    error: (err) => {
+                        console.log(err);
+                    },
+                })
+            }
+
+            getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
+                var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;
+
+                function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
+                    progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
+                    progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
+                    progressBarElement.setAttribute("aria-valuenow", progress.percent)
+                }
+
+                function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
+                    alert("Complete progress 100%")
+                    progressBarMessageElement.innerHTML = "Waiting event . . ."
+                    progressBarElement.setAttribute("style", "width: 0%")
+                    progressBarElement.setAttribute("aria-valuenow", 0)
+                    if (isDownloadFile) window.open(`{% url 'download' %}?task_id=${taskId}`, '_blank');
+                }
+
+                CeleryProgressBar.initProgressBar(progressUrl, {
+                    progressBarId: progressBarId,
+                    progressBarMessageId: progressBarMessageId,
+                    onProgress: onExportUserProgress,
+                    onSuccess: onExportUserSuccess,
+                })
+            }
+        });
+    </script>
+
+{% endblock %}

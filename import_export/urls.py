@@ -11,4 +11,5 @@ urlpatterns = [
     path('export/tools/', views.export_tools, name='tools'),
     path('import/part/', views.import_sparepart, name='import_part'),
     path('import/ecu-base/', views.import_ecurefbase, name='import_ecu_base'),
+    path('export/corvet/async/', views.export_corvet_async, name='export'),
 ]
