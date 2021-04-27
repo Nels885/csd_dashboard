@@ -20,7 +20,8 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from dashboard import views
+from dashboard.views import index
+from .views import get_progress_view, download_file_view
 
 favicon_view = RedirectView.as_view(url=staticfiles_storage.url('favicon.ico'))
 
@@ -32,8 +33,10 @@ def trigger_error(request):
 
 urlpatterns = [
     path('sentry-debug/', trigger_error),
+    path('celery-progress/', get_progress_view, name='progress'),
+    path('download-file/', download_file_view, name="download"),
     path('favicon.ico', favicon_view),
-    path('', views.index, name="index"),
+    path('', index, name="index"),
     path('api/', include('api.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('raspeedi/', include('raspeedi.urls')),

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'constance',
     'django_inlinecss',
+    'celery_progress',
 
     # My apps
     'dashboard.apps.DashboardConfig',
@@ -305,6 +306,15 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
     )
 }
+
+
+# CELERY STUFF
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
+CELERY_TASK_IGNORE_RESULT = False
+CELERY_TIMEZONE = "Europe/Paris"
+
 
 ###############################
 # DJANGO LOGGER CONFIGURATION
