@@ -29,7 +29,7 @@ paho-mqtt = "*"
 django-inlinecss = "*"
 requests = "*"
 openpyxl = "*"
-
-[packages.django-constance]
-extras = [ "database",]
-version = "*"
+celery = "*"
+django-constance = {extras = [ "database",], version = "*"}
+celery-progress = "*"
+redis = "*"
