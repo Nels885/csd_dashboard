@@ -9,6 +9,24 @@ from reman.models import Batch, Repair, EcuModel
 from tools.models import Suptech
 from utils.file.export import ExportExcel
 
+XELON_LIST = [
+    ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
+    ('Vehicule (XELON)', 'modele_vehicule')
+]
+
+BTEL_LIST = [
+    ('Modele reel', 'corvet__btel__name'), ('Réf. Setplate', 'corvet__btel__label_ref'),
+    ('Niv.', 'corvet__btel__level'), ('HW variant', 'corvet__btel__extra'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
+    ('DHB_HAUT PARLEUR', 'corvet__attribut_dhb'), ('DUN_AMPLI EQUALISEUR', 'corvet__attribut_dun'),
+    ('DYR_BTA', 'corvet__attribut_dyr'), ('14X_BTEL_HARD', 'corvet__electronique_14x'),
+    ('44X_BTEL_FOURN.NO.SERIE', 'corvet__electronique_44x'), ('64X_BTEL_FOURN.CODE', 'corvet__electronique_64x'),
+    ('84X_BTEL_DOTE', 'corvet__electronique_84x'), ('94X_BTEL_SOFT', 'corvet__electronique_94x')
+]
+
+BTEL_HEADER = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in BTEL_LIST]
+BTEL_FIELDS = [value_tuple[1] for value_tuple in XELON_LIST] + [value_tuple[1] for value_tuple in BTEL_LIST]
 
 """
 ##################################
@@ -105,84 +123,35 @@ def extract_corvet(product='corvet', excel_type='csv'):
             'corvet__electronique_86b', 'corvet__electronique_96b'
         )
     elif product == "nac":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modele reel', 'Réf. Setplate', 'Niv.',
-            'HW variant', 'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
+        header = BTEL_HEADER
         queryset = xelons.filter(modele_produit__contains="NAC").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__label_ref', 'corvet__btel__level', 'corvet__btel__extra', 'date_debut_garantie',
-            'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x', 'corvet__electronique_44x',
-            'corvet__electronique_64x', 'corvet__electronique_84x', 'corvet__electronique_94x'
-        )
+        values_list = BTEL_FIELDS
     elif product == "rtx":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modele reel', 'Niv.', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
+        header = BTEL_HEADER
         queryset = xelons.filter(modele_produit__startswith="RT").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__level', 'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit',
-            'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
-            'corvet__electronique_84x', 'corvet__electronique_94x'
-        )
+        values_list = BTEL_FIELDS
     elif product == "smeg":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modele reel', 'Niv.', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
+        header = BTEL_HEADER
         queryset = xelons.filter(modele_produit__startswith="SMEG").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__level', 'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit',
-            'corvet__electronique_14x', 'corvet__electronique_44x', 'corvet__electronique_64x',
-            'corvet__electronique_84x', 'corvet__electronique_94x'
-        )
+        values_list = BTEL_FIELDS
     elif product == "rneg":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modele reel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
+        header = BTEL_HEADER
         queryset = xelons.filter(modele_produit__startswith="RNEG").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
-        )
+        values_list = BTEL_FIELDS
     elif product == "ng4":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modele reel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
+        header = BTEL_HEADER
         queryset = xelons.filter(modele_produit__startswith="NG4").annotate(
             date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
         )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
-        )
+        values_list = BTEL_FIELDS
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
