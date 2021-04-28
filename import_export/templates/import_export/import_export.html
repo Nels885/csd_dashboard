@@ -67,6 +67,32 @@
 
     <script type="application/javascript">
         $(function () {
+            $("#export-corvet").on("submit", (e) => {
+                e.preventDefault()
+                let formData = new FormData($("#export-corvet")[0])
+                // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'import_export:export' %}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    async: true,
+                    success: function (res) {
+                        getProgress(
+                            res.task_id,
+                            progressBarId = "export-progress-bar",
+                            progressBarMessageId = "export-progress-message",
+                            isDownloadFile = true
+                    )
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                })
+            })
+
             runExportData = () => {
                 $.ajax({
                     type: "GET",

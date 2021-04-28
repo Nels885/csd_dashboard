@@ -2,7 +2,7 @@
 
 <h3 class="mb-4 mt-3 text-gray-800">Exportation des données CORVET :</h3>
 
-<form method="post" action="{% url 'import_export:corvet' %}">
+<form id="export-corvet" method="post" action="{% url 'import_export:export' %}">
 
     {% csrf_token %}
 
@@ -25,19 +25,15 @@
     </div>
 </form>
 
-{% if user.is_superuser %}
-    <button class="btn btn-primary" onclick="runExportData()">Export</button>
-
-    <div id="export-progress-container" class="col-md-12">
-        <div id="export-progress-message">Waiting event . . .</div>
-        <div class="progress">
-            <div id="export-progress-bar"
-                 class="progress-bar progress-bar-striped progress-bar-animated"
-                 role="progressbar" aria-valuemin="0" aria-valuemax="100">
-            </div>
+<div id="export-progress-container" class="col-md-12">
+    <div id="export-progress-message">Waiting event . . .</div>
+    <div class="progress">
+        <div id="export-progress-bar"
+             class="progress-bar progress-bar-striped progress-bar-animated"
+             role="progressbar" aria-valuemin="0" aria-valuemax="100">
         </div>
     </div>
-{% endif %}
+</div>
 
 <hr>
 

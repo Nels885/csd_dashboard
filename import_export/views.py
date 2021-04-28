@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm, ExportToolsForm
 from .utils import extract_ecu, extract_corvet, extract_reman, extract_tools
@@ -120,5 +120,11 @@ def import_ecurefbase(request):
 
 
 def export_corvet_async(request):
-    task = export_corvet_task.delay()
-    return JsonResponse({"task_id": task.id})
+    print(request.POST)
+    form = ExportCorvetForm(request.POST)
+    if form.is_valid():
+        product = form.cleaned_data['products']
+        excel_type = form.cleaned_data['formats']
+        task = export_corvet_task.delay(excel_type=excel_type, product=product)
+        return JsonResponse({"task_id": task.id})
+    raise Http404
