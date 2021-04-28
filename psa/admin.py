@@ -15,7 +15,7 @@ class CorvetAdmin(admin.ModelAdmin):
 
 
 class MultimediaAdmin(admin.ModelAdmin):
-    list_display = ('hw_reference', 'name', 'level', 'type', 'dab', 'cam', 'media')
+    list_display = ('hw_reference', 'name', 'level', 'type', 'dab', 'cam', 'media', 'firmware')
     list_filter = ('name', 'level', 'type', 'media')
     ordering = ('hw_reference',)
     search_fields = ('hw_reference', 'name', 'type')
