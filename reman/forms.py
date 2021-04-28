@@ -79,6 +79,13 @@ class AddBatchForm(BSModalModelForm):
             self.add_error('ref_reman', 'reference non valide')
         return data
 
+    def save(self, commit=True):
+        batch = super(AddBatchForm, self).save(commit=False)
+        if commit and not self.request.is_ajax():
+            batch.save()
+            call_command('exportreman', '--batch')
+        return batch
+
 
 class AddEtudeBatchForm(AddBatchForm):
 
@@ -105,6 +112,7 @@ class AddEtudeBatchForm(AddBatchForm):
         if commit and not self.request.is_ajax():
             batch.active = False
             batch.save()
+            call_command('exportreman', '--batch')
         return batch
 
 
