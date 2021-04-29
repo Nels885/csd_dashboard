@@ -107,13 +107,13 @@ class AddEtudeBatchForm(AddBatchForm):
             self.add_error('number', _('The batch already exists!'))
         return data
 
-    def save(self, commit=True):
-        batch = super(AddEtudeBatchForm, self).save(commit=False)
-        if commit and not self.request.is_ajax():
-            batch.active = False
-            batch.save()
-            call_command('exportreman', '--batch')
-        return batch
+    # def save(self, commit=True):
+    #     batch = super(AddEtudeBatchForm, self).save(commit=False)
+    #     if commit and not self.request.is_ajax():
+    #         batch.active = False
+    #         batch.save()
+    #         call_command('exportreman', '--batch')
+    #     return batch
 
 
 class DefaultForm(BSModalModelForm):
