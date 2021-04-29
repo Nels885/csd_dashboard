@@ -152,8 +152,7 @@ Export REMAN data to excel format
 """
 
 
-def extract_reman(model, excel_type='csv'):
-    filename = model
+def extract_reman(model):
     header = queryset = values_list = None
     if model == "batch":
         header = [
@@ -195,12 +194,9 @@ def extract_reman(model, excel_type='csv'):
             'ecu_type__ecu_ref_base__status'
 
         )
-
-    if queryset:
-        values_list = queryset.values_list(*values_list).distinct()
-        return ExportExcel(values_list, filename, header, excel_type).http_response()
-    else:
-        raise Http404("No data matches")
+    fields = values_list
+    values_list = queryset.values_list(*values_list).distinct()
+    return header, fields, values_list
 
 
 """
