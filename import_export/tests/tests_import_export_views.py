@@ -49,23 +49,23 @@ class ImportExportTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_export_corvet_page(self):
-        url = reverse('import_export:corvet')
-        response = self.client.post(url, {'formats': 'csv', 'products': 'corvet', 'btn_corvet_all': ''})
-        self.assertEqual(response.status_code, 302)
-
-        self.add_perms_user(Corvet, 'view_corvet')
-        self.login()
-
-        for product in ['corvet', 'ecu', 'bsi', 'com200x', 'bsm']:
-            response = self.client.post(url, {'formats': 'csv', 'products': product, 'btn_corvet_all': ''})
-            self.assertEqual(response.status_code, 200)
-            self._http_content(response)
-
-        # Test for ECU extracting from a VIN list
-        response = self.client.post(url, {'vin_list': self.vin, 'btn_corvet_vin': ''})
-        self.assertEqual(response.status_code, 200)
-        self._http_content(response)
+    # def test_export_corvet_page(self):
+    #     url = reverse('import_export:corvet')
+    #     response = self.client.post(url, {'formats': 'csv', 'products': 'corvet', 'btn_corvet_all': ''})
+    #     self.assertEqual(response.status_code, 302)
+    #
+    #     self.add_perms_user(Corvet, 'view_corvet')
+    #     self.login()
+    #
+    #     for product in ['corvet', 'ecu', 'bsi', 'com200x', 'bsm']:
+    #         response = self.client.post(url, {'formats': 'csv', 'products': product, 'btn_corvet_all': ''})
+    #         self.assertEqual(response.status_code, 200)
+    #         self._http_content(response)
+    #
+    #     # Test for ECU extracting from a VIN list
+    #     response = self.client.post(url, {'vin_list': self.vin, 'btn_corvet_vin': ''})
+    #     self.assertEqual(response.status_code, 200)
+    #     self._http_content(response)
 
     def test_export_reman_page(self):
         url = reverse('import_export:reman')

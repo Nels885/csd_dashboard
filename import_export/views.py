@@ -9,7 +9,7 @@ from django.core.management import call_command
 from django.http import JsonResponse, Http404
 
 from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm, ExportToolsForm
-from .utils import extract_ecu, extract_corvet, extract_reman, extract_tools
+from .utils import extract_reman, extract_tools
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 from .tasks import export_corvet_task
@@ -29,24 +29,6 @@ def import_export(request):
     form_tools = ExportToolsForm()
     context.update(locals())
     return render(request, 'import_export/import_export.html', context)
-
-
-def export_corvet(request):
-    if request.user.has_perm('psa.view_corvet') and request.POST:
-        if "btn_corvet_vin" in request.POST:
-            form = ExportCorvetVinListForm(request.POST or None)
-            if form.is_valid():
-                vin_list = form.cleaned_data['vin_list'].split('\r\n')
-                return extract_ecu(vin_list)
-        elif "btn_corvet_all" in request.POST:
-            form = ExportCorvetForm(request.POST or None)
-            if form.is_valid():
-                product = form.cleaned_data['products']
-                excel_type = form.cleaned_data['formats']
-                return extract_corvet(product, excel_type)
-    else:
-        messages.warning(request, _('You do not have the required permissions'))
-    return redirect('import_export:detail')
 
 
 def export_reman(request):
@@ -120,11 +102,20 @@ def import_ecurefbase(request):
 
 
 def export_corvet_async(request):
-    print(request.POST)
     form = ExportCorvetForm(request.POST)
     if form.is_valid():
         product = form.cleaned_data['products']
         excel_type = form.cleaned_data['formats']
         task = export_corvet_task.delay(excel_type=excel_type, product=product)
+        return JsonResponse({"task_id": task.id})
+    raise Http404
+
+
+def export_corvet_vin_async(request):
+    form = ExportCorvetVinListForm(request.POST or None)
+    print(request.POST)
+    if form.is_valid():
+        vin_list = form.cleaned_data['vin_list'].split('\r\n')
+        task = export_corvet_task.delay(vin_list=vin_list)
         return JsonResponse({"task_id": task.id})
     raise Http404

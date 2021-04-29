@@ -2,7 +2,7 @@
 
 <h3 class="mb-4 mt-3 text-gray-800">Exportation des données CORVET :</h3>
 
-<form id="export-corvet" method="post" action="{% url 'import_export:export' %}">
+<form id="export-corvet" method="post" action="">
 
     {% csrf_token %}
 
@@ -17,7 +17,7 @@
             {% render_field form_corvet.products class="custom-select form-control" %}
         </div>
         <div class="col-sm-auto">
-            <button type="submit" class="btn btn-success btn-icon-split mb-2" name="btn_corvet_all">
+            <button type="submit" class="btn btn-success btn-icon-split mb-2">
                 <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
             </button>
         </div>
@@ -25,19 +25,13 @@
     </div>
 </form>
 
-<div id="export-progress-container" class="col-md-12">
-    <div id="export-progress-message">Waiting event . . .</div>
-    <div class="progress">
-        <div id="export-progress-bar"
-             class="progress-bar progress-bar-striped progress-bar-animated"
-             role="progressbar" aria-valuemin="0" aria-valuemax="100">
-        </div>
-    </div>
-</div>
+{% include 'format/progress_bar.html' with name='corvet' %}
 
 <hr>
 
-<form class="mt-4" method="post" action="{% url 'import_export:corvet' %}">
+<h3 class="mb-4 mt-5 text-gray-800">Exportation des données ECU par list de V.I.N. :</h3>
+
+<form id="export-corvet-vin" method="post" action="">
 
     {% csrf_token %}
 
@@ -47,12 +41,14 @@
             {% render_field form_corvet_vin.vin_list class="form-control" rows=8 %}
         </div>
         <div class="col-sm-auto">
-            <button type="submit" class="btn btn-success btn-icon-split mb-2" name="btn_corvet_vin">
+            <button type="submit" class="btn btn-success btn-icon-split mb-2">
                 <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
             </button>
         </div>
     </div>
 
 </form>
+
+{% include 'format/progress_bar.html' with name='corvet-vin' %}
 
 <hr>

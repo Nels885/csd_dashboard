@@ -73,7 +73,7 @@
                 // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
                 $.ajax({
                     type: "POST",
-                    url: "{% url 'import_export:export' %}",
+                    url: "{% url 'import_export:export_corvet' %}",
                     data: formData,
                     contentType: false,
                     processData: false,
@@ -82,10 +82,10 @@
                     success: function (res) {
                         getProgress(
                             res.task_id,
-                            progressBarId = "export-progress-bar",
-                            progressBarMessageId = "export-progress-message",
+                            progressBarId = "export-corvet-progress-bar",
+                            progressBarMessageId = "export-corvet-progress-message",
                             isDownloadFile = true
-                    )
+                        )
                     },
                     error: function (err) {
                         console.log(err);
@@ -93,48 +93,32 @@
                 })
             })
 
-            runExportData = () => {
+            $("#export-corvet-vin").on("submit", (e) => {
+                e.preventDefault()
+                let formData = new FormData($("#export-corvet-vin")[0])
+                // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
                 $.ajax({
-                    type: "GET",
-                    url: "{% url 'import_export:export' %}",
-                    success: (res) => {
+                    type: "POST",
+                    url: "{% url 'import_export:export_corvet_vin' %}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    async: true,
+                    success: function (res) {
+                        console.log(res.task_id);
                         getProgress(
                             res.task_id,
-                            progressBarId = "export-progress-bar",
-                            progressBarMessageId = "export-progress-message",
+                            progressBarId = "export-corvet-vin-progress-bar",
+                            progressBarMessageId = "export-corvet-vin-progress-message",
                             isDownloadFile = true
                         )
                     },
-                    error: (err) => {
+                    error: function (err) {
                         console.log(err);
                     },
                 })
-            }
-
-            getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
-                var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;
-
-                function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
-                    progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
-                    progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
-                    progressBarElement.setAttribute("aria-valuenow", progress.percent)
-                }
-
-                function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
-                    alert("Complete progress 100%")
-                    progressBarMessageElement.innerHTML = "Waiting event . . ."
-                    progressBarElement.setAttribute("style", "width: 0%")
-                    progressBarElement.setAttribute("aria-valuenow", 0)
-                    if (isDownloadFile) window.open(`{% url 'download' %}?task_id=${taskId}`, '_blank');
-                }
-
-                CeleryProgressBar.initProgressBar(progressUrl, {
-                    progressBarId: progressBarId,
-                    progressBarMessageId: progressBarMessageId,
-                    onProgress: onExportUserProgress,
-                    onSuccess: onExportUserSuccess,
-                })
-            }
+            })
         });
     </script>
 

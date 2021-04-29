@@ -5,11 +5,11 @@ FORMAT_CHOICES = [('csv', 'CSV'), ('xls', 'XLS'), ('xlsx', 'XLSX')]
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
-        ('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'),
+        ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'),     # ('corvet', 'ALL'),
         ('nac', 'NAC'), ('rtx', 'RTx'), ('smeg', 'SMEG'), ('rneg', 'RNEG'), ('ng4', 'NG4')
     ]
 
-    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
     products = forms.ChoiceField(label='Produit', required=False, choices=PRODUCTS, widget=forms.Select())
 
 
