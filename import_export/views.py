@@ -9,10 +9,10 @@ from django.core.management import call_command
 from django.http import JsonResponse, Http404
 
 from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm, ExportToolsForm
-from .utils import extract_reman, extract_tools
+from .utils import extract_tools
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
-from .tasks import export_corvet_task
+from .tasks import export_corvet_task, export_reman_task
 
 context = {
     'title': 'Import / Export'
@@ -29,18 +29,6 @@ def import_export(request):
     form_tools = ExportToolsForm()
     context.update(locals())
     return render(request, 'import_export/import_export.html', context)
-
-
-def export_reman(request):
-    if request.user.has_perms(['reman.view_batch', 'reman.view_repair', 'reman.view_ecumodel']) and request.POST:
-        form = ExportRemanForm(request.POST or None)
-        if form.is_valid():
-            table = form.cleaned_data['tables']
-            excel_type = form.cleaned_data['formats']
-            return extract_reman(table, excel_type)
-    else:
-        messages.warning(request, _('You do not have the required permissions'))
-    return redirect('import_export:detail')
 
 
 def export_tools(request):
@@ -102,7 +90,7 @@ def import_ecurefbase(request):
 
 
 def export_corvet_async(request):
-    form = ExportCorvetForm(request.POST)
+    form = ExportCorvetForm(request.POST or None)
     if form.is_valid():
         product = form.cleaned_data['products']
         excel_type = form.cleaned_data['formats']
@@ -113,9 +101,18 @@ def export_corvet_async(request):
 
 def export_corvet_vin_async(request):
     form = ExportCorvetVinListForm(request.POST or None)
-    print(request.POST)
     if form.is_valid():
         vin_list = form.cleaned_data['vin_list'].split('\r\n')
         task = export_corvet_task.delay(vin_list=vin_list)
+        return JsonResponse({"task_id": task.id})
+    raise Http404
+
+
+def export_reman_async(request):
+    form = ExportRemanForm(request.POST or None)
+    if form.is_valid():
+        table = form.cleaned_data['tables']
+        excel_type = form.cleaned_data['formats']
+        task = export_reman_task.delay(table=table, excel_type=excel_type)
         return JsonResponse({"task_id": task.id})
     raise Http404

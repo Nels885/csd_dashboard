@@ -119,6 +119,33 @@
                     },
                 })
             })
+
+            $("#export-reman").on("submit", (e) => {
+                e.preventDefault()
+                let formData = new FormData($("#export-reman")[0])
+                // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'import_export:export_reman' %}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    async: true,
+                    success: function (res) {
+                        console.log(res.task_id);
+                        getProgress(
+                            res.task_id,
+                            progressBarId = "export-reman-progress-bar",
+                            progressBarMessageId = "export-reman-progress-message",
+                            isDownloadFile = true
+                        )
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                })
+            })
         });
     </script>
 
