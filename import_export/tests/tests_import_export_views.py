@@ -49,38 +49,20 @@ class ImportExportTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    # def test_export_corvet_page(self):
-    #     url = reverse('import_export:corvet')
-    #     response = self.client.post(url, {'formats': 'csv', 'products': 'corvet', 'btn_corvet_all': ''})
-    #     self.assertEqual(response.status_code, 302)
-    #
-    #     self.add_perms_user(Corvet, 'view_corvet')
-    #     self.login()
-    #
-    #     for product in ['corvet', 'ecu', 'bsi', 'com200x', 'bsm']:
-    #         response = self.client.post(url, {'formats': 'csv', 'products': product, 'btn_corvet_all': ''})
-    #         self.assertEqual(response.status_code, 200)
-    #         self._http_content(response)
-    #
-    #     # Test for ECU extracting from a VIN list
-    #     response = self.client.post(url, {'vin_list': self.vin, 'btn_corvet_vin': ''})
-    #     self.assertEqual(response.status_code, 200)
-    #     self._http_content(response)
+    def test_export_corvet_task(self):
+        url = reverse('import_export:export_corvet')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
 
-    def test_export_reman_page(self):
-        url = reverse('import_export:reman')
-        response = self.client.post(url, {'formats': 'csv', 'tables': 'batch'})
-        self.assertEqual(response.status_code, 302)
+    def test_esport_corvet_vin_task(self):
+        url = reverse('import_export:export_corvet_vin')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
 
-        self.add_perms_user(Batch, 'view_batch')
-        self.add_perms_user(Repair, 'view_repair')
-        self.add_perms_user(EcuModel, 'view_ecumodel')
-        self.login()
-
-        for table in ['batch', 'repair_reman', 'base_ref_reman']:
-            response = self.client.post(url, {'formats': 'csv', 'tables': table})
-            self.assertEqual(response.status_code, 200)
-            self._http_content(response)
+    def test_esport_reman_task(self):
+        url = reverse('import_export:export_reman')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
 
     def test_export_tools_page(self):
         url = reverse('import_export:tools')
