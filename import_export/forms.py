@@ -5,7 +5,7 @@ FORMAT_CHOICES = [('csv', 'CSV'), ('xls', 'XLS'), ('xlsx', 'XLSX')]
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
-        ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'),     # ('corvet', 'ALL'),
+        ('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'),
         ('nac', 'NAC'), ('rtx', 'RTx'), ('smeg', 'SMEG'), ('rneg', 'RNEG'), ('ng4', 'NG4')
     ]
 

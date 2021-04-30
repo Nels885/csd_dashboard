@@ -98,8 +98,8 @@ def extract_corvet(product='corvet'):
     values_list = ()
     header = queryset = None
     xelons = Xelon.objects.filter(corvet__isnull=False).annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
+        date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
+    )
     if product == "ecu":
         header, values_list = CMM_HEADER, CMM_FIELDS
         queryset = xelons.exclude(corvet__electronique_14a__exact='')
@@ -138,6 +138,8 @@ def extract_corvet(product='corvet'):
             '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
         ]
         queryset = Corvet.objects.all()
+        values_list = tuple([field.name for field in Corvet._meta.fields
+                             if field.name not in ['radio', 'btel', 'bsi', 'emf', 'bsm', 'cmm', 'hdc']])
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
     return header, fields, values_list
