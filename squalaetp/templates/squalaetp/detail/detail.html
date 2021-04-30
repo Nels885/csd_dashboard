@@ -7,7 +7,7 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
 
-            {% if perms.squalaetp.change_xelon and perms.psa.change_corvet %}
+            {% if perms.squalaetp.change_xelon or perms.psa.change_corvet %}
 
                 {% include 'tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
 

@@ -7,7 +7,7 @@
     </a>
 </li>
 
-{% if user.is_authenticated %}
+{% if  perms.squalaetp.change_xelon or perms.psa.change_corvet %}%}
     <!-- Nav Item - Generate Squalaetp -->
     <li class="nav-item">
         <a class="nav-link font-weight-bold text-warning" href="{% url 'squalaetp:generate' %}">
