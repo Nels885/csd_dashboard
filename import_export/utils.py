@@ -10,7 +10,7 @@ from utils.file.export import ExportExcel
 
 XELON_LIST = [
     ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
-    ('Vehicule (XELON)', 'modele_vehicule')
+    ('Vehicule (XELON)', 'modele_vehicule'), ('Date Retour (XELON)', 'date_retour')
 ]
 
 BTEL_LIST = [
@@ -114,7 +114,7 @@ def extract_corvet(product='corvet'):
         queryset = xelons.exclude(corvet__electronique_16p__exact='')
     elif product == "nac":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__contains="NAC")
+        queryset = xelons.filter(modele_produit__startswith="NAC")
     elif product == "rtx":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
         queryset = xelons.filter(modele_produit__startswith="RT")
