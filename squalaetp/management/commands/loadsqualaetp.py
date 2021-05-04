@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError, DataError
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, ProductCategory
 from psa.models import Corvet
 from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
 from utils.django.models import defaults_dict
@@ -44,6 +44,12 @@ class Command(BaseCommand):
             dest='relations',
             help='Add the relationship between the xelon and corvet tables',
         )
+        parser.add_argument(
+            '--prod_category',
+            action='store_true',
+            dest='prod_category',
+            help='Add values in ProductCategory table',
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[SQUALAETP] Waiting...")
@@ -64,6 +70,9 @@ class Command(BaseCommand):
 
         elif options['relations']:
             self._foreignkey_relation()
+
+        elif options['prod_category']:
+            self._product_category()
 
     def _foreignkey_relation(self):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
@@ -131,6 +140,8 @@ class Command(BaseCommand):
                 product_model = row.get("modele_produit")
                 defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
                 try:
+                    ProductCategory.objects.get_or_create(
+                        product_model=product_model, defaults={'category': 'DEFAUT'})
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                     if not created:
                         nb_prod_update += 1
@@ -160,3 +171,35 @@ class Command(BaseCommand):
             )
         else:
             self.stdout.write(self.style.WARNING("[DELAY] No delay files found"))
+
+    def _product_category(self):
+        xelons = Xelon.objects.exclude(modele_produit="")
+        psa = xelons.filter(Q(ilot='PSA') | Q(famille_produit__exact='TBORD PSA')).exclude(famille_produit='CALC MOT')
+        clarion = xelons.filter(ilot='CLARION')
+        etude = xelons.filter(ilot='LaboQual').exclude(famille_produit='CALC MOT')
+        autre = xelons.filter(ilot='ILOTAUTRE').exclude(Q(famille_produit='CALC MOT') |
+                                                        Q(famille_produit__exact='TBORD PSA'))
+        calc_mot = xelons.filter(famille_produit='CALC MOT')
+        defaut = xelons.filter(ilot='DEFAUT').exclude(famille_produit='CALC MOT')
+
+        cat_list = [
+            (psa, "PSA"), (clarion, "CLARION"), (etude, "ETUDE"), (autre, "AUTRE"), (calc_mot, "CALCULATEUR"),
+            (defaut, "DEFAUT")
+        ]
+
+        cat_old = ProductCategory.objects.count()
+
+        for model, category in cat_list:
+            values_list = list(model.values_list('modele_produit').distinct())
+            values_list = list(set(values_list))
+
+            for prod in values_list:
+                ProductCategory.objects.get_or_create(product_model=prod[0], defaults={'category': category})
+
+        cat_new = ProductCategory.objects.count()
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"[SQUALAETP] ProductCategory update completed: ADD = {cat_new - cat_old}"
+            )
+        )

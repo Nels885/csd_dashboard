@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
 
-from squalaetp.models import Xelon, Indicator
+from squalaetp.models import Xelon, Indicator, ProductCategory
 
 
 class Command(BaseCommand):
@@ -20,6 +20,12 @@ class Command(BaseCommand):
             action='store_true',
             dest='indicator',
             help='Clear Indicator table',
+        )
+        parser.add_argument(
+            '--prod_category',
+            action='store_true',
+            dest='prod_category',
+            help='Clear ProductCategory table',
         )
 
     def handle(self, *args, **options):
@@ -40,3 +46,11 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             self.stdout.write(self.style.SUCCESS("Suppression des données de la table Indicator terminée!"))
+        if options['prod_category']:
+            ProductCategory.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [ProductCategory, ])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
+            self.stdout.write(self.style.SUCCESS("Suppression des données de la table ProductCategory terminée!"))
