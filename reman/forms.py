@@ -8,7 +8,7 @@ from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from utils.conf import DICT_YEAR
-from utils.django.validators import validate_psa_barcode
+# from utils.django.validators import validate_psa_barcode
 
 
 """
@@ -327,19 +327,19 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=10,
+    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=20,
                                   widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''}))
 
-    def clean_psa_barcode(self):
-        data = self.cleaned_data['psa_barcode']
-        message = validate_psa_barcode(data)
-        if message:
-            raise forms.ValidationError(
-                _(message),
-                code='invalid',
-                params={'value': data},
-            )
-        return data
+    # def clean_psa_barcode(self):
+    #     data = self.cleaned_data['psa_barcode']
+    #     message = validate_psa_barcode(data)
+    #     if message:
+    #         raise forms.ValidationError(
+    #             _(message),
+    #             code='invalid',
+    #             params={'value': data},
+    #         )
+    #     return data
 
 
 class EcuModelForm(forms.ModelForm):
