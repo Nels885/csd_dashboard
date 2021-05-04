@@ -20,11 +20,11 @@ class RemanCommandTestCase(TestCase):
         out = StringIO()
         call_command('ecurefbase', '-s', 1, '-f', 'reman/tests/Base_réf_ECU_test.xlsx', stdout=out)
         self.assertIn(
-            "[ECUREFBASE] Data update completed: CSV_LINES = 5 | ADD = 4 | UPDATE = 1 | TOTAL = 4",
+            "[ECUREFBASE] Data update completed: EXCEL_LINES = 5 | ADD = 4 | UPDATE = 1 | TOTAL = 4",
             out.getvalue()
         )
         self.assertIn(
-            "[ECUMODEL] Data update completed: CSV_LINES = 5 | ADD = 5 | UPDATE = 0 | TOTAL = 5",
+            "[ECUMODEL] Data update completed: EXCEL_LINES = 5 | ADD = 5 | UPDATE = 0 | TOTAL = 5",
             out.getvalue()
         )
         self.assertEqual(EcuRefBase.objects.count(), 4)

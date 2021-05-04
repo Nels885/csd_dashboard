@@ -102,9 +102,9 @@ class RemanTestCase(UnitTest):
         # Invalid form
         response = self.client.post(url, {'psa_barcode': ''})
         self.assertFormError(response, 'form', 'psa_barcode', _('This field is required.'))
-        for barcode in ['123456789', 'abcdefghij', '96123', '981234567']:
-            response = self.client.post(url, {'psa_barcode': barcode})
-            self.assertFormError(response, 'form', 'psa_barcode', _('PSA barcode is invalid'))
+        # for barcode in ['123456789', 'abcdefghij', '96123', '981234567']:
+        #     response = self.client.post(url, {'psa_barcode': barcode})
+        #     self.assertFormError(response, 'form', 'psa_barcode', _('PSA barcode is invalid'))
 
         # Valid form
         for barcode in ['9600000000', '9687654321', '9800000000', '9887654321']:
