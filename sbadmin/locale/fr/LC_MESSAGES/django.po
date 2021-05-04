@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 14:59+0200\n"
+"POT-Creation-Date: 2021-05-04 17:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,36 +19,29 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: import_export/templates/import_export/detail_csd.html:21
-#: import_export/templates/import_export/detail_csd.html:39
+#: import_export/templates/import_export/detail_csd.html:45
 #: import_export/templates/import_export/detail_reman.html:21
 #: import_export/templates/import_export/detail_tools.html:21
-#: import_export/templates/import_export/import_export_old.html:40
-#: import_export/templates/import_export/import_export_old.html:70
 msgid "Data Export"
 msgstr "Exportation de données"
 
-#: import_export/templates/import_export/detail_reman.html:48
-#: import_export/templates/import_export/import_export_old.html:113
+#: import_export/templates/import_export/detail_reman.html:50
 msgid "Csv Import"
 msgstr "Importation CSV"
 
-#: import_export/templates/import_export/detail_reman.html:72
-#: import_export/templates/import_export/import_export_old.html:94
-#: import_export/templates/import_export/import_export_old.html:132
+#: import_export/templates/import_export/detail_reman.html:74
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/views.py:46 import_export/views.py:58
-#: import_export/views.py:70 import_export/views.py:93
-#: import_export/views.py:116
+#: import_export/views.py:64 import_export/views.py:87
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:163 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:164 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:164 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:165 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -75,6 +68,12 @@ msgstr ""
 #: templates/base/top_bar.html:133
 msgid "New user"
 msgstr "Nouveau utilisateur"
+
+#: templates/base/top_bar.html:137
+#, fuzzy
+#| msgid "Generate Squalaetp"
+msgid "Import Squalaetp"
+msgstr "Générer Squalaetp"
 
 #: templates/base/top_bar.html:142
 msgid "API Documentation"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 14:59+0200\n"
+"POT-Creation-Date: 2021-05-04 17:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,11 +29,6 @@ msgstr "Editer"
 #: dashboard/templates/dashboard/modal/weblink_delete.html:19
 msgid "Delete"
 msgstr "Supprimer"
-
-#: dashboard/templates/dashboard/config.html:22
-#: dashboard/templates/dashboard/modal/signup.html:35
-msgid "Submit"
-msgstr "Soumettre"
 
 #: dashboard/templates/dashboard/done.html:21
 msgid "Back to Dashboard"
@@ -112,6 +107,10 @@ msgstr "Mise à jour"
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
+#: dashboard/templates/dashboard/modal/signup.html:35
+msgid "Submit"
+msgstr "Soumettre"
+
 #: dashboard/templates/dashboard/modal/weblink_create.html:10
 msgid "Create web link"
 msgstr "Créer un lien Web"
@@ -168,92 +167,91 @@ msgstr "Ajouter un lien Web"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: dashboard/views.py:38
+#: dashboard/views.py:37
 msgid "Home"
 msgstr "Acceuil"
 
-#: dashboard/views.py:45 dashboard/views.py:111
+#: dashboard/views.py:44 dashboard/views.py:110
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: dashboard/views.py:65
+#: dashboard/views.py:64
 msgid "Late Products"
 msgstr "Produits en retard"
 
-#: dashboard/views.py:84
+#: dashboard/views.py:83
 msgid "Search"
 msgstr "Recherche"
 
-#: dashboard/views.py:85
+#: dashboard/views.py:84
 msgid "Xelon files"
 msgstr "Dossiers Xelon"
 
-#: dashboard/views.py:93
+#: dashboard/views.py:92
 msgid "Warning: The research was not successful."
 msgstr "Avertissement: la recherche n'a pas réussi."
 
-#: dashboard/views.py:112
+#: dashboard/views.py:111
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:120
+#: dashboard/views.py:119
 msgid "User Profile"
 msgstr "Mon Profil"
 
-#: dashboard/views.py:127
+#: dashboard/views.py:126
 msgid "Success: Update profile picture!"
 msgstr "Succès: mise à jour de la photo de profil !"
 
-#: dashboard/views.py:132
+#: dashboard/views.py:131
 msgid "Success: Update display configuration!"
 msgstr "Succès: mise à jour de la configuration de l'affichage !"
 
-#: dashboard/views.py:142
+#: dashboard/views.py:141
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: dashboard/views.py:166
+#: dashboard/views.py:165
 msgid "Success: Sign up succeeded. You can now Log in."
 msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
 
-#: dashboard/views.py:182
+#: dashboard/views.py:181
 msgid "Thank you for your email confirmation. Now you can login your account."
 msgstr ""
 "Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous "
 "connecter à votre compte."
 
-#: dashboard/views.py:185
+#: dashboard/views.py:184
 msgid "Activation link is invalid!"
 msgstr "Le lien d'activation n'est pas valide !"
 
-#: dashboard/views.py:198
-msgid "Success: Modification done!"
-msgstr "Succès: Modification effectuée !"
-
-#: dashboard/views.py:210
+#: dashboard/views.py:192
 msgid "Success: You are logged in."
 msgstr "Succès: vous êtes connecté."
 
-#: dashboard/views.py:224
+#: dashboard/views.py:206
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été créé."
 
-#: dashboard/views.py:234
+#: dashboard/views.py:216
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:243
+#: dashboard/views.py:225
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."
 
-#: dashboard/views.py:251
+#: dashboard/views.py:233
 msgid "Success: Web link was created"
 msgstr "Succès: Le lien Web a été créé."
 
-#: dashboard/views.py:265
+#: dashboard/views.py:247
 msgid "Success: Web link was updated"
 msgstr "Succès: Le lien Web a été mis à jour."
 
-#: dashboard/views.py:279
+#: dashboard/views.py:261
 msgid "Success: Web link was deleted."
 msgstr "Succès: Le lien Web a été supprimé."
+
+#~ msgid "Success: Modification done!"
+#~ msgstr "Succès: Modification effectuée !"

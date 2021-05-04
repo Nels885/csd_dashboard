@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 14:59+0200\n"
+"POT-Creation-Date: 2021-05-04 17:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/forms.py:59
+#: reman/forms.py:59 reman/forms.py:105
+msgid "Unauthorized batch number!"
+msgstr "Numéro de lot non autorisé !"
+
+#: reman/forms.py:61 reman/forms.py:107
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:66
+#: reman/forms.py:68
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/models.py:102
+#: reman/forms.py:338 reman/tests/tests_reman_views.py:107
+msgid "The barcode is invalid"
+msgstr "Le code-barre n'est pas valide"
+
+#: reman/models.py:103
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
@@ -155,15 +163,11 @@ msgstr "ECU à Dumper"
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: reman/tests/tests_reman_views.py:85 reman/tests/tests_reman_views.py:105
+#: reman/tests/tests_reman_views.py:84 reman/tests/tests_reman_views.py:104
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: reman/tests/tests_reman_views.py:108
-msgid "PSA barcode is invalid"
-msgstr "Code barre PSA n'est pas valide"
-
-#: reman/tests/tests_reman_views.py:129 reman/views.py:269
+#: reman/tests/tests_reman_views.py:128 reman/views.py:269
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
