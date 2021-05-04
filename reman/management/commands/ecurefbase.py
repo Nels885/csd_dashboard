@@ -4,8 +4,7 @@ from django.core.management.color import no_style
 from django.db import connection
 from django.db.utils import DataError, IntegrityError
 
-from squalaetp.models import ProductCode, SparePart
-from reman.models import EcuRefBase, EcuModel, EcuType
+from reman.models import EcuRefBase, EcuModel, EcuType, SparePart
 from utils.conf import XLS_ECU_REF_BASE, CSD_ROOT, conf
 from utils.file.export import ExportExcel, os
 from utils.django.models import defaults_dict
@@ -74,43 +73,43 @@ class Command(BaseCommand):
         nb_base_update, nb_ecu_update, nb_type_update = 0, 0, 0
         for row in data:
             logger.info(row)
-            code_produit = reman_reference = None
+            code_produit = reman_reference = type_obj = None
             try:
                 code_produit, reman_reference = row["code_produit"], row["reman_reference"]
 
                 # Update or create SpareParts
-                prod_obj, part_created = ProductCode.objects.get_or_create(
-                    name=code_produit)
-                stock_obj, stock_created = SparePart.objects.get_or_create(
-                    code_magasin="MAGREM PSA", code_zone="REMAN PSA", code_produit=prod_obj
-                )
+                part_obj, part_created = SparePart.objects.get_or_create(
+                     code_produit=code_produit, code_magasin="MAGREM PSA", code_zone="REMAN PSA")
 
                 # Update or Create EcuType
-                type_values = defaults_dict(EcuType, row, "hw_reference")
-                # type_values['spare_part'] = part_obj
-                type_obj, type_created = EcuType.objects.update_or_create(
-                    hw_reference=row['hw_reference'], defaults=type_values
-                )
-                if not type_created:
-                    nb_type_update += 1
-
-                # Update or Create EcurefBase
-                base_values = defaults_dict(EcuRefBase, row, "reman_reference")
-                base_values['ecu_type'] = type_obj
-                base_obj, base_created = EcuRefBase.objects.update_or_create(
-                    reman_reference=reman_reference, defaults=base_values
-                )
-                if not base_created:
-                    nb_base_update += 1
+                if row['technical_data']:
+                    type_values = defaults_dict(EcuType, row, "hw_reference", "technical_data")
+                    type_values['spare_part'] = part_obj
+                    type_obj, type_created = EcuType.objects.update_or_create(
+                        hw_reference=row['hw_reference'], technical_data=row['technical_data'], defaults=type_values
+                    )
+                    if not type_created:
+                        nb_type_update += 1
 
                 # Update or Create Ecumodel
-                ecu_model_values = defaults_dict(EcuModel, row, "psa_barcode")
-                ecu_model_values['ecu_type'] = type_obj
-                ecu_obj, ecu_created = EcuModel.objects.update_or_create(
-                    psa_barcode=row['psa_barcode'], defaults=ecu_model_values
-                )
-                if not ecu_created:
-                    nb_ecu_update += 1
+                if row['psa_barcode']:
+                    ecu_model_values = defaults_dict(EcuModel, row, "psa_barcode")
+                    ecu_model_values['ecu_type'] = type_obj
+                    ecu_obj, ecu_created = EcuModel.objects.update_or_create(
+                        psa_barcode=row['psa_barcode'], defaults=ecu_model_values
+                    )
+                    if not ecu_created:
+                        nb_ecu_update += 1
+
+                # Update or Create EcurefBase
+                if reman_reference:
+                    base_values = defaults_dict(EcuRefBase, row, "reman_reference")
+                    base_values['ecu_type'] = type_obj
+                    base_obj, base_created = EcuRefBase.objects.update_or_create(
+                        reman_reference=reman_reference, defaults=base_values
+                    )
+                    if not base_created:
+                        nb_base_update += 1
             except KeyError as err:
                 logger.error(f"[ECUREBASE_CMD] KeyError: {err}")
             except DataError as err:
@@ -123,14 +122,14 @@ class Command(BaseCommand):
         nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
-                "[ECUREFBASE] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                "[ECUREFBASE] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                     len(data), nb_base_after - nb_base_before, nb_base_update, nb_base_after
                 )
             )
         )
         self.stdout.write(
             self.style.SUCCESS(
-                "[ECUMODEL] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                "[ECUMODEL] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                     len(data), nb_ecu_after - nb_ecu_before, nb_ecu_update, nb_ecu_after
                 )
             )
@@ -147,11 +146,11 @@ class Command(BaseCommand):
         values_list = queryset.values_list(
             'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
             'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference',
-            'ecu_type__ecu_ref_base__ref_cal_out', 'ecu_type__spare_part__code_produit',
-            'ecu_type__ecu_ref_base__ref_psa_out', 'ecu_type__ecu_ref_base__open_diag',
-            'ecu_type__ecu_ref_base__ref_mat', 'ecu_type__ecu_ref_base__ref_comp',
-            'ecu_type__ecu_ref_base__cal_ktag',
-            'ecu_type__ecu_ref_base__status'
+            'ecu_type__ref_cal_out', 'ecu_type__spare_part__code_produit',
+            'ecu_type__ref_psa_out', 'ecu_type__open_diag',
+            'ecu_type__ref_mat', 'ecu_type__ref_comp',
+            'ecu_type__cal_ktag',
+            'ecu_type__status'
         ).distinct()
         ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
         self.stdout.write(

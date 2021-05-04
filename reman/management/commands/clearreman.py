@@ -16,12 +16,10 @@ class Command(BaseCommand):
         Repair.objects.all().delete()
         Batch.objects.all().delete()
         Default.objects.all().delete()
-        SparePart.repairs.through.objects.all().delete()
         Default.ecu_type.through.objects.all().delete()
 
         sequence_sql = connection.ops.sequence_reset_sql(no_style(), [
-            SparePart, EcuType, EcuModel, EcuRefBase, Repair, Batch, Default, SparePart.repairs.through,
-            Default.ecu_type.through
+            SparePart, EcuType, EcuModel, EcuRefBase, Repair, Batch, Default, Default.ecu_type.through
         ])
         with connection.cursor() as cursor:
             for sql in sequence_sql:
