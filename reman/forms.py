@@ -330,16 +330,16 @@ class CheckPartForm(forms.Form):
     psa_barcode = forms.CharField(label="Code Barre PSA", max_length=20,
                                   widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''}))
 
-    # def clean_psa_barcode(self):
-    #     data = self.cleaned_data['psa_barcode']
-    #     message = validate_psa_barcode(data)
-    #     if message:
-    #         raise forms.ValidationError(
-    #             _(message),
-    #             code='invalid',
-    #             params={'value': data},
-    #         )
-    #     return data
+    def clean_psa_barcode(self):
+        data = self.cleaned_data['psa_barcode']
+        # message = validate_psa_barcode(data)
+        if len(data) < 10:
+            raise forms.ValidationError(
+                _("The barcode is invalid"),
+                code='invalid',
+                params={'value': data},
+            )
+        return data
 
 
 class EcuModelForm(forms.ModelForm):
