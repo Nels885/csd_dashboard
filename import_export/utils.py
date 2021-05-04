@@ -1,12 +1,10 @@
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
-from django.http import Http404
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
 from reman.models import Batch, Repair, EcuModel
 from tools.models import Suptech
-from utils.file.export import ExportExcel
 
 XELON_LIST = [
     ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
@@ -210,16 +208,14 @@ Export Tools data to excel format
 """
 
 
-def extract_tools(model='all', excel_type='csv'):
-    filename = model
+def extract_tools(model):
     header = queryset = values_list = None
     if model == "suptech":
         header = [
             'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR'
         ]
         queryset = Suptech.objects.all().order_by('date')
-        values_list = queryset.values_list('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action').distinct()
-    if queryset:
-        return ExportExcel(values_list, filename, header, excel_type).http_response()
-    else:
-        raise Http404("No data matches")
+        values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
+    fields = values_list
+    values_list = queryset.values_list(*values_list).distinct()
+    return header, fields, values_list

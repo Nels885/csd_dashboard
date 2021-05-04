@@ -4,7 +4,7 @@ import datetime
 from sbadmin import celery_app
 from openpyxl import Workbook
 
-from .utils import extract_corvet, extract_ecu, extract_reman
+from .utils import extract_corvet, extract_ecu, extract_reman, extract_tools
 from utils.file.export_task import ExportExcelTask
 from psa.models import Multimedia
 from psa.templatetags.corvet_tags import get_corvet
@@ -100,6 +100,30 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
         }
 
 
+class ExportToolsIntoExcelTask(ExportExcelTask):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.noValue = ""
+
+    def run(self, *args, **kwargs):
+        path = self.copy_and_get_copied_path()
+        excel_type = kwargs.pop('excel_type', 'xlsx')
+        model = kwargs.pop('table', 'suptech')
+        filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+        self.header, self.fields, values_list = extract_tools(model)
+        destination_path = os.path.join(path, f"{filename}.{excel_type}")
+        workbook = Workbook()
+        workbook = self.create_workbook(workbook, self.header, values_list)
+        workbook.save(filename=destination_path)
+        return {
+            "detail": "Successfully export TOOLS",
+            "data": {
+                "outfile": destination_path
+            }
+        }
+
+
 @celery_app.task(bind=True, base=ExportCorvetIntoExcelTask)
 def export_corvet_task(self, *args, **kwargs):
     return super(type(self), self).run(*args, **kwargs)
@@ -107,4 +131,9 @@ def export_corvet_task(self, *args, **kwargs):
 
 @celery_app.task(bind=True, base=ExportRemanIntoExcelTask)
 def export_reman_task(self, *args, **kwargs):
+    return super(type(self), self).run(*args, **kwargs)
+
+
+@celery_app.task(bind=True, base=ExportToolsIntoExcelTask)
+def export_tools_task(self, *args, **kwargs):
     return super(type(self), self).run(*args, **kwargs)

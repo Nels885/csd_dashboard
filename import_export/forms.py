@@ -27,5 +27,5 @@ class ExportCorvetVinListForm(forms.Form):
 class ExportToolsForm(forms.Form):
     TABLES = [('suptech', 'SUPTECH')]
 
-    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
     tables = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())

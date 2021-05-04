@@ -64,18 +64,23 @@ class ImportExportTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
-    def test_export_tools_page(self):
-        url = reverse('import_export:tools')
-        response = self.client.post(url, {'formats': 'csv', 'tables': 'suptech'})
-        self.assertEqual(response.status_code, 302)
+    def test_esport_tools_task(self):
+        url = reverse('import_export:export_tools')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
 
-        self.add_perms_user(Suptech, 'view_suptech')
-        self.login()
-
-        for table in ['suptech']:
-            response = self.client.post(url, {'formats': 'csv', 'tables': table})
-            self.assertEqual(response.status_code, 200)
-            self._http_content(response)
+    # def test_export_tools_page(self):
+    #     url = reverse('import_export:tools')
+    #     response = self.client.post(url, {'formats': 'csv', 'tables': 'suptech'})
+    #     self.assertEqual(response.status_code, 302)
+    #
+    #     self.add_perms_user(Suptech, 'view_suptech')
+    #     self.login()
+    #
+    #     for table in ['suptech']:
+    #         response = self.client.post(url, {'formats': 'csv', 'tables': table})
+    #         self.assertEqual(response.status_code, 200)
+    #         self._http_content(response)
 
     def test_import_part(self):
         self.add_perms_user(SparePart, 'add_sparepart', 'change_sparepart')
