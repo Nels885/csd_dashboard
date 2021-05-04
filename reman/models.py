@@ -13,10 +13,20 @@ STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 
 
 
 class EcuType(models.Model):
-    hw_reference = models.CharField("hardware", max_length=20, unique=True)
-    technical_data = models.CharField("modèle produit", max_length=50, blank=True)
+    hw_reference = models.CharField("hardware", max_length=20)
+    technical_data = models.CharField("modèle produit", max_length=50)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
+    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
+    open_diag = models.CharField("OPENDIAG", max_length=16, blank=True)
+    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
+    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
+    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
+    status = models.CharField("STATUT", max_length=16, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = ["hw_reference", "technical_data"]
 
     def part_name(self):
         return self.technical_data + " HW" + self.hw_reference
@@ -66,17 +76,8 @@ class EcuModel(models.Model):
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
-    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
-    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
-    open_diag = models.CharField("OPENDIAG", max_length=16, blank=True)
-    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
-    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
-    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
-    status = models.CharField("STATUT", max_length=16, blank=True)
     ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.SET_NULL, null=True,
                                     blank=True)
-    # ecu_types = models.ManyToManyField("EcuType", related_name="ecu_ref_bases", on_delete=models.SET_NULL, null=True,
-    #                                    blank=True)
 
     def __str__(self):
         return self.reman_reference
@@ -154,7 +155,6 @@ class SparePart(models.Model):
     code_site = models.IntegerField('code Site', null=True, blank=True)
     code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
-    repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)
 
     def __str__(self):
         return self.code_produit
