@@ -112,3 +112,20 @@ class Action(models.Model):
         if user and user.pk:
             self.modified_by = user
         super(Action, self).save(*args, **kwargs)
+
+
+class ProductCategory(models.Model):
+    CHOICES = [
+        ('PSA', 'Produits PSA'), ('AUTRE', 'Autres produits'), ('CLARION', 'Clarion'), ('ETUDE', 'Etude'),
+        ('CALCULATEUR', 'Calculateurs'), ('DEFAUT', 'Defaut')
+    ]
+
+    product_model = models.CharField('modèle produit', max_length=50, unique=True)
+    category = models.CharField('catégorie', max_length=50, choices=CHOICES, blank=True)
+
+    class Meta:
+        verbose_name = "Catégorie Produit"
+        ordering = ['product_model']
+
+    def __str__(self):
+        return self.product_model

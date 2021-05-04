@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Xelon, SparePart, Indicator, Action
+from .models import Xelon, SparePart, Indicator, Action, ProductCategory
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -30,7 +30,14 @@ class ActionAdmin(admin.ModelAdmin):
     list_display = ('content', 'modified_at', 'modified_by', 'content_object')
 
 
+class ProductCategoryAdmin(admin.ModelAdmin):
+    list_display = ('product_model', 'category')
+    list_filter = ('category', )
+    search_fields = ('product_model', 'category')
+
+
 admin.site.register(Xelon, XelonAdmin)
 admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(Indicator, IndicatorAdmin)
 admin.site.register(Action, ActionAdmin)
+admin.site.register(ProductCategory, ProductCategoryAdmin)
