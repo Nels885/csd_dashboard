@@ -142,16 +142,13 @@ class Command(BaseCommand):
             'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
             'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
         ]
-        queryset = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
-        values_list = queryset.values_list(
-            'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
-            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference',
-            'ecu_type__ref_cal_out', 'ecu_type__spare_part__code_produit',
-            'ecu_type__ref_psa_out', 'ecu_type__open_diag',
-            'ecu_type__ref_mat', 'ecu_type__ref_comp',
-            'ecu_type__cal_ktag',
-            'ecu_type__status'
-        ).distinct()
+        queryset = EcuType.objects.all().order_by('ecu_ref_base__reman_reference')
+        values_list = (
+            'ecumodel__oe_raw_reference', 'ecu_ref_base__reman_reference', 'technical_data', 'hw_reference',
+            'supplier_oe', 'ecumodel__psa_barcode', 'ecumodel__former_oe_reference', 'ref_cal_out',
+            'spare_part__code_produit', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
+        )
+        values_list = queryset.values_list(*values_list).distinct()
         ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
         self.stdout.write(
             self.style.SUCCESS(
