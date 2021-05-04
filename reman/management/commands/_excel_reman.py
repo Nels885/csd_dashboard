@@ -72,13 +72,12 @@ class ExcelEcuRefBase(ExcelFormat):
     def _dict(self, row, keys):
         data_dict = {}
         for key in list(keys):
-            data_dict.update({key: row[key]})
+            data_dict.update({key: row[key].strip()})
         return data_dict
 
     def _data_update(self):
         data = []
         for line in range(self.nrows):
             row = self.sheet.loc[line]
-            if row["reman_reference"] != "" and row["psa_barcode"] != "":
-                data.append(dict(row))
+            data.append(dict((key, value.strip()) for key, value in row.items()))
         return data
