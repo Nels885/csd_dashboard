@@ -94,11 +94,12 @@ class Command(BaseCommand):
                 'REMAN_REFERENCE', 'HW_REFERENCE', 'TYPE_ECU', 'SUPPLIER', 'PSA_BARCODE', 'REF_CAL_OUT', 'REF_PSA_OUT',
                 'OPEN_DIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUS'
             ]
-            ecu = EcuRefBase.objects.exclude(ref_cal_out__exact='').order_by('reman_reference')
+            ecu = EcuRefBase.objects.exclude(ecu_type__ref_cal_out__exact='').order_by('reman_reference')
             values_list = ecu.values_list(
                 'reman_reference', 'ecu_type__hw_reference', 'ecu_type__technical_data', 'ecu_type__supplier_oe',
-                'ecu_type__ecumodel__psa_barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
-                'cal_ktag', 'status'
+                'ecu_type__ecumodel__psa_barcode', 'ecu_type__ref_cal_out', 'ecu_type__ref_psa_out',
+                'ecu_type__open_diag', 'ecu_type__ref_mat', 'ecu_type__ref_comp', 'ecu_type__cal_ktag',
+                'ecu_type__status'
             ).distinct()
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
