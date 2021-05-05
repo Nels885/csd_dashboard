@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db.models.aggregates import Count
 from django.db.models import Q
 
-from squalaetp.models import Xelon, Indicator
+from squalaetp.models import Xelon, Indicator, ProductCategory
 from psa.models import Corvet
 
 
@@ -44,14 +44,12 @@ class ProductAnalysis:
         :return:
             Dictionary of different activities
         """
-        psa = self.lateQueryset.filter(Q(ilot='PSA') |
-                                       Q(famille_produit__exact='TBORD PSA')).exclude(famille_produit='CALC MOT')
-        clarion = self.lateQueryset.filter(ilot='CLARION')
-        etude = self.lateQueryset.filter(ilot='LaboQual').exclude(famille_produit='CALC MOT')
-        autre = self.lateQueryset.filter(ilot='ILOTAUTRE').exclude(Q(famille_produit='CALC MOT') |
-                                                                   Q(famille_produit__exact='TBORD PSA'))
-        calc_mot = self.lateQueryset.filter(famille_produit='CALC MOT')
-        defaut = self.lateQueryset.filter(ilot='DEFAUT').exclude(famille_produit='CALC MOT')
+        psa = self._late_filter('PSA')
+        clarion = self._late_filter('CLARION')
+        etude = self._late_filter('ETUDE')
+        autre = self._late_filter('AUTRE')
+        calc_mot = self._late_filter('CALCULATEUR')
+        defaut = self._late_filter('DEFAUT')
         autotronik = self.QUERYSET_AUTOTRONIK.exclude(
             type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         return locals()
@@ -63,6 +61,10 @@ class ProductAnalysis:
             number of Corvet data
         """
         return Corvet.objects.all().count()
+
+    def _late_filter(self, value):
+        query_list = [query.product_model for query in ProductCategory.objects.filter(category=value)]
+        return self.lateQueryset.filter(modele_produit__in=query_list)
 
 
 class IndicatorAnalysis:
