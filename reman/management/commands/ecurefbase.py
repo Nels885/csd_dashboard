@@ -70,7 +70,8 @@ class Command(BaseCommand):
     def _update_or_create(self, data):
 
         nb_base_before, nb_ecu_before = EcuRefBase.objects.count(), EcuModel.objects.count()
-        nb_base_update, nb_ecu_update, nb_type_update = 0, 0, 0
+        nb_type_before = EcuType.objects.count()
+        nb_base_update, nb_ecu_update, nb_type_update, nb_part_create = 0, 0, 0, 0
         for row in data:
             logger.info(row)
             code_produit = reman_reference = type_obj = None
@@ -80,6 +81,8 @@ class Command(BaseCommand):
                 # Update or create SpareParts
                 part_obj, part_created = SparePart.objects.get_or_create(
                      code_produit=code_produit, code_magasin="MAGREM PSA", code_zone="REMAN PSA")
+                if part_created:
+                    nb_part_create += 1
 
                 # Update or Create EcuType
                 if row['technical_data']:
@@ -120,10 +123,18 @@ class Command(BaseCommand):
                 logger.error(f"[ECUREFBASE_CMD] MultipleObjectsReturned: {code_produit} - {err}")
 
         nb_base_after, nb_ecu_after = EcuRefBase.objects.count(), EcuModel.objects.count()
+        nb_type_after, nb_part_after = EcuType.objects.count(), SparePart.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
-                "[ECUREFBASE] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    len(data), nb_base_after - nb_base_before, nb_base_update, nb_base_after
+                "[SPAREPART] Data update completed: EXCEL_LINES = {} | ADD = {} | TOTAL = {}".format(
+                    len(data), nb_part_create, nb_part_after
+                )
+            )
+        )
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[ECUTYPE] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    len(data), nb_type_after - nb_type_before, nb_type_update, nb_type_after
                 )
             )
         )
@@ -131,6 +142,13 @@ class Command(BaseCommand):
             self.style.SUCCESS(
                 "[ECUMODEL] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                     len(data), nb_ecu_after - nb_ecu_before, nb_ecu_update, nb_ecu_after
+                )
+            )
+        )
+        self.stdout.write(
+            self.style.SUCCESS(
+                "[ECUREFBASE] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    len(data), nb_base_after - nb_base_before, nb_base_update, nb_base_after
                 )
             )
         )
