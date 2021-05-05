@@ -54,7 +54,7 @@ class EcuModelAdmin(admin.ModelAdmin):
 class EcuTypeAdmin(admin.ModelAdmin):
     list_display = ('hw_reference', 'technical_data', 'supplier_oe', 'get_spare_part')
     ordering = ('hw_reference',)
-    search_fields = ('hw_reference', )
+    search_fields = ('hw_reference', 'technical_data', 'supplier_oe')
 
     def get_spare_part(self, obj):
         return obj.spare_part
