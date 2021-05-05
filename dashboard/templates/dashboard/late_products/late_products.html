@@ -39,6 +39,7 @@
             <table class="table table-bordered table-sm text-nowrap display" id="lateProdNewTable" style="width:100%">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Activité</th>
                     <th>Dossier</th>
                     <th>Modèle</th>
@@ -49,17 +50,17 @@
                 </thead>
                 <tbody>
 
-                {% include 'dashboard/format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=psa activity='Produits PSA' %}
 
-                {% include 'dashboard/format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=autre activity='Autres produits' %}
 
-                {% include 'dashboard/format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=clarion activity='Clarion' %}
 
-                {% include 'dashboard/format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=calc_mot activity='Calculateurs' %}
 
-                {% include 'dashboard/format/lp_tr_format.html' with prods=etude activity='Etude' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=etude activity='Etude' %}
 
-                {% include 'dashboard/format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=defaut activity='Defaut' %}
 
                 </tbody>
             </table>
@@ -72,6 +73,7 @@
             <table class="table table-bordered table-sm text-nowrap display" id="tronikTable" style="width:100%">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Activité</th>
                     <th>Dossier</th>
                     <th>Modèle</th>
@@ -82,7 +84,7 @@
                 </thead>
                 <tbody>
 
-                {% include 'dashboard/format/lp_tr_format.html' with prods=autotronik activity='Autotronik' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=autotronik activity='Autotronik' %}
 
                 </tbody>
             </table>
