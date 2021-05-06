@@ -1,7 +1,5 @@
 import logging
 from django.core.management.base import BaseCommand
-from django.core.management.color import no_style
-from django.db import connection
 from django.db.utils import DataError, IntegrityError
 
 from reman.models import EcuRefBase, EcuModel, EcuType, SparePart
@@ -37,28 +35,11 @@ class Command(BaseCommand):
             dest='export',
             help='Export all data of EcuRefBase',
         )
-        parser.add_argument(
-            '--delete',
-            action='store_true',
-            dest='delete',
-            help='Delete all data in EcuRefBase table',
-        )
 
     def handle(self, *args, **options):
         self.stdout.write("[ECUREFBASE] Waiting...")
 
-        if options['delete']:
-            EcuRefBase.objects.all().delete()
-            EcuModel.objects.all().delete()
-            EcuType.objects.all().delete()
-
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(),
-                                                             [EcuRefBase, EcuModel, EcuType])
-            with connection.cursor() as cursor:
-                for sql in sequence_sql:
-                    cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données de la table EcuRefBase terminée!"))
-        elif options['export']:
+        if options['export']:
             self._export()
         else:
             if options['filename'] is not None:
