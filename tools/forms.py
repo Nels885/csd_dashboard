@@ -2,7 +2,6 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.core.mail import EmailMessage
-from django.core.management import call_command
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
@@ -15,6 +14,7 @@ from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 
 from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech
+from .tasks import cmd_suptech_task, send_email_task
 
 
 class TagXelonForm(BSModalModelForm):
@@ -105,6 +105,7 @@ class SuptechModalForm(BSModalModelForm):
     def send_email(self):
         current_site = get_current_site(self.request)
         from_email = self.cleaned_data["username"].email
+        files = self.request.FILES.getlist('attach')
         subject = f"!!! Info Support Tech : {self.instance.item} !!!"
         context = {"email": from_email, "suptech": self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
@@ -112,7 +113,6 @@ class SuptechModalForm(BSModalModelForm):
             subject=subject, body=message, from_email=from_email,
             to=string_to_list(self.cleaned_data['to']), cc=[from_email]
         )
-        files = self.request.FILES.getlist('attach')
         if files:
             for f in files:
                 email.attach(f.name, f.read(), f.content_type)
@@ -131,8 +131,8 @@ class SuptechModalForm(BSModalModelForm):
             if self.cleaned_data['custom_item']:
                 suptech.item = self.cleaned_data['custom_item']
             suptech.save()
+            cmd_suptech_task.delay()
             self.send_email()
-            call_command('suptech')
         return suptech
 
 
@@ -147,11 +147,10 @@ class SuptechResponseForm(forms.ModelForm):
         subject = f"!!! Info Support Tech : {self.instance.item} !!!"
         context = {"user": request.user, "suptech": self.instance}
         message = render_to_string('tools/email_format/suptech_response_email.html', context)
-        email = EmailMessage(
+        send_email_task.delay(
             subject=subject, body=message, from_email=request.user.email,
             to=[self.instance.created_by.email], cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
         )
-        email.send()
 
     def save(self, commit=True):
         suptech = super(SuptechResponseForm, self).save(commit=False)
@@ -160,5 +159,5 @@ class SuptechResponseForm(forms.ModelForm):
         suptech.modified_at = timezone.now()
         if commit:
             suptech.save()
-            call_command('suptech')
+            cmd_suptech_task.delay()
         return suptech
