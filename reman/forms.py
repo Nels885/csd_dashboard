@@ -2,11 +2,11 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db.models import Q, Count, Max
-from django.core.management import call_command
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
+from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 # from utils.django.validators import validate_psa_barcode
 
@@ -83,7 +83,7 @@ class AddBatchForm(BSModalModelForm):
         batch = super(AddBatchForm, self).save(commit=False)
         if commit and not self.request.is_ajax():
             batch.save()
-            call_command('exportreman', '--batch')
+            cmd_exportreman_task.delay('--batch')
         return batch
 
 
@@ -107,13 +107,13 @@ class AddEtudeBatchForm(AddBatchForm):
             self.add_error('number', _('The batch already exists!'))
         return data
 
-    # def save(self, commit=True):
-    #     batch = super(AddEtudeBatchForm, self).save(commit=False)
-    #     if commit and not self.request.is_ajax():
-    #         batch.active = False
-    #         batch.save()
-    #         call_command('exportreman', '--batch')
-    #     return batch
+    def save(self, commit=True):
+        batch = super(AddEtudeBatchForm, self).save(commit=False)
+        if commit and not self.request.is_ajax():
+            batch.active = False
+            batch.save()
+            cmd_exportreman_task.delay('--batch')
+        return batch
 
 
 class DefaultForm(BSModalModelForm):
@@ -177,7 +177,7 @@ class AddRepairForm(BSModalModelForm):
         instance = super(AddRepairForm, self).save(commit=False)
         if commit and not self.request.is_ajax():
             instance.save()
-            call_command('exportreman', '--repair')
+            cmd_exportreman_task.delay('--repair')
         return instance
 
 
@@ -204,7 +204,7 @@ class EditRepairForm(forms.ModelForm):
         instance = super(EditRepairForm, self).save(commit=False)
         if commit:
             instance.save()
-            call_command('exportreman', '--repair')
+            cmd_exportreman_task.delay('--repair')
         return instance
 
 
@@ -234,7 +234,7 @@ class CloseRepairForm(forms.ModelForm):
         instance = super(CloseRepairForm, self).save(commit=False)
         if commit:
             instance.save()
-            call_command('exportreman', '--repair')
+            cmd_exportreman_task.delay('--repair')
         return instance
 
 
