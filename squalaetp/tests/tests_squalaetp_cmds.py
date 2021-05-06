@@ -1,12 +1,17 @@
 from django.core.management import call_command
-from django.test import TestCase
+
+from dashboard.tests.base import UnitTest
 
 from io import StringIO
 
 from squalaetp.models import ProductCode
 
 
-class XelonCommandTestCase(TestCase):
+class XelonCommandTestCase(UnitTest):
+
+    def setUp(self):
+        super(type(self), self).setUp()
+        self.out = StringIO()
 
     def test_loadsparepart_cmd(self):
         out = StringIO()
@@ -37,3 +42,31 @@ class XelonCommandTestCase(TestCase):
         out = StringIO()
         call_command('importcorvet', '--squalaetp', stdout=out)
         self.assertIn("[IMPORT_CORVET] Import completed:", out.getvalue())
+
+    def test_clear_squalaetp_xelon_table(self):
+        call_command('clearsqualaetp', '--xelon', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table Xelon terminée!",
+            self.out.getvalue()
+        )
+
+    def test_clear_squalaetp_indicator_table(self):
+        call_command('clearsqualaetp', '--indicator', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table Indicator terminée!",
+            self.out.getvalue()
+        )
+
+    def test_clear_squalaetp_product_category_table(self):
+        call_command('clearsqualaetp', '--prod_category', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table ProductCategory terminée!",
+            self.out.getvalue()
+        )
+
+    def test_clear_sparepart_table(self):
+        call_command('loadsparepart', '--delete', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table SparePart terminée!",
+            self.out.getvalue()
+        )
