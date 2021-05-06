@@ -15,7 +15,6 @@ class Command(BaseCommand):
         call_command("programing")
         # call_command("corvet")
         call_command("loadsqualaetp", "--xelon_update")
-        call_command("indicator")
         call_command("importcorvet", "--squalaetp")
         call_command("exportsqualaetp")
         call_command("loadsqualaetp", "--relations")

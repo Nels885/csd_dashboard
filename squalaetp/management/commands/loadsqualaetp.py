@@ -4,11 +4,13 @@ from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.utils import IntegrityError, DataError
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.utils import timezone
 
-from squalaetp.models import Xelon, ProductCategory
+from squalaetp.models import Xelon, ProductCategory, Indicator
 from psa.models import Corvet
 from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
 from utils.django.models import defaults_dict
+from utils.data.analysis import ProductAnalysis
 
 from ._excel_squalaetp import ExcelSqualaetp
 from ._excel_delay_analysis import ExcelDelayAnalysis
@@ -67,6 +69,7 @@ class Command(BaseCommand):
 
             self._squalaetp_file(Xelon, squalaetp)
             self._delay_files(Xelon, squalaetp, delay)
+            self._indicator()
 
         elif options['relations']:
             self._foreignkey_relation()
@@ -203,3 +206,18 @@ class Command(BaseCommand):
                 f"[SQUALAETP] ProductCategory update completed: ADD = {cat_new - cat_old}"
             )
         )
+
+    def _indicator(self):
+        self.stdout.write("[INDICATOR] Waiting...")
+
+        prod = ProductAnalysis()
+        defaults = {
+            "products_to_repair": prod.pending,
+            "express_products": prod.express,
+            "late_products": prod.late,
+            "output_products": 0,
+        }
+        obj, created = Indicator.objects.update_or_create(date=timezone.now(), defaults=defaults)
+        for query in prod.pendingQueryset:
+            obj.xelons.add(query)
+        self.stdout.write(self.style.SUCCESS("[INDICATOR] data update completed"))
