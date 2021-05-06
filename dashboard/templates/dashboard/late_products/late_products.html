@@ -60,7 +60,7 @@
 
                 {% include 'dashboard/format/lp_tr_link_format.html' with prods=etude activity='Etude' %}
 
-                {% include 'dashboard/format/lp_tr_link_format.html' with prods=defaut activity='Defaut' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=defaut activity='Defaut' last=True %}
 
                 </tbody>
             </table>
@@ -84,7 +84,7 @@
                 </thead>
                 <tbody>
 
-                {% include 'dashboard/format/lp_tr_link_format.html' with prods=autotronik activity='Autotronik' %}
+                {% include 'dashboard/format/lp_tr_link_format.html' with prods=autotronik activity='Autotronik' last=True %}
 
                 </tbody>
             </table>
