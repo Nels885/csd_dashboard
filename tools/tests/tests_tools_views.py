@@ -129,7 +129,10 @@ class ToolsTestCase(UnitTest):
     def test_response_suptech_page(self):
         suptech = Suptech.objects.first()
         url = reverse('tools:suptech_update', kwargs={'pk': suptech.pk})
-        form_data = {'xelon': 'A123456789', 'item': 'Hot Line Tech', 'time': '5', 'info': 'test', 'rmq': 'test', 'action': 'test'}
+        form_data = {
+            'xelon': 'A123456789', 'item': 'Hot Line Tech', 'time': '5', 'info': 'test', 'rmq': 'test',
+            'action': 'test', 'status': 'Cloturée', 'deadline': ''
+        }
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 

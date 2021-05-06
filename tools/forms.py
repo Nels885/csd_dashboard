@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 from constance import config
+from tempus_dominus.widgets import DatePicker
 
 from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
@@ -137,11 +138,18 @@ class SuptechModalForm(BSModalModelForm):
 
 
 class SuptechResponseForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('', '---------'), ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée'), ('Annulée', 'Annulée')
+    ]
     action = forms.CharField(widget=forms.Textarea(), required=True)
+    status = forms.CharField(widget=forms.Select(choices=STATUS_CHOICES), required=True)
+    deadline = forms.DateField(required=False, widget=DatePicker(
+        attrs={'append': 'fa fa-calendar', 'icon_toggle': True}, options={'format': 'DD/MM/YYYY'},
+    ))
 
     class Meta:
         model = Suptech
-        fields = ['xelon', 'item', 'time', 'info', 'rmq', 'action']
+        fields = ['xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
 
     def send_email(self, request):
         subject = f"!!! Info Support Tech : {self.instance.item} !!!"
