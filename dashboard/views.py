@@ -61,10 +61,19 @@ def charts_ajax(request):
 @login_required
 def late_products(request):
     """ View of Late products page """
-    data = {'title': _("Late Products")}
+    context = {'title': _("Late Products"), 'select_tab': 'late'}
     prods = ProductAnalysis()
-    data.update(prods.late_products())
-    return render(request, 'dashboard/late_products/late_products.html', data)
+    context.update(prods.late_products())
+    return render(request, 'dashboard/late_products/late_products.html', context)
+
+
+@login_required
+def autotronik(request):
+    """ View of Autotronik page """
+    context = {'title': _("Late Products"), 'select_tab': 'tronik'}
+    prods = ProductAnalysis()
+    context.update(prods.late_products())
+    return render(request, 'dashboard/late_products/autotronik.html', context)
 
 
 @login_required

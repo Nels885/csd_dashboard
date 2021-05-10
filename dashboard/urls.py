@@ -9,6 +9,7 @@ urlpatterns = [
     path('charts/', views.charts, name='charts'),
     path('charts/ajax/', views.charts_ajax, name='charts_ajax'),
     path('late-prod/', views.late_products, name='late_prod'),
+    path('autotronik/', views.autotronik, name='autotronik'),
     path('set_language/<str:user_language>/', views.set_language, name="set_lang"),
     path('profile/', views.user_profile, name="user_profile"),
     path('activity_log/', views.activity_log, name="activity_log"),
