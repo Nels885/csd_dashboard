@@ -36,20 +36,22 @@ class IhmEmailModalForm(BSModalForm):
 
     @staticmethod
     def vin_message(model, request):
-        try:
-            data = model.actions.filter(content__contains="OLD_VIN").first().content.split('\n')
+        queryset = model.actions.filter(content__contains="OLD_VIN")
+        if queryset:
+            data = queryset.first().content.split('\n')
             vins = {"old_vin": data[0][-17:], "new_vin": data[1][-17:]}
-        except ObjectDoesNotExist:
+        else:
             vins = None
         message = render_to_string('squalaetp/email_format/vin_error_email.html', locals())
         return message
 
     @staticmethod
     def prod_message(model, request):
-        try:
-            data = model.actions.filter(content__contains="OLD_PROD").first().content.split('\n')
+        queryset = model.actions.filter(content__contains="OLD_PROD")
+        if queryset:
+            data = queryset.first().content.split('\n')
             prods = {"old_prod": data[0][9:], "new_prod": data[1][9:]}
-        except ObjectDoesNotExist:
+        else:
             prods = None
         message = render_to_string('squalaetp/email_format/prod_error_email.html', locals())
         return message
