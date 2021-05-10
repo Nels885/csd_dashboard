@@ -37,7 +37,7 @@ class IhmEmailModalForm(BSModalForm):
     @staticmethod
     def vin_message(model, request):
         try:
-            data = model.actions.get(content__contains="OLD_VIN").content.split('\n')
+            data = model.actions.filter(content__contains="OLD_VIN").first().content.split('\n')
             vins = {"old_vin": data[0][-17:], "new_vin": data[1][-17:]}
         except ObjectDoesNotExist:
             vins = None
@@ -47,7 +47,7 @@ class IhmEmailModalForm(BSModalForm):
     @staticmethod
     def prod_message(model, request):
         try:
-            data = model.actions.get(content__contains="OLD_PROD").content.split('\n')
+            data = model.actions.filter(content__contains="OLD_PROD").first().content.split('\n')
             prods = {"old_prod": data[0][9:], "new_prod": data[1][9:]}
         except ObjectDoesNotExist:
             prods = None
