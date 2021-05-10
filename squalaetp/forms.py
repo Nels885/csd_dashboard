@@ -1,7 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
-from django.core.exceptions import ObjectDoesNotExist
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 

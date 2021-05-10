@@ -2,6 +2,18 @@
 
 {% load static %}
 
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'tools/suptech/tab_select.html' with select=query_param %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
 {% block table_content %}
 
     <table class="table table-bordered display" id="suptechTable" style="width:100%">
