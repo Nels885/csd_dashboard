@@ -112,7 +112,7 @@ class Suptech(models.Model):
     rmq = models.TextField('RMQ', max_length=2000, blank=True)
     action = models.TextField('ACTION/RETOUR', max_length=2000, blank=True)
     status = models.TextField('STATUT', max_length=50, default='En Attente', choices=STATUS_CHOICES)
-    deadline = models.DateField('DATE LIMITE', null=True)
+    deadline = models.DateField('DATE LIMITE', null=True, blank=True)
     created_at = models.DateTimeField('ajouté le', editable=False, null=True)
     created_by = models.ForeignKey(User, related_name="suptechs_created", editable=False, on_delete=models.SET_NULL,
                                    null=True, blank=True)
