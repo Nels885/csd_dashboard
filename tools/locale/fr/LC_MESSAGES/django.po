@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-04 17:13+0200\n"
+"POT-Creation-Date: 2021-05-11 18:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: tools/forms.py:102
+#: tools/forms.py:103
 msgid "Username not found."
 msgstr ""
 
@@ -29,7 +29,7 @@ msgstr "Le fichier CALIBRE existe !"
 #: tools/templates/tools/modal/suptech_create.html:125
 #: tools/templates/tools/modal/tag_xelon.html:37
 #: tools/templates/tools/modal/thermal_delete.html:20
-#: tools/templates/tools/suptech_update.html:64
+#: tools/templates/tools/suptech/suptech_update.html:87
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -76,7 +76,7 @@ msgstr "Lien de téléchargement"
 msgid "Validation date"
 msgstr "Date de validation"
 
-#: tools/templates/tools/suptech_update.html:65
+#: tools/templates/tools/suptech/suptech_update.html:88
 msgid "Update"
 msgstr ""
 
@@ -100,7 +100,7 @@ msgstr "Vous ne disposez pas des autorisations requises"
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:33 tools/views.py:177
+#: tools/views.py:33
 msgid "Tools"
 msgstr "Outils"
 
@@ -141,16 +141,16 @@ msgstr "liste Chambre thermique"
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:164 tools/views.py:198
+#: tools/views.py:164 tools/views.py:208
 msgid "Success: The email has been sent."
 msgstr ""
 
-#: tools/views.py:178
+#: tools/views.py:177
 #, fuzzy
 #| msgid "Software list"
 msgid "Support Tech list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:193
+#: tools/views.py:203
 msgid "Support Tech Response"
 msgstr ""
