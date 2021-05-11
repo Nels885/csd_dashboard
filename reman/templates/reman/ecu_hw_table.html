@@ -1,0 +1,75 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block table_content %}
+
+    <table class="table table-bordered text-nowrap" id="ecuTypeTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Réf. Hardware</th>
+            <th>Module Moteur</th>
+            <th>Fournisseur</th>
+            <th>XELON - Code produit</th>
+            <th>REF_CAL_OUT</th>
+            <th>REF_PSA_OUT</th>
+            <th>REQ_DIAG</th>
+            <th>OPENDIAG</th>
+            <th>REQ_REF</th>
+            <th>REF_MAT</th>
+            <th>REF_COMP</th>
+            <th>REQ_CAL</th>
+            <th>CAL_KTAG</th>
+            <th>REQ_STATUS</th>
+            <th>STATUS</th>
+            <th>TEST_CLEAR_MEMORY</th>
+            <th>CLE_APPLI</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for ecu in ecus %}
+
+            <tr>
+                <td class="bg-white">
+                    {% if perms.reman.change_ecutype %}
+                        <button title="Modification" class="bs-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:ecu_hw_update' ecu.pk %}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                    {% endif %}
+                </td>
+                <td>{{ ecu.hw_reference }}</td>
+                <td>{{ ecu.technical_data }}</td>
+                <td>{{ ecu.supplier_oe }}</td>
+                <td>{{ ecu.spare_part.code_produit }}</td>
+                <td>{{ ecu.ref_cal_out }}</td>
+                <td>{{ ecu.ref_psa_out }}</td>
+                <td>{{ ecu.req_diag }}</td>
+                <td>{{ ecu.open_diag }}</td>
+                <td>{{ ecu.req_ref }}</td>
+                <td>{{ ecu.ref_mat }}</td>
+                <td>{{ ecu.ref_comp }}</td>
+                <td>{{ ecu.req_cal }}</td>
+                <td>{{ ecu.cal_ktag }}</td>
+                <td>{{ ecu.req_status }}</td>
+                <td>{{ ecu.status }}</td>
+                <td>{{ ecu.test_clear_memory }}</td>
+                <td>{{ ecu.cle_appli }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
+
+{% endblock %}

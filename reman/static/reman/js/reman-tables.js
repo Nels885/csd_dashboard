@@ -29,6 +29,17 @@ $(document).ready(function () {
         order: [[0, "asc"]],
     });
 
+    $('#ecuTypeTable').DataTable({
+        pagingType: "full_numbers",
+        scrollX: true,
+        order: [[1, "asc"]],
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
+    });
+
     $('#outTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,

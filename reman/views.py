@@ -21,7 +21,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm, AddEtudeBatchForm
+    EcuDumpModelForm, AddEtudeBatchForm, EcuTypeModelForm
 )
 
 context = {
@@ -401,6 +401,25 @@ def base_ref_table(request):
     refs = EcuRefBase.objects.all()
     context.update(locals())
     return render(request, 'reman/base_ref_table.html', context)
+
+
+@permission_required('reman.view_ecutype')
+def ecu_hw_table(request):
+    """ View of EcuType table page """
+    table_title = 'Référence Hardware'
+    ecus = EcuType.objects.all()
+    context.update(locals())
+    return render(request, 'reman/ecu_hw_table.html', context)
+
+
+class EcuTypeUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal ECU Hardware update """
+    model = EcuType
+    permission_required = 'reman.change_ecutype'
+    template_name = 'reman/modal/ecu_type_update.html'
+    form_class = EcuTypeModelForm
+    success_message = _('Success: Reman ECU HW Reference was updated.')
+    success_url = reverse_lazy('reman:ecu_hw_table')
 
 
 @login_required()

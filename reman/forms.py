@@ -350,6 +350,15 @@ class EcuModelForm(forms.ModelForm):
         exclude = ['ecu_type']
 
 
+class EcuTypeModelForm(BSModalModelForm):
+    class Meta:
+        model = EcuType
+        exclude = ['spare_part']
+        widgets = {
+            'hw_reference': forms.TextInput(attrs={"readonly": ""})
+        }
+
+
 class EcuDumpModelForm(BSModalModelForm):
     class Meta:
         model = EcuModel
