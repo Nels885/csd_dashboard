@@ -94,7 +94,7 @@ class Command(BaseCommand):
         if options['check_out']:
             self.stdout.write("[CHECK_OUT] Waiting...")
 
-            filename = conf.CHECKOUT_EXPORT_FILE
+            filename, excel_type = self._file_format(conf.CHECKOUT_EXPORT_FILE)
             path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
             header = [
                 'REMAN_REFERENCE', 'HW_REFERENCE', 'TYPE_ECU', 'SUPPLIER', 'PSA_BARCODE', 'REF_CAL_OUT', 'REF_PSA_OUT',
@@ -107,11 +107,12 @@ class Command(BaseCommand):
                 'ecu_type__open_diag', 'ecu_type__ref_mat', 'ecu_type__ref_comp', 'ecu_type__cal_ktag',
                 'ecu_type__status'
             ).distinct()
-            ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
+            ExportExcel(
+                values_list=values_list, filename=filename, header=header, excel_type=excel_type).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}.csv".format(
-                        ecu.count(), os.path.join(path, filename)
+                    "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}.{}".format(
+                        ecu.count(), os.path.join(path, filename), excel_type
                     )
                 )
             )
@@ -141,7 +142,8 @@ class Command(BaseCommand):
                 )
             )
 
-    def _file_format(self, filename):
+    @staticmethod
+    def _file_format(filename):
         file_list = filename.split('.')
         filename, extension = file_list[0], 'csv'
         if len(file_list) > 1:
