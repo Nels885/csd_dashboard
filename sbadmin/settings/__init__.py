@@ -228,7 +228,7 @@ CONSTANCE_CONFIG = {
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
-    'WEBSITE_DOMAIN': ('', 'Webside domain name'),
+    'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
 
     # CSD Repair Options
     'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error TO email list'),
