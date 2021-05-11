@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from reman.models import Batch, Repair, EcuRefBase
+from reman.models import Batch, Repair, EcuRefBase, EcuType
 
 from utils.file.export import ExportExcel, os
 from utils.conf import CSD_ROOT, conf
@@ -34,6 +34,12 @@ class Command(BaseCommand):
             action='store_true',
             dest='check_out',
             help='Export REMAN REFERENCE for Check Out repair',
+        )
+        parser.add_argument(
+            '--scan_in_out',
+            action='store_true',
+            dest='scan_in_out',
+            help='Export REMAN REFERENCE for Scan IN/OUT',
         )
 
     def handle(self, *args, **options):
@@ -106,6 +112,29 @@ class Command(BaseCommand):
                 self.style.SUCCESS(
                     "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}.csv".format(
                         ecu.count(), os.path.join(path, filename)
+                    )
+                )
+            )
+
+        if options['scan_in_out']:
+            filename = conf.SCAN_IN_OUT_EXPORT_FILE
+            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
+            header = [
+                'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
+                'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
+            ]
+            queryset = EcuType.objects.all().order_by('ecu_ref_base__reman_reference')
+            values_list = (
+                'ecumodel__oe_raw_reference', 'ecu_ref_base__reman_reference', 'technical_data', 'hw_reference',
+                'supplier_oe', 'ecumodel__psa_barcode', 'ecumodel__former_oe_reference', 'ref_cal_out',
+                'spare_part__code_produit', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
+            )
+            values_list = queryset.values_list(*values_list).distinct()
+            ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}.csv".format(
+                        queryset.count(), os.path.join(path, filename)
                     )
                 )
             )

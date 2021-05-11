@@ -246,7 +246,7 @@ CONSTANCE_CONFIG = {
     'BATCH_EXPORT_FILE': ('reman_lots', 'File name for exporting batch'),
     'REPAIR_EXPORT_FILE': ('reman_repairs', 'File name for exporting repairs'),
     'CHECKOUT_EXPORT_FILE': ('reman_output', 'File name for exporting data from check out'),
-    'ECUREFBASE_EXPORT_FILE': ('base_ref_reman_new', 'File name for exporting Base Ref REMAN'),
+    'SCAN_IN_OUT_EXPORT_FILE': ('base_ref_reman_new', 'File name for exporting Base Ref REMAN of SCAN IN/OUT'),
     'DICT_YEAR': (
         "{2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U'}",
         'REMAN batch date formatting dictionary'
@@ -292,7 +292,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ),
     '3. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
-        'CHECKOUT_EXPORT_FILE', 'ECUREFBASE_EXPORT_FILE', 'DICT_YEAR'
+        'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR'
     ),
     '4. Tools Options': (
         'SUPTECH_TO_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING', 'PROXY_PORT_SCRAPING'
