@@ -4,7 +4,6 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'api/repair', views.RepairViewSet, basename='api_repair')
-router.register(r'api/ecurefbase', views.EcuRefBaseViewSet, basename='api_ecurefbase')
 
 app_name = 'reman'
 
@@ -25,7 +24,7 @@ urlpatterns = [
     path('batch/etude/create/', views.BatchEtudeCreateView.as_view(), name='create_etude_batch'),
     path('batch/<int:pk>/update/', views.BatchUpdateView.as_view(), name='update_batch'),
     path('batch/<int:pk>/delete/', views.BatchDeleteView.as_view(), name='delete_batch'),
-    path('ecu/table/', views.ecu_ref_table, name='ecu_table'),
+    path('base-ref/table/', views.base_ref_table, name='base_ref_table'),
     path('ecu/<str:psa_barcode>/create/', views.ref_base_create, name='create_ref_base'),
     path('ecu/<str:psa_barcode>/edit/', views.ref_base_edit, name='edit_ref_base'),
     path('ecu/dump/table', views.ecu_dump_table, name='ecu_dump_table'),

@@ -16,8 +16,8 @@ from utils.django.urls import reverse, reverse_lazy
 from utils.conf import string_to_list
 from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType
-from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST, EcuRefBaseSerializer, ECU_REF_BASE_COLUMN_LIST
+from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase
+from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
@@ -115,7 +115,7 @@ def ref_base_edit(request, psa_barcode):
             ecu_type.save()
             ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
             context.update(locals())
-            return render(request, 'reman/part_full_detail.html', context)
+            return render(request, 'reman/part/part_full_detail.html', context)
     else:
         card_title = "Edit Modèle ECU"
         model = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
@@ -202,13 +202,13 @@ def check_parts(request):
             ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
             context.update(locals())
             if ecu.ecu_type and ecu.ecu_type.spare_part:
-                return render(request, 'reman/part_detail.html', context)
+                return render(request, 'reman/part/part_detail.html', context)
         except EcuModel.DoesNotExist:
             pass
         return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
-    return render(request, 'reman/part_check.html', context)
+    return render(request, 'reman/part/part_check.html', context)
 
 
 @permission_required('reman.add_ecumodel')
@@ -236,7 +236,7 @@ def ref_base_create(request, psa_barcode):
             ecu_type.save()
             ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
             context.update(locals())
-            return render(request, 'reman/part_send_email.html', context)
+            return render(request, 'reman/part/part_send_email.html', context)
     else:
         card_title = "Ajout Modèle ECU"
         try:
@@ -253,7 +253,7 @@ def ref_base_create(request, psa_barcode):
         return redirect(
             reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
     context.update(locals())
-    return render(request, 'reman/part_create_form.html', context)
+    return render(request, 'reman/part/part_create_form.html', context)
 
 
 @permission_required('reman.check_ecumodel')
@@ -391,36 +391,16 @@ def part_table(request):
     table_title = 'Pièces détachées'
     parts = SparePart.objects.all()
     context.update(locals())
-    return render(request, 'reman/part_table.html', context)
+    return render(request, 'reman/part/part_table.html', context)
 
 
 @permission_required('reman.view_ecurefbase')
-def ecu_ref_table(request):
+def base_ref_table(request):
     """ View of EcuRefBase table page """
-    table_title = 'Base ECU Reman'
-    # ecus = EcuModel.objects.all()
+    table_title = 'REMAN Référence'
+    refs = EcuRefBase.objects.all()
     context.update(locals())
-    return render(request, 'reman/ajax_ecu_ref_base_table.html', context)
-
-
-class EcuRefBaseViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = EcuModel.objects.all()
-    serializer_class = EcuRefBaseSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            ecu = QueryTableByArgs(self.queryset, ECU_REF_BASE_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(ecu["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": ecu["draw"],
-                "recordsTotal": ecu["total"],
-                "recordsFiltered": ecu["count"]
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+    return render(request, 'reman/base_ref_table.html', context)
 
 
 @login_required()

@@ -38,9 +38,9 @@
     </li>
 {% endif %}
 
-<li class="nav-item {% if select == 'ecu' %}active{% endif %}">
-    <a class="nav-link {% if select == 'ecu' %}active{% endif %}" href="{% url 'reman:ecu_table' %}">
-        {% trans 'REMAN Reference' %}
+<li class="nav-item {% if select == 'base_ref' %}active{% endif %}">
+    <a class="nav-link {% if select == 'base_ref' %}active{% endif %}" href="{% url 'reman:base_ref_table' %}">
+        {% trans "REMAN Reference" %}
     </a>
 </li>
 

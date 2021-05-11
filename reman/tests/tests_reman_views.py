@@ -128,8 +128,8 @@ class RemanTestCase(UnitTest):
         self.assertEqual(str(messages[0]), _('Success: The email has been sent.'))
         self.assertRedirects(response, reverse('reman:part_check'), status_code=302)
 
-    def test_ecu_ref_base_table(self):
-        url = reverse('reman:ecu_table')
+    def test_base_ref_table(self):
+        url = reverse('reman:base_ref_table')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -160,11 +160,6 @@ class RemanTestCase(UnitTest):
 
     def test_repair_view_set_is_disconnected(self):
         response = self.client.get(reverse('reman:api_repair-list'), format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.data, self.authError)
-
-    def test_ecu_ref_base_view_set_is_disconnected(self):
-        response = self.client.get(reverse('reman:api_ecurefbase-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
