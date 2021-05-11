@@ -283,3 +283,26 @@ class MixinsTest(UnitTest):
         # Object is updated
         ecu_model = EcuModel.objects.first()
         self.assertEqual(ecu_model.to_dump, True)
+
+    def test_update_ecu_type_ajax_mixin(self):
+        """
+        Update ECU Type throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuType, 'change_ecutype')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        ecu_type = EcuType.objects.first()
+        response = self.client.post(
+            reverse('reman:ecu_hw_update', kwargs={'pk': ecu_type.pk}),
+            data={
+                'hw_reference': ecu_type.hw_reference,
+                'technical_data': ecu_type.technical_data,
+                'status': 'test'
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('reman:ecu_hw_table'), status_code=302)
+        # Object is updated
+        ecu_model = EcuType.objects.first()
+        self.assertEqual(ecu_model.status, 'test')

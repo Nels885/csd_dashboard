@@ -58,7 +58,8 @@ class Command(BaseCommand):
                 # Update or Create EcuType
                 if row.get('technical_data'):
                     type_values = defaults_dict(EcuType, row, "hw_reference", "technical_data")
-                    type_values['spare_part'] = part_obj
+                    if part_obj:
+                        type_values['spare_part'] = part_obj
                     type_obj, type_created = EcuType.objects.update_or_create(
                         hw_reference=row['hw_reference'], technical_data=row['technical_data'], defaults=type_values
                     )

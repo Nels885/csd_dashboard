@@ -403,7 +403,7 @@ def base_ref_table(request):
     return render(request, 'reman/base_ref_table.html', context)
 
 
-@permission_required('reman.view_ecutype')
+@login_required()
 def ecu_hw_table(request):
     """ View of EcuType table page """
     table_title = 'Référence Hardware'

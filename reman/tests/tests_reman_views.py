@@ -138,12 +138,20 @@ class RemanTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_ecu_hw_table(self):
+        url = reverse('reman:ecu_hw_table')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
     def test_ecu_dump_table(self):
         url = reverse('reman:ecu_dump_table')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
-        self.add_perms_user(EcuRefBase, 'view_ecurefbase')
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
