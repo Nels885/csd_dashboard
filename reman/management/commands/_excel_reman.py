@@ -32,7 +32,9 @@ class ExcelEcuCrossReference(ExcelFormat):
 class ExcelEcuRefBase(ExcelFormat):
     COLS = {'A': 'oe_raw_reference', 'B': 'reman_reference', 'C': 'technical_data', 'D': 'hw_reference',
             'E': 'supplier_oe', 'F': 'psa_barcode', 'G': 'former_oe_reference', 'H': 'ref_cal_out', 'I': 'code_produit',
-            'J': 'ref_psa_out', 'K': 'open_diag', 'L': 'ref_mat', 'M': 'ref_comp', 'N': 'cal_ktag', 'O': 'status'}
+            'J': 'ref_psa_out', 'K': 'req_diag', 'L': 'open_diag', 'M': 'req_ref', 'N': 'ref_mat', 'O': 'ref_comp',
+            'P': 'req_cal', 'Q': 'cal_ktag', 'R': 'req_status', 'S': 'status', 'T': 'test_clear_memory',
+            'U': 'cle_appli'}
 
     def __init__(self, file, sheet_name=0, columns=None, skiprows=None):
         """

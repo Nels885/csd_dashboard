@@ -20,7 +20,7 @@ class Command(BaseCommand):
             '-s',
             '--sheet_id',
             type=int,
-            default=0
+            default=1
         )
         parser.add_argument(
             '-f',
@@ -44,18 +44,19 @@ class Command(BaseCommand):
         nb_base_update, nb_ecu_update, nb_type_update, nb_part_create = 0, 0, 0, 0
         for row in data:
             logger.info(row)
-            code_produit = reman_reference = type_obj = None
+            code_produit = reman_reference = type_obj = part_obj = None
             try:
-                code_produit, reman_reference = row["code_produit"], row["reman_reference"]
+                code_produit, reman_reference = row.get("code_produit"), row.get("reman_reference")
 
                 # Update or create SpareParts
-                part_obj, part_created = SparePart.objects.get_or_create(
-                     code_produit=code_produit, code_magasin="MAGREM PSA", code_zone="REMAN PSA")
-                if part_created:
-                    nb_part_create += 1
+                # if code_produit and len(code_produit) > 10:
+                #     part_obj, part_created = SparePart.objects.get_or_create(
+                #          code_produit=code_produit, code_magasin="MAGREM PSA", code_zone="REMAN PSA")
+                #     if part_created:
+                #         nb_part_create += 1
 
                 # Update or Create EcuType
-                if row['technical_data']:
+                if row.get('technical_data'):
                     type_values = defaults_dict(EcuType, row, "hw_reference", "technical_data")
                     type_values['spare_part'] = part_obj
                     type_obj, type_created = EcuType.objects.update_or_create(
@@ -65,7 +66,7 @@ class Command(BaseCommand):
                         nb_type_update += 1
 
                 # Update or Create Ecumodel
-                if row['psa_barcode']:
+                if row.get('psa_barcode'):
                     ecu_model_values = defaults_dict(EcuModel, row, "psa_barcode")
                     ecu_model_values['ecu_type'] = type_obj
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(
@@ -84,7 +85,7 @@ class Command(BaseCommand):
                     if not base_created:
                         nb_base_update += 1
             except KeyError as err:
-                logger.error(f"[ECUREBASE_CMD] KeyError: {err}")
+                logger.error(f"[ECUREBASE_CMD] KeyError: {reman_reference} - {err}")
             except DataError as err:
                 logger.error(f"[ECUREFBASE_CMD] DataError: {reman_reference} - {err}")
             except IntegrityError as err:
@@ -101,24 +102,15 @@ class Command(BaseCommand):
                 )
             )
         )
+        self._end_message("ECUTYPE", data, nb_type_update, nb_type_after, nb_type_before)
+        self._end_message("ECUMODEL", data, nb_ecu_update, nb_ecu_after, nb_ecu_before)
+        self._end_message("ECUREFBASE", data, nb_base_update, nb_base_after, nb_base_before)
+
+    def _end_message(self, title, data, nb_update, nb_after, nb_before):
         self.stdout.write(
             self.style.SUCCESS(
-                "[ECUTYPE] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    len(data), nb_type_after - nb_type_before, nb_type_update, nb_type_after
-                )
-            )
-        )
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[ECUMODEL] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    len(data), nb_ecu_after - nb_ecu_before, nb_ecu_update, nb_ecu_after
-                )
-            )
-        )
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[ECUREFBASE] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    len(data), nb_base_after - nb_base_before, nb_base_update, nb_base_after
+                "[{}] Data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    title, len(data), nb_after - nb_before, nb_update, nb_after
                 )
             )
         )

@@ -117,7 +117,8 @@ class Command(BaseCommand):
             )
 
         if options['scan_in_out']:
-            filename = conf.SCAN_IN_OUT_EXPORT_FILE
+            self.stdout.write("[SCAN_IN_OUT] Waiting...")
+            filename, excel_type = self._file_format(conf.SCAN_IN_OUT_EXPORT_FILE)
             path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
             header = [
                 'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
@@ -130,11 +131,19 @@ class Command(BaseCommand):
                 'spare_part__code_produit', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
             )
             values_list = queryset.values_list(*values_list).distinct()
-            ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
+            ExportExcel(
+                values_list=values_list, filename=filename, header=header, excel_type=excel_type).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}.csv".format(
-                        queryset.count(), os.path.join(path, filename)
+                    "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}.{}".format(
+                        queryset.count(), os.path.join(path, filename), excel_type
                     )
                 )
             )
+
+    def _file_format(self, filename):
+        file_list = filename.split('.')
+        filename, extension = file_list[0], 'csv'
+        if len(file_list) > 1:
+            extension = file_list[-1]
+        return filename, extension
