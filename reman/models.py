@@ -102,11 +102,12 @@ class Batch(models.Model):
     ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.CASCADE)
 
     def clean(self):
-        date = timezone.now()
-        if date.year in DICT_YEAR.keys():
-            self.year = DICT_YEAR[date.year]
-        else:
-            raise ValidationError(_('Impossible formatting of the year!'))
+        if not self.year:
+            date = timezone.now()
+            if date.year in DICT_YEAR.keys():
+                self.year = DICT_YEAR[date.year]
+            else:
+                raise ValidationError(_('Impossible formatting of the year!'))
 
     def __str__(self):
         return self.batch_number

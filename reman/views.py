@@ -28,7 +28,6 @@ context = {
     'title': 'Reman'
 }
 
-
 """
 ~~~~~~~~~~~~~~~~~
 TECHNICIAN VIEWS
@@ -155,7 +154,17 @@ class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     template_name = 'reman/modal/batch_update.html'
     form_class = BatchForm
     success_message = _('Success: Batch was updated.')
-    success_url = reverse_lazy('reman:batch_table')
+
+    def form_valid(self, form):
+        if form.cleaned_data['number'] > 900:
+            self.filter = 'etude'
+        else:
+            self.filter = 'pending'
+        response = super(BatchUpdateView, self).form_valid(form)
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('reman:batch_table', get={'filter': self.filter})
 
 
 class BatchDeleteView(PermissionRequiredMixin, BSModalDeleteView):
@@ -301,7 +310,7 @@ def out_table(request):
     batch_number = request.GET.get('filter')
     table_title = 'Préparation lot n° {}'.format(batch_number)
     files = Repair.objects.filter(batch__batch_number=batch_number, status="Réparé", checkout=False)
-    form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList, batch_number=batch_number,)
+    form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList, batch_number=batch_number, )
     if request.POST and form.is_valid():
         repair = form.save()
         messages.success(request, _('Repair n°%(repair)s to batch n°%(batch)s ready for shipment') % {
