@@ -83,7 +83,7 @@ class AddBatchForm(BSModalModelForm):
         batch = super(AddBatchForm, self).save(commit=False)
         if commit and not self.request.is_ajax():
             batch.save()
-            cmd_exportreman_task.delay('--batch')
+            cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
 
 
@@ -112,7 +112,7 @@ class AddEtudeBatchForm(AddBatchForm):
         if commit and not self.request.is_ajax():
             batch.active = False
             batch.save()
-            cmd_exportreman_task.delay('--batch')
+            cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
 
 
@@ -358,6 +358,13 @@ class EcuTypeModelForm(BSModalModelForm):
             'hw_reference': forms.TextInput(attrs={"readonly": ""})
         }
 
+    def save(self, commit=True):
+        instance = super(EcuTypeModelForm, self).save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+            cmd_exportreman_task.delay('--scan_in_out')
+        return instance
+
 
 class EcuDumpModelForm(BSModalModelForm):
     class Meta:
@@ -383,10 +390,11 @@ class PartEcuModelForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super(PartEcuModelForm, self).save(commit=False)
-        type_obj, type_created = EcuType.objects.update_or_create(hw_reference=self.cleaned_data["hw_reference"])
+        type_obj, type_created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"])
         instance.ecu_type = type_obj
         if commit:
             instance.save()
+            cmd_exportreman_task.delay('--scan_in_out')
         return instance
 
 
