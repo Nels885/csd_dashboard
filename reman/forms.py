@@ -21,7 +21,8 @@ MANAGER FORMS
 class BatchForm(BSModalModelForm):
     class Meta:
         model = Batch
-        fields = "__all__"
+        exclude = ['batch_number']
+        labels = {'ecu_ref_base': 'Réf. REMAN'}
 
 
 class AddBatchForm(BSModalModelForm):

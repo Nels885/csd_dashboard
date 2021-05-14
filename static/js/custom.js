@@ -25,6 +25,9 @@ function clock() {
     document.getElementById('datetime').innerHTML = resultat;
 }
 
+clock();
+setInterval(clock, 1000);
+
 $('#detail-list a').on('click', function (e) {
     e.preventDefault();
     $(this).tab('show')
@@ -34,9 +37,18 @@ $('.modal').on('shown.bs.modal', function () {
     $(this).find('[autofocus]').focus();
 });
 
+$(function () {
+    // Hide message
+    $(".fader-auto").fadeTo(10000, 500).slideUp(500, function () {
+        $(".fader-auto").slideUp(500);
+    });
 
-clock();
-setInterval(clock, 1000);
+    $("input[type=file]").change(function (e) {
+        $(this).next('.custom-file-label').text(e.target.files[0].name);
+    });
+
+    $(".django-ckeditor-widget").css("width", "100%")
+});
 
 getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
     var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;

@@ -106,25 +106,11 @@
             $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#small-modal"});
         })
 
-        // log file buttons
-        $(".log-btn").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
-        });
-
-        // Hide message
-        $(".fader-auto").fadeTo(10000, 500).slideUp(500, function () {
-            $(".fader-auto").slideUp(500);
-        });
-
-        $("input[type=file]").change(function (e) {
-            $(this).next('.custom-file-label').text(e.target.files[0].name);
-        });
-
-        $(".django-ckeditor-widget").css("width", "100%")
-
     });
 
 </script>
+
+{% block modalbtn %} {% endblock %}
 
 </body>
 

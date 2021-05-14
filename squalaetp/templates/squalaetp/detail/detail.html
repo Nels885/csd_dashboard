@@ -160,3 +160,16 @@
     </script>
 
 {% endblock %}
+
+{% block modalbtn %}
+
+    <script type="text/javascript">
+        $(function () {
+            // log file buttons
+            $(".log-btn").each(function () {
+                $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
+            });
+        });
+    </script>
+
+{% endblock %}
