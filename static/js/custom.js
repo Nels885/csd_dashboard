@@ -33,3 +33,32 @@ $('#detail-list a').on('click', function (e) {
 $('.modal').on('shown.bs.modal', function () {
     $(this).find('[autofocus]').focus();
 });
+
+
+clock();
+setInterval(clock, 1000);
+
+getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
+    var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;
+
+    function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
+        progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
+        progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
+        progressBarElement.setAttribute("aria-valuenow", progress.percent)
+    }
+
+    function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
+        alert("Complete progress 100%")
+        progressBarMessageElement.innerHTML = "Waiting event . . ."
+        progressBarElement.setAttribute("style", "width: 0%")
+        progressBarElement.setAttribute("aria-valuenow", 0)
+        if (isDownloadFile) window.open(`{% url 'download' %}?task_id=${taskId}`, '_blank');
+    }
+
+    CeleryProgressBar.initProgressBar(progressUrl, {
+        progressBarId: progressBarId,
+        progressBarMessageId: progressBarMessageId,
+        onProgress: onExportUserProgress,
+        onSuccess: onExportUserSuccess,
+    })
+}
