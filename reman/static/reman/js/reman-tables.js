@@ -2,6 +2,7 @@
 $(document).ready(function () {
     $('#repairTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[2, "asc"]],
         // Disable sorting for the Tags and Actions columns.
@@ -14,6 +15,7 @@ $(document).ready(function () {
 
     $('#batchTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [],
         columnDefs: [{
@@ -25,12 +27,14 @@ $(document).ready(function () {
 
     $('#baseRefTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[0, "asc"]],
     });
 
     $('#ecuTypeTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[1, "asc"]],
         columnDefs: [{
@@ -42,6 +46,7 @@ $(document).ready(function () {
 
     $('#outTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[0, "asc"]],
     });

@@ -2,6 +2,7 @@ $(document).ready(function () {
     $('#repairTable').DataTable({
         processing: true,
         serverSide: true,
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[2, "asc"]],
         ajax: URL_AJAX,
