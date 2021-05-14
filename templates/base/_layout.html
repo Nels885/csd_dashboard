@@ -98,15 +98,51 @@
         // Commun modal button
         $(".bs-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url')});
-        })
+        });
         $(".bs-large-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#large-modal"});
-        })
+        });
         $(".bs-small-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#small-modal"});
-        })
+        });
+
+        // Hide message
+        $(".fader-auto").fadeTo(10000, 500).slideUp(500, function () {
+            $(".fader-auto").slideUp(500);
+        });
+
+        $("input[type=file]").change(function (e) {
+            $(this).next('.custom-file-label').text(e.target.files[0].name);
+        });
+
+        $(".django-ckeditor-widget").css("width", "100%")
 
     });
+
+    getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
+        var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;
+
+        function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
+            progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
+            progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
+            progressBarElement.setAttribute("aria-valuenow", progress.percent)
+        }
+
+        function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
+            alert("Complete progress 100%")
+            progressBarMessageElement.innerHTML = "Waiting event . . ."
+            progressBarElement.setAttribute("style", "width: 0%")
+            progressBarElement.setAttribute("aria-valuenow", 0)
+            if (isDownloadFile) window.open(`{% url 'download' %}?task_id=${taskId}`, '_blank');
+        }
+
+        CeleryProgressBar.initProgressBar(progressUrl, {
+            progressBarId: progressBarId,
+            progressBarMessageId: progressBarMessageId,
+            onProgress: onExportUserProgress,
+            onSuccess: onExportUserSuccess,
+        })
+    }
 
 </script>
 
