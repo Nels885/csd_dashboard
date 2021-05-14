@@ -52,10 +52,7 @@ class EcuModel(models.Model):
     to_dump = models.BooleanField("à dumper", default=False)
 
     class Meta:
-
-        permissions = [
-            ("check_ecumodel", "Check that the EcuModel instance exists")
-        ]
+        permissions = [("check_ecumodel", "Can check ecu model")]
 
     @staticmethod
     def part_list(psa_barcode):
@@ -143,7 +140,7 @@ class Repair(models.Model):
 
     class Meta:
         permissions = [
-            ("close_repair", "Closing of the repair instance")
+            ("close_repair", "Can close repair")
         ]
 
     def get_absolute_url(self):

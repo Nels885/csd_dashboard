@@ -35,6 +35,11 @@ class Xelon(models.Model):
     class Meta:
         verbose_name = "dossier Xelon"
         ordering = ['numero_de_dossier']
+        permissions = [
+            ("change_product", "Can change product"), ("email_product", "Can send email product"),
+            ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
+            ("active_xelon", "Can active xelon")
+        ]
 
     def save(self, *args, **kwargs):
         from psa.models import Corvet

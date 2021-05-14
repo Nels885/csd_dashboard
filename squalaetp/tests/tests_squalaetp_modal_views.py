@@ -16,8 +16,7 @@ class MixinsTest(UnitTest):
         """
         Update VIN and Corvet throught BSModalCreateView.
         """
-        self.add_perms_user(Xelon, 'change_xelon')
-        self.add_perms_user(Corvet, 'change_corvet')
+        self.add_perms_user(Xelon, 'change_vin')
         self.login()
 
         # Update object through BSModalUpdateView
@@ -40,8 +39,7 @@ class MixinsTest(UnitTest):
         """
         Send email for VIN data update.
         """
-        self.add_perms_user(Xelon, 'change_xelon')
-        self.add_perms_user(Corvet, 'change_corvet')
+        self.add_perms_user(Xelon, 'email_vin')
         self.login()
 
         # Update object through BSModalUpdateView
@@ -63,7 +61,7 @@ class MixinsTest(UnitTest):
         """
         Update Product throught BSModalCreateView.
         """
-        self.add_perms_user(Xelon, 'change_xelon')
+        self.add_perms_user(Xelon, 'change_product')
         self.login()
 
         # Update object through BSModalUpdateView
@@ -86,8 +84,7 @@ class MixinsTest(UnitTest):
         """
         Send email for Product data update.
         """
-        self.add_perms_user(Xelon, 'change_xelon')
-        self.add_perms_user(Corvet, 'change_corvet')
+        self.add_perms_user(Xelon, 'email_product')
         self.login()
 
         # Update object through BSModalUpdateView

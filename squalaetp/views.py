@@ -118,7 +118,7 @@ def detail(request, pk):
 class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     """ Modal view for updating Corvet and VIN data """
     model = Xelon
-    permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
+    permission_required = ['squalaetp.change_vin']
     template_name = 'squalaetp/modal/vin_corvet_update.html'
     form_class = VinCorvetModalForm
     success_message = _('Success: Squalaetp data was updated.')
@@ -153,7 +153,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     """ Modal view for product update """
     model = Xelon
-    permission_required = ['squalaetp.change_xelon']
+    permission_required = ['squalaetp.change_product']
     template_name = 'squalaetp/modal/product_update.html'
     form_class = ProductModalForm
     success_message = _('Success: Xelon was updated.')
@@ -181,7 +181,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
     """ Modal view for sending email for VIN errors """
-    permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
+    permission_required = ['squalaetp.email_vin']
     template_name = 'squalaetp/modal/ihm_email_form.html'
     form_class = IhmEmailModalForm
 
@@ -207,7 +207,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
 
 class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
     """ Modal view for  sending email for Product errors """
-    permission_required = ['squalaetp.change_xelon', 'psa.change_corvet']
+    permission_required = ['squalaetp.email_product']
     template_name = 'squalaetp/modal/ihm_email_form.html'
     form_class = IhmEmailModalForm
 
