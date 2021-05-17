@@ -126,7 +126,7 @@ class Command(BaseCommand):
                 'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'REQ_DIAG', 'OPENDIAG', 'REQ_REF', 'REF_MAT', 'REF_COMP',
                 'REQ_CAL', 'CAL_KTAG', 'REQ_STATUS', 'STATUS', 'TEST_CLEAR_MEMORY', 'CLE_APPLI'
             ]
-            queryset = EcuType.objects.all().order_by('ecu_ref_base__reman_reference')
+            queryset = EcuType.objects.exclude(test_clear_memory__exact='').order_by('ecu_ref_base__reman_reference')
             values_list = (
                 'ecumodel__oe_raw_reference', 'ecu_ref_base__reman_reference', 'technical_data', 'hw_reference',
                 'supplier_oe', 'ecumodel__psa_barcode', 'ecumodel__former_oe_reference', 'ref_cal_out',

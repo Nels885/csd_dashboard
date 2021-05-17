@@ -31,9 +31,6 @@ class EcuType(models.Model):
     cle_appli = models.CharField("CLE_APPLI", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
 
-    class Meta:
-        unique_together = ["hw_reference", "technical_data"]
-
     def part_name(self):
         return self.technical_data + " HW" + self.hw_reference
 
