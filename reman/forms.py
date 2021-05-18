@@ -351,13 +351,10 @@ class EcuModelForm(forms.ModelForm):
         exclude = ['ecu_type']
 
 
-class EcuTypeModelForm(BSModalModelForm):
+class AddEcuTypeForm(BSModalModelForm):
     class Meta:
         model = EcuType
         exclude = ['spare_part']
-        widgets = {
-            'hw_reference': forms.TextInput(attrs={"readonly": ""})
-        }
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -365,6 +362,15 @@ class EcuTypeModelForm(BSModalModelForm):
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
         return instance
+
+
+class UpdateEcuTypeForm(AddEcuTypeForm):
+    class Meta:
+        model = EcuType
+        exclude = ['spare_part']
+        widgets = {
+            'hw_reference': forms.TextInput(attrs={"readonly": ""})
+        }
 
 
 class EcuDumpModelForm(BSModalModelForm):
