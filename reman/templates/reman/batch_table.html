@@ -25,17 +25,18 @@
             <th>Quantité</th>
             <th>Réf. REMAN</th>
             <th>Réparés</th>
+            <th>Rebuts</th>
             <th>Emballés</th>
             <th>Total</th>
             <th>Status</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
             <th>Type ECU</th>
             <th>Codes barre PSA</th>
             <th>Réf. Hardware</th>
             <th>Fabriquant</th>
             <th>XELON - Code produit</th>
             <th>XELON - Emplacement</th>
-            <th>Date de début</th>
-            <th>Date de fin</th>
             <th>Ajouté par</th>
             <th>Ajouté le</th>
         </tr>
@@ -48,14 +49,16 @@
                 <tr>
                     <td>
                         {% if perms.reman.change_batch %}
-                            <button data-form-url="{% url 'reman:update_batch' batch.id %}" class="bs-modal btn btn-success btn-circle btn-sm" title="Modification dossier" ><i class="fas fa-edit"></i></button>
+                            <button data-form-url="{% url 'reman:update_batch' batch.id %}" class="bs-modal btn btn-success btn-circle btn-sm" title="Modification dossier">
+                                <i class="fas fa-edit"></i></button>
                         {% else %}
                             <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                         {% endif %}
                     </td>
                     <td>
                         {% if perms.reman.delete_batch and not batch.total %}
-                            <button data-form-url="{% url 'reman:delete_batch' batch.id %}" class="bs-modal btn btn-danger btn-circle btn-sm" title="Suppression"><i class="fas fa-trash-alt"></i></button>
+                            <button data-form-url="{% url 'reman:delete_batch' batch.id %}" class="bs-modal btn btn-danger btn-circle btn-sm" title="Suppression">
+                                <i class="fas fa-trash-alt"></i></button>
                         {% else %}
                             <i class="btn btn-dark btn-circle btn-sm fas fa-trash-alt"></i>
                         {% endif %}
@@ -64,9 +67,12 @@
                     <td>{{ batch.quantity }}</td>
                     <td>{{ batch.ecu_ref_base.reman_reference }}</td>
                     <td>{{ batch.repaired }}</td>
+                    <td>{{ batch.rebutted }}</td>
                     <td>{{ batch.packed }}</td>
                     <td>{{ batch.total }}</td>
                     <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
+                    <td>{{ batch.start_date }}</td>
+                    <td>{{ batch.end_date }}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
                     <td>
                         {% if ecus|length > 1 %}
@@ -84,8 +90,6 @@
                     <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.spare_part.code_produit }}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.spare_part.code_emplacement }}</td>
-                    <td>{{ batch.start_date }}</td>
-                    <td>{{ batch.end_date }}</td>
                     <td>{{ batch.created_by }}</td>
                     <td>{{ batch.created_at }}</td>
                 </tr>
