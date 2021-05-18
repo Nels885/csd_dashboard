@@ -4,6 +4,10 @@
 
 {% block table_content %}
 
+    <button class="create-ecu-hw btn btn-sm btn-primary mb-3" {% if not perms.reman.add_ecutype %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. HW
+    </button>
+
     <table class="table table-bordered table-sm text-nowrap" id="ecuTypeTable" style="width: 100%;">
         <thead>
         <tr>
@@ -34,7 +38,7 @@
             <tr>
                 <td class="bg-white">
                     {% if perms.reman.change_ecutype %}
-                        <button title="Modification" class="bs-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:ecu_hw_update' ecu.pk %}">
+                        <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:ecu_hw_update' ecu.pk %}">
                             <i class="fas fa-edit"></i>
                         </button>
                     {% else %}
