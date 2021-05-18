@@ -422,11 +422,20 @@ def ecu_hw_table(request):
     return render(request, 'reman/ecu_hw_table.html', context)
 
 
-class EcuTypeUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
+    """ View of modal ECU Hardware update """
+    permission_required = 'reman.add_ecutype'
+    template_name = 'reman/modal/ecu_hw_create.html'
+    form_class = EcuTypeModelForm
+    success_message = _('Success: Reman ECU HW Reference was created.')
+    success_url = reverse_lazy('reman:ecu_hw_table')
+
+
+class EcuHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     """ View of modal ECU Hardware update """
     model = EcuType
     permission_required = 'reman.change_ecutype'
-    template_name = 'reman/modal/ecu_type_update.html'
+    template_name = 'reman/modal/ecu_hw_update.html'
     form_class = EcuTypeModelForm
     success_message = _('Success: Reman ECU HW Reference was updated.')
     success_url = reverse_lazy('reman:ecu_hw_table')
