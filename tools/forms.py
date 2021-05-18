@@ -30,7 +30,7 @@ class TagXelonForm(BSModalModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(TagXelonForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['comments'].initial = 'RAS OK'
 
     def clean_xelon(self):
@@ -89,7 +89,7 @@ class SuptechModalForm(BSModalModelForm):
     def __init__(self, *args, **kwargs):
         users = User.objects.all()
         _data_list = list(users.values_list('username', flat=True).distinct())
-        super(SuptechModalForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['to'].initial = config.SUPTECH_TO_EMAIL_LIST
         if self.request.user:
             self.fields['username'].initial = self.request.user.username
@@ -161,7 +161,7 @@ class SuptechResponseForm(forms.ModelForm):
         )
 
     def save(self, commit=True):
-        suptech = super(SuptechResponseForm, self).save(commit=False)
+        suptech = super().save(commit=False)
         user = get_current_user()
         suptech.modified_by = user
         suptech.modified_at = timezone.now()

@@ -156,12 +156,12 @@ class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     success_message = _('Success: Batch was updated.')
 
     def form_valid(self, form):
-        if form.cleaned_data['number'] > 900:
-            self.filter = 'etude'
-        else:
-            self.filter = 'pending'
-        response = super(BatchUpdateView, self).form_valid(form)
-        return response
+        if not self.request.is_ajax():
+            if form.cleaned_data['number'] > 900:
+                self.filter = 'etude'
+            else:
+                self.filter = 'pending'
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('reman:batch_table', get={'filter': self.filter})
@@ -296,9 +296,9 @@ class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
     form_class = CheckOutSelectBatchForm
 
     def form_valid(self, form):
-        self.filter = '?filter=' + str(form.cleaned_data['batch'])
-        response = super(CheckOutFilterView, self).form_valid(form)
-        return response
+        if not self.request.is_ajax():
+            self.filter = '?filter=' + str(form.cleaned_data['batch'])
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('reman:out_table') + self.filter

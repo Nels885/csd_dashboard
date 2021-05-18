@@ -104,7 +104,7 @@ class ThermalChamberList(LoginRequiredMixin, ListView):
     template_name = 'tools/thermal_chamber_table.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ThermalChamberList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = _('Thermal chamber')
         context['table_title'] = _('Thermal chamber list')
         return context
@@ -138,7 +138,7 @@ class UltimakerStreamView(LoginRequiredMixin, TemplateView):
     template_name = "tools/ultimaker_stream.html"
 
     def get_context_data(self, **kwargs):
-        context = super(UltimakerStreamView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = "Imprimante 3D"
         context['card_title'] = "Ultimaker Streaming"
         context['stream_url'] = config.PRINTER_STREAM_URL
@@ -198,7 +198,7 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
     success_url = reverse_lazy('tools:suptech_list')
 
     def get_context_data(self, **kwargs):
-        context = super(SuptechResponseView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = "Tools"
         context['card_title'] = _("Support Tech Response")
         return context
@@ -206,4 +206,4 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.send_email(self.request)
         messages.success(self.request, _('Success: The email has been sent.'))
-        return super(SuptechResponseView, self).form_valid(form)
+        return super().form_valid(form)

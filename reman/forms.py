@@ -45,7 +45,7 @@ class AddBatchForm(BSModalModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(AddBatchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         try:
             date = timezone.now()
             batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
@@ -74,14 +74,14 @@ class AddBatchForm(BSModalModelForm):
         try:
             ecu = EcuRefBase.objects.get(reman_reference__exact=data)
             if not self.errors:
-                batch = super(AddBatchForm, self).save(commit=False)
+                batch = super().save(commit=False)
                 batch.ecu_ref_base = ecu
         except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
         return data
 
     def save(self, commit=True):
-        batch = super(AddBatchForm, self).save(commit=False)
+        batch = super().save(commit=False)
         if commit and not self.request.is_ajax():
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
@@ -91,7 +91,7 @@ class AddBatchForm(BSModalModelForm):
 class AddEtudeBatchForm(AddBatchForm):
 
     def __init__(self, *args, **kwargs):
-        super(AddEtudeBatchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         try:
             date = timezone.now()
             batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
@@ -109,7 +109,7 @@ class AddEtudeBatchForm(AddBatchForm):
         return data
 
     def save(self, commit=True):
-        batch = super(AddEtudeBatchForm, self).save(commit=False)
+        batch = super().save(commit=False)
         if commit and not self.request.is_ajax():
             batch.active = False
             batch.save()
@@ -144,7 +144,7 @@ class AddRepairForm(BSModalModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(AddRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.queryset = Batch.objects.all()
 
     def clean_identify_number(self):
@@ -165,7 +165,7 @@ class AddRepairForm(BSModalModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super(AddRepairForm, self).clean()
+        cleaned_data = super().clean()
         identify_number = cleaned_data.get("identify_number")
         psa_barcode = cleaned_data.get("psa_barcode")
         if psa_barcode and identify_number:
@@ -175,7 +175,7 @@ class AddRepairForm(BSModalModelForm):
                 raise forms.ValidationError("Ce lot n'est plus actif")
 
     def save(self, commit=True):
-        instance = super(AddRepairForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
             instance.save()
             cmd_exportreman_task.delay('--repair')
@@ -187,7 +187,7 @@ class EditRepairForm(forms.ModelForm):
                                      widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
-        super(EditRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.instance.batch.ecu_ref_base:
             hw_reference = self.instance.batch.ecu_ref_base.ecu_type.hw_reference
             self.fields['default'].queryset = Default.objects.filter(ecu_type__hw_reference=hw_reference)
@@ -202,7 +202,7 @@ class EditRepairForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        instance = super(EditRepairForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit:
             instance.save()
             cmd_exportreman_task.delay('--repair')
@@ -212,7 +212,7 @@ class EditRepairForm(forms.ModelForm):
 class CloseRepairForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(CloseRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         selected_choices = ["En cours"]
         self.fields['status'].choices = [(k, v) for k, v in STATUS_CHOICES if k not in selected_choices]
         instance = getattr(self, 'instance', None)
@@ -232,7 +232,7 @@ class CloseRepairForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        instance = super(CloseRepairForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit:
             instance.save()
             cmd_exportreman_task.delay('--repair')
@@ -256,7 +256,7 @@ class CheckOutSelectBatchForm(BSModalForm):
         fields = ["batch"]
 
     def __init__(self, *args, **kwargs):
-        super(CheckOutSelectBatchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         self.batch = Batch.objects.all().annotate(repaired=repaired, packed=packed)
@@ -285,7 +285,7 @@ class CheckOutRepairForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         batch_number = kwargs.pop("batch_number", None)
-        super(CheckOutRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if batch_number:
             batch = Batch.objects.filter(batch_number=batch_number).first()
         else:
@@ -360,7 +360,7 @@ class EcuTypeModelForm(BSModalModelForm):
         }
 
     def save(self, commit=True):
-        instance = super(EcuTypeModelForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
@@ -390,7 +390,7 @@ class PartEcuModelForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        instance = super(PartEcuModelForm, self).save(commit=False)
+        instance = super().save(commit=False)
         type_obj, type_created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"])
         instance.ecu_type = type_obj
         if commit:
@@ -405,7 +405,7 @@ class PartEcuTypeForm(forms.ModelForm):
         fields = ['hw_reference', 'technical_data', 'supplier_oe']
 
     def __init__(self, *args, **kwargs):
-        super(PartEcuTypeForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # instance = getattr(self, 'instance', None)
         # if instance and instance.technical_data:
         #     self.fields['technical_data'].widget.attrs['readonly'] = True
@@ -420,7 +420,7 @@ class PartSparePartForm(forms.ModelForm):
         fields = ['code_produit', 'code_emplacement']
 
     def __init__(self, *args, **kwargs):
-        super(PartSparePartForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # instance = getattr(self, 'instance', None)
         # if instance and instance.code_emplacement:
         #     for field in self.fields:
