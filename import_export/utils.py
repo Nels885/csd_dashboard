@@ -1,5 +1,5 @@
 from django.db.models.functions import Cast, TruncSecond
-from django.db.models import DateTimeField, CharField
+from django.db.models import DateTimeField, CharField, Q, Count
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
@@ -156,14 +156,18 @@ def extract_reman(model):
     header = queryset = values_list = None
     if model == "batch":
         header = [
-            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
-            'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
+            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Réparés', 'Rebuts', 'Emballés', 'Total', 'Date_de_Debut',
+            'Date_de_fin', 'Type_ECU', 'HW_Reference', 'Fabriquant',  'Actif', 'Ajoute par', 'Ajoute le'
         ]
+        repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
+        rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
+        packed = Count('repairs', filter=Q(repairs__checkout=True))
         queryset = Batch.objects.all().order_by('batch_number')
+        queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
         values_list = (
-            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
-            'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
-            'active', 'created_by__username', 'created_at'
+            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'repaired', 'rebutted', 'packed', 'total',
+            'start_date', 'end_date', 'ecu_ref_base__ecu_type__technical_data', 'ecu_ref_base__ecu_type__hw_reference',
+            'ecu_ref_base__ecu_type__supplier_oe', 'active', 'created_by__username', 'created_at'
         )
     elif model == "repair_reman":
         header = [

@@ -64,7 +64,10 @@ class ExportExcelTask(BaseTask):
     #         writer.writerow(query)
 
     def _query_format(self, query):
-        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+        format_date = "%d/%m/%Y %H:%M:%S"
+        query = tuple(
+            [_.strftime(format_date).replace(" 00:00:00", "") if isinstance(_, datetime.date) else _ for _ in query]
+        )
         query = tuple([self.noValue if not value else value for value in query])
         return query
 
