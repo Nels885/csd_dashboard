@@ -336,6 +336,49 @@ class MixinsTest(UnitTest):
         ecu_model = EcuModel.objects.first()
         self.assertEqual(ecu_model.to_dump, True)
 
+    def test_create_ecu_type_ajax_mixin(self):
+        """
+        Create ECU Type throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuType, 'add_ecutype')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        for hw_ref, tech_data in [('', ''), ('0123456789', ''), ('9876543210', 'test_new')]:
+            response = self.client.post(
+                reverse('reman:ecu_hw_create'),
+                data={
+                    'hw_reference': hw_ref,
+                    'technical_data': tech_data,
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
+
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            ecu_type = EcuType.objects.all()
+            self.assertEqual(ecu_type.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:ecu_hw_create'),
+            data={
+                'hw_reference': '1234567890',
+                'technical_data': 'test',
+                'status': 'test'
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        ecu_type = EcuType.objects.all()
+        self.assertEqual(ecu_type.count(), 2)
+        self.assertEqual(ecu_type.last().hw_reference, '1234567890')
+
     def test_update_ecu_type_ajax_mixin(self):
         """
         Update ECU Type throught BSModalUpdateView.
@@ -356,5 +399,5 @@ class MixinsTest(UnitTest):
         # redirection
         self.assertRedirects(response, reverse('reman:ecu_hw_table'), status_code=302)
         # Object is updated
-        ecu_model = EcuType.objects.first()
-        self.assertEqual(ecu_model.status, 'test')
+        ecu_type = EcuType.objects.first()
+        self.assertEqual(ecu_type.status, 'test')

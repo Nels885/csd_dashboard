@@ -13,7 +13,7 @@ STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 
 
 
 class EcuType(models.Model):
-    hw_reference = models.CharField("hardware", max_length=20)
+    hw_reference = models.CharField("hardware", max_length=20, unique=True)
     technical_data = models.CharField("modèle produit", max_length=50)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
