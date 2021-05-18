@@ -1,9 +1,12 @@
+from io import StringIO
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
+from django.core.management import call_command
 from django.core.mail import EmailMessage
 from django.db.models import Q, Count
 from rest_framework.response import Response
@@ -420,6 +423,20 @@ def ecu_hw_table(request):
     ecus = EcuType.objects.all()
     context.update(locals())
     return render(request, 'reman/ecu_hw_table.html', context)
+
+
+@login_required
+def ecu_hw_generate(request):
+    """ Generating Scan IN/OU EXCEL files """
+    out = StringIO()
+    call_command("exportreman", "--scan_in_out", stdout=out)
+    if "Export error" in out.getvalue():
+        for msg in out.getvalue().split('\n'):
+            if "Export error" in msg:
+                messages.warning(request, msg)
+    else:
+        messages.success(request, "Exportation Scan IN/OUT terminée.")
+    return redirect('reman:ecu_hw_table')
 
 
 class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):

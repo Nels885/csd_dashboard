@@ -28,6 +28,7 @@ urlpatterns = [
     path('base-ref/<str:psa_barcode>/create/', views.ref_base_create, name='create_ref_base'),
     path('base-ref/<str:psa_barcode>/edit/', views.ref_base_edit, name='edit_ref_base'),
     path('ecu/hw/table/', views.ecu_hw_table, name='ecu_hw_table'),
+    path('ecu/hw/generate/', views.ecu_hw_generate, name='ecu_hw_generate'),
     path('ecu/hw/create/', views.EcuHwCreateView.as_view(), name='ecu_hw_create'),
     path('ecu/hw/<int:pk>/update/', views.EcuHwUpdateView.as_view(), name='ecu_hw_update'),
     path('ecu/dump/table/', views.ecu_dump_table, name='ecu_dump_table'),
