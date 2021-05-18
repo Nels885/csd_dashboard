@@ -33,8 +33,7 @@ $(document).ready(function () {
     });
 
     $('#ecuTypeTable').DataTable({
-        pagingType: "full_numbers",
-        lengthMenu: [[25, 50, 100], [25, 50, 100]],
+        paging: false,
         scrollX: true,
         order: [[1, "asc"]],
         columnDefs: [{
