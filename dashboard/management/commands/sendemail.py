@@ -107,7 +107,7 @@ class Command(BaseCommand):
         subject = "Liste des lots REMAN en cours {}".format(date_joined)
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
-        batchs = Batch.objects.filter(active=True, number__lt=900).order_by('end_date')
+        batchs = Batch.objects.filter(active=True, number__lt=900, start_date__lte=timezone.now()).order_by('end_date')
         batchs = batchs.annotate(repaired=repaired, packed=packed, remaining=F('quantity') - repaired)
         if batchs:
             html_message = render_to_string(
