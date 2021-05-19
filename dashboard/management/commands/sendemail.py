@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 
 from constance import config
 
@@ -106,10 +106,9 @@ class Command(BaseCommand):
     def _reman_email(self, date_joined):
         subject = "Liste des lots REMAN en cours {}".format(date_joined)
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
-        rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         batchs = Batch.objects.filter(active=True, number__lt=900).order_by('end_date')
-        batchs = batchs.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
+        batchs = batchs.annotate(repaired=repaired, packed=packed, remaining=F('quantity') - repaired)
         if batchs:
             html_message = render_to_string(
                 'dashboard/email_format/reman_batches_email.html',
