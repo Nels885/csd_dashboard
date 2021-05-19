@@ -159,11 +159,10 @@ class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     success_message = _('Success: Batch was updated.')
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
-            if form.cleaned_data['number'] > 900:
-                self.filter = 'etude'
-            else:
-                self.filter = 'pending'
+        if form.cleaned_data['number'] > 900:
+            self.filter = 'etude'
+        else:
+            self.filter = 'pending'
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -299,8 +298,7 @@ class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
     form_class = CheckOutSelectBatchForm
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
-            self.filter = '?filter=' + str(form.cleaned_data['batch'])
+        self.filter = '?filter=' + str(form.cleaned_data['batch'])
         return super().form_valid(form)
 
     def get_success_url(self):
