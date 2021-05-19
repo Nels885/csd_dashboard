@@ -5,10 +5,12 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.db.models import Q, Count
 
 from constance import config
 
 from squalaetp.models import Xelon, Indicator
+from reman.models import Batch
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
 
@@ -34,6 +36,12 @@ class Command(BaseCommand):
             action='store_true',
             dest='vin_corvet',
             help='Send email for VIN no CORVET',
+        )
+        parser.add_argument(
+            '--reman',
+            action='store_true',
+            dest='reman',
+            help='Send email for REMAN in progress',
         )
 
     def handle(self, *args, **options):
@@ -92,3 +100,26 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Envoi de l'email des VINs sans données CORVET terminée !"))
             else:
                 self.stdout.write(self.style.SUCCESS("Pas de VIN sans données CORVET à envoyer !"))
+        if options['reman']:
+            self._reman_email(date_joined)
+
+    def _reman_email(self, date_joined):
+        subject = "Liste des lots REMAN en cours {}".format(date_joined)
+        repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
+        rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
+        packed = Count('repairs', filter=Q(repairs__checkout=True))
+        batchs = Batch.objects.filter(active=True, number__lt=900).order_by('end_date')
+        batchs = batchs.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
+        if batchs:
+            html_message = render_to_string(
+                'dashboard/email_format/reman_batches_email.html',
+                {'batchs': batchs, 'domain': config.WEBSITE_DOMAIN}
+            )
+            plain_message = strip_tags(html_message)
+            send_mail(
+                subject, plain_message, None, string_to_list(config.VIN_ERROR_TO_EMAIL_LIST),
+                html_message=html_message
+            )
+            self.stdout.write(self.style.SUCCESS("Envoi de l'email des lots REMAN en cours terminée !"))
+        else:
+            self.stdout.write(self.style.SUCCESS("Pas de lot REMAN en cours à envoyer !"))

@@ -1,0 +1,58 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    <p> Vous trouvez ci-dessous la liste des lots REMAN en cours.</p>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Numéro de lot</th>
+            <th>Quantité</th>
+            <th>Réf. REMAN</th>
+            <th>Réparés</th>
+            <th>Rebuts</th>
+            <th>Emballées</th>
+            <th>Total</th>
+            <th>Date de Debut</th>
+            <th>Date de Fin</th>
+            <th>Modèle Produit</th>
+            <th>Réf Hardware</th>
+            <th>Fabriquant</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for batch in batchs %}
+
+            <tr>
+                <td>{{ batch }}</td>
+                <td>{{ batch.quantity }}</td>
+                <td>{{ batch.ecu_ref_base.reman_reference }}</td>
+                <td>{{ batch.repaired }}</td>
+                <td>{{ batch.rebutted }}</td>
+                <td>{{ batch.packed }}</td>
+                <td>{{ batch.total }}</td>
+                <td>{{ batch.start_date }}</td>
+                <td>{{ batch.end_date }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.hw_reference }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}
