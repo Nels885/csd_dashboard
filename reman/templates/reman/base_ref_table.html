@@ -7,6 +7,9 @@
     <button class="create-ref-reman btn btn-sm btn-primary mb-3" {% if not perms.reman.add_ecurefbase %}disabled{% endif %}>
         <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. REMAN
     </button>
+    <button class="create-ecu-hw btn btn-sm btn-primary mb-3 ml-3" {% if not perms.reman.add_ecutype %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. HW
+    </button>
     <a class="btn btn-sm btn-success mb-3 ml-3" href="{% url 'reman:ecu_hw_generate' %}">Générer Scan IN/OUT</a>
 
     <table class="table table-bordered table-sm text-nowrap" id="baseRefTable" style="width: 100%;">

@@ -452,7 +452,12 @@ class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/ecu_hw_create.html'
     form_class = AddEcuTypeForm
     success_message = _('Success: Reman ECU HW Reference was created.')
-    success_url = reverse_lazy('reman:ecu_hw_table')
+
+    def get_success_url(self):
+        if 'HTTP_REFERER' in self.request.META:
+            return self.request.META['HTTP_REFERER']
+        else:
+            return reverse_lazy('index')
 
 
 class EcuHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):

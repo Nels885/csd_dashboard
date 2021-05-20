@@ -336,7 +336,7 @@ class MixinsTest(UnitTest):
         ecu_model = EcuModel.objects.first()
         self.assertEqual(ecu_model.to_dump, True)
 
-    def test_create_ecu_type_ajax_mixin(self):
+    def test_create_ecu_hw_ajax_mixin(self):
         """
         Create ECU Type throught BSModalUpdateView.
         """
@@ -379,7 +379,7 @@ class MixinsTest(UnitTest):
         self.assertEqual(ecu_type.count(), 2)
         self.assertEqual(ecu_type.last().hw_reference, '1234567890')
 
-    def test_update_ecu_type_ajax_mixin(self):
+    def test_update_ecu_hw_ajax_mixin(self):
         """
         Update ECU Type throught BSModalUpdateView.
         """
