@@ -24,7 +24,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm, AddEtudeBatchForm, AddEcuTypeForm, UpdateEcuTypeForm
+    EcuDumpModelForm, AddEtudeBatchForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm
 )
 
 context = {
@@ -175,6 +175,15 @@ class BatchDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     template_name = 'reman/modal/batch_delete.html'
     success_message = _('Success: Batch was deleted.')
     success_url = reverse_lazy('reman:batch_table')
+
+
+class RefRemanCreateView(PermissionRequiredMixin, BSModalCreateView):
+    """ View of modal default create """
+    permission_required = 'reman.add_ecurefbase'
+    template_name = 'reman/modal/ref_reman_create.html'
+    form_class = AddRefRemanForm
+    success_message = _('Success: Reman reference was created.')
+    success_url = reverse_lazy('reman:base_ref_table')
 
 
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):

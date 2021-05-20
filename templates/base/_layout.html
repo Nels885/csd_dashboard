@@ -88,6 +88,8 @@
 
         $(".create-etude-batch").modalForm({formURL: "{% url 'reman:create_etude_batch' %}"});
 
+        $(".create-ref-reman").modalForm({formURL: "{% url 'reman:ref_reman_create' %}"});
+
         $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}", modalID: "#create-large-modal"});
 
         $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});

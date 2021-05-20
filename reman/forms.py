@@ -8,6 +8,7 @@ from tempus_dominus.widgets import DatePicker
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
+from utils.django.forms.fields import ListTextWidget
 # from utils.django.validators import validate_psa_barcode
 
 
@@ -115,6 +116,38 @@ class AddEtudeBatchForm(AddBatchForm):
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
+
+
+class AddRefRemanForm(BSModalModelForm):
+    hw_reference = forms.CharField(label="Réf. HW", widget=forms.TextInput(), max_length=20)
+
+    class Meta:
+        model = EcuRefBase
+        fields = ['reman_reference', 'hw_reference']
+
+    def __init__(self, *args, **kwargs):
+        ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
+        _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['hw_reference'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+
+    def clean_hw_reference(self):
+        data = self.cleaned_data['hw_reference']
+        try:
+            ecu = EcuType.objects.get(hw_reference__exact=data)
+            if not self.errors:
+                reman = super().save(commit=False)
+                reman.ecu_type = ecu
+        except EcuType.DoesNotExist:
+            self.add_error('hw_reference', "réf. HW n'existe pas.")
+        return data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+            cmd_exportreman_task.delay('--scan_in_out')
+        return instance
 
 
 class DefaultForm(BSModalModelForm):
