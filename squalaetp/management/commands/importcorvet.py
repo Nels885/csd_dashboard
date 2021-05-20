@@ -35,7 +35,7 @@ class Command(BaseCommand):
         elif options['squalaetp']:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-            xelon_list = list(squalaetp.sheet['numero_de_dossier'])
+            xelon_list = squalaetp.xelon_number_list()
             xelons = Xelon.objects.filter(
                 numero_de_dossier__in=xelon_list, vin__regex=r'^V((F[37])|(R[137]))\w{14}$',
                 vin_error=False, corvet__isnull=True)

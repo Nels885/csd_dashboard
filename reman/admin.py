@@ -52,9 +52,13 @@ class EcuModelAdmin(admin.ModelAdmin):
 
 
 class EcuTypeAdmin(admin.ModelAdmin):
-    list_display = ('hw_reference', 'technical_data', 'supplier_oe', 'get_spare_part')
+    list_display = (
+        'hw_reference', 'technical_data', 'supplier_oe', 'get_spare_part', 'ref_cal_out', 'ref_psa_out', 'req_diag',
+        'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag', 'req_status', 'status',
+        'test_clear_memory', 'cle_appli'
+    )
     ordering = ('hw_reference',)
-    search_fields = ('hw_reference', )
+    search_fields = ('hw_reference', 'technical_data', 'supplier_oe')
 
     def get_spare_part(self, obj):
         return obj.spare_part

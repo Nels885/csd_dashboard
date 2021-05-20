@@ -1,0 +1,64 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block table_content %}
+
+    <button class="create-ref-reman btn btn-sm btn-primary mb-3" {% if not perms.reman.add_ecurefbase %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. REMAN
+    </button>
+    <button class="create-ecu-hw btn btn-sm btn-primary mb-3 ml-3" {% if not perms.reman.add_ecutype %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. HW
+    </button>
+    <a class="btn btn-sm btn-success mb-3 ml-3" href="{% url 'reman:ecu_hw_generate' %}">Générer Scan IN/OUT</a>
+
+    <table class="table table-bordered table-sm text-nowrap" id="baseRefTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <th>Référence REMAN</th>
+            <th>Module Moteur</th>
+            <th>Réf. Hardware</th>
+            <th>Fournisseur</th>
+            <th>Code barre PSA</th>
+            <th>XELON - Code produit</th>
+            <th>XELON - Emplacement</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for ref in refs %}
+            {% with ecus=ref.ecu_type.ecumodel_set.all %}
+                <tr>
+                    <td>{{ ref.reman_reference }}</td>
+                    <td>{{ ref.ecu_type.technical_data }}</td>
+                    <td>{{ ref.ecu_type.hw_reference }}</td>
+                    <td>{{ ref.ecu_type.supplier_oe }}</td>
+                    <td>
+                        {% if ecus|length > 1 %}
+                            <a data-toggle="collapse" href="#ref_{{ ref }}" role="button" aria-expanded="false">
+                                Afficher
+                            </a>
+                            <div class="collapse mt-2" id="ref_{{ ref }}">
+                                {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
+                            </div>
+                        {% else %}
+                            {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>{{ ref.ecu_type.spare_part.code_produit }}</td>
+                    <td>{{ ref.ecu_type.spare_part.code_emplacement }}</td>
+                </tr>
+            {% endwith %}
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
+
+{% endblock %}

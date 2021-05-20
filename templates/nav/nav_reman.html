@@ -9,7 +9,7 @@
 
     {% if perms.reman.add_repair %}
         <!-- Nav Item - Reman Repair Menu -->
-        {% with name="RemanAtelier" icon="fa-table" %}
+        {% with name="RemanAtelier" icon="fa-tools" %}
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
                    aria-expanded="true" aria-controls="collapse{{ name }}">
@@ -20,12 +20,66 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
                         <a class="repair-btn collapse-item" href="#">{% trans "Create file" %}</a>
+
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Consultation :</h6>
                         <a class="collapse-item" href="{% url 'reman:repair_table' %}?filter=pending">{% trans "Current files" %}</a>
                     </div>
                 </div>
             </li>
         {% endwith %}
     {% endif %}
+
+    {% if perms.reman.add_batch %}
+        <!-- Nav Item - Reman Batch management Menu -->
+        {% with name="remanBatchManagement" icon="fa-box" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>Gestion des lots</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        {% if perms.reman.add_batch %}
+                            <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+                            <a class="create-batch collapse-item" href="#">{% trans "Create Batch" %}</a>
+                            <a class="create-etude-batch collapse-item" href="#">{% trans "Create Etude Batch" %}</a>
+                            <div class="collapse-divider"></div>
+                        {% endif %}
+                        <h6 class="collapse-header">Consultation :</h6>
+                        <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=pending">{% trans "Current batches" %}</a>
+                        <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=etude">{% trans "Etude batches" %}</a>
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+    {% endif %}
+
+    <!-- Nav Item - Reman Reference management Menu -->
+    {% with name="remanRefManagement" icon="fa-barcode" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>Gestion des Réf.</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+                    <a class="collapse-item" href="{% url 'reman:base_ref_table' %}">{% trans "REMAN References" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:ecu_hw_table' %}">{% trans "HW References" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
+
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans "Etude" %} :</h6>
+                    <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
+                </div>
+            </div>
+        </li>
+    {% endwith %}
 
     <!-- Nav Item - Reman Consultation Menu -->
     {% with name="remanConsult" icon="fa-table" %}
@@ -38,53 +92,15 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">{% trans "Repairs" %} :</h6>
-                    <a class="collapse-item" href="{% url 'reman:repair_table' %}?filter=pending">{% trans "Current files" %}</a>
                     <a class="collapse-item" href="{% url 'reman:repair_table' %}">{% trans "Customer files" %}</a>
-                    <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
-
-                    <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
-                    <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=pending">{% trans "Current batches" %}</a>
                     <a class="collapse-item" href="{% url 'reman:batch_table' %}">{% trans "Batch list" %}</a>
-                    <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=etude">{% trans "Etude batches" %}</a>
-                    {% if perms.reman.view_default %}
-                        <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
-                    {% endif %}
-                    {% if perms.reman.view_ecurefbase %}
-                        <a class="collapse-item" href="{% url 'reman:ecu_table' %}">{% trans "ECU ref Base" %}</a>
-                    {% endif %}
                     <a class="collapse-item" href="{% url 'reman:part_table' %}">{% trans "Spare Parts" %}</a>
                 </div>
             </div>
         </li>
     {% endwith %}
 
-    {% if perms.reman.add_batch %}
 
-        <li class="nav-item">
-            <a class="create-batch nav-link" href="#">
-                <i class="fas fa-fw fa-box"></i><span>{% trans "Create Batch" %}</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="create-etude-batch nav-link" href="#">
-                <i class="fas fa-fw fa-box"></i><span>{% trans "Create Etude Batch" %}</span>
-            </a>
-        </li>
-
-    {% endif %}
-
-    {% if perms.reman.add_default %}
-
-        <li class="nav-item">
-            <a class="default-btn nav-link" href="#">
-                <i class="fas fa-fw fa-wrench"></i><span>{% trans "Create Default" %}</span>
-            </a>
-        </li>
-
-    {% endif %}
 
     {% if perms.reman.close_repair %}
         <li class="nav-item">

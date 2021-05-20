@@ -32,8 +32,8 @@ class Command(BaseCommand):
             path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
             header = [f.name for f in Corvet._meta.local_fields]
             queryset = Corvet.objects.exclude(donnee_date_entree_montage__isnull=True)
-            values_list = None
-            ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list).file(path, False)
+            values_list = queryset.values_list().distinct()
+            ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(
@@ -59,13 +59,13 @@ class Command(BaseCommand):
                 queryset = Xelon.objects.filter(is_active=True).distinct()
 
                 corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if
-                                     field.name not in ['vin', 'radio', 'btel', 'bsi', 'emf']])
+                                     field.name not in ['vin', 'radio', 'btel', 'bsi', 'emf', 'bsm', 'cmm', 'hdc']])
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
 
-                values_list = xelon_list + corvet_list
+                values_list = queryset.values_list(*(xelon_list + corvet_list)).distinct()
                 for filename in string_to_list(config.SQUALAETP_FILE_LIST):
-                    error = ExportExcel(queryset=queryset, filename=filename, header=header, values_list=values_list,
-                                        excel_type='xls').file(path, False)
+                    error = ExportExcel(
+                        values_list=values_list, filename=filename, header=header, excel_type='xls').file(path, False)
                     if error:
                         self.stdout.write(
                             self.style.ERROR(

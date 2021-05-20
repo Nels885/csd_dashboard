@@ -143,7 +143,8 @@ def corvet_detail(request, vin):
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)
     select = "prods"
-    return render(request, 'psa/detail/detail.html', locals())
+    context.update(locals())
+    return render(request, 'psa/detail/detail.html', context)
 
 
 @permission_required('psa.add_corvet')
@@ -173,13 +174,10 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
         context['modal_title'] = _('CORVET integration')
         return context
 
-    def form_valid(self, form):
-        if not self.request.is_ajax():
-            form.save()
-        return super(CorvetCreateView, self).form_valid(form)
-
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
+        if not self.request.is_ajax():
+            return reverse_lazy('psa:corvet_detail', args=[self.object.pk])
+        elif 'HTTP_REFERER' in self.request.META:
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')

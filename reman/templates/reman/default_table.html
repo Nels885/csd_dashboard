@@ -2,21 +2,13 @@
 
 {% load static i18n %}
 
-{% block card_header %}
-
-    <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs" role="tablist">
-
-            {% include 'reman/tab_select.html' with select='default' %}
-
-        </ul>
-    </div>
-
-{% endblock %}
-
 {% block table_content %}
 
-    <table class="table table-bordered text-nowrap" id="defaultTable" width="100%" cellspacing="0">
+    <button class="default-btn btn btn-sm btn-primary mb-3" {% if not perms.reman.add_default %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> {% trans "Create Default" %}
+    </button>
+
+    <table class="table table-bordered table-sm text-nowrap" id="defaultTable" style="width: 100%;">
         <thead>
         <tr>
             <th class="all"></th>

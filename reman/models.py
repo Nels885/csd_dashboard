@@ -14,8 +14,21 @@ STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 
 
 class EcuType(models.Model):
     hw_reference = models.CharField("hardware", max_length=20, unique=True)
-    technical_data = models.CharField("modèle produit", max_length=50, blank=True)
+    technical_data = models.CharField("modèle produit", max_length=50)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
+    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
+    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
+    req_diag = models.CharField("REQ_DIAG", max_length=50, blank=True)
+    open_diag = models.CharField("OPENDIAG", max_length=50, blank=True)
+    req_ref = models.CharField("REQ_REF", max_length=50, blank=True)
+    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
+    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
+    req_cal = models.CharField("REQ_CAL", max_length=50, blank=True)
+    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
+    req_status = models.CharField("REQ_STATUS", max_length=50, blank=True)
+    status = models.CharField("STATUT", max_length=50, blank=True)
+    test_clear_memory = models.CharField("TEST_CLEAR_MEMORY", max_length=10, blank=True)
+    cle_appli = models.CharField("CLE_APPLI", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
 
     def part_name(self):
@@ -36,10 +49,7 @@ class EcuModel(models.Model):
     to_dump = models.BooleanField("à dumper", default=False)
 
     class Meta:
-
-        permissions = [
-            ("check_ecumodel", "Check that the EcuModel instance exists")
-        ]
+        permissions = [("check_ecumodel", "Can check ecu model")]
 
     @staticmethod
     def part_list(psa_barcode):
@@ -66,17 +76,8 @@ class EcuModel(models.Model):
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
-    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
-    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
-    open_diag = models.CharField("OPENDIAG", max_length=16, blank=True)
-    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
-    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
-    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
-    status = models.CharField("STATUT", max_length=16, blank=True)
-    ecu_type = models.OneToOneField("EcuType", related_name='ecu_ref_base', on_delete=models.SET_NULL, null=True,
-                                    blank=True)
-    # ecu_types = models.ManyToManyField("EcuType", related_name="ecu_ref_bases", on_delete=models.SET_NULL, null=True,
-    #                                    blank=True)
+    ecu_type = models.ForeignKey("EcuType", related_name='ecu_ref_base', on_delete=models.SET_NULL, null=True,
+                                 blank=True)
 
     def __str__(self):
         return self.reman_reference
@@ -95,11 +96,12 @@ class Batch(models.Model):
     ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.CASCADE)
 
     def clean(self):
-        date = timezone.now()
-        if date.year in DICT_YEAR.keys():
-            self.year = DICT_YEAR[date.year]
-        else:
-            raise ValidationError(_('Impossible formatting of the year!'))
+        if not self.year:
+            date = timezone.now()
+            if date.year in DICT_YEAR.keys():
+                self.year = DICT_YEAR[date.year]
+            else:
+                raise ValidationError(_('Impossible formatting of the year!'))
 
     def __str__(self):
         return self.batch_number
@@ -135,7 +137,7 @@ class Repair(models.Model):
 
     class Meta:
         permissions = [
-            ("close_repair", "Closing of the repair instance")
+            ("close_repair", "Can close repair")
         ]
 
     def get_absolute_url(self):
@@ -154,7 +156,6 @@ class SparePart(models.Model):
     code_site = models.IntegerField('code Site', null=True, blank=True)
     code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
     cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
-    repairs = models.ManyToManyField(Repair, related_name='spare_part', blank=True)
 
     def __str__(self):
         return self.code_produit

@@ -9,14 +9,14 @@ class ExportCorvetForm(forms.Form):
         ('nac', 'NAC'), ('rtx', 'RTx'), ('smeg', 'SMEG'), ('rneg', 'RNEG'), ('ng4', 'NG4')
     ]
 
-    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
     products = forms.ChoiceField(label='Produit', required=False, choices=PRODUCTS, widget=forms.Select())
 
 
 class ExportRemanForm(forms.Form):
     TABLES = [('batch', 'BATCH'), ('repair_reman', 'REPAIR'), ('base_ref_reman', 'BASE REF REMAN')]
 
-    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
     tables = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
 
 
@@ -27,5 +27,5 @@ class ExportCorvetVinListForm(forms.Form):
 class ExportToolsForm(forms.Form):
     TABLES = [('suptech', 'SUPTECH')]
 
-    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
     tables = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())

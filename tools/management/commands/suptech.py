@@ -130,10 +130,12 @@ class Command(BaseCommand):
         try:
             queryset = Suptech.objects.all().order_by('date')
 
-            values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
+            values_list = queryset.values_list(
+                'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action'
+            ).distinct()
 
-            error = ExportExcelSuptech(queryset=queryset, filename=filename, header=header, values_list=values_list,
-                                       excel_type='xls', novalue="").file(path, False)
+            error = ExportExcelSuptech(values_list=values_list, filename=filename, header=header, excel_type='xls',
+                                       novalue="").file(path, False)
             if error:
                 self.stdout.write(
                     self.style.ERROR(

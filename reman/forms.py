@@ -2,13 +2,14 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db.models import Q, Count, Max
-from django.core.management import call_command
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
+from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
-from utils.django.validators import validate_psa_barcode
+from utils.django.forms.fields import ListTextWidget
+# from utils.django.validators import validate_psa_barcode
 
 
 """
@@ -21,7 +22,8 @@ MANAGER FORMS
 class BatchForm(BSModalModelForm):
     class Meta:
         model = Batch
-        fields = "__all__"
+        exclude = ['batch_number']
+        labels = {'ecu_ref_base': 'Réf. REMAN'}
 
 
 class AddBatchForm(BSModalModelForm):
@@ -44,7 +46,7 @@ class AddBatchForm(BSModalModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(AddBatchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         try:
             date = timezone.now()
             batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
@@ -73,17 +75,24 @@ class AddBatchForm(BSModalModelForm):
         try:
             ecu = EcuRefBase.objects.get(reman_reference__exact=data)
             if not self.errors:
-                batch = super(AddBatchForm, self).save(commit=False)
+                batch = super().save(commit=False)
                 batch.ecu_ref_base = ecu
         except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
         return data
 
+    def save(self, commit=True):
+        batch = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            batch.save()
+            cmd_exportreman_task.delay('--batch', '--scan_in_out')
+        return batch
+
 
 class AddEtudeBatchForm(AddBatchForm):
 
     def __init__(self, *args, **kwargs):
-        super(AddEtudeBatchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         try:
             date = timezone.now()
             batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
@@ -101,11 +110,44 @@ class AddEtudeBatchForm(AddBatchForm):
         return data
 
     def save(self, commit=True):
-        batch = super(AddEtudeBatchForm, self).save(commit=False)
+        batch = super().save(commit=False)
         if commit and not self.request.is_ajax():
             batch.active = False
             batch.save()
+            cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
+
+
+class AddRefRemanForm(BSModalModelForm):
+    hw_reference = forms.CharField(label="Réf. HW", widget=forms.TextInput(), max_length=20)
+
+    class Meta:
+        model = EcuRefBase
+        fields = ['reman_reference', 'hw_reference']
+
+    def __init__(self, *args, **kwargs):
+        ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
+        _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['hw_reference'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+
+    def clean_hw_reference(self):
+        data = self.cleaned_data['hw_reference']
+        try:
+            ecu = EcuType.objects.get(hw_reference__exact=data)
+            if not self.errors:
+                reman = super().save(commit=False)
+                reman.ecu_type = ecu
+        except EcuType.DoesNotExist:
+            self.add_error('hw_reference', "réf. HW n'existe pas.")
+        return data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+            cmd_exportreman_task.delay('--scan_in_out')
+        return instance
 
 
 class DefaultForm(BSModalModelForm):
@@ -135,7 +177,7 @@ class AddRepairForm(BSModalModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(AddRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.queryset = Batch.objects.all()
 
     def clean_identify_number(self):
@@ -156,7 +198,7 @@ class AddRepairForm(BSModalModelForm):
         return data
 
     def clean(self):
-        cleaned_data = super(AddRepairForm, self).clean()
+        cleaned_data = super().clean()
         identify_number = cleaned_data.get("identify_number")
         psa_barcode = cleaned_data.get("psa_barcode")
         if psa_barcode and identify_number:
@@ -166,10 +208,10 @@ class AddRepairForm(BSModalModelForm):
                 raise forms.ValidationError("Ce lot n'est plus actif")
 
     def save(self, commit=True):
-        instance = super(AddRepairForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
             instance.save()
-            call_command('exportreman', '--repair')
+            cmd_exportreman_task.delay('--repair')
         return instance
 
 
@@ -178,7 +220,7 @@ class EditRepairForm(forms.ModelForm):
                                      widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
-        super(EditRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.instance.batch.ecu_ref_base:
             hw_reference = self.instance.batch.ecu_ref_base.ecu_type.hw_reference
             self.fields['default'].queryset = Default.objects.filter(ecu_type__hw_reference=hw_reference)
@@ -193,17 +235,17 @@ class EditRepairForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        instance = super(EditRepairForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit:
             instance.save()
-            call_command('exportreman', '--repair')
+            cmd_exportreman_task.delay('--repair')
         return instance
 
 
 class CloseRepairForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(CloseRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         selected_choices = ["En cours"]
         self.fields['status'].choices = [(k, v) for k, v in STATUS_CHOICES if k not in selected_choices]
         instance = getattr(self, 'instance', None)
@@ -223,10 +265,10 @@ class CloseRepairForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        instance = super(CloseRepairForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit:
             instance.save()
-            call_command('exportreman', '--repair')
+            cmd_exportreman_task.delay('--repair')
         return instance
 
 
@@ -247,7 +289,7 @@ class CheckOutSelectBatchForm(BSModalForm):
         fields = ["batch"]
 
     def __init__(self, *args, **kwargs):
-        super(CheckOutSelectBatchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         self.batch = Batch.objects.all().annotate(repaired=repaired, packed=packed)
@@ -259,12 +301,12 @@ class CheckOutSelectBatchForm(BSModalForm):
             self.add_error("batch", "Pas de lot associé")
         elif len(batchs) > 1:
             self.add_error("batch", "Il y a plusieurs lots associés")
-        else:
-            batch = batchs.first()
-            if batch.repaired != batch.quantity:
-                self.add_error(
-                    "batch", "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
-                )
+        # else:
+        #     batch = batchs.first()
+        #     if batch.repaired != batch.quantity:
+        #         self.add_error(
+        #             "batch", "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
+        #         )
         return data
 
 
@@ -276,7 +318,7 @@ class CheckOutRepairForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         batch_number = kwargs.pop("batch_number", None)
-        super(CheckOutRepairForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if batch_number:
             batch = Batch.objects.filter(batch_number=batch_number).first()
         else:
@@ -319,15 +361,15 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=10,
+    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=20,
                                   widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''}))
 
     def clean_psa_barcode(self):
         data = self.cleaned_data['psa_barcode']
-        message = validate_psa_barcode(data)
-        if message:
+        # message = validate_psa_barcode(data)
+        if len(data) < 10:
             raise forms.ValidationError(
-                _(message),
+                _("The barcode is invalid"),
                 code='invalid',
                 params={'value': data},
             )
@@ -335,11 +377,33 @@ class CheckPartForm(forms.Form):
 
 
 class EcuModelForm(forms.ModelForm):
-    hw_reference = forms.CharField(label="HW référence", max_length=10, required=True)
+    hw_reference = forms.CharField(label="HW référence", max_length=20, required=True)
 
     class Meta:
         model = EcuModel
         exclude = ['ecu_type']
+
+
+class AddEcuTypeForm(BSModalModelForm):
+    class Meta:
+        model = EcuType
+        exclude = ['spare_part']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+            cmd_exportreman_task.delay('--scan_in_out')
+        return instance
+
+
+class UpdateEcuTypeForm(AddEcuTypeForm):
+    class Meta:
+        model = EcuType
+        exclude = ['spare_part']
+        widgets = {
+            'hw_reference': forms.TextInput(attrs={"readonly": ""})
+        }
 
 
 class EcuDumpModelForm(BSModalModelForm):
@@ -352,7 +416,7 @@ class EcuDumpModelForm(BSModalModelForm):
 
 
 class PartEcuModelForm(forms.ModelForm):
-    hw_reference = forms.CharField(label="HW référence *", max_length=10, required=True)
+    hw_reference = forms.CharField(label="HW référence *", max_length=20, required=True)
 
     class Meta:
         model = EcuModel
@@ -365,11 +429,12 @@ class PartEcuModelForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        instance = super(PartEcuModelForm, self).save(commit=False)
-        type_obj, type_created = EcuType.objects.update_or_create(hw_reference=self.cleaned_data["hw_reference"])
+        instance = super().save(commit=False)
+        type_obj, type_created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"])
         instance.ecu_type = type_obj
         if commit:
             instance.save()
+            cmd_exportreman_task.delay('--scan_in_out')
         return instance
 
 
@@ -379,7 +444,7 @@ class PartEcuTypeForm(forms.ModelForm):
         fields = ['hw_reference', 'technical_data', 'supplier_oe']
 
     def __init__(self, *args, **kwargs):
-        super(PartEcuTypeForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # instance = getattr(self, 'instance', None)
         # if instance and instance.technical_data:
         #     self.fields['technical_data'].widget.attrs['readonly'] = True
@@ -394,7 +459,7 @@ class PartSparePartForm(forms.ModelForm):
         fields = ['code_produit', 'code_emplacement']
 
     def __init__(self, *args, **kwargs):
-        super(PartSparePartForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # instance = getattr(self, 'instance', None)
         # if instance and instance.code_emplacement:
         #     for field in self.fields:

@@ -16,6 +16,7 @@ urlpatterns = [
     path('<int:pk>/prod/email/', views.ProdEmailFormView.as_view(), name='prod_email'),
     path('<int:pk>/prog/active/', views.prog_activate, name='prog_activate'),
     path('generate/', views.generate, name='generate'),
+    path('excel/import/', views.excel_import, name='excel_import'),
     path('xelon/', views.xelon_table, name='xelon'),
     path('stock-parts/', views.stock_table, name='stock_parts'),
     path('log/<int:pk>/detail/', views.LogFileView.as_view(), name='log_detail'),

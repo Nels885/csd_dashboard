@@ -15,7 +15,7 @@ class MixinsTest(UnitTest):
         self.batch = Batch.objects.create(year="C", number=1, quantity=1, created_by=self.user, ecu_ref_base=ref_base)
         Default.objects.create(code='TEST1', description='Ceci est le test 1')
         self.ecuId = ecu.id
-        self.refBaseId = ref_base.id
+        self.refBase = ref_base
 
     def test_create_batch_ajax_mixin(self):
         """
@@ -109,6 +109,58 @@ class MixinsTest(UnitTest):
         batchs = Batch.objects.all()
         self.assertEqual(batchs.count(), 2)
         self.assertEqual(batchs.last().number, 901)
+
+    def test_update_batch_ajax_mixin(self):
+        """
+        Update batch throught BSModalUpdateView.
+        """
+        self.add_perms_user(Batch, 'change_batch')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        batch = Batch.objects.first()
+        response = self.client.post(
+            reverse('reman:update_batch', kwargs={'pk': batch.pk}),
+            data={
+                'year': 'A',
+                'number': '2',
+                'quantity': '20',
+                'start_date': '01/01/1970',
+                'end_date': '01/01/1970',
+                'ecu_ref_base': self.refBase.id
+            },
+        )
+        # redirection
+        self.assertRedirects(response, reverse('reman:batch_table') + "?filter=pending", status_code=302)
+        # Object is updated
+        batch = Batch.objects.first()
+        self.assertEqual(batch.year, 'A')
+
+    def test_update_etude_batch_ajax_mixin(self):
+        """
+        Update etude batch throught BSModalUpdateView.
+        """
+        self.add_perms_user(Batch, 'change_batch')
+        self.login()
+
+        # Update Batch under etude through BSModalUpdateView
+        batch = Batch.objects.first()
+        response = self.client.post(
+            reverse('reman:update_batch', kwargs={'pk': batch.pk}),
+            data={
+                'year': 'A',
+                'number': '902',
+                'quantity': '20',
+                'start_date': '01/01/1970',
+                'end_date': '01/01/1970',
+                'ecu_ref_base': self.refBase.id
+            },
+        )
+        # redirection
+        self.assertRedirects(response, reverse('reman:batch_table') + "?filter=etude", status_code=302)
+        # Object is updated
+        batch = Batch.objects.first()
+        self.assertEqual(batch.year, 'A')
 
     def test_Delete_batch_ajax_mixin(self):
         """
@@ -283,3 +335,112 @@ class MixinsTest(UnitTest):
         # Object is updated
         ecu_model = EcuModel.objects.first()
         self.assertEqual(ecu_model.to_dump, True)
+
+    def test_create_ecu_hw_ajax_mixin(self):
+        """
+        Create ECU Type throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuType, 'add_ecutype')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        for hw_ref, tech_data in [('', ''), ('0123456789', ''), ('9876543210', 'test_new')]:
+            response = self.client.post(
+                reverse('reman:ecu_hw_create'),
+                data={
+                    'hw_reference': hw_ref,
+                    'technical_data': tech_data,
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
+
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            ecu_type = EcuType.objects.all()
+            self.assertEqual(ecu_type.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:ecu_hw_create'),
+            data={
+                'hw_reference': '1234567890',
+                'technical_data': 'test',
+                'status': 'test'
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        ecu_type = EcuType.objects.all()
+        self.assertEqual(ecu_type.count(), 2)
+        self.assertEqual(ecu_type.last().hw_reference, '1234567890')
+
+    def test_update_ecu_hw_ajax_mixin(self):
+        """
+        Update ECU Type throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuType, 'change_ecutype')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        ecu_type = EcuType.objects.first()
+        response = self.client.post(
+            reverse('reman:ecu_hw_update', kwargs={'pk': ecu_type.pk}),
+            data={
+                'hw_reference': ecu_type.hw_reference,
+                'technical_data': ecu_type.technical_data,
+                'status': 'test'
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('reman:ecu_hw_table'), status_code=302)
+        # Object is updated
+        ecu_type = EcuType.objects.first()
+        self.assertEqual(ecu_type.status, 'test')
+
+    def test_create_ref_reman_ajax_mixin(self):
+        """
+        Create EcuRefBase throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuRefBase, 'add_ecurefbase')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        refs_list = [('', ''), ('1234567890', '9876543210'), ('1234567891', ''), ('1234567891', 'test_new')]
+        for reman_ref, hw_ref in refs_list:
+            response = self.client.post(
+                reverse('reman:ref_reman_create'),
+                data={
+                    'reman_reference': reman_ref,
+                    'hw_reference': hw_ref
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
+
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            ecu_type = EcuType.objects.all()
+            self.assertEqual(ecu_type.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:ref_reman_create'),
+            data={
+                'reman_reference': '1234567891',
+                'hw_reference': '9876543210'
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        remans = EcuRefBase.objects.all()
+        self.assertEqual(remans.count(), 2)
+        self.assertEqual(remans.last().reman_reference, '1234567891')

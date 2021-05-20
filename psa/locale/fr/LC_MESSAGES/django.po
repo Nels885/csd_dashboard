@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 14:59+0200\n"
+"POT-Creation-Date: 2021-05-20 14:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,15 +41,15 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: psa/templates/psa/detail/detail.html:16
+#: psa/templates/psa/detail/detail.html:27
 msgid "Raw Corvet data"
 msgstr "Données Corvet brute"
 
-#: psa/templates/psa/detail/detail.html:23
+#: psa/templates/psa/detail/detail.html:34
 msgid "Info NAC"
 msgstr ""
 
-#: psa/templates/psa/detail/detail.html:31
+#: psa/templates/psa/detail/detail.html:42
 msgid "VIN Barcode"
 msgstr "code barre VIN"
 
@@ -83,7 +83,7 @@ msgstr ""
 msgid "CORVET table"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:144
+#: psa/views.py:143
 msgid "Detail Corvet data for the VIN: "
 msgstr "Détail des données Corvet pour le VIN : "
 
@@ -95,6 +95,6 @@ msgstr "Intégration CORVET"
 msgid "Modification done successfully!"
 msgstr "Modification réussie !"
 
-#: psa/views.py:198
+#: psa/views.py:195
 msgid "Products PSA table"
 msgstr "Tableau des produits PSA"

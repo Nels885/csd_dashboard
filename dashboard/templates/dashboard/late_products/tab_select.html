@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<li class="nav-item {% if select == 'late' %}active{% endif %}">
+    <a class="nav-link {% if select == 'late' %}active{% endif %}" href="{% url 'dashboard:late_prod' %}?filter=pending">
+        {% trans "Late Products" %}
+    </a>
+</li>
+
+<li class="nav-item {% if select == 'tronik' %}active{% endif %}">
+    <a class="nav-link {% if select == 'tronik' %}active{% endif %}" href="{% url 'dashboard:autotronik' %}">
+        Autotronik
+    </a>
+</li>

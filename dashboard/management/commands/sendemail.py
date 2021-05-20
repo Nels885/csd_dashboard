@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
+from django.core.management import call_command
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
@@ -35,6 +36,12 @@ class Command(BaseCommand):
             dest='vin_corvet',
             help='Send email for VIN no CORVET',
         )
+        parser.add_argument(
+            '--reman',
+            action='store_true',
+            dest='reman',
+            help='Send email for REMAN in progress',
+        )
 
     def handle(self, *args, **options):
         date_joined = datetime.strftime(datetime.now(), "%d/%m/%Y %H:%M:%S")
@@ -63,7 +70,10 @@ class Command(BaseCommand):
             xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')[:10]
 
             if xelons:
-                html_message = render_to_string('dashboard/email_format/vin_error_email.html', {'xelons': xelons})
+                html_message = render_to_string(
+                    'dashboard/email_format/vin_error_email.html',
+                    {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
+                )
                 plain_message = strip_tags(html_message)
                 send_mail(
                     subject, plain_message, None, string_to_list(config.VIN_ERROR_TO_EMAIL_LIST),
@@ -77,7 +87,10 @@ class Command(BaseCommand):
             xelons = Xelon.objects.filter(date_retour__gte=last_7_days, vin__regex=r'^V((F[37])|(R[137]))\w{14}$',
                                           vin_error=False, corvet__isnull=True).order_by('-date_retour')[:10]
             if xelons:
-                html_message = render_to_string('dashboard/email_format/vin_corvet_email.html', {'xelons': xelons})
+                html_message = render_to_string(
+                    'dashboard/email_format/vin_corvet_email.html',
+                    {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
+                )
                 plain_message = strip_tags(html_message)
                 send_mail(
                     subject, plain_message, None, string_to_list(config.VIN_ERROR_TO_EMAIL_LIST),
@@ -86,3 +99,5 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Envoi de l'email des VINs sans données CORVET terminée !"))
             else:
                 self.stdout.write(self.style.SUCCESS("Pas de VIN sans données CORVET à envoyer !"))
+        if options['reman']:
+            call_command("emailreman", "--batch")

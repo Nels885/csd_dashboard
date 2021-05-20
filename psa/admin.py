@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, EmfModel, Ecu
+from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu
 
 
 class CorvetAdmin(admin.ModelAdmin):
@@ -15,7 +15,7 @@ class CorvetAdmin(admin.ModelAdmin):
 
 
 class MultimediaAdmin(admin.ModelAdmin):
-    list_display = ('hw_reference', 'name', 'level', 'type', 'dab', 'cam', 'media')
+    list_display = ('hw_reference', 'name', 'level', 'type', 'dab', 'cam', 'media', 'firmware')
     list_filter = ('name', 'level', 'type', 'media')
     ordering = ('hw_reference',)
     search_fields = ('hw_reference', 'name', 'type')
@@ -42,13 +42,6 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
     search_fields = ('key', 'value', 'column')
 
 
-class EmfModelAdmin(admin.ModelAdmin):
-    list_display = ('hw_reference', 'name', 'hw', 'sw', 'supplier_oe', 'pr_reference')
-    list_filter = ('name', 'hw', 'sw', 'supplier_oe')
-    ordering = ('hw_reference',)
-    search_fields = ('hw_reference', 'name')
-
-
 class EcuAdmin(admin.ModelAdmin):
     list_display = ('comp_ref', 'mat_ref', 'name', 'type', 'hw', 'sw', 'supplier_oe', 'pr_reference')
     list_filter = ('type', 'supplier_oe')
@@ -61,5 +54,4 @@ admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
-admin.site.register(EmfModel, EmfModelAdmin)
 admin.site.register(Ecu, EcuAdmin)

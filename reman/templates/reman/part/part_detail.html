@@ -17,8 +17,12 @@
                     <td>{{ ecu.psa_barcode|default:"---" }}</td>
                 </tr>
                 <tr>
-                    <td class="text-dark">Référence REMAN</td>
-                    <td>{{ ecu_ref_base.reman_reference|default:"---" }}</td>
+                    <td class="text-dark">Référence(s) REMAN</td>
+                    <td>
+                        {% for ecu in ecu_ref_base.all %}
+                            {{ ecu.reman_reference|default:"---" }}<br>
+                        {% endfor %}
+                    </td>
                 </tr>
                 <tr>
                     <td class="text-dark">Code Produit</td>

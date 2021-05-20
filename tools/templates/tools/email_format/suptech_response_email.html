@@ -1,8 +1,11 @@
 {% autoescape off %}
 Bonjour,
 
-Actions réalisées :
+Action(s) réalisée(s) :
 {{ suptech.action }}
+
+Statut : {{ suptech.status }}
+Date limite : {{ suptech.deadline|default:"---" }}
 
 Cordialement
 

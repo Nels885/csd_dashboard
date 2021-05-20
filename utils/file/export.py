@@ -13,7 +13,7 @@ from django.shortcuts import HttpResponse
 # from django.utils.safestring import SafeString
 
 from psa.models import Corvet
-from utils.conf import XML_PATH, TAG_PATH, TAG_LOG_PATH
+from utils.conf import XML_CORVET_PATH, TAG_XELON_PATH, TAG_XELON_LOG_PATH
 
 # Get an instance of a logger
 logger = logging.getLogger('command')
@@ -29,8 +29,8 @@ class HTMLFilter(HTMLParser):
 def xml_corvet_file(instance, data, vin):
     try:
         xelon_nb = instance.numero_de_dossier
-        os.makedirs(XML_PATH, exist_ok=True)
-        file = os.path.join(XML_PATH, xelon_nb + ".xml")
+        os.makedirs(XML_CORVET_PATH, exist_ok=True)
+        file = os.path.join(XML_CORVET_PATH, xelon_nb + ".xml")
         if not os.path.isfile(file):
             with open(file, "w", encoding='utf-8') as f:
                 f.write(str(data))
@@ -77,22 +77,18 @@ class Calibre:
         return False
 
 
-calibre = Calibre(TAG_PATH, TAG_LOG_PATH)
+calibre = Calibre(TAG_XELON_PATH, TAG_XELON_LOG_PATH)
 
 
 class ExportExcel:
     """ class for exporting data in CSV format """
 
-    def __init__(self, queryset, filename, header, values_list=None, excel_type="csv", novalue="#"):
+    def __init__(self, values_list, filename, header, excel_type="csv", novalue="#"):
         self.date = datetime.datetime.now()
-        self.queryset = queryset
         self.filename = filename
         self.header = header
         self.noValue = novalue
-        if values_list:
-            self.valueSet = self.queryset.values_list(*values_list).distinct()
-        else:
-            self.valueSet = self.queryset.values_list().distinct()
+        self.valueSet = values_list
         self.excelType = excel_type
 
     def http_response(self):

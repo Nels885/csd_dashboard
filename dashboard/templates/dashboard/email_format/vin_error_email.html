@@ -22,7 +22,7 @@
         {% for xelon in xelons %}
 
             <tr>
-                <td>{{ xelon.numero_de_dossier }}</td>
+                <td><a href="http://{{ domain }}{% url 'squalaetp:detail' pk=xelon.pk %}?select=ihm">{{ xelon.numero_de_dossier }}</a></td>
                 <td>{{ xelon.modele_produit }}</td>
                 <td>{{ xelon.vin }}</td>
                 <td>{{ xelon.date_retour }}</td>

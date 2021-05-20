@@ -127,16 +127,6 @@ class DashboardTestCase(UnitTest):
             response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
 
-    def test_config_edit_page_is_not_staff(self):
-        self.login()
-        response = self.client.get(reverse('dashboard:config_edit'))
-        self.assertRedirects(response, '/accounts/login/?next=/dashboard/config/edit/', status_code=302)
-
-    def test_config_edit_page_is_staff(self):
-        self.login('admin')
-        response = self.client.get(reverse('dashboard:config_edit'))
-        self.assertEqual(response.status_code, 200)
-
     def test_supplier_links_page(self):
         url = reverse('dashboard:supplier_links')
         response = self.client.get(url)

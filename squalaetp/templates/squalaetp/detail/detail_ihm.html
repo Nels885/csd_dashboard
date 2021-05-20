@@ -7,15 +7,19 @@
 </div>
 <div class="row">
     <section class="col-sm-3">
-        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_edit' xelon.pk %}">
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_edit' xelon.pk %}" {% if not perms.squalaetp.change_vin %}disabled{% endif %}>
             Modification VIN / CORVET
         </button>
-        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_email' xelon.pk %}">Envoi Email VIN</button>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_email' xelon.pk %}" {% if not perms.squalaetp.email_vin %}disabled{% endif %}>
+            Envoi Email VIN
+        </button>
         <hr>
-        <button class="bs-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_edit' xelon.pk %}">
+        <button class="bs-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_edit' xelon.pk %}" {% if not perms.squalaetp.change_product %}disabled{% endif %}>
             Modification PRODUIT
         </button>
-        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}">Envoi Email PRODUIT</button>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}" {% if not perms.squalaetp.email_product %}disabled{% endif %}>
+            Envoi Email PRODUIT
+        </button>
         <hr>
         <button class="log-btn btn btn-secondary btn-block mb-5" data-id="{% url 'squalaetp:log_detail' xelon.pk %}">Info VIN Raspeedi</button>
         {% if xelon.is_active %}

@@ -25,6 +25,9 @@ function clock() {
     document.getElementById('datetime').innerHTML = resultat;
 }
 
+clock();
+setInterval(clock, 1000);
+
 $('#detail-list a').on('click', function (e) {
     e.preventDefault();
     $(this).tab('show')

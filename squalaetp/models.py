@@ -35,6 +35,11 @@ class Xelon(models.Model):
     class Meta:
         verbose_name = "dossier Xelon"
         ordering = ['numero_de_dossier']
+        permissions = [
+            ("change_product", "Can change product"), ("email_product", "Can send email product"),
+            ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
+            ("active_xelon", "Can active xelon")
+        ]
 
     def save(self, *args, **kwargs):
         from psa.models import Corvet
@@ -56,7 +61,7 @@ class ProductCode(models.Model):
         return self.name
 
 
-class Stock(models.Model):
+class SparePart(models.Model):
     code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
     code_zone = models.CharField('code Zone', max_length=50, blank=True)
     code_site = models.IntegerField('code Site', null=True, blank=True)
@@ -112,3 +117,20 @@ class Action(models.Model):
         if user and user.pk:
             self.modified_by = user
         super(Action, self).save(*args, **kwargs)
+
+
+class ProductCategory(models.Model):
+    CHOICES = [
+        ('PSA', 'Produits PSA'), ('AUTRE', 'Autres produits'), ('CLARION', 'Clarion'), ('ETUDE', 'Etude'),
+        ('CALCULATEUR', 'Calculateurs'), ('DEFAUT', 'Defaut')
+    ]
+
+    product_model = models.CharField('modèle produit', max_length=50, unique=True)
+    category = models.CharField('catégorie', max_length=50, choices=CHOICES, blank=True)
+
+    class Meta:
+        verbose_name = "Catégorie Produit"
+        ordering = ['product_model']
+
+    def __str__(self):
+        return self.product_model

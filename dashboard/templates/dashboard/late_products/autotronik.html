@@ -1,0 +1,60 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block tablecss %}
+
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
+
+{% endblock %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'dashboard/late_products/tab_select.html' with select=select_tab %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <table class="table table-bordered table-sm text-nowrap display" id="tronikTable" style="width:100%">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Activité</th>
+            <th>Dossier</th>
+            <th>Modèle</th>
+            <th>Date In</th>
+            <th>Délai</th>
+            <th>Tech</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% include 'dashboard/format/lp_tr_link_format.html' with prods=autotronik activity='Autotronik' last=True %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'dashboard/js/late-prod-tables.js' %}"></script>
+
+    <script src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/JSZip/jszip.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/pdfmake/pdfmake.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'vendor/datatables/Buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/Buttons/js/buttons.print.min.js' %}"></script>
+
+{% endblock %}

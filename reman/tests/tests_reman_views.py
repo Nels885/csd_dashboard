@@ -102,9 +102,9 @@ class RemanTestCase(UnitTest):
         # Invalid form
         response = self.client.post(url, {'psa_barcode': ''})
         self.assertFormError(response, 'form', 'psa_barcode', _('This field is required.'))
-        for barcode in ['123456789', 'abcdefghij', '96123', '981234567']:
+        for barcode in ['123456789', '96123']:
             response = self.client.post(url, {'psa_barcode': barcode})
-            self.assertFormError(response, 'form', 'psa_barcode', _('PSA barcode is invalid'))
+            self.assertFormError(response, 'form', 'psa_barcode', _('The barcode is invalid'))
 
         # Valid form
         for barcode in ['9600000000', '9687654321', '9800000000', '9887654321']:
@@ -128,8 +128,8 @@ class RemanTestCase(UnitTest):
         self.assertEqual(str(messages[0]), _('Success: The email has been sent.'))
         self.assertRedirects(response, reverse('reman:part_check'), status_code=302)
 
-    def test_ecu_ref_base_table(self):
-        url = reverse('reman:ecu_table')
+    def test_base_ref_table(self):
+        url = reverse('reman:base_ref_table')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -138,12 +138,28 @@ class RemanTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_ecu_hw_table(self):
+        url = reverse('reman:ecu_hw_table')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_ecu_hw_generate_view(self):
+        url = reverse('reman:ecu_hw_generate')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertRedirects(response, reverse('reman:ecu_hw_table'), status_code=302)
+
     def test_ecu_dump_table(self):
         url = reverse('reman:ecu_dump_table')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
-        self.add_perms_user(EcuRefBase, 'view_ecurefbase')
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -160,11 +176,6 @@ class RemanTestCase(UnitTest):
 
     def test_repair_view_set_is_disconnected(self):
         response = self.client.get(reverse('reman:api_repair-list'), format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.data, self.authError)
-
-    def test_ecu_ref_base_view_set_is_disconnected(self):
-        response = self.client.get(reverse('reman:api_ecurefbase-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 

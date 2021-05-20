@@ -4,7 +4,6 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'api/repair', views.RepairViewSet, basename='api_repair')
-router.register(r'api/ecurefbase', views.EcuRefBaseViewSet, basename='api_ecurefbase')
 
 app_name = 'reman'
 
@@ -25,10 +24,15 @@ urlpatterns = [
     path('batch/etude/create/', views.BatchEtudeCreateView.as_view(), name='create_etude_batch'),
     path('batch/<int:pk>/update/', views.BatchUpdateView.as_view(), name='update_batch'),
     path('batch/<int:pk>/delete/', views.BatchDeleteView.as_view(), name='delete_batch'),
-    path('ecu/table/', views.ecu_ref_table, name='ecu_table'),
-    path('ecu/<str:psa_barcode>/create/', views.ref_base_create, name='create_ref_base'),
-    path('ecu/<str:psa_barcode>/edit/', views.ref_base_edit, name='edit_ref_base'),
-    path('ecu/dump/table', views.ecu_dump_table, name='ecu_dump_table'),
+    path('base-ref/table/', views.base_ref_table, name='base_ref_table'),
+    path('base-ref/create/', views.RefRemanCreateView.as_view(), name='ref_reman_create'),
+    path('base-ref/<str:psa_barcode>/create/', views.ref_base_create, name='create_ref_base'),
+    path('base-ref/<str:psa_barcode>/edit/', views.ref_base_edit, name='edit_ref_base'),
+    path('ecu/hw/table/', views.ecu_hw_table, name='ecu_hw_table'),
+    path('ecu/hw/generate/', views.ecu_hw_generate, name='ecu_hw_generate'),
+    path('ecu/hw/create/', views.EcuHwCreateView.as_view(), name='ecu_hw_create'),
+    path('ecu/hw/<int:pk>/update/', views.EcuHwUpdateView.as_view(), name='ecu_hw_update'),
+    path('ecu/dump/table/', views.ecu_dump_table, name='ecu_dump_table'),
     path('ecu/dump/<int:pk>/update/', views.EcuDumpUpdateView.as_view(), name='update_ecu_dump'),
     path('default/create/', views.DefaultCreateView.as_view(), name='create_default'),
     path('default/<int:pk>/edit/', views.DefaultUpdateView.as_view(), name='update_default'),

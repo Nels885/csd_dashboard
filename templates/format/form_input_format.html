@@ -1,0 +1,25 @@
+{% load i18n widget_tweaks %}
+
+<div class="form-group row">
+    <label for="{{ field_1.id_for_label }}" class="col-form-label col-sm-3">{{ field_1.label }}{% if field_1.field.required %} *{% endif %}</label>
+    <div class="col-sm-3">
+        {% render_field field_1 class="form-control" %}
+        <div class="{% if field_1.errors %} invalid{% endif %}">
+            {% for error in field_1.errors %}
+                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% if field_2 %}
+        <label for="{{ field_2.id_for_label }}" class="col-form-label col-sm-3">{{ field_2.label }}{% if field_2.field.required %} *{% endif %}</label>
+        <div class="col-sm-3 mb-3 mb-sm-0">
+            {% render_field field_2 class="form-control" %}
+            <div class="{% if field_2.errors %} invalid{% endif %}">
+                {% for error in field_2.errors %}
+                    <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    {% endif %}
+</div>

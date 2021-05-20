@@ -23,8 +23,7 @@
 
     <!-- Custom fonts for this template-->
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     {% block customcss %} {% endblock %}
 
@@ -38,17 +37,16 @@
 
 <body id="page-top">
 
+{% include 'base/_modal.html' %}
+
+{% block custommodal %} {% endblock %}
+
 {% block basecontent %} {% endblock %}
 
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-
-{% include 'base/_modal.html' %}
-
-{% block custommodal %} {% endblock %}
-
 
 <!-- Bootstrap core JavaScript-->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
@@ -63,8 +61,6 @@
 <!-- Custom scripts for all pages-->
 <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
-
-{% block customjs %} {% endblock %}
 
 {% block datatablesjs %} {% endblock %}
 
@@ -92,6 +88,10 @@
 
         $(".create-etude-batch").modalForm({formURL: "{% url 'reman:create_etude_batch' %}"});
 
+        $(".create-ref-reman").modalForm({formURL: "{% url 'reman:ref_reman_create' %}"});
+
+        $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}", modalID: "#create-large-modal"});
+
         $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});
 
         // Filter Batch buttons
@@ -102,17 +102,12 @@
         // Commun modal button
         $(".bs-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url')});
-        })
+        });
         $(".bs-large-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#large-modal"});
-        })
+        });
         $(".bs-small-modal").each(function () {
             $(this).modalForm({formURL: $(this).data('form-url'), modalID: "#small-modal"});
-        })
-
-        // log file buttons
-        $(".log-btn").each(function () {
-            $(this).modalForm({formURL: $(this).data('id'), modalID: "#large-modal"});
         });
 
         // Hide message
@@ -128,10 +123,34 @@
 
     });
 
-    clock();
-    setInterval(clock, 1000);
+    getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
+        var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;
+
+        function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
+            progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
+            progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
+            progressBarElement.setAttribute("aria-valuenow", progress.percent)
+        }
+
+        function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
+            alert("Complete progress 100%")
+            progressBarMessageElement.innerHTML = "Waiting event . . ."
+            progressBarElement.setAttribute("style", "width: 0%")
+            progressBarElement.setAttribute("aria-valuenow", 0)
+            if (isDownloadFile) window.open(`{% url 'download' %}?task_id=${taskId}`, '_blank');
+        }
+
+        CeleryProgressBar.initProgressBar(progressUrl, {
+            progressBarId: progressBarId,
+            progressBarMessageId: progressBarMessageId,
+            onProgress: onExportUserProgress,
+            onSuccess: onExportUserSuccess,
+        })
+    }
 
 </script>
+
+{% block modalbtn %} {% endblock %}
 
 </body>
 

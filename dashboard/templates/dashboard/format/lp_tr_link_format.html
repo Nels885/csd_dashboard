@@ -1,0 +1,40 @@
+{% for prod in prods %}
+
+    <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"
+        {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"
+        {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"
+        {% else %}class="bg-success text-gray-700"{% endif %}>
+        <td class="bg-white" style="width: 20px;">
+            <a href="{% url 'squalaetp:detail' pk=prod.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm" target="_blank"><i class="fas fa-info-circle"></i></a>
+        </td>
+        <td>{{ activity }}</td>
+        <td>{{ prod.numero_de_dossier }}</td>
+        <td>{{ prod.modele_produit }}</td>
+        <td>{{ prod.date_retour }}</td>
+        <td>{{ prod.delai_au_en_jours_ouvres }}</td>
+        <td>{{ prod.nom_technicien }}</td>
+    </tr>
+
+{% endfor %}
+
+<tr class="bg-success text-light">
+    <td class="bg-white" style="width: 20px;"></td>
+    <td>Total {{ activity }}</td>
+    <td>{{ prods.count }}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+
+{% if last == None or last == False %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+{% endif %}

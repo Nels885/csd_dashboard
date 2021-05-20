@@ -82,3 +82,9 @@ class CorvetModalForm(CorvetForm, BSModalModelForm):
     class Meta(CorvetForm):
         model = Corvet
         fields = '__all__'
+
+    def save(self, commit=True):
+        instance = super(CorvetModalForm, self).save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+        return instance

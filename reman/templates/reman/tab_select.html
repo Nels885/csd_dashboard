@@ -2,13 +2,7 @@
 
 <li class="nav-item {% if select == 'batch_pending' %}active{% endif %}">
     <a class="nav-link {% if select == 'batch_pending' %}active{% endif %}" href="{% url 'reman:batch_table' %}?filter=pending">
-        {% trans "Current batches" %}
-    </a>
-</li>
-
-<li class="nav-item {% if select == 'batch' %}active{% endif %}">
-    <a class="nav-link {% if select == 'batch' %}active{% endif %}" href="{% url 'reman:batch_table' %}">
-        {% trans "Batch list" %}
+        <span class="font-weight-bold">{% trans "Current batches" %}</span>
     </a>
 </li>
 
@@ -18,9 +12,15 @@
     </a>
 </li>
 
+<li class="nav-item {% if select == 'batch' %}active{% endif %}">
+    <a class="nav-link {% if select == 'batch' %}active{% endif %}" href="{% url 'reman:batch_table' %}">
+        {% trans "Batch list" %}
+    </a>
+</li>
+
 <li class="nav-item {% if select == 'repair_pending' %}active{% endif %}">
     <a class="nav-link {% if select == 'repair_pending' %}active{% endif %}" href="{% url 'reman:repair_table' %}?filter=pending">
-        {% trans "Current files" %}
+        <span class="font-weight-bold">{% trans "Current files" %}</span>
     </a>
 </li>
 
@@ -30,27 +30,11 @@
     </a>
 </li>
 
-{% if perms.reman.view_default %}
-    <li class="nav-item {% if select == 'default' %}active{% endif %}">
-        <a class="nav-link {% if select == 'default' %}active{% endif %}" href="{% url 'reman:default_table' %}">
-            {% trans "Default list" %}
-        </a>
-    </li>
-{% endif %}
-
-{% if perms.reman.view_ecurefbase %}
-    <li class="nav-item {% if select == 'ecu' %}active{% endif %}">
-        <a class="nav-link {% if select == 'ecu' %}active{% endif %}" href="{% url 'reman:ecu_table' %}">
-            {% trans 'Base ECU Reman' %}
-        </a>
-    </li>
-
-    <li class="nav-item {% if select == 'ecu_dump' %}active{% endif %}">
-        <a class="nav-link {% if select == 'ecu_dump' %}active{% endif %}" href="{% url 'reman:ecu_dump_table' %}">
-            {% trans "ECU to Dump" %}
-        </a>
-    </li>
-{% endif %}
+<li class="nav-item {% if select == 'ecu_dump' %}active{% endif %}">
+    <a class="nav-link {% if select == 'ecu_dump' %}active{% endif %}" href="{% url 'reman:ecu_dump_table' %}">
+        <span class="font-weight-bold">{% trans "ECU to Dump" %}</span>
+    </a>
+</li>
 
 <li class="nav-item {% if select == 'part' %}active{% endif %}">
     <a class="nav-link {% if select == 'part' %}active{% endif %}" href="{% url 'reman:part_table' %}">

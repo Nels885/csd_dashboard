@@ -3,9 +3,10 @@ from rest_framework import serializers
 from reman.models import Batch, EcuModel, Repair
 
 REPAIR_COLUMN_LIST = [
-    'identify_number', 'batch', 'batch__ecu_ref_base__ecu_type__technical_data',
+    'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__ecu_type__technical_data',
     'batch__ecu_ref_base__ecu_type__supplier_oe', 'batch__ecu_ref_base__ecu_type__hw_reference', 'psa_barcode',
-    'status', 'quality_control', 'closing_date', 'modified_by', 'modified_at', 'created_by__username', 'created_at'
+    'status', 'quality_control', 'closing_date', 'modified_by__username', 'modified_at', 'created_by__username',
+    'created_at'
 ]
 
 ECU_REF_BASE_COLUMN_LIST = [

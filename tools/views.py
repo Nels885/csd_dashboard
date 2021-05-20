@@ -104,7 +104,7 @@ class ThermalChamberList(LoginRequiredMixin, ListView):
     template_name = 'tools/thermal_chamber_table.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ThermalChamberList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = _('Thermal chamber')
         context['table_title'] = _('Thermal chamber list')
         return context
@@ -138,7 +138,7 @@ class UltimakerStreamView(LoginRequiredMixin, TemplateView):
     template_name = "tools/ultimaker_stream.html"
 
     def get_context_data(self, **kwargs):
-        context = super(UltimakerStreamView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = "Imprimante 3D"
         context['card_title'] = "Ultimaker Streaming"
         context['stream_url'] = config.PRINTER_STREAM_URL
@@ -174,21 +174,31 @@ class SupTechCreateView(BSModalCreateView):
 @login_required
 def suptech_list(request):
     """ View of Software list page """
-    title = _('Tools')
-    table_title = _('Support Tech list')
+    title = _('Support Tech list')
+    query_param = request.GET.get('filter', 'all')
+    table_title = 'Total'
     objects = Suptech.objects.all().order_by('-date')
-    return render(request, 'tools/suptech_table.html', locals())
+    if query_param and query_param == "waiting":
+        table_title = 'En Attente'
+        objects = objects.filter(status="En Attente")
+    elif query_param and query_param == "progress":
+        table_title = 'En Cours'
+        objects = objects.filter(status="En Cours")
+    elif query_param and query_param == "close":
+        table_title = 'Cloturées'
+        objects = objects.filter(status="Cloturée")
+    return render(request, 'tools/suptech/suptech_table.html', locals())
 
 
 class SuptechResponseView(PermissionRequiredMixin, UpdateView):
     permission_required = 'tools.change_suptech'
     model = Suptech
     form_class = SuptechResponseForm
-    template_name = 'tools/suptech_update.html'
+    template_name = 'tools/suptech/suptech_update.html'
     success_url = reverse_lazy('tools:suptech_list')
 
     def get_context_data(self, **kwargs):
-        context = super(SuptechResponseView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['title'] = "Tools"
         context['card_title'] = _("Support Tech Response")
         return context
@@ -196,4 +206,4 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.send_email(self.request)
         messages.success(self.request, _('Success: The email has been sent.'))
-        return super(SuptechResponseView, self).form_valid(form)
+        return super().form_valid(form)

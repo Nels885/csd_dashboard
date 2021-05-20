@@ -17,10 +17,16 @@ $(document).ready(function () {
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
-        columnDefs: [{
-            targets: "_all",
-            orderable: false,
-        }],
+        columnDefs: [
+            {
+                targets: "_all",
+                orderable: false,
+            },
+            {
+                targets: 0,
+                searchable: false,
+            }
+        ],
     });
     $('#tronikTable').DataTable({
         paging: false,
@@ -28,11 +34,17 @@ $(document).ready(function () {
         scrollX: true,
         dom: 'Bfrtip',
         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
+            'copy', 'csv', 'excel', 'pdf', 'print',
         ],
-        columnDefs: [{
-            targets: "_all",
-            orderable: false,
-        }],
+        columnDefs: [
+            {
+                targets: "_all",
+                orderable: false,
+            },
+            {
+                targets: 0,
+                searchable: false,
+            }
+        ],
     });
 });

@@ -1,14 +1,14 @@
 import time
+import logging
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import (
-    NoSuchElementException, TimeoutException, ElementClickInterceptedException, WebDriverException,
-    StaleElementReferenceException
-)
+from selenium.common.exceptions import WebDriverException
 from constance import config
+
+logger = logging.getLogger('command')
 
 profile = webdriver.FirefoxProfile()
 if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
@@ -53,8 +53,9 @@ class ScrapingCorvet(webdriver.Firefox):
                 data = WebDriverWait(self, 10).until(
                     EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
                 ).text
-            except (NoSuchElementException,
-                    TimeoutException, ElementClickInterceptedException, StaleElementReferenceException):
+            except Exception as err:
+                exception_type = type(err).__name__
+                logger.error(f'{exception_type} - result(): {err}')
                 data = "Exception or timeout error !"
             self.logout()
         else:
@@ -74,7 +75,9 @@ class ScrapingCorvet(webdriver.Firefox):
                 element.send_keys(value)
             login.click()
             WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin')))
-        except (NoSuchElementException, TimeoutException, ElementClickInterceptedException):
+        except Exception as err:
+            exception_type = type(err).__name__
+            logger.error(f"{exception_type} - login(): {err}")
             self.quit()
             return False
         return True
@@ -87,7 +90,9 @@ class ScrapingCorvet(webdriver.Firefox):
         try:
             logout = self.find_element_by_id('form:deconnect2')
             logout.click()
-        except (NoSuchElementException, ElementClickInterceptedException):
+        except Exception as err:
+            exception_type = type(err).__name__
+            logger.error(f"{exception_type} - logout(): {err}")
             self.quit()
             return False
         return True

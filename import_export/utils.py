@@ -1,14 +1,70 @@
 from django.db.models.functions import Cast, TruncSecond
-from django.db.models import DateTimeField, CharField
-from django.http import Http404
-from django.db.models import Q
+from django.db.models import DateTimeField, CharField, Q, Count
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
-from reman.models import Batch, Repair, EcuModel
+from reman.models import Batch, Repair, EcuType
 from tools.models import Suptech
-from utils.file.export import ExportExcel
 
+XELON_LIST = [
+    ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
+    ('Vehicule (XELON)', 'modele_vehicule'), ('Date Retour (XELON)', 'date_retour')
+]
+
+BTEL_LIST = [
+    ('Modele reel', 'corvet__btel__name'), ('Réf. Setplate', 'corvet__btel__label_ref'),
+    ('Niv.', 'corvet__btel__level'), ('HW variant', 'corvet__btel__extra'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
+    ('DHB_HAUT PARLEUR', 'corvet__attribut_dhb'), ('DUN_AMPLI EQUALISEUR', 'corvet__attribut_dun'),
+    ('DYR_BTA', 'corvet__attribut_dyr'), ('14X_BTEL_HARD', 'corvet__electronique_14x'),
+    ('44X_BTEL_FOURN.NO.SERIE', 'corvet__electronique_44x'), ('64X_BTEL_FOURN.CODE', 'corvet__electronique_64x'),
+    ('84X_BTEL_DOTE', 'corvet__electronique_84x'), ('94X_BTEL_SOFT', 'corvet__electronique_94x')
+]
+
+CMM_LIST = [
+    ('Modele reel', 'corvet__cmm__name'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
+    ('14A_CMM_HARD', 'corvet__electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'corvet__electronique_34a'),
+    ('94A_CMM_SOFT', 'corvet__electronique_94a'), ('44A_CMM_FOURN.NO.SERIE', 'corvet__electronique_44b'),
+    ('54A_CMM_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64A_CMM_FOURN.CODE', 'corvet__electronique_64b'),
+    ('84A_CMM_DOTE', 'corvet__electronique_84a'), ('P4A_CMM_EOBD', 'corvet__electronique_p4a')
+]
+
+BSI_LIST = [
+    ('Modele reel', 'corvet__bsi__name'), ('HW', 'corvet__bsi__hw'), ('SW', 'corvet__bsi__sw'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
+    ('94B_BSI_SOFT', 'corvet__electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'corvet__electronique_44b'),
+    ('54B_BSI_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64B_BSI_FOURN.CODE', 'corvet__electronique_64b'),
+    ('84B_BSI_DOTE', 'corvet__electronique_84b')
+]
+
+HDC_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('16P_HDC_HARD', 'corvet__electronique_16p'),
+    ('46P_HDC_FOURN.NO.SERIE', 'corvet__electronique_46p'), ('56P_HDC_FOURN.DATE.FAB', 'corvet__electronique_56p'),
+    ('66P_HDC_FOURN.CODE', 'corvet__electronique_66p')
+]
+
+BSM_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('16B_BSM_HARD', 'corvet__electronique_16b'),
+    ('46B_BSM_FOURN.NO.SERIE', 'corvet__electronique_46b'), ('56B_BSM_FOURN.DATE.FAB', 'corvet__electronique_56b'),
+    ('66B_BSM_FOURN.CODE', 'corvet__electronique_66b'), ('86B_BSM_DOTE', 'corvet__electronique_86b'),
+    ('96B_BSM_SOFT', 'corvet__electronique_96b')
+]
+
+
+def get_header_fields(prod_list):
+    header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
+    fields = [value_tuple[1] for value_tuple in XELON_LIST] + [value_tuple[1] for value_tuple in prod_list]
+    return header, fields
+
+
+BTEL_HEADER, BTEL_FIELDS = get_header_fields(BTEL_LIST)
+CMM_HEADER, CMM_FIELDS = get_header_fields(CMM_LIST)
+BSI_HEADER, BSI_FIELDS = get_header_fields(BSI_LIST)
+HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
+BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
 
 """
 ##################################
@@ -20,7 +76,6 @@ Export CORVET data to excel format
 
 
 def extract_ecu(vin_list=None):
-    filename = 'ecu'
     header = [
         'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD',
         '34A_CMM_SOFT_LIVRE', '94A_CMM_SOFT', '44A_CMM_FOURN.NO.SERIE', '54A_CMM_FOURN.DATE.FAB', '64A_CMM_FOURN.CODE',
@@ -28,158 +83,48 @@ def extract_ecu(vin_list=None):
     ]
     corvets = Corvet.objects.filter(vin__in=vin_list)
 
-    values_list = (
+    fields = [
         'xelon__numero_de_dossier', 'vin', 'xelon__modele_produit', 'xelon__modele_vehicule',
         'donnee_date_debut_garantie', 'electronique_14a', 'electronique_34a', 'electronique_94a', 'electronique_44a',
         'electronique_54a', 'electronique_64a', 'electronique_84a', 'electronique_p4a'
+    ]
+    values_list = corvets.values_list(*fields).distinct()
+    return header, fields, values_list
+
+
+def extract_corvet(product='corvet'):
+    values_list = ()
+    header = queryset = None
+    xelons = Xelon.objects.filter(corvet__isnull=False).annotate(
+        date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
-
-    return ExportExcel(queryset=corvets, filename=filename, header=header, values_list=values_list).http_response()
-
-
-def extract_corvet(product='corvet', excel_type='csv'):
-    filename = product
-    header = queryset = values_list = None
     if product == "ecu":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD',
-            '34A_CMM_SOFT_LIVRE', '94A_CMM_SOFT', '44A_CMM_FOURN.NO.SERIE', '54A_CMM_FOURN.DATE.FAB',
-            '64A_CMM_FOURN.CODE',
-            '84A_CMM_DOTE', 'P4A_CMM_EOBD'
-        ]
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14a__exact='').annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
-            'corvet__electronique_14a', 'corvet__electronique_34a', 'corvet__electronique_94a',
-            'corvet__electronique_44a',
-            'corvet__electronique_54a', 'corvet__electronique_64a', 'corvet__electronique_84a',
-            'corvet__electronique_p4a'
-        )
+        header, values_list = CMM_HEADER, CMM_FIELDS
+        queryset = xelons.exclude(corvet__electronique_14a__exact='')
     elif product == "bsi":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14B_BSI_HARD',
-            '94B_BSI_SOFT', '44B_BSI_FOURN.NO.SERIE', '54B_BSI_FOURN.DATE.FAB', '64B_BSI_FOURN.CODE', '84B_BSI_DOTE'
-        ]
-
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_14b__exact='').annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
-            'corvet__electronique_14b', 'corvet__electronique_94b', 'corvet__electronique_44b',
-            'corvet__electronique_54b',
-            'corvet__electronique_64b', 'corvet__electronique_84b',
-        )
+        header, values_list = BSI_HEADER, BSI_FIELDS
+        queryset = xelons.exclude(corvet__electronique_14b__exact='')
     elif product == "com200x":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '16P_HDC_HARD',
-            '46P_HDC_FOURN.NO.SERIE', '56P_HDC_FOURN.DATE.FAB', '66P_HDC_FOURN.CODE'
-        ]
-
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_16p__exact='').annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
-            'corvet__electronique_16p', 'corvet__electronique_46p', 'corvet__electronique_56p',
-            'corvet__electronique_66p'
-        )
+        header, values_list = HDC_HEADER, HDC_FIELDS
+        queryset = xelons.exclude(corvet__electronique_16p__exact='')
     elif product == "bsm":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '16B_BSM_HARD',
-            '46B_BSM_FOURN.NO.SERIE', '56B_BSM_FOURN.DATE.FAB', '66B_BSM_FOURN.CODE', '86B_BSM_DOTE', '96B_BSM_SOFT'
-        ]
-
-        queryset = Xelon.objects.filter(corvet__isnull=False).exclude(corvet__electronique_16p__exact='').annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_debut_garantie',
-            'corvet__electronique_16b', 'corvet__electronique_46b', 'corvet__electronique_56b',
-            'corvet__electronique_66b',
-            'corvet__electronique_86b', 'corvet__electronique_96b'
-        )
+        header, values_list = BSM_HEADER, BSM_FIELDS
+        queryset = xelons.exclude(corvet__electronique_16p__exact='')
     elif product == "nac":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE', '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE',
-            '94X_BTEL_SOFT'
-        ]
-
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__contains="NAC")).annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__electronique_14x', 'corvet__electronique_44x',
-            'corvet__electronique_64x', 'corvet__electronique_84x', 'corvet__electronique_94x'
-        )
+        header, values_list = BTEL_HEADER, BTEL_FIELDS
+        queryset = xelons.filter(modele_produit__startswith="NAC")
     elif product == "rtx":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="RT")).annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
-        )
+        header, values_list = BTEL_HEADER, BTEL_FIELDS
+        queryset = xelons.filter(modele_produit__startswith="RT")
     elif product == "smeg":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="SMEG")).annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
-        )
+        header, values_list = BTEL_HEADER, BTEL_FIELDS
+        queryset = xelons.filter(modele_produit__startswith="SMEG")
     elif product == "rneg":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="RNEG")).annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
-        )
+        header, values_list = BTEL_HEADER, BTEL_FIELDS
+        queryset = xelons.filter(modele_produit__startswith="RNEG")
     elif product == "ng4":
-        header = [
-            'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'Modèle réel', 'HW variant',
-            'DATE_DEBUT_GARANTIE', 'LIGNE_DE_PRODUIT', '14X_BTEL_HARD', '44X_BTEL_FOURN.NO.SERIE',
-            '64X_BTEL_FOURN.CODE', '84X_BTEL_DOTE', '94X_BTEL_SOFT'
-        ]
-
-        queryset = Xelon.objects.filter(Q(corvet__isnull=False) & Q(modele_produit__startswith="NG4")).annotate(
-            date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
-        )
-        values_list = (
-            'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'corvet__btel__name',
-            'corvet__btel__extra', 'date_debut_garantie', 'corvet__donnee_ligne_de_produit', 'corvet__electronique_14x',
-            'corvet__electronique_44x', 'corvet__electronique_64x', 'corvet__electronique_84x',
-            'corvet__electronique_94x'
-        )
+        header, values_list = BTEL_HEADER, BTEL_FIELDS
+        queryset = xelons.filter(modele_produit__startswith="NG4")
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
@@ -191,11 +136,11 @@ def extract_corvet(product='corvet', excel_type='csv'):
             '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
         ]
         queryset = Corvet.objects.all()
-        values_list = None
-    if queryset:
-        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
-    else:
-        raise Http404("No data matches")
+        values_list = tuple([field.name for field in Corvet._meta.fields
+                             if field.name not in ['radio', 'btel', 'bsi', 'emf', 'bsm', 'cmm', 'hdc']])
+    fields = values_list
+    values_list = queryset.values_list(*values_list).distinct()
+    return header, fields, values_list
 
 
 """
@@ -207,19 +152,22 @@ Export REMAN data to excel format
 """
 
 
-def extract_reman(model, excel_type='csv'):
-    filename = model
+def extract_reman(model):
     header = queryset = values_list = None
     if model == "batch":
         header = [
-            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
-            'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
+            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Réparés', 'Rebuts', 'Emballés', 'Total', 'Date_de_Debut',
+            'Date_de_fin', 'Type_ECU', 'HW_Reference', 'Fabriquant',  'Actif', 'Ajoute par', 'Ajoute le'
         ]
+        repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
+        rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
+        packed = Count('repairs', filter=Q(repairs__checkout=True))
         queryset = Batch.objects.all().order_by('batch_number')
+        queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
         values_list = (
-            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
-            'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
-            'active', 'created_by__username', 'created_at'
+            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'repaired', 'rebutted', 'packed', 'total',
+            'start_date', 'end_date', 'ecu_ref_base__ecu_type__technical_data', 'ecu_ref_base__ecu_type__hw_reference',
+            'ecu_ref_base__ecu_type__supplier_oe', 'active', 'created_by__username', 'created_at'
         )
     elif model == "repair_reman":
         header = [
@@ -240,21 +188,15 @@ def extract_reman(model, excel_type='csv'):
             'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
             'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
         ]
-        queryset = EcuModel.objects.all().order_by('ecu_type__ecu_ref_base__reman_reference')
+        queryset = EcuType.objects.all().order_by('ecu_ref_base__reman_reference')
         values_list = (
-            'oe_raw_reference', 'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data',
-            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'psa_barcode', 'former_oe_reference',
-            'ecu_type__ecu_ref_base__ref_cal_out', 'ecu_type__spare_part__code_produit',
-            'ecu_type__ecu_ref_base__ref_psa_out', 'ecu_type__ecu_ref_base__open_diag',
-            'ecu_type__ecu_ref_base__ref_mat', 'ecu_type__ecu_ref_base__ref_comp', 'ecu_type__ecu_ref_base__cal_ktag',
-            'ecu_type__ecu_ref_base__status'
-
+            'ecumodel__oe_raw_reference', 'ecu_ref_base__reman_reference', 'technical_data', 'hw_reference',
+            'supplier_oe', 'ecumodel__psa_barcode', 'ecumodel__former_oe_reference', 'ref_cal_out',
+            'spare_part__code_produit', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
         )
-
-    if queryset:
-        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
-    else:
-        raise Http404("No data matches")
+    fields = values_list
+    values_list = queryset.values_list(*values_list).distinct()
+    return header, fields, values_list
 
 
 """
@@ -266,8 +208,7 @@ Export Tools data to excel format
 """
 
 
-def extract_tools(model='all', excel_type='csv'):
-    filename = model
+def extract_tools(model):
     header = queryset = values_list = None
     if model == "suptech":
         header = [
@@ -275,7 +216,6 @@ def extract_tools(model='all', excel_type='csv'):
         ]
         queryset = Suptech.objects.all().order_by('date')
         values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
-    if queryset:
-        return ExportExcel(queryset, filename, header, values_list, excel_type).http_response()
-    else:
-        raise Http404("No data matches")
+    fields = values_list
+    values_list = queryset.values_list(*values_list).distinct()
+    return header, fields, values_list

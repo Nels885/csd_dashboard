@@ -1,8 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
-from django.core.exceptions import ObjectDoesNotExist
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 
@@ -11,6 +9,7 @@ from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet
 from .models import Xelon, Action
+from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
 
 
@@ -29,28 +28,29 @@ class IhmEmailModalForm(BSModalForm):
         self.fields['cc'].initial = cc_email_list
 
     def send_email(self):
-        email = EmailMessage(
+        send_email_task.delay(
             subject=self.cleaned_data['subject'], body=self.cleaned_data['message'], from_email=self.request.user.email,
             to=string_to_list(self.cleaned_data['to']), cc=string_to_list(self.cleaned_data['cc'])
         )
-        email.send()
 
     @staticmethod
     def vin_message(model, request):
-        try:
-            data = model.actions.get(content__contains="OLD_VIN").content.split('\n')
+        queryset = model.actions.filter(content__contains="OLD_VIN")
+        if queryset:
+            data = queryset.first().content.split('\n')
             vins = {"old_vin": data[0][-17:], "new_vin": data[1][-17:]}
-        except ObjectDoesNotExist:
+        else:
             vins = None
         message = render_to_string('squalaetp/email_format/vin_error_email.html', locals())
         return message
 
     @staticmethod
     def prod_message(model, request):
-        try:
-            data = model.actions.get(content__contains="OLD_PROD").content.split('\n')
+        queryset = model.actions.filter(content__contains="OLD_PROD")
+        if queryset:
+            data = queryset.first().content.split('\n')
             prods = {"old_prod": data[0][9:], "new_prod": data[1][9:]}
-        except ObjectDoesNotExist:
+        else:
             prods = None
         message = render_to_string('squalaetp/email_format/prod_error_email.html', locals())
         return message

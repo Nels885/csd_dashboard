@@ -1,0 +1,92 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    <p> Vous trouvez ci-dessous la liste des lots REMAN en cours.</p>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>Numéro de lot</th>
+            <th>Réf. REMAN</th>
+            <th>Réparés</th>
+            <th>Emballées</th>
+            <th>Restants</th>
+            <th>Date de Debut</th>
+            <th>Date de Fin</th>
+            <th>Modèle Produit</th>
+            <th>Fabriquant</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for batch in current_batchs %}
+
+            <tr>
+                <td>{{ batch }}</td>
+                <td>{{ batch.ecu_ref_base.reman_reference }}</td>
+                <td>{{ batch.repaired }}</td>
+                <td>{{ batch.packed }}</td>
+                <td>{{ batch.remaining }}</td>
+                <td>{{ batch.start_date }}</td>
+                <td>{{ batch.end_date }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
+                <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    {% if next_batchs %}
+
+        <p> Vous trouvez ci-dessous la liste des prochains lots REMAN à faire.</p>
+
+        <table class="table table-bordered text-nowrap">
+            <thead>
+            <tr>
+                <th>Numéro de lot</th>
+                <th>Réf. REMAN</th>
+                <th>Réparés</th>
+                <th>Emballées</th>
+                <th>Restants</th>
+                <th>Date de Debut</th>
+                <th>Date de Fin</th>
+                <th>Modèle Produit</th>
+                <th>Fabriquant</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for batch in next_batchs %}
+
+                <tr>
+                    <td>{{ batch }}</td>
+                    <td>{{ batch.ecu_ref_base.reman_reference }}</td>
+                    <td>{{ batch.repaired }}</td>
+                    <td>{{ batch.packed }}</td>
+                    <td>{{ batch.remaining }}</td>
+                    <td>{{ batch.start_date }}</td>
+                    <td>{{ batch.end_date }}</td>
+                    <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
+                    <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}
