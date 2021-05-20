@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-11 18:51+0200\n"
+"POT-Creation-Date: 2021-05-20 14:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,13 +108,12 @@ msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
-#: templates/nav/nav_reman.html:42 templates/nav/nav_reman.html:64
+#: templates/nav/nav_reman.html:46 templates/nav/nav_reman.html:71
 #: templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
 
-#: templates/nav/nav_csd_atelier.html:24 templates/nav/nav_reman.html:23
-#: templates/nav/nav_reman.html:86
+#: templates/nav/nav_csd_atelier.html:24 templates/nav/nav_reman.html:26
 msgid "Current files"
 msgstr "Dossiers en cours"
 
@@ -126,7 +125,7 @@ msgstr "Dossiers erreur VIN"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:30
+#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:95
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -188,7 +187,7 @@ msgstr ""
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: templates/nav/nav_reman.html:17 templates/nav/nav_reman.html:85
+#: templates/nav/nav_reman.html:17
 msgid "Repairs"
 msgstr "Réparations"
 
@@ -196,55 +195,55 @@ msgstr "Réparations"
 msgid "Create file"
 msgstr "Création dossier"
 
-#: templates/nav/nav_reman.html:44
+#: templates/nav/nav_reman.html:47
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:45
+#: templates/nav/nav_reman.html:48
 msgid "Create Etude Batch"
 msgstr "Création lot Etude"
 
-#: templates/nav/nav_reman.html:66
-msgid "Create Default"
-msgstr "Création panne"
-
-#: templates/nav/nav_reman.html:68
-msgid "HW References"
-msgstr "Réf. Hardware"
-
-#: templates/nav/nav_reman.html:87
+#: templates/nav/nav_reman.html:52
 msgid "Current batches"
 msgstr "Lots en cours"
 
-#: templates/nav/nav_reman.html:88
-msgid "REMAN References"
-msgstr "Réf. REMAN"
-
-#: templates/nav/nav_reman.html:89
-msgid "Spare Parts"
-msgstr "Pièces détachées"
-
-#: templates/nav/nav_reman.html:92
-msgid "Etude"
-msgstr ""
-
-#: templates/nav/nav_reman.html:93
+#: templates/nav/nav_reman.html:53
 msgid "Etude batches"
 msgstr "Lots en Etude"
 
-#: templates/nav/nav_reman.html:94
-msgid "ECU to Dump"
-msgstr "ECU à Dumper"
+#: templates/nav/nav_reman.html:72
+msgid "REMAN References"
+msgstr "Réf. REMAN"
 
-#: templates/nav/nav_reman.html:95
+#: templates/nav/nav_reman.html:73
+msgid "HW References"
+msgstr "Réf. Hardware"
+
+#: templates/nav/nav_reman.html:74
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: templates/nav/nav_reman.html:106
+#: templates/nav/nav_reman.html:77
+msgid "Etude"
+msgstr ""
+
+#: templates/nav/nav_reman.html:78
+msgid "ECU to Dump"
+msgstr "ECU à Dumper"
+
+#: templates/nav/nav_reman.html:96
+msgid "Batch list"
+msgstr "Liste des lots"
+
+#: templates/nav/nav_reman.html:97
+msgid "Spare Parts"
+msgstr "Pièces détachées"
+
+#: templates/nav/nav_reman.html:108
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:114
+#: templates/nav/nav_reman.html:116
 msgid "check part"
 msgstr "Vérification pièce"
 

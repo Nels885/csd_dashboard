@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-11 18:51+0200\n"
+"POT-Creation-Date: 2021-05-20 14:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,25 +18,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/forms.py:59 reman/forms.py:105
+#: reman/forms.py:61 reman/forms.py:107
 msgid "Unauthorized batch number!"
 msgstr "Numéro de lot non autorisé !"
 
-#: reman/forms.py:61 reman/forms.py:107
+#: reman/forms.py:63 reman/forms.py:109
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:68
+#: reman/forms.py:70
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:338 reman/tests/tests_reman_views.py:107
+#: reman/forms.py:372 reman/tests/tests_reman_views.py:107
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/models.py:109
+#: reman/models.py:104
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
+
+#: reman/templates/reman/default_table.html:8
+#: reman/templates/reman/modal/default_create.html:7
+msgid "Create Default"
+msgstr "Ajout panne"
 
 #: reman/templates/reman/ecu_ref_base_update.html:36
 #: reman/templates/reman/part/part_create_form.html:49
@@ -53,7 +58,9 @@ msgstr "Création d'un lot"
 #: reman/templates/reman/modal/default_create.html:43
 #: reman/templates/reman/modal/default_update.html:43
 #: reman/templates/reman/modal/ecu_dump_update.html:38
-#: reman/templates/reman/modal/ecu_type_update.html:38
+#: reman/templates/reman/modal/ecu_hw_create.html:43
+#: reman/templates/reman/modal/ecu_hw_update.html:43
+#: reman/templates/reman/modal/ref_reman_create.html:38
 #: reman/templates/reman/modal/repair_create.html:38
 #: reman/templates/reman/part/part_create_form.html:47
 #: reman/templates/reman/repair/repair_close.html:93
@@ -63,6 +70,8 @@ msgstr "Annuler"
 
 #: reman/templates/reman/modal/batch_create.html:42
 #: reman/templates/reman/modal/default_create.html:44
+#: reman/templates/reman/modal/ecu_hw_create.html:44
+#: reman/templates/reman/modal/ref_reman_create.html:39
 #: reman/templates/reman/modal/repair_create.html:39
 msgid "Create"
 msgstr "Création"
@@ -90,13 +99,9 @@ msgstr "Mettre à jour le lot"
 #: reman/templates/reman/modal/batch_update.html:42
 #: reman/templates/reman/modal/default_update.html:44
 #: reman/templates/reman/modal/ecu_dump_update.html:39
-#: reman/templates/reman/modal/ecu_type_update.html:39
+#: reman/templates/reman/modal/ecu_hw_update.html:44
 msgid "Update"
 msgstr "Mise à jour"
-
-#: reman/templates/reman/modal/default_create.html:7
-msgid "Create Default"
-msgstr "Ajout panne"
 
 #: reman/templates/reman/modal/default_update.html:7
 msgid "Update Default"
@@ -106,9 +111,19 @@ msgstr "Mise à jour panne"
 msgid "Update ECU Dump"
 msgstr "Mise à jour Dump ECU"
 
-#: reman/templates/reman/modal/ecu_type_update.html:7
+#: reman/templates/reman/modal/ecu_hw_create.html:7
+#, fuzzy
+#| msgid "Update HW Reference"
+msgid "Create HW Reference"
+msgstr "Mise à jour Réf. Hardware"
+
+#: reman/templates/reman/modal/ecu_hw_update.html:7
 msgid "Update HW Reference"
 msgstr "Mise à jour Réf. Hardware"
+
+#: reman/templates/reman/modal/ref_reman_create.html:7
+msgid "Create REMAN Reference"
+msgstr "Création Réf. REMAN"
 
 #: reman/templates/reman/modal/repair_create.html:7
 msgid "Create Repair"
@@ -153,19 +168,11 @@ msgstr "Dossiers client"
 msgid "Customer files"
 msgstr "Dossiers client"
 
-#: reman/templates/reman/tab_select.html:36
-msgid "Default list"
-msgstr "Liste des pannes"
-
-#: reman/templates/reman/tab_select.html:43
-msgid "REMAN References"
-msgstr "Réf. REMAN"
-
-#: reman/templates/reman/tab_select.html:49
+#: reman/templates/reman/tab_select.html:35
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: reman/templates/reman/tab_select.html:55
+#: reman/templates/reman/tab_select.html:41
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
@@ -173,55 +180,63 @@ msgstr "Pièces détachées"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: reman/tests/tests_reman_views.py:128 reman/views.py:273
+#: reman/tests/tests_reman_views.py:128 reman/views.py:293
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: reman/views.py:42 reman/views.py:58
+#: reman/views.py:44 reman/views.py:60
 msgid "Modification customer file"
 msgstr "Modification dossier client"
 
-#: reman/views.py:47 reman/views.py:63
+#: reman/views.py:49 reman/views.py:65
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views.py:72
+#: reman/views.py:74
 msgid "Detail customer file"
 msgstr "Dossier client détaillé"
 
-#: reman/views.py:83
+#: reman/views.py:85
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#: reman/views.py:136 reman/views.py:146
+#: reman/views.py:138 reman/views.py:148
 msgid "Success: Batch was created."
 msgstr "Succès: le lot a été créé."
 
-#: reman/views.py:157
+#: reman/views.py:159
 msgid "Success: Batch was updated."
 msgstr "Succès: le lot a été mis à jour."
 
-#: reman/views.py:165
+#: reman/views.py:176
 msgid "Success: Batch was deleted."
 msgstr "Succès: le lot a été supprimé."
 
-#: reman/views.py:174
+#: reman/views.py:185
+msgid "Success: Reman reference was created."
+msgstr "Succès: La Référence REMAN a été créé."
+
+#: reman/views.py:194
 msgid "Success: Reman Default was created."
 msgstr "Succès: La panne REMAN a été créé."
 
-#: reman/views.py:184
+#: reman/views.py:204
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
 
-#: reman/views.py:307
+#: reman/views.py:326
 #, python-format
 msgid "Repair n°%(repair)s to batch n°%(batch)s ready for shipment"
 msgstr "Réparation n°%(repair)s du lot n°%(batch)s prêt pour expédition."
 
-#: reman/views.py:421
-msgid "Success: Reman ECU HW Reference was updated."
-msgstr "Succès: la référence Hardware a été mise à jour.."
+#: reman/views.py:454
+msgid "Success: Reman ECU HW Reference was created."
+msgstr "Succès: la référence Hardware a été créé."
 
-#: reman/views.py:439
+#: reman/views.py:464
+msgid "Success: Reman ECU HW Reference was updated."
+msgstr "Succès: la référence Hardware a été mise à jour."
+
+#: reman/views.py:482
 msgid "Success: Reman ECU dump was updated."
 msgstr "Succès: La dump ECU Reman a été mise à jour."

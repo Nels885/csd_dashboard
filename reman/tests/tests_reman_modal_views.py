@@ -401,3 +401,46 @@ class MixinsTest(UnitTest):
         # Object is updated
         ecu_type = EcuType.objects.first()
         self.assertEqual(ecu_type.status, 'test')
+
+    def test_create_ref_reman_ajax_mixin(self):
+        """
+        Create EcuRefBase throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuRefBase, 'add_ecurefbase')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        refs_list = [('', ''), ('1234567890', '9876543210'), ('1234567891', ''), ('1234567891', 'test_new')]
+        for reman_ref, hw_ref in refs_list:
+            response = self.client.post(
+                reverse('reman:ref_reman_create'),
+                data={
+                    'reman_reference': reman_ref,
+                    'hw_reference': hw_ref
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
+
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            ecu_type = EcuType.objects.all()
+            self.assertEqual(ecu_type.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:ref_reman_create'),
+            data={
+                'reman_reference': '1234567891',
+                'hw_reference': '9876543210'
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        remans = EcuRefBase.objects.all()
+        self.assertEqual(remans.count(), 2)
+        self.assertEqual(remans.last().reman_reference, '1234567891')
