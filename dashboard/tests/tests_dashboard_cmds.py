@@ -96,3 +96,9 @@ class DashboardCommandTestCase(UnitTest):
             "Suppression des données des tables de Dashboard terminée!",
             self.out.getvalue()
         )
+
+    def test_send_email(self):
+        call_command("sendemail", "--late_products", "--vin_error", "--vin_corvet",  stdout=self.out)
+        self.assertIn("Envoi de l'email des produits en retard terminée!", self.out.getvalue())
+        self.assertIn("Pas d'erreurs de VIN a envoyer !", self.out.getvalue())
+        self.assertIn("Pas de VIN sans données CORVET à envoyer !", self.out.getvalue())

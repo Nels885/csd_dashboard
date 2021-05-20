@@ -1,16 +1,15 @@
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
+from django.core.management import call_command
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.db.models import Q, Count, F
 
 from constance import config
 
 from squalaetp.models import Xelon, Indicator
-from reman.models import Batch
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
 
@@ -101,24 +100,4 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(self.style.SUCCESS("Pas de VIN sans données CORVET à envoyer !"))
         if options['reman']:
-            self._reman_email(date_joined)
-
-    def _reman_email(self, date_joined):
-        subject = "Liste des lots REMAN en cours {}".format(date_joined)
-        repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
-        packed = Count('repairs', filter=Q(repairs__checkout=True))
-        batchs = Batch.objects.filter(active=True, number__lt=900, start_date__lte=timezone.now()).order_by('end_date')
-        batchs = batchs.annotate(repaired=repaired, packed=packed, remaining=F('quantity') - repaired)
-        if batchs:
-            html_message = render_to_string(
-                'dashboard/email_format/reman_batches_email.html',
-                {'batchs': batchs, 'domain': config.WEBSITE_DOMAIN}
-            )
-            plain_message = strip_tags(html_message)
-            send_mail(
-                subject, plain_message, None, string_to_list(config.REMAN_TO_EMAIL_LIST),
-                html_message=html_message
-            )
-            self.stdout.write(self.style.SUCCESS("Envoi de l'email des lots REMAN en cours terminée !"))
-        else:
-            self.stdout.write(self.style.SUCCESS("Pas de lot REMAN en cours à envoyer !"))
+            call_command("emailreman", "--batch")

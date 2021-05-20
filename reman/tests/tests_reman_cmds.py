@@ -69,3 +69,7 @@ class RemanCommandTestCase(UnitTest):
         )
         for obj_nb in [EcuRefBase.objects.count(), EcuModel.objects.count(), EcuType.objects.count()]:
             self.assertEqual(obj_nb, 0)
+
+    def test_send_email_batch(self):
+        call_command("emailreman", "--batch",  stdout=self.out)
+        self.assertIn("Pas de lot REMAN en cours à envoyer !", self.out.getvalue())
