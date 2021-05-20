@@ -2,18 +2,6 @@
 
 {% load static i18n %}
 
-{% block card_header %}
-
-    <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs" role="tablist">
-
-            {% include 'reman/tab_select.html' with select='base_ref' %}
-
-        </ul>
-    </div>
-
-{% endblock %}
-
 {% block table_content %}
 
     <table class="table table-bordered table-sm text-nowrap" id="baseRefTable" style="width: 100%;">

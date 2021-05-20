@@ -2,18 +2,6 @@
 
 {% load static i18n %}
 
-{% block card_header %}
-
-    <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs" role="tablist">
-
-            {% include 'reman/tab_select.html' with select='default' %}
-
-        </ul>
-    </div>
-
-{% endblock %}
-
 {% block table_content %}
 
     <table class="table table-bordered table-sm text-nowrap" id="defaultTable" style="width: 100%;">
