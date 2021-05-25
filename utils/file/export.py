@@ -83,13 +83,12 @@ calibre = Calibre(TAG_XELON_PATH, TAG_XELON_LOG_PATH)
 class ExportExcel:
     """ class for exporting data in CSV format """
 
-    def __init__(self, values_list, filename, header, excel_type="csv", novalue="#"):
+    def __init__(self, values_list, filename, header, novalue="#"):
         self.date = datetime.datetime.now()
-        self.filename = filename
+        self.filename, self.excelType = self._file_format(filename)
         self.header = header
         self.noValue = novalue
         self.valueSet = values_list
-        self.excelType = excel_type
 
     def http_response(self):
         """ Creation http response """
@@ -224,3 +223,11 @@ class ExportExcel:
             return re.sub(re_sub, ' ', f.text)
         else:
             return f.text
+
+    @staticmethod
+    def _file_format(filename):
+        file_list = filename.split('.')
+        filename, extension = file_list[0], 'csv'
+        if len(file_list) > 1:
+            extension = file_list[-1]
+        return filename, extension

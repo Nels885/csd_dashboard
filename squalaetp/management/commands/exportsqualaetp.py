@@ -8,7 +8,7 @@ from squalaetp.models import Xelon
 from psa.models import Corvet
 
 from utils.file.export import ExportExcel, os
-from utils.conf import CSD_ROOT, conf
+from utils.conf import CSD_ROOT
 
 logger = logging.getLogger('command')
 
@@ -28,15 +28,15 @@ class Command(BaseCommand):
         if options['corvet']:
             self.stdout.write("[CORVET_EXPORT] Waiting...")
 
-            filename = "squalaetp_corvet"
-            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
+            filename = "squalaetp_corvet.csv"
+            path = os.path.join(CSD_ROOT, "EXTS")
             header = [f.name for f in Corvet._meta.local_fields]
             queryset = Corvet.objects.exclude(donnee_date_entree_montage__isnull=True)
             values_list = queryset.values_list().distinct()
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(
+                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
                         queryset.count(), os.path.join(path, filename)
                     )
                 )
@@ -44,7 +44,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write("[SQUALAETP_EXPORT] Waiting...")
 
-            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
+            path = os.path.join(CSD_ROOT, "EXTS")
             header = [
                 'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE',
                 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE', 'SILHOUETTE', 'GENRE_DE_PRODUIT',
@@ -65,7 +65,7 @@ class Command(BaseCommand):
                 values_list = queryset.values_list(*(xelon_list + corvet_list)).distinct()
                 for filename in string_to_list(config.SQUALAETP_FILE_LIST):
                     error = ExportExcel(
-                        values_list=values_list, filename=filename, header=header, excel_type='xls').file(path, False)
+                        values_list=values_list, filename=filename, header=header).file(path, False)
                     if error:
                         self.stdout.write(
                             self.style.ERROR(
@@ -77,7 +77,7 @@ class Command(BaseCommand):
                     else:
                         self.stdout.write(
                             self.style.SUCCESS(
-                                "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}.xls".format(
+                                "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}".format(
                                     queryset.count(), os.path.join(path, filename)
                                 )
                             )
