@@ -47,7 +47,7 @@ class LogFile:
 
     def export_cal(self, file_name):
         cal_list = []
-        path = os.path.join(self.path, 'LOG_ECU_IN')
+        path = self._select_path('LOG_ECU_IN')
         files = self.log_filter('LOG_ECU_IN')
         files = [file[0] for file in self.log_filter('LOG_ECU_IN') if '.txt' in file[0]]
         for file in files:
@@ -72,7 +72,7 @@ class LogFile:
 
     def export_cal_xelon(self, file_name):
         cal_list = []
-        path = os.path.join(self.path, 'LOG_ECU_IN')
+        path = self._select_path('LOG_ECU_IN')
         df = self._dataframe(path)
         data = df.pivot_table(index=['cal'], aggfunc='size')
         for key, value in data.items():
@@ -114,6 +114,12 @@ class LogFile:
             except FileNotFoundError as err:
                 print(f"FileNotFoundError : {err}")
         return pd.DataFrame(data)
+
+    def _select_path(self, dirname):
+        path = os.path.join(self.path, dirname)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
 
 def handle_uploaded_file(f):
