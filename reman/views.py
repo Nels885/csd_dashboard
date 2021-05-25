@@ -463,6 +463,15 @@ class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
     form_class = AddEcuTypeForm
     success_message = _('Success: Reman ECU HW Reference was created.')
 
+    def get_initial(self):
+        initial = super().get_initial()
+        ecu_dict = EcuType.objects.filter(hw_reference=self.request.GET.get('hw', None)).values().first()
+        if ecu_dict:
+            for field, value in ecu_dict.items():
+                if field not in ['hw_reference']:
+                    initial[field] = value
+        return initial
+
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:
             return self.request.META['HTTP_REFERER']
