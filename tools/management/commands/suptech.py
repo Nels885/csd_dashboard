@@ -45,7 +45,7 @@ class Command(BaseCommand):
                     for sql in sequence_sql:
                         cursor.execute(sql)
                 for table in ["Suptech"]:
-                    self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
+                    self.stdout.write(self.style.WARNING(f"Suppression des données de la table {table} terminée!"))
 
             elif options['first']:
                 excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
@@ -134,7 +134,7 @@ class Command(BaseCommand):
                 'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action'
             ).distinct()
 
-            error = ExportExcelSuptech(values_list=values_list, filename=filename, header=header, excel_type='xls',
+            error = ExportExcelSuptech(values_list=values_list, filename=filename + ".xls", header=header,
                                        novalue="").file(path, False)
             if error:
                 self.stdout.write(
