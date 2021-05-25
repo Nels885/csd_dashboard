@@ -33,3 +33,4 @@ celery = "*"
 django-constance = {extras = [ "database",], version = "*"}
 celery-progress = "*"
 redis = "*"
+django-celery-beat = "*"

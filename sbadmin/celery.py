@@ -1,4 +1,5 @@
 import os
+from django.core.management import call_command
 
 from celery import Celery
 
@@ -20,3 +21,13 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
+
+@app.task
+def send_email_task():
+    call_command('sendemail', '--late_products', '--vin_error', '--vin_corvet', '--reman')
+
+
+@app.task
+def import_excel_task():
+    call_command('importexcel')

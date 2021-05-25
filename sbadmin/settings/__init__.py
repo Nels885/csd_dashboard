@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'constance',
     'django_inlinecss',
     'celery_progress',
+    'django_celery_beat',
 
     # My apps
     'dashboard.apps.DashboardConfig',
