@@ -137,6 +137,11 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     form_class = AddBatchForm
     success_message = _('Success: Batch was created.')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Create Batch')
+        return context
+
     def get_success_url(self):
         return reverse_lazy('reman:batch_table', get={'filter': 'pending'})
 
@@ -146,6 +151,11 @@ class BatchEtudeCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/batch_create.html'
     form_class = AddEtudeBatchForm
     success_message = _('Success: Batch was created.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Create Etude Batch')
+        return context
 
     def get_success_url(self):
         return reverse_lazy('reman:batch_table', get={'filter': 'etude'})
