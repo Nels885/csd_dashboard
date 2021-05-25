@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'raspeedi.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',
     'reman.apps.RemanConfig',
-    'demo.apps.DemoConfig',
     'tools.apps.ToolsConfig',
     'api.apps.ApiConfig',
     'import_export.apps.ImportExportConfig',
