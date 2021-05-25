@@ -1,9 +1,11 @@
+import os
 from django.core.management import call_command
 
 from dashboard.tests.base import UnitTest
 
 from io import StringIO
 
+from utils.conf import CSD_ROOT, conf
 from reman.models import EcuRefBase, EcuModel, EcuType
 
 
@@ -73,3 +75,24 @@ class RemanCommandTestCase(UnitTest):
     def test_send_email_batch(self):
         call_command("emailreman", "--batch",  stdout=self.out)
         self.assertIn("Pas de lot REMAN en cours à envoyer !", self.out.getvalue())
+
+    def test_export_reman_files(self):
+        call_command("exportreman", "--batch", stdout=self.out)
+        self.assertIn("[BATCH] Export completed", self.out.getvalue())
+        self.assertIn(os.path.join(CSD_ROOT, conf.BATCH_EXPORT_FILE), self.out.getvalue())
+
+        call_command("exportreman", "--repair", stdout=self.out)
+        self.assertIn("[REPAIR] Export completed", self.out.getvalue())
+        self.assertIn(os.path.join(CSD_ROOT, conf.REPAIR_EXPORT_FILE), self.out.getvalue())
+
+        call_command("exportreman", "--check_out", stdout=self.out)
+        self.assertIn("[CHECK_OUT] Export completed", self.out.getvalue())
+        self.assertIn(os.path.join(CSD_ROOT, conf.CHECKOUT_EXPORT_FILE), self.out.getvalue())
+
+        call_command("exportreman", "--cal_ecu", stdout=self.out)
+        self.assertIn("[ECU_CAL] Export completed", self.out.getvalue())
+        self.assertIn("liste_CAL_PSA.txt", self.out.getvalue())
+
+        call_command("exportreman", "--scan_in_out", stdout=self.out)
+        self.assertIn("[SCAN_IN_OUT] Export completed", self.out.getvalue())
+        self.assertIn(os.path.join(CSD_ROOT, conf.SCAN_IN_OUT_EXPORT_FILE), self.out.getvalue())
