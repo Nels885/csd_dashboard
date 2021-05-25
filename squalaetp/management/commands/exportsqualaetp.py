@@ -36,7 +36,7 @@ class Command(BaseCommand):
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
+                    "[CORVET_EXPORT] Export completed: NB_BATCH = {} | FILE = {}".format(
                         queryset.count(), os.path.join(path, filename)
                     )
                 )

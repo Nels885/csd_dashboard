@@ -73,10 +73,10 @@ class XelonCommandTestCase(UnitTest):
 
     def test_export_squalaetp_files(self):
         call_command('exportsqualaetp', '--corvet', stdout=self.out)
-        self.assertIn("[BATCH] Export completed", self.out.getvalue())
+        self.assertIn("[CORVET_EXPORT] Export completed", self.out.getvalue())
         self.assertIn("squalaetp_corvet.csv", self.out.getvalue())
 
         call_command('exportsqualaetp', stdout=self.out)
-        self.assertIn("[SQUALAETP_EXPORT] Export completed", self.out.getvalue())
+        self.assertIn("[SQUALAETP_EXPORT]", self.out.getvalue())
         for filename in string_to_list(config.SQUALAETP_FILE_LIST):
             self.assertIn(filename, self.out.getvalue())
