@@ -38,7 +38,6 @@ $(function () {
             cache: false,
             async: true,
             success: function (res) {
-                console.log(res.task_id);
                 getProgress(
                     res.task_id,
                     progressBarId = "export-corvet-vin-progress-bar",
@@ -65,7 +64,6 @@ $(function () {
             cache: false,
             async: true,
             success: function (res) {
-                console.log(res.task_id);
                 getProgress(
                     res.task_id,
                     progressBarId = "export-reman-progress-bar",
@@ -92,7 +90,6 @@ $(function () {
             cache: false,
             async: true,
             success: function (res) {
-                console.log(res.task_id);
                 getProgress(
                     res.task_id,
                     progressBarId = "export-tools-progress-bar",

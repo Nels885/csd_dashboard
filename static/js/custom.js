@@ -36,3 +36,20 @@ $('#detail-list a').on('click', function (e) {
 $('.modal').on('shown.bs.modal', function () {
     $(this).find('[autofocus]').focus();
 });
+
+function addMessage(text, extra_tags) {
+    var message = $(`
+            <div style="border-radius:0;" class="alert alert-icon alert-${extra_tags} alert-dismissible fade show mb-0" role="alert">\n
+                    ${text}\n
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n
+                    <span aria-hidden="true">&times;</span>\n
+                </button>\n
+            </div>`).hide();
+    $("#messages").append(message);
+    message.fadeIn(500);
+
+    message.fadeTo(10000, 500).slideUp(500, function () {
+        message.slideUp(500);
+        message.remove();
+    });
+}

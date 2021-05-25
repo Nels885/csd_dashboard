@@ -133,7 +133,9 @@
         }
 
         function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
-            alert("Complete progress 100%")
+            {#alert("Complete progress 100%")#}
+            // display message
+            addMessage("Complete Progress 100%", "success");
             progressBarMessageElement.innerHTML = "Waiting event . . ."
             progressBarElement.setAttribute("style", "width: 0%")
             progressBarElement.setAttribute("aria-valuenow", 0)
