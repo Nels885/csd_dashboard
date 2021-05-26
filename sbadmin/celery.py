@@ -31,3 +31,15 @@ def send_email_task():
 @app.task
 def import_excel_task():
     call_command('importexcel')
+    call_command('loadsparepart')
+    call_command('importcorvet')
+
+
+@app.task
+def export_reman_task():
+    call_command('exportreman', '--batch', '--repair', '--check_out', '--cal_ecu')
+
+
+@app.task
+def suptech_task():
+    call_command('suptech')
