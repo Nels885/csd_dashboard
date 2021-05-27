@@ -1,0 +1,78 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    <p> Vous trouvez ci-dessous la liste des Suptech en attente de traitement.</p>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <th>date</th>
+            <th>Qui</th>
+            <th>N° XELON</th>
+            <th>Objet</th>
+            <th>Infos</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for suptech in waiting_suptechs %}
+
+            <tr>
+                <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=waiting">{{ suptech.date }}</a></td>
+                <td>{{ suptech.user }}</td>
+                <td>{{ suptech.xelon }}</td>
+                <td>{{ suptech.item }}</td>
+                <td>{{ suptech.info|truncatechars:50 }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    {% if progress_suptechs %}
+
+        <p> Vous trouvez ci-dessous la liste des Suptech en cours.</p>
+
+        <table class="table table-bordered text-nowrap">
+            <thead>
+            <tr>
+                <th>date</th>
+                <th>Qui</th>
+                <th>N° XELON</th>
+                <th>Objet</th>
+                <th>Infos</th>
+                <th>Pris en charge par</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for suptech in progress_suptechs %}
+
+                <tr>
+                    <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=progress">{{ suptech.date }}</a></td>
+                    <td>{{ suptech.user }}</td>
+                    <td>{{ suptech.xelon }}</td>
+                    <td>{{ suptech.item }}</td>
+                    <td>{{ suptech.info|truncatechars:50 }}</td>
+                    <td>{{ suptech.modified_by.first_name }} {{ suptech.modified_by.last_name }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}

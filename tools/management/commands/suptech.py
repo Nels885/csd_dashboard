@@ -1,13 +1,17 @@
 import os
 import logging
+from datetime import datetime
 from django.core.management.base import BaseCommand
-from django.core.management.color import no_style
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from django.db import connection
+from django.utils.html import strip_tags
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+from constance import config
 
 from tools.models import Suptech
-from utils.conf import CSD_ROOT
+from utils.conf import CSD_ROOT, string_to_list
 from utils.django.models import defaults_dict
 
 from ._file_suptech import CsvSuptech, ExcelSuptech, ExportExcelSuptech
@@ -20,16 +24,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--delete',
-            action='store_true',
-            dest='delete',
-            help='Delete all data in Suptech table',
-        )
-        parser.add_argument(
             '--first',
             action='store_true',
             dest='first',
             help='Adding first data in Suptech table',
+        )
+        parser.add_argument(
+            '--email',
+            action='store_true',
+            dest='email',
+            help='Send email for Suptech in progress',
         )
 
     def handle(self, *args, **options):
@@ -37,19 +41,11 @@ class Command(BaseCommand):
         path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
         filename = "LOG_SUPTECH"
         try:
-            if options['delete']:
-                Suptech.objects.all().delete()
-
-                sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Suptech, ])
-                with connection.cursor() as cursor:
-                    for sql in sequence_sql:
-                        cursor.execute(sql)
-                for table in ["Suptech"]:
-                    self.stdout.write(self.style.WARNING(f"Suppression des données de la table {table} terminée!"))
-
-            elif options['first']:
+            if options['first']:
                 excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
                 self._create(Suptech, excel.read())
+            if options['email']:
+                self._send_email()
             else:
                 if os.path.exists(os.path.join(path, filename + ".csv")):
                     csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
@@ -154,3 +150,26 @@ class Command(BaseCommand):
                 )
         except FileNotFoundError as err:
             self.stdout.write(self.style.ERROR("[SUPTECH] {}".format(err)))
+
+    def _send_email(self):
+        date_joined = datetime.strftime(datetime.now(), "%d/%m/%Y %H:%M:%S")
+        subject = "Liste des Suptech en cours {}".format(date_joined)
+        suptechs = Suptech.objects.exclude(status="Cloturée").order_by('-date')
+        if suptechs:
+            waiting_suptechs = suptechs.filter(status="En Attente")
+            progress_suptechs = suptechs.filter(status="En Cours")
+            html_message = render_to_string(
+                'tools/email_format/suptech_list_email.html',
+                {
+                    'waiting_suptechs': waiting_suptechs, 'progress_suptechs': progress_suptechs,
+                    'domain': config.WEBSITE_DOMAIN,
+                }
+            )
+            plain_message = strip_tags(html_message)
+            send_mail(
+                subject, plain_message, None, string_to_list(config.SUPTECH_TO_EMAIL_LIST),
+                html_message=html_message
+            )
+            self.stdout.write(self.style.SUCCESS("Envoi de l'email des Suptech en cours terminée !"))
+        else:
+            self.stdout.write(self.style.SUCCESS("Pas de Suptech en cours à envoyer !"))
