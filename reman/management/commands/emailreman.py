@@ -14,7 +14,7 @@ from utils.conf import string_to_list
 
 
 class Command(BaseCommand):
-    help = 'Send email for Late products'
+    help = 'Send email for Bach in progress'
 
     def add_arguments(self, parser):
         parser.add_argument(

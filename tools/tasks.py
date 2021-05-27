@@ -3,9 +3,18 @@ from django.core.management import call_command
 from django.core.mail import EmailMessage
 
 
-@celery_app.task(bind=True)
-def cmd_suptech_task(self):
-    call_command('suptech')
+@celery_app.task
+def cmd_suptech_task(*args):
+    """
+    Task for the Suptech command
+        Interact with the Suptech table in the database
+    :param args: --email, --first or None
+    :return:
+        --email: Send email for Suptech in progress
+        --first: Adding first data in Suptech table
+        None: Import data from CSV file to Suptech table and export data to XLS file
+    """
+    call_command('suptech', *args)
 
 
 @celery_app.task(bind=True)

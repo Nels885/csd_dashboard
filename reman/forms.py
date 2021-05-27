@@ -25,6 +25,13 @@ class BatchForm(BSModalModelForm):
         exclude = ['batch_number']
         labels = {'ecu_ref_base': 'Réf. REMAN'}
 
+    def save(self, commit=True):
+        batch = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            batch.save()
+            cmd_exportreman_task.delay('--batch', '--scan_in_out')
+        return batch
+
 
 class AddBatchForm(BSModalModelForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
