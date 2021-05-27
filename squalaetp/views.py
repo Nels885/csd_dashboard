@@ -21,7 +21,7 @@ from psa.models import Corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
 from .forms import IhmForm, VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
-from .tasks import cmd_squalaetp_task
+from .tasks import cmd_loadsqualaetp_task
 from psa.forms import CorvetForm
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
@@ -60,7 +60,7 @@ def prog_activate(request, pk):
 
 def excel_import(request):
     if request.user.is_staff:
-        cmd_squalaetp_task.delay()
+        cmd_loadsqualaetp_task.delay()
         messages.success(request, "Importation Squalaetp en cours...")
     if 'HTTP_REFERER' in request.META:
         return HttpResponseRedirect(request.META['HTTP_REFERER'])

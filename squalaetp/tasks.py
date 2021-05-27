@@ -4,8 +4,13 @@ from django.core.mail import EmailMessage
 
 
 @celery_app.task(bind=True)
-def cmd_squalaetp_task(self):
+def cmd_loadsqualaetp_task(self):
     call_command("loadsqualaetp", "--xelon_update")
+
+
+@celery_app.task
+def cmd_exportsqualaetp_task():
+    call_command("exportsqualaetp")
 
 
 @celery_app.task(bind=True)
