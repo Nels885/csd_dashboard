@@ -152,13 +152,17 @@ class SuptechResponseForm(forms.ModelForm):
         fields = ['xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
 
     def send_email(self, request):
-        subject = f"!!! Info Support Tech : {self.instance.item} !!!"
-        context = {"user": request.user, "suptech": self.instance}
-        message = render_to_string('tools/email_format/suptech_response_email.html', context)
-        send_email_task.delay(
-            subject=subject, body=message, from_email=request.user.email,
-            to=[self.instance.created_by.email], cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
-        )
+        try:
+            subject = f"!!! Info Support Tech : {self.instance.item} !!!"
+            context = {"user": request.user, "suptech": self.instance}
+            message = render_to_string('tools/email_format/suptech_response_email.html', context)
+            send_email_task.delay(
+                subject=subject, body=message, from_email=request.user.email,
+                to=self.instance.created_by.email, cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
+            )
+            return True
+        except AttributeError:
+            return False
 
     def save(self, commit=True):
         suptech = super().save(commit=False)

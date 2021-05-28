@@ -204,6 +204,8 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        form.send_email(self.request)
-        messages.success(self.request, _('Success: The email has been sent.'))
+        if form.send_email(self.request):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
         return super().form_valid(form)

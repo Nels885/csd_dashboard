@@ -141,3 +141,9 @@ class ToolsTestCase(UnitTest):
 
         response = self.client.post(url, form_data)
         self.assertRedirects(response, reverse('tools:suptech_list'), status_code=302)
+
+        # If the creation user does not exist
+        suptech.created_by = None
+        suptech.save()
+        response = self.client.post(url, form_data)
+        self.assertRedirects(response, reverse('tools:suptech_list'), status_code=302)
