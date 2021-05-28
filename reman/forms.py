@@ -472,5 +472,5 @@ class PartSparePartForm(forms.ModelForm):
         #     for field in self.fields:
         #         self.fields[field].widget.attrs['readonly'] = True
         # else:
-        self.fields['code_produit'].widget.attrs['readonly'] = True
+        # self.fields['code_produit'].widget.attrs['readonly'] = True
         # self.fields['code_emplacement'].required = True

@@ -14,6 +14,12 @@ class BatchAdmin(admin.ModelAdmin):
     batch_number.short_description = "Numéro de lot"
 
 
+class EcuRefBaseAdmin(admin.ModelAdmin):
+    list_display = ('reman_reference', 'ecu_type')
+    ordering = ('reman_reference',)
+    search_fields = ('reman_reference',)
+
+
 class RepairAdmin(admin.ModelAdmin):
     list_display = (
         'identify_number', 'get_batch_number', 'get_hw_reference', 'psa_barcode', 'created_at', 'status',
@@ -67,7 +73,7 @@ class EcuTypeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Batch, BatchAdmin)
-admin.site.register(EcuRefBase)
+admin.site.register(EcuRefBase, EcuRefBaseAdmin)
 admin.site.register(EcuType, EcuTypeAdmin)
 admin.site.register(EcuModel, EcuModelAdmin)
 admin.site.register(Repair, RepairAdmin)
