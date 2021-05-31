@@ -158,7 +158,7 @@ class SuptechResponseForm(forms.ModelForm):
             message = render_to_string('tools/email_format/suptech_response_email.html', context)
             send_email_task.delay(
                 subject=subject, body=message, from_email=request.user.email,
-                to=string_to_list(self.instance.created_by.email), cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
+                to=[self.instance.created_by.email], cc=string_to_list(config.SUPTECH_TO_EMAIL_LIST)
             )
             return True
         except AttributeError:
