@@ -4,6 +4,7 @@ from django.core.mail import EmailMessage
 
 from utils.conf import string_to_list
 
+
 @celery_app.task
 def cmd_suptech_task(*args):
     """
