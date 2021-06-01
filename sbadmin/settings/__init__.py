@@ -307,14 +307,12 @@ CONSTANCE_CONFIG_FIELDSETS = {
     )
 }
 
-
 # CELERY STUFF
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
 CELERY_TIMEZONE = "Europe/Paris"
-
 
 ###############################
 # DJANGO LOGGER CONFIGURATION
@@ -326,6 +324,7 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format': '[{asctime}] [{process:d}] [{levelname}] {message}',
+            'datefmt': "%Y-%m-%d %H:%M:%S",
             'style': '{',
         },
         'simple': {
@@ -364,6 +363,11 @@ LOGGING = {
             'propagate': False,
         },
         'command': {
+            'handlers': ['mail_admin', 'console_verbose'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'celery': {
             'handlers': ['mail_admin', 'console_verbose'],
             'level': 'ERROR',
             'propagate': False,
