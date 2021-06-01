@@ -329,7 +329,12 @@ def out_table(request):
     """ View of Reman Out Repair table page """
     batch_number = request.GET.get('filter')
     table_title = 'Préparation lot n° {}'.format(batch_number)
-    files = Repair.objects.filter(batch__batch_number=batch_number, status="Réparé", checkout=False)
+    repaired = Count('repairs', filter=Q(repairs__status="Réparé", repairs__quality_control=True))
+    packed = Count('repairs', filter=Q(repairs__checkout=True))
+    batch = Batch.objects.filter(batch_number=batch_number).annotate(repaired=repaired, packed=packed).first()
+    files = Repair.objects.filter(
+        batch__batch_number=batch_number, status="Réparé", checkout=False, quality_control=True
+    )
     form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList, batch_number=batch_number, )
     if request.POST and form.is_valid():
         repair = form.save()

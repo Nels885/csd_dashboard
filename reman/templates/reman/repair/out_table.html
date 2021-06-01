@@ -51,53 +51,57 @@
 
     {% if files %}
 
-    <table class="table table-bordered table-sm text-nowrap" id="outTable" style="width: 100%;">
-        <thead>
-        <tr>
-            <th>Numéro d'identification</th>
-            <th>Numéro de lot</th>
-            <th>Modèle produit</th>
-            <th>Fabriquant</th>
-            <th>Réf. Hardware</th>
-            <th>Code barre PSA</th>
-            <th>Status</th>
-            <th>Contrôle qualité</th>
-            <th>Date de cloture</th>
-            <th>Modifié par</th>
-            <th>Modifié le</th>
-            <th>Créé par</th>
-            <th>Créé le</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        {% for file in files %}
-
+        <table class="table table-bordered table-sm text-nowrap" id="outTable" style="width: 100%;">
+            <thead>
             <tr>
-                <td>{{ file.identify_number }}</td>
-                <td>{{ file.batch }}</td>
-                <td>{{ file.batch.ecu_ref_base.ecu_type.technical_data }}</td>
-                <td>{{ file.batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
-                <td>{{ file.batch.ecu_ref_base.ecu_type.hw_reference }}</td>
-                <td>{{ file.psa_barcode }}</td>
-                <td>{{ file.status }}</td>
-                <td>{% if file.quality_control %}OK{% endif %}</td>
-                <td>{{ file.closing_date|default:"--" }}</td>
-                <td>{{ file.modified_by }}</td>
-                <td>{{ file.modified_at }}</td>
-                <td>{{ file.created_by }}</td>
-                <td>{{ file.created_at }}</td>
+                <th>Numéro d'identification</th>
+                <th>Numéro de lot</th>
+                <th>Modèle produit</th>
+                <th>Fabriquant</th>
+                <th>Réf. Hardware</th>
+                <th>Code barre PSA</th>
+                <th>Status</th>
+                <th>Contrôle qualité</th>
+                <th>Date de cloture</th>
+                <th>Modifié par</th>
+                <th>Modifié le</th>
+                <th>Créé par</th>
+                <th>Créé le</th>
             </tr>
+            </thead>
+            <tbody>
 
-        {% endfor %}
+            {% for file in files %}
 
-        </tbody>
-    </table>
+                <tr>
+                    <td>{{ file.identify_number }}</td>
+                    <td>{{ file.batch }}</td>
+                    <td>{{ file.batch.ecu_ref_base.ecu_type.technical_data }}</td>
+                    <td>{{ file.batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
+                    <td>{{ file.batch.ecu_ref_base.ecu_type.hw_reference }}</td>
+                    <td>{{ file.psa_barcode }}</td>
+                    <td>{{ file.status }}</td>
+                    <td>{% if file.quality_control %}OK{% endif %}</td>
+                    <td>{{ file.closing_date|default:"--" }}</td>
+                    <td>{{ file.modified_by }}</td>
+                    <td>{{ file.modified_at }}</td>
+                    <td>{{ file.created_by }}</td>
+                    <td>{{ file.created_at }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
 
     {% else %}
 
         <h1 class="display-4 text-center font-weight-bold m-5">
-            <span class="bg-success text-light">Le lot {{ batch_number }} est terminé !!!</span>
+            {% if batch.repaired == batch.quantity %}
+                <span class="bg-success text-light">Le lot {{ batch_number }} est terminé !!!</span>
+            {% else %}
+                <span class="bg-danger text-light">Le lot n'est pas finalisé, {{ batch.repaired }} produit(s) sur {{ batch.quantity }} !!!</span>
+            {% endif %}
         </h1>
 
     {% endif %}
