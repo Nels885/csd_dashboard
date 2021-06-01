@@ -14,7 +14,7 @@ from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 
-from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech
+from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem
 from .tasks import cmd_suptech_task, send_email_task
 
 
@@ -77,7 +77,7 @@ class SuptechModalForm(BSModalModelForm):
         ('Scan IN/OUT', 'Scan IN/OUT'), ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
     ]
     username = forms.CharField(max_length=50, required=True)
-    item = forms.ChoiceField(choices=ITEM_CHOICES)
+    item = forms.ModelChoiceField(queryset=SuptechItem.objects.all())
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
     to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
     attach = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
@@ -90,7 +90,6 @@ class SuptechModalForm(BSModalModelForm):
         users = User.objects.all()
         _data_list = list(users.values_list('username', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        self.fields['to'].initial = config.SUPTECH_TO_EMAIL_LIST
         if self.request.user:
             self.fields['username'].initial = self.request.user.username
         self.fields['username'].widget = ListTextWidget(data_list=_data_list, name='value-list')
@@ -130,7 +129,7 @@ class SuptechModalForm(BSModalModelForm):
             for field in ['username', 'custom_item', 'to', 'attach']:
                 del self.fields[field]
             if self.cleaned_data['custom_item']:
-                suptech.item = self.cleaned_data['custom_item']
+                suptech.item = f"{self.cleaned_data['item']} - {self.cleaned_data['custom_item']}"
             suptech.save()
             cmd_suptech_task.delay()
             self.send_email()

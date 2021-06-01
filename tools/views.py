@@ -10,7 +10,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
 from utils.data.mqtt import MQTTClass
@@ -169,6 +169,16 @@ class SupTechCreateView(BSModalCreateView):
             return self.request.META['HTTP_REFERER']
         else:
             return reverse_lazy('index')
+
+
+def suptech_item_ajax(request):
+    pk = request.GET.get('pk', None)
+    try:
+        suptech_item = SuptechItem.objects.get(pk=pk)
+        data = {"extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list}
+    except SuptechItem.DoesNotExist:
+        data = {"extra": False, "mailing_list": ""}
+    return JsonResponse(data)
 
 
 @login_required

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import TagXelon, CsdSoftware, EtudeProject, ThermalChamber, Suptech
+from .models import TagXelon, CsdSoftware, EtudeProject, ThermalChamber, Suptech, SuptechItem
 
 
 class TagXelonAdmin(admin.ModelAdmin):
@@ -19,8 +19,15 @@ class SuptechAdmin(admin.ModelAdmin):
     search_fields = ('user', 'xelon', 'item')
 
 
+class SuptechItemAdmin(admin.ModelAdmin):
+    list_display = ('name', 'extra', 'mailing_list')
+    ordering = ('name',)
+    search_fields = ('name', 'mailing_list')
+
+
 admin.site.register(TagXelon, TagXelonAdmin)
 admin.site.register(CsdSoftware)
 admin.site.register(EtudeProject)
 admin.site.register(ThermalChamber, ThermalChamberAdmin)
 admin.site.register(Suptech, SuptechAdmin)
+admin.site.register(SuptechItem, SuptechItemAdmin)

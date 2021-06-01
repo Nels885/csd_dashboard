@@ -20,4 +20,5 @@ urlpatterns = [
     path('suptech/', views.suptech_list, name='suptech_list'),
     path('suptech/add/', views.SupTechCreateView.as_view(), name="suptech_add"),
     path('suptech/<int:pk>/update/', views.SuptechResponseView.as_view(), name="suptech_update"),
+    path('suptech/item/ajax/', views.suptech_item_ajax, name='suptech_item_ajax'),
 ]
