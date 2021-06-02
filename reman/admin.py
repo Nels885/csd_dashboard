@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.template.defaultfilters import pluralize
+from django.utils.translation import gettext_lazy as _
 
 from .models import Batch, EcuModel, Repair, SparePart, Default, EcuRefBase, EcuType
 
@@ -30,6 +32,26 @@ class RepairAdmin(admin.ModelAdmin):
     ordering = ('identify_number', 'batch__batch_number')
     list_filter = ('status', 'quality_control', 'checkout')
     search_fields = ('identify_number', 'batch__batch_number', 'batch__ecu_ref_base__ecu_type__hw_reference')
+    actions = ('checkout_enabled',)
+
+    def _message_user_about_update(self, request, rows_updated, verb):
+        """Send message about action to user.
+        `verb` should shortly describe what have changed (e.g. 'enabled').
+        """
+        self.message_user(
+            request,
+            _('{0} product{1} {2} successfully {3}').format(
+                rows_updated,
+                pluralize(rows_updated),
+                pluralize(rows_updated, _('was,were')),
+                verb,
+            ),
+        )
+
+    def checkout_enabled(self, request, queryset):
+        rows_updated = queryset.update(checkout=True)
+        self._message_user_about_update(request, rows_updated, 'enabled')
+    checkout_enabled.short_description = _('Checkout enabled')
 
     def get_batch_number(self, obj):
         return obj.batch.batch_number
