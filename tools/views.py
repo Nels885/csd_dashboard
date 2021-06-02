@@ -172,12 +172,13 @@ class SupTechCreateView(BSModalCreateView):
 
 
 def suptech_item_ajax(request):
-    pk = request.GET.get('pk', None)
+    data = {"extra": False, "mailing_list": ""}
     try:
-        suptech_item = SuptechItem.objects.get(pk=pk)
-        data = {"extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list}
+        if request.GET.get('pk', None):
+            suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
+            data = {"extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list}
     except SuptechItem.DoesNotExist:
-        data = {"extra": False, "mailing_list": ""}
+        pass
     return JsonResponse(data)
 
 
