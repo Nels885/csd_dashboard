@@ -6,6 +6,7 @@ from .models import Batch, EcuModel, Repair, SparePart, Default, EcuRefBase, Ecu
 class BatchAdmin(admin.ModelAdmin):
     list_display = ('batch_number', 'quantity', 'created_by', 'created_at', 'active')
     ordering = ('batch_number',)
+    list_filter = ('active',)
     search_fields = ('batch_number',)
 
     def batch_number(self, obj):
@@ -17,6 +18,7 @@ class BatchAdmin(admin.ModelAdmin):
 class EcuRefBaseAdmin(admin.ModelAdmin):
     list_display = ('reman_reference', 'ecu_type')
     ordering = ('reman_reference',)
+    list_filter = ('ecu_type',)
     search_fields = ('reman_reference',)
 
 
@@ -26,7 +28,7 @@ class RepairAdmin(admin.ModelAdmin):
         'quality_control', 'checkout', 'closing_date'
     )
     ordering = ('identify_number', 'batch__batch_number')
-    list_filter = ('batch__batch_number',)
+    list_filter = ('status', 'quality_control', 'checkout')
     search_fields = ('identify_number', 'batch__batch_number', 'batch__ecu_ref_base__ecu_type__hw_reference')
 
     def get_batch_number(self, obj):
@@ -48,8 +50,8 @@ class SparePartAdmin(admin.ModelAdmin):
 class EcuModelAdmin(admin.ModelAdmin):
     list_display = ('psa_barcode', 'oe_raw_reference', 'sw_reference', 'get_ecu_type', 'to_dump')
     ordering = ('psa_barcode', 'oe_raw_reference')
-    list_filter = ('ecu_type__hw_reference', 'to_dump')
-    search_fields = ('psa_barcode', 'ecu_type__hw_reference')
+    list_filter = ('ecu_type', 'to_dump')
+    search_fields = ('psa_barcode', 'ecu_type__hw_reference', 'ecu_type__technical_data')
 
     def get_ecu_type(self, obj):
         return obj.ecu_type
@@ -64,6 +66,7 @@ class EcuTypeAdmin(admin.ModelAdmin):
         'test_clear_memory', 'cle_appli'
     )
     ordering = ('hw_reference',)
+    list_filter = ('technical_data', 'supplier_oe')
     search_fields = ('hw_reference', 'technical_data', 'supplier_oe')
 
     def get_spare_part(self, obj):
