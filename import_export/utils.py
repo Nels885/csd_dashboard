@@ -1,5 +1,5 @@
-from django.db.models.functions import Cast, TruncSecond
-from django.db.models import DateTimeField, CharField, Q, Count
+from django.db.models.functions import Cast, TruncSecond, Concat, ExtractDay
+from django.db.models import DateTimeField, CharField, Q, Count, Value, F
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
@@ -212,10 +212,16 @@ def extract_tools(model):
     header = queryset = values_list = None
     if model == "suptech":
         header = [
-            'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR'
+            'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR', 'STATUS', 'DATE_LIMIT',
+            'ACTION_LE', 'ACTION_PAR', 'DELAIS_EN_JOURS'
         ]
-        queryset = Suptech.objects.all().order_by('date')
-        values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
+        fullname = Concat('modified_by__first_name', Value(' '), 'modified_by__last_name')
+        day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
+        queryset = Suptech.objects.annotate(fullname=fullname, day_number=day_number).order_by('date')
+        values_list = (
+            'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline', 'modified_at',
+            'fullname', 'day_number'
+        )
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
     return header, fields, values_list
