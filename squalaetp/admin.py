@@ -6,10 +6,32 @@ from .models import Xelon, SparePart, Indicator, Action, ProductCategory
 
 
 class XelonAdmin(admin.ModelAdmin):
-    list_display = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'type_de_cloture')
-    list_filter = ('type_de_cloture', 'modele_vehicule')
-    ordering = ('numero_de_dossier',)
-    search_fields = ('numero_de_dossier', 'vin')
+    list_display = (
+        'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture', 'vin_error', 'is_active'
+    )
+    list_filter = ('type_de_cloture', 'vin_error', 'is_active')
+    ordering = ('-date_retour',)
+    search_fields = ('numero_de_dossier', 'vin', 'modele_produit', 'model_vehicule')
+    actions = ('vin_error_disabled',)
+
+    def _message_user_about_update(self, request, rows_updated, verb):
+        """Send message about action to user.
+        `verb` should shortly describe what have changed (e.g. 'enabled').
+        """
+        self.message_user(
+            request,
+            _('{0} product{1} {2} successfully {3}').format(
+                rows_updated,
+                pluralize(rows_updated),
+                pluralize(rows_updated, _('was,were')),
+                verb,
+            ),
+        )
+
+    def vin_error_disabled(self, request, queryset):
+        rows_updated = queryset.update(vin_error=False)
+        self._message_user_about_update(request, rows_updated, 'disabled')
+    vin_error_disabled.short_description = _('Vin error disabled')
 
 
 class SparePartAdmin(admin.ModelAdmin):
