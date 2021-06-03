@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_inlinecss',
     'celery_progress',
     'django_celery_beat',
+    'django_celery_results',
 
     # My apps
     'dashboard.apps.DashboardConfig',
@@ -309,7 +310,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
 
 # CELERY STUFF
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
 CELERY_TIMEZONE = "Europe/Paris"
