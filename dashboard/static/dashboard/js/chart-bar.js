@@ -6,7 +6,7 @@ $.ajax({
     method: "GET",
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
-        console.log(data);
+        // console.log(data);
         const {suptechLabels} = data;
         const {suptechValue} = data;
 
