@@ -1,11 +1,13 @@
 from django.utils import timezone
 # import itertools
 
+from django.db.models.functions import ExtractDay
 from django.db.models.aggregates import Count
-from django.db.models import Q
+from django.db.models import Q, F
 
 from squalaetp.models import Xelon, Indicator, ProductCategory
 from psa.models import Corvet
+from tools.models import Suptech
 
 
 class ProductAnalysis:
@@ -105,3 +107,23 @@ class IndicatorAnalysis:
             data["prodsExpValue"].append(prod.express_products)
             data["prodsLateValue"].append(prod.late_products)
         return data
+
+
+class SuptechAnalysis:
+
+    def __init__(self):
+        day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
+        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
+        self.total = suptechs.count()
+        self.queryset = suptechs.annotate(day_number=day_number).order_by('date')
+        self.data = {"suptechLabels": [], 'suptechValue': []}
+
+    def result(self):
+        self.data['suptechLabels'] = ["1 à 2 jours", "3 à 6 jours", "7 jours et plus"]
+        self.data['suptechValue'].append(self._percent(self.queryset.filter(day_number__lte=2)))
+        self.data['suptechValue'].append(self._percent(self.queryset.filter(day_number__gt=2, day_number__lte=6)))
+        self.data['suptechValue'].append(self._percent(self.queryset.filter(day_number__gt=6)))
+        return self.data
+
+    def _percent(self, queryset):
+        return round(100 * queryset.count() / self.total, 1)
