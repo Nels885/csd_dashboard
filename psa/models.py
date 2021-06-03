@@ -158,6 +158,10 @@ class CorvetProduct(models.Model):
     bsm = models.ForeignKey('psa.Ecu', related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
     hdc = models.ForeignKey('psa.Ecu', related_name='corvet_hdc', on_delete=models.SET_NULL, limit_choices_to={'type': 'HDC'}, null=True, blank=True)
 
+    class Meta:
+        verbose_name = "produits CORVET"
+        ordering = ['corvet']
+
     def __str__(self):
         return self.corvet.vin
 
@@ -212,6 +216,8 @@ class Multimedia(models.Model):
         super(Multimedia, self).save(*args, **kwargs)
         Corvet.objects.filter(electronique_14x__exact=self.hw_reference).update(btel=self.pk)
         Corvet.objects.filter(electronique_14f__exact=self.hw_reference).update(radio=self.pk)
+        CorvetProduct.objects.filter(corvet__electronique_14x__exact=self.hw_reference).update(btel=self.pk)
+        CorvetProduct.objects.filter(corvet__electronique_14f__exact=self.hw_reference).update(radio=self.pk)
 
     def __iter__(self):
         for field in self._meta.fields:
@@ -292,16 +298,22 @@ class Ecu(models.Model):
         super(Ecu, self).save(*args, **kwargs)
         if self.type == "BSI":
             Corvet.objects.filter(electronique_14b__startswith=self.comp_ref).update(bsi=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_14b__startswith=self.comp_ref).update(bsi=self.pk)
         if self.type == "EMF":
             Corvet.objects.filter(electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
         if self.type == "MDS":
             Corvet.objects.filter(electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
         if self.type == "CMM":
             Corvet.objects.filter(electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
         if self.type == "BSM":
             Corvet.objects.filter(electronique_16b__startswith=self.comp_ref).update(bsm=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_16b__startswith=self.comp_ref).update(bsm=self.pk)
         # if self.type == "HDC":
         #     Corvet.objects.filter(electronique_16p__startswith=self.comp_ref).update(hdc=self.pk)
+        #     CorvetProduct.objects.filter(corvet__electronique_16p__startswith=self.comp_ref).update(hdc=self.pk)
 
     def __iter__(self):
         for field in self._meta.fields:
