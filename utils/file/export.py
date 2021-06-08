@@ -122,7 +122,7 @@ class ExportExcel:
             self._file_yesterday(path, file)
         try:
             if self.excelType == "csv":
-                with open(file, 'w+', newline='', encoding='utf-8') as f:
+                with open(file, 'w+', newline='', encoding='utf-8-sig') as f:
                     if self.excelType == "csv":
                         self._csv_writer(f)
             elif self.excelType == "xlsx":
