@@ -57,32 +57,6 @@ function textCopy(text) {
 
 
 $(function () {
-    // Log in buttons
-    $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
-    $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
-
-    $(".create-post").modalForm({formURL: "{% url 'dashboard:create_post' %}", modalID: "#large-modal"});
-
-    $(".create-weblink").modalForm({formURL: "{% url 'dashboard:create_weblink' %}", modalID: "#large-modal"});
-
-    $(".create-corvet").modalForm({formURL: "{% url 'psa:create_corvet' %}", modalID: "#large-modal"});
-
-    $(".create-batch").modalForm({formURL: "{% url 'reman:create_batch' %}"});
-
-    $(".create-repair").modalForm({formURL: "{% url 'reman:create_repair' %}"});
-
-    $(".create-etude-batch").modalForm({formURL: "{% url 'reman:create_etude_batch' %}"});
-
-    $(".create-default").modalForm({formURL: "{% url 'reman:create_default' %}", modalID: "#create-large-modal"});
-
-    $(".create-ref-reman").modalForm({formURL: "{% url 'reman:ref_reman_create' %}"});
-
-    $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}", modalID: "#create-large-modal"});
-
-    $(".create-tag-xelon").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
-
-    $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});
-
     // Filter Batch buttons
     $(".out-filter-btn").each(function () {
         $(this).modalForm({formURL: $(this).data('form-url')});
