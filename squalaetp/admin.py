@@ -11,7 +11,7 @@ class XelonAdmin(admin.ModelAdmin):
     )
     list_filter = ('type_de_cloture', 'vin_error', 'is_active')
     ordering = ('-date_retour',)
-    search_fields = ('numero_de_dossier', 'vin', 'modele_produit', 'model_vehicule')
+    search_fields = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
     actions = ('vin_error_disabled',)
 
     def _message_user_about_update(self, request, rows_updated, verb):
