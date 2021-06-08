@@ -58,8 +58,8 @@ class Command(BaseCommand):
             try:
                 queryset = Xelon.objects.filter(is_active=True).distinct()
 
-                corvet_list = tuple([f"corvet__{field.name}" for field in Corvet._meta.fields if
-                                     field.name not in ['vin', 'radio', 'btel', 'bsi', 'emf', 'bsm', 'cmm', 'hdc']])
+                corvet_list = tuple([f"corvet__{field.name}" for col_nb, field in enumerate(Corvet._meta.fields) if
+                                     col_nb < (len(header) - 3) and field.name not in ['vin']])
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
 
                 values_list = queryset.values_list(*(xelon_list + corvet_list)).distinct()
