@@ -171,8 +171,8 @@ TECHNICIAN FORMS
 
 
 class AddRepairForm(BSModalModelForm):
-    psa_barcode = forms.CharField(label='Code barre PSA', max_length=10,
-                                  widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
+    psa_barcode = forms.CharField(label='Code barre PSA', max_length=20,
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Repair

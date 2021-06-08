@@ -12,7 +12,8 @@ class MixinsTest(UnitTest):
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
         ecu = EcuModel.objects.create(oe_raw_reference='1699999999', psa_barcode='9876543210', ecu_type=ecu_type)
-        self.batch = Batch.objects.create(year="C", number=1, quantity=1, created_by=self.user, ecu_ref_base=ref_base)
+        EcuModel.objects.create(psa_barcode='9876543210azertyuiop', ecu_type=ecu_type)
+        self.batch = Batch.objects.create(year="C", number=1, quantity=2, created_by=self.user, ecu_ref_base=ref_base)
         Default.objects.create(code='TEST1', description='Ceci est le test 1')
         self.ecuId = ecu.id
         self.refBase = ref_base
@@ -182,7 +183,7 @@ class MixinsTest(UnitTest):
         self.add_perms_user(Repair, 'add_repair')
         self.login()
 
-        # First post request = ajax request checking if form in view is valid
+        # First post request = non-ajax request creating an object
         response = self.client.post(
             reverse('reman:create_repair'),
             data={
@@ -203,23 +204,24 @@ class MixinsTest(UnitTest):
         repairs = Repair.objects.all()
         self.assertEqual(repairs.count(), 0)
 
-        # Second post request = non-ajax request creating an object
-        response = self.client.post(
-            reverse('reman:create_repair'),
-            data={
-                'psa_barcode': '9876543210',
-                'identify_number': 'C001001001',
-                'ref_supplier': '1234567890',
-                'product_number': '1234567890',
-                'remark': 'test',
-            },
-        )
+        # Second post request = ajax request checking if form in view is valid
+        for barcode, identify_nb in [('9876543210', 'C001002001'), ('9876543210azertyuiop', 'C001002002')]:
+            response = self.client.post(
+                reverse('reman:create_repair'),
+                data={
+                    'psa_barcode': barcode,
+                    'identify_number': identify_nb,
+                    'ref_supplier': '1234567890',
+                    'product_number': '1234567890',
+                    'remark': 'test',
+                },
+            )
+            # redirection
+            self.assertEqual(response.status_code, 302)
 
-        # redirection
-        self.assertEqual(response.status_code, 302)
-        # Object is not created
+        # Object is created
         repairs = Repair.objects.all()
-        self.assertEqual(repairs.count(), 1)
+        self.assertEqual(repairs.count(), 2)
 
     def test_create_default_ajax_mixin(self):
         """
@@ -302,12 +304,12 @@ class MixinsTest(UnitTest):
         self.assertEqual(response.status_code, 200)
 
         # Second search request = non-ajax request creating an object
-        Repair.objects.create(identify_number='C001001001', psa_barcode='9876543210', status='Réparé',
+        Repair.objects.create(identify_number='C001002001', psa_barcode='9876543210', status='Réparé',
                               quality_control=True, created_by=self.user, batch=self.batch)
         response = self.client.post(
             reverse('reman:out_filter'),
             data={
-                'batch': 'C001001000',
+                'batch': 'C001002000',
             },
         )
 
