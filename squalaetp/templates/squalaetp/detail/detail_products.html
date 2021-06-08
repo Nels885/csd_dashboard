@@ -11,11 +11,11 @@
             <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm">Numéro de dossier</td>
-                <td>{{ xelon.numero_de_dossier }}</td>
+                <td id="xelon">{{ xelon.numero_de_dossier }}<a href="#" title="copie" onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">V.I.N.</td>
-                <td>{{ xelon.vin }}</td>
+                <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Modèle produit</td>
