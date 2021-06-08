@@ -12,8 +12,8 @@ XELON_LIST = [
 ]
 
 BTEL_LIST = [
-    ('Modele reel', 'corvet__btel__name'), ('Réf. Setplate', 'corvet__btel__label_ref'),
-    ('Niv.', 'corvet__btel__level'), ('HW variant', 'corvet__btel__extra'),
+    ('Modele reel', 'corvet__prods__btel__name'), ('Réf. Setplate', 'corvet__prods__btel__label_ref'),
+    ('Niv.', 'corvet__prods__btel__level'), ('HW variant', 'corvet__prods__btel__extra'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
     ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
     ('DHB_HAUT PARLEUR', 'corvet__attribut_dhb'), ('DUN_AMPLI EQUALISEUR', 'corvet__attribut_dun'),
@@ -23,7 +23,7 @@ BTEL_LIST = [
 ]
 
 CMM_LIST = [
-    ('Modele reel', 'corvet__cmm__name'),
+    ('Modele reel', 'corvet__prods__cmm__name'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
     ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
     ('14A_CMM_HARD', 'corvet__electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'corvet__electronique_34a'),
@@ -33,7 +33,7 @@ CMM_LIST = [
 ]
 
 BSI_LIST = [
-    ('Modele reel', 'corvet__bsi__name'), ('HW', 'corvet__bsi__hw'), ('SW', 'corvet__bsi__sw'),
+    ('Modele reel', 'corvet__prods__bsi__name'), ('HW', 'corvet__prods__bsi__hw'), ('SW', 'corvet__prods__bsi__sw'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
     ('94B_BSI_SOFT', 'corvet__electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'corvet__electronique_44b'),
     ('54B_BSI_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64B_BSI_FOURN.CODE', 'corvet__electronique_64b'),
@@ -136,8 +136,8 @@ def extract_corvet(product='corvet'):
             '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
         ]
         queryset = Corvet.objects.all()
-        values_list = tuple([field.name for field in Corvet._meta.fields
-                             if field.name not in ['radio', 'btel', 'bsi', 'emf', 'bsm', 'cmm', 'hdc']])
+        values_list = tuple([field.name for col_nb, field in enumerate(Corvet._meta.fields)
+                             if col_nb < len(header)])
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
     return header, fields, values_list

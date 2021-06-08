@@ -33,8 +33,8 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         return query
 
     def get_multimedia_display(self, data_list):
-        if 'corvet__btel__name' in self.fields:
-            position = self.fields.index('corvet__btel__name')
+        if 'corvet__prods__btel__name' in self.fields:
+            position = self.fields.index('corvet__prods__btel__name')
             for prod in Multimedia.PRODUCT_CHOICES:
                 if prod[0] == data_list[position]:
                     data_list[position] = prod[1]
