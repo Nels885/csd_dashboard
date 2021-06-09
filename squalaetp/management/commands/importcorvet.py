@@ -56,7 +56,12 @@ class Command(BaseCommand):
             for attempt in range(2):
                 data = scrap.result(query.vin)
                 row = xml_parser(data)
-                if row and row.get('donnee_date_entree_montage'):
+                if scrap.ERROR:
+                    delay_time = time.time() - start_time
+                    self.stdout.write(
+                        self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error CORVET in {delay_time}"))
+                    break
+                elif row and row.get('donnee_date_entree_montage'):
                     defaults = defaults_dict(Corvet, row, "vin")
                     obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
                     if created:
