@@ -1,3 +1,4 @@
+import re
 import os.path
 import datetime
 
@@ -46,11 +47,11 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
             if field in self.fields:
                 position = self.fields.index(field)
                 if data_list[position]:
-                    if arg == 'DON_LIN_PROD':
-                        if 'vin' in self.fields and 'VF3' in data_list[self.fields.index('vin')]:
-                            arg = 'DON_LIN_PROD 0'
-                        elif 'vin' in self.fields and 'VF3' in data_list[self.fields.index('vin')]:
+                    if 'vin' in self.fields and arg == 'DON_LIN_PROD':
+                        if re.match(r'^[V][FR]7\w{14}$', str(data_list[self.fields.index('vin')])):
                             arg = 'DON_LIN_PROD 1'
+                        else:
+                            arg = 'DON_LIN_PROD 0'
                     data_list[position] = f"{data_list[position]} - {get_corvet(data_list[position], arg)}"
         return data_list
 

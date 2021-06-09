@@ -34,20 +34,23 @@ CMM_LIST = [
 
 BSI_LIST = [
     ('Modele reel', 'corvet__prods__bsi__name'), ('HW', 'corvet__prods__bsi__hw'), ('SW', 'corvet__prods__bsi__sw'),
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
     ('94B_BSI_SOFT', 'corvet__electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'corvet__electronique_44b'),
     ('54B_BSI_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64B_BSI_FOURN.CODE', 'corvet__electronique_64b'),
     ('84B_BSI_DOTE', 'corvet__electronique_84b')
 ]
 
 HDC_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('16P_HDC_HARD', 'corvet__electronique_16p'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16P_HDC_HARD', 'corvet__electronique_16p'),
     ('46P_HDC_FOURN.NO.SERIE', 'corvet__electronique_46p'), ('56P_HDC_FOURN.DATE.FAB', 'corvet__electronique_56p'),
     ('66P_HDC_FOURN.CODE', 'corvet__electronique_66p')
 ]
 
 BSM_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('16B_BSM_HARD', 'corvet__electronique_16b'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16B_BSM_HARD', 'corvet__electronique_16b'),
     ('46B_BSM_FOURN.NO.SERIE', 'corvet__electronique_46b'), ('56B_BSM_FOURN.DATE.FAB', 'corvet__electronique_56b'),
     ('66B_BSM_FOURN.CODE', 'corvet__electronique_66b'), ('86B_BSM_DOTE', 'corvet__electronique_86b'),
     ('96B_BSM_SOFT', 'corvet__electronique_96b')
