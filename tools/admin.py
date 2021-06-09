@@ -14,8 +14,9 @@ class ThermalChamberAdmin(admin.ModelAdmin):
 
 
 class SuptechAdmin(admin.ModelAdmin):
-    list_display = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
+    list_display = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status')
     ordering = ('-date',)
+    list_filter = ('status',)
     search_fields = ('user', 'xelon', 'item')
 
 
