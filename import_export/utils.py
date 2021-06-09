@@ -35,7 +35,8 @@ CMM_LIST = [
 BSI_LIST = [
     ('Modele reel', 'corvet__prods__bsi__name'), ('HW', 'corvet__prods__bsi__hw'), ('SW', 'corvet__prods__bsi__sw'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('MOTEUR', 'corvet__donnee_moteur'),
+    ('CAL MOTEUR', 'corvet__prods__cmm__name'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
     ('94B_BSI_SOFT', 'corvet__electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'corvet__electronique_44b'),
     ('54B_BSI_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64B_BSI_FOURN.CODE', 'corvet__electronique_64b'),
     ('84B_BSI_DOTE', 'corvet__electronique_84b')

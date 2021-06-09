@@ -19,7 +19,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'corvet__donnee_ligne_de_produit': 'DON_LIN_PROD', 'corvet__donnee_silhouette': 'DON_SIL',
         'corvet__donnee_genre_de_produit': 'DON_GEN_PROD', 'corvet__attribut_dhb': 'ATT_DHB',
         'corvet__attribut_dlx': 'ATT_DLX', 'corvet__attribut_dun': 'ATT_DUN', 'corvet__attribut_dym': 'ATT_DYM',
-        'corvet__attribut_dyr': 'ATT_DYR'
+        'corvet__attribut_dyr': 'ATT_DYR', 'corvet__donnee_moteur': 'DON_MOT'
     }
 
     def __init__(self, *args, **kwargs) -> None:
