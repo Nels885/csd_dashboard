@@ -1,16 +1,23 @@
+from io import StringIO
 from sbadmin import celery_app
 from django.core.management import call_command
 from django.core.mail import EmailMessage
 
 
-@celery_app.task(bind=True)
-def cmd_loadsqualaetp_task(self):
-    call_command("loadsqualaetp", "--xelon_update")
+@celery_app.task
+def cmd_loadsqualaetp_task():
+    out = StringIO()
+    call_command("loadsqualaetp", "--xelon_update", stdout=out)
+    return "Importation Squalaetp terminée."
 
 
 @celery_app.task
 def cmd_exportsqualaetp_task():
-    call_command("exportsqualaetp")
+    out = StringIO()
+    call_command("exportsqualaetp", stdout=out)
+    if "Export error" in out.getvalue():
+        return out.getvalue()
+    return "Exportation Squalaetp terminée."
 
 
 @celery_app.task(bind=True)
