@@ -141,3 +141,17 @@ class SuptechItem(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class BgaTemp(models.Model):
+#     name = models.CharField('Nom de la machine', max_length=100)
+#     date = models.DateField('date', auto_now_add=True)
+#     start_time = models.TimeField('heure de START', auto_now_add=True)
+#     end_time = models.TimeField('heure de FIN', auto_now=True)
+#
+#     class Meta:
+#         verbose_name = "BGA Temp"
+#         ordering = ["date"]
+#
+#     def __str__(self):
+#         return f"{self.name} {self.date} {self.start_time}"
