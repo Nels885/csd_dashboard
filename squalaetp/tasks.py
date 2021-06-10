@@ -8,7 +8,7 @@ from django.core.mail import EmailMessage
 def cmd_loadsqualaetp_task():
     out = StringIO()
     call_command("loadsqualaetp", "--xelon_update", stdout=out)
-    return "Importation Squalaetp terminée."
+    return {"msg": "Importation Squalaetp terminée."}
 
 
 @celery_app.task
@@ -16,8 +16,8 @@ def cmd_exportsqualaetp_task():
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
     if "Export error" in out.getvalue():
-        return out.getvalue()
-    return "Exportation Squalaetp terminée."
+        return {"msg": out.getvalue()}
+    return {"msg": "Exportation Squalaetp terminée."}
 
 
 @celery_app.task(bind=True)

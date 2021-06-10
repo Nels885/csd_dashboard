@@ -131,7 +131,7 @@
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "New user" %}</strong>
                         </a>
-                        <a class="dropdown-item" href="{% url 'squalaetp:excel_import' %}">
+                        <a class="dropdown-item" href="#" onclick="excelImport(`{% url 'squalaetp:excel_import_async' %}`)">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>
                         </a>

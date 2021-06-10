@@ -26,7 +26,7 @@ function clock() {
 }
 
 
-function addMessage(text, extra_tags) {
+function addMessage(text, extra_tags, fixed = false) {
     var message = $(`
             <div style="border-radius:0;" class="alert alert-icon alert-${extra_tags} alert-dismissible fade show mb-0" role="alert">\n
                     ${text}\n
@@ -37,15 +37,16 @@ function addMessage(text, extra_tags) {
     $("#messages").append(message);
     message.fadeIn(500);
 
-    message.fadeTo(10000, 500).slideUp(500, function () {
-        message.slideUp(500);
-        message.remove();
-    });
+    if (!fixed) {
+        message.fadeTo(10000, 500).slideUp(500, function () {
+            message.slideUp(500);
+            message.remove();
+        });
+    }
 }
 
 
 function textCopy(text) {
-    console.log(text);
     const elem = document.createElement('textarea');
     elem.value = text;
     document.body.appendChild(elem);
@@ -53,6 +54,29 @@ function textCopy(text) {
     document.execCommand("copy");
     document.body.removeChild(elem);
     alert("Copied the text: " + elem.value);
+}
+
+function excelImport(url) {
+    $.ajax({
+        type: "GET",
+        url: url,
+        contentType: false,
+        processData: false,
+        cache: false,
+        async: true,
+        success: function (res) {
+            addMessage("Importation Squalaetp en cours...", "warning");
+            getProgress(
+                res.task_id,
+                progressBarId = "export-corvet-progress-bar",
+                progressBarMessageId = "export-corvet-progress-message",
+            );
+        },
+        error: function (err) {
+            console.log(err);
+            addMessage("Vous n'avez pas la permissions !", "warning");
+        },
+    })
 }
 
 

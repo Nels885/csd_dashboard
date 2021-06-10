@@ -57,6 +57,7 @@
 <script type="text/javascript" src="{% static 'vendor/moment.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+<script src="{% static 'celery_progress/celery_progress.js' %}" type="application/javascript"></script>
 
 <!-- Custom scripts for all pages-->
 <script type="text/javascript" src="{% static 'js/sb-admin-2.min.js' %}"></script>
@@ -102,9 +103,12 @@
         }
 
         function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
-            {#alert("Complete progress 100%")#}
             // display message
-            addMessage("Complete Progress 100%", "success");
+            if ("msg" in result) {
+                addMessage(result["msg"], "success");
+            } else {
+                addMessage("Complete Progress 100%", "success");
+            }
             progressBarMessageElement.innerHTML = "Waiting event . . ."
             progressBarElement.setAttribute("style", "width: 0%")
             progressBarElement.setAttribute("aria-valuenow", 0)
