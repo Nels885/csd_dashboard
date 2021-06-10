@@ -56,6 +56,7 @@
                         </div>
                     </div>
                     <a href="
+
                             {% if user.is_authenticated %}{% url 'dashboard:late_prod' %}{% else %}#{% endif %}" class="stretched-link"></a>
                 </div>
             </div>
@@ -215,7 +216,7 @@
 {% block extrascripts %}
 
     <!-- Page level plugins -->
-    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'vendor/chart.js/chart.min.js' %}"></script>
 
     <!-- Page level custom scripts -->
     <script src="{% static 'dashboard/js/chart-pie.js' %}"></script>

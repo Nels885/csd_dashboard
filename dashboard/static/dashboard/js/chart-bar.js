@@ -1,6 +1,6 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = 'Nunito,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
+Chart.defaults.font.Family = 'Nunito,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.color = '#858796';
 
 $.ajax({
     method: "GET",
@@ -18,22 +18,41 @@ $.ajax({
                 labels: suptechLabels,
                 datasets: [
                     {
-                        label: "Pourcentage délai en jours",
+                        label: "Demandes Suptech",
                         data: suptechValue,
-                        backgroundColor: "#4e73df",
-                        hoverBackgroundColor: "#2e59d9",
-                        borderColor: "#4e73df",
+                        backgroundColor: ['#4FC88B', '#F6C23E', '#E74A3B'],
+                        borderWidth: 1
                     },
                 ],
             },
             options: {
+                maintainAspectRatio: false,
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            max: 100
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Délai de traitement'
+                        },
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                    },
+                    y: {
+                        max: 100,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Valeur en %',
+                        },
+                        grid: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
                         }
-                    }]
+                    }
                 }
             }
         });

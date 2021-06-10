@@ -1,6 +1,6 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = 'Nunito,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
+Chart.defaults.font.Family = 'Nunito,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.color = '#858796';
 
 $.ajax({
     method: "GET",
@@ -26,7 +26,7 @@ $.ajax({
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(0, 143, 136, 1)",
-                        pointRadius: 3,
+                        pointRadius: 2,
                         pointBackgroundColor: "rgba(0, 143, 136, 1)",
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
@@ -36,7 +36,7 @@ $.ajax({
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(78, 115, 223, 1)",
-                        pointRadius: 3,
+                        pointRadius: 2,
                         pointBackgroundColor: "rgba(78, 115, 223, 1)",
                         pointBorderColor: "rgba(78, 115, 223, 1)",
                     },
@@ -46,7 +46,7 @@ $.ajax({
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(240, 132, 40, 1)",
-                        pointRadius: 3,
+                        pointRadius: 2,
                         pointBackgroundColor: "rgba(240, 132, 40, 1)",
                         pointBorderColor: "rgba(240, 132, 40, 1)",
                     },
@@ -56,7 +56,7 @@ $.ajax({
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(214, 54, 33, 1)",
-                        pointRadius: 3,
+                        pointRadius: 2,
                         pointBackgroundColor: "rgba(214, 54, 33, 1)",
                         pointBorderColor: "rgba(214, 54, 33, 1)",
                     }
@@ -73,35 +73,34 @@ $.ajax({
                     }
                 },
                 scales: {
-                    xAxes: [{
-                        time: {
-                            unit: 'date'
-                        },
-                        gridLines: {
+                    x: {
+                        grid: {
                             display: false,
                             drawBorder: false
                         },
                         ticks: {
                             maxTicksLimit: 7
                         }
-                    }],
-                    yAxes: [{
+                    },
+                    y: {
                         ticks: {
                             maxTicksLimit: 5,
                             padding: 10,
                         },
-                        gridLines: {
+                        grid: {
                             color: "rgb(234, 236, 244)",
                             zeroLineColor: "rgb(234, 236, 244)",
                             drawBorder: false,
                             borderDash: [2],
                             zeroLineBorderDash: [2]
                         }
-                    }],
+                    }
                 },
-                legend: {
-                    display: true
-                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
             },
         });
     },
