@@ -10,7 +10,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
 from utils.data.mqtt import MQTTClass
@@ -220,3 +220,19 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         else:
             messages.warning(self.request, _('Warning: Data update but without sending the email'))
         return super().form_valid(form)
+
+
+def bga_time(request):
+    device = request.GET.get("device", None)
+    status = request.GET.get("status", None)
+    if device and status:
+        bga_is_active = BgaTime.objects.filter(name=device, end_time__isnull=True)
+        if bga_is_active and status.upper() == "STOP":
+            bga_is_active.update(end_time=timezone.localtime())
+        elif bga_is_active and status.upper() == "START":
+            date_time = timezone.datetime.combine(bga_is_active.first().date, bga_is_active.first().start_time)
+            bga_is_active.update(end_time=date_time + timezone.timedelta(minutes=5))
+        if status.upper() == "START":
+            BgaTime.objects.create(name=device)
+        return JsonResponse({"response": "OK", "device": device, "status": status.upper()})
+    return JsonResponse({"response": "ERROR"})

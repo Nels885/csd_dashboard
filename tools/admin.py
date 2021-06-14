@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import TagXelon, CsdSoftware, EtudeProject, ThermalChamber, Suptech, SuptechItem
+from .models import TagXelon, CsdSoftware, EtudeProject, ThermalChamber, Suptech, SuptechItem, BgaTime
 
 
 class TagXelonAdmin(admin.ModelAdmin):
@@ -32,4 +32,4 @@ admin.site.register(EtudeProject)
 admin.site.register(ThermalChamber, ThermalChamberAdmin)
 admin.site.register(Suptech, SuptechAdmin)
 admin.site.register(SuptechItem, SuptechItemAdmin)
-# admin.site.register(BgaTemp)
+admin.site.register(BgaTime)
