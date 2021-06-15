@@ -4,7 +4,7 @@ from django.db.models import DateTimeField, CharField, Q, Count, Value, F
 from squalaetp.models import Xelon
 from psa.models import Corvet
 from reman.models import Batch, Repair, EcuType
-from tools.models import Suptech
+from tools.models import Suptech, BgaTime
 
 XELON_LIST = [
     ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
@@ -226,6 +226,10 @@ def extract_tools(model):
             'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline', 'modified_at',
             'fullname', 'day_number'
         )
+    if model == "bga_time":
+        header = ['MACHINE', 'DATE', 'HEURE DEBUT', 'DUREE']
+        queryset = BgaTime.objects.all()
+        values_list = ('name', 'date', 'start_time', 'duration')
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
     return header, fields, values_list
