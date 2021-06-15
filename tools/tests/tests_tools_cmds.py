@@ -29,6 +29,10 @@ class ToolsCommandTestCase(UnitTest):
         call_command('cleartools', '--suptech', stdout=self.out)
         self.assertIn("Suppression des données de la table Suptech terminée!", self.out.getvalue())
 
+    def test_clear_BgaTime_table(self):
+        call_command('cleartools', '--bga_time', stdout=self.out)
+        self.assertIn("Suppression des données de la table BgaTime terminée!", self.out.getvalue())
+
     def test_send_email_suptech(self):
         call_command('suptech', '--email', stdout=self.out)
         self.assertIn("Envoi de l'email des Suptech en cours terminée !", self.out.getvalue())
