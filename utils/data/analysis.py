@@ -1,13 +1,13 @@
 from django.utils import timezone
 # import itertools
 
-from django.db.models.functions import ExtractDay
-from django.db.models.aggregates import Count
+from django.db.models.functions import ExtractDay, TruncDay
+from django.db.models.aggregates import Count, Sum
 from django.db.models import Q, F
 
 from squalaetp.models import Xelon, Indicator, ProductCategory
 from psa.models import Corvet
-from tools.models import Suptech
+from tools.models import Suptech, BgaTime
 
 
 class ProductAnalysis:
@@ -98,10 +98,10 @@ class IndicatorAnalysis:
 
     def new_result(self):
         last_60_days = timezone.datetime.today() - timezone.timedelta(60)
-        data = {"areaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
+        data = {"prodsAreaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
         prods = Indicator.objects.filter(date__gte=last_60_days).order_by('date')
         for prod in prods:
-            data["areaLabels"].append(prod.date.strftime("%d/%m/%Y"))
+            data["prodsAreaLabels"].append(prod.date.strftime("%d/%m/%Y"))
             data["prodsInValue"].append(self.queryset.filter(date_retour=prod.date).count())
             data["prodsRepValue"].append(prod.products_to_repair)
             data["prodsExpValue"].append(prod.express_products)
@@ -109,24 +109,47 @@ class IndicatorAnalysis:
         return data
 
 
-class SuptechAnalysis:
-    LABELS = ["1 à 2 jours", "3 à 6 jours", "7 jours et plus"]
+class ToolsAnalysis:
+    SUPTECH_LABELS = ["1 à 2 jours", "3 à 6 jours", "7 jours et plus"]
+    BGA = {"bgaOneValue": "DES-48", "bgaTwoValue": "DES-51"}
+    TOTAL_HOURS = 7 * 60 * 60
 
     def __init__(self):
+        last_60_days = timezone.datetime.today() - timezone.timedelta(60)
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
         suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
-        self.total = suptechs.count()
-        self.queryset = suptechs.annotate(day_number=day_number).order_by('date')
+        self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
+        self.bgaTimes = BgaTime.objects.filter(date__gte=last_60_days)
+        self.total = None
 
-    def result(self):
-        data = {"suptechLabels": self.LABELS, 'suptechValue': []}
-        data['suptechValue'].append(self._percent(self.queryset.filter(day_number__lte=2)))
-        data['suptechValue'].append(self._percent(self.queryset.filter(day_number__gt=2, day_number__lte=6)))
-        data['suptechValue'].append(self._percent(self.queryset.filter(day_number__gt=6)))
+    def suptech(self):
+        self.total = self.suptechs.count()
+        data = {"suptechLabels": self.SUPTECH_LABELS, 'suptechValue': []}
+        data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__lte=2).count()))
+        data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=2, day_number__lte=6).count()))
+        data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=6).count()))
         return data
 
-    def _percent(self, queryset):
-        if queryset.count() != 0:
-            return round(100 * queryset.count() / self.total, 1)
+    def bga_time(self):
+        self.total = self.TOTAL_HOURS
+        data = {"bgaAreaLabels": [], "bgaTotalValue": [], "bgaOneValue": [], "bgaTwoValue": []}
+        queryset = self._bga_annotate(self.bgaTimes)
+        for query in queryset:
+            data["bgaAreaLabels"].append(query['sum_date'].strftime("%d/%m/%Y"))
+            data["bgaTotalValue"].append(self._percent(query['sum_duration']))
+        for key, value in self.BGA.items():
+            queryset = self._bga_annotate(self.bgaTimes.filter(name=value))
+            for query in queryset:
+                data[key].append(self._percent(query['sum_duration']))
+        return data
+
+    def _percent(self, value,):
+        if self.total and value != 0:
+            return round(100 * value / self.total, 1)
         else:
             return 0
+
+    @staticmethod
+    def _bga_annotate(queryset):
+        return queryset.annotate(
+            sum_date=TruncDay("date")).values("sum_date").annotate(sum_duration=Sum('duration')).order_by("-sum_date")
