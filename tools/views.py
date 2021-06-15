@@ -226,12 +226,11 @@ def bga_time(request):
     device = request.GET.get("device", None)
     status = request.GET.get("status", None)
     if device and status:
-        bga_is_active = BgaTime.objects.filter(name=device, end_time__isnull=True)
-        if bga_is_active and status.upper() == "STOP":
-            bga_is_active.update(end_time=timezone.localtime())
-        elif bga_is_active and status.upper() == "START":
-            date_time = timezone.datetime.combine(bga_is_active.first().date, bga_is_active.first().start_time)
-            bga_is_active.update(end_time=date_time + timezone.timedelta(minutes=5))
+        try:
+            bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
+            bga_is_active.save(status=status)
+        except BgaTime.DoesNotExist:
+            pass
         if status.upper() == "START":
             BgaTime.objects.create(name=device)
         return JsonResponse({"response": "OK", "device": device, "status": status.upper()})
