@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
@@ -148,10 +149,21 @@ class BgaTime(models.Model):
     date = models.DateField('date', auto_now_add=True)
     start_time = models.TimeField('heure de START', auto_now_add=True)
     end_time = models.TimeField('heure de FIN', null=True)
+    duration = models.IntegerField('durée en secondes', null=True)
 
     class Meta:
         verbose_name = "BGA Time"
-        ordering = ["date"]
+        ordering = ["id"]
+
+    def save(self, *args, **kwargs):
+        status = kwargs.pop('status', None)
+        if status:
+            if self.pk and status.upper() == "STOP":
+                self.end_time = timezone.localtime().time()
+            elif self.pk and status.upper() == "START":
+                date_time = timezone.datetime.combine(self.date, self.start_time)
+                self.end_time = (date_time + timezone.timedelta(minutes=5)).time()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} {self.date} {self.start_time}"
