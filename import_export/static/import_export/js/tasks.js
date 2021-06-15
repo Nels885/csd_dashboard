@@ -1,8 +1,8 @@
 $(function () {
     $("#export-corvet").on("submit", (e) => {
-        e.preventDefault()
-        let formData = new FormData($("#export-corvet")[0])
-        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
+        e.preventDefault();
+        let formData = new FormData($("#export-corvet")[0]);
+        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}");
         $.ajax({
             type: "POST",
             url: CORVET_URL,
@@ -23,12 +23,12 @@ $(function () {
                 console.log(err);
             },
         })
-    })
+    });
 
     $("#export-corvet-vin").on("submit", (e) => {
-        e.preventDefault()
-        let formData = new FormData($("#export-corvet-vin")[0])
-        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
+        e.preventDefault();
+        let formData = new FormData($("#export-corvet-vin")[0]);
+        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}");
         $.ajax({
             type: "POST",
             url: CORVET_VIN_URL,
@@ -38,7 +38,6 @@ $(function () {
             cache: false,
             async: true,
             success: function (res) {
-                console.log(res.task_id);
                 getProgress(
                     res.task_id,
                     progressBarId = "export-corvet-vin-progress-bar",
@@ -49,13 +48,13 @@ $(function () {
             error: function (err) {
                 console.log(err);
             },
-        })
-    })
+        });
+    });
 
     $("#export-reman").on("submit", (e) => {
-        e.preventDefault()
-        let formData = new FormData($("#export-reman")[0])
-        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
+        e.preventDefault();
+        let formData = new FormData($("#export-reman")[0]);
+        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}");
         $.ajax({
             type: "POST",
             url: REMAN_URL,
@@ -65,7 +64,6 @@ $(function () {
             cache: false,
             async: true,
             success: function (res) {
-                console.log(res.task_id);
                 getProgress(
                     res.task_id,
                     progressBarId = "export-reman-progress-bar",
@@ -76,13 +74,13 @@ $(function () {
             error: function (err) {
                 console.log(err);
             },
-        })
-    })
+        });
+    });
 
     $("#export-tools").on("submit", (e) => {
-        e.preventDefault()
-        let formData = new FormData($("#export-tools")[0])
-        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
+        e.preventDefault();
+        let formData = new FormData($("#export-tools")[0]);
+        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}");
         $.ajax({
             type: "POST",
             url: TOOLS_URL,
@@ -92,7 +90,6 @@ $(function () {
             cache: false,
             async: true,
             success: function (res) {
-                console.log(res.task_id);
                 getProgress(
                     res.task_id,
                     progressBarId = "export-tools-progress-bar",
@@ -103,6 +100,6 @@ $(function () {
             error: function (err) {
                 console.log(err);
             },
-        })
-    })
+        });
+    });
 });

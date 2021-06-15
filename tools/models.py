@@ -1,9 +1,12 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
+
+from constance import config
 
 from squalaetp.models import Xelon
 from utils.file.export import calibre
@@ -106,7 +109,7 @@ class Suptech(models.Model):
     date = models.DateField('DATE')
     user = models.CharField('QUI', max_length=50)
     xelon = models.CharField('XELON', max_length=10, blank=True)
-    item = models.CharField('ITEM', max_length=100)
+    item = models.CharField('ITEM', max_length=200)
     time = models.CharField('TIME', max_length=10)
     info = models.TextField('INFO', max_length=2000)
     rmq = models.TextField('RMQ', max_length=2000, blank=True)
@@ -121,8 +124,46 @@ class Suptech(models.Model):
                                     blank=True)
 
     class Meta:
-        verbose_name = "Logs SupTech"
+        verbose_name = "SupTech Log"
         ordering = ['pk']
 
     def __str__(self):
         return self.item
+
+
+class SuptechItem(models.Model):
+    name = models.CharField('Nom', max_length=100, unique=True)
+    extra = models.BooleanField(default=False)
+    mailing_list = models.TextField("Liste d'email", max_length=5000, default=config.SUPTECH_TO_EMAIL_LIST)
+
+    class Meta:
+        verbose_name = "SupTech Item"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class BgaTime(models.Model):
+    name = models.CharField('Nom de la machine', max_length=100)
+    date = models.DateField('date', auto_now_add=True)
+    start_time = models.TimeField('heure de START', auto_now_add=True)
+    end_time = models.TimeField('heure de FIN', null=True)
+    duration = models.IntegerField('durée en secondes', null=True)
+
+    class Meta:
+        verbose_name = "BGA Time"
+        ordering = ["id"]
+
+    def save(self, *args, **kwargs):
+        status = kwargs.pop('status', None)
+        if status:
+            if self.pk and status.upper() == "STOP":
+                self.end_time = timezone.localtime().time()
+            elif self.pk and status.upper() == "START":
+                date_time = timezone.datetime.combine(self.date, self.start_time)
+                self.end_time = (date_time + timezone.timedelta(minutes=5)).time()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} {self.date} {self.start_time}"

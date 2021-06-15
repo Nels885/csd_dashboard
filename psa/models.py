@@ -115,37 +115,74 @@ class Corvet(models.Model):
     electronique_86b = models.CharField('BSM DOTE - Boitier Servitude Moteur', max_length=200, blank=True)
     electronique_96b = models.CharField('BSM SOFT - Boitier Servitude Moteur', max_length=200, blank=True)
 
+    attribut_dao = models.CharField('SURVEILLANCE VOIE LATERALE', max_length=200, blank=True)
+    attribut_dcd = models.CharField('CARBURANT (RON MINI MOTEUR)', max_length=200, blank=True)
+    attribut_de2 = models.CharField('MIRROR LINK', max_length=200, blank=True)
+    attribut_de3 = models.CharField('RECHARGE NOMADE', max_length=200, blank=True)
+    attribut_de4 = models.CharField('JUKE BOX', max_length=200, blank=True)
+    attribut_dpr = models.CharField('PROJECTEUR ANTI-BROUILLARD', max_length=200, blank=True)
+    attribut_dqk = models.CharField('AIDE VISUELLE PANORAMIQUE', max_length=200, blank=True)
+    attribut_dqp = models.CharField('AFFICHAGE COMPL DETECTION EXT', max_length=200, blank=True)
+    attribut_dub = models.CharField('DETECTION OBSTACLE', max_length=200, blank=True)
+    attribut_due = models.CharField('DETECTION SOUS GONFLAGE', max_length=200, blank=True)
+    attribut_duf = models.CharField('SYSTEME ESP/ESC', max_length=200, blank=True)
+    attribut_dyc = models.CharField('STOP AND START', max_length=200, blank=True)
+    attribut_dyq = models.CharField('ALLUMAGE FEUX', max_length=200, blank=True)
+    attribut_dze = models.CharField('PACK VISION', max_length=200, blank=True)
+    electronique_94r = models.CharField('AAS SOFT - Aide Au Stationnement', max_length=200, blank=True)
+    electronique_16q = models.CharField('BCM HARD - Boitier coffre Motorise', max_length=200, blank=True)
+    electronique_96q = models.CharField('BCM SOFT - Boitier coffre Motorise', max_length=200, blank=True)
+    electronique_16v = models.CharField('BCPM HARD - Projecteur gauche avec fonctionnalites de correction integrees', max_length=200, blank=True)
+    electronique_19f = models.CharField('BECB HARD - Boitier Electronique Etat charge Batterie', max_length=200, blank=True)
+    electronique_19u = models.CharField('BEM HARD - Boitier Eclairage Memorisation', max_length=200, blank=True)
+    electronique_14d = models.CharField('BV HARD - Boite Vitesses', max_length=200, blank=True)
+    electronique_94d = models.CharField('BV SOFT - Boite Vitesses', max_length=200, blank=True)
+    electronique_16g = models.CharField('CDPL HARD - Capteur de pluie/luminosite', max_length=200, blank=True)
+    electronique_96g = models.CharField('CDPL SOFT - Capteur de pluie/luminosite', max_length=200, blank=True)
+    electronique_94j = models.CharField('CLIM SOFT - Climatisation', max_length=200, blank=True)
+    electronique_94k = models.CharField('CMB SOFT - Combine Planche de Bord', max_length=200, blank=True)
+    electronique_19v = models.CharField('CRT HARD - Leve Vitre Arriere Droit', max_length=200, blank=True)
+    electronique_12y = models.CharField('CVM2_2_ HARD - CAMERA VIDEO MULTIFONCTION V2', max_length=200, blank=True)
+    electronique_92y = models.CharField('CVM2_2_ SOFT - CAMERA VIDEO MULTIFONCTION V2', max_length=200, blank=True)
+    electronique_16l = models.CharField('DAE HARD - Direction Assistee Electrique', max_length=200, blank=True)
+    electronique_96l = models.CharField('DAE SOFT - Direction Assistee Electrique', max_length=200, blank=True)
+    electronique_14y = models.CharField('EDP HARD - Electronique De Porte Conducteur', max_length=200, blank=True)
+    electronique_14z = models.CharField('EDP_P HARD - Electronique De Porte Passager', max_length=200, blank=True)
+    electronique_14p = models.CharField('FREIN HARD - Frein ABS/ESP/EHB Frein Principal', max_length=200, blank=True)
+    electronique_94p = models.CharField('FREIN SOFT - Frein ABS/ESP/EHB Frein Principal', max_length=200, blank=True)
+    electronique_34p = models.CharField('FREIN SOFT LIVRE - Frein ABS/ESP/EHB Frein Principal', max_length=200, blank=True)
+    electronique_19w = models.CharField('LVARG HARD - Leve Vitre Arriere Gauche', max_length=200, blank=True)
+    electronique_16t = models.CharField('MOTEV HARD - Moteur Essuie-Vitre', max_length=200, blank=True)
+    electronique_19t = models.CharField('PDPC HARD - Platine de Porte Conducteur', max_length=200, blank=True)
+    electronique_14m = models.CharField('RBG HARD - Boitier Air Bag (Sac Gonflable)', max_length=200, blank=True)
+    electronique_94m = models.CharField('RBG SOFT - Boitier Air Bag (Sac Gonflable)', max_length=200, blank=True)
+    electronique_18z = models.CharField('TNB HARD - Boitier de non Bouclage Ceinture Securite', max_length=200, blank=True)
+    electronique_11m = models.CharField('VMF HARD - MODULE COMMUTATION INTEGRE', max_length=200, blank=True)
+
+    class Meta:
+        verbose_name = "données CORVET"
+        ordering = ['vin']
+
+    def __str__(self):
+        return self.vin
+
+
+class CorvetProduct(models.Model):
+    corvet = models.OneToOneField('psa.Corvet', related_name='prods', on_delete=models.CASCADE, primary_key=True)
     radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
     btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
     bsi = models.ForeignKey('psa.Ecu', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
     emf = models.ForeignKey('psa.Ecu', related_name='corvet_emf', on_delete=models.SET_NULL, limit_choices_to={'type': 'EMF'}, null=True, blank=True)
     cmm = models.ForeignKey('psa.Ecu', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
     bsm = models.ForeignKey('psa.Ecu', related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
-    # hdc = models.ForeignKey('psa.Ecu', related_name='corvet_hdc', on_delete=models.SET_NULL, limit_choices_to={'type': 'HDC'}, null=True, blank=True)
+    hdc = models.ForeignKey('psa.Ecu', related_name='corvet_hdc', on_delete=models.SET_NULL, limit_choices_to={'type': 'HDC'}, null=True, blank=True)
 
     class Meta:
-        verbose_name = "données CORVET"
-        ordering = ['vin']
-
-    def save(self, *args, **kwargs):
-        if self.electronique_14x.isdigit():
-            self.btel = Multimedia.objects.filter(hw_reference=self.electronique_14x).first()
-        if self.electronique_14f.isdigit():
-            self.radio = Multimedia.objects.filter(hw_reference=self.electronique_14f).first()
-        if self.electronique_14b.isdigit():
-            self.bsi = Ecu.objects.filter(comp_ref__startswith=self.electronique_14b, type='BSI').first()
-        if self.electronique_14l.isdigit():
-            self.emf = Ecu.objects.filter(comp_ref__startswith=self.electronique_14l, type='EMF').first()
-        if self.electronique_14a.isdigit():
-            self.cmm = Ecu.objects.filter(comp_ref__startswith=self.electronique_14a, type='CMM').first()
-        if self.electronique_16b.isdigit():
-            self.bsm = Ecu.objects.filter(comp_ref__startswith=self.electronique_16b, type='BSM').first()
-        # if self.electronique_16p.isdigit():
-        #     self.hdc = Ecu.objects.filter(comp_ref__startswith=self.electronique_16p, type='HDC').first()
-        super(Corvet, self).save(*args, **kwargs)
+        verbose_name = "produits CORVET"
+        ordering = ['corvet']
 
     def __str__(self):
-        return self.vin
+        return self.corvet.vin
 
 
 class Multimedia(models.Model):
@@ -196,8 +233,8 @@ class Multimedia(models.Model):
 
     def save(self, *args, **kwargs):
         super(Multimedia, self).save(*args, **kwargs)
-        Corvet.objects.filter(electronique_14x__exact=self.hw_reference).update(btel=self.pk)
-        Corvet.objects.filter(electronique_14f__exact=self.hw_reference).update(radio=self.pk)
+        CorvetProduct.objects.filter(corvet__electronique_14x__exact=self.hw_reference).update(btel=self.pk)
+        CorvetProduct.objects.filter(corvet__electronique_14f__exact=self.hw_reference).update(radio=self.pk)
 
     def __iter__(self):
         for field in self._meta.fields:
@@ -277,17 +314,17 @@ class Ecu(models.Model):
     def save(self, *args, **kwargs):
         super(Ecu, self).save(*args, **kwargs)
         if self.type == "BSI":
-            Corvet.objects.filter(electronique_14b__startswith=self.comp_ref).update(bsi=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_14b__startswith=self.comp_ref).update(bsi=self.pk)
         if self.type == "EMF":
-            Corvet.objects.filter(electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
         if self.type == "MDS":
-            Corvet.objects.filter(electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
         if self.type == "CMM":
-            Corvet.objects.filter(electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
         if self.type == "BSM":
-            Corvet.objects.filter(electronique_16b__startswith=self.comp_ref).update(bsm=self.pk)
-        # if self.type == "HDC":
-        #     Corvet.objects.filter(electronique_16p__startswith=self.comp_ref).update(hdc=self.pk)
+            CorvetProduct.objects.filter(corvet__electronique_16b__startswith=self.comp_ref).update(bsm=self.pk)
+        if self.type == "HDC":
+            CorvetProduct.objects.filter(corvet__electronique_16p__startswith=self.comp_ref).update(hdc=self.pk)
 
     def __iter__(self):
         for field in self._meta.fields:

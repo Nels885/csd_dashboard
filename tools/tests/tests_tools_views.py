@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from tools.models import CsdSoftware, ThermalChamber, Suptech
+from tools.models import CsdSoftware, ThermalChamber, Suptech, BgaTime
 
 
 class ToolsTestCase(UnitTest):
@@ -141,3 +141,30 @@ class ToolsTestCase(UnitTest):
 
         response = self.client.post(url, form_data)
         self.assertRedirects(response, reverse('tools:suptech_list'), status_code=302)
+
+        # If the creation user does not exist
+        suptech.created_by = None
+        suptech.save()
+        response = self.client.post(url, form_data)
+        self.assertRedirects(response, reverse('tools:suptech_list'), status_code=302)
+
+    def test_bga_time_view(self):
+        url = reverse('tools:bga_time')
+        response = self.client.get(url)
+        self.assertJSONEqual(response.content, {"response": "ERROR"})
+
+        response = self.client.get(url, {"device": "test", "status": "start"})
+        self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "START"})
+        self.assertEqual(BgaTime.objects.count(), 1)
+        self.assertEqual(BgaTime.objects.first().end_time, None)
+
+        response = self.client.get(url, {"device": "test", "status": "start"})
+        self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "START"})
+        self.assertEqual(BgaTime.objects.count(), 2)
+        self.assertEqual(BgaTime.objects.first().duration, 300)
+        self.assertEqual(BgaTime.objects.last().end_time, None)
+
+        response = self.client.get(url, {"device": "test", "status": "stop"})
+        self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "STOP"})
+        self.assertEqual(BgaTime.objects.count(), 2)
+        self.assertNotEqual(BgaTime.objects.last().end_time, None)

@@ -1,7 +1,7 @@
 from dashboard.tests.base import UnitTest, reverse
 
 from squalaetp.models import Xelon
-from tools.models import TagXelon, Suptech
+from tools.models import TagXelon, Suptech, SuptechItem
 
 
 class MixinsTest(UnitTest):
@@ -10,6 +10,7 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         xelon = Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                                      modele_vehicule='peugeot')
+        SuptechItem.objects.create(name='Hot Line Tech')
         self.xelonId = str(xelon.id)
 
     def test_create_Tag_xelon_ajax_mixin(self):
@@ -72,6 +73,7 @@ class MixinsTest(UnitTest):
         self.assertEqual(response.status_code, 200)
         # Object is not created
         suptechs = Suptech.objects.all()
+        item = SuptechItem.objects.first()
         self.assertEqual(suptechs.count(), 0)
 
         # Second post request = non-ajax request creating an object
@@ -80,7 +82,7 @@ class MixinsTest(UnitTest):
             data={
                 'username': self.user.username,
                 'xelon': 'A123456789',
-                'item': 'Hot Line Tech',
+                'item': item.id,
                 'time': '5',
                 'info': 'test',
                 'rmq': 'test',

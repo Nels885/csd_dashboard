@@ -129,12 +129,23 @@
 </form>
 
 <script type="text/javascript">
-    $('#id_item').on('change', function () {
-        if ($(this).val() === 'Autres... (Avec resumé)') {
-            console.log($(this).val());
-            $('#id_custom_item').attr({'readonly': false, 'required': true});
-        } else {
-            $('#id_custom_item').attr({'readonly': true, 'required': false});
-        }
+    $('#id_item').change(function () {
+        $.ajax({
+            method: "GET",
+            url: "{% url 'tools:suptech_item_ajax' %}" + "?pk=" + $(this).val(),
+            success: function (data) {
+                console.log(data);
+                if (data.extra === true) {
+                    $('#id_custom_item').attr({'readonly': false, 'required': true});
+                } else {
+                    $('#id_custom_item').attr({'readonly': true, 'required': false});
+                }
+                $('#id_to').val(data.mailing_list)
+            },
+            error: function (error_data) {
+                console.log("error");
+                console.log(error_data)
+            }
+        });
     });
 </script>

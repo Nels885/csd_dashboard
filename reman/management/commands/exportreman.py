@@ -43,11 +43,12 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        path = CSD_ROOT
         if options['batch']:
             self.stdout.write("[BATCH] Waiting...")
 
             filename = conf.BATCH_EXPORT_FILE
-            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
+
             header = [
                 'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
                 'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
@@ -61,7 +62,7 @@ class Command(BaseCommand):
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}.csv".format(
+                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
                         batch.count(), os.path.join(path, filename)
                     )
                 )
@@ -70,14 +71,13 @@ class Command(BaseCommand):
             self.stdout.write("[REPAIR] Waiting...")
 
             filename = conf.REPAIR_EXPORT_FILE
-            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
             header = ['Numero_Identification', 'Code_Barre_PSA', 'Status', 'Controle_Qualite']
             repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
             values_list = repairs.values_list('identify_number', 'psa_barcode', 'status', 'quality_control').distinct()
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}.csv".format(
+                    "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}".format(
                         repairs.count(), os.path.join(path, filename)
                     )
                 )
@@ -94,8 +94,7 @@ class Command(BaseCommand):
         if options['check_out']:
             self.stdout.write("[CHECK_OUT] Waiting...")
 
-            filename, excel_type = self._file_format(conf.CHECKOUT_EXPORT_FILE)
-            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
+            filename = conf.CHECKOUT_EXPORT_FILE
             header = [
                 'REMAN_REFERENCE', 'HW_REFERENCE', 'TYPE_ECU', 'SUPPLIER', 'PSA_BARCODE', 'REF_CAL_OUT', 'REF_PSA_OUT',
                 'OPEN_DIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUS'
@@ -108,19 +107,18 @@ class Command(BaseCommand):
                 'ecu_type__status'
             ).distinct()
             ExportExcel(
-                values_list=values_list, filename=filename, header=header, excel_type=excel_type).file(path, False)
+                values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}.{}".format(
-                        ecu.count(), os.path.join(path, filename), excel_type
+                    "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}".format(
+                        ecu.count(), os.path.join(path, filename)
                     )
                 )
             )
 
         if options['scan_in_out']:
             self.stdout.write("[SCAN_IN_OUT] Waiting...")
-            filename, excel_type = self._file_format(conf.SCAN_IN_OUT_EXPORT_FILE)
-            path = os.path.join(CSD_ROOT, conf.EXPORT_PATH)
+            filename = conf.SCAN_IN_OUT_EXPORT_FILE
             header = [
                 'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
                 'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'REQ_DIAG', 'OPENDIAG', 'REQ_REF', 'REF_MAT', 'REF_COMP',
@@ -135,19 +133,11 @@ class Command(BaseCommand):
             )
             values_list = queryset.values_list(*values_list).distinct()
             ExportExcel(
-                values_list=values_list, filename=filename, header=header, excel_type=excel_type).file(path, False)
+                values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}.{}".format(
-                        queryset.count(), os.path.join(path, filename), excel_type
+                    "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}".format(
+                        queryset.count(), os.path.join(path, filename)
                     )
                 )
             )
-
-    @staticmethod
-    def _file_format(filename):
-        file_list = filename.split('.')
-        filename, extension = file_list[0], 'csv'
-        if len(file_list) > 1:
-            extension = file_list[-1]
-        return filename, extension

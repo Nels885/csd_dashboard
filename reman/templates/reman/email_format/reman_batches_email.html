@@ -26,7 +26,7 @@
 
         {% for batch in current_batchs %}
 
-            <tr>
+            <tr {% if batch.end_date < current_date %}class="bg-danger text-light"{% endif %}>
                 <td>{{ batch }}</td>
                 <td>{{ batch.ecu_ref_base.reman_reference }}</td>
                 <td>{{ batch.repaired }}</td>

@@ -14,7 +14,7 @@ from utils.conf import string_to_list
 
 
 class Command(BaseCommand):
-    help = 'Send email for Late products'
+    help = 'Send email for Bach in progress'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -40,8 +40,11 @@ class Command(BaseCommand):
             current_batchs = batchs.filter(start_date__lte=timezone.now()).order_by('end_date')
             next_batchs = batchs.filter(start_date__gt=timezone.now(), start_date__lte=next_7_days).order_by('end_date')
             html_message = render_to_string(
-                'dashboard/email_format/reman_batches_email.html',
-                {'current_batchs': current_batchs, 'next_batchs': next_batchs, 'domain': config.WEBSITE_DOMAIN}
+                'reman/email_format/reman_batches_email.html',
+                {
+                    'current_batchs': current_batchs, 'next_batchs': next_batchs, 'domain': config.WEBSITE_DOMAIN,
+                    'current_date': timezone.now().date()
+                }
             )
             plain_message = strip_tags(html_message)
             send_mail(

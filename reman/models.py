@@ -119,7 +119,7 @@ class Default(models.Model):
 class Repair(models.Model):
 
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
-    psa_barcode = models.CharField("code barre PSA", max_length=10, blank=True)
+    psa_barcode = models.CharField("code barre PSA", max_length=20, blank=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=200, blank=True)
     comment = RichTextField("Commentaires action", max_length=500, config_name="comment", blank=True)

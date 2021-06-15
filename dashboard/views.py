@@ -21,7 +21,7 @@ from django.utils.encoding import force_bytes, force_text
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
-from utils.data.analysis import ProductAnalysis, IndicatorAnalysis
+from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
 from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
@@ -53,8 +53,11 @@ def charts_ajax(request):
     """
     indicator = IndicatorAnalysis()
     prod = Indicator.count_prods()
+    tools = ToolsAnalysis()
     data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
     data.update(indicator.new_result())
+    data.update(tools.suptech())
+    data.update(tools.bga_time())
     return JsonResponse(data)
 
 

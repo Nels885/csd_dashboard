@@ -1,10 +1,10 @@
 from django.core.management import call_command
-
-from dashboard.tests.base import UnitTest
-
+from constance import config
 from io import StringIO
 
+from dashboard.tests.base import UnitTest
 from squalaetp.models import ProductCode
+from utils.conf import string_to_list
 
 
 class XelonCommandTestCase(UnitTest):
@@ -70,3 +70,13 @@ class XelonCommandTestCase(UnitTest):
             "Suppression des données de la table SparePart terminée!",
             self.out.getvalue()
         )
+
+    def test_export_squalaetp_files(self):
+        call_command('exportsqualaetp', '--corvet', stdout=self.out)
+        self.assertIn("[CORVET_EXPORT] Export completed", self.out.getvalue())
+        self.assertIn("squalaetp_corvet.csv", self.out.getvalue())
+
+        call_command('exportsqualaetp', stdout=self.out)
+        self.assertIn("[SQUALAETP_EXPORT]", self.out.getvalue())
+        for filename in string_to_list(config.SQUALAETP_FILE_LIST):
+            self.assertIn(filename, self.out.getvalue())

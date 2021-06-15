@@ -1,17 +1,18 @@
 from django.contrib import admin
 
-from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu
+from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct
 
 
 class CorvetAdmin(admin.ModelAdmin):
     list_display = (
-        'vin', 'electronique_14f', 'electronique_94f',
-        'electronique_14x', 'electronique_94x',
-        'electronique_14a', 'electronique_94a',
+        'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
+        'electronique_94a',
     )
-    list_filter = ('donnee_silhouette', 'donnee_marque_commerciale')
     ordering = ('vin',)
-    search_fields = ('vin', 'electronique_14l', 'electronique_94l')
+    search_fields = (
+        'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
+        'electronique_94a',
+    )
 
 
 class MultimediaAdmin(admin.ModelAdmin):
@@ -49,7 +50,16 @@ class EcuAdmin(admin.ModelAdmin):
     search_fields = ('comp_ref', 'mat_ref', 'name', 'type')
 
 
+class CorvetProductAdmin(admin.ModelAdmin):
+    list_display = ('corvet', 'btel', 'radio', 'emf', 'bsi', 'bsm', 'cmm', 'hdc')
+    ordering = ('corvet',)
+    search_fields = (
+        'corvet__vin', 'btel__name', 'radio__name', 'emf__name', 'bsi__name', 'bsm__name', 'cmm__name', 'hdc__name'
+    )
+
+
 admin.site.register(Corvet, CorvetAdmin)
+admin.site.register(CorvetProduct, CorvetProductAdmin)
 admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)

@@ -47,13 +47,14 @@ INSTALLED_APPS = [
     'constance',
     'django_inlinecss',
     'celery_progress',
+    'django_celery_beat',
+    'django_celery_results',
 
     # My apps
     'dashboard.apps.DashboardConfig',
     'raspeedi.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',
     'reman.apps.RemanConfig',
-    'demo.apps.DemoConfig',
     'tools.apps.ToolsConfig',
     'api.apps.ApiConfig',
     'import_export.apps.ImportExportConfig',
@@ -230,29 +231,6 @@ CONSTANCE_CONFIG = {
     'SITE_DESCRIPTION': ('', 'Website description'),
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
 
-    # CSD Repair Options
-    'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error TO email list'),
-    'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products TO email list'),
-    'REMAN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN TO email list'),
-    'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN TO email list'),
-    'CSD_CC_EMAIL_LIST': ('test1@test.com; test2@test.com', 'CSD Atelier CC email list'),
-    'CORVET_USER': ('', 'CORVET user for RepairLab'),
-    'CORVET_PWD': ('', 'CORVET password for RepairLab'),
-    'SQUALAETP_FILE_LIST': ('squalaetp_cal, squalaetp_ecu', 'Squalaetp file list'),
-
-    # REMAN Options
-    'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN TO email list'),
-    'ECU_CC_EMAIL_LIST': ('', 'REMAN CC email list'),
-    'EXPORT_PATH': ('EXTS', 'Export path'),
-    'BATCH_EXPORT_FILE': ('reman_lots', 'File name for exporting batch'),
-    'REPAIR_EXPORT_FILE': ('reman_repairs', 'File name for exporting repairs'),
-    'CHECKOUT_EXPORT_FILE': ('reman_output', 'File name for exporting data from check out'),
-    'SCAN_IN_OUT_EXPORT_FILE': ('base_ref_reman_new', 'File name for exporting Base Ref REMAN of SCAN IN/OUT'),
-    'DICT_YEAR': (
-        "{2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U'}",
-        'REMAN batch date formatting dictionary'
-    ),
-
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
     'XLS_RASPEEDI_FILE': ('PROG/RASPEEDI/table_boitier_PSA.xlsx', 'xls raspeedi file'),
@@ -267,6 +245,28 @@ CONSTANCE_CONFIG = {
     'XML_CORVET_PATH': ('LOGS/CORVET_XML_TEST', 'xml Corvet path'),
     'TAG_XELON_PATH': ('LOGS/CALIBRE', 'tag xelon path'),
     'TAG_XELON_LOG_PATH': ('LOGS/LOG_CONFIG_PROD', 'tag xelon log path'),
+
+    # CSD Repair Options
+    'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error TO email list'),
+    'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products TO email list'),
+    'REMAN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN TO email list'),
+    'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN TO email list'),
+    'CSD_CC_EMAIL_LIST': ('test1@test.com; test2@test.com', 'CSD Atelier CC email list'),
+    'CORVET_USER': ('', 'CORVET user for RepairLab'),
+    'CORVET_PWD': ('', 'CORVET password for RepairLab'),
+    'SQUALAETP_FILE_LIST': ('squalaetp_cal.xls, squalaetp_ecu.xls, squalaetp_prog.xls', 'Squalaetp file list'),
+
+    # REMAN Options
+    'ECU_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN TO email list'),
+    'ECU_CC_EMAIL_LIST': ('', 'REMAN CC email list'),
+    'BATCH_EXPORT_FILE': ('EXTS/reman_lots.csv', 'File name for exporting batch'),
+    'REPAIR_EXPORT_FILE': ('EXTS/reman_repairs.csv', 'File name for exporting repairs'),
+    'CHECKOUT_EXPORT_FILE': ('EXTS/reman_output.csv', 'File name for exporting data from check out'),
+    'SCAN_IN_OUT_EXPORT_FILE': ('EXTS/BASE_REF_REMAN.xlsx', 'File name for exporting Base Ref REMAN of SCAN IN/OUT'),
+    'DICT_YEAR': (
+        "{2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U'}",
+        'REMAN batch date formatting dictionary'
+    ),
 
     # MQTT Options
     "MQTT_TOPIC": ('TEMP/TC-01', 'Topic subcribe'),
@@ -287,35 +287,33 @@ CONSTANCE_CONFIG = {
 
 CONSTANCE_CONFIG_FIELDSETS = {
     '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
-    '2. CSD Repair Options': (
-        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
-        'CSD_CC_EMAIL_LIST', 'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
-    ),
-    '3. REMAN Options': (
-        'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'EXPORT_PATH', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
-        'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR'
-    ),
-    '4. Tools Options': (
-        'SUPTECH_TO_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING', 'PROXY_PORT_SCRAPING'
-    ),
-    '5. Network Options': (
+    '2. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
         'TAG_XELON_LOG_PATH'
+    ),
+    '3. CSD Repair Options': (
+        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
+        'CSD_CC_EMAIL_LIST', 'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
+    ),
+    '4. REMAN Options': (
+        'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
+        'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR'
+    ),
+    '5. Tools Options': (
+        'SUPTECH_TO_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING', 'PROXY_PORT_SCRAPING'
     ),
     '6. MQTT Options': (
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
     )
 }
 
-
 # CELERY STUFF
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
 CELERY_TIMEZONE = "Europe/Paris"
-
 
 ###############################
 # DJANGO LOGGER CONFIGURATION
@@ -327,6 +325,7 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format': '[{asctime}] [{process:d}] [{levelname}] {message}',
+            'datefmt': "%Y-%m-%d %H:%M:%S",
             'style': '{',
         },
         'simple': {
@@ -365,6 +364,11 @@ LOGGING = {
             'propagate': False,
         },
         'command': {
+            'handlers': ['mail_admin', 'console_verbose'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'celery': {
             'handlers': ['mail_admin', 'console_verbose'],
             'level': 'ERROR',
             'propagate': False,

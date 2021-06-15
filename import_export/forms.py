@@ -5,8 +5,8 @@ FORMAT_CHOICES = [('csv', 'CSV'), ('xls', 'XLS'), ('xlsx', 'XLSX')]
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
-        ('corvet', 'ALL'), ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'),
-        ('nac', 'NAC'), ('rtx', 'RTx'), ('smeg', 'SMEG'), ('rneg', 'RNEG'), ('ng4', 'NG4')
+        ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('nac', 'NAC'), ('rtx', 'RTx'),
+        ('smeg', 'SMEG'), ('rneg', 'RNEG'), ('ng4', 'NG4')
     ]
 
     formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
@@ -25,7 +25,7 @@ class ExportCorvetVinListForm(forms.Form):
 
 
 class ExportToolsForm(forms.Form):
-    TABLES = [('suptech', 'SUPTECH')]
+    TABLES = [('suptech', 'SUPTECH'), ('bga_time', 'UTILISATION BGA')]
 
     formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
     tables = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())

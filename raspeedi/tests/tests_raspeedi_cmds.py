@@ -6,10 +6,20 @@ from io import StringIO
 
 class RaspeediCommandTestCase(TestCase):
 
-    def test_message_of_importraspeedi_commmand_delete(self):
-        out = StringIO()
-        call_command('loadraspeedi', '--delete', stdout=out)
+    def setUp(self):
+        super(type(self), self).setUp()
+        self.out = StringIO()
+
+    def test_clear_raspeedi_table(self):
+        call_command('loadraspeedi', '--delete', stdout=self.out)
         self.assertIn(
             "Suppression des données de la table Raspeedi terminée!",
-            out.getvalue()
+            self.out.getvalue()
+        )
+
+    def test_clear_programing_table(self):
+        call_command('programing', '--delete', stdout=self.out)
+        self.assertIn(
+            "Suppression des données des tables Raspeedi terminée!",
+            self.out.getvalue()
         )

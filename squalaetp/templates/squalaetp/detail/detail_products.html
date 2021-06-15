@@ -11,11 +11,11 @@
             <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm">Numéro de dossier</td>
-                <td>{{ xelon.numero_de_dossier }}</td>
+                <td id="xelon">{{ xelon.numero_de_dossier }}<a href="#" title="copie" onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">V.I.N.</td>
-                <td>{{ xelon.vin }}</td>
+                <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Modèle produit</td>
@@ -28,21 +28,21 @@
             </tbody>
         </table>
 
-        {% if corvet.btel %}
-            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.btel %}
+        {% if corvet.prods.btel %}
+            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.prods.btel %}
         {% else %}
-            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.radio %}
+            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.prods.radio %}
         {% endif %}
 
         {% include 'raspeedi/format/prog_table_format.html' with object=prog %}
 
-        {% include 'psa/format/emf_table_format.html' with object=corvet.emf %}
+        {% include 'psa/format/emf_table_format.html' with object=corvet.prods.emf %}
 
         {% include 'psa/format/cmm_table_format.html' with object=cmm %}
 
-        {% include 'psa/format/bsi_table_format.html' with object=corvet.bsi %}
+        {% include 'psa/format/bsi_table_format.html' with object=corvet.prods.bsi %}
 
-        {% include 'psa/format/hdc_table_format.html' with object=corvet.hdc %}
+        {% include 'psa/format/hdc_table_format.html' with object=corvet.prods.hdc %}
 
     </section>
     <section class="col-sm-6">

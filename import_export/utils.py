@@ -1,10 +1,10 @@
-from django.db.models.functions import Cast, TruncSecond
-from django.db.models import DateTimeField, CharField, Q, Count
+from django.db.models.functions import Cast, TruncSecond, Concat, ExtractDay
+from django.db.models import DateTimeField, CharField, Q, Count, Value, F
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
 from reman.models import Batch, Repair, EcuType
-from tools.models import Suptech
+from tools.models import Suptech, BgaTime
 
 XELON_LIST = [
     ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
@@ -12,8 +12,8 @@ XELON_LIST = [
 ]
 
 BTEL_LIST = [
-    ('Modele reel', 'corvet__btel__name'), ('Réf. Setplate', 'corvet__btel__label_ref'),
-    ('Niv.', 'corvet__btel__level'), ('HW variant', 'corvet__btel__extra'),
+    ('Modele reel', 'corvet__prods__btel__name'), ('Réf. Setplate', 'corvet__prods__btel__label_ref'),
+    ('Niv.', 'corvet__prods__btel__level'), ('HW variant', 'corvet__prods__btel__extra'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
     ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
     ('DHB_HAUT PARLEUR', 'corvet__attribut_dhb'), ('DUN_AMPLI EQUALISEUR', 'corvet__attribut_dun'),
@@ -23,7 +23,7 @@ BTEL_LIST = [
 ]
 
 CMM_LIST = [
-    ('Modele reel', 'corvet__cmm__name'),
+    ('Modele reel', 'corvet__prods__cmm__name'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
     ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
     ('14A_CMM_HARD', 'corvet__electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'corvet__electronique_34a'),
@@ -33,21 +33,25 @@ CMM_LIST = [
 ]
 
 BSI_LIST = [
-    ('Modele reel', 'corvet__bsi__name'), ('HW', 'corvet__bsi__hw'), ('SW', 'corvet__bsi__sw'),
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
+    ('Modele reel', 'corvet__prods__bsi__name'), ('HW', 'corvet__prods__bsi__hw'), ('SW', 'corvet__prods__bsi__sw'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('MOTEUR', 'corvet__donnee_moteur'),
+    ('CAL MOTEUR', 'corvet__prods__cmm__name'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
     ('94B_BSI_SOFT', 'corvet__electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'corvet__electronique_44b'),
     ('54B_BSI_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64B_BSI_FOURN.CODE', 'corvet__electronique_64b'),
     ('84B_BSI_DOTE', 'corvet__electronique_84b')
 ]
 
 HDC_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('16P_HDC_HARD', 'corvet__electronique_16p'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16P_HDC_HARD', 'corvet__electronique_16p'),
     ('46P_HDC_FOURN.NO.SERIE', 'corvet__electronique_46p'), ('56P_HDC_FOURN.DATE.FAB', 'corvet__electronique_56p'),
     ('66P_HDC_FOURN.CODE', 'corvet__electronique_66p')
 ]
 
 BSM_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('16B_BSM_HARD', 'corvet__electronique_16b'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16B_BSM_HARD', 'corvet__electronique_16b'),
     ('46B_BSM_FOURN.NO.SERIE', 'corvet__electronique_46b'), ('56B_BSM_FOURN.DATE.FAB', 'corvet__electronique_56b'),
     ('66B_BSM_FOURN.CODE', 'corvet__electronique_66b'), ('86B_BSM_DOTE', 'corvet__electronique_86b'),
     ('96B_BSM_SOFT', 'corvet__electronique_96b')
@@ -136,8 +140,8 @@ def extract_corvet(product='corvet'):
             '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
         ]
         queryset = Corvet.objects.all()
-        values_list = tuple([field.name for field in Corvet._meta.fields
-                             if field.name not in ['radio', 'btel', 'bsi', 'emf', 'bsm', 'cmm', 'hdc']])
+        values_list = tuple([field.name for col_nb, field in enumerate(Corvet._meta.fields)
+                             if col_nb < len(header)])
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
     return header, fields, values_list
@@ -212,10 +216,20 @@ def extract_tools(model):
     header = queryset = values_list = None
     if model == "suptech":
         header = [
-            'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR'
+            'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR', 'STATUS', 'DATE_LIMIT',
+            'ACTION_LE', 'ACTION_PAR', 'DELAIS_EN_JOURS'
         ]
-        queryset = Suptech.objects.all().order_by('date')
-        values_list = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action')
+        fullname = Concat('modified_by__first_name', Value(' '), 'modified_by__last_name')
+        day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
+        queryset = Suptech.objects.annotate(fullname=fullname, day_number=day_number).order_by('date')
+        values_list = (
+            'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline', 'modified_at',
+            'fullname', 'day_number'
+        )
+    if model == "bga_time":
+        header = ['MACHINE', 'DATE', 'HEURE DEBUT', 'DUREE']
+        queryset = BgaTime.objects.all()
+        values_list = ('name', 'date', 'start_time', 'duration')
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
     return header, fields, values_list

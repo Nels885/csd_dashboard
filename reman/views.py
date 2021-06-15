@@ -137,6 +137,11 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
     form_class = AddBatchForm
     success_message = _('Success: Batch was created.')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Create Batch')
+        return context
+
     def get_success_url(self):
         return reverse_lazy('reman:batch_table', get={'filter': 'pending'})
 
@@ -146,6 +151,11 @@ class BatchEtudeCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/batch_create.html'
     form_class = AddEtudeBatchForm
     success_message = _('Success: Batch was created.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Create Etude Batch')
+        return context
 
     def get_success_url(self):
         return reverse_lazy('reman:batch_table', get={'filter': 'etude'})
@@ -319,7 +329,12 @@ def out_table(request):
     """ View of Reman Out Repair table page """
     batch_number = request.GET.get('filter')
     table_title = 'Préparation lot n° {}'.format(batch_number)
-    files = Repair.objects.filter(batch__batch_number=batch_number, status="Réparé", checkout=False)
+    repaired = Count('repairs', filter=Q(repairs__status="Réparé", repairs__quality_control=True))
+    packed = Count('repairs', filter=Q(repairs__checkout=True))
+    batch = Batch.objects.filter(batch_number=batch_number).annotate(repaired=repaired, packed=packed).first()
+    files = Repair.objects.filter(
+        batch__batch_number=batch_number, status="Réparé", checkout=False, quality_control=True
+    )
     form = CheckOutRepairForm(request.POST or None, error_class=ParaErrorList, batch_number=batch_number, )
     if request.POST and form.is_valid():
         repair = form.save()
@@ -452,6 +467,15 @@ class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/ecu_hw_create.html'
     form_class = AddEcuTypeForm
     success_message = _('Success: Reman ECU HW Reference was created.')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        ecu_dict = EcuType.objects.filter(hw_reference=self.request.GET.get('hw', None)).values().first()
+        if ecu_dict:
+            for field, value in ecu_dict.items():
+                if field not in ['hw_reference']:
+                    initial[field] = value
+        return initial
 
     def get_success_url(self):
         if 'HTTP_REFERER' in self.request.META:

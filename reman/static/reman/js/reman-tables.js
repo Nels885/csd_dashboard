@@ -35,9 +35,9 @@ $(document).ready(function () {
     $('#ecuTypeTable').DataTable({
         paging: false,
         scrollX: true,
-        order: [[1, "asc"]],
+        order: [[2, "asc"]],
         columnDefs: [{
-            targets: 0,
+            targets: [0, 1],
             searchable: false,
             orderable: false,
         }],

@@ -42,14 +42,14 @@ class ScrapingCorvet(webdriver.Firefox):
         :return: Corvet data
         """
         if not self.ERROR and self.login():
-            vin = self.find_element_by_name('form:input_vin')
-            submit = self.find_element_by_id('form:suite')
-            vin.clear()
-            if vin_value:
-                vin.send_keys(vin_value)
-            submit.click()
-            time.sleep(1)
             try:
+                vin = self.find_element_by_name('form:input_vin')
+                submit = self.find_element_by_id('form:suite')
+                vin.clear()
+                if vin_value:
+                    vin.send_keys(vin_value)
+                submit.click()
+                time.sleep(1)
                 data = WebDriverWait(self, 10).until(
                     EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
                 ).text
@@ -57,6 +57,7 @@ class ScrapingCorvet(webdriver.Firefox):
                 exception_type = type(err).__name__
                 logger.error(f'{exception_type} - result(): {err}')
                 data = "Exception or timeout error !"
+                self.ERROR = True
             self.logout()
         else:
             data = "Corvet login Error !!!"
@@ -79,7 +80,8 @@ class ScrapingCorvet(webdriver.Firefox):
             exception_type = type(err).__name__
             logger.error(f"{exception_type} - login(): {err}")
             self.quit()
-            return False
+            self.ERROR = True
+            return self.ERROR
         return True
 
     def logout(self):

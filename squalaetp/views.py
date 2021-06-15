@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
@@ -21,7 +21,7 @@ from psa.models import Corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
 from .forms import IhmForm, VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
-from .tasks import cmd_squalaetp_task
+from .tasks import cmd_loadsqualaetp_task
 from psa.forms import CorvetForm
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
@@ -58,14 +58,16 @@ def prog_activate(request, pk):
     return redirect('squalaetp:generate')
 
 
-def excel_import(request):
+def excel_import_async(request):
     if request.user.is_staff:
-        cmd_squalaetp_task.delay()
-        messages.success(request, "Importation Squalaetp en cours...")
-    if 'HTTP_REFERER' in request.META:
-        return HttpResponseRedirect(request.META['HTTP_REFERER'])
-    else:
-        return redirect('index')
+        task = cmd_loadsqualaetp_task.delay()
+        # messages.success(request, "Importation Squalaetp en cours...")
+        return JsonResponse({"task_id": task.id})
+    # if 'HTTP_REFERER' in request.META:
+    #     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    # else:
+    #     return redirect('index')
+    return Http404
 
 
 @login_required

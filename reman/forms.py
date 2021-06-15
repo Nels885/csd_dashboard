@@ -25,6 +25,13 @@ class BatchForm(BSModalModelForm):
         exclude = ['batch_number']
         labels = {'ecu_ref_base': 'Réf. REMAN'}
 
+    def save(self, commit=True):
+        batch = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            batch.save()
+            cmd_exportreman_task.delay('--batch', '--scan_in_out')
+        return batch
+
 
 class AddBatchForm(BSModalModelForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
@@ -164,8 +171,8 @@ TECHNICIAN FORMS
 
 
 class AddRepairForm(BSModalModelForm):
-    psa_barcode = forms.CharField(label='Code barre PSA', max_length=10,
-                                  widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 50%;'}))
+    psa_barcode = forms.CharField(label='Code barre PSA', max_length=20,
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Repair
@@ -465,5 +472,5 @@ class PartSparePartForm(forms.ModelForm):
         #     for field in self.fields:
         #         self.fields[field].widget.attrs['readonly'] = True
         # else:
-        self.fields['code_produit'].widget.attrs['readonly'] = True
+        # self.fields['code_produit'].widget.attrs['readonly'] = True
         # self.fields['code_emplacement'].required = True

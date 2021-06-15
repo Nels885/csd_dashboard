@@ -10,7 +10,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
 from utils.data.mqtt import MQTTClass
@@ -171,6 +171,17 @@ class SupTechCreateView(BSModalCreateView):
             return reverse_lazy('index')
 
 
+def suptech_item_ajax(request):
+    data = {"extra": False, "mailing_list": ""}
+    try:
+        if request.GET.get('pk', None):
+            suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
+            data = {"extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list}
+    except SuptechItem.DoesNotExist:
+        pass
+    return JsonResponse(data)
+
+
 @login_required
 def suptech_list(request):
     """ View of Software list page """
@@ -204,6 +215,23 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        form.send_email(self.request)
-        messages.success(self.request, _('Success: The email has been sent.'))
+        if form.send_email(self.request):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
         return super().form_valid(form)
+
+
+def bga_time(request):
+    device = request.GET.get("device", None)
+    status = request.GET.get("status", None)
+    if device and status:
+        try:
+            bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
+            bga_is_active.save(status=status)
+        except BgaTime.DoesNotExist:
+            pass
+        if status.upper() == "START":
+            BgaTime.objects.create(name=device)
+        return JsonResponse({"response": "OK", "device": device, "status": status.upper()})
+    return JsonResponse({"response": "ERROR"})
