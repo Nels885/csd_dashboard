@@ -136,20 +136,20 @@ class ToolsAnalysis:
         queryset = self._bga_annotate(self.bgaTimes)
         for query in queryset:
             data["bgaAreaLabels"].append(query['sum_date'].strftime("%d/%m/%Y"))
-            data["bgaTotalValue"].append(self._percent(query['sum_duration']))
+            data["bgaTotalValue"].append(self._percent(query['sum_duration'], 2))
         for key, value in self.BGA.items():
             queryset = self._bga_annotate(self.bgaTimes.filter(name=value))
             for query in queryset:
                 data[key].append(self._percent(query['sum_duration']))
         return data
 
-    def _percent(self, value,):
+    def _percent(self, value, total_multiplier=1):
         if self.total and value != 0:
-            return round(100 * value / self.total, 1)
+            return round(100 * value / (self.total * total_multiplier), 1)
         else:
             return 0
 
     @staticmethod
     def _bga_annotate(queryset):
         return queryset.annotate(
-            sum_date=TruncDay("date")).values("sum_date").annotate(sum_duration=Sum('duration')).order_by("-sum_date")
+            sum_date=TruncDay("date")).values("sum_date").annotate(sum_duration=Sum('duration')).order_by("sum_date")
