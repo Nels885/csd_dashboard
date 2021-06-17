@@ -29,9 +29,9 @@
         </table>
 
         {% if corvet.prods.btel %}
-            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.prods.btel %}
+            {% include 'psa/format/multimedia_table_format.html' with object=corvet.prods.btel %}
         {% else %}
-            {% include 'psa/format/mutimedia_table_format.html' with object=corvet.prods.radio %}
+            {% include 'psa/format/multimedia_table_format.html' with object=corvet.prods.radio %}
         {% endif %}
 
         {% include 'raspeedi/format/prog_table_format.html' with object=prog %}
