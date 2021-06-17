@@ -87,6 +87,32 @@
                 <td class="text-dark td-ihm">CARBURANT</td>
                 <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 1" }}</td>
             </tr>
+            {% if corvet.attribut_dcd %}
+                <tr>
+                    <td class="text-dark td-ihm">CARBURANT</td>
+                    <td>{{ corvet.attribut_dcd|get_corvet:"ATT_DCD" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dyc %}
+                <tr>
+                    <td class="text-dark td-ihm">STOP AND START</td>
+                    <td>{{ corvet.attribut_dyc|get_corvet:"ATT_DYC" }}</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-striped table-sm mt-4">
+
+            {% include 'format/collapse_thead.html' with id="collapseBody" expanded=user.showcollapse.body thead_title="Carrosserie Equipements :" %}
+
+            <tbody class="collapse{% if user.showcollapse.body %}show{% endif %}" id="collapseBody">
+            {% if corvet.attribut_dqk %}
+                <tr>
+                    <td class="text-dark td-ihm">AIDE VISUELLE PANORAMIQUE</td>
+                    <td>{{ corvet.attribut_dqk|get_corvet:"ATT_DQK" }}</td>
+                </tr>
+            {% endif %}
             </tbody>
         </table>
 
@@ -96,6 +122,12 @@
             {% include 'format/collapse_thead.html' with id="collapseInterior" expanded=user.showcollapse.interior thead_title="Equipement intérieur :" %}
 
             <tbody class="collapse {% if user.showcollapse.interior %}show{% endif %}" id="collapseInterior">
+            {% if corvet.attribut_de2 %}
+                <tr>
+                    <td class="text-dark td-ihm">MIRROR LINK</td>
+                    <td>{{ corvet.attribut_de2|get_corvet:"ATT_DE2" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dgm %}
                 <tr>
                     <td class="text-dark td-ihm">COMBINE (CARACTERISTIQUES)</td>
@@ -147,7 +179,6 @@
             {% if corvet.attribut_dun %}
                 <tr>
                     <td class="text-dark td-ihm">AMPLI EQUALISEUR</td>
-{#                    <td>{% if corvet.attribut_dun == "01" %}AVEC{% else %}SANS{% endif %} AMPLI EQUALISEUR</td>#}
                     <td>{{ corvet.attribut_dun|get_corvet:"ATT_DUN" }}</td>
                 </tr>
             {% endif %}
@@ -164,6 +195,20 @@
                                 Autoliv){% endif %}</td>
                     </tr>
                 {% endwith %}
+            {% endif %}
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-striped table-sm mt-4">
+
+            {% include 'format/collapse_thead.html' with id="collapseElectric" expanded=user.showcollapse.body thead_title="Electricité :" %}
+
+            <tbody class="collapse{% if user.showcollapse.electric %}show{% endif %}" id="collapseElectric">
+            {% if corvet.attribut_dyq %}
+                <tr>
+                    <td class="text-dark td-ihm">ALLUMAGE FEUX</td>
+                    <td>{{ corvet.attribut_dyq|get_corvet:"ATT_DYQ" }}</td>
+                </tr>
             {% endif %}
             </tbody>
         </table>
