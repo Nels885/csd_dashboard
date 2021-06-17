@@ -16,7 +16,10 @@ class ShowCollapse(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     general = models.BooleanField('informations générales', default=False)
     motor = models.BooleanField('alimentation moteur', default=False)
+    axle = models.BooleanField('suspension direction freinage', default=False)
+    body = models.BooleanField('carrosserie équipements', default=False)
     interior = models.BooleanField('equipements intérieur', default=False)
+    electric = models.BooleanField('électricité', default=False)
     diverse = models.BooleanField('divers', default=False)
 
     class Meta:
