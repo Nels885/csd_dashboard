@@ -60,13 +60,7 @@ class ShowCollapseForm(forms.ModelForm):
 
     class Meta:
         model = ShowCollapse
-        fields = ['general', 'motor', 'interior', 'diverse']
-        widgets = {
-            'general': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'motor': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'interior': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'diverse': forms.CheckboxInput(attrs={'class': 'form-control'})
-        }
+        exclude = ["user"]
 
 
 class PostForm(BSModalModelForm):
