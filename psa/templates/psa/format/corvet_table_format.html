@@ -27,30 +27,34 @@
     {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio thead_title="AUDIO :" %}
 
     <tbody class="collapse {% if collapse.audio %}show{% endif %}" id="collapseAudio">
-    <tr>
-        <td class="text-dark td-ihm">Réf HW RAD</td>
-        <td>{{ object.electronique_14f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL RAD</td>
-        <td>{{ object.electronique_94f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série RAD</td>
-        <td>{{ object.electronique_44f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">Réf HW NAV</td>
-        <td>{{ object.electronique_14x }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL NAV</td>
-        <td>{{ object.electronique_94x }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série NAV</td>
-        <td>{{ object.electronique_44x }}</td>
-    </tr>
+    {% if object.electronique_14f %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW RAD</td>
+            <td>{{ object.electronique_14f }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL RAD</td>
+            <td>{{ object.electronique_94f }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série RAD</td>
+            <td>{{ object.electronique_44f }}</td>
+        </tr>
+    {% endif %}
+    {% if object.electronique_14x %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW NAV</td>
+            <td>{{ object.electronique_14x }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL NAV</td>
+            <td>{{ object.electronique_94x }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série NAV</td>
+            <td>{{ object.electronique_44x }}</td>
+        </tr>
+    {% endif %}
     </tbody>
 </table>
 
