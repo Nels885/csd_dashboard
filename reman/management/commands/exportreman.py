@@ -74,7 +74,7 @@ class Command(BaseCommand):
             header = ['Numero_Identification', 'Code_Barre_PSA', 'Status', 'Controle_Qualite']
             repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
             values_list = repairs.values_list('identify_number', 'psa_barcode', 'status', 'quality_control').distinct()
-            values_list = self._repair_list_generate(values_list)
+            # values_list = self._repair_list_generate(values_list)
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
