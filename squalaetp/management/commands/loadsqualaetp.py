@@ -131,7 +131,7 @@ class Command(BaseCommand):
 
     def _delay_files(self, model, squalaetp, delay):
         self.stdout.write("[DELAY] Waiting...")
-        nb_prod_before, nb_prod_update = model.objects.count(), 0
+        nb_prod_before, nb_prod_update, value_error_list = model.objects.count(), 0, []
         xelon_list, delay_list = squalaetp.xelon_number_list(), delay.xelon_number_list()
         if not delay.ERROR:
             self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
@@ -161,8 +161,10 @@ class Command(BaseCommand):
                     logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
                 except ValidationError as err:
                     logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
-                except ValueError as err:
-                    logger.error(f"[DELAY_CMD] ValueError row {xelon_number} : {err}")
+                except ValueError:
+                    value_error_list.append(xelon_number)
+            if value_error_list:
+                logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
 
             nb_prod_after = model.objects.count()
             self.stdout.write(
