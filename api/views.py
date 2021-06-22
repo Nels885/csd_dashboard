@@ -8,12 +8,15 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from constance import config
 
-from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from .serializers import UnlockSerializer, UnlockUpdateSerializer
+from .serializers import (
+    UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer,
+    UnlockUpdateSerializer, ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer
+)
 from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, EcuRefBaseSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair
+from tools.models import ThermalChamberMeasure
 
 from .utils import TokenAuthSupportQueryString
 
@@ -156,3 +159,27 @@ class NacLicenseView(APIView):
         if response.status_code == 200:
             return redirect(response.url)
         return Response({"error": "Request failed"}, status=response.status_code)
+
+
+class ThermalChamberMeasureViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = ThermalChamberMeasure.objects.all()
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ThermalChamberMeasureCreateSerializer
+        else:
+            return ThermalChamberMeasureSerializer
+
+    def create(self, *args, **kwargs):
+        data = self.request.data
+        if self.request.query_params.get('value', None):
+            data['value'] = self.request.query_params.get('value', None)
+        serializer = ThermalChamberMeasureCreateSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)

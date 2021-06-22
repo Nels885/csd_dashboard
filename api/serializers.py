@@ -4,6 +4,7 @@ from rest_framework import serializers
 from psa.serializers import CorvetSerializer
 from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
+from tools.models import ThermalChamberMeasure
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -70,3 +71,17 @@ class UnlockUpdateSerializer(UnlockSerializer):
     class Meta:
         model = UnlockProduct
         fields = UnlockSerializer.Meta.fields + ('active',)
+
+
+class ThermalChamberMeasureSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ThermalChamberMeasure
+        fields = "__all__"
+
+
+class ThermalChamberMeasureCreateSerializer(ThermalChamberMeasureSerializer):
+
+    class Meta:
+        model = ThermalChamberMeasure
+        fields = ('value',)
