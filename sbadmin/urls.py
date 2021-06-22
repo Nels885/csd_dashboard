@@ -36,7 +36,6 @@ urlpatterns = [
     path('celery-progress/', get_progress_view, name='progress'),
     path('download-file/', download_file_view, name="download"),
     path('favicon.ico', favicon_view),
-    path('', index, name="index"),
     path('api/', include('api.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('raspeedi/', include('raspeedi.urls')),
@@ -51,6 +50,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
+    path('', index, name="index"),
 ]
 
 if settings.DEBUG:
