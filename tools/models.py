@@ -36,7 +36,6 @@ class TagXelon(models.Model):
 
 
 class CsdSoftware(models.Model):
-
     STATUS_CHOICES = [
         ('Validé', 'Validé'),
         ('En test', 'En test'),
@@ -91,6 +90,19 @@ class ThermalChamber(models.Model):
             return "{} {} - {}".format(self.created_by.last_name, self.created_by.first_name, self.xelon_number)
         else:
             return "{} - {}".format(self.created_by.username, self.xelon_number)
+
+
+class ThermalChamberMeasure(models.Model):
+    datetime = models.DateTimeField('heure de mesure', auto_now_add=True)
+    value = models.IntegerField('valeur mesuré')
+    temp = models.CharField('température', max_length=20)
+
+    class Meta:
+        verbose_name = "Thermal Chamber Measure"
+        ordering = ['-datetime']
+
+    def __str__(self):
+        return self.datetime
 
 
 class EtudeProject(models.Model):

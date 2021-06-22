@@ -1,6 +1,8 @@
 from django.contrib import admin
 
-from .models import TagXelon, CsdSoftware, EtudeProject, ThermalChamber, Suptech, SuptechItem, BgaTime
+from .models import (
+    TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechItem, BgaTime
+)
 
 
 class TagXelonAdmin(admin.ModelAdmin):
@@ -11,6 +13,11 @@ class ThermalChamberAdmin(admin.ModelAdmin):
     list_display = ('created_at', 'created_by', 'xelon_number', 'start_time', 'stop_time', 'operating_mode', 'active')
     ordering = ('-created_at',)
     search_fields = ('xelon_number', 'created_by')
+
+
+class ThermalChamberMeasureAdmin(admin.ModelAdmin):
+    list_display = ('datetime', 'value', 'temp')
+    search_fields = ('datetime',)
 
 
 class SuptechAdmin(admin.ModelAdmin):
@@ -33,3 +40,4 @@ admin.site.register(ThermalChamber, ThermalChamberAdmin)
 admin.site.register(Suptech, SuptechAdmin)
 admin.site.register(SuptechItem, SuptechItemAdmin)
 admin.site.register(BgaTime)
+admin.site.register(ThermalChamberMeasure, ThermalChamberMeasureAdmin)
