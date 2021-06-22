@@ -14,7 +14,7 @@
             Envoi Email VIN
         </button>
         <hr>
-        <button class="bs-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_edit' xelon.pk %}" {% if not perms.squalaetp.change_product %}disabled{% endif %}>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_edit' xelon.pk %}" {% if not perms.squalaetp.change_product %}disabled{% endif %}>
             Modification PRODUIT
         </button>
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}" {% if not perms.squalaetp.email_product %}disabled{% endif %}>

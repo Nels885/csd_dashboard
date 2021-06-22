@@ -146,6 +146,7 @@ class ProductModalForm(BSModalModelForm):
     class Meta:
         model = Xelon
         fields = ['modele_produit', 'modele_vehicule']
+        widgets = {'modele_vehicule': forms.TextInput(attrs={'readonly': True})}
 
     def __init__(self, *args, **kwargs):
         xelons = Xelon.objects.exclude(modele_produit="").order_by('modele_produit')

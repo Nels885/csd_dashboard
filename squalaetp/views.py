@@ -163,7 +163,8 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'modal_title': _('Product update for %(file)s' % {'file': self.object.numero_de_dossier})
+            'modal_title': _('Product update for %(file)s' % {'file': self.object.numero_de_dossier}),
+            'corvet': self.object.corvet
         })
         return context
 
