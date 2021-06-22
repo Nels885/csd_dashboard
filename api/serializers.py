@@ -1,27 +1,9 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
 from psa.serializers import CorvetSerializer
 from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
 from tools.models import ThermalChamberMeasure
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="api:user-detail")
-    groups = serializers.HyperlinkedIdentityField(view_name="api:group-detail")
-
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'groups')
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="api:user-detail")
-
-    class Meta:
-        model = Group
-        fields = ('url', 'name')
 
 
 class RaspeediSerializer(serializers.ModelSerializer):

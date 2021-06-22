@@ -4,8 +4,6 @@ from rest_framework.authtoken.views import obtain_auth_token
 from api import views
 
 router = DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
 router.register(r'prog', views.ProgViewSet, basename='prog')
 router.register(r'cal', views.CalViewSet, basename='cal')
 router.register(r'unlock', views.UnlockViewSet, basename='unlock')

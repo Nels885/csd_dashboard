@@ -1,16 +1,15 @@
 import requests
 
-from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions, authentication
+from rest_framework import viewsets, permissions
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from constance import config
 
 from .serializers import (
-    UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer,
-    UnlockUpdateSerializer, ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer
+    ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer, UnlockUpdateSerializer,
+    ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer
 )
 from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, EcuRefBaseSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
@@ -27,22 +26,6 @@ def documentation(request):
     card_title = "Documentation"
     domain = config.WEBSITE_DOMAIN
     return render(request, 'api/doc.html', locals())
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """ API endpoint that allows users to be viewed or edited. """
-    authentication_classes = (authentication.SessionAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """ API endpoint that allows groups to be viewed or edited. """
-    authentication_classes = (authentication.SessionAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
 
 
 class UnlockViewSet(viewsets.ModelViewSet):

@@ -19,24 +19,6 @@ class ApiTestCase(APITestCase):
         else:
             self.client.login(username='toto', password='totopassword')
 
-    def test_user_view_set(self):
-        response = self.client.get(reverse('api:user-list'), format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.data, self.authError)
-        self.login('admin')
-        response = self.client.get(reverse('api:user-list'), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 4)
-
-    def test_group_view_set(self):
-        response = self.client.get(reverse('api:group-list'), format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.data, self.authError)
-        self.login('admin')
-        response = self.client.get(reverse('api:group-list'), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 4)
-
     def test_prog_list(self):
         response = self.client.get(reverse('api:prog-list'), format='json')
         self.assertEqual(response.status_code, 401)
@@ -55,6 +37,18 @@ class ApiTestCase(APITestCase):
 
         # Identification with Token
         response = self.client.get('/api/cal/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_thermal_chamber_measure_list(self):
+        url = reverse('api:tools_tc_measure-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get(url + '?auth_token={}'.format(self.token), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
