@@ -1,8 +1,10 @@
 import requests
 
 from django.shortcuts import render, redirect
+from django.utils.translation import ugettext as _
+from django.utils import timezone
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from constance import config
@@ -163,6 +165,9 @@ class ThermalChamberMeasureViewSet(viewsets.ModelViewSet):
             data['value'] = self.request.query_params.get('value', None)
         serializer = ThermalChamberMeasureCreateSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            measure = ThermalChamberMeasure.objects.order_by('datetime').last()
+            if not measure or (timezone.now() - measure.datetime).seconds >= (10 * 60):
+                serializer.save()
+                return Response(serializer.data)
+            raise serializers.ValidationError({'warning': _('Time between 2 requests too short')})
         return Response(serializer.errors)
