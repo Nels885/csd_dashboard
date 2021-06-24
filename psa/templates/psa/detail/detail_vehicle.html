@@ -184,7 +184,11 @@
             {% endif %}
             <tr>
                 <td class="text-dark td-ihm">DÉTECTION D’OBSTACLE</td>
-                <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
+                {% if corvet.attribut_dub %}
+                    <td>{{ corvet.attribut_dub|get_corvet:"ATT_DUB" }}</td>
+                {% else %}
+                    <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
+                {% endif %}
             </tr>
             {% if corvet.attribut_dyr %}
                 {% with bta=corvet.electronique_69h %}
