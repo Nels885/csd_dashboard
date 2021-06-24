@@ -17,7 +17,7 @@ class ExcelCorvet(ExcelFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super(ExcelCorvet, self).__init__(file, sheet_name, columns)
+        super(ExcelCorvet, self).__init__(file, sheet_name, columns, dtype=str)
         self._columns_convert()
         self.sheet.replace({"#": None}, inplace=True)
         self._date_converter(self.COLS_DATE)
