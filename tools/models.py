@@ -102,7 +102,7 @@ class ThermalChamberMeasure(models.Model):
         ordering = ['-datetime']
 
     def __str__(self):
-        return self.datetime
+        return self.datetime.strftime("%d/%m/%Y %H:%M")
 
 
 class EtudeProject(models.Model):

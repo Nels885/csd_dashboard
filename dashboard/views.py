@@ -58,6 +58,7 @@ def charts_ajax(request):
     data.update(indicator.new_result())
     data.update(tools.suptech())
     data.update(tools.bga_time())
+    data.update(tools.thermal_chamber_measure())
     return JsonResponse(data)
 
 

@@ -45,6 +45,9 @@ $.ajax({
                             display: true,
                             text: 'Valeur en %',
                         },
+                        ticks: {
+                            maxTicksLimit: 6
+                        },
                         grid: {
                             color: "rgb(234, 236, 244)",
                             zeroLineColor: "rgb(234, 236, 244)",

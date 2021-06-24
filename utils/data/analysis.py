@@ -7,7 +7,7 @@ from django.db.models import Q, F
 
 from squalaetp.models import Xelon, Indicator, ProductCategory
 from psa.models import Corvet
-from tools.models import Suptech, BgaTime
+from tools.models import Suptech, BgaTime, ThermalChamberMeasure
 
 
 class ProductAnalysis:
@@ -116,10 +116,12 @@ class ToolsAnalysis:
 
     def __init__(self):
         last_60_days = timezone.datetime.today() - timezone.timedelta(60)
+        last_30_days = timezone.datetime.today() - timezone.timedelta(30)
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
         suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=last_60_days)
+        self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__gte=last_30_days).order_by('datetime')
         self.total = None
 
     def suptech(self):
@@ -141,6 +143,13 @@ class ToolsAnalysis:
             queryset = self._bga_annotate(self.bgaTimes.filter(name=value))
             for query in queryset:
                 data[key].append(self._percent(query['sum_duration']))
+        return data
+
+    def thermal_chamber_measure(self):
+        data = {"tcAreaLabels": [], "tcTempValue": []}
+        for query in self.tcMeasure:
+            data["tcAreaLabels"].append(query.datetime.strftime("%d/%m/%Y %H:%M"))
+            data["tcTempValue"].append(query.temp[:-2])
         return data
 
     def _percent(self, value, total_multiplier=1):
