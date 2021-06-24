@@ -121,3 +121,16 @@ $('.modal').on('shown.bs.modal', function () {
     $(this).find('[autofocus]').focus();
 });
 
+
+$(".unmask").on('click', function (event) {
+    event.preventDefault();
+    if ($('.unmask input').attr("type") === "text") {
+        $('.unmask input').attr('type', 'password');
+        $('.unmask i').addClass("fa-eye-slash");
+        $('.unmask i').removeClass("fa-eye");
+    } else if ($('.unmask input').attr("type") === "password") {
+        $('.unmask input').attr('type', 'text');
+        $('.unmask i').removeClass("fa-eye-slash");
+        $('.unmask i').addClass("fa-eye");
+    }
+});
