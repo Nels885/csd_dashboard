@@ -394,15 +394,14 @@ class MixinsTest(UnitTest):
             reverse('reman:ecu_hw_update', kwargs={'pk': ecu_type.pk}),
             data={
                 'hw_reference': ecu_type.hw_reference,
-                'technical_data': ecu_type.technical_data,
-                'status': 'test'
+                'technical_data': 'test',
             }
         )
         # redirection
         self.assertRedirects(response, reverse('reman:ecu_hw_table'), status_code=302)
         # Object is updated
         ecu_type = EcuType.objects.first()
-        self.assertEqual(ecu_type.status, 'test')
+        self.assertEqual(ecu_type.technical_data, 'test')
 
     def test_create_ref_reman_ajax_mixin(self):
         """
@@ -436,7 +435,8 @@ class MixinsTest(UnitTest):
             reverse('reman:ref_reman_create'),
             data={
                 'reman_reference': '1234567891',
-                'hw_reference': '9876543210'
+                'hw_reference': '9876543210',
+                'status': 'test'
             },
         )
 
@@ -446,3 +446,4 @@ class MixinsTest(UnitTest):
         remans = EcuRefBase.objects.all()
         self.assertEqual(remans.count(), 2)
         self.assertEqual(remans.last().reman_reference, '1234567891')
+        self.assertEqual(remans.last().status, 'test')
