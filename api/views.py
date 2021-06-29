@@ -16,7 +16,7 @@ from .serializers import (
 from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, EcuRefBaseSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
-from reman.models import Batch, EcuModel, Repair
+from reman.models import Batch, EcuModel, Repair, EcuRefBase
 from tools.models import ThermalChamberMeasure
 
 from .utils import TokenAuthSupportQueryString
@@ -105,7 +105,7 @@ class RemanCheckOutViewSet(viewsets.ModelViewSet):
     queryset = EcuModel.objects.all().order_by('psa_barcode')
     serializer_class = RemanCheckOutSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['psa_barcode', 'ecu_type__ecu_ref_base__reman_reference']
+    search_fields = ['psa_barcode', 'ecu_type__ecurefbase__reman_reference', 'ecu_type__hw_reference']
     http_method_names = ['get']
 
 
@@ -124,7 +124,7 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
 class RemanEcuRefBaseViewSet(viewsets.ModelViewSet):
     # authentication_classes = (TokenAuthSupportQueryString,)
     permissions_classes = (permissions.IsAuthenticated,)
-    queryset = EcuModel.objects.all().order_by('id')
+    queryset = EcuRefBase.objects.all().order_by('id')
     serializer_class = EcuRefBaseSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     http_method_names = ['get']

@@ -3,7 +3,7 @@ from django.db.models import DateTimeField, CharField, Q, Count, Value, F
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
-from reman.models import Batch, Repair, EcuType
+from reman.models import Batch, Repair, EcuRefBase
 from tools.models import Suptech, BgaTime
 
 XELON_LIST = [
@@ -190,13 +190,16 @@ def extract_reman(model):
     elif model == "base_ref_reman":
         header = [
             'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
-            'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
+            'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'REQ_DIAG', 'OPENDIAG', 'REQ_REF', 'REF_MAT', 'REF_COMP',
+            'REQ_CAL', 'CAL_KTAG', 'REQ_STATUS', 'STATUS', 'TEST_CLEAR_MEMORY', 'CLE_APPLI'
         ]
-        queryset = EcuType.objects.all().order_by('ecu_ref_base__reman_reference')
+        queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
         values_list = (
-            'ecumodel__oe_raw_reference', 'ecu_ref_base__reman_reference', 'technical_data', 'hw_reference',
-            'supplier_oe', 'ecumodel__psa_barcode', 'ecumodel__former_oe_reference', 'ref_cal_out',
-            'spare_part__code_produit', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
+            'ecu_type__ecumodel__oe_raw_reference', 'reman_reference', 'ecu_type__technical_data',
+            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__psa_barcode',
+            'ecu_type__ecumodel__former_oe_reference', 'ref_cal_out', 'ecu_type__spare_part__code_produit',
+            'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag',
+            'req_status', 'status', 'test_clear_memory', 'cle_appli'
         )
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
