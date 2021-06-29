@@ -16,7 +16,8 @@ class ExportExcelTask(BaseTask):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.date = timezone.now()
-        self.noValue = "#"
+        self.sheetName = kwargs.get('sheet_name', 'Feuil1')
+        self.noValue = kwargs.get('novalue', "#")
         self.header = self.fields = []
 
     def copy_and_get_copied_path(self):
@@ -28,7 +29,7 @@ class ExportExcelTask(BaseTask):
         progress_recorder = ProgressRecorder(self)
         # Get active worksheet/tab
         ws = workbook.active
-        ws.title = 'Feuille 1'
+        ws.title = self.sheetName
 
         # Sheet header, first row
         row_num = 1
