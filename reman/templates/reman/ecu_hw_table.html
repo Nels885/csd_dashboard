@@ -17,63 +17,56 @@
             <th>Réf. Hardware</th>
             <th>Module Moteur</th>
             <th>Fournisseur</th>
+            <th>Code barre PSA</th>
             <th>XELON - Code produit</th>
-            <th>REF_CAL_OUT</th>
-            <th>REF_PSA_OUT</th>
-            <th>REQ_DIAG</th>
-            <th>OPENDIAG</th>
-            <th>REQ_REF</th>
-            <th>REF_MAT</th>
-            <th>REF_COMP</th>
-            <th>REQ_CAL</th>
-            <th>CAL_KTAG</th>
-            <th>REQ_STATUS</th>
-            <th>STATUS</th>
-            <th>TEST_CLEAR_MEMORY</th>
-            <th>CLE_APPLI</th>
+            <th>XELON - Emplacement</th>
         </tr>
         </thead>
         <tbody>
 
-        {% for ecu in ecus %}
+        {% for type in ecus %}
 
-            <tr>
-                <td class="bg-white">
-                    {% if perms.reman.change_ecutype %}
-                        <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:ecu_hw_update' ecu.pk %}">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    {% else %}
-                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
-                    {% endif %}
-                </td>
-                <td class="bg-white">
-                    {% if perms.reman.add_ecutype %}
-                        <button title="Copie" class="bs-large-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'reman:ecu_hw_create' %}?hw={{ ecu.hw_reference }}">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    {% else %}
-                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
-                    {% endif %}
-                </td>
-                <td>{{ ecu.hw_reference }}</td>
-                <td>{{ ecu.technical_data }}</td>
-                <td>{{ ecu.supplier_oe }}</td>
-                <td>{{ ecu.spare_part.code_produit }}</td>
-                <td>{{ ecu.ref_cal_out }}</td>
-                <td>{{ ecu.ref_psa_out }}</td>
-                <td>{{ ecu.req_diag }}</td>
-                <td>{{ ecu.open_diag }}</td>
-                <td>{{ ecu.req_ref }}</td>
-                <td>{{ ecu.ref_mat }}</td>
-                <td>{{ ecu.ref_comp }}</td>
-                <td>{{ ecu.req_cal }}</td>
-                <td>{{ ecu.cal_ktag }}</td>
-                <td>{{ ecu.req_status }}</td>
-                <td>{{ ecu.status }}</td>
-                <td>{{ ecu.test_clear_memory }}</td>
-                <td>{{ ecu.cle_appli }}</td>
-            </tr>
+            {% with models=type.ecumodel_set.all %}
+
+                <tr>
+                    <td class="bg-white">
+                        {% if perms.reman.change_ecutype %}
+                            <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:ecu_hw_update' type.pk %}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        {% else %}
+                            <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                        {% endif %}
+                    </td>
+                    <td class="bg-white">
+                        {% if perms.reman.add_ecutype %}
+                            <button title="Copie" class="bs-large-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'reman:ecu_hw_create' %}?hw={{ type.hw_reference }}">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        {% else %}
+                            <i class="btn btn-dark btn-circle btn-sm fas fa-copy"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ type.hw_reference }}</td>
+                    <td>{{ type.technical_data }}</td>
+                    <td>{{ type.supplier_oe }}</td>
+                    <td>
+                        {% if models|length > 1 %}
+                            <a data-toggle="collapse" href="#ref_{{ type.hw_reference }}" role="button" aria-expanded="false">
+                                Afficher
+                            </a>
+                            <div class="collapse mt-2" id="ref_{{ type.hw_reference }}">
+                                {% for model in models %}{{ model.psa_barcode }}<br>{% endfor %}
+                            </div>
+                        {% else %}
+                            {% for model in models %}{{ model.psa_barcode }}<br>{% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>{{ type.spare_part.code_produit }}</td>
+                    <td>{{ type.spare_part.code_emplacement }}</td>
+                </tr>
+
+            {% endwith %}
 
         {% endfor %}
 

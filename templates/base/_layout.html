@@ -84,9 +84,9 @@
 
         $(".create-default").modalForm({formURL: "{% url 'reman:create_default' %}", modalID: "#create-large-modal"});
 
-        $(".create-ref-reman").modalForm({formURL: "{% url 'reman:ref_reman_create' %}"});
+        $(".create-ref-reman").modalForm({formURL: "{% url 'reman:ref_reman_create' %}", modalID: "#create-large-modal"});
 
-        $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}", modalID: "#create-large-modal"});
+        $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}"});
 
         $(".create-tag-xelon").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
 
