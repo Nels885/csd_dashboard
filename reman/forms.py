@@ -130,7 +130,7 @@ class AddRefRemanForm(BSModalModelForm):
 
     class Meta:
         model = EcuRefBase
-        fields = ['reman_reference', 'hw_reference']
+        exclude = ['ecu_type']
 
     def __init__(self, *args, **kwargs):
         ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
@@ -155,6 +155,22 @@ class AddRefRemanForm(BSModalModelForm):
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
         return instance
+
+
+class UpdateRefRemanForm(AddRefRemanForm):
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        super().__init__(*args, **kwargs)
+        if instance:
+            self.initial['hw_reference'] = instance.ecu_type.hw_reference
+
+    class Meta:
+        model = EcuRefBase
+        exclude = ['ecu_type']
+        widgets = {
+            'reman_reference': forms.TextInput(attrs={"readonly": ""})
+        }
 
 
 class DefaultForm(BSModalModelForm):

@@ -26,6 +26,7 @@ urlpatterns = [
     path('batch/<int:pk>/delete/', views.BatchDeleteView.as_view(), name='delete_batch'),
     path('base-ref/table/', views.base_ref_table, name='base_ref_table'),
     path('base-ref/create/', views.RefRemanCreateView.as_view(), name='ref_reman_create'),
+    path('base-ref/<int:pk>/update/', views.RefRemanUpdateView.as_view(), name='ref_reman_update'),
     path('base-ref/<str:psa_barcode>/create/', views.ref_base_create, name='create_ref_base'),
     path('base-ref/<str:psa_barcode>/edit/', views.ref_base_edit, name='edit_ref_base'),
     path('ecu/hw/table/', views.ecu_hw_table, name='ecu_hw_table'),

@@ -24,7 +24,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm, AddEtudeBatchForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm
+    EcuDumpModelForm, AddEtudeBatchForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
 )
 
 context = {
@@ -194,6 +194,27 @@ class RefRemanCreateView(PermissionRequiredMixin, BSModalCreateView):
     form_class = AddRefRemanForm
     success_message = _('Success: Reman reference was created.')
     success_url = reverse_lazy('reman:base_ref_table')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        ecu_dict = EcuRefBase.objects.filter(reman_reference=self.request.GET.get('ref', None)).values().first()
+        if ecu_dict:
+            for field, value in ecu_dict.items():
+                if field not in ['reman_reference']:
+                    initial[field] = value
+                if field == 'ecu_type_id' and value is not None:
+                    initial['hw_reference'] = EcuType.objects.get(pk=value).hw_reference
+        return initial
+
+
+class RefRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal ECU Hardware update """
+    model = EcuRefBase
+    permission_required = 'reman.change_ecurefbase'
+    template_name = 'reman/modal/ref_reman_update.html'
+    form_class = UpdateRefRemanForm
+    success_message = _('Success: Reman reference was updated.')
+    success_url = reverse_lazy('reman:ecu_hw_table')
 
 
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
