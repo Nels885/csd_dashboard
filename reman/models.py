@@ -16,19 +16,6 @@ class EcuType(models.Model):
     hw_reference = models.CharField("hardware", max_length=20, unique=True)
     technical_data = models.CharField("modèle produit", max_length=50)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
-    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
-    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
-    req_diag = models.CharField("REQ_DIAG", max_length=50, blank=True)
-    open_diag = models.CharField("OPENDIAG", max_length=50, blank=True)
-    req_ref = models.CharField("REQ_REF", max_length=50, blank=True)
-    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
-    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
-    req_cal = models.CharField("REQ_CAL", max_length=50, blank=True)
-    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
-    req_status = models.CharField("REQ_STATUS", max_length=50, blank=True)
-    status = models.CharField("STATUT", max_length=50, blank=True)
-    test_clear_memory = models.CharField("TEST_CLEAR_MEMORY", max_length=10, blank=True)
-    cle_appli = models.CharField("CLE_APPLI", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
 
     def part_name(self):
@@ -57,11 +44,14 @@ class EcuModel(models.Model):
         msg_list = []
         if ecu_models:
             for ecu_model in ecu_models:
-                reman_refs = ecu_model.ecu_type.ecu_ref_base.reman_reference
-                xelon_refs = ecu_model.ecu_type.spare_part.code_produit
-                location = ecu_model.ecu_type.spare_part.code_emplacement
-                msg_list.append(
-                    'Réf. REMAN : {}  -  Réf. XELON : {}  -  EMPLACEMENT : {}'.format(reman_refs, xelon_refs, location))
+                try:
+                    reman_refs = "/".join([query.reman_reference for query in ecu_model.ecu_type.ecurefbase_set.all()])
+                    xelon_refs = ecu_model.ecu_type.spare_part.code_produit
+                    location = ecu_model.ecu_type.spare_part.code_emplacement
+                    msg_list.append(
+                        f"Réf. REMAN : {reman_refs}  -  Réf. XELON : {xelon_refs}  -  EMPLACEMENT : {location}")
+                except AttributeError:
+                    pass
             return msg_list
         else:
             return None
@@ -76,8 +66,20 @@ class EcuModel(models.Model):
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
-    ecu_type = models.ForeignKey("EcuType", related_name='ecu_ref_base', on_delete=models.SET_NULL, null=True,
-                                 blank=True)
+    ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
+    ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
+    req_diag = models.CharField("REQ_DIAG", max_length=50, blank=True)
+    open_diag = models.CharField("OPENDIAG", max_length=50, blank=True)
+    req_ref = models.CharField("REQ_REF", max_length=50, blank=True)
+    ref_mat = models.CharField("REF_MAT", max_length=10, blank=True)
+    ref_comp = models.CharField("REF_COMP", max_length=10, blank=True)
+    req_cal = models.CharField("REQ_CAL", max_length=50, blank=True)
+    cal_ktag = models.CharField("CAL_KTAG", max_length=10, blank=True)
+    req_status = models.CharField("REQ_STATUS", max_length=50, blank=True)
+    status = models.CharField("STATUT", max_length=50, blank=True)
+    test_clear_memory = models.CharField("TEST_CLEAR_MEMORY", max_length=10, blank=True)
+    cle_appli = models.CharField("CLE_APPLI", max_length=50, blank=True)
+    ecu_type = models.ForeignKey("EcuType", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.reman_reference

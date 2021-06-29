@@ -18,7 +18,10 @@ class BatchAdmin(admin.ModelAdmin):
 
 
 class EcuRefBaseAdmin(admin.ModelAdmin):
-    list_display = ('reman_reference', 'ecu_type')
+    list_display = (
+        'reman_reference', 'ecu_type', 'ref_cal_out', 'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat',
+        'ref_comp', 'req_cal', 'cal_ktag', 'req_status', 'status', 'test_clear_memory', 'cle_appli'
+    )
     ordering = ('reman_reference',)
     list_filter = ('ecu_type',)
     search_fields = ('reman_reference',)
@@ -82,11 +85,7 @@ class EcuModelAdmin(admin.ModelAdmin):
 
 
 class EcuTypeAdmin(admin.ModelAdmin):
-    list_display = (
-        'hw_reference', 'technical_data', 'supplier_oe', 'get_spare_part', 'ref_cal_out', 'ref_psa_out', 'req_diag',
-        'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag', 'req_status', 'status',
-        'test_clear_memory', 'cle_appli'
-    )
+    list_display = ('hw_reference', 'technical_data', 'supplier_oe', 'get_spare_part',)
     ordering = ('hw_reference',)
     list_filter = ('technical_data', 'supplier_oe')
     search_fields = ('hw_reference', 'technical_data', 'supplier_oe')
