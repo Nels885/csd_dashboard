@@ -122,7 +122,7 @@ $('.modal').on('shown.bs.modal', function () {
 });
 
 
-$(".unmask").on('click', function (event) {
+$(".unmask a").on('click', function (event) {
     event.preventDefault();
     if ($('.unmask input').attr("type") === "text") {
         $('.unmask input').attr('type', 'password');
