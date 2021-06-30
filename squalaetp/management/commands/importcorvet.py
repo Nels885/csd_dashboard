@@ -46,7 +46,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             xelons = Xelon.objects.filter(vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False).order_by('-id')
-            xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__electronique_94m=''))[:50]
+            xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__electronique_14p=''))[:50]
             self._import(xelons, limit=True)
 
     def _import(self, queryset, limit=False):

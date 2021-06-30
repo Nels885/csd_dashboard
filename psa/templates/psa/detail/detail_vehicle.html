@@ -83,14 +83,15 @@
                 <td class="text-dark td-ihm">MOTEUR</td>
                 <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
             </tr>
-            <tr>
-                <td class="text-dark td-ihm">CARBURANT</td>
-                <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 1" }}</td>
-            </tr>
             {% if corvet.attribut_dcd %}
                 <tr>
                     <td class="text-dark td-ihm">CARBURANT</td>
                     <td>{{ corvet.attribut_dcd|get_corvet:"ATT_DCD" }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-dark td-ihm">CARBURANT</td>
+                    <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 1" }}</td>
                 </tr>
             {% endif %}
             {% if corvet.attribut_dyc %}
