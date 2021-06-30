@@ -1,5 +1,6 @@
 import time
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from constance import config
 
 from ._excel_squalaetp import ExcelSqualaetp
@@ -44,12 +45,12 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
         else:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
-            xelons = Xelon.objects.filter(
-                vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False, corvet__isnull=True).order_by('-id')
+            xelons = Xelon.objects.filter(vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False).order_by('-id')
+            xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__electronique_94m=''))[:50]
             self._import(xelons, limit=True)
 
     def _import(self, queryset, limit=False):
-        nb_created = 0
+        nb_import = 0
         scrap = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD)
         for query in queryset:
             start_time = time.time()
@@ -57,6 +58,7 @@ class Command(BaseCommand):
                 data = scrap.result(query.vin)
                 row = xml_parser(data)
                 if scrap.ERROR:
+                    nb_import += 1
                     delay_time = time.time() - start_time
                     self.stdout.write(
                         self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error CORVET in {delay_time}"))
@@ -64,8 +66,7 @@ class Command(BaseCommand):
                 elif row and row.get('donnee_date_entree_montage'):
                     defaults = defaults_dict(Corvet, row, "vin")
                     obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
-                    if created:
-                        nb_created += 1
+                    nb_import += 1
                     query.corvet = obj
                     delay_time = time.time() - start_time
                     self.stdout.write(
@@ -77,7 +78,7 @@ class Command(BaseCommand):
                     self.stdout.write(
                         self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error VIN in {delay_time}"))
             query.save()
-            if limit and nb_created >= 10:
+            if limit and nb_import >= 50:
                 break
         scrap.quit()
-        return nb_created
+        return nb_import
