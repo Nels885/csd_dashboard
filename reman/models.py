@@ -97,6 +97,9 @@ class Batch(models.Model):
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
     ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.CASCADE)
 
+    class Meta:
+        permissions = [("pdfgen_batch", "Can pdfgen batch")]
+
     def clean(self):
         if not self.year:
             date = timezone.now()
