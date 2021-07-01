@@ -401,7 +401,7 @@ def batch_table(request):
     return render(request, 'reman/batch_table.html', context)
 
 
-@login_required()
+@permission_required('reman.pdfgen_batch')
 def batch_pdf_generate(request, pk):
     batch = get_object_or_404(Batch, pk=pk)
     buffer = BytesIO()

@@ -204,3 +204,13 @@ class RemanTestCase(UnitTest):
         for nb in range(2):
             response = self.client.get(url + f"?next={nb}")
             self.assertEqual(response.status_code, 200)
+
+    def test_batch_pdf_generate(self):
+        url = reverse('reman:batch_pdf', kwargs={'pk': self.batch.pk})
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(Batch, 'pdfgen_batch')
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
