@@ -19,7 +19,7 @@ $(document).ready(function () {
         scrollX: true,
         order: [],
         columnDefs: [{
-            targets: [0, 1],
+            targets: 0,
             searchable: false,
             orderable: false,
         }],
