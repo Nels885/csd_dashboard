@@ -22,6 +22,7 @@ urlpatterns = [
     path('batch/table/', views.batch_table, name='batch_table'),
     path('batch/create/', views.BatchCreateView.as_view(), name='create_batch'),
     path('batch/etude/create/', views.BatchEtudeCreateView.as_view(), name='create_etude_batch'),
+    path('batch/<int:pk>/pdf/', views.batch_pdf_generate, name='batch_pdf'),
     path('batch/<int:pk>/update/', views.BatchUpdateView.as_view(), name='update_batch'),
     path('batch/<int:pk>/delete/', views.BatchDeleteView.as_view(), name='delete_batch'),
     path('base-ref/table/', views.base_ref_table, name='base_ref_table'),

@@ -1,5 +1,6 @@
-from io import StringIO
+from io import StringIO, BytesIO
 
+from django.http import FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
@@ -11,6 +12,7 @@ from django.core.mail import EmailMessage
 from django.db.models import Q, Count
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
+from reportlab.pdfgen import canvas
 
 from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
@@ -395,6 +397,33 @@ def batch_table(request):
     batchs = batchs.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
     context.update(locals())
     return render(request, 'reman/batch_table.html', context)
+
+
+@login_required()
+def batch_pdf_generate(request, pk):
+    batch = get_object_or_404(Batch, pk=pk)
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
+    p.setTitle(f"batch_{batch.batch_number}")
+    p.rotate(90)
+    p.setFont('Courier', 24)
+    p.drawString(100, -130, "REFERENCE REMAN :")
+    p.drawString(100, -230, "Type boitier : ")
+    p.drawString(100, -330, "N° LOT :")
+    p.drawString(100, -430, "Quantité du lot :")
+
+    p.setFont('Courier-Bold', 36)
+    p.drawString(500, -130, str(batch.ecu_ref_base.reman_reference))
+    p.drawString(500, -230, str(batch.ecu_ref_base.ecu_type.technical_data))
+    p.drawString(500, -330, str(batch.batch_number))
+    p.drawCentredString(525, -430, str(batch.quantity))
+    p.setLineWidth(4)
+    p.line(500, -440,  550, -440)
+    p.showPage()
+    p.save()
+
+    buffer.seek(0)
+    return FileResponse(buffer, filename=f"batch_{batch.batch_number}.pdf")
 
 
 @login_required()
