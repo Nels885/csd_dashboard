@@ -13,6 +13,8 @@ from django.db.models import Q, Count
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+from reportlab.graphics.barcode import code128
 
 from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
@@ -413,12 +415,16 @@ def batch_pdf_generate(request, pk):
     p.drawString(100, -430, "Quantité du lot :")
 
     p.setFont('Courier-Bold', 36)
-    p.drawString(500, -130, str(batch.ecu_ref_base.reman_reference))
-    p.drawString(500, -230, str(batch.ecu_ref_base.ecu_type.technical_data))
-    p.drawString(500, -330, str(batch.batch_number))
-    p.drawCentredString(525, -430, str(batch.quantity))
+    p.drawCentredString(600, -110, str(batch.ecu_ref_base.reman_reference))
+    barcode = code128.Code128(str(batch.ecu_ref_base.reman_reference), barWidth=0.5*mm, barHeight=10*mm)
+    barcode.drawOn(p, 515, -150)
+    p.drawCentredString(600, -230, str(batch.ecu_ref_base.ecu_type.technical_data))
+    p.drawCentredString(600, -310, str(batch.batch_number))
+    barcode = code128.Code128(str(batch.batch_number), barWidth=0.5*mm, barHeight=10*mm)
+    barcode.drawOn(p, 500, -350)
+    p.drawCentredString(600, -430, str(batch.quantity))
     p.setLineWidth(4)
-    p.line(500, -440,  550, -440)
+    p.line(575, -440,  625, -440)
     p.showPage()
     p.save()
 
