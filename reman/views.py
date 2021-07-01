@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+from reportlab.lib.pagesizes import A4
 from reportlab.graphics.barcode import code128
 
 from constance import config
@@ -405,14 +406,15 @@ def batch_table(request):
 def batch_pdf_generate(request, pk):
     batch = get_object_or_404(Batch, pk=pk)
     buffer = BytesIO()
-    p = canvas.Canvas(buffer)
+    p = canvas.Canvas(buffer, pagesize=A4)
     p.setTitle(f"batch_{batch.batch_number}")
     p.rotate(90)
     p.setFont('Courier', 24)
+    p.setLineWidth(4)
     p.drawString(60, -130, "REFERENCE REMAN :")
     p.drawString(60, -230, "Type boitier : ")
     p.drawString(60, -330, "N° LOT :")
-    p.drawString(60, -430, "Quantité du lot :")
+    p.drawString(60, -430, "Quantité carton :")
 
     p.setFont('Courier-Bold', 36)
     p.drawString(380, -130, str(batch.ecu_ref_base.reman_reference))
@@ -420,11 +422,11 @@ def batch_pdf_generate(request, pk):
     barcode.drawOn(p, 610, -130)
     p.drawString(380, -230, str(batch.ecu_ref_base.ecu_type.technical_data[:20]))
     p.drawString(380, -330, str(batch.batch_number))
+    p.line(470, -340,  530, -340)
     barcode = code128.Code128(str(batch.batch_number), barWidth=0.5*mm, barHeight=10*mm)
     barcode.drawOn(p, 610, -330)
-    p.drawCentredString(405, -430, str(batch.quantity))
-    p.setLineWidth(4)
-    p.line(380, -440,  430, -440)
+    p.drawString(380, -430, "6")
+    # p.line(380, -440,  400, -440)
     p.showPage()
     p.save()
 
