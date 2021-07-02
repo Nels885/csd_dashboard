@@ -16,10 +16,12 @@ class CorvetAdmin(admin.ModelAdmin):
 
 
 class MultimediaAdmin(admin.ModelAdmin):
-    list_display = ('hw_reference', 'name', 'level', 'type', 'dab', 'cam', 'media', 'firmware')
+    list_display = (
+        'hw_reference', 'label_ref', 'pr_reference', 'name', 'level', 'type', 'dab', 'cam', 'media', 'firmware'
+    )
     list_filter = ('name', 'level', 'type', 'media')
     ordering = ('hw_reference',)
-    search_fields = ('hw_reference', 'name', 'type')
+    search_fields = ('hw_reference', 'label_ref', 'name', 'type', 'pr_reference')
 
 
 class FirmwareAdmin(admin.ModelAdmin):
@@ -44,10 +46,10 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 
 
 class EcuAdmin(admin.ModelAdmin):
-    list_display = ('comp_ref', 'mat_ref', 'name', 'type', 'hw', 'sw', 'supplier_oe', 'pr_reference')
+    list_display = ('comp_ref', 'mat_ref', 'pr_reference', 'name', 'type', 'hw', 'sw', 'supplier_oe')
     list_filter = ('type', 'supplier_oe')
     ordering = ('comp_ref',)
-    search_fields = ('comp_ref', 'mat_ref', 'name', 'type')
+    search_fields = ('comp_ref', 'mat_ref', 'pr_reference', 'name', 'type')
 
 
 class CorvetProductAdmin(admin.ModelAdmin):
