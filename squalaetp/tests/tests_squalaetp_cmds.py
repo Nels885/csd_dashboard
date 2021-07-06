@@ -15,7 +15,7 @@ class XelonCommandTestCase(UnitTest):
 
     def test_loadsparepart_cmd(self):
         out = StringIO()
-        call_command('loadsparepart', '-f' 'reman/tests/extraction_test.csv', stdout=out)
+        call_command('loadsparepart', '-f' 'dashboard/tests/files/extraction_test.csv', stdout=out)
         self.assertIn(
             "[SPAREPART] Data update completed: CSV_LINES = 2 | ADD = 2 | UPDATE = 0 | TOTAL = 2",
             out.getvalue()
