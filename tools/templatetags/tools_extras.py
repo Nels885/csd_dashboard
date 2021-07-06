@@ -16,7 +16,7 @@ def past_time(obj):
             return str(delta).split('.')[0]
         else:
             return "---"
-    except ThermalChamber.DoesNotExist:
+    except (ThermalChamber.DoesNotExist, AttributeError):
         return "---"
 
 
@@ -29,5 +29,5 @@ def usage_time(obj):
             return str(delta).split('.')[0]
         else:
             return "---"
-    except ThermalChamber.DoesNotExist:
+    except (ThermalChamber.DoesNotExist, AttributeError):
         return "---"
