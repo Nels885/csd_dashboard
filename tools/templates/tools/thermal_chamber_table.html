@@ -1,6 +1,6 @@
 {% extends 'format/datatables_format.html' %}
 
-{% load static %}
+{% load static tools_extras %}
 
 {% block table_content %}
 
@@ -12,6 +12,7 @@
             <th>N° Xelon</th>
             <th>Heure de départ</th>
             <th>Heure de fin</th>
+            <th>Temps d'utilisation</th>
             <th>Mode de fonctionnement</th>
             <th>Actif</th>
         </tr>
@@ -26,6 +27,7 @@
                 <td>{{ thermal.xelon_number|default:'---' }}</td>
                 <td>{{ thermal.start_time|default:'---' }}</td>
                 <td>{{ thermal.stop_time|default:'---' }}</td>
+                <td>{{ thermal|usage_time }}</td>
                 <td>{{ thermal.operating_mode }}</td>
                 <td>{{ thermal.active }}</td>
             </tr>
