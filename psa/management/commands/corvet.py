@@ -74,7 +74,7 @@ class Command(BaseCommand):
             else:
                 excel = ExcelCorvet(XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE)
 
-            self._update_or_create(Corvet, excel.read())
+            self._update_or_create(Corvet, excel)
 
     def _foreignkey_relation(self):
         self.stdout.write("[CORVET_RELATIONSHIPS] Waiting...")
@@ -89,30 +89,33 @@ class Command(BaseCommand):
             )
         )
 
-    def _update_or_create(self, model, data):
+    def _update_or_create(self, model, excel):
         nb_prod_before = model.objects.count()
         nb_prod_update = 0
-        for row in data:
-            logger.info(row)
-            vin = row.pop('vin')
-            try:
-                defaults = defaults_dict(model, row, 'vin')
-                obj, created = model.objects.update_or_create(
-                    vin=vin, defaults=defaults
-                )
-                if not created:
-                    nb_prod_update += 1
-            except KeyError as err:
-                logger.error(f"[CORVET_CMD] KeyError: {vin} - {err}")
-            except IntegrityError as err:
-                logger.error(f"[CORVET_CMD] IntegrityError: {vin} - {err}")
-            except ValidationError as err:
-                logger.error(f"[CORVET_CMD] ValidationError: {vin} - {err}")
-        nb_prod_after = model.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[CORVET] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    len(data), nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+        if not excel.ERROR:
+            for row in excel.read():
+                logger.info(row)
+                vin = row.pop('vin')
+                try:
+                    defaults = defaults_dict(model, row, 'vin')
+                    obj, created = model.objects.update_or_create(
+                        vin=vin, defaults=defaults
+                    )
+                    if not created:
+                        nb_prod_update += 1
+                except KeyError as err:
+                    logger.error(f"[CORVET_CMD] KeyError: {vin} - {err}")
+                except IntegrityError as err:
+                    logger.error(f"[CORVET_CMD] IntegrityError: {vin} - {err}")
+                except ValidationError as err:
+                    logger.error(f"[CORVET_CMD] ValidationError: {vin} - {err}")
+            nb_prod_after = model.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[CORVET] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                    )
                 )
             )
-        )
+        else:
+            self.stdout.write(self.style.WARNING("[CORVET] No squalaetp file found"))
