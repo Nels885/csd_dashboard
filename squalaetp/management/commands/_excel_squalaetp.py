@@ -43,7 +43,7 @@ class ExcelSqualaetp(ExcelFormat):
                 row = self.sheet.loc[line, self.XELON_COLS]
                 if row[0]:
                     data.append(dict(row.dropna()))
-            return data
+        return data
 
     def corvet_table(self, attribut_file=None):
         """
