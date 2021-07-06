@@ -34,7 +34,7 @@ class XelonCommandTestCase(UnitTest):
         out = StringIO()
 
         # Test for files not found
-        call_command('loadsqualaetp', '--xelon_update', '-S', 'test.xls', '-D' 'test.xls, test.xls', stdout=out)
+        call_command('loadsqualaetp', '--xelon_update', '-S' 'test.xls', '-D' 'test.xls, test.xls', stdout=out)
         self.assertIn("[XELON] No squalaetp file found", out.getvalue())
         self.assertIn("[DELAY] No delay files found", out.getvalue())
 

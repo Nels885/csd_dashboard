@@ -51,7 +51,7 @@ class Command(BaseCommand):
         if options['import_csv']:
             if options['filename'] is not None:
                 excel = CsvCorvet(options['filename'])
-                self._update_or_create(Corvet, excel.read())
+                self._update_or_create(Corvet, excel)
             else:
                 self.stdout.write("Fichier CSV manquant")
 
