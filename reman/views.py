@@ -1,3 +1,4 @@
+import re
 from io import StringIO, BytesIO
 
 from django.http import FileResponse
@@ -254,6 +255,10 @@ def check_parts(request):
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if request.POST and form.is_valid():
         psa_barcode = form.cleaned_data['psa_barcode']
+        if re.match(r'^89661-\w{5}$', psa_barcode):
+            psa_barcode = psa_barcode[:11]
+        else:
+            psa_barcode = psa_barcode[:10]
         try:
             ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
             context.update(locals())
@@ -261,14 +266,14 @@ def check_parts(request):
                 return render(request, 'reman/part/part_detail.html', context)
         except EcuModel.DoesNotExist:
             pass
-        return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
+        return redirect(reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/part/part_check.html', context)
 
 
-@permission_required('reman.add_ecumodel')
-def ref_base_create(request, psa_barcode):
+@permission_required('reman.check_ecumodel')
+def create_part(request, psa_barcode):
     next_form = int(request.GET.get('next', 0))
     if next_form == 1:
         card_title = "Ajout Type ECU"
@@ -307,7 +312,7 @@ def ref_base_create(request, psa_barcode):
         form.save()
         next_form += 1
         return redirect(
-            reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
+            reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
     context.update(locals())
     return render(request, 'reman/part/part_create_form.html', context)
 
