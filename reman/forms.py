@@ -9,7 +9,7 @@ from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuM
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
-# from utils.django.validators import validate_psa_barcode
+from utils.django.validators import validate_psa_barcode
 
 
 """
@@ -384,17 +384,17 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=10,
+    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=20,
                                   widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''}))
 
     def clean_psa_barcode(self):
         data = self.cleaned_data['psa_barcode']
-        # message = validate_psa_barcode(data)
-        if len(data) < 10:
+        message = validate_psa_barcode(data)
+        if message:
             raise forms.ValidationError(
                 _("The barcode is invalid"),
                 code='invalid',
-                params={'value': data},
+                params={'value': message},
             )
         return data
 

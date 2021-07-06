@@ -71,7 +71,7 @@ def validate_psa_barcode(value):
     :return:
         Error message if not valid
     """
-    if not re.match(r'^9[68]\d{8}$', str(value)):
+    if not re.match(r'^9[68]\d{8}\w*$', str(value)) and not re.match(r'^89661-\w{5}$', str(value)):
         return 'PSA barcode is invalid'
     return None
 
