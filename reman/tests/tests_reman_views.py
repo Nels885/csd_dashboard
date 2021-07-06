@@ -107,10 +107,14 @@ class RemanTestCase(UnitTest):
             self.assertFormError(response, 'form', 'psa_barcode', _('The barcode is invalid'))
 
         # Valid form
-        for barcode in ['9600000000', '9687654321', '9800000000', '9887654321']:
-            response = self.client.post(url, {'psa_barcode': barcode})
+        barcode_list = [
+            ('9600000000', '9600000000'), ('9687654321', '9687654321'), ('9800000000', '9800000000'),
+            ('9887654321', '9887654321'), ('96876543210000000000', '9687654321'), ('89661-0H390', '89661-0H390')
+        ]
+        for barcode in barcode_list:
+            response = self.client.post(url, {'psa_barcode': barcode[0]})
             self.assertRedirects(
-                response, reverse('reman:create_ref_base', kwargs={'psa_barcode': barcode}), status_code=302)
+                response, reverse('reman:part_create', kwargs={'psa_barcode': barcode[1]}), status_code=302)
         response = self.client.post(url, {'psa_barcode': self.psaBarcode})
         ecu = EcuModel.objects.get(psa_barcode=self.psaBarcode)
         self.assertEquals(response.context['ecu'], ecu)
@@ -179,13 +183,13 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
-    def test_ref_base_create_view(self):
+    def test_part_create_view(self):
         psa_barcode = '9676543210'
-        url = reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode})
+        url = reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
-        self.add_perms_user(EcuModel, 'add_ecumodel')
+        self.add_perms_user(EcuModel, 'check_ecumodel')
         self.login()
         for nb in range(2):
             response = self.client.get(url + f"?next={nb}")
