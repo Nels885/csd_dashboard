@@ -28,7 +28,7 @@
                 </a>
             </li>
 
-            {% if 'NAC' in corvet.btel.get_name_display %}
+            {% if 'NAC' in corvet.prods.btel.get_name_display %}
                 <li class="nav-item">
                     <a class="nav-link" href="#nac" role="tab" aria-selected="false">
                         {% trans "Info NAC" %}
@@ -84,7 +84,7 @@
         <!-- Info NAC -->
         <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
 
-            {% include 'psa/format/nac_info_format.html' with firmware=corvet.btel.firmware uin=corvet.electronique_44x %}
+            {% include 'psa/format/nac_info_format.html' with firmware=corvet.prods.btel.firmware uin=corvet.electronique_44x %}
 
         </div>
 
