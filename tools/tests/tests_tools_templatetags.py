@@ -10,7 +10,8 @@ class ToolsTemplateTagsTest(UnitTest):
     def setUp(self):
         super(ToolsTemplateTagsTest, self).setUp()
         self.tc = ThermalChamber.objects.create(
-            operating_mode='CHAUD', start_time='1970-07-17 12:12', stop_time='1970-07-17 14:14', created_by=self.user
+            operating_mode='CHAUD', start_time='1970-07-17 12:12:00+00:00', stop_time='1970-07-17 14:14:00+00:00',
+            created_by=self.user
         )
 
     def test_past_time(self):

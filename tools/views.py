@@ -14,6 +14,7 @@ from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem,
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
 from utils.data.mqtt import MQTTClass
+from api.utils import thermal_chamber_use
 
 MQTT_CLIENT = MQTTClass()
 
@@ -74,10 +75,8 @@ def soft_edit(request, soft_id):
 def thermal_chamber(request):
     title = _('Thermal chamber')
     table_title = _('Use of the thermal chamber')
-    now = timezone.now()
-    ThermalChamber.objects.filter(created_at__lt=now.date(), active=True).update(active=False)
+    thermal_chamber_use()
     thermals = ThermalChamber.objects.filter(active=True).order_by('created_at')
-    temp = None
     form = ThermalFrom(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
         if request.user.is_authenticated:
