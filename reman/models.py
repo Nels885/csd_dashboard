@@ -89,6 +89,8 @@ class Batch(models.Model):
     year = models.CharField("années", max_length=1)
     number = models.IntegerField("numéro de lot", validators=[MaxValueValidator(999), MinValueValidator(1)])
     quantity = models.IntegerField('quantité', validators=[MaxValueValidator(999), MinValueValidator(1)])
+    box_quantity = models.IntegerField('quantité du carton', default=6,
+                                       validators=[MaxValueValidator(6), MinValueValidator(1)])
     batch_number = models.CharField("numéro de lot", max_length=10, blank=True, unique=True)
     active = models.BooleanField(default=True)
     start_date = models.DateField("date de début", null=True)
