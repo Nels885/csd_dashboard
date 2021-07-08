@@ -112,16 +112,16 @@ class IndicatorAnalysis:
 class ToolsAnalysis:
     SUPTECH_LABELS = ["1 à 2 jours", "3 à 6 jours", "7 jours et plus"]
     BGA = {"bgaOneValue": "DES-48", "bgaTwoValue": "DES-51"}
+    LAST_60_DAYS = timezone.datetime.today() - timezone.timedelta(60)
+    LAST_30_DAYS = timezone.datetime.today() - timezone.timedelta(30)
     TOTAL_HOURS = 7 * 60 * 60
 
     def __init__(self):
-        last_60_days = timezone.datetime.today() - timezone.timedelta(60)
-        last_30_days = timezone.datetime.today() - timezone.timedelta(30)
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
         suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
-        self.bgaTimes = BgaTime.objects.filter(date__gte=last_60_days)
-        self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__gte=last_30_days).order_by('datetime')
+        self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
+        self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
         self.total = None
 
     def suptech(self):
@@ -147,9 +147,10 @@ class ToolsAnalysis:
 
     def thermal_chamber_measure(self):
         data = {"tcAreaLabels": [], "tcTempValue": []}
-        for query in self.tcMeasure:
-            data["tcAreaLabels"].append(query.datetime.strftime("%d/%m/%Y %H:%M"))
-            data["tcTempValue"].append(query.temp[:-2])
+        if self.tcMeasure:
+            for query in self.tcMeasure.filter(datetime__gte=self.LAST_30_DAYS):
+                data["tcAreaLabels"].append(timezone.localtime(query.datetime).strftime("%d/%m/%Y %H:%M"))
+                data["tcTempValue"].append(query.temp[:-2])
         return data
 
     def _percent(self, value, total_multiplier=1):
