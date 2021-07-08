@@ -1,3 +1,5 @@
+import re
+
 from rest_framework.authentication import TokenAuthentication
 from django.utils import timezone
 
@@ -18,14 +20,14 @@ class TokenAuthSupportQueryString(TokenAuthentication):
             return super(TokenAuthSupportQueryString, self).authenticate(request)
 
 
-def thermal_chamber_use(temp=None):
+def thermal_chamber_use(temp=""):
     now = timezone.now()
     if ThermalChamber.objects.filter(active=True):
         ThermalChamber.objects.filter(created_at__lt=now.date(), active=True).update(active=False)
     therms = ThermalChamber.objects.filter(active=True)
-    if therms and temp and float(temp[:-2]) < 0:
+    if therms and re.search(r'\d', temp) and float(temp[:-2]) < 0:
         therms.filter(operating_mode='FROID', start_time__isnull=True).update(start_time=now)
-    elif therms and temp and float(temp[:-2]) > 40:
+    elif therms and re.search(r'\d', temp) and float(temp[:-2]) > 40:
         therms.filter(operating_mode='CHAUD', start_time__isnull=True).update(start_time=now)
     elif therms and temp:
         therms.filter(start_time__isnull=False).update(stop_time=now, active=False)
