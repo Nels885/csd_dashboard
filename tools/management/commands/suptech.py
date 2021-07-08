@@ -1,10 +1,10 @@
 import os
 import logging
-from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.html import strip_tags
+from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -152,7 +152,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR("[SUPTECH] {}".format(err)))
 
     def _send_email(self):
-        date_joined = datetime.strftime(datetime.now(), "%d/%m/%Y %H:%M:%S")
+        date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
         subject = "Liste des Suptech en cours {}".format(date_joined)
         suptechs = Suptech.objects.exclude(status="Cloturée").order_by('-date')
         if suptechs:

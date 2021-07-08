@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.utils import timezone
@@ -44,7 +42,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        date_joined = datetime.strftime(datetime.now(), "%d/%m/%Y %H:%M:%S")
+        date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
         last_7_days = timezone.datetime.today() - timezone.timedelta(7)
         if options['late_products']:
             subject = 'Stocks et Retards {}'.format(date_joined)
