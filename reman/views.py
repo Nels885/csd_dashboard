@@ -430,7 +430,7 @@ def batch_pdf_generate(request, pk):
     p.line(470, -340,  530, -340)
     barcode = code128.Code128(str(batch.batch_number), barWidth=0.5*mm, barHeight=10*mm)
     barcode.drawOn(p, 610, -330)
-    p.drawString(380, -430, "6")
+    p.drawString(380, -430, str(batch.box_quantity))
     # p.line(380, -440,  400, -440)
     p.showPage()
     p.save()

@@ -24,6 +24,11 @@ class BatchForm(BSModalModelForm):
         model = Batch
         exclude = ['batch_number']
         labels = {'ecu_ref_base': 'Réf. REMAN'}
+        widgets = {
+            'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
+            'quantity': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
+            'box_quantity': forms.NumberInput(attrs={'min': 1, 'max': 6, 'type': 'number'}),
+        }
 
     def save(self, commit=True):
         batch = super().save(commit=False)
@@ -38,10 +43,11 @@ class AddBatchForm(BSModalModelForm):
 
     class Meta:
         model = Batch
-        fields = ['number', 'quantity', 'start_date', 'end_date', 'ref_reman']
+        fields = ['number', 'quantity', 'box_quantity', 'start_date', 'end_date', 'ref_reman']
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
             'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3, 'autofocus': ''}),
+            'box_quantity': forms.NumberInput(attrs={'style': 'width: 40%;', 'min': 1, 'max': 6, 'type': 'number'}),
             'start_date': DatePicker(
                 attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
                 options={'format': 'DD/MM/YYYY'}
