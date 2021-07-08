@@ -31,6 +31,7 @@ class MixinsTest(UnitTest):
             data={
                 'number': '2',
                 'quantity': '20',
+                'box_quantity': '6',
                 'start_date': '02/01/1970',
                 'end_date': '01/01/1970',
                 'ref_reman': ''
@@ -52,6 +53,7 @@ class MixinsTest(UnitTest):
             data={
                 'number': '2',
                 'quantity': '20',
+                'box_quantity': '6',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ref_reman': '1234567890'
@@ -77,6 +79,7 @@ class MixinsTest(UnitTest):
             data={
                 'number': '2',
                 'quantity': '20',
+                'box_quantity': '6',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ref_reman': '1234567890'
@@ -98,6 +101,7 @@ class MixinsTest(UnitTest):
             data={
                 'number': '901',
                 'quantity': '20',
+                'box_quantity': '6',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ref_reman': '1234567890'
@@ -126,6 +130,7 @@ class MixinsTest(UnitTest):
                 'year': 'A',
                 'number': '2',
                 'quantity': '20',
+                'box_quantity': '6',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ecu_ref_base': self.refBase.id
@@ -152,6 +157,7 @@ class MixinsTest(UnitTest):
                 'year': 'A',
                 'number': '902',
                 'quantity': '20',
+                'box_quantity': '6',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ecu_ref_base': self.refBase.id
