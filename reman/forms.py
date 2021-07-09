@@ -18,6 +18,8 @@ MANAGER FORMS
 ~~~~~~~~~~~~~~
 """
 
+BOX_NUMBER = [(1, 1), (3, 3), (6, 6)]
+
 
 class BatchForm(BSModalModelForm):
     class Meta:
@@ -27,7 +29,7 @@ class BatchForm(BSModalModelForm):
         widgets = {
             'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
             'quantity': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
-            'box_quantity': forms.NumberInput(attrs={'min': 1, 'max': 6, 'type': 'number'}),
+            'box_quantity': forms.Select(choices=BOX_NUMBER, attrs={'style': 'width: 40%;'}),
         }
 
     def save(self, commit=True):
@@ -47,7 +49,7 @@ class AddBatchForm(BSModalModelForm):
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
             'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3, 'autofocus': ''}),
-            'box_quantity': forms.NumberInput(attrs={'style': 'width: 40%;', 'min': 1, 'max': 6, 'type': 'number'}),
+            'box_quantity': forms.Select(choices=BOX_NUMBER, attrs={'style': 'width: 40%;'}),
             'start_date': DatePicker(
                 attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
                 options={'format': 'DD/MM/YYYY'}

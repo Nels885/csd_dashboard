@@ -22,6 +22,7 @@
             <th></th>
             <th>Numéro de lot</th>
             <th>Quantité</th>
+            <th>Nb / carton</th>
             <th>Réf. REMAN</th>
             <th>Réparés</th>
             <th>Rebuts</th>
@@ -66,6 +67,7 @@
                     </td>
                     <td>{{ batch }}</td>
                     <td>{{ batch.quantity }}</td>
+                    <td>{{ batch.box_quantity }}</td>
                     <td>{{ batch.ecu_ref_base.reman_reference }}</td>
                     <td>{{ batch.repaired }}</td>
                     <td>{{ batch.rebutted }}</td>
