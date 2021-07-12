@@ -183,7 +183,7 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
             return reverse_lazy('index')
 
 
-@permission_required('psa.view_product')
+@permission_required('psa.view_multimedia')
 def product_table(request):
     """
     View of the product table page
