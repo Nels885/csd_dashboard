@@ -19,6 +19,24 @@ class ApiTestCase(APITestCase):
         else:
             self.client.login(username='toto', password='totopassword')
 
+    def api_view_list(self, url):
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get(url + '?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_documentation_view(self):
+        response = self.client.get(reverse('api:doc'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_unlock_list(self):
+        self.api_view_list(reverse('api:unlock-list'))
+
     def test_prog_list(self):
         response = self.client.get(reverse('api:prog-list'), format='json')
         self.assertEqual(response.status_code, 401)
@@ -85,26 +103,19 @@ class ApiTestCase(APITestCase):
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
-    def test_thermal_chamber_measure_list(self):
-        url = reverse('api:tools_tc_measure-list')
-        response = self.client.get(url, format='json')
+    def test_nac_license_view(self):
+        response = self.client.get(reverse('api:nac_license'), format='json')
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data, self.authError)
 
         # Identification with Token
-        response = self.client.get(url + '?auth_token={}'.format(self.token), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 4)
-        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+        response = self.client.get('/api/nac-license/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data, {"error": "Request failed"})
+
+    def test_thermal_chamber_measure_list(self):
+        self.api_view_list(reverse('api:tools_tc_measure-list'))
 
     def test_bga_time_list(self):
-        url = reverse('api:tools_bga_time-list')
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.data, self.authError)
-
-        # Identification with Token
-        response = self.client.get(url + '?auth_token={}'.format(self.token), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 4)
-        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+        self.api_view_list(reverse('api:tools_bga_time-list'))
