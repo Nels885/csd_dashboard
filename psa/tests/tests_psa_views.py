@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 
 from dashboard.tests.base import UnitTest
 
-from psa.models import Corvet
+from psa.models import Corvet, Multimedia
 
 
 class PsaTestCase(UnitTest):
@@ -89,3 +89,11 @@ class PsaTestCase(UnitTest):
         response = self.client.get(reverse('psa:api_corvet-list'), format='json')
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
+
+    def test_product_table_page(self):
+        response = self.client.get(reverse('psa:product'))
+        self.assertEqual(response.status_code, 302)
+        self.add_perms_user(Multimedia, 'view_multimedia')
+        self.login()
+        response = self.client.get(reverse('psa:product'))
+        self.assertEqual(response.status_code, 200)
