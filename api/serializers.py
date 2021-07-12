@@ -3,7 +3,7 @@ from rest_framework import serializers
 from psa.serializers import CorvetSerializer
 from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
-from tools.models import ThermalChamberMeasure
+from tools.models import ThermalChamberMeasure, BgaTime
 
 
 class RaspeediSerializer(serializers.ModelSerializer):
@@ -67,3 +67,17 @@ class ThermalChamberMeasureCreateSerializer(ThermalChamberMeasureSerializer):
     class Meta:
         model = ThermalChamberMeasure
         fields = ('value',)
+
+
+class BgaTimeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BgaTime
+        fields = "__all__"
+
+
+class BgaTimeCreateSerializer(BgaTimeSerializer):
+
+    class Meta:
+        model = BgaTime
+        fields = ('name',)

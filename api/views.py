@@ -11,13 +11,13 @@ from constance import config
 
 from .serializers import (
     ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer, UnlockUpdateSerializer,
-    ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer
+    ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer, BgaTimeSerializer, BgaTimeCreateSerializer
 )
 from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, EcuRefBaseSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair, EcuRefBase
-from tools.models import ThermalChamberMeasure
+from tools.models import ThermalChamberMeasure, BgaTime
 
 from .utils import TokenAuthSupportQueryString
 
@@ -110,8 +110,8 @@ class RemanCheckOutViewSet(viewsets.ModelViewSet):
 
 
 class RemanRepairViewSet(viewsets.ModelViewSet):
-    # authentication_classes = (TokenAuthSupportQueryString,)
-    permissions_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Repair.objects.all()
     serializer_class = RemanRepairSerializer
     filter_backends = [SearchFilter, OrderingFilter]
@@ -122,8 +122,8 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
 
 
 class RemanEcuRefBaseViewSet(viewsets.ModelViewSet):
-    # authentication_classes = (TokenAuthSupportQueryString,)
-    permissions_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = EcuRefBase.objects.all().order_by('id')
     serializer_class = EcuRefBaseSerializer
     filter_backends = [SearchFilter, OrderingFilter]
@@ -171,3 +171,34 @@ class ThermalChamberMeasureViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data)
             raise serializers.ValidationError({'warning': _('Time between 2 requests too short')})
         return Response(serializer.errors)
+
+
+class BgaTimeViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = BgaTime.objects.all()
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return BgaTimeCreateSerializer
+        else:
+            return BgaTimeSerializer
+
+    def create(self, *args, **kwargs):
+        data = self.request.data
+        device = self.request.query_params.get("device", None)
+        status = self.request.query_params.get("status", None)
+        if device and status:
+            data['name'] = device
+            serializer = BgaTimeCreateSerializer(data=data)
+            try:
+                bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
+                bga_is_active.save(status=status)
+            except BgaTime.DoesNotExist:
+                pass
+            if status.upper() == "START" and serializer.is_valid():
+                serializer.save()
+            return Response({"response": "OK", "device": device, "status": status.upper()})
+        return Response({"response": "ERROR"})
