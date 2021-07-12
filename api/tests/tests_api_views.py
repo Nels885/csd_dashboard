@@ -41,8 +41,64 @@ class ApiTestCase(APITestCase):
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
+    def test_batch_list(self):
+        response = self.client.get(reverse('api:reman_batch-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/batch/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_checkout_list(self):
+        response = self.client.get(reverse('api:reman_checkout-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/checkout/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_repair_list(self):
+        response = self.client.get(reverse('api:reman_repair-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/repair/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_ecurefbase_list(self):
+        response = self.client.get(reverse('api:reman_ecurefbase-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/ecurefbase/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
     def test_thermal_chamber_measure_list(self):
         url = reverse('api:tools_tc_measure-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get(url + '?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_bga_time_list(self):
+        url = reverse('api:tools_bga_time-list')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data, self.authError)
