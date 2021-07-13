@@ -220,7 +220,7 @@ class RefRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     template_name = 'reman/modal/ref_reman_update.html'
     form_class = UpdateRefRemanForm
     success_message = _('Success: Reman reference was updated.')
-    success_url = reverse_lazy('reman:ecu_hw_table')
+    success_url = reverse_lazy('reman:base_ref_table')
 
 
 class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
