@@ -24,12 +24,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--first',
-            action='store_true',
-            dest='first',
-            help='Adding first data in Suptech table',
-        )
-        parser.add_argument(
             '--email',
             action='store_true',
             dest='email',
@@ -38,15 +32,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
-        path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
-        filename = "LOG_SUPTECH"
-        try:
-            if options['first']:
-                excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
-                self._create(Suptech, excel.read())
-            if options['email']:
-                self._send_email()
-            else:
+        if options['email']:
+            self._send_email()
+        else:
+            try:
+                path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
+                filename = "LOG_SUPTECH"
                 if os.path.exists(os.path.join(path, filename + ".csv")):
                     csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
                     self._create(Suptech, csv_file.read())
@@ -57,8 +48,8 @@ class Command(BaseCommand):
                 excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
                 self._update(Suptech, excel.read())
                 self._export(path, filename)
-        except FileNotFoundError as err:
-            logger.error(f"[SUPTECH_CMD] FileNotFoundError: {err}")
+            except FileNotFoundError as err:
+                logger.error(f"[SUPTECH_CMD] FileNotFoundError: {err}")
 
     def _create(self, model, data):
         nb_prod_before = model.objects.count()
@@ -104,6 +95,7 @@ class Command(BaseCommand):
             except model.DoesNotExist as err:
                 self.stdout.write(
                     self.style.WARNING(f"DoesNotExist, modified in Dashboard: {user} {xelon} {item} {time} - {err}"))
+                print(row)
             except KeyError as err:
                 self.stderr.write(self.style.ERROR("KeyError: {}".format(err)))
             except IntegrityError as err:
@@ -130,8 +122,8 @@ class Command(BaseCommand):
                 'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action'
             ).distinct()
 
-            error = ExportExcelSuptech(values_list=values_list, filename=filename + ".xls", header=header,
-                                       novalue="").file(path, False)
+            error = ExportExcelSuptech(
+                values_list=values_list, filename=filename + ".xls", header=header).file(path, False)
             if error:
                 self.stdout.write(
                     self.style.ERROR(
