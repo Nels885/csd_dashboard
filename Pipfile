@@ -30,10 +30,10 @@ django-inlinecss = "*"
 requests = "*"
 openpyxl = "*"
 celery = "*"
-django-constance = {extras = [ "database",], version = "*"}
 celery-progress = "*"
 redis = "*"
 django-celery-beat = "*"
 django-celery-results = "*"
 django-searchable-encrypted-fields = "*"
 reportlab = "*"
+django-constance = {extras = ["redis"], version = "*"}

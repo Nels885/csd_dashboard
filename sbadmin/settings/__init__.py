@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'tempus_dominus',
     'bootstrap_modal_forms',
     'widget_tweaks',
-    'constance.backends.database',
     'constance',
     'django_inlinecss',
     'celery_progress',
@@ -224,7 +223,8 @@ TEMPUS_DOMINUS_LOCALIZE = True
 TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 
 # Configuration DJANGO-CONSTANCE
-CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
+CONSTANCE_REDIS_CONNECTION = 'redis://localhost:6379/1'
 
 CONSTANCE_CONFIG = {
     # General Options
