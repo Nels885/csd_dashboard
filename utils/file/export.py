@@ -32,7 +32,7 @@ def xml_corvet_file(instance, data, vin):
         os.makedirs(XML_CORVET_PATH, exist_ok=True)
         file = os.path.join(XML_CORVET_PATH, xelon_nb + ".xml")
         if not os.path.isfile(file):
-            with open(file, "w", encoding='utf-8') as f:
+            with open(file, "w", encoding='utf-8-sig') as f:
                 f.write(str(data))
         else:
             logger.warning("{} File exists.".format(xelon_nb))
@@ -59,7 +59,7 @@ class Calibre:
                 file = os.path.join(path, xelon + ".txt")
                 os.makedirs(path, exist_ok=True)
                 if not os.path.isfile(file):
-                    with open(file, "w", encoding='utf-8') as f:
+                    with open(file, "w", encoding='utf-8-sig') as f:
                         f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
                 else:
                     logger.warning("%s File exists.", xelon)
@@ -147,7 +147,7 @@ class ExportExcel:
 
     def _xls_writer(self, response):
         """ Formatting data in Excel format """
-        xldoc = xlwt.Workbook(encoding='utf-8')
+        xldoc = xlwt.Workbook(encoding='utf-8-sig')
         sheet = xldoc.add_sheet(self.sheetName)
 
         # Sheet header, first row
@@ -175,6 +175,7 @@ class ExportExcel:
     def _xlsx_writer(self, response):
         """ Formatting data in Excel 2010 format """
         wb = openpyxl.Workbook()
+        wb.encoding = 'utf-8-sig'
 
         # Get active worksheet/tab
         ws = wb.active
