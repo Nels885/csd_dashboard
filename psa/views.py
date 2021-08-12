@@ -8,7 +8,6 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import TemplateView
 from django.utils.translation import ugettext as _
 from django.http import JsonResponse
-from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 from django.core.management import call_command
 from bootstrap_modal_forms.generic import BSModalCreateView
@@ -17,6 +16,7 @@ from rest_framework import viewsets, permissions, status
 
 from utils.django.forms import ParaErrorList
 from utils.django.datatables import QueryTableByArgs
+from utils.django.urls import reverse_lazy, http_referer
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
 from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Multimedia
@@ -82,10 +82,7 @@ def majestic_web(request):
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=fw"
         uin = "00000000000000000000"
         return redirect(url.format(uin=uin, update=update_id))
-    if 'HTTP_REFERER' in request.META:
-        return request.META['HTTP_REFERER']
-    else:
-        return redirect('index')
+    return redirect(http_referer(request))
 
 
 def useful_links(request):
@@ -177,10 +174,7 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
     def get_success_url(self):
         if not self.request.is_ajax():
             return reverse_lazy('psa:corvet_detail', args=[self.object.pk])
-        elif 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 @permission_required('psa.view_multimedia')
