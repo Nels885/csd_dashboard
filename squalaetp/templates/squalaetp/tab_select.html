@@ -20,6 +20,13 @@
         {% trans "Customer files" %}
     </a>
 </li>
+{% if select and not 'error' in select and select != 'pending' %}
+    <li class="nav-item active">
+        <a class="nav-link active" href="{% url 'squalaetp:xelon' %}?filter={{ select }}">
+            {% trans "Search:" %} {{ select }}
+        </a>
+    </li>
+{% endif %}
 {#<li class="nav-item {% if select == 'late' %}active{% endif %}">#}
 {#    <a class="nav-link {% if select == 'late' %}active{% endif %}" href="{% url 'dashboard:late_prod' %}">#}
 {#        {% trans "Late products" %}#}

@@ -12,13 +12,8 @@ $(document).ready(function () {
                 render: function (data, type, full, meta) {
                     let url_ihm = '/squalaetp/' + full.id + '/detail/?select=ihm';
                     let url_detail = '/squalaetp/' + full.id + '/detail/';
-                    if (PERM) {
-                        return '<a href="' + url_ihm + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a> ' +
-                            '<a  href="' + url_detail + '" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>';
-                    } else {
-                        return '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i> ' +
-                            '<a  href="' + url_detail + '" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>';
-                    }
+                    return '<a href="' + url_ihm + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a> ' +
+                        '<a  href="' + url_detail + '" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>';
                 }
             },
             {data: "numero_de_dossier"},

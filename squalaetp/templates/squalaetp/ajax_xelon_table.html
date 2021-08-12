@@ -37,10 +37,6 @@
 
     <!-- Page level custom scripts -->
     <script type="text/javascript">
-        let PERM;
-        {% if perms.squalaetp.change_xelon and perms.psa.change_corvet%}
-            PERM = true;
-        {% endif %}
         const URL_AJAX = "{% url 'squalaetp:api_xelon-list' %}?filter={{ query_param }}";
     </script>
     <script type="text/javascript" src="{% static 'squalaetp/js/ajax-xelon-tables.js' %}"></script>
