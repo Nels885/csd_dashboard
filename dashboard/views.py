@@ -21,7 +21,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
-from utils.django.urls import reverse, reverse_lazy
+from utils.django.urls import reverse, reverse_lazy, http_referer
 from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
 from psa.models import Corvet
@@ -84,7 +84,7 @@ def search(request):
     """ View of search page """
     query = request.GET.get('query')
     select = request.GET.get('select')
-    if select == 'atelier':
+    if query and select == 'atelier':
         files = Xelon.search(query)
         if files and len(files) > 1:
             return redirect(reverse('squalaetp:xelon', get={'filter': query}))
@@ -94,7 +94,7 @@ def search(request):
     if corvets:
         return redirect('psa:corvet_detail', vin=corvets.first().vin)
     messages.warning(request, _('Warning: The research was not successful.'))
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(http_referer(request))
 
 
 def set_language(request, user_language):
@@ -105,7 +105,7 @@ def set_language(request, user_language):
     """
     translation.activate(user_language)
     request.session[translation.LANGUAGE_SESSION_KEY] = user_language
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(http_referer(request))
 
 
 @login_required
@@ -237,10 +237,7 @@ class WebLinkCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = _('Success: Web link was created')
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class WebLinkUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -251,10 +248,7 @@ class WebLinkUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     success_message = _('Success: Web link was updated')
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
@@ -265,10 +259,7 @@ class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     success_message = _('Success: Web link was deleted.')
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 @login_required
