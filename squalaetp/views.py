@@ -75,15 +75,7 @@ def xelon_table(request):
     """ View of Xelon table page """
     title = 'Xelon'
     form = CorvetForm()
-    query_param = request.GET.get('filter', None)
-    if query_param and query_param == "pending":
-        table_title = 'Dossiers en cours'
-    elif query_param and query_param == "vin-error":
-        table_title = 'Dossiers avec erreur de VIN'
-    elif query_param and query_param == "corvet-error":
-        table_title = 'Dossiers avec erreur CORVET'
-    else:
-        table_title = 'Dossiers Clients'
+    query_param = request.GET.get('filter', '')
     return render(request, 'squalaetp/ajax_xelon_table.html', locals())
 
 
@@ -286,3 +278,5 @@ class XelonViewSet(viewsets.ModelViewSet):
         elif query and query == "corvet-error":
             self.queryset = self.queryset.filter(
                 vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
+        elif query:
+            self.queryset = Xelon.search(query)

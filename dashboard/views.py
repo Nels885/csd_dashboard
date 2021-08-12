@@ -8,9 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import login
 from django.contrib import messages
-from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from django.db.models import Q
 from django.http import JsonResponse
 
 from django.core.mail import EmailMessage
@@ -23,6 +21,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
+from utils.django.urls import reverse, reverse_lazy
 from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
 from psa.models import Corvet
@@ -84,25 +83,17 @@ def autotronik(request):
 def search(request):
     """ View of search page """
     query = request.GET.get('query')
-    if query:
-        query = query.upper().strip()
-        # select = request.GET.get('select')
-        files = Xelon.objects.filter(Q(numero_de_dossier=query) |
-                                     Q(vin=query) |
-                                     Q(corvet__electronique_44l__contains=query) |
-                                     Q(corvet__electronique_44x__contains=query) |
-                                     Q(corvet__electronique_44a__contains=query))
+    select = request.GET.get('select')
+    if select == 'atelier':
+        files = Xelon.search(query)
         if files and len(files) > 1:
-            title = _('Search')
-            table_title = _('Xelon files')
-            return render(request, 'squalaetp/xelon_table.html', locals())
+            return redirect(reverse('squalaetp:xelon', get={'filter': query}))
         elif files:
             return redirect('squalaetp:detail', pk=files.first().pk)
-        else:
-            corvets = Corvet.objects.filter(vin=query)
-            if corvets:
-                return redirect('psa:corvet_detail', vin=corvets.first().vin)
-        messages.warning(request, _('Warning: The research was not successful.'))
+    corvets = Corvet.objects.filter(vin=query)
+    if corvets:
+        return redirect('psa:corvet_detail', vin=corvets.first().vin)
+    messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(request.META.get('HTTP_REFERER'))
 
 

@@ -120,7 +120,7 @@ class DashboardTestCase(UnitTest):
         Xelon.objects.create(numero_de_dossier='A123456780', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
         response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'ihm'})
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/squalaetp/xelon/?filter=' + self.vin, status_code=302)
 
         # Search by Xelon is valid
         for value in ['A123456789', 'a123456789']:
