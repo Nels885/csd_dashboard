@@ -126,7 +126,7 @@ class ProductCategory(models.Model):
     ]
 
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
-    category = models.CharField('catégorie', max_length=50, choices=CHOICES, blank=True)
+    category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
 
     class Meta:
         verbose_name = "Catégorie Produit"
