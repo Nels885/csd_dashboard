@@ -20,7 +20,7 @@ from reportlab.graphics.barcode import code128
 
 from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
-from utils.django.urls import reverse, reverse_lazy
+from utils.django.urls import reverse, reverse_lazy, http_referer
 
 from utils.conf import string_to_list
 from utils.django.datatables import QueryTableByArgs
@@ -541,10 +541,7 @@ class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
         return initial
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class EcuHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):
