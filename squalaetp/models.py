@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -49,6 +50,17 @@ class Xelon(models.Model):
         except ObjectDoesNotExist:
             pass
         super(Xelon, self).save(*args, **kwargs)
+
+    @classmethod
+    def search(cls, value):
+        query = value.upper().strip()
+        return cls.objects.filter(Q(numero_de_dossier=query) |
+                                  Q(vin=query) |
+                                  Q(corvet__electronique_44l__contains=query) |
+                                  Q(corvet__electronique_44x__contains=query) |
+                                  Q(corvet__electronique_44a__contains=query) |
+                                  Q(corvet__electronique_14l__exact=query) |
+                                  Q(corvet__electronique_14x__exact=query))
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
