@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.views.generic import TemplateView, ListView, UpdateView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
@@ -14,6 +13,7 @@ from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem,
 from dashboard.forms import ParaErrorList
 from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
 from utils.data.mqtt import MQTTClass
+from utils.django.urls import reverse_lazy, http_referer
 from api.utils import thermal_chamber_use
 
 MQTT_CLIENT = MQTTClass()
@@ -127,10 +127,7 @@ class TagXelonCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = 'Success: Création du fichier CALIBRE avec succès !'
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class UltimakerStreamView(LoginRequiredMixin, TemplateView):
@@ -164,10 +161,7 @@ class SupTechCreateView(BSModalCreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 def suptech_item_ajax(request):
