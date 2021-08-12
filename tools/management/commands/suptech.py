@@ -95,7 +95,6 @@ class Command(BaseCommand):
             except model.DoesNotExist as err:
                 self.stdout.write(
                     self.style.WARNING(f"DoesNotExist, modified in Dashboard: {user} {xelon} {item} {time} - {err}"))
-                print(row)
             except KeyError as err:
                 self.stderr.write(self.style.ERROR("KeyError: {}".format(err)))
             except IntegrityError as err:
