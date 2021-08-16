@@ -57,7 +57,7 @@ class Command(BaseCommand):
             for attempt in range(2):
                 data = scrap.result(query.vin)
                 row = xml_parser(data)
-                if scrap.ERROR:
+                if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in data:
                     nb_import += 1
                     delay_time = time.time() - start_time
                     self.stdout.write(
