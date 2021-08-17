@@ -48,7 +48,7 @@ class Xelon(models.Model):
             self.corvet = Corvet.objects.get(pk=self.vin)
             self.vin_error = False
         except ObjectDoesNotExist:
-            pass
+            self.corvet = None
         super(Xelon, self).save(*args, **kwargs)
 
     @classmethod

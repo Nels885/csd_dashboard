@@ -123,8 +123,9 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         if not self.request.is_ajax():
             data = form.cleaned_data['xml_data']
             vin = form.cleaned_data['vin']
-            defaults = defaults_dict(Corvet, data, 'vin')
-            Corvet.objects.update_or_create(vin=vin, defaults=defaults)
+            if data and vin:
+                defaults = defaults_dict(Corvet, data, 'vin')
+                Corvet.objects.update_or_create(vin=vin, defaults=defaults)
             out = StringIO()
             call_command("exportsqualaetp", stdout=out)
             if "Export error" in out.getvalue():
