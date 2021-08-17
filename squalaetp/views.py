@@ -250,7 +250,7 @@ class XelonViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         try:
             self._filter(request)
-            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
+            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 1, **request.query_params).values()
             serializer = self.serializer_class(xelon["items"], many=True)
             data = {
                 "data": serializer.data,
