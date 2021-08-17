@@ -28,6 +28,25 @@ $(document).ready(function () {
             }
         ],
     });
+    $('#adminTable').DataTable({
+        paging: false,
+        order: false,
+        scrollX: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print',
+        ],
+        columnDefs: [
+            {
+                targets: "_all",
+                orderable: false,
+            },
+            {
+                targets: 0,
+                searchable: false,
+            }
+        ],
+    });
     $('#tronikTable').DataTable({
         paging: false,
         order: false,
