@@ -52,11 +52,19 @@ class ProductAnalysis:
         autre = self._late_filter('AUTRE')
         calc_mot = self._late_filter('CALCULATEUR')
         defaut = self._late_filter('DEFAUT')
+        return locals()
+
+    def admin_products(self):
+        admin = self.QUERYSET.filter(type_de_cloture='Admin').order_by('-delai_au_en_jours_ouvres')
+        return locals()
+
+    def autotronik(self):
         autotronik = self.QUERYSET_AUTOTRONIK.exclude(
             type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         return locals()
 
-    def corvet_count(self):
+    @staticmethod
+    def corvet_count():
         """
         Function to count the number of Corvet data
         :return:
