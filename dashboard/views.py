@@ -152,6 +152,7 @@ def user_profile(request):
 def signup(request):
     """ View of Sign Up page """
     title = _("SignUp")
+    card_title = _('Create an Account!')
     form = SignUpForm(request.POST or None)
     if request.POST and form.is_valid():
         password = User.objects.make_random_password()
@@ -178,7 +179,7 @@ def signup(request):
         email.send()
         messages.success(request, _('Success: Sign up succeeded. You can now Log in.'))
     errors = form.errors.items()
-    return render(request, 'dashboard/register.html', locals())
+    return render(request, 'dashboard/register_form.html', locals())
 
 
 def activate(request, uidb64, token):
