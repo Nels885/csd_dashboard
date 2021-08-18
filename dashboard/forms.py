@@ -1,11 +1,9 @@
-import os
 from django.forms.utils import ErrorList
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
-from django.conf import settings
 
 from bootstrap_modal_forms.forms import BSModalModelForm
 from .models import UserProfile, Post, WebLink, ShowCollapse
@@ -86,8 +84,7 @@ class SignUpForm(UserCreationForm):
 
     class Media:
         css = {
-            'all': (os.path.join(settings.BASE_DIR, '/static/admin/css/widgets.css'),
-                    os.path.join(settings.BASE_DIR, '/static/admin/css/overrides.css')),
+            'all': ('/static/admin/css/widgets.css', '/static/admin/css/overrides.css'),
         }
         js = ('/admin/jsi18n',)
 
