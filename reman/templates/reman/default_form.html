@@ -1,0 +1,75 @@
+{% extends 'format/forms_format.html' %}
+
+{% load i18n widget_tweaks %}
+
+
+{% block form_content %}
+
+    {{ form.media }}
+
+    <form class="user" id="defaultForm" method="POST">
+
+        {% csrf_token %}
+
+        <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.code.id_for_label }}" class="col-sm-2 col-form-label">{{ form.code.label }}</label>
+            <div class="col-sm-2">
+                {% render_field form.code class="form-control" %}
+                <div class="text-danger {% if form.code.errors %} invalid{% endif %}">
+                    {% for error in form.code.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.description.id_for_label }}" class="col-sm-2 col-form-label">{{ form.description.label }}</label>
+            <div class="col-sm-9">
+                {% render_field form.description class="form-control" %}
+                <div class="text-danger {% if form.description.errors %} invalid{% endif %}">
+                    {% for error in form.description.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.ecu_type.id_for_label }}" class="col-sm-2 col-form-label">{{ form.ecu_type.label }}</label>
+            <div class="col-sm-6">
+                {% render_field form.ecu_type class="form-control" %}
+                <div class="text-danger {% if form.ecu_type.errors %} invalid{% endif %}">
+                    {% for error in form.ecu_type.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="offset-sm-2">
+                <div class="help">
+                    Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs.
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% block card_footer %}
+
+    <div class="modal-footer">
+            <a href="{% url 'reman:default_table' %}" type="button" class="btn btn-secondary">{% trans "Cancel" %}</a>
+            <button class="btn btn-primary" form="defaultForm" type="submit">{% trans 'Submit' %}</button>
+    </div>
+
+{% endblock %}
