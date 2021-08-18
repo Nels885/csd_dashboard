@@ -1,5 +1,7 @@
 {% load i18n  widget_tweaks %}
 
+{{ form.media }}
+
 <form class="user" method="POST">
 
     {% csrf_token %}
@@ -53,8 +55,11 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="col-sm-6">
-            <label for="{{ form.group.id_for_label }}">{{ form.group.label }}</label>
+    </div>
+
+    <div class="form-group row mt-4">
+        <label for="{{ form.group.id_for_label }}" class="col-sm-1 col-form-label">{{ form.group.label }}</label>
+        <div class="col-sm-11">
             {% render_field form.group class="form-control" %}
             <div class="text-danger {% if form.group.errors %} invalid{% endif %}">
                 {% for error in form.group.errors %}
@@ -62,6 +67,10 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
+
+    <div class="help">
+        Maintenez appuyé « Ctrl », ou « Commande (touche pomme) » sur un Mac, pour en sélectionner plusieurs.
     </div>
 
     <br>
