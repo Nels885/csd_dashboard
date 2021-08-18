@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db.models import Q, Count, Max
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
@@ -181,7 +182,16 @@ class UpdateRefRemanForm(AddRefRemanForm):
         }
 
 
-class DefaultForm(BSModalModelForm):
+class DefaultForm(forms.ModelForm):
+    ecu_type = forms.ModelMultipleChoiceField(
+        queryset=EcuType.objects.all(), widget=FilteredSelectMultiple("EcuType", is_stacked=False), required=False)
+
+    class Media:
+        css = {
+            'all': ('/static/admin/css/widgets.css', '/static/admin/css/overrides.css'),
+        }
+        js = ('/admin/jsi18n',)
+
     class Meta:
         model = Default
         fields = '__all__'

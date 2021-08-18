@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.core.management import call_command
 from django.core.mail import EmailMessage
 from django.db.models import Q, Count
+from django.views.generic.edit import CreateView, UpdateView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from reportlab.pdfgen import canvas
@@ -223,23 +224,35 @@ class RefRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     success_url = reverse_lazy('reman:base_ref_table')
 
 
-class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
+class DefaultCreateView(PermissionRequiredMixin, CreateView):
     """ View of modal default create """
     permission_required = 'reman.add_default'
-    template_name = 'reman/modal/default_create.html'
+    template_name = 'reman/default_form.html'
     form_class = DefaultForm
     success_message = _('Success: Reman Default was created.')
     success_url = reverse_lazy('reman:default_table')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Reman"
+        context['card_title'] = _('Create Default')
+        return context
 
-class DefaultUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+
+class DefaultUpdateView(PermissionRequiredMixin, UpdateView):
     """ View of modal default update """
     model = Default
     permission_required = 'reman.change_default'
-    template_name = 'reman/modal/default_update.html'
+    template_name = 'reman/default_form.html'
     form_class = DefaultForm
     success_message = _('Success: Reman Default was updated.')
     success_url = reverse_lazy('reman:default_table')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Reman"
+        context['card_title'] = _('Update Default')
+        return context
 
 
 """
@@ -423,12 +436,12 @@ def batch_pdf_generate(request, pk):
 
     p.setFont('Courier-Bold', 36)
     p.drawString(380, -130, str(batch.ecu_ref_base.reman_reference))
-    barcode = code128.Code128(str(batch.ecu_ref_base.reman_reference), barWidth=0.5*mm, barHeight=10*mm)
+    barcode = code128.Code128(str(batch.ecu_ref_base.reman_reference), barWidth=0.5 * mm, barHeight=10 * mm)
     barcode.drawOn(p, 610, -130)
     p.drawString(380, -230, str(batch.ecu_ref_base.ecu_type.technical_data[:20]))
     p.drawString(380, -330, str(batch.batch_number))
-    p.line(470, -340,  530, -340)
-    barcode = code128.Code128(str(batch.batch_number), barWidth=0.5*mm, barHeight=10*mm)
+    p.line(470, -340, 530, -340)
+    barcode = code128.Code128(str(batch.batch_number), barWidth=0.5 * mm, barHeight=10 * mm)
     barcode.drawOn(p, 610, -330)
     p.drawString(380, -430, str(batch.box_quantity))
     # p.line(380, -440,  400, -440)
