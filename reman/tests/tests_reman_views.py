@@ -20,6 +20,7 @@ class RemanTestCase(UnitTest):
         self.repair = Repair.objects.create(
             batch=self.batch, identify_number="C001010001", created_by=self.user, status="Réparé", quality_control=True)
         self.authError = {"detail": "Informations d'authentification non fournies."}
+        Default.objects.create(code='TEST1', description='Ceci est le test 1')
 
     def test_repair_table_page(self):
         url = reverse('reman:repair_table')
@@ -218,3 +219,65 @@ class RemanTestCase(UnitTest):
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_create_default(self):
+        """
+        Create Default through CreateView.
+        """
+        self.add_perms_user(Default, 'add_default')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('reman:create_default'),
+            data={
+                'code': '',
+                'description': '',
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        defaults = Default.objects.all()
+        self.assertEqual(defaults.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:create_default'),
+            data={
+                'code': 'TEST2',
+                'description': 'Ceci est le test 2',
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        defaults = Default.objects.all()
+        self.assertEqual(defaults.count(), 2)
+
+    def test_update_default(self):
+        """
+        Update Default throught UpdateView.
+        """
+        self.add_perms_user(Default, 'change_default')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        default = Default.objects.first()
+        response = self.client.post(
+            reverse('reman:update_default', kwargs={'pk': default.pk}),
+            data={
+                'code': 'TEST3',
+                'description': 'Ceci est le test 3',
+            }
+        )
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is updated
+        default = Default.objects.first()
+        self.assertEqual(default.code, 'TEST3')
