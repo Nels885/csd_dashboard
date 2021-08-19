@@ -56,12 +56,13 @@ class ScrapingCorvet(webdriver.Firefox):
                 messages = self.find_elements_by_xpath('//*[@id="form:messages_container"]/div/div/div[2]/p')
                 if len(messages) > 0:
                     data = messages[0].text
+                self.logout()
             except Exception as err:
                 exception_type = type(err).__name__
                 logger.error(f'{exception_type} - result(): {err}')
                 data = "Exception or timeout error !"
+                self.quit()
                 self.ERROR = True
-            self.logout()
         else:
             data = "Corvet login Error !!!"
         return data

@@ -72,7 +72,7 @@ class Command(BaseCommand):
                     self.stdout.write(
                         self.style.SUCCESS(f"{query.numero_de_dossier} - {query.vin} updated in {delay_time}"))
                     break
-                elif attempt:
+                if attempt:
                     query.vin_error = True
                     delay_time = time.time() - start_time
                     self.stdout.write(
