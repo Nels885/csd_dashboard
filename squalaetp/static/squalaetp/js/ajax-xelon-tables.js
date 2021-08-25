@@ -3,7 +3,7 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         scrollX: true,
-        order: [[5, 'desc']],
+        order: [[6, 'desc']],
         ajax: URL_AJAX,
         columns: [
             {
@@ -19,6 +19,7 @@ $(document).ready(function () {
             {data: "numero_de_dossier"},
             {data: "vin"},
             {data: "modele_produit"},
+            {data: "activity"},
             {data: "modele_vehicule"},
             {data: "date_retour"},
             {data: "type_de_cloture"},
