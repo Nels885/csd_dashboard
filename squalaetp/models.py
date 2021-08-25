@@ -31,6 +31,7 @@ class Xelon(models.Model):
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey('squalaetp.ProductCategory', on_delete=models.SET_NULL, null=True, blank=True)
     actions = GenericRelation('Action')
 
     class Meta:
@@ -49,6 +50,10 @@ class Xelon(models.Model):
             self.vin_error = False
         except ObjectDoesNotExist:
             self.corvet = None
+        if self.modele_produit:
+            if not ProductCategory.objects.filter(product_model=self.modele_produit):
+                ProductCategory.objects.create(product_model=self.modele_produit)
+            self.product = ProductCategory.objects.get(product_model=self.modele_produit)
         super(Xelon, self).save(*args, **kwargs)
 
     @classmethod
