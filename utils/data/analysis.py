@@ -5,7 +5,7 @@ from django.db.models.functions import ExtractDay, TruncDay
 from django.db.models.aggregates import Count, Sum
 from django.db.models import Q, F
 
-from squalaetp.models import Xelon, Indicator, ProductCategory
+from squalaetp.models import Xelon, Indicator
 from psa.models import Corvet
 from tools.models import Suptech, BgaTime, ThermalChamberMeasure
 
@@ -46,12 +46,12 @@ class ProductAnalysis:
         :return:
             Dictionary of different activities
         """
-        psa = self._late_filter('PSA')
-        clarion = self._late_filter('CLARION')
-        etude = self._late_filter('ETUDE')
-        autre = self._late_filter('AUTRE')
-        calc_mot = self._late_filter('CALCULATEUR')
-        defaut = self._late_filter('DEFAUT')
+        psa = self.lateQueryset.filter(product__category='PSA')
+        clarion = self.lateQueryset.filter(product__category='CLARION')
+        etude = self.lateQueryset.filter(product__category='ETUDE')
+        autre = self.lateQueryset.filter(product__category='AUTRE')
+        calc_mot = self.lateQueryset.filter(product__category='CALCULATEUR')
+        defaut = self.lateQueryset.filter(product__category='DEFAUT')
         return locals()
 
     def admin_products(self):
@@ -71,10 +71,6 @@ class ProductAnalysis:
             number of Corvet data
         """
         return Corvet.objects.all().count()
-
-    def _late_filter(self, value):
-        query_list = [query.product_model for query in ProductCategory.objects.filter(category=value)]
-        return self.lateQueryset.filter(modele_produit__in=query_list)
 
 
 class IndicatorAnalysis:
