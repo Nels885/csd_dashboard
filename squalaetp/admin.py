@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
+from django.contrib.admin import widgets
 
 from .models import Xelon, SparePart, Indicator, Action, ProductCategory
 
@@ -61,6 +62,14 @@ class ProductCategoryAdmin(admin.ModelAdmin):
         'psa_category_update', 'other_category_update', 'clarion_category_update', 'etude_category_update',
         'ecu_category_update', 'default_category_update'
     )
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        vertical = False  # change to True if you prefer boxes to be stacked vertically
+        kwargs['widget'] = widgets.FilteredSelectMultiple(
+            db_field.verbose_name,
+            vertical,
+        )
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def _message_user_about_update(self, request, rows_updated, verb):
         """Send message about action to user.

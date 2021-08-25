@@ -149,6 +149,10 @@ class ProductCategory(models.Model):
 
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
     category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
+    niv_i_users = models.ManyToManyField(User, related_name='niv_i_prods', blank=True)
+    niv_l_users = models.ManyToManyField(User, related_name='niv_l_prods', blank=True)
+    niv_u_users = models.ManyToManyField(User, related_name='niv_u_prods', blank=True)
+    niv_o_users = models.ManyToManyField(User, related_name='niv_o_prods', blank=True)
 
     class Meta:
         verbose_name = "Catégorie Produit"
