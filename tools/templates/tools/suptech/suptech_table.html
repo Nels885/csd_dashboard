@@ -16,15 +16,16 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered display" id="suptechTable" style="width:100%">
+    <table class="table table-bordered table-sm display" id="suptechTable" style="width:100%">
         <thead>
         <tr>
             <th></th>
+            <th class="text-nowrap">N° Sup</th>
             <th>Date</th>
             <th>Qui</th>
-            <th>N° XELON</th>
+            <th class="text-nowrap">N° XELON</th>
             <th>Objet</th>
-            <th>Temps/Durée</th>
+            <th>Durée</th>
             <th>Infos</th>
             <th>Rmqs</th>
             <th>Action</th>
@@ -35,7 +36,7 @@
         {% for obj in objects %}
 
             <tr>
-                <td class="bg-white text-nowrap">
+                <td class="bg-white text-nowrap" style="width: 60px;">
                     {% if perms.tools.change_suptech %}
                         <a href="{% url 'tools:suptech_update' pk=obj.pk %}" title="Actions réalisées" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                     {% else %}
@@ -43,11 +44,12 @@
                     {% endif %}
                     <a href="#" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
-                <td style="min-width: 8rem;">{{ obj.date }}</td>
-                <td>{{ obj.user }}</td>
+                <td>{{ obj.id }}</td>
+                <td class="text-nowrap">{{ obj.date }}</td>
+                <td class="text-nowrap">{{ obj.user }}</td>
                 <td>{{ obj.xelon }}</td>
-                <td>{{ obj.item }}</td>
-                <td>{{ obj.time }}</td>
+                <td style="min-width: 15rem;">{{ obj.item }}</td>
+                <td class="text-nowrap">{{ obj.time }}</td>
                 <td style="min-width: 30rem; max-width: 30rem;">{{ obj.info }}</td>
                 <td style="min-width: 30rem; max-width: 30rem;">{{ obj.rmq }}</td>
                 <td style="min-width: 20rem;">{{ obj.action }}</td>
