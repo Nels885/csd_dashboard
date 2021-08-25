@@ -9,7 +9,7 @@ XELON_COLUMN_LIST = [
 
 
 class XelonSerializer(serializers.ModelSerializer):
-    activity = serializers.CharField(source='product.get_category_display', read_only=True)
+    activity = serializers.CharField(source='product.get_category_display', read_only=True, default='')
 
     class Meta:
         model = Xelon
