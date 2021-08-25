@@ -53,9 +53,8 @@ class ScrapingCorvet(webdriver.Firefox):
                 data = WebDriverWait(self, 10).until(
                     EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
                 ).text
-                messages = self.find_elements_by_xpath('//*[@id="form:messages_container"]/div/div/div[2]/p')
-                if len(messages) > 0:
-                    data = messages[0].text
+                if data and len(data) == 0:
+                    data = "ERREUR COMMUNICATION SYSTEME CORVET"
             except Exception as err:
                 exception_type = type(err).__name__
                 logger.error(f'{exception_type} - result(): {err}')

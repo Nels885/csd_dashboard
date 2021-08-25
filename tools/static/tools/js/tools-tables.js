@@ -41,6 +41,11 @@ $(document).ready(function () {
     $('#suptechTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
-        order: []
+        order: [],
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
     });
 });

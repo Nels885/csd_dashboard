@@ -47,7 +47,8 @@ class Command(BaseCommand):
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             xelons = Xelon.objects.filter(vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False).order_by('-id')
             xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__attribut_dcd=''))[:50]
-            self._import(xelons, limit=True)
+            nb_file = self._import(xelons, limit=True)
+            self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
 
     def _import(self, queryset, limit=False):
         nb_import = 0
@@ -72,7 +73,7 @@ class Command(BaseCommand):
                     self.stdout.write(
                         self.style.SUCCESS(f"{query.numero_de_dossier} - {query.vin} updated in {delay_time}"))
                     break
-                elif attempt:
+                if attempt:
                     query.vin_error = True
                     delay_time = time.time() - start_time
                     self.stdout.write(
