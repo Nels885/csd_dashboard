@@ -2,12 +2,10 @@ import logging
 from django.core.management.base import BaseCommand
 from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.utils import IntegrityError, DataError
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.utils import timezone
 
 from squalaetp.models import Xelon, ProductCategory, Indicator
-from psa.models import Corvet
 from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
 from utils.django.models import defaults_dict
 from utils.data.analysis import ProductAnalysis
@@ -80,20 +78,18 @@ class Command(BaseCommand):
     def _foreignkey_relation(self):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
 
-        nb_xelon, nb_corvet, objects_list = 0, 0, []
+        nb_xelon, nb_category = 0, 0
         for xelon in Xelon.objects.filter(corvet__isnull=True):
-            try:
-                xelon.corvet = Corvet.objects.get(pk=xelon.vin)
-                xelon.save()
-                nb_xelon += 1
-            except ObjectDoesNotExist:
-                objects_list.append(xelon.numero_de_dossier)
+            xelon.save()
+            nb_xelon += 1
         self.stdout.write(
-            self.style.SUCCESS(
-                "[SQUALAETP] Relationships update completed: CORVET/XELON = {} | RASPEEDI/CORVET = {}".format(
-                    nb_xelon, nb_corvet
-                )
-            )
+            self.style.SUCCESS("[SQUALAETP] Relationships update completed: CORVET/XELON = {}".format(nb_xelon))
+        )
+        for xelon in Xelon.objects.filter(product__isnull=True):
+            xelon.save()
+            nb_category += 1
+        self.stdout.write(
+            self.style.SUCCESS("[SQUALAETP] Relationships update completed: CATEGORY/XELON = {}".format(nb_category))
         )
 
     def _squalaetp_file(self, model, excel):
@@ -150,8 +146,6 @@ class Command(BaseCommand):
                     if product_model and not obj.modele_produit:
                         obj.modele_produit = product_model
                         obj.save()
-                    if obj.modele_produit:
-                        ProductCategory.objects.get_or_create(product_model=obj.modele_produit)
                 except IntegrityError as err:
                     logger.error(f"[DELAY_CMD] IntegrityError row {xelon_number} : {err}")
                 except DataError as err:
