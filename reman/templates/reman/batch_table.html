@@ -60,7 +60,7 @@
                                 <i class="fas fa-edit"></i></button>
                         {% endif %}
                         {% if perms.reman.delete_batch %}
-                            {% if  batch.total %}
+                            {% if not batch.total %}
                                 <button data-form-url="{% url 'reman:delete_batch' batch.pk %}"
                                         class="bs-modal btn btn-danger btn-circle btn-sm" title="Suppression">
                                     <i class="fas fa-trash-alt"></i></button>
