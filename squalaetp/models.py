@@ -59,7 +59,8 @@ class Xelon(models.Model):
     @classmethod
     def search(cls, value):
         query = value.upper().strip()
-        return cls.objects.filter(Q(numero_de_dossier=query) | Q(vin=query) |
+        return cls.objects.filter(Q(numero_de_dossier__exact=query) |
+                                  Q(vin__exact=query) | Q(vin__endswith=query) |
                                   Q(corvet__electronique_44l__contains=query) |
                                   Q(corvet__electronique_44x__contains=query) |
                                   Q(corvet__electronique_44a__contains=query) |
