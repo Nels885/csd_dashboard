@@ -184,6 +184,9 @@ class CorvetProduct(models.Model):
     cmm = models.ForeignKey('psa.Ecu', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
     bsm = models.ForeignKey('psa.Ecu', related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
     hdc = models.ForeignKey('psa.Ecu', related_name='corvet_hdc', on_delete=models.SET_NULL, limit_choices_to={'type': 'HDC'}, null=True, blank=True)
+    cmb = models.ForeignKey('psa.Ecu', related_name='corvet_cmb', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMB'}, null=True, blank=True)
+    fmux = models.ForeignKey('psa.Ecu', related_name='corvet_fmux', on_delete=models.SET_NULL, limit_choices_to={'type': 'FMUX'}, null=True, blank=True)
+    mds = models.ForeignKey('psa.Ecu', related_name='corvet_mds', on_delete=models.SET_NULL, limit_choices_to={'type': 'MDS'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"
@@ -229,7 +232,7 @@ class Multimedia(models.Model):
     media = models.CharField('type de média', max_length=20, choices=MEDIA_CHOICES, blank=True)
     lvds_con = models.IntegerField("nombre d'LVDS", choices=LVDS_CON_CHOICES, null=True, blank=True)
     ant_con = models.IntegerField("Nombre d'antenne", choices=ANT_CON_CHOICES, null=True, blank=True)
-    usb_con = models.IntegerField("nombre d'USB", choices=USB_CON_CHOICES,  null=True, blank=True)
+    usb_con = models.IntegerField("nombre d'USB", choices=USB_CON_CHOICES, null=True, blank=True)
     front_pic = models.ImageField(upload_to='psa', blank=True)
     setplate_pic = models.ImageField(upload_to='psa', blank=True)
     rear_pic = models.ImageField(upload_to='psa', blank=True)
@@ -298,15 +301,16 @@ class Calibration(models.Model):
 
 class Ecu(models.Model):
     TYPE_CHOICES = [
-        ('BSI', 'Boitier Servitude Intelligent'), ('EMF', 'Ecran Multifonctions'),
-        ('MDS', 'Module de service telematique'), ('CMM', 'Calculateur Moteur Multifonction'),
-        ('BSM', 'Boitier Servitude Moteur'), ('HDC', 'Haut de Colonne de Direction (COM200x)')
+        ('BSI', 'Boitier Servitude Intelligent'), ('BSM', 'Boitier Servitude Moteur'),
+        ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
+        ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
+        ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique')
     ]
 
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)
     mat_ref = models.CharField("réf. matériel", max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50)
-    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=7, choices=TYPE_CHOICES)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)
     hw = models.CharField('HW', max_length=10, blank=True)
@@ -323,16 +327,20 @@ class Ecu(models.Model):
         super(Ecu, self).save(*args, **kwargs)
         if self.type == "BSI":
             CorvetProduct.objects.filter(corvet__electronique_14b__startswith=self.comp_ref).update(bsi=self.pk)
-        if self.type == "EMF":
-            CorvetProduct.objects.filter(corvet__electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
-        if self.type == "MDS":
-            CorvetProduct.objects.filter(corvet__electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
-        if self.type == "CMM":
-            CorvetProduct.objects.filter(corvet__electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
         if self.type == "BSM":
             CorvetProduct.objects.filter(corvet__electronique_16b__startswith=self.comp_ref).update(bsm=self.pk)
+        if self.type == "CMB":
+            CorvetProduct.objects.filter(corvet__electronique_14k__startswith=self.comp_ref).update(cmb=self.pk)
+        if self.type == "CMM":
+            CorvetProduct.objects.filter(corvet__electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
+        if self.type == "EMF":
+            CorvetProduct.objects.filter(corvet__electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
+        if self.type == "FMUX":
+            CorvetProduct.objects.filter(corvet__electronique_19z__startswith=self.comp_ref).update(fmux=self.pk)
         if self.type == "HDC":
             CorvetProduct.objects.filter(corvet__electronique_16p__startswith=self.comp_ref).update(hdc=self.pk)
+        if self.type == "MDS":
+            CorvetProduct.objects.filter(corvet__electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
 
     def __iter__(self):
         for field in self._meta.fields:
