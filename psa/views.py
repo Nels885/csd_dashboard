@@ -130,7 +130,8 @@ def corvet_detail(request, vin):
         VIN for Corvet data
     """
     collapse = {
-        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True
+        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True,
+        "cmb": True
     }
     corvet = get_object_or_404(Corvet, vin=vin)
     if corvet.electronique_14x.isdigit():
