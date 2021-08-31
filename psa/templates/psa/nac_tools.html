@@ -1,6 +1,6 @@
 {% extends 'format/detail_format.html' %}
 
-{% load static i18n %}
+{% load static i18n widget_tweaks %}
 
 {% block card_header %}
 
@@ -18,20 +18,51 @@
 
     <h3 class="mt-3">Licence pour MAJ :</h3>
 
-    <form class="form-inline ml-sm-3 mt-3" method="post" action="{% url 'psa:nac_license' %}">
+    <form class="mt-3" method="post" action="{% url 'psa:nac_license' %}">
 
         {% csrf_token %}
 
-        {% for field in form_license %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }} :</label>
-                {{ field }}
-            </div>
-        {% endfor %}
+        <div class="form-group row">
+            {% with form=form_license %}
+                <label for="{{ form.software.id_for_label }}" class="col-form-label col-sm-2">{{ form.software.label }} :</label>
+                <div class="col-sm-3">
+                    {% render_field form.software class="custom-select form-control" %}
+                </div>
+                <label for="{{ form.uin.id_for_label }}" class="col-form-label col-sm-2">{{ form.uin.label }} :</label>
+                <div class="col-sm-2">
+                    {% render_field form.uin class="form-control" %}
+                </div>
+                <div class="col-sm-auto">
+                    <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                        <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Download" %}</span>
+                    </button>
+                </div>
+            {% endwith %}
+        </div>
 
-        <button type="submit" class="btn btn-success btn-icon-split mb-2">
-            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Download" %}</span>
-        </button>
+    </form>
+
+    <form class="mb-5" method="post" action="{% url 'psa:nac_id_license' %}">
+
+        {% csrf_token %}
+
+        <div class="form-group row">
+            {% with form=form_id_license %}
+                <label for="{{ form.update_id.id_for_label }}" class="col-form-label col-sm-2">{{ form.update_id.label }} :</label>
+                <div class="col-sm-3">
+                    {% render_field form.update_id class="form-control" %}
+                </div>
+                <label for="{{ form.uin.id_for_label }}" class="col-form-label col-sm-2">{{ form.uin.label }} :</label>
+                <div class="col-sm-2">
+                    {% render_field form.uin class="form-control" %}
+                </div>
+                <div class="col-sm-auto">
+                    <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                        <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Download" %}</span>
+                    </button>
+                </div>
+            {% endwith %}
+        </div>
 
     </form>
 
@@ -39,20 +70,23 @@
 
     <h3 class="mt-5">Mise à jour :</h3>
 
-    <form class="form-inline ml-sm-3 mt-3 mb-5" method="post" action="{% url 'psa:nac_update' %}">
+    <form class="mt-3 mb-5" method="post" action="{% url 'psa:nac_update' %}">
 
         {% csrf_token %}
 
-        {% for field in form_update %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }} :</label>
-                {{ field }}
-            </div>
-        {% endfor %}
-
-        <button type="submit" class="btn btn-success btn-icon-split mb-2">
-            <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Download" %}</span>
-        </button>
+        <div class="form-group row">
+            {% with form=form_update %}
+                <label for="{{ form.software.id_for_label }}" class="col-form-label col-sm-2">{{ form.software.label }} :</label>
+                <div class="col-sm-3">
+                    {% render_field form.software class="custom-select form-control" %}
+                </div>
+                <div class="col-sm-auto">
+                    <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                        <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Download" %}</span>
+                    </button>
+                </div>
+            {% endwith %}
+        </div>
 
     </form>
 

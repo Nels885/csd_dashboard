@@ -18,7 +18,7 @@ from utils.django.forms import ParaErrorList
 from utils.django.datatables import QueryTableByArgs
 from utils.django.urls import reverse_lazy, http_referer
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
-from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
+from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Multimedia
 from dashboard.models import WebLink
 from raspeedi.models import Programing
@@ -31,6 +31,7 @@ context = {
 
 def nac_tools(request):
     form_license = NacLicenseForm(request.POST or None, error_class=ParaErrorList)
+    form_id_license = NacUpdateIdLicenseForm(request.POST or None, error_class=ParaErrorList)
     form_update = NacUpdateForm(request.POST or None, error_class=ParaErrorList)
     web_links = WebLink.objects.filter(type="PSA")
     context.update(locals())
@@ -54,6 +55,18 @@ def nac_license(request):
         soft = form.cleaned_data['software']
         uin = form.cleaned_data['uin']
         return redirect(url.format(uin=uin, update=soft.update_id))
+    for key, error in form.errors.items():
+        messages.warning(request, error)
+    return redirect('psa:nac_tools')
+
+
+def nac_update_id_license(request):
+    form = NacUpdateIdLicenseForm(request.POST or None)
+    if request.POST and form.is_valid():
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion={update}&uin={uin}"
+        update_id = form.cleaned_data['update_id']
+        uin = form.cleaned_data['uin']
+        return redirect(url.format(uin=uin, update=update_id))
     for key, error in form.errors.items():
         messages.warning(request, error)
     return redirect('psa:nac_tools')
