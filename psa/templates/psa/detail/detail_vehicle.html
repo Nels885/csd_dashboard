@@ -41,15 +41,15 @@
 
             <tbody class="collapse {% if user.showcollapse.general %}show{% endif %}" id="collapseGeneral">
             <tr>
-                <td class="text-dark td-ihm">GENRE_DE_PRODUIT</td>
+                <td class="text-dark td-ihm">GENRE DE PRODUIT</td>
                 <td>{{ corvet.donnee_genre_de_produit|get_corvet:"DON_GEN_PROD" }}</td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">MARQUE_COMMERCIALE</td>
+                <td class="text-dark td-ihm">MARQUE COMMERCIALE, TYPE ORGANE</td>
                 <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}</td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">LIGNE_DE_PRODUIT</td>
+                <td class="text-dark td-ihm">LIGNE DE PRODUIT</td>
                 <td>
                     {% if corvet.donnee_marque_commerciale == "0P" %}
                         {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
@@ -108,6 +108,12 @@
             {% include 'format/collapse_thead.html' with id="collapseBody" expanded=user.showcollapse.body thead_title="Carrosserie Equipements :" %}
 
             <tbody class="collapse{% if user.showcollapse.body %}show{% endif %}" id="collapseBody">
+            {% if corvet.attribut_dat %}
+                <tr>
+                    <td class="text-dark td-ihm">ANTENNE</td>
+                    <td>{{ corvet.attribut_dat|get_corvet:"ATT_DAT" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dqk %}
                 <tr>
                     <td class="text-dark td-ihm">AIDE VISUELLE PANORAMIQUE</td>
@@ -159,28 +165,28 @@
                     <td>{{ corvet.attribut_dlx|get_corvet:"ATT_DLX" }}</td>
                 </tr>
             {% endif %}
-            {% if corvet.attribut_dym %}
-                <tr>
-                    <td class="text-dark td-ihm">PRISE AUXILIAIRE PACK AUDIO</td>
-                    <td>{{ corvet.attribut_dym|get_corvet:"ATT_DYM" }}</td>
-                </tr>
-            {% endif %}
-            {% if corvet.attribut_dat %}
-                <tr>
-                    <td class="text-dark td-ihm">ANTENNE</td>
-                    <td>{{ corvet.attribut_dat|get_corvet:"ATT_DAT" }}</td>
-                </tr>
-            {% endif %}
             {% if corvet.attribut_dqs %}
                 <tr>
                     <td class="text-dark td-ihm">WIFI</td>
                     <td>{% if corvet.attribut_dqs == "01" %}AVEC{% else %}SANS{% endif %} WIFI</td>
                 </tr>
             {% endif %}
+            {% if corvet.attribut_drc %}
+                <tr>
+                    <td class="text-dark td-ihm">RÉCEPTEUR RADIO</td>
+                    <td>{{ corvet.attribut_drc|get_corvet:"ATT_DRC" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dun %}
                 <tr>
                     <td class="text-dark td-ihm">AMPLI EQUALISEUR</td>
                     <td>{{ corvet.attribut_dun|get_corvet:"ATT_DUN" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_dti %}
+                <tr>
+                    <td class="text-dark td-ihm">TUNER-RADIO</td>
+                    <td>{{ corvet.attribut_dti|get_corvet:"ATT_DTI" }}</td>
                 </tr>
             {% endif %}
             <tr>
@@ -191,6 +197,12 @@
                     <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
                 {% endif %}
             </tr>
+            {% if corvet.attribut_dym %}
+                <tr>
+                    <td class="text-dark td-ihm">PRISE AUXILIAIRE PACK AUDIO</td>
+                    <td>{{ corvet.attribut_dym|get_corvet:"ATT_DYM" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dyr %}
                 {% with bta=corvet.electronique_69h %}
                     <tr>
