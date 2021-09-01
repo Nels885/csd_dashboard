@@ -1,0 +1,85 @@
+<section class="col-sm-5">
+    <table class="table table-secondary table-sm">
+        <thead>
+        <tr>
+            <th colspan="6" class="text-primary">Technicien Niveau 4 - Expert / Référent produit (formateur)</th>
+        </tr>
+        </thead>
+        <tbody class="table-borderless">
+        {% for user in xelon.product.niv_o_users.all %}
+            <tr>
+                <td class="text-dark">{{ user.last_name }}</td>
+                <td class="text-dark">{{ user.first_name }}</td>
+                <td colspan="4" class="text-right"><a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">Pas de technicien</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-secondary table-sm mt-4">
+        <thead>
+        <tr>
+            <th colspan="6" class="text-primary">Technicien Niveau 3 - Pratique régulière</th>
+        </tr>
+        </thead>
+        <tbody class="table-borderless">
+        {% for user in xelon.product.niv_u_users.all %}
+            <tr>
+                <td class="text-dark">{{ user.last_name }}</td>
+                <td class="text-dark">{{ user.first_name }}</td>
+                <td colspan="4" class="text-right"><a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">Pas de technicien</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-secondary table-sm mt-4">
+        <thead>
+        <tr>
+            <th colspan="6" class="text-primary">Technicien Niveau 2 - Formé pratique occasionnelle / doublure</th>
+        </tr>
+        </thead>
+        <tbody class="table-borderless">
+        {% for user in xelon.product.niv_l_users.all %}
+            <tr>
+                <td class="text-dark">{{ user.last_name }}</td>
+                <td class="text-dark">{{ user.first_name }}</td>
+                <td colspan="4" class="text-right"><a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">Pas de technicien</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-secondary table-sm mt-4">
+        <thead>
+        <tr>
+            <th colspan="6" class="text-primary">Technicien Niveau 1 - Formé sans pratiquer</th>
+        </tr>
+        </thead>
+        <tbody class="table-borderless">
+        {% for user in xelon.product.niv_i_users.all %}
+            <tr>
+                <td class="text-dark">{{ user.last_name }}</td>
+                <td class="text-dark">{{ user.first_name }}</td>
+                <td colspan="4" class="text-right"><a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">Pas de technicien</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>

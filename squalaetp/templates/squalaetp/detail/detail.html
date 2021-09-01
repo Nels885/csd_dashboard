@@ -45,6 +45,12 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="#tech" role="tab" aria-selected="false">
+                    {% trans "Technician" %}
+                </a>
+            </li>
+
         </ul>
     </div>
 
@@ -109,6 +115,13 @@
         <div class="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
 
             {% include 'squalaetp/detail/detail_logs.html' %}
+
+        </div>
+
+        <!-- Info Technician -->
+        <div class="tab-pane" id="tech" role="tabpanel" aria-labelledby="tech-tab">
+
+            {% include 'squalaetp/detail/detail_skills.html' %}
 
         </div>
 
