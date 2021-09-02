@@ -207,7 +207,7 @@ class Multimedia(models.Model):
         ('RD3', 'RD3'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
         ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
         ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
-        ('NG4', 'NG4'), ('RNEG', 'RNEG'),
+        ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
         ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
     ]
     LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
