@@ -148,7 +148,7 @@ class SuptechResponseForm(forms.ModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
+        fields = ['user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
 
     def send_email(self, request):
         try:
