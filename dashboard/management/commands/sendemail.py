@@ -64,7 +64,7 @@ class Command(BaseCommand):
             )
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en retard terminée!"))
         if options['vin_error']:
-            subject = "Liste d'erreur de VIN Xelon {}".format(date_joined)
+            subject = "Erreur VIN Xelon {}".format(date_joined)
             xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')[:10]
 
             if xelons:
@@ -81,7 +81,7 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(self.style.SUCCESS("Pas d'erreurs de VIN a envoyer !"))
         if options['vin_corvet']:
-            subject = "Liste des VIN Xelon sans CORVET {}".format(date_joined)
+            subject = "Problème CORVET {}".format(date_joined)
             xelons = Xelon.objects.filter(date_retour__gte=last_7_days, vin__regex=r'^V((F[37])|(R[137]))\w{14}$',
                                           vin_error=False, corvet__isnull=True).order_by('-date_retour')[:10]
             if xelons:

@@ -29,7 +29,7 @@ class Command(BaseCommand):
             self._batch_email(date_joined, next_7_days)
 
     def _batch_email(self, date_joined, next_7_days):
-        subject = "Liste des lots REMAN en cours {}".format(date_joined)
+        subject = "Lots REMAN en cours {}".format(date_joined)
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         batchs = Batch.objects.filter(active=True, number__lt=900)
