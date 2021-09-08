@@ -11,6 +11,7 @@
     <table class="table table-bordered text-nowrap">
         <thead>
         <tr>
+            <td>N° Suptech</td>
             <th>date</th>
             <th>Qui</th>
             <th>N° XELON</th>
@@ -23,7 +24,8 @@
         {% for suptech in waiting_suptechs %}
 
             <tr>
-                <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=waiting">{{ suptech.date }}</a></td>
+                <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=waiting">{{ suptech.pk }}</a></td>
+                <td>{{ suptech.date }}</td>
                 <td>{{ suptech.user }}</td>
                 <td>{{ suptech.xelon }}</td>
                 <td>{{ suptech.item }}</td>

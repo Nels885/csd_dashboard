@@ -144,7 +144,7 @@ class Command(BaseCommand):
 
     def _send_email(self):
         date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
-        subject = "Liste des Suptech en cours {}".format(date_joined)
+        subject = "Suptech en cours {}".format(date_joined)
         suptechs = Suptech.objects.exclude(status="Cloturée").order_by('-date')
         if suptechs:
             waiting_suptechs = suptechs.filter(status="En Attente")
