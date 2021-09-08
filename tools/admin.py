@@ -21,10 +21,10 @@ class ThermalChamberMeasureAdmin(admin.ModelAdmin):
 
 
 class SuptechAdmin(admin.ModelAdmin):
-    list_display = ('date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status')
+    list_display = ('id', 'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status')
     ordering = ('-date',)
     list_filter = ('status',)
-    search_fields = ('user', 'xelon', 'item')
+    search_fields = ('id', 'user', 'xelon', 'item')
 
 
 class SuptechItemAdmin(admin.ModelAdmin):

@@ -16,7 +16,8 @@ BTEL_LIST = [
     ('Niv.', 'corvet__prods__btel__level'), ('HW variant', 'corvet__prods__btel__extra'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
     ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
-    ('DHB_HAUT PARLEUR', 'corvet__attribut_dhb'), ('DUN_AMPLI EQUALISEUR', 'corvet__attribut_dun'),
+    ('DHB_HAUT_PARLEUR', 'corvet__attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'corvet__attribut_drc'),
+    ('DUN_AMPLI_EQUALISEUR', 'corvet__attribut_dun'),
     ('DYR_BTA', 'corvet__attribut_dyr'), ('14X_BTEL_HARD', 'corvet__electronique_14x'),
     ('44X_BTEL_FOURN.NO.SERIE', 'corvet__electronique_44x'), ('64X_BTEL_FOURN.CODE', 'corvet__electronique_64x'),
     ('84X_BTEL_DOTE', 'corvet__electronique_84x'), ('94X_BTEL_SOFT', 'corvet__electronique_94x')
@@ -116,19 +117,22 @@ def extract_corvet(product='corvet'):
         queryset = xelons.exclude(corvet__electronique_16p__exact='')
     elif product == "nac":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="NAC")
+        queryset = xelons.filter(corvet__attribut_drc="NA")
+    elif product == "rcc":
+        header, values_list = BTEL_HEADER, BTEL_FIELDS
+        queryset = xelons.filter(corvet__attribut_drc="RC")
     elif product == "rtx":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="RT")
+        queryset = xelons.filter(corvet__attribut_drc__in=["T3", "T4", "T6"])
     elif product == "smeg":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="SMEG")
+        queryset = xelons.filter(corvet__attribut_drc="SA")
     elif product == "rneg":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="RNEG")
+        queryset = xelons.filter(corvet__attribut_drc="RN")
     elif product == "ng4":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="NG4")
+        queryset = xelons.filter(corvet__attribut_drc="G4")
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',

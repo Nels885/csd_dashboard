@@ -204,7 +204,7 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Tools"
-        context['card_title'] = _("Support Tech Response")
+        context['card_title'] = _(f"SUPTECH N°{self.object.pk} - Response")
         return context
 
     def form_valid(self, form):
