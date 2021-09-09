@@ -183,7 +183,7 @@
                     <td>{{ corvet.attribut_dun|get_corvet:"ATT_DUN" }}</td>
                 {% else %}
                     {% with att_dhb=corvet.attribut_dhb|get_corvet:"ATT_DHB 1" %}
-                        <td>{% if att_dhb|length < 6 %}{{ att_dhb }}{% else %}???{% endif %} AMPLIFICATEUR</td>
+                        <td>{% if att_dhb|length < 6 %}{{ att_dhb }}{% else %}???{% endif %} AMPLI EQUALISEUR</td>
                     {% endwith %}
                 {% endif %}
             </tr>
