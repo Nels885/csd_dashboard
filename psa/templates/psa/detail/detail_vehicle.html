@@ -144,7 +144,7 @@
             {% if corvet.attribut_dhb %}
                 <tr>
                     <td class="text-dark td-ihm">HAUT PARLEUR</td>
-                    <td>{{ corvet.attribut_dhb|get_corvet:"ATT_DHB" }}</td>
+                    <td>{{ corvet.attribut_dhb|get_corvet:"ATT_DHB 0" }}</td>
                 </tr>
             {% endif %}
             {% if corvet.attribut_dhg %}
@@ -177,12 +177,16 @@
                     <td>{{ corvet.attribut_drc|get_corvet:"ATT_DRC" }}</td>
                 </tr>
             {% endif %}
-            {% if corvet.attribut_dun %}
-                <tr>
-                    <td class="text-dark td-ihm">AMPLI EQUALISEUR</td>
+            <tr>
+                <td class="text-dark td-ihm">AMPLI EQUALISEUR</td>
+                {% if corvet.attribut_dun %}
                     <td>{{ corvet.attribut_dun|get_corvet:"ATT_DUN" }}</td>
-                </tr>
-            {% endif %}
+                {% else %}
+                    {% with att_dhb=corvet.attribut_dhb|get_corvet:"ATT_DHB 1" %}
+                        <td>{% if att_dhb|length < 6 %}{{ att_dhb }}{% else %}???{% endif %} AMPLIFICATEUR</td>
+                    {% endwith %}
+                {% endif %}
+            </tr>
             {% if corvet.attribut_dti %}
                 <tr>
                     <td class="text-dark td-ihm">TUNER-RADIO</td>
