@@ -42,7 +42,7 @@
                     {% else %}
                         <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                     {% endif %}
-                    <a href="#" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                    <a href="{% url 'tools:suptech_detail' pk=obj.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
                 <td>{{ obj.id }}</td>
                 <td class="text-nowrap">{{ obj.date }}</td>
