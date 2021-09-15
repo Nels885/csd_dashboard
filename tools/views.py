@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.generic import TemplateView, ListView, UpdateView
+from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
@@ -192,6 +192,17 @@ def suptech_list(request):
         table_title = 'Cloturées'
         objects = objects.filter(status="Cloturée")
     return render(request, 'tools/suptech/suptech_table.html', locals())
+
+
+class SuptechDetailView(LoginRequiredMixin, DetailView):
+    model = Suptech
+    template_name = 'tools/suptech/suptech_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Tools"
+        context['card_title'] = _(f"SUPTECH N°{self.object.pk} - Detail")
+        return context
 
 
 class SuptechResponseView(PermissionRequiredMixin, UpdateView):
