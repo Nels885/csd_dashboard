@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
 
@@ -29,7 +31,7 @@ class TagXelon(models.Model):
         if not self.pk:
             self.created_by = user
         calibre.file(self.xelon, self.comments, user)
-        super(TagXelon, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.xelon
@@ -59,7 +61,7 @@ class CsdSoftware(models.Model):
             user = None
         if not self.pk:
             self.created_by = user
-        super(CsdSoftware, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.jig
@@ -82,7 +84,7 @@ class ThermalChamber(models.Model):
             user = None
         if not self.pk and user:
             self.created_by = user
-        super(ThermalChamber, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         first_name, last_name = self.created_by.first_name, self.created_by.last_name
@@ -134,6 +136,7 @@ class Suptech(models.Model):
     modified_at = models.DateTimeField('modifié le', null=True)
     modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
+    messages = GenericRelation('SuptechMessage')
 
     class Meta:
         verbose_name = "SupTech Log"
@@ -154,6 +157,28 @@ class SuptechItem(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SuptechMessage(models.Model):
+    content = models.TextField()
+    added_at = models.DateTimeField('ajouté le', auto_now=True)
+    added_by = models.ForeignKey(User, related_name="message_added", on_delete=models.SET_NULL, null=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "SupTech Message"
+        ordering = ['-added_at']
+
+    def __str__(self):
+        return "Message de {} sur {}".format(self.added_by, self.content_object)
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and user.pk:
+            self.added_by = user
+        super().save(*args, **kwargs)
 
 
 class BgaTime(models.Model):
