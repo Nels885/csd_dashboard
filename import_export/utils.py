@@ -59,6 +59,13 @@ BSM_LIST = [
 ]
 
 
+CVM_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('12Y_CVM2_2_HARD', 'corvet__electronique_12y'),
+    ('92Y_CVM2_2_SOFT', 'corvet__electronique_92y')
+]
+
+
 def get_header_fields(prod_list):
     header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
     fields = [value_tuple[1] for value_tuple in XELON_LIST] + [value_tuple[1] for value_tuple in prod_list]
@@ -70,6 +77,7 @@ CMM_HEADER, CMM_FIELDS = get_header_fields(CMM_LIST)
 BSI_HEADER, BSI_FIELDS = get_header_fields(BSI_LIST)
 HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
 BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
+CVM_HEADER, CVM_FIELDS = get_header_fields(CVM_LIST)
 
 """
 ##################################
@@ -115,6 +123,9 @@ def extract_corvet(product='corvet'):
     elif product == "bsm":
         header, values_list = BSM_HEADER, BSM_FIELDS
         queryset = xelons.exclude(corvet__electronique_16p__exact='')
+    elif product == "cvm":
+        header, values_list = CVM_HEADER, CVM_FIELDS
+        queryset = xelons.exclude(corvet__electronique_12y__exact='')
     elif product == "nac":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
         queryset = xelons.filter(corvet__attribut_drc="NA")
