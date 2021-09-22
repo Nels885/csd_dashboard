@@ -123,6 +123,10 @@ class SuptechModalForm(BSModalModelForm):
         user = self.cleaned_data['username']
         suptech.date = timezone.now()
         suptech.user = f"{user.first_name} {user.last_name}"
+        try:
+            suptech.category = SuptechItem.objects.get(name=suptech.item).category
+        except SuptechItem.DoesNotExist:
+            pass
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
@@ -148,7 +152,7 @@ class SuptechResponseForm(forms.ModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
+        fields = ['user', 'xelon', 'item', 'category', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
 
     def send_email(self, request):
         try:

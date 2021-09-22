@@ -38,6 +38,10 @@
                 <div class="col-sm-4 mb-3 mb-sm-0">
                     {% render_field form.item class="form-control" readonly="" %}
                 </div>
+                <label for="{{ form.category.id_for_label }}" class="col-form-label col-sm-3">Catégorie</label>
+                <div class="col-sm-3 mb-3 mb-sm-0">
+                    {% render_field form.category class="form-control" %}
+                </div>
             </div>
 
             <div class="form-group row">
