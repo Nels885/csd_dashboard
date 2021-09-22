@@ -115,6 +115,13 @@ class EtudeProject(models.Model):
         return self.name
 
 
+class SuptechCategory(models.Model):
+    name = models.CharField('nom', max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class Suptech(models.Model):
     STATUS_CHOICES = [
         ('En Attente', 'En Attente'), ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée'), ('Annulée', 'Annulée')
@@ -130,6 +137,7 @@ class Suptech(models.Model):
     action = models.TextField('ACTION/RETOUR', max_length=2000, blank=True)
     status = models.TextField('STATUT', max_length=50, default='En Attente', choices=STATUS_CHOICES)
     deadline = models.DateField('DATE LIMITE', null=True, blank=True)
+    category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField('ajouté le', editable=False, null=True)
     created_by = models.ForeignKey(User, related_name="suptechs_created", editable=False, on_delete=models.SET_NULL,
                                    null=True, blank=True)
@@ -149,6 +157,7 @@ class Suptech(models.Model):
 class SuptechItem(models.Model):
     name = models.CharField('Nom', max_length=100, unique=True)
     extra = models.BooleanField(default=False)
+    category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
     mailing_list = models.TextField("Liste d'email", max_length=5000, default=config.SUPTECH_TO_EMAIL_LIST)
 
     class Meta:

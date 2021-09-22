@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from .models import (
-    TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechItem, SuptechMessage,
-    BgaTime
+    TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
+    SuptechMessage, BgaTime
 )
 
 
@@ -22,15 +22,16 @@ class ThermalChamberMeasureAdmin(admin.ModelAdmin):
 
 
 class SuptechAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status')
+    list_display = ('id', 'date', 'user', 'xelon', 'item', 'category', 'time', 'info', 'rmq', 'action', 'status')
     ordering = ('-date',)
-    list_filter = ('status',)
+    list_filter = ('status', 'category')
     search_fields = ('id', 'user', 'xelon', 'item')
 
 
 class SuptechItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'extra', 'mailing_list')
+    list_display = ('name', 'extra', 'category', 'mailing_list')
     ordering = ('name',)
+    list_filter = ('category',)
     search_fields = ('name', 'mailing_list')
 
 
@@ -43,6 +44,7 @@ admin.site.register(CsdSoftware)
 admin.site.register(EtudeProject)
 admin.site.register(ThermalChamber, ThermalChamberAdmin)
 admin.site.register(Suptech, SuptechAdmin)
+admin.site.register(SuptechCategory)
 admin.site.register(SuptechItem, SuptechItemAdmin)
 admin.site.register(SuptechMessage, SuptechMessageAdmin)
 admin.site.register(BgaTime)
