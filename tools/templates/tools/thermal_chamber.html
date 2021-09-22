@@ -52,10 +52,9 @@
 
     <hr>
 
-    <table class="table table-bordered" id="thermalActiveTable" style="width: 100%;">
+    <table class="table table-bordered text-nowrap table-sm display" id="thermalActiveTable" style="width: 100%;">
         <thead>
         <tr>
-            <th></th>
             <th></th>
             <th>Utilisateur</th>
             <th>N° Xelon</th>
@@ -70,33 +69,20 @@
         {% for thermal in thermals %}
 
             <tr>
-                {% if user == thermal.created_by %}
-                    {% if not thermal.start_time %}
-                        <td>
-                            <a href="#" data-form-url="{% url 'tools:thermal_delete' thermal.pk %}" title="Suppression"
-                               class="bs-modal btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
-                        </td>
-                        <td>
+                <td class="text-nowrap" style="width: 60px;">
+                    {% if user == thermal.created_by %}
+                        {% if not thermal.start_time %}
                             <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-check"></i></a>
-                        </td>
-                    {% else %}
-                        <td>
+                            <a href="#" data-form-url="{% url 'tools:thermal_delete' thermal.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                        {% else %}
+                            <a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Stop" class="btn btn-success btn-circle btn-sm"><i class="fas fa-check"></i></a>
                             <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
-                        </td>
-                        <td>
-                            <a href="{% url 'tools:thermal_disable' pk=thermal.pk %}" title="Stop"
-                               class="btn btn-success btn-circle btn-sm"><i class="fas fa-check"></i></a>
-                        </td>
-                    {% endif %}
-
-                {% else %}
-                    <td>
-                        <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
-                    </td>
-                    <td>
+                        {% endif %}
+                    {% else %}
                         <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-check"></i></a>
-                    </td>
-                {% endif %}
+                        <a href="#" class="btn btn-dark btn-circle btn-sm"><i class="fas fa-trash-alt"></i></a>
+                    {% endif %}
+                </td>
                 <td>{{ thermal.created_by }}</td>
                 <td>{{ thermal.xelon_number|default:'---' }}</td>
                 <td>{{ thermal.created_at }}</td>
@@ -124,8 +110,7 @@
 
     <script type="text/javascript" src="{% static 'tools/js/thermal-chamber.js' %}"></script>
     <script type="text/javascript">
-        getTemp("{% url 'tools:ajax_temp' %}");
-        setInterval(getTemp, 5000);
+        setInterval(`getTemp("{% url 'tools:ajax_temp' %}")`, 5000);
     </script>
 
 {% endblock %}

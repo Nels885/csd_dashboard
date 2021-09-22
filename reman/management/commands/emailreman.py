@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils.html import strip_tags
@@ -25,13 +23,13 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        date_joined = datetime.strftime(datetime.now(), "%d/%m/%Y %H:%M:%S")
+        date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
         next_7_days = timezone.datetime.today() + timezone.timedelta(7)
         if options['batch']:
             self._batch_email(date_joined, next_7_days)
 
     def _batch_email(self, date_joined, next_7_days):
-        subject = "Liste des lots REMAN en cours {}".format(date_joined)
+        subject = "Lots REMAN en cours {}".format(date_joined)
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         batchs = Batch.objects.filter(active=True, number__lt=900)

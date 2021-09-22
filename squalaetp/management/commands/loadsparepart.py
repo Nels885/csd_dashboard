@@ -49,6 +49,7 @@ class Command(BaseCommand):
 
             nb_part_before = ProductCode.objects.count()
             nb_part_update = 0
+            SparePart.objects.exclude(cumul_dispo=0).update(cumul_dispo=0)
             for row in extraction.read():
                 logger.info(row)
                 code_magasin = row.pop("code_magasin")

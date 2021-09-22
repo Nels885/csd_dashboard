@@ -4,8 +4,6 @@ from rest_framework.authtoken.views import obtain_auth_token
 from api import views
 
 router = DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
 router.register(r'prog', views.ProgViewSet, basename='prog')
 router.register(r'cal', views.CalViewSet, basename='cal')
 router.register(r'unlock', views.UnlockViewSet, basename='unlock')
@@ -13,6 +11,8 @@ router.register(r'reman/batch', views.RemanBatchViewSet, basename='reman_batch')
 router.register(r'reman/checkout', views.RemanCheckOutViewSet, basename='reman_checkout')
 router.register(r'reman/repair', views.RemanRepairViewSet, basename='reman_repair')
 router.register(r'reman/ecurefbase', views.RemanEcuRefBaseViewSet, basename='reman_ecurefbase')
+router.register(r'tools/tc-measure', views.ThermalChamberMeasureViewSet, basename='tools_tc_measure')
+router.register(r'tools/bga-time', views.BgaTimeViewSet, basename='tools_bga_time')
 
 app_name = 'api'
 

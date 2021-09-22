@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db.models import Q, Count, Max
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
@@ -9,7 +10,7 @@ from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuM
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
-# from utils.django.validators import validate_psa_barcode
+from utils.django.validators import validate_psa_barcode
 
 
 """
@@ -18,12 +19,19 @@ MANAGER FORMS
 ~~~~~~~~~~~~~~
 """
 
+BOX_NUMBER = [(1, 1), (3, 3), (6, 6)]
+
 
 class BatchForm(BSModalModelForm):
     class Meta:
         model = Batch
         exclude = ['batch_number']
         labels = {'ecu_ref_base': 'Réf. REMAN'}
+        widgets = {
+            'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
+            'quantity': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
+            'box_quantity': forms.Select(choices=BOX_NUMBER, attrs={'style': 'width: 40%;'}),
+        }
 
     def save(self, commit=True):
         batch = super().save(commit=False)
@@ -38,10 +46,11 @@ class AddBatchForm(BSModalModelForm):
 
     class Meta:
         model = Batch
-        fields = ['number', 'quantity', 'start_date', 'end_date', 'ref_reman']
+        fields = ['number', 'quantity', 'box_quantity', 'start_date', 'end_date', 'ref_reman']
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
             'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3, 'autofocus': ''}),
+            'box_quantity': forms.Select(choices=BOX_NUMBER, attrs={'style': 'width: 40%;'}),
             'start_date': DatePicker(
                 attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
                 options={'format': 'DD/MM/YYYY'}
@@ -130,7 +139,7 @@ class AddRefRemanForm(BSModalModelForm):
 
     class Meta:
         model = EcuRefBase
-        fields = ['reman_reference', 'hw_reference']
+        exclude = ['ecu_type']
 
     def __init__(self, *args, **kwargs):
         ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
@@ -157,7 +166,32 @@ class AddRefRemanForm(BSModalModelForm):
         return instance
 
 
-class DefaultForm(BSModalModelForm):
+class UpdateRefRemanForm(AddRefRemanForm):
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        super().__init__(*args, **kwargs)
+        if instance:
+            self.initial['hw_reference'] = instance.ecu_type.hw_reference
+
+    class Meta:
+        model = EcuRefBase
+        exclude = ['ecu_type']
+        widgets = {
+            'reman_reference': forms.TextInput(attrs={"readonly": ""})
+        }
+
+
+class DefaultForm(forms.ModelForm):
+    ecu_type = forms.ModelMultipleChoiceField(
+        queryset=EcuType.objects.all(), widget=FilteredSelectMultiple("EcuType", is_stacked=False), required=False)
+
+    class Media:
+        css = {
+            'all': ('/static/admin/css/widgets.css', '/static/admin/css/overrides.css'),
+        }
+        js = ('/admin/jsi18n',)
+
     class Meta:
         model = Default
         fields = '__all__'
@@ -373,12 +407,12 @@ class CheckPartForm(forms.Form):
 
     def clean_psa_barcode(self):
         data = self.cleaned_data['psa_barcode']
-        # message = validate_psa_barcode(data)
-        if len(data) < 10:
+        message = validate_psa_barcode(data)
+        if message:
             raise forms.ValidationError(
                 _("The barcode is invalid"),
                 code='invalid',
-                params={'value': data},
+                params={'value': message},
             )
         return data
 

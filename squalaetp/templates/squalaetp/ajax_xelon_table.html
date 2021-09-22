@@ -20,10 +20,10 @@
         <thead>
         <tr>
             <th></th>
-            <th></th>
             <th class="all">Numéro de dossier</th>
             <th>V.I.N.</th>
             <th class="all">Modèle produit</th>
+            <th class="all">Activité</th>
             <th>Modèle véhicule</th>
             <th>Date Retour</th>
             <th class="all">Type de clôture</th>
@@ -38,10 +38,6 @@
 
     <!-- Page level custom scripts -->
     <script type="text/javascript">
-        let PERM;
-        {% if perms.squalaetp.change_xelon and perms.psa.change_corvet%}
-            PERM = true;
-        {% endif %}
         const URL_AJAX = "{% url 'squalaetp:api_xelon-list' %}?filter={{ query_param }}";
     </script>
     <script type="text/javascript" src="{% static 'squalaetp/js/ajax-xelon-tables.js' %}"></script>

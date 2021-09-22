@@ -8,7 +8,6 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import TemplateView
 from django.utils.translation import ugettext as _
 from django.http import JsonResponse
-from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 from django.core.management import call_command
 from bootstrap_modal_forms.generic import BSModalCreateView
@@ -17,8 +16,9 @@ from rest_framework import viewsets, permissions, status
 
 from utils.django.forms import ParaErrorList
 from utils.django.datatables import QueryTableByArgs
+from utils.django.urls import reverse_lazy, http_referer
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
-from .forms import NacLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
+from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Multimedia
 from dashboard.models import WebLink
 from raspeedi.models import Programing
@@ -31,6 +31,7 @@ context = {
 
 def nac_tools(request):
     form_license = NacLicenseForm(request.POST or None, error_class=ParaErrorList)
+    form_id_license = NacUpdateIdLicenseForm(request.POST or None, error_class=ParaErrorList)
     form_update = NacUpdateForm(request.POST or None, error_class=ParaErrorList)
     web_links = WebLink.objects.filter(type="PSA")
     context.update(locals())
@@ -59,6 +60,18 @@ def nac_license(request):
     return redirect('psa:nac_tools')
 
 
+def nac_update_id_license(request):
+    form = NacUpdateIdLicenseForm(request.POST or None)
+    if request.POST and form.is_valid():
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion={update}&uin={uin}"
+        update_id = form.cleaned_data['update_id']
+        uin = form.cleaned_data['uin']
+        return redirect(url.format(uin=uin, update=update_id))
+    for key, error in form.errors.items():
+        messages.warning(request, error)
+    return redirect('psa:nac_tools')
+
+
 def nac_update(request):
     form = NacUpdateForm(request.POST or None)
     if request.POST and form.is_valid():
@@ -82,10 +95,7 @@ def majestic_web(request):
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=fw"
         uin = "00000000000000000000"
         return redirect(url.format(uin=uin, update=update_id))
-    if 'HTTP_REFERER' in request.META:
-        return request.META['HTTP_REFERER']
-    else:
-        return redirect('index')
+    return redirect(http_referer(request))
 
 
 def useful_links(request):
@@ -133,7 +143,8 @@ def corvet_detail(request, vin):
         VIN for Corvet data
     """
     collapse = {
-        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True
+        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True,
+        "cmb": True
     }
     corvet = get_object_or_404(Corvet, vin=vin)
     if corvet.electronique_14x.isdigit():
@@ -177,13 +188,10 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
     def get_success_url(self):
         if not self.request.is_ajax():
             return reverse_lazy('psa:corvet_detail', args=[self.object.pk])
-        elif 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
-@permission_required('psa.view_product')
+@permission_required('psa.view_multimedia')
 def product_table(request):
     """
     View of the product table page

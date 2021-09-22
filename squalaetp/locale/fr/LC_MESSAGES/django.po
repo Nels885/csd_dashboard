@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 14:00+0200\n"
+"POT-Creation-Date: 2021-09-22 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,45 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: squalaetp/admin.py:24 squalaetp/admin.py:80
+#, python-brace-format
+msgid "{0} product{1} {2} successfully {3}"
+msgstr "{0} produit{1} {2} avec succès {3}"
+
+#: squalaetp/admin.py:27 squalaetp/admin.py:83
+msgid "was,were"
+msgstr "était, étaient"
+
+#: squalaetp/admin.py:35
+#, fuzzy
+#| msgid "VIN Error files"
+msgid "Vin error disabled"
+msgstr "Dossiers erreur VIN"
+
+#: squalaetp/admin.py:91
+msgid "Change category for PSA products"
+msgstr "Changer de catégorie pour les produits PSA"
+
+#: squalaetp/admin.py:96
+msgid "Change category for Others products"
+msgstr "Changer de catégorie pour les autres produits"
+
+#: squalaetp/admin.py:101
+msgid "Change category for Clarion"
+msgstr "Changer de catégorie pour Clarion"
+
+#: squalaetp/admin.py:106
+msgid "Change category for Etude"
+msgstr "Changer de catégorie pour Etude"
+
+#: squalaetp/admin.py:111
+msgid "Change category for Calculators"
+msgstr "Changer de catégorie pour les calculatrices"
+
+#: squalaetp/admin.py:116
+msgid "Change category for Default"
+msgstr "Changer de catégorie pour Par défaut"
 
 #: squalaetp/forms.py:86
 msgid ""
@@ -30,36 +69,40 @@ msgstr ""
 msgid "Enter the VIN number"
 msgstr "Entrez le numéro de VIN"
 
-#: squalaetp/forms.py:126
+#: squalaetp/forms.py:127
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:128
+#: squalaetp/forms.py:129
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
-#: squalaetp/forms.py:138
+#: squalaetp/forms.py:140
 msgid "VIN error !"
 msgstr "Erreur VIN"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:24
+#: squalaetp/templates/squalaetp/detail/detail.html:20
 msgid "Raw Corvet data"
 msgstr "Données Corvet brute"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:30
+#: squalaetp/templates/squalaetp/detail/detail.html:26
 msgid "Log Files"
 msgstr "Fichiers Log"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:33
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:48
+#: squalaetp/templates/squalaetp/detail/detail.html:44
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 
+#: squalaetp/templates/squalaetp/detail/detail.html:50
+msgid "Technician"
+msgstr "Technicien"
+
 #: squalaetp/templates/squalaetp/modal/ihm_email_form.html:37
-#: squalaetp/templates/squalaetp/modal/product_update.html:43
+#: squalaetp/templates/squalaetp/modal/product_update.html:57
 #: squalaetp/templates/squalaetp/modal/vin_corvet_update.html:63
 msgid "Cancel"
 msgstr "Annuler"
@@ -68,7 +111,7 @@ msgstr "Annuler"
 msgid "OK"
 msgstr ""
 
-#: squalaetp/templates/squalaetp/modal/product_update.html:44
+#: squalaetp/templates/squalaetp/modal/product_update.html:58
 #: squalaetp/templates/squalaetp/modal/vin_corvet_update.html:64
 msgid "Submit"
 msgstr "Soumettre"
@@ -89,24 +132,28 @@ msgstr "Dossiers erreur CORVET"
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: squalaetp/views.py:124
+#: squalaetp/templates/squalaetp/tab_select.html:26
+msgid "Search:"
+msgstr "Recherche:"
+
+#: squalaetp/views.py:111
 msgid "Success: Squalaetp data was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:131
+#: squalaetp/views.py:118
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
 
-#: squalaetp/views.py:159
+#: squalaetp/views.py:147
 msgid "Success: Xelon was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:164
+#: squalaetp/views.py:152
 #, python-format
 msgid "Product update for %(file)s"
 msgstr "MAJ du produit pour %(file)s"
 
-#: squalaetp/views.py:201 squalaetp/views.py:227
+#: squalaetp/views.py:190 squalaetp/views.py:216
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."

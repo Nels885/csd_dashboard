@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 14:00+0200\n"
+"POT-Creation-Date: 2021-09-22 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,28 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: psa/forms.py:39
+#: psa/forms.py:48
 msgid ""
 "Data in XML format available on the RepairNAV site during CORVET "
 "extraction..."
 msgstr ""
 
-#: psa/forms.py:47
+#: psa/forms.py:56
 msgid "Enter the VIN number"
-msgstr ""
+msgstr "Entrez le numéro VIN"
 
-#: psa/forms.py:74
+#: psa/forms.py:83
 msgid "XML data does not match VIN"
-msgstr ""
+msgstr "Les données XML ne correspondent pas au VIN"
 
-#: psa/forms.py:76 psa/tests/tests_corvet_views.py:66
+#: psa/forms.py:85 psa/tests/tests_corvet_views.py:66
 msgid "Invalid XML data"
-msgstr ""
+msgstr "Données XML non valides"
 
 #: psa/templates/psa/corvet_insert.html:40
 #: psa/templates/psa/modal/corvet_form.html:53
 msgid "Submit"
-msgstr ""
+msgstr "Soumettre"
 
 #: psa/templates/psa/detail/detail.html:27
 msgid "Raw Corvet data"
@@ -47,7 +47,7 @@ msgstr "Données Corvet brute"
 
 #: psa/templates/psa/detail/detail.html:34
 msgid "Info NAC"
-msgstr ""
+msgstr "Info NAC"
 
 #: psa/templates/psa/detail/detail.html:42
 msgid "VIN Barcode"
@@ -55,9 +55,10 @@ msgstr "code barre VIN"
 
 #: psa/templates/psa/modal/corvet_form.html:52
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
-#: psa/templates/psa/nac_tools.html:33 psa/templates/psa/nac_tools.html:54
+#: psa/templates/psa/nac_tools.html:37 psa/templates/psa/nac_tools.html:61
+#: psa/templates/psa/nac_tools.html:85
 msgid "Download"
 msgstr "Téléchargement"
 
@@ -78,23 +79,24 @@ msgstr "Ce champ est requis."
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
+"Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie des véhicules PSA"
 
-#: psa/views.py:104
+#: psa/views.py:114
 msgid "CORVET table"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:143
+#: psa/views.py:154
 msgid "Detail Corvet data for the VIN: "
 msgstr "Détail des données Corvet pour le VIN : "
 
-#: psa/views.py:156 psa/views.py:174
+#: psa/views.py:167 psa/views.py:185
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: psa/views.py:160 psa/views.py:170
+#: psa/views.py:171 psa/views.py:181
 msgid "Modification done successfully!"
 msgstr "Modification réussie !"
 
-#: psa/views.py:195
+#: psa/views.py:203
 msgid "Products PSA table"
 msgstr "Tableau des produits PSA"

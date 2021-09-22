@@ -69,7 +69,7 @@ class Command(BaseCommand):
                     if error:
                         self.stdout.write(
                             self.style.ERROR(
-                                "[SQUALAETP_EXPORT] Export error because {}.xls file is read-only!".format(
+                                "[SQUALAETP_EXPORT] Export error because {} file is read-only!".format(
                                     os.path.join(path, filename)
                                 )
                             )

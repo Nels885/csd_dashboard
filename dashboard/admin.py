@@ -5,8 +5,8 @@ from .models import UserProfile, Post, WebLink, ShowCollapse
 
 
 class ShowCollapseAdmin(admin.ModelAdmin):
-    list_display = ('user', 'general', 'motor', 'interior', 'diverse')
-    search_fields = ('user',)
+    list_display = ('user', 'general', 'motor', 'axle', 'body', 'interior', 'electric', 'diverse')
+    search_fields = ('user__username', 'user__first_name', 'user__last_name')
 
 
 admin.site.register(Permission)

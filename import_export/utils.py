@@ -3,7 +3,7 @@ from django.db.models import DateTimeField, CharField, Q, Count, Value, F
 
 from squalaetp.models import Xelon
 from psa.models import Corvet
-from reman.models import Batch, Repair, EcuType
+from reman.models import Batch, Repair, EcuRefBase
 from tools.models import Suptech, BgaTime
 
 XELON_LIST = [
@@ -16,7 +16,8 @@ BTEL_LIST = [
     ('Niv.', 'corvet__prods__btel__level'), ('HW variant', 'corvet__prods__btel__extra'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
     ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
-    ('DHB_HAUT PARLEUR', 'corvet__attribut_dhb'), ('DUN_AMPLI EQUALISEUR', 'corvet__attribut_dun'),
+    ('DHB_HAUT_PARLEUR', 'corvet__attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'corvet__attribut_drc'),
+    ('DUN_AMPLI_EQUALISEUR', 'corvet__attribut_dun'),
     ('DYR_BTA', 'corvet__attribut_dyr'), ('14X_BTEL_HARD', 'corvet__electronique_14x'),
     ('44X_BTEL_FOURN.NO.SERIE', 'corvet__electronique_44x'), ('64X_BTEL_FOURN.CODE', 'corvet__electronique_64x'),
     ('84X_BTEL_DOTE', 'corvet__electronique_84x'), ('94X_BTEL_SOFT', 'corvet__electronique_94x')
@@ -58,6 +59,13 @@ BSM_LIST = [
 ]
 
 
+CVM_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('12Y_CVM2_2_HARD', 'corvet__electronique_12y'),
+    ('92Y_CVM2_2_SOFT', 'corvet__electronique_92y')
+]
+
+
 def get_header_fields(prod_list):
     header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
     fields = [value_tuple[1] for value_tuple in XELON_LIST] + [value_tuple[1] for value_tuple in prod_list]
@@ -69,6 +77,7 @@ CMM_HEADER, CMM_FIELDS = get_header_fields(CMM_LIST)
 BSI_HEADER, BSI_FIELDS = get_header_fields(BSI_LIST)
 HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
 BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
+CVM_HEADER, CVM_FIELDS = get_header_fields(CVM_LIST)
 
 """
 ##################################
@@ -114,21 +123,27 @@ def extract_corvet(product='corvet'):
     elif product == "bsm":
         header, values_list = BSM_HEADER, BSM_FIELDS
         queryset = xelons.exclude(corvet__electronique_16p__exact='')
+    elif product == "cvm":
+        header, values_list = CVM_HEADER, CVM_FIELDS
+        queryset = xelons.exclude(corvet__electronique_12y__exact='')
     elif product == "nac":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="NAC")
+        queryset = xelons.filter(corvet__attribut_drc="NA")
+    elif product == "rcc":
+        header, values_list = BTEL_HEADER, BTEL_FIELDS
+        queryset = xelons.filter(corvet__attribut_drc="RC")
     elif product == "rtx":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="RT")
+        queryset = xelons.filter(corvet__attribut_drc__in=["T3", "T4", "T6"])
     elif product == "smeg":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="SMEG")
+        queryset = xelons.filter(corvet__attribut_drc="SA")
     elif product == "rneg":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="RNEG")
+        queryset = xelons.filter(corvet__attribut_drc="RN")
     elif product == "ng4":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(modele_produit__startswith="NG4")
+        queryset = xelons.filter(corvet__attribut_drc="G4")
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
@@ -190,13 +205,16 @@ def extract_reman(model):
     elif model == "base_ref_reman":
         header = [
             'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
-            'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'OPENDIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUT'
+            'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'REQ_DIAG', 'OPENDIAG', 'REQ_REF', 'REF_MAT', 'REF_COMP',
+            'REQ_CAL', 'CAL_KTAG', 'REQ_STATUS', 'STATUS', 'TEST_CLEAR_MEMORY', 'CLE_APPLI'
         ]
-        queryset = EcuType.objects.all().order_by('ecu_ref_base__reman_reference')
+        queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
         values_list = (
-            'ecumodel__oe_raw_reference', 'ecu_ref_base__reman_reference', 'technical_data', 'hw_reference',
-            'supplier_oe', 'ecumodel__psa_barcode', 'ecumodel__former_oe_reference', 'ref_cal_out',
-            'spare_part__code_produit', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp', 'cal_ktag', 'status'
+            'ecu_type__ecumodel__oe_raw_reference', 'reman_reference', 'ecu_type__technical_data',
+            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__psa_barcode',
+            'ecu_type__ecumodel__former_oe_reference', 'ref_cal_out', 'ecu_type__spare_part__code_produit',
+            'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag',
+            'req_status', 'status', 'test_clear_memory', 'cle_appli'
         )
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()

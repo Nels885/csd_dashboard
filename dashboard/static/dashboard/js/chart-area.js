@@ -16,6 +16,8 @@ $.ajax({
         const {bgaTotalValue} = data;
         const {bgaOneValue} = data;
         const {bgaTwoValue} = data;
+        const {tcAreaLabels} = data;
+        const {tcTempValue} = data;
 
         // Deal Area Chart
         var ctx1 = document.getElementById("dealAreaChart");
@@ -83,14 +85,13 @@ $.ajax({
                             drawBorder: false
                         },
                         ticks: {
-                            maxTicksLimit: 7
+                            maxTicksLimit: 10
                         }
                     },
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            maxTicksLimit: 5,
-                            padding: 10,
+                            maxTicksLimit: 5
                         },
                         grid: {
                             color: "rgb(234, 236, 244)",
@@ -165,7 +166,7 @@ $.ajax({
                             drawBorder: false
                         },
                         ticks: {
-                            maxTicksLimit: 7
+                            maxTicksLimit: 10
                         }
                     },
                     y: {
@@ -176,8 +177,73 @@ $.ajax({
                             text: 'Valeur en %',
                         },
                         ticks: {
-                            maxTicksLimit: 5,
-                            padding: 10,
+                            maxTicksLimit: 6,
+                        },
+                        grid: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            },
+        });
+
+        // Thermal Chamber Temperature Area Chart
+        var ctx3 = document.getElementById("tcAreaChart");
+        var tcLineChart = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: tcAreaLabels,
+                datasets: [
+                    {
+                        data: tcTempValue,
+                        label: "Température Chambre Thermique",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(0, 143, 136, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(0, 143, 136, 1)",
+                        pointBorderColor: "rgba(0, 143, 136, 1)",
+                    },
+                ],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 10
+                        }
+                    },
+                    y: {
+                        max: 80,
+                        min: -40,
+                        title: {
+                            display: true,
+                            text: 'Valeur en %',
+                        },
+                        ticks: {
+                            maxTicksLimit: 10,
                         },
                         grid: {
                             color: "rgb(234, 236, 244)",
@@ -202,4 +268,3 @@ $.ajax({
         console.log(error_data)
     }
 });
-

@@ -19,6 +19,7 @@ urlpatterns = [
     path('3d-printer/ultimaker/stream/', views.UltimakerStreamView.as_view(), name="ultimaker_stream"),
     path('suptech/', views.suptech_list, name='suptech_list'),
     path('suptech/add/', views.SupTechCreateView.as_view(), name="suptech_add"),
+    path('suptech/<int:pk>/detail/', views.SuptechDetailView.as_view(), name="suptech_detail"),
     path('suptech/<int:pk>/update/', views.SuptechResponseView.as_view(), name="suptech_update"),
     path('suptech/item/ajax/', views.suptech_item_ajax, name='suptech_item_ajax'),
     path('bga/time/', views.bga_time, name='bga_time'),

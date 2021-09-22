@@ -21,19 +21,22 @@ class MixinsTest(UnitTest):
 
         # Update object through BSModalUpdateView
         xelon = Xelon.objects.first()
-        response = self.client.post(
-            reverse('squalaetp:vin_edit', kwargs={'pk': xelon.pk}),
-            data={
-                'vin': self.vin,
-                'xml_data': self.xmlData,
-            }
-        )
-        # redirection
-        self.assertRedirects(
-            response, reverse('squalaetp:detail', args=[xelon.pk], get={'select': 'ihm'}), status_code=302)
-        # Object is updated
-        xelon = Xelon.objects.first()
-        self.assertEqual(xelon.vin, self.vin)
+        for xml_data, corvet_nb in [('', 0), (self.xmlData, 1)]:
+            response = self.client.post(
+                reverse('squalaetp:vin_edit', kwargs={'pk': xelon.pk}),
+                data={
+                    'vin': self.vin,
+                    'xml_data': xml_data,
+                }
+            )
+            # redirection
+            self.assertRedirects(
+                response, reverse('squalaetp:detail', args=[xelon.pk], get={'select': 'ihm'}), status_code=302)
+            # Object is updated
+            xelon = Xelon.objects.first()
+            self.assertEqual(xelon.vin, self.vin)
+            corvets = Corvet.objects.filter(vin=self.vin)
+            self.assertEqual(len(corvets), corvet_nb)
 
     def test_vin_email_ajax_mixin(self):
         """

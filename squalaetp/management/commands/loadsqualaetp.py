@@ -2,12 +2,10 @@ import logging
 from django.core.management.base import BaseCommand
 from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.utils import IntegrityError, DataError
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.utils import timezone
 
 from squalaetp.models import Xelon, ProductCategory, Indicator
-from psa.models import Corvet
 from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
 from utils.django.models import defaults_dict
 from utils.data.analysis import ProductAnalysis
@@ -80,20 +78,18 @@ class Command(BaseCommand):
     def _foreignkey_relation(self):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
 
-        nb_xelon, nb_corvet, objects_list = 0, 0, []
+        nb_xelon, nb_category = 0, 0
         for xelon in Xelon.objects.filter(corvet__isnull=True):
-            try:
-                xelon.corvet = Corvet.objects.get(pk=xelon.vin)
-                xelon.save()
-                nb_xelon += 1
-            except ObjectDoesNotExist:
-                objects_list.append(xelon.numero_de_dossier)
+            xelon.save()
+            nb_xelon += 1
         self.stdout.write(
-            self.style.SUCCESS(
-                "[SQUALAETP] Relationships update completed: CORVET/XELON = {} | RASPEEDI/CORVET = {}".format(
-                    nb_xelon, nb_corvet
-                )
-            )
+            self.style.SUCCESS("[SQUALAETP] Relationships update completed: CORVET/XELON = {}".format(nb_xelon))
+        )
+        for xelon in Xelon.objects.filter(product__isnull=True):
+            xelon.save()
+            nb_category += 1
+        self.stdout.write(
+            self.style.SUCCESS("[SQUALAETP] Relationships update completed: CATEGORY/XELON = {}".format(nb_category))
         )
 
     def _squalaetp_file(self, model, excel):
@@ -131,7 +127,8 @@ class Command(BaseCommand):
 
     def _delay_files(self, model, squalaetp, delay):
         self.stdout.write("[DELAY] Waiting...")
-        nb_prod_before, nb_prod_update = model.objects.count(), 0
+        nb_prod_before, nb_prod_update, value_error_list = model.objects.count(), 0, []
+        cat_old = ProductCategory.objects.count()
         xelon_list, delay_list = squalaetp.xelon_number_list(), delay.xelon_number_list()
         if not delay.ERROR:
             self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
@@ -143,8 +140,6 @@ class Command(BaseCommand):
                 product_model = row.get("modele_produit")
                 defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
                 try:
-                    ProductCategory.objects.get_or_create(
-                        product_model=product_model, defaults={'category': 'DEFAUT'})
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                     if not created:
                         nb_prod_update += 1
@@ -161,10 +156,16 @@ class Command(BaseCommand):
                     logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
                 except ValidationError as err:
                     logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
-                except ValueError as err:
-                    logger.error(f"[DELAY_CMD] ValueError row {xelon_number} : {err}")
+                except ValueError:
+                    value_error_list.append(xelon_number)
+            if value_error_list:
+                logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
 
             nb_prod_after = model.objects.count()
+            cat_new = ProductCategory.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(f"[DElAY] ProductCategory update completed: ADD = {cat_new - cat_old}")
+            )
             self.stdout.write(
                 self.style.SUCCESS(
                     "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
@@ -202,9 +203,7 @@ class Command(BaseCommand):
         cat_new = ProductCategory.objects.count()
 
         self.stdout.write(
-            self.style.SUCCESS(
-                f"[SQUALAETP] ProductCategory update completed: ADD = {cat_new - cat_old}"
-            )
+            self.style.SUCCESS(f"[SQUALAETP] ProductCategory update completed: ADD = {cat_new - cat_old}")
         )
 
     def _indicator(self):

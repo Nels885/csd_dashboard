@@ -19,11 +19,11 @@ $(document).ready(function () {
         pagingType: "full_numbers",
         scrollX: true,
         columnDefs: [{
-            targets: [0, 1],
+            targets: 0,
             searchable: false,
             orderable: false,
         }],
-        order: [[4, "desc"]],
+        order: [[3, "desc"]],
     });
 
     $('#thermalTable').DataTable({
@@ -41,6 +41,11 @@ $(document).ready(function () {
     $('#suptechTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
-        order: []
+        order: [],
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
     });
 });

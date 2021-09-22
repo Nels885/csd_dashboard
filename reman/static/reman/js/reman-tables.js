@@ -19,7 +19,7 @@ $(document).ready(function () {
         scrollX: true,
         order: [],
         columnDefs: [{
-            targets: [0, 1],
+            targets: 0,
             searchable: false,
             orderable: false,
         }],
@@ -29,7 +29,12 @@ $(document).ready(function () {
         pagingType: "full_numbers",
         lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
-        order: [[0, "asc"]],
+        order: [[2, "asc"]],
+        columnDefs: [{
+            targets: [0, 1],
+            searchable: false,
+            orderable: false,
+        }],
     });
 
     $('#ecuTypeTable').DataTable({

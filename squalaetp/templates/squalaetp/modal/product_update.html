@@ -1,6 +1,4 @@
-{% load i18n %}
-
-{% load widget_tweaks %}
+{% load i18n widget_tweaks corvet_tags %}
 
 <form method="post" action="">
 
@@ -24,8 +22,8 @@
         {% for field in form %}
             <div class="form-group">
                 <div class="form-group row">
-                    <label for="{{ field.id_for_label }}" class="col-sm-4 col-form-label">{{ field.label }}</label>
-                    <div class="col-sm-8">
+                    <label for="{{ field.id_for_label }}" class="col-sm-5 col-form-label">{{ field.label }} (XELON)</label>
+                    <div class="col-sm-7">
                         {% render_field field class="form-control form-control-user" placeholder=field.label %}
                         <div class=" text-danger {% if field.errors %} invalid{% endif %}">
                             {% for error in field.errors %}
@@ -37,6 +35,22 @@
                 </div>
             </div>
         {% endfor %}
+
+        {% if corvet %}
+            <div class="form-group">
+                <div class="form-group row">
+                    <label for="id_real_product" class="col-sm-5 col-form-label">Modèle véhicule (CORVET)</label>
+                    <div class="col-sm-7">
+                        {% if corvet.donnee_marque_commerciale == "0P" %}
+                            <input type="text" value="{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}" class="form-control form-control-user" id="id_real_product" readonly>
+                        {% else %}
+                            <input type="text" value="{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}" class="form-control form-control-user" id="id_real_product" readonly>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 
     <div class="modal-footer">

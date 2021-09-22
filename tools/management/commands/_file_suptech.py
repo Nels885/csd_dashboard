@@ -46,7 +46,7 @@ class ExcelSuptech(ExcelFormat):
     """## Read data in Excel file for LOG_SUPTECH.xlsx ##"""
     COLS = {"DATE": "date", "QUI": "user", "XELON": "xelon", "ITEM": "item", "TIME": "time", "INFO": "info",
             "RMQ": "rmq", "ACTION/RETOUR": "action"}
-    COLS_DATE = {'date': "%d/%m/%Y %H:%M:%S"}
+    COLS_DATE = {'date': "%d/%m/%Y"}
 
     def __init__(self, file, sheet_name=0, columns=None):
         """
@@ -60,7 +60,7 @@ class ExcelSuptech(ExcelFormat):
         """
         super(ExcelSuptech, self).__init__(file, sheet_name, columns)
         self._columns_rename(self.COLS)
-        self.sheet.replace({"": None}, inplace=True)
+        self.sheet.replace({"": None, "#": None}, inplace=True)
         self._date_converter(self.COLS_DATE)
 
     def read(self):
@@ -78,8 +78,8 @@ class ExcelSuptech(ExcelFormat):
 
 class ExportExcelSuptech(ExportExcel):
 
-    def __init__(self, values_list, filename, header, novalue="#"):
-        super().__init__(values_list, filename, header, novalue)
+    def __init__(self, values_list, filename, header, sheet_name='Feuille 1', novalue=""):
+        super().__init__(values_list, filename, header, sheet_name, novalue)
 
     def _xlsx_writer(self, response):
         """ Formatting data in Excel 2010 format """

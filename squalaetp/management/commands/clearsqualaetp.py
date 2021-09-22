@@ -27,6 +27,12 @@ class Command(BaseCommand):
             dest='prod_category',
             help='Clear ProductCategory table',
         )
+        parser.add_argument(
+            '--user_skills',
+            action='store_true',
+            dest='user_skills',
+            help='Clear User Skills table',
+        )
 
     def handle(self, *args, **options):
 
@@ -50,6 +56,22 @@ class Command(BaseCommand):
             ProductCategory.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(), [ProductCategory, ])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
+            self.stdout.write(self.style.SUCCESS("Suppression des données de la table ProductCategory terminée!"))
+        if options['user_skills']:
+            ProductCategory.niv_i_users.through.objects.all().delete()
+            ProductCategory.niv_l_users.through.objects.all().delete()
+            ProductCategory.niv_u_users.through.objects.all().delete()
+            ProductCategory.niv_o_users.through.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(
+                no_style(), [
+                    ProductCategory.niv_i_users.through, ProductCategory.niv_l_users.through,
+                    ProductCategory.niv_u_users.through, ProductCategory.niv_o_users.through
+                ]
+            )
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)

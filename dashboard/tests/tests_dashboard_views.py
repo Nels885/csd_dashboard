@@ -29,7 +29,7 @@ class DashboardTestCase(UnitTest):
         response = self.client.get(reverse('dashboard:charts_ajax'), format='json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertEqual(len(data), 13)
+        self.assertEqual(len(data), 15)
 
     def test_late_products(self):
         response = self.client.get(reverse('dashboard:late_prod'))
@@ -40,8 +40,7 @@ class DashboardTestCase(UnitTest):
 
     def test_set_language_view_is_valid(self):
         for lang in ['fr', 'en']:
-            response = self.client.get(reverse('dashboard:set_lang', args={'user_language': lang}),
-                                       HTTP_REFERER=self.redirectUrl)
+            response = self.client.get(reverse('dashboard:set_lang', args={'user_language': lang}))
             self.assertTrue(translation.check_for_language(lang))
             self.assertRedirects(response, self.redirectUrl, status_code=302)
 
@@ -105,8 +104,7 @@ class DashboardTestCase(UnitTest):
         # Search is not found
         self.login()
         for value in ['null', 'A1234567890', 'azertyuiop123456789', 'AZERTIOP']:
-            response = self.client.get(reverse('dashboard:search'), {'query': 'null', 'select': 'xelon'},
-                                       HTTP_REFERER=self.redirectUrl)
+            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
             self.assertRedirects(response, self.redirectUrl, status_code=302)
 
         # Search is not value
@@ -115,16 +113,18 @@ class DashboardTestCase(UnitTest):
 
         # Search by VIN is valid
         for value in [self.vin, self.vin.lower()]:
-            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
+            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
         Xelon.objects.create(numero_de_dossier='A123456780', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
-        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'ihm'})
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'atelier'})
+        self.assertRedirects(response, '/squalaetp/xelon/?filter=' + self.vin, status_code=302)
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'reman'})
+        self.assertRedirects(response, self.redirectUrl, status_code=302)
 
         # Search by Xelon is valid
         for value in ['A123456789', 'a123456789']:
-            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
+            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
 
     def test_supplier_links_page(self):

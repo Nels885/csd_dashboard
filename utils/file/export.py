@@ -32,7 +32,7 @@ def xml_corvet_file(instance, data, vin):
         os.makedirs(XML_CORVET_PATH, exist_ok=True)
         file = os.path.join(XML_CORVET_PATH, xelon_nb + ".xml")
         if not os.path.isfile(file):
-            with open(file, "w", encoding='utf-8') as f:
+            with open(file, "w", encoding='utf-8-sig') as f:
                 f.write(str(data))
         else:
             logger.warning("{} File exists.".format(xelon_nb))
@@ -59,7 +59,7 @@ class Calibre:
                 file = os.path.join(path, xelon + ".txt")
                 os.makedirs(path, exist_ok=True)
                 if not os.path.isfile(file):
-                    with open(file, "w", encoding='utf-8') as f:
+                    with open(file, "w", encoding='utf-8-sig') as f:
                         f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
                 else:
                     logger.warning("%s File exists.", xelon)
@@ -83,12 +83,13 @@ calibre = Calibre(TAG_XELON_PATH, TAG_XELON_LOG_PATH)
 class ExportExcel:
     """ class for exporting data in CSV format """
 
-    def __init__(self, values_list, filename, header, novalue="#"):
+    def __init__(self, values_list, filename, header, sheet_name='Feuil1', novalue="#"):
         self.date = datetime.datetime.now()
         self.filename, self.excelType = self._file_format(filename)
         self.header = header
         self.noValue = novalue
         self.valueSet = values_list
+        self.sheetName = sheet_name
 
     def http_response(self):
         """ Creation http response """
@@ -146,8 +147,8 @@ class ExportExcel:
 
     def _xls_writer(self, response):
         """ Formatting data in Excel format """
-        xldoc = xlwt.Workbook(encoding='utf-8')
-        sheet = xldoc.add_sheet('Feuille 1')
+        xldoc = xlwt.Workbook(encoding='utf-8-sig')
+        sheet = xldoc.add_sheet(self.sheetName)
 
         # Sheet header, first row
         row_num = 0
@@ -174,10 +175,11 @@ class ExportExcel:
     def _xlsx_writer(self, response):
         """ Formatting data in Excel 2010 format """
         wb = openpyxl.Workbook()
+        wb.encoding = 'utf-8-sig'
 
         # Get active worksheet/tab
         ws = wb.active
-        ws.title = 'Feuille 1'
+        ws.title = self.sheetName
 
         # Sheet header, first row
         row_num = 1
@@ -211,7 +213,10 @@ class ExportExcel:
                 shutil.copyfile(file, os.path.join(path, "{}J-1.{}".format(self.filename, self.excelType)))
 
     def _query_format(self, query):
-        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+        format_date = "%d/%m/%Y %H:%M:%S"
+        query = tuple(
+            [_.strftime(format_date).replace(" 00:00:00", "") if isinstance(_, datetime.date) else _ for _ in query]
+        )
         query = tuple([self.noValue if not value else value for value in query])
         return query
 

@@ -15,7 +15,7 @@ class XelonCommandTestCase(UnitTest):
 
     def test_loadsparepart_cmd(self):
         out = StringIO()
-        call_command('loadsparepart', '-f' 'reman/tests/extraction_test.csv', stdout=out)
+        call_command('loadsparepart', '-f' 'dashboard/tests/files/extraction_test.csv', stdout=out)
         self.assertIn(
             "[SPAREPART] Data update completed: CSV_LINES = 2 | ADD = 2 | UPDATE = 0 | TOTAL = 2",
             out.getvalue()
@@ -34,7 +34,7 @@ class XelonCommandTestCase(UnitTest):
         out = StringIO()
 
         # Test for files not found
-        call_command('loadsqualaetp', '--xelon_update', '-S', 'test.xls', '-D' 'test.xls, test.xls', stdout=out)
+        call_command('loadsqualaetp', '--xelon_update', '-S' 'test.xls', '-D' 'test.xls, test.xls', stdout=out)
         self.assertIn("[XELON] No squalaetp file found", out.getvalue())
         self.assertIn("[DELAY] No delay files found", out.getvalue())
 

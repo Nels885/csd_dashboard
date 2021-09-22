@@ -1,10 +1,10 @@
 import os
 import logging
-from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.html import strip_tags
+from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -24,12 +24,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--first',
-            action='store_true',
-            dest='first',
-            help='Adding first data in Suptech table',
-        )
-        parser.add_argument(
             '--email',
             action='store_true',
             dest='email',
@@ -38,15 +32,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
-        path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
-        filename = "LOG_SUPTECH"
-        try:
-            if options['first']:
-                excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
-                self._create(Suptech, excel.read())
-            if options['email']:
-                self._send_email()
-            else:
+        if options['email']:
+            self._send_email()
+        else:
+            try:
+                path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
+                filename = "LOG_SUPTECH"
                 if os.path.exists(os.path.join(path, filename + ".csv")):
                     csv_file = CsvSuptech(os.path.join(path, filename + ".csv"))
                     self._create(Suptech, csv_file.read())
@@ -57,8 +48,8 @@ class Command(BaseCommand):
                 excel = ExcelSuptech(os.path.join(path, filename + ".xls"))
                 self._update(Suptech, excel.read())
                 self._export(path, filename)
-        except FileNotFoundError as err:
-            logger.error(f"[SUPTECH_CMD] FileNotFoundError: {err}")
+            except FileNotFoundError as err:
+                logger.error(f"[SUPTECH_CMD] FileNotFoundError: {err}")
 
     def _create(self, model, data):
         nb_prod_before = model.objects.count()
@@ -130,8 +121,8 @@ class Command(BaseCommand):
                 'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action'
             ).distinct()
 
-            error = ExportExcelSuptech(values_list=values_list, filename=filename + ".xls", header=header,
-                                       novalue="").file(path, False)
+            error = ExportExcelSuptech(
+                values_list=values_list, filename=filename + ".xls", header=header).file(path, False)
             if error:
                 self.stdout.write(
                     self.style.ERROR(
@@ -152,8 +143,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR("[SUPTECH] {}".format(err)))
 
     def _send_email(self):
-        date_joined = datetime.strftime(datetime.now(), "%d/%m/%Y %H:%M:%S")
-        subject = "Liste des Suptech en cours {}".format(date_joined)
+        date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
+        subject = "Suptech en cours {}".format(date_joined)
         suptechs = Suptech.objects.exclude(status="Cloturée").order_by('-date')
         if suptechs:
             waiting_suptechs = suptechs.filter(status="En Attente")

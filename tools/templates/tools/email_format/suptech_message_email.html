@@ -1,0 +1,11 @@
+{% autoescape off %}
+Bonjour,
+
+Un nouveau message est disponible pour la demande ci-dessous :
+
+http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}
+
+Cordialement
+
+CSD Dashboard
+{% endautoescape %}

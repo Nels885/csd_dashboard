@@ -55,7 +55,8 @@ def validate_xelon(value):
     """
     if re.match(r'^[a-zA-Z]\d{9}$', str(value)):
         try:
-            Xelon.objects.get(numero_de_dossier=value)
+            if not re.match(r'^[pP]\d{9}$', str(value)):
+                Xelon.objects.get(numero_de_dossier=value)
             return None
         except Xelon.DoesNotExist:
             return 'Xelon number no exist'
@@ -71,7 +72,7 @@ def validate_psa_barcode(value):
     :return:
         Error message if not valid
     """
-    if not re.match(r'^9[68]\d{8}$', str(value)):
+    if not re.match(r'^9[68]\d{8}\w*$', str(value)) and not re.match(r'^89661-\w{5}$', str(value)):
         return 'PSA barcode is invalid'
     return None
 

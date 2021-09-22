@@ -1,7 +1,11 @@
+import logging
 from utils.microsoft_format import CsvFormat
+
+logger = logging.getLogger('command')
 
 
 class CsvCorvet(CsvFormat):
+    ERROR = False
     COLS_DATE = {'donnee_date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'donnee_date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
     def __init__(self, file, columns=None):
@@ -14,10 +18,14 @@ class CsvCorvet(CsvFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super().__init__(file, columns, dtype='str')
-        self._columns_convert()
-        self.sheet.replace({"#": None}, inplace=True)
-        self._date_converter(self.COLS_DATE)
+        try:
+            super().__init__(file, columns, dtype='str')
+            self._columns_convert()
+            self.sheet.replace({"#": None}, inplace=True)
+            self._date_converter(self.COLS_DATE)
+        except FileNotFoundError as err:
+            logger.error(f'FileNotFoundError: {err}')
+            self.ERROR = True
 
     def read(self):
         """
@@ -26,6 +34,7 @@ class CsvCorvet(CsvFormat):
             list of dictionnaries that represents the data in the sheet
         """
         data = []
-        for line in range(self.nrows):
-            data.append(dict(self.sheet.loc[line].dropna()))
+        if not self.ERROR:
+            for line in range(self.nrows):
+                data.append(dict(self.sheet.loc[line].dropna()))
         return data

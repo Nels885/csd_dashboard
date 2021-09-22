@@ -43,12 +43,12 @@ INSTALLED_APPS = [
     'tempus_dominus',
     'bootstrap_modal_forms',
     'widget_tweaks',
-    'constance.backends.database',
     'constance',
     'django_inlinecss',
     'celery_progress',
     'django_celery_beat',
     'django_celery_results',
+    'encrypted_fields',
 
     # My apps
     'dashboard.apps.DashboardConfig',
@@ -223,7 +223,8 @@ TEMPUS_DOMINUS_LOCALIZE = True
 TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 
 # Configuration DJANGO-CONSTANCE
-CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
+CONSTANCE_REDIS_CONNECTION = 'redis://localhost:6379/1'
 
 CONSTANCE_CONFIG = {
     # General Options
@@ -237,10 +238,10 @@ CONSTANCE_CONFIG = {
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
     'XLS_ATTRIBUTS_FILE': ('EXTS/Attributs CORVET.xlsx', 'xls attributs file'),
     'CSV_EXTRACTION_FILE': ('EXTS/extraction.csv', 'csv extraction file'),
-    'XLS_ECU_REF_BASE': ('REMAN/PSA/Base réf REMAN.xlsx', 'xls ECU ref base'),
+    'XLS_ECU_REF_BASE': ('REMAN/PSA/Base ref REMAN.xlsx', 'xls ECU ref base'),
     'XLS_DELAY_PATH': ('RH/AnalyseRetards', 'Path of xls delay files'),
     'XLS_DELAY_FILES': (
-        'PSA.xls, ILOTAUTRE.xls, LaboQual.xls, DEFAUT.xls, CLARION.xls', 'List of xls delay file'
+        'PSA.xlsx, ILOTAUTRE.xlsx, LaboQual.xlsx, DEFAUT.xlsx, CLARION.xlsx', 'List of xls delay file'
     ),
     'XML_CORVET_PATH': ('LOGS/CORVET_XML_TEST', 'xml Corvet path'),
     'TAG_XELON_PATH': ('LOGS/CALIBRE', 'tag xelon path'),

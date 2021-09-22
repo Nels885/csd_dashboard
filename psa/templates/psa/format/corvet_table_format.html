@@ -8,6 +8,10 @@
         <td>{{ object.electronique_14k }}</td>
     </tr>
     <tr>
+        <td class="text-dark td-ihm">SOFT TDB</td>
+        <td>{{ object.electronique_94k }}</td>
+    </tr>
+    <tr>
         <td class="text-dark td-ihm">Réf HW EMF</td>
         <td>{{ object.electronique_14l }}</td>
     </tr>
@@ -27,30 +31,34 @@
     {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio thead_title="AUDIO :" %}
 
     <tbody class="collapse {% if collapse.audio %}show{% endif %}" id="collapseAudio">
-    <tr>
-        <td class="text-dark td-ihm">Réf HW RAD</td>
-        <td>{{ object.electronique_14f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL RAD</td>
-        <td>{{ object.electronique_94f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série RAD</td>
-        <td>{{ object.electronique_44f }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">Réf HW NAV</td>
-        <td>{{ object.electronique_14x }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL NAV</td>
-        <td>{{ object.electronique_94x }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série NAV</td>
-        <td>{{ object.electronique_44x }}</td>
-    </tr>
+    {% if object.electronique_14f %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW RAD</td>
+            <td>{{ object.electronique_14f }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL RAD</td>
+            <td>{{ object.electronique_94f }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série RAD</td>
+            <td>{{ object.electronique_44f }}</td>
+        </tr>
+    {% endif %}
+    {% if object.electronique_14x %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW NAV</td>
+            <td>{{ object.electronique_14x }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL NAV</td>
+            <td>{{ object.electronique_94x }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série NAV</td>
+            <td>{{ object.electronique_44x }}</td>
+        </tr>
+    {% endif %}
     </tbody>
 </table>
 
@@ -63,6 +71,10 @@
     <tr>
         <td class="text-dark td-ihm">Réf HW ECU moteur</td>
         <td>{{ object.electronique_14a }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL LIVRE ECU moteur</td>
+        <td>{{ object.electronique_34a }}</td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">CAL ECU moteur</td>
@@ -106,6 +118,50 @@
     <tr>
         <td class="text-dark td-ihm">N° série BSM</td>
         <td>{{ object.electronique_46b }}</td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="table table-bordered table-striped table-sm mt-4">
+
+    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.ecu thead_title="SECURITE :" %}
+
+    <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseSecu">
+    <!-- ASS -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW boitier ASS</td>
+        <td>{{ object.electronique_14r }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL boitier ASS</td>
+        <td>{{ object.electronique_94r }}</td>
+    </tr>
+    <!-- AIR BAG -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW Boitier Air Bag</td>
+        <td>{{ object.electronique_14m }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL Boitier Air Bag</td>
+        <td>{{ object.electronique_94m }}</td>
+    </tr>
+    <!-- RAIN SENSOR -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW Capteur pluie</td>
+        <td>{{ object.electronique_16g }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL Capteur pluie</td>
+        <td>{{ object.electronique_96g }}</td>
+    </tr>
+    <!-- MULTIFUNCTION CAM -->
+    <tr>
+        <td class="text-dark td-ihm">Réf HW CVM 2</td>
+        <td>{{ object.electronique_12y }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark td-ihm">CAL CVM 2</td>
+        <td>{{ object.electronique_92y }}</td>
     </tr>
     </tbody>
 </table>

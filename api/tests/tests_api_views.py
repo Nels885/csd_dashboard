@@ -19,23 +19,23 @@ class ApiTestCase(APITestCase):
         else:
             self.client.login(username='toto', password='totopassword')
 
-    def test_user_view_set(self):
-        response = self.client.get(reverse('api:user-list'), format='json')
-        self.assertEqual(response.status_code, 403)
+    def api_view_list(self, url):
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data, self.authError)
-        self.login('admin')
-        response = self.client.get(reverse('api:user-list'), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 4)
 
-    def test_group_view_set(self):
-        response = self.client.get(reverse('api:group-list'), format='json')
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.data, self.authError)
-        self.login('admin')
-        response = self.client.get(reverse('api:group-list'), format='json')
+        # Identification with Token
+        response = self.client.get(url + '?auth_token={}'.format(self.token), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_documentation_view(self):
+        response = self.client.get(reverse('api:doc'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_unlock_list(self):
+        self.api_view_list(reverse('api:unlock-list'))
 
     def test_prog_list(self):
         response = self.client.get(reverse('api:prog-list'), format='json')
@@ -58,3 +58,64 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_batch_list(self):
+        response = self.client.get(reverse('api:reman_batch-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/batch/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_checkout_list(self):
+        response = self.client.get(reverse('api:reman_checkout-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/checkout/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_repair_list(self):
+        response = self.client.get(reverse('api:reman_repair-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/repair/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_ecurefbase_list(self):
+        response = self.client.get(reverse('api:reman_ecurefbase-list'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/reman/ecurefbase/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
+
+    def test_nac_license_view(self):
+        response = self.client.get(reverse('api:nac_license'), format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, self.authError)
+
+        # Identification with Token
+        response = self.client.get('/api/nac-license/?auth_token={}'.format(self.token), format='json')
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data, {"error": "Request failed"})
+
+    def test_thermal_chamber_measure_list(self):
+        self.api_view_list(reverse('api:tools_tc_measure-list'))
+
+    def test_bga_time_list(self):
+        self.api_view_list(reverse('api:tools_bga_time-list'))

@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
 
-from tools.models import TagXelon, ThermalChamber, Suptech, BgaTime
+from tools.models import TagXelon, ThermalChamber, ThermalChamberMeasure, Suptech, BgaTime
 
 
 class Command(BaseCommand):
@@ -20,6 +20,12 @@ class Command(BaseCommand):
             action='store_true',
             dest='thermal_chamber',
             help='Clear ThermalChamber table',
+        )
+        parser.add_argument(
+            '--thermal_chamber_measure',
+            action='store_true',
+            dest='thermal_chamber_measure',
+            help='Clear ThermalChamberMeasure table',
         )
         parser.add_argument(
             '--suptech',
@@ -53,6 +59,15 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             tables.append("ThermalChamber")
+
+        if options['thermal_chamber_measure']:
+            ThermalChamberMeasure.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [ThermalChamberMeasure, ])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
+            tables.append("ThermalChamberMeasure")
 
         if options['suptech']:
             Suptech.objects.all().delete()

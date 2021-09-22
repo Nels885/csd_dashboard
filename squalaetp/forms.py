@@ -87,7 +87,7 @@ class VinCorvetModalForm(BSModalModelForm):
                 'rows': 10,
             }
         ),
-        required=True
+        required=False
     )
 
     class Meta:
@@ -112,29 +112,31 @@ class VinCorvetModalForm(BSModalModelForm):
 
     def clean_xml_data(self):
         xml_data = self.cleaned_data['xml_data']
-        data = xml_parser(xml_data)
-        no_fields = ['vin', 'btel', 'radio', 'bsi', 'emf', 'cmm', 'bsm']
-        all_data = {key: '' for key in [f.name for f in Corvet._meta.local_fields if f.name not in no_fields]}
-        all_data.update({'donnee_date_debut_garantie': None, 'donnee_date_entree_montage': None})
-        vin = self.cleaned_data.get("vin")
-        if data:
-            all_data.update(data)
-            if data.get('vin') == vin and data.get('donnee_date_entree_montage'):
-                if self.request.is_ajax():
-                    xml_corvet_file(self.instance, xml_data, vin)
-            if data.get('vin') != vin:
-                self.add_error('xml_data', _('XML data does not match VIN'))
-        else:
-            self.add_error('xml_data', _('Invalid XML data'))
-            all_data = data
-        return all_data
+        if xml_data:
+            data = xml_parser(xml_data)
+            no_fields = ['vin', 'btel', 'radio', 'bsi', 'emf', 'cmm', 'bsm']
+            all_data = {key: '' for key in [f.name for f in Corvet._meta.local_fields if f.name not in no_fields]}
+            all_data.update({'donnee_date_debut_garantie': None, 'donnee_date_entree_montage': None})
+            vin = self.cleaned_data.get("vin")
+            if data:
+                all_data.update(data)
+                if data.get('vin') == vin and data.get('donnee_date_entree_montage'):
+                    if self.request.is_ajax():
+                        xml_corvet_file(self.instance, xml_data, vin)
+                if data.get('vin') != vin:
+                    self.add_error('xml_data', _('XML data does not match VIN'))
+            else:
+                self.add_error('xml_data', _('Invalid XML data'))
+                all_data = data
+            return all_data
+        return xml_data
 
     def clean(self):
         cleaned_data = super(VinCorvetModalForm, self).clean()
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
-        if vin and data and self.request.is_ajax():
-            if not data.get('donnee_date_entree_montage'):
+        if vin and self.request.is_ajax():
+            if data and not data.get('donnee_date_entree_montage'):
                 raise forms.ValidationError(_('VIN error !'))
             elif vin != self.instance.vin:
                 content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)
@@ -146,6 +148,7 @@ class ProductModalForm(BSModalModelForm):
     class Meta:
         model = Xelon
         fields = ['modele_produit', 'modele_vehicule']
+        widgets = {'modele_vehicule': forms.TextInput(attrs={'readonly': True})}
 
     def __init__(self, *args, **kwargs):
         xelons = Xelon.objects.exclude(modele_produit="").order_by('modele_produit')

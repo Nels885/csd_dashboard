@@ -8,9 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import login
 from django.contrib import messages
-from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from django.db.models import Q
 from django.http import JsonResponse
 
 from django.core.mail import EmailMessage
@@ -23,6 +21,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
+from utils.django.urls import reverse, reverse_lazy, http_referer
 from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
 from psa.models import Corvet
@@ -58,6 +57,7 @@ def charts_ajax(request):
     data.update(indicator.new_result())
     data.update(tools.suptech())
     data.update(tools.bga_time())
+    data.update(tools.thermal_chamber_measure())
     return JsonResponse(data)
 
 
@@ -71,11 +71,20 @@ def late_products(request):
 
 
 @login_required
+def admin_products(request):
+    """ View of Autotronik page """
+    context = {'title': _("Admin Products"), 'select_tab': 'admin'}
+    prods = ProductAnalysis()
+    context.update(prods.admin_products())
+    return render(request, 'dashboard/late_products/admin_products.html', context)
+
+
+@login_required
 def autotronik(request):
     """ View of Autotronik page """
     context = {'title': _("Late Products"), 'select_tab': 'tronik'}
     prods = ProductAnalysis()
-    context.update(prods.late_products())
+    context.update(prods.autotronik())
     return render(request, 'dashboard/late_products/autotronik.html', context)
 
 
@@ -83,26 +92,18 @@ def autotronik(request):
 def search(request):
     """ View of search page """
     query = request.GET.get('query')
-    if query:
-        query = query.upper().strip()
-        # select = request.GET.get('select')
-        files = Xelon.objects.filter(Q(numero_de_dossier=query) |
-                                     Q(vin=query) |
-                                     Q(corvet__electronique_44l__contains=query) |
-                                     Q(corvet__electronique_44x__contains=query) |
-                                     Q(corvet__electronique_44a__contains=query))
+    select = request.GET.get('select')
+    if query and select == 'atelier':
+        files = Xelon.search(query)
         if files and len(files) > 1:
-            title = _('Search')
-            table_title = _('Xelon files')
-            return render(request, 'squalaetp/xelon_table.html', locals())
+            return redirect(reverse('squalaetp:xelon', get={'filter': query}))
         elif files:
             return redirect('squalaetp:detail', pk=files.first().pk)
-        else:
-            corvets = Corvet.objects.filter(vin=query)
-            if corvets:
-                return redirect('psa:corvet_detail', vin=corvets.first().vin)
-        messages.warning(request, _('Warning: The research was not successful.'))
-    return redirect(request.META.get('HTTP_REFERER'))
+    corvets = Corvet.objects.filter(vin=query)
+    if corvets:
+        return redirect('psa:corvet_detail', vin=corvets.first().vin)
+    messages.warning(request, _('Warning: The research was not successful.'))
+    return redirect(http_referer(request))
 
 
 def set_language(request, user_language):
@@ -113,7 +114,7 @@ def set_language(request, user_language):
     """
     translation.activate(user_language)
     request.session[translation.LANGUAGE_SESSION_KEY] = user_language
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(http_referer(request))
 
 
 @login_required
@@ -151,6 +152,7 @@ def user_profile(request):
 def signup(request):
     """ View of Sign Up page """
     title = _("SignUp")
+    card_title = _('Create an Account!')
     form = SignUpForm(request.POST or None)
     if request.POST and form.is_valid():
         password = User.objects.make_random_password()
@@ -159,7 +161,8 @@ def signup(request):
         user.is_active = False
         form.save()
         if form.cleaned_data['group']:
-            user.groups.add(form.cleaned_data['group'])
+            for group in form.cleaned_data['group']:
+                user.groups.add(group)
         current_site = get_current_site(request)
         mail_subject = 'Activate your CSD Dashboard account.'
         message = render_to_string('dashboard/acc_active_email.html', {
@@ -176,7 +179,7 @@ def signup(request):
         email.send()
         messages.success(request, _('Success: Sign up succeeded. You can now Log in.'))
     errors = form.errors.items()
-    return render(request, 'dashboard/register.html', locals())
+    return render(request, 'dashboard/register_form.html', locals())
 
 
 def activate(request, uidb64, token):
@@ -245,10 +248,7 @@ class WebLinkCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = _('Success: Web link was created')
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class WebLinkUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -259,10 +259,7 @@ class WebLinkUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     success_message = _('Success: Web link was updated')
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
@@ -273,10 +270,7 @@ class WebLinkDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     success_message = _('Success: Web link was deleted.')
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 @login_required

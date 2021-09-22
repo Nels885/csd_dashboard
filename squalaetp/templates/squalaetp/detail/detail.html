@@ -7,11 +7,7 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" id="detail-list" role="tablist">
 
-            {% if perms.squalaetp.change_xelon or perms.psa.change_corvet %}
-
-                {% include 'tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
-
-            {% endif %}
+            {% include 'tab_select.html' with name='ihm' tab_title="IHM Extraction" %}
 
             {% if corvet %}
 
@@ -46,6 +42,12 @@
                 <a class="nav-link" href="#" role="tab" data-toggle="modal" data-target="#vinModal"
                    aria-selected="false">
                     {% trans "VIN Barcode" %}
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#tech" role="tab" aria-selected="false">
+                    {% trans "Technician" %}
                 </a>
             </li>
 
@@ -113,6 +115,13 @@
         <div class="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
 
             {% include 'squalaetp/detail/detail_logs.html' %}
+
+        </div>
+
+        <!-- Info Technician -->
+        <div class="tab-pane" id="tech" role="tabpanel" aria-labelledby="tech-tab">
+
+            {% include 'squalaetp/detail/detail_skills.html' %}
 
         </div>
 

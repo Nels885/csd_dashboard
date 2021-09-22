@@ -16,5 +16,18 @@ def past_time(obj):
             return str(delta).split('.')[0]
         else:
             return "---"
-    except ThermalChamber.DoesNotExist:
+    except (ThermalChamber.DoesNotExist, AttributeError):
+        return "---"
+
+
+@register.filter(name='usage_time')
+def usage_time(obj):
+    try:
+        therm = ThermalChamber.objects.get(id=obj.id)
+        if therm.start_time and therm.stop_time:
+            delta = therm.stop_time - therm.start_time
+            return str(delta).split('.')[0]
+        else:
+            return "---"
+    except (ThermalChamber.DoesNotExist, AttributeError):
         return "---"

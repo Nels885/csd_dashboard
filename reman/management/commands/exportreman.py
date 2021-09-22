@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from reman.models import Batch, Repair, EcuRefBase, EcuType
+from reman.models import Batch, Repair, EcuRefBase
 
 from utils.file.export import ExportExcel, os
 from utils.conf import CSD_ROOT, conf
@@ -74,6 +74,7 @@ class Command(BaseCommand):
             header = ['Numero_Identification', 'Code_Barre_PSA', 'Status', 'Controle_Qualite']
             repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
             values_list = repairs.values_list('identify_number', 'psa_barcode', 'status', 'quality_control').distinct()
+            # values_list = self._repair_list_generate(values_list)
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
@@ -99,19 +100,18 @@ class Command(BaseCommand):
                 'REMAN_REFERENCE', 'HW_REFERENCE', 'TYPE_ECU', 'SUPPLIER', 'PSA_BARCODE', 'REF_CAL_OUT', 'REF_PSA_OUT',
                 'OPEN_DIAG', 'REF_MAT', 'REF_COMP', 'CAL_KTAG', 'STATUS'
             ]
-            ecu = EcuRefBase.objects.exclude(ecu_type__ref_cal_out__exact='').order_by('reman_reference')
-            values_list = ecu.values_list(
+            queryset = EcuRefBase.objects.exclude(ref_cal_out__exact='').order_by('reman_reference')
+            values_list = queryset.values_list(
                 'reman_reference', 'ecu_type__hw_reference', 'ecu_type__technical_data', 'ecu_type__supplier_oe',
-                'ecu_type__ecumodel__psa_barcode', 'ecu_type__ref_cal_out', 'ecu_type__ref_psa_out',
-                'ecu_type__open_diag', 'ecu_type__ref_mat', 'ecu_type__ref_comp', 'ecu_type__cal_ktag',
-                'ecu_type__status'
+                'ecu_type__ecumodel__psa_barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
+                'cal_ktag', 'status'
             ).distinct()
             ExportExcel(
                 values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}".format(
-                        ecu.count(), os.path.join(path, filename)
+                        queryset.count(), os.path.join(path, filename)
                     )
                 )
             )
@@ -124,16 +124,18 @@ class Command(BaseCommand):
                 'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'REQ_DIAG', 'OPENDIAG', 'REQ_REF', 'REF_MAT', 'REF_COMP',
                 'REQ_CAL', 'CAL_KTAG', 'REQ_STATUS', 'STATUS', 'TEST_CLEAR_MEMORY', 'CLE_APPLI'
             ]
-            queryset = EcuType.objects.exclude(test_clear_memory__exact='').order_by('ecu_ref_base__reman_reference')
+            queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
             values_list = (
-                'ecumodel__oe_raw_reference', 'ecu_ref_base__reman_reference', 'technical_data', 'hw_reference',
-                'supplier_oe', 'ecumodel__psa_barcode', 'ecumodel__former_oe_reference', 'ref_cal_out',
-                'spare_part__code_produit', 'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat', 'ref_comp',
-                'req_cal', 'cal_ktag', 'req_status', 'status', 'test_clear_memory', 'cle_appli'
+                'ecu_type__ecumodel__oe_raw_reference', 'reman_reference', 'ecu_type__technical_data',
+                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__psa_barcode',
+                'ecu_type__ecumodel__former_oe_reference', 'ref_cal_out', 'ecu_type__spare_part__code_produit',
+                'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag',
+                'req_status', 'status', 'test_clear_memory', 'cle_appli'
             )
             values_list = queryset.values_list(*values_list).distinct()
+            values_list = [self._replace_value(val) for val in values_list]
             ExportExcel(
-                values_list=values_list, filename=filename, header=header).file(path, False)
+                values_list=values_list, filename=filename, header=header, novalue="").file(path, False)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}".format(
@@ -141,3 +143,22 @@ class Command(BaseCommand):
                     )
                 )
             )
+
+    @staticmethod
+    def _repair_list_generate(values_list):
+        values_list = list(values_list)
+        batchs = Batch.objects.filter(active=True, number__gte=900)
+        for batch in batchs:
+            number = 0
+            for ecu in batch.ecu_ref_base.ecu_type.ecumodel_set.all():
+                number += 1
+                values_list.append((f"{batch.batch_number[:-3]}{number:03d}", ecu.psa_barcode, "Réparé", True))
+        return values_list
+
+    @staticmethod
+    def _replace_value(tup):
+        data = list(tup)
+        for index in [0, 6]:
+            if data[index] == "":
+                data[index] = "#"
+        return tuple(data)

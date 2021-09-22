@@ -51,7 +51,7 @@ class RemanCommandTestCase(UnitTest):
         )
 
     def test_ecurefbase(self):
-        call_command('ecurefbase', '-s', 1, '-f', 'reman/tests/Base_réf_ECU_test.xlsx', stdout=self.out)
+        call_command('ecurefbase', '-s', 1, '-f', 'dashboard/tests/files/Base_réf_ECU_test.xlsx', stdout=self.out)
         self.assertIn(
             "[ECUREFBASE] Data update completed: EXCEL_LINES = 5 | ADD = 4 | UPDATE = 1 | TOTAL = 4",
             self.out.getvalue()

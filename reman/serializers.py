@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from reman.models import Batch, EcuModel, Repair
+from reman.models import Batch, EcuModel, Repair, EcuRefBase
 
 REPAIR_COLUMN_LIST = [
     'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__ecu_type__technical_data',
@@ -10,7 +10,7 @@ REPAIR_COLUMN_LIST = [
 ]
 
 ECU_REF_BASE_COLUMN_LIST = [
-    'ecu_type__ecu_ref_base__reman_reference', 'ecu_type__technical_data', 'ecu_type__hw_reference',
+    'ecu_type__ecurefbase__reman_reference', 'ecu_type__technical_data', 'ecu_type__hw_reference',
     'ecu_type__supplier_oe', 'psa_barcode', 'ecu_type__spare_part__code_produit',
     'ecu_type__spare_part__code_emplacement', 'ecu_type__spare_part__cumul_dispo'
 ]
@@ -32,17 +32,17 @@ class RemanBatchSerializer(serializers.ModelSerializer):
 
 
 class RemanCheckOutSerializer(serializers.ModelSerializer):
-    reman_reference = serializers.CharField(source='ecu_type.ecu_ref_base.reman_reference', read_only=True)
-    ecu_type = serializers.CharField(source='ecu_type.technical_data')
+    reman_reference = serializers.CharField(source='ecu_type.ecurefbase.first.reman_reference', read_only=True)
+    ecu_type = serializers.CharField(source='ecu_type.technical_data', read_only=True)
     hw_reference = serializers.CharField(source='ecu_type.hw_reference', read_only=True)
     supplier = serializers.CharField(source='ecu_type.supplier_oe', read_only=True)
-    ref_cal_out = serializers.CharField(source='ecu_type.ecu_ref_base.ref_cal_out', read_only=True)
-    ref_psa_out = serializers.CharField(source='ecu_type.ecu_ref_base.ref_psa_out', read_only=True)
-    open_diag = serializers.CharField(source='ecu_type.ecu_ref_base.open_diag', read_only=True)
-    ref_mat = serializers.CharField(source='ecu_type.ecu_ref_base.ref_mat', read_only=True)
-    ref_comp = serializers.CharField(source='ecu_type.ecu_ref_base.ref_comp', read_only=True)
-    cal_ktag = serializers.CharField(source='ecu_type.ecu_ref_base.cal_ktag', read_only=True)
-    status = serializers.CharField(source='ecu_type.ecu_ref_base.status', read_only=True)
+    ref_cal_out = serializers.CharField(source='ecu_type.ecurefbase.first.ref_cal_out', read_only=True)
+    ref_psa_out = serializers.CharField(source='ecu_type.ecurefbase.first.ref_psa_out', read_only=True)
+    open_diag = serializers.CharField(source='ecu_type.ecurefbase.first.open_diag', read_only=True)
+    ref_mat = serializers.CharField(source='ecu_type.ecurefbase.first.ref_mat', read_only=True)
+    ref_comp = serializers.CharField(source='ecu_type.ecurefbase.first.ref_comp', read_only=True)
+    cal_ktag = serializers.CharField(source='ecu_type.ecurefbase.first.cal_ktag', read_only=True)
+    status = serializers.CharField(source='ecu_type.ecurefbase.first.status', read_only=True)
 
     class Meta:
         model = EcuModel
@@ -69,16 +69,16 @@ class RemanRepairSerializer(serializers.ModelSerializer):
 
 
 class EcuRefBaseSerializer(serializers.ModelSerializer):
-    reman_reference = serializers.CharField(source='ecu_type.ecu_ref_base.reman_reference', read_only=True, default="")
     technical_data = serializers.CharField(source='ecu_type.technical_data', read_only=True, default="")
     hw_reference = serializers.CharField(source='ecu_type.hw_reference', read_only=True, default="")
     supplier_oe = serializers.CharField(source='ecu_type.supplier_oe', read_only=True, default="")
+    psa_barcode = serializers.ListField(source='ecu_type.ecumodel_set.all', child=serializers.CharField())
     code_produit = serializers.CharField(source='ecu_type.spare_part.code_produit', read_only=True, default="")
     code_emplacement = serializers.CharField(source='ecu_type.spare_part.code_emplacement', read_only=True, default="")
     cumul_dispo = serializers.CharField(source='ecu_type.spare_part.cumul_dispo', read_only=True, default="")
 
     class Meta:
-        model = EcuModel
+        model = EcuRefBase
         fields = (
             'id', 'reman_reference', 'technical_data', 'hw_reference', 'supplier_oe', 'psa_barcode', 'code_produit',
             'code_emplacement', 'cumul_dispo'

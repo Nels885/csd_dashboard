@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.http import HttpResponseRedirect, JsonResponse, Http404
+from django.http import JsonResponse, Http404
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
@@ -26,7 +26,7 @@ from psa.forms import CorvetForm
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
-from utils.django.urls import reverse_lazy
+from utils.django.urls import reverse_lazy, http_referer
 
 
 @login_required
@@ -40,10 +40,7 @@ def generate(request):
                 messages.warning(request, msg)
     else:
         messages.success(request, "Exportation Squalaetp terminée.")
-    if 'HTTP_REFERER' in request.META:
-        return HttpResponseRedirect(request.META['HTTP_REFERER'])
-    else:
-        return redirect('index')
+    return redirect(http_referer(request))
 
 
 @login_required
@@ -63,10 +60,6 @@ def excel_import_async(request):
         task = cmd_loadsqualaetp_task.delay()
         # messages.success(request, "Importation Squalaetp en cours...")
         return JsonResponse({"task_id": task.id})
-    # if 'HTTP_REFERER' in request.META:
-    #     return HttpResponseRedirect(request.META['HTTP_REFERER'])
-    # else:
-    #     return redirect('index')
     return Http404
 
 
@@ -75,15 +68,7 @@ def xelon_table(request):
     """ View of Xelon table page """
     title = 'Xelon'
     form = CorvetForm()
-    query_param = request.GET.get('filter', None)
-    if query_param and query_param == "pending":
-        table_title = 'Dossiers en cours'
-    elif query_param and query_param == "vin-error":
-        table_title = 'Dossiers avec erreur de VIN'
-    elif query_param and query_param == "corvet-error":
-        table_title = 'Dossiers avec erreur CORVET'
-    else:
-        table_title = 'Dossiers Clients'
+    query_param = request.GET.get('filter', '')
     return render(request, 'squalaetp/ajax_xelon_table.html', locals())
 
 
@@ -138,8 +123,9 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         if not self.request.is_ajax():
             data = form.cleaned_data['xml_data']
             vin = form.cleaned_data['vin']
-            defaults = defaults_dict(Corvet, data, 'vin')
-            Corvet.objects.update_or_create(vin=vin, defaults=defaults)
+            if data and vin:
+                defaults = defaults_dict(Corvet, data, 'vin')
+                Corvet.objects.update_or_create(vin=vin, defaults=defaults)
             out = StringIO()
             call_command("exportsqualaetp", stdout=out)
             if "Export error" in out.getvalue():
@@ -163,7 +149,8 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'modal_title': _('Product update for %(file)s' % {'file': self.object.numero_de_dossier})
+            'modal_title': _('Product update for %(file)s' % {'file': self.object.numero_de_dossier}),
+            'corvet': self.object.corvet
         })
         return context
 
@@ -264,7 +251,7 @@ class XelonViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         try:
             self._filter(request)
-            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 2, **request.query_params).values()
+            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 1, **request.query_params).values()
             serializer = self.serializer_class(xelon["items"], many=True)
             data = {
                 "data": serializer.data,
@@ -285,3 +272,5 @@ class XelonViewSet(viewsets.ModelViewSet):
         elif query and query == "corvet-error":
             self.queryset = self.queryset.filter(
                 vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
+        elif query:
+            self.queryset = Xelon.search(query)

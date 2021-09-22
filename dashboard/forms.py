@@ -1,5 +1,6 @@
 from django.forms.utils import ErrorList
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
@@ -60,13 +61,7 @@ class ShowCollapseForm(forms.ModelForm):
 
     class Meta:
         model = ShowCollapse
-        fields = ['general', 'motor', 'interior', 'diverse']
-        widgets = {
-            'general': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'motor': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'interior': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'diverse': forms.CheckboxInput(attrs={'class': 'form-control'})
-        }
+        exclude = ["user"]
 
 
 class PostForm(BSModalModelForm):
@@ -82,9 +77,16 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class SignUpForm(UserCreationForm):
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
+    group = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(), widget=FilteredSelectMultiple("Group", is_stacked=False), required=False)
     password1 = None
     password2 = None
+
+    class Media:
+        css = {
+            'all': ('/static/admin/css/widgets.css', '/static/admin/css/overrides.css'),
+        }
+        js = ('/admin/jsi18n',)
 
     class Meta:
         model = User

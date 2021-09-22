@@ -16,7 +16,6 @@ class MQTTClass(mqtt.Client):
     def on_connect(self, client, userdata, flags, rc):
         print("Connection: return code = {} | status = {}".format(rc, "OK" if rc == 0 else "fail"))
         if rc != 0:
-            self.PAYLOAD = {'temp': 'Hors ligne'}
             self.stop()
 
     def on_message(self, client, userdata, message):
@@ -26,11 +25,10 @@ class MQTTClass(mqtt.Client):
             volts = temp_val / 1023
             temp = "{:.1f}°C".format(((volts - 0.5) * 100) + config.MQTT_TEMP_ADJ)
             self.cntMessage = 0
-            thermal_chamber_use(temp)
             print("on_message : {}".format(temp))
-            self.PAYLOAD = {'temp': temp}
         except ValueError:
-            self.PAYLOAD = {'temp': 'Hors ligne'}
+            temp = 'Hors ligne'
+        self._current_value(temp)
 
     def on_subscribe(self, client, userdata, mid, granted_qos):
         print("Subscribed: "+str(mid)+" "+str(granted_qos))
@@ -40,7 +38,6 @@ class MQTTClass(mqtt.Client):
         self.cntMessage += 1
         print("no result: {} - connected: {}".format(self.cntMessage, self.is_connected()))
         if self.cntMessage >= 2:
-            self.PAYLOAD = {'temp': 'Hors ligne'}
             self.stop()
             self.cntMessage = 0
         return self.PAYLOAD
@@ -53,9 +50,14 @@ class MQTTClass(mqtt.Client):
                 self.loop_start()
         except OSError:
             print("*** MQTT Server no found ***")
-            self.PAYLOAD = {'temp': 'Hors ligne'}
+            self._current_value()
             self.cntMessage = 0
 
     def stop(self):
+        self._current_value()
         self.loop_stop()
         self.disconnect()
+
+    def _current_value(self, value='Hors ligne'):
+        self.PAYLOAD = {'temp': value}
+        thermal_chamber_use(value)

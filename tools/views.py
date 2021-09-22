@@ -3,17 +3,19 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.urls import reverse_lazy
 from django.http import JsonResponse
-from django.views.generic import TemplateView, ListView, UpdateView
+from django.views.generic import TemplateView, ListView, UpdateView, DetailView
+from django.views.generic.edit import FormMixin
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage
 from dashboard.forms import ParaErrorList
-from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
+from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm
 from utils.data.mqtt import MQTTClass
+from utils.django.urls import reverse_lazy, http_referer
+from api.utils import thermal_chamber_use
 
 MQTT_CLIENT = MQTTClass()
 
@@ -74,10 +76,8 @@ def soft_edit(request, soft_id):
 def thermal_chamber(request):
     title = _('Thermal chamber')
     table_title = _('Use of the thermal chamber')
-    now = timezone.now()
-    ThermalChamber.objects.filter(created_at__lt=now.date(), active=True).update(active=False)
+    thermal_chamber_use()
     thermals = ThermalChamber.objects.filter(active=True).order_by('created_at')
-    temp = None
     form = ThermalFrom(request.POST or None, error_class=ParaErrorList)
     if form.is_valid():
         if request.user.is_authenticated:
@@ -128,10 +128,7 @@ class TagXelonCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = 'Success: Création du fichier CALIBRE avec succès !'
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class UltimakerStreamView(LoginRequiredMixin, TemplateView):
@@ -165,10 +162,7 @@ class SupTechCreateView(BSModalCreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 def suptech_item_ajax(request):
@@ -201,17 +195,49 @@ def suptech_list(request):
     return render(request, 'tools/suptech/suptech_table.html', locals())
 
 
+class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
+    model = Suptech
+    template_name = 'tools/suptech/suptech_detail.html'
+    form_class = SuptechMessageForm
+
+    def get_success_url(self):
+        from django.urls import reverse
+        return reverse('tools:suptech_detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Tools"
+        context['card_title'] = _(f"SUPTECH N°{self.object.pk} - Detail")
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        SuptechMessage.objects.create(content=form.cleaned_data['content'], content_object=self.object)
+        messages.success(self.request, _('Success: The message has been added.'))
+        if form.send_email(self.request, self.object):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
+        return super().form_valid(form)
+
+
 class SuptechResponseView(PermissionRequiredMixin, UpdateView):
     permission_required = 'tools.change_suptech'
     model = Suptech
     form_class = SuptechResponseForm
     template_name = 'tools/suptech/suptech_update.html'
-    success_url = reverse_lazy('tools:suptech_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Tools"
-        context['card_title'] = _("Support Tech Response")
+        context['card_title'] = _(f"SUPTECH N°{self.object.pk} - Response")
         return context
 
     def form_valid(self, form):

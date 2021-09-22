@@ -1,5 +1,7 @@
-from io import StringIO
+import re
+from io import StringIO, BytesIO
 
+from django.http import FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
@@ -9,12 +11,17 @@ from django.template.loader import render_to_string
 from django.core.management import call_command
 from django.core.mail import EmailMessage
 from django.db.models import Q, Count
+from django.views.generic.edit import CreateView, UpdateView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+from reportlab.lib.pagesizes import A4
+from reportlab.graphics.barcode import code128
 
 from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
-from utils.django.urls import reverse, reverse_lazy
+from utils.django.urls import reverse, reverse_lazy, http_referer
 
 from utils.conf import string_to_list
 from utils.django.datatables import QueryTableByArgs
@@ -24,7 +31,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm, AddEtudeBatchForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm
+    EcuDumpModelForm, AddEtudeBatchForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
 )
 
 context = {
@@ -195,24 +202,57 @@ class RefRemanCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = _('Success: Reman reference was created.')
     success_url = reverse_lazy('reman:base_ref_table')
 
+    def get_initial(self):
+        initial = super().get_initial()
+        ecu_dict = EcuRefBase.objects.filter(reman_reference=self.request.GET.get('ref', None)).values().first()
+        if ecu_dict:
+            for field, value in ecu_dict.items():
+                if field not in ['reman_reference']:
+                    initial[field] = value
+                if field == 'ecu_type_id' and value is not None:
+                    initial['hw_reference'] = EcuType.objects.get(pk=value).hw_reference
+        return initial
 
-class DefaultCreateView(PermissionRequiredMixin, BSModalCreateView):
+
+class RefRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal ECU Hardware update """
+    model = EcuRefBase
+    permission_required = 'reman.change_ecurefbase'
+    template_name = 'reman/modal/ref_reman_update.html'
+    form_class = UpdateRefRemanForm
+    success_message = _('Success: Reman reference was updated.')
+    success_url = reverse_lazy('reman:base_ref_table')
+
+
+class DefaultCreateView(PermissionRequiredMixin, CreateView):
     """ View of modal default create """
     permission_required = 'reman.add_default'
-    template_name = 'reman/modal/default_create.html'
+    template_name = 'reman/default_form.html'
     form_class = DefaultForm
     success_message = _('Success: Reman Default was created.')
     success_url = reverse_lazy('reman:default_table')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Reman"
+        context['card_title'] = _('Create Default')
+        return context
 
-class DefaultUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+
+class DefaultUpdateView(PermissionRequiredMixin, UpdateView):
     """ View of modal default update """
     model = Default
     permission_required = 'reman.change_default'
-    template_name = 'reman/modal/default_update.html'
+    template_name = 'reman/default_form.html'
     form_class = DefaultForm
     success_message = _('Success: Reman Default was updated.')
     success_url = reverse_lazy('reman:default_table')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Reman"
+        context['card_title'] = _('Update Default')
+        return context
 
 
 """
@@ -228,6 +268,10 @@ def check_parts(request):
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if request.POST and form.is_valid():
         psa_barcode = form.cleaned_data['psa_barcode']
+        if re.match(r'^89661-\w{5}$', psa_barcode):
+            psa_barcode = psa_barcode[:11]
+        else:
+            psa_barcode = psa_barcode[:10]
         try:
             ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
             context.update(locals())
@@ -235,14 +279,14 @@ def check_parts(request):
                 return render(request, 'reman/part/part_detail.html', context)
         except EcuModel.DoesNotExist:
             pass
-        return redirect(reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}))
+        return redirect(reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode}))
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/part/part_check.html', context)
 
 
-@permission_required('reman.add_ecumodel')
-def ref_base_create(request, psa_barcode):
+@permission_required('reman.check_ecumodel')
+def create_part(request, psa_barcode):
     next_form = int(request.GET.get('next', 0))
     if next_form == 1:
         card_title = "Ajout Type ECU"
@@ -281,7 +325,7 @@ def ref_base_create(request, psa_barcode):
         form.save()
         next_form += 1
         return redirect(
-            reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
+            reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
     context.update(locals())
     return render(request, 'reman/part/part_create_form.html', context)
 
@@ -374,6 +418,38 @@ def batch_table(request):
     batchs = batchs.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
     context.update(locals())
     return render(request, 'reman/batch_table.html', context)
+
+
+@permission_required('reman.pdfgen_batch')
+def batch_pdf_generate(request, pk):
+    batch = get_object_or_404(Batch, pk=pk)
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+    p.setTitle(f"batch_{batch.batch_number}")
+    p.rotate(90)
+    p.setFont('Courier', 24)
+    p.setLineWidth(4)
+    p.drawString(60, -130, "REFERENCE REMAN :")
+    p.drawString(60, -230, "Type boitier : ")
+    p.drawString(60, -330, "N° LOT :")
+    p.drawString(60, -430, "Quantité carton :")
+
+    p.setFont('Courier-Bold', 36)
+    p.drawString(380, -130, str(batch.ecu_ref_base.reman_reference))
+    barcode = code128.Code128(str(batch.ecu_ref_base.reman_reference), barWidth=0.5 * mm, barHeight=10 * mm)
+    barcode.drawOn(p, 610, -130)
+    p.drawString(380, -230, str(batch.ecu_ref_base.ecu_type.technical_data[:20]))
+    p.drawString(380, -330, str(batch.batch_number))
+    p.line(470, -340, 530, -340)
+    barcode = code128.Code128(str(batch.batch_number), barWidth=0.5 * mm, barHeight=10 * mm)
+    barcode.drawOn(p, 610, -330)
+    p.drawString(380, -430, str(batch.box_quantity))
+    # p.line(380, -440,  400, -440)
+    p.showPage()
+    p.save()
+
+    buffer.seek(0)
+    return FileResponse(buffer, filename=f"batch_{batch.batch_number}.pdf")
 
 
 @login_required()
@@ -478,10 +554,7 @@ class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
         return initial
 
     def get_success_url(self):
-        if 'HTTP_REFERER' in self.request.META:
-            return self.request.META['HTTP_REFERER']
-        else:
-            return reverse_lazy('index')
+        return http_referer(self.request)
 
 
 class EcuHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):

@@ -15,40 +15,70 @@
     <table class="table table-bordered table-sm text-nowrap" id="baseRefTable" style="width: 100%;">
         <thead>
         <tr>
+            <th></th>
+            <th></th>
             <th>Référence REMAN</th>
             <th>Module Moteur</th>
             <th>Réf. Hardware</th>
             <th>Fournisseur</th>
-            <th>Code barre PSA</th>
             <th>XELON - Code produit</th>
-            <th>XELON - Emplacement</th>
+            <th>REF_CAL_OUT</th>
+            <th>REF_PSA_OUT</th>
+            <th>REQ_DIAG</th>
+            <th>OPENDIAG</th>
+            <th>REQ_REF</th>
+            <th>REF_MAT</th>
+            <th>REF_COMP</th>
+            <th>REQ_CAL</th>
+            <th>CAL_KTAG</th>
+            <th>REQ_STATUS</th>
+            <th>STATUS</th>
+            <th>TEST_CLEAR_MEMORY</th>
+            <th>CLE_APPLI</th>
         </tr>
         </thead>
         <tbody>
 
         {% for ref in refs %}
-            {% with ecus=ref.ecu_type.ecumodel_set.all %}
-                <tr>
-                    <td>{{ ref.reman_reference }}</td>
-                    <td>{{ ref.ecu_type.technical_data }}</td>
-                    <td>{{ ref.ecu_type.hw_reference }}</td>
-                    <td>{{ ref.ecu_type.supplier_oe }}</td>
-                    <td>
-                        {% if ecus|length > 1 %}
-                            <a data-toggle="collapse" href="#ref_{{ ref }}" role="button" aria-expanded="false">
-                                Afficher
-                            </a>
-                            <div class="collapse mt-2" id="ref_{{ ref }}">
-                                {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
-                            </div>
-                        {% else %}
-                            {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
-                        {% endif %}
-                    </td>
-                    <td>{{ ref.ecu_type.spare_part.code_produit }}</td>
-                    <td>{{ ref.ecu_type.spare_part.code_emplacement }}</td>
-                </tr>
-            {% endwith %}
+
+            <tr>
+                <td class="bg-white">
+                    {% if perms.reman.change_ecurefbase %}
+                        <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:ref_reman_update' ref.pk %}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                    {% endif %}
+                </td>
+                <td class="bg-white">
+                    {% if perms.reman.add_ecurefbase %}
+                        <button title="Copie" class="bs-large-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'reman:ref_reman_create' %}?ref={{ ref.reman_reference }}">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-copy"></i>
+                    {% endif %}
+                </td>
+                <td>{{ ref.reman_reference }}</td>
+                <td>{{ ref.ecu_type.technical_data }}</td>
+                <td>{{ ref.ecu_type.hw_reference }}</td>
+                <td>{{ ref.ecu_type.supplier_oe }}</td>
+                <td>{{ ref.ecu_type.spare_part.code_produit }}</td>
+                <td>{{ ref.ref_cal_out }}</td>
+                <td>{{ ref.ref_psa_out }}</td>
+                <td>{{ ref.req_diag }}</td>
+                <td>{{ ref.open_diag }}</td>
+                <td>{{ ref.req_ref }}</td>
+                <td>{{ ref.ref_mat }}</td>
+                <td>{{ ref.ref_comp }}</td>
+                <td>{{ ref.req_cal }}</td>
+                <td>{{ ref.cal_ktag }}</td>
+                <td>{{ ref.req_status }}</td>
+                <td>{{ ref.status }}</td>
+                <td>{{ ref.test_clear_memory }}</td>
+                <td>{{ ref.cle_appli }}</td>
+            </tr>
         {% endfor %}
 
         </tbody>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 14:00+0200\n"
+"POT-Creation-Date: 2021-09-22 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,22 +20,20 @@ msgstr ""
 
 #: tools/forms.py:103
 msgid "Username not found."
-msgstr ""
+msgstr "Utilisateur non trouvé."
 
-#: tools/models.py:20
+#: tools/models.py:25
 msgid "CALIBRE file exists !"
 msgstr "Le fichier CALIBRE existe !"
 
 #: tools/templates/tools/modal/suptech_create.html:125
 #: tools/templates/tools/modal/tag_xelon.html:37
 #: tools/templates/tools/modal/thermal_delete.html:20
-#: tools/templates/tools/suptech/suptech_update.html:87
+#: tools/templates/tools/suptech/suptech_update.html:99
 msgid "Cancel"
 msgstr "Annuler"
 
 #: tools/templates/tools/modal/suptech_create.html:126
-#, fuzzy
-#| msgid "created at"
 msgid "Create"
 msgstr "créé le"
 
@@ -76,9 +74,17 @@ msgstr "Lien de téléchargement"
 msgid "Validation date"
 msgstr "Date de validation"
 
-#: tools/templates/tools/suptech/suptech_update.html:88
+#: tools/templates/tools/suptech/suptech_detail.html:90
+msgid "Respond to request"
+msgstr "Répondre à la demande"
+
+#: tools/templates/tools/suptech/suptech_detail.html:145
+msgid "Send"
+msgstr "Envoyer"
+
+#: tools/templates/tools/suptech/suptech_update.html:100
 msgid "Update"
-msgstr ""
+msgstr "Mettre à jour"
 
 #: tools/templates/tools/thermal_chamber.html:35
 msgid "Add"
@@ -96,40 +102,40 @@ msgstr "Température Chambre Thermique"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: tools/views.py:25
+#: tools/views.py:27
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:33
+#: tools/views.py:35
 msgid "Tools"
 msgstr "Outils"
 
-#: tools/views.py:34
+#: tools/views.py:36
 msgid "Tag Xelon list"
 msgstr "Liste Tag Xelon"
 
-#: tools/views.py:43
+#: tools/views.py:45
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:50
+#: tools/views.py:52
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
-#: tools/views.py:65
+#: tools/views.py:67
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"
 
-#: tools/views.py:69 tools/views.py:85
+#: tools/views.py:71 tools/views.py:85
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:75 tools/views.py:108
+#: tools/views.py:77 tools/views.py:108
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: tools/views.py:76
+#: tools/views.py:78
 msgid "Use of the thermal chamber"
 msgstr "Utilisation de la chambre thermique"
 
@@ -137,20 +143,32 @@ msgstr "Utilisation de la chambre thermique"
 msgid "Thermal chamber list"
 msgstr "liste Chambre thermique"
 
-#: tools/views.py:152
+#: tools/views.py:149
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:164 tools/views.py:208
+#: tools/views.py:161 tools/views.py:225 tools/views.py:245
 msgid "Success: The email has been sent."
-msgstr ""
+msgstr "Succès: L'email a été envoyé."
 
-#: tools/views.py:177
-#, fuzzy
-#| msgid "Software list"
+#: tools/views.py:182
 msgid "Support Tech list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:203
-msgid "Support Tech Response"
-msgstr ""
+#: tools/views.py:210
+#, python-brace-format
+msgid "SUPTECH N°{self.object.pk} - Detail"
+msgstr "SUPTECH N°{self.object.pk} - Détail"
+
+#: tools/views.py:223
+msgid "Success: The message has been added."
+msgstr "Succès: Le message a été ajouté."
+
+#: tools/views.py:227 tools/views.py:247
+msgid "Warning: Data update but without sending the email"
+msgstr "Attention : mise à jour des données mais sans envoi de l'email"
+
+#: tools/views.py:240
+#, python-brace-format
+msgid "SUPTECH N°{self.object.pk} - Response"
+msgstr "SUPTECH N°{self.object.pk} - Réponse"

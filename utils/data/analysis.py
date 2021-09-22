@@ -5,9 +5,9 @@ from django.db.models.functions import ExtractDay, TruncDay
 from django.db.models.aggregates import Count, Sum
 from django.db.models import Q, F
 
-from squalaetp.models import Xelon, Indicator, ProductCategory
+from squalaetp.models import Xelon, Indicator
 from psa.models import Corvet
-from tools.models import Suptech, BgaTime
+from tools.models import Suptech, BgaTime, ThermalChamberMeasure
 
 
 class ProductAnalysis:
@@ -46,27 +46,31 @@ class ProductAnalysis:
         :return:
             Dictionary of different activities
         """
-        psa = self._late_filter('PSA')
-        clarion = self._late_filter('CLARION')
-        etude = self._late_filter('ETUDE')
-        autre = self._late_filter('AUTRE')
-        calc_mot = self._late_filter('CALCULATEUR')
-        defaut = self._late_filter('DEFAUT')
+        psa = self.lateQueryset.filter(product__category='PSA')
+        clarion = self.lateQueryset.filter(product__category='CLARION')
+        etude = self.lateQueryset.filter(product__category='ETUDE')
+        autre = self.lateQueryset.filter(product__category='AUTRE')
+        calc_mot = self.lateQueryset.filter(product__category='CALCULATEUR')
+        defaut = self.lateQueryset.filter(product__category='DEFAUT')
+        return locals()
+
+    def admin_products(self):
+        admin = self.QUERYSET.filter(type_de_cloture='Admin').order_by('-delai_au_en_jours_ouvres')
+        return locals()
+
+    def autotronik(self):
         autotronik = self.QUERYSET_AUTOTRONIK.exclude(
             type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         return locals()
 
-    def corvet_count(self):
+    @staticmethod
+    def corvet_count():
         """
         Function to count the number of Corvet data
         :return:
             number of Corvet data
         """
         return Corvet.objects.all().count()
-
-    def _late_filter(self, value):
-        query_list = [query.product_model for query in ProductCategory.objects.filter(category=value)]
-        return self.lateQueryset.filter(modele_produit__in=query_list)
 
 
 class IndicatorAnalysis:
@@ -112,14 +116,16 @@ class IndicatorAnalysis:
 class ToolsAnalysis:
     SUPTECH_LABELS = ["1 à 2 jours", "3 à 6 jours", "7 jours et plus"]
     BGA = {"bgaOneValue": "DES-48", "bgaTwoValue": "DES-51"}
+    LAST_60_DAYS = timezone.datetime.today() - timezone.timedelta(60)
+    LAST_30_DAYS = timezone.datetime.today() - timezone.timedelta(30)
     TOTAL_HOURS = 7 * 60 * 60
 
     def __init__(self):
-        last_60_days = timezone.datetime.today() - timezone.timedelta(60)
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
         suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
-        self.bgaTimes = BgaTime.objects.filter(date__gte=last_60_days)
+        self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
+        self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
         self.total = None
 
     def suptech(self):
@@ -136,20 +142,28 @@ class ToolsAnalysis:
         queryset = self._bga_annotate(self.bgaTimes)
         for query in queryset:
             data["bgaAreaLabels"].append(query['sum_date'].strftime("%d/%m/%Y"))
-            data["bgaTotalValue"].append(self._percent(query['sum_duration']))
+            data["bgaTotalValue"].append(self._percent(query['sum_duration'], 2))
         for key, value in self.BGA.items():
             queryset = self._bga_annotate(self.bgaTimes.filter(name=value))
             for query in queryset:
                 data[key].append(self._percent(query['sum_duration']))
         return data
 
-    def _percent(self, value,):
+    def thermal_chamber_measure(self):
+        data = {"tcAreaLabels": [], "tcTempValue": []}
+        if self.tcMeasure:
+            for query in self.tcMeasure.filter(datetime__gte=self.LAST_30_DAYS):
+                data["tcAreaLabels"].append(timezone.localtime(query.datetime).strftime("%d/%m/%Y %H:%M"))
+                data["tcTempValue"].append(query.temp[:-2])
+        return data
+
+    def _percent(self, value, total_multiplier=1):
         if self.total and value != 0:
-            return round(100 * value / self.total, 1)
+            return round(100 * value / (self.total * total_multiplier), 1)
         else:
             return 0
 
     @staticmethod
     def _bga_annotate(queryset):
         return queryset.annotate(
-            sum_date=TruncDay("date")).values("sum_date").annotate(sum_duration=Sum('duration')).order_by("-sum_date")
+            sum_date=TruncDay("date")).values("sum_date").annotate(sum_duration=Sum('duration')).order_by("sum_date")

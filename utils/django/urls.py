@@ -17,3 +17,7 @@ def reverse_lazy(*args, **kwargs):
     if get:
         url += '?' + urlencode(get)
     return url
+
+
+def http_referer(request):
+    return request.META.get('HTTP_REFERER', reverse_lazy('index'))

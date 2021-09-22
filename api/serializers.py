@@ -1,26 +1,9 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
 from psa.serializers import CorvetSerializer
 from squalaetp.models import Xelon
 from raspeedi.models import Raspeedi, UnlockProduct
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="api:user-detail")
-    groups = serializers.HyperlinkedIdentityField(view_name="api:group-detail")
-
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'groups')
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="api:user-detail")
-
-    class Meta:
-        model = Group
-        fields = ('url', 'name')
+from tools.models import ThermalChamberMeasure, BgaTime
 
 
 class RaspeediSerializer(serializers.ModelSerializer):
@@ -70,3 +53,31 @@ class UnlockUpdateSerializer(UnlockSerializer):
     class Meta:
         model = UnlockProduct
         fields = UnlockSerializer.Meta.fields + ('active',)
+
+
+class ThermalChamberMeasureSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ThermalChamberMeasure
+        fields = "__all__"
+
+
+class ThermalChamberMeasureCreateSerializer(ThermalChamberMeasureSerializer):
+
+    class Meta:
+        model = ThermalChamberMeasure
+        fields = ('value',)
+
+
+class BgaTimeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BgaTime
+        fields = "__all__"
+
+
+class BgaTimeCreateSerializer(BgaTimeSerializer):
+
+    class Meta:
+        model = BgaTime
+        fields = ('name',)

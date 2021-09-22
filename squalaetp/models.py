@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -30,6 +31,7 @@ class Xelon(models.Model):
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey('squalaetp.ProductCategory', on_delete=models.SET_NULL, null=True, blank=True)
     actions = GenericRelation('Action')
 
     class Meta:
@@ -47,8 +49,28 @@ class Xelon(models.Model):
             self.corvet = Corvet.objects.get(pk=self.vin)
             self.vin_error = False
         except ObjectDoesNotExist:
-            pass
+            self.corvet = None
+        if self.modele_produit:
+            if not ProductCategory.objects.filter(product_model=self.modele_produit):
+                ProductCategory.objects.create(product_model=self.modele_produit)
+            self.product = ProductCategory.objects.get(product_model=self.modele_produit)
         super(Xelon, self).save(*args, **kwargs)
+
+    @classmethod
+    def search(cls, value):
+        query = value.upper().strip()
+        return cls.objects.filter(Q(numero_de_dossier__exact=query) |
+                                  Q(vin__exact=query) | Q(vin__endswith=query) |
+                                  Q(corvet__electronique_44l__contains=query) |
+                                  Q(corvet__electronique_44x__contains=query) |
+                                  Q(corvet__electronique_44a__contains=query) |
+                                  Q(corvet__electronique_14l__exact=query) |
+                                  Q(corvet__electronique_14x__exact=query) |
+                                  Q(corvet__electronique_14a__exact=query) |
+                                  Q(corvet__electronique_14b__exact=query) |
+                                  Q(corvet__electronique_44b__exact=query) |
+                                  Q(corvet__electronique_16p__exact=query) |
+                                  Q(corvet__electronique_46p__exact=query))
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
@@ -126,7 +148,11 @@ class ProductCategory(models.Model):
     ]
 
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
-    category = models.CharField('catégorie', max_length=50, choices=CHOICES, blank=True)
+    category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
+    niv_i_users = models.ManyToManyField(User, related_name='niv_i_prods', blank=True)
+    niv_l_users = models.ManyToManyField(User, related_name='niv_l_prods', blank=True)
+    niv_u_users = models.ManyToManyField(User, related_name='niv_u_prods', blank=True)
+    niv_o_users = models.ManyToManyField(User, related_name='niv_o_prods', blank=True)
 
     class Meta:
         verbose_name = "Catégorie Produit"

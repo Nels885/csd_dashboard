@@ -1,19 +1,23 @@
 import requests
 
-from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
+from django.utils.translation import ugettext as _
+from django.utils import timezone
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions, authentication
+from rest_framework import viewsets, permissions, serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 from constance import config
 
-from .serializers import UserSerializer, GroupSerializer, ProgSerializer, CalSerializer, RaspeediSerializer
-from .serializers import UnlockSerializer, UnlockUpdateSerializer
+from .serializers import (
+    ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer, UnlockUpdateSerializer,
+    ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer, BgaTimeSerializer, BgaTimeCreateSerializer
+)
 from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, EcuRefBaseSerializer
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
-from reman.models import Batch, EcuModel, Repair
+from reman.models import Batch, EcuModel, Repair, EcuRefBase
+from tools.models import ThermalChamberMeasure, BgaTime
 
 from .utils import TokenAuthSupportQueryString
 
@@ -24,22 +28,6 @@ def documentation(request):
     card_title = "Documentation"
     domain = config.WEBSITE_DOMAIN
     return render(request, 'api/doc.html', locals())
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """ API endpoint that allows users to be viewed or edited. """
-    authentication_classes = (authentication.SessionAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """ API endpoint that allows groups to be viewed or edited. """
-    authentication_classes = (authentication.SessionAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
 
 
 class UnlockViewSet(viewsets.ModelViewSet):
@@ -117,13 +105,13 @@ class RemanCheckOutViewSet(viewsets.ModelViewSet):
     queryset = EcuModel.objects.all().order_by('psa_barcode')
     serializer_class = RemanCheckOutSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['psa_barcode', 'ecu_type__ecu_ref_base__reman_reference']
+    search_fields = ['psa_barcode', 'ecu_type__ecurefbase__reman_reference', 'ecu_type__hw_reference']
     http_method_names = ['get']
 
 
 class RemanRepairViewSet(viewsets.ModelViewSet):
-    # authentication_classes = (TokenAuthSupportQueryString,)
-    permissions_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Repair.objects.all()
     serializer_class = RemanRepairSerializer
     filter_backends = [SearchFilter, OrderingFilter]
@@ -134,9 +122,9 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
 
 
 class RemanEcuRefBaseViewSet(viewsets.ModelViewSet):
-    # authentication_classes = (TokenAuthSupportQueryString,)
-    permissions_classes = (permissions.IsAuthenticated,)
-    queryset = EcuModel.objects.all().order_by('id')
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = EcuRefBase.objects.all().order_by('id')
     serializer_class = EcuRefBaseSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     http_method_names = ['get']
@@ -156,3 +144,61 @@ class NacLicenseView(APIView):
         if response.status_code == 200:
             return redirect(response.url)
         return Response({"error": "Request failed"}, status=response.status_code)
+
+
+class ThermalChamberMeasureViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = ThermalChamberMeasure.objects.all()
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ThermalChamberMeasureCreateSerializer
+        else:
+            return ThermalChamberMeasureSerializer
+
+    def create(self, *args, **kwargs):
+        data = self.request.data
+        if self.request.query_params.get('value', None):
+            data['value'] = self.request.query_params.get('value', None)
+        serializer = ThermalChamberMeasureCreateSerializer(data=data)
+        if serializer.is_valid():
+            measure = ThermalChamberMeasure.objects.order_by('datetime').last()
+            if not measure or (timezone.now() - measure.datetime).seconds >= (10 * 60):
+                serializer.save()
+                return Response(serializer.data)
+            raise serializers.ValidationError({'warning': _('Time between 2 requests too short')})
+        return Response(serializer.errors)
+
+
+class BgaTimeViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = BgaTime.objects.all()
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return BgaTimeCreateSerializer
+        else:
+            return BgaTimeSerializer
+
+    def create(self, *args, **kwargs):
+        data = self.request.data
+        device = self.request.query_params.get("device", None)
+        status = self.request.query_params.get("status", None)
+        if device and status:
+            data['name'] = device
+            serializer = BgaTimeCreateSerializer(data=data)
+            try:
+                bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
+                bga_is_active.save(status=status)
+            except BgaTime.DoesNotExist:
+                pass
+            if status.upper() == "START" and serializer.is_valid():
+                serializer.save()
+            return Response({"response": "OK", "device": device, "status": status.upper()})
+        return Response({"response": "ERROR"})

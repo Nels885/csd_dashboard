@@ -126,12 +126,22 @@ class ToolsTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_suptech_detail_page(self):
+        suptech = Suptech.objects.first()
+        url = reverse('tools:suptech_detail', kwargs={'pk': suptech.pk})
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
     def test_response_suptech_page(self):
         suptech = Suptech.objects.first()
         url = reverse('tools:suptech_update', kwargs={'pk': suptech.pk})
+        url_detail = reverse('tools:suptech_detail', kwargs={'pk': suptech.pk})
         form_data = {
-            'xelon': 'A123456789', 'item': 'Hot Line Tech', 'time': '5', 'info': 'test', 'rmq': 'test',
-            'action': 'test', 'status': 'Cloturée', 'deadline': ''
+            'user': self.user, 'xelon': 'A123456789', 'item': 'Hot Line Tech', 'time': '5', 'info': 'test',
+            'rmq': 'test', 'action': 'test', 'status': 'Cloturée', 'deadline': ''
         }
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
@@ -140,13 +150,13 @@ class ToolsTestCase(UnitTest):
         self.login()
 
         response = self.client.post(url, form_data)
-        self.assertRedirects(response, reverse('tools:suptech_list'), status_code=302)
+        self.assertRedirects(response, url_detail, status_code=302)
 
         # If the creation user does not exist
         suptech.created_by = None
         suptech.save()
         response = self.client.post(url, form_data)
-        self.assertRedirects(response, reverse('tools:suptech_list'), status_code=302)
+        self.assertRedirects(response, url_detail, status_code=302)
 
     def test_bga_time_view(self):
         url = reverse('tools:bga_time')

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 14:00+0200\n"
+"POT-Creation-Date: 2021-09-22 16:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: api/views.py:172
+msgid "Time between 2 requests too short"
+msgstr ""
 
 #: import_export/templates/import_export/detail_csd.html:21
 #: import_export/templates/import_export/detail_csd.html:45
@@ -37,11 +41,11 @@ msgstr "Importation Excel"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:164 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:165 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:165 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:166 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
 
@@ -90,7 +94,7 @@ msgid "Guest"
 msgstr "Invité"
 
 #: templates/base/top_bar.html:171 templates/nav/nav_interface.html:21
-#: templates/registration/login.html:47
+#: templates/registration/login.html:62
 msgid "Login"
 msgstr "S'identifier"
 
@@ -283,7 +287,7 @@ msgstr "Bienvenue sur le tableau de bord CSD"
 msgid "Please enter your login information to continue."
 msgstr "Veuillez renseigner vos informations de connexion pour continuer."
 
-#: templates/registration/login.html:53
+#: templates/registration/login.html:68
 msgid "Forgot Password?"
 msgstr ""
 

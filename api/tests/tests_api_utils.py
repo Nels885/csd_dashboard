@@ -40,3 +40,18 @@ class ApiUtilsTestCase(UnitTest):
         self.assertEqual(len(thermals), 1)
         for thermal in thermals:
             self.assertEqual(thermal.operating_mode, "FROID")
+
+    def test_thermal_chamber_use_hors_ligne(self):
+        temp = "41°C"
+        thermal_chamber_use(temp)
+        temp = "Hors ligne"
+        thermal_chamber_use(temp)
+        thermals = ThermalChamber.objects.filter(start_time__isnull=False, stop_time__isnull=False, active=False)
+        self.assertEqual(len(thermals), 1)
+
+        temp = "-20°C"
+        thermal_chamber_use(temp)
+        temp = "Hors ligne"
+        thermal_chamber_use(temp)
+        thermals = ThermalChamber.objects.filter(start_time__isnull=False, stop_time__isnull=False, active=False)
+        self.assertEqual(len(thermals), 2)

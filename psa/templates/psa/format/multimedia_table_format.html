@@ -1,0 +1,91 @@
+<table class="table table-bordered table-striped table-sm mt-4">
+
+    {% include 'format/collapse_thead.html' with id="collapseMedia" expanded=collapse.media thead_title="MULTIMEDIA :" %}
+
+    <tbody class="collapse {% if collapse.media %}show{% endif %}" id="collapseMedia">
+    <tr>
+        <td class="text-dark td-ihm">Référence Comp. Mat.</td>
+        <td>{{ object.hw_reference|default:"???" }}</td>
+    </tr>
+    {% if object.label_ref %}
+        <tr>
+            <td class="text-dark td-ihm">Réf. étiquette</td>
+            <td>{{ object.label_ref }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td class="text-dark td-ihm">Modèle</td>
+        <td>{{ object.get_name_display|default:"???" }}</td>
+    </tr>
+    {% if object.level %}
+        <tr>
+            <td class="text-dark td-ihm">Niveau</td>
+            <td>{{ object.level }}</td>
+        </tr>
+    {% endif %}
+    {% if object.extra %}
+        <tr>
+            <td class="text-dark td-ihm">Supplément</td>
+            <td>{{ object.extra }}</td>
+        </tr>
+    {% endif %}
+    {% if object.supplier_oe %}
+        <tr>
+            <td class="text-dark td-ihm">Fabriquant</td>
+            <td>{{ object.supplier_oe }}</td>
+        </tr>
+    {% endif %}
+    {% if object.type %}
+        <tr>
+            <td class="text-dark td-ihm">Type</td>
+            <td>{{ object.get_type_display }}</td>
+        </tr>
+    {% endif %}
+    {% if object.name %}
+        <tr>
+            <td class="text-dark td-ihm">DAB</td>
+            <td>{% if object.dab %}Oui{% else %}Non{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Caméra de recul</td>
+            <td>{% if object.cam %}Oui{% else %}Non{% endif %}</td>
+        </tr>
+    {% endif %}
+    {% if object.jukebox %}
+        <tr>
+            <td class="text-dark td-ihm">Jukebox</td>
+            <td>{% if object.jukebox %}Oui{% else %}Non{% endif %}</td>
+        </tr>
+    {% endif %}
+    {% if object.carplay %}
+        <tr>
+            <td class="text-dark td-ihm">CarPlay</td>
+            <td>{% if object.carplay %}Oui{% else %}Non{% endif %}</td>
+        </tr>
+    {% endif %}
+    {% if object.media %}
+        <tr>
+            <td class="text-dark td-ihm">Média</td>
+            <td>{{ object.get_media_display }}</td>
+        </tr>
+    {% endif %}
+    {% if object.lvds_con %}
+        <tr>
+            <td class="text-dark td-ihm">Connecteur LVDS</td>
+            <td>{{ object.lvds_con }}</td>
+        </tr>
+    {% endif %}
+    {% if object.ant_con %}
+        <tr>
+            <td class="text-dark td-ihm">Connecteur antenne</td>
+            <td>{{ object.ant_con }}</td>
+        </tr>
+    {% endif %}
+    {% if object.usb_con %}
+        <tr>
+            <td class="text-dark td-ihm">Connecteur USB</td>
+            <td>{{ object.usb_con }}</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

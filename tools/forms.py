@@ -5,6 +5,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
+from django.conf import settings
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 from constance import config
@@ -14,7 +15,7 @@ from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 
-from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem
+from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage
 from .tasks import cmd_suptech_task, send_email_task
 
 
@@ -106,8 +107,8 @@ class SuptechModalForm(BSModalModelForm):
         current_site = get_current_site(self.request)
         from_email = self.cleaned_data["username"].email
         files = self.request.FILES.getlist('attach')
-        subject = f"!!! Info Support Tech : {self.instance.item} !!!"
-        context = {"email": from_email, "suptech": self.instance, 'domain': current_site.domain}
+        subject = f"!!! Info Support Tech n°{self.instance.id} : {self.instance.item} !!!"
+        context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
         email = EmailMessage(
             subject=subject, body=message, from_email=from_email,
@@ -123,6 +124,10 @@ class SuptechModalForm(BSModalModelForm):
         user = self.cleaned_data['username']
         suptech.date = timezone.now()
         suptech.user = f"{user.first_name} {user.last_name}"
+        try:
+            suptech.category = SuptechItem.objects.get(name=suptech.item).category
+        except SuptechItem.DoesNotExist:
+            pass
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
@@ -148,11 +153,11 @@ class SuptechResponseForm(forms.ModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
+        fields = ['user', 'xelon', 'item', 'category', 'time', 'info', 'rmq', 'action', 'status', 'deadline']
 
     def send_email(self, request):
         try:
-            subject = f"!!! Info Support Tech : {self.instance.item} !!!"
+            subject = f"!!! Info Support Tech n°{self.instance.id} : {self.instance.item} !!!"
             context = {"user": request.user, "suptech": self.instance}
             message = render_to_string('tools/email_format/suptech_response_email.html', context)
             send_email_task.delay(
@@ -172,3 +177,25 @@ class SuptechResponseForm(forms.ModelForm):
             suptech.save()
             cmd_suptech_task.delay()
         return suptech
+
+
+class SuptechMessageForm(forms.ModelForm):
+
+    class Meta:
+        model = SuptechMessage
+        fields = ['content']
+
+    @staticmethod
+    def send_email(request, instance):
+        try:
+            current_site = get_current_site(request)
+            subject = f"!!! Info Support Tech n°{instance.id} : {instance.item} !!!"
+            to_list = config.SUPTECH_TO_EMAIL_LIST + "; " + instance.created_by.email
+            context = {'suptech': instance, 'domain': current_site.domain}
+            message = render_to_string('tools/email_format/suptech_message_email.html', context)
+            send_email_task.delay(
+                subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=[request.user.email]
+            )
+            return True
+        except AttributeError:
+            return False

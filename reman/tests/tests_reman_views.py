@@ -20,6 +20,7 @@ class RemanTestCase(UnitTest):
         self.repair = Repair.objects.create(
             batch=self.batch, identify_number="C001010001", created_by=self.user, status="Réparé", quality_control=True)
         self.authError = {"detail": "Informations d'authentification non fournies."}
+        Default.objects.create(code='TEST1', description='Ceci est le test 1')
 
     def test_repair_table_page(self):
         url = reverse('reman:repair_table')
@@ -107,10 +108,14 @@ class RemanTestCase(UnitTest):
             self.assertFormError(response, 'form', 'psa_barcode', _('The barcode is invalid'))
 
         # Valid form
-        for barcode in ['9600000000', '9687654321', '9800000000', '9887654321']:
-            response = self.client.post(url, {'psa_barcode': barcode})
+        barcode_list = [
+            ('9600000000', '9600000000'), ('9687654321', '9687654321'), ('9800000000', '9800000000'),
+            ('9887654321', '9887654321'), ('96876543210000000000', '9687654321'), ('89661-0H390', '89661-0H390')
+        ]
+        for barcode in barcode_list:
+            response = self.client.post(url, {'psa_barcode': barcode[0]})
             self.assertRedirects(
-                response, reverse('reman:create_ref_base', kwargs={'psa_barcode': barcode}), status_code=302)
+                response, reverse('reman:part_create', kwargs={'psa_barcode': barcode[1]}), status_code=302)
         response = self.client.post(url, {'psa_barcode': self.psaBarcode})
         ecu = EcuModel.objects.get(psa_barcode=self.psaBarcode)
         self.assertEquals(response.context['ecu'], ecu)
@@ -179,13 +184,13 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data, self.authError)
 
-    def test_ref_base_create_view(self):
+    def test_part_create_view(self):
         psa_barcode = '9676543210'
-        url = reverse('reman:create_ref_base', kwargs={'psa_barcode': psa_barcode})
+        url = reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
-        self.add_perms_user(EcuModel, 'add_ecumodel')
+        self.add_perms_user(EcuModel, 'check_ecumodel')
         self.login()
         for nb in range(2):
             response = self.client.get(url + f"?next={nb}")
@@ -204,3 +209,75 @@ class RemanTestCase(UnitTest):
         for nb in range(2):
             response = self.client.get(url + f"?next={nb}")
             self.assertEqual(response.status_code, 200)
+
+    def test_batch_pdf_generate(self):
+        url = reverse('reman:batch_pdf', kwargs={'pk': self.batch.pk})
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(Batch, 'pdfgen_batch')
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_default(self):
+        """
+        Create Default through CreateView.
+        """
+        self.add_perms_user(Default, 'add_default')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('reman:create_default'),
+            data={
+                'code': '',
+                'description': '',
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        defaults = Default.objects.all()
+        self.assertEqual(defaults.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:create_default'),
+            data={
+                'code': 'TEST2',
+                'description': 'Ceci est le test 2',
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        defaults = Default.objects.all()
+        self.assertEqual(defaults.count(), 2)
+
+    def test_update_default(self):
+        """
+        Update Default throught UpdateView.
+        """
+        self.add_perms_user(Default, 'change_default')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        default = Default.objects.first()
+        response = self.client.post(
+            reverse('reman:update_default', kwargs={'pk': default.pk}),
+            data={
+                'code': 'TEST3',
+                'description': 'Ceci est le test 3',
+            }
+        )
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is updated
+        default = Default.objects.first()
+        self.assertEqual(default.code, 'TEST3')
