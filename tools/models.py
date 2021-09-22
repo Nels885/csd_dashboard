@@ -150,6 +150,10 @@ class Suptech(models.Model):
         verbose_name = "SupTech Log"
         ordering = ['pk']
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('tools:suptech_detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return self.item
 

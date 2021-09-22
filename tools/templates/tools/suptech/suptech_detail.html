@@ -32,6 +32,10 @@
             <div class="col-sm-4 mb-3 mb-sm-0">
                 <input type="text" name="item" value="{{ object.item }}" maxlength="200" readonly="" class="form-control" required id="id_item">
             </div>
+            <label for="id_time" class="col-form-label col-sm-3">Catégorie</label>
+            <div class="col-sm-3 mb-3 mb-sm-0">
+                <input type="text" name="time" value="{{ object.category|default:"---" }}" maxlength="200" readonly="" class="form-control" required id="id_time">
+            </div>
         </div>
 
         <div class="form-group row">
@@ -78,6 +82,16 @@
                 <input type="text" name="deadline" value="{{ object.deadline|default:'' }}" maxlength="200" readonly="" class="form-control" required id="id_deadline">
             </div>
         </div>
+
+        {% if perms.tools.change_suptech %}
+
+            <div class="mt-5 row">
+                <div class="col text-center">
+                    <a type="button" href="{% url 'tools:suptech_update' pk=object.pk %}" class="text-justify btn btn-primary">{% trans 'Respond to request' %}</a>
+                </div>
+            </div>
+
+        {% endif %}
 
         <hr class="mt-5">
 

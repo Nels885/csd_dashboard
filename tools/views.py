@@ -210,7 +210,6 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
     model = Suptech
     form_class = SuptechResponseForm
     template_name = 'tools/suptech/suptech_update.html'
-    success_url = reverse_lazy('tools:suptech_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
