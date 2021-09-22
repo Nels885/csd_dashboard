@@ -5,13 +5,14 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.generic import TemplateView, ListView, UpdateView, DetailView
+from django.views.generic.edit import FormMixin
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage
 from dashboard.forms import ParaErrorList
-from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm
+from .forms import TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
 from api.utils import thermal_chamber_use
@@ -194,15 +195,37 @@ def suptech_list(request):
     return render(request, 'tools/suptech/suptech_table.html', locals())
 
 
-class SuptechDetailView(LoginRequiredMixin, DetailView):
+class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Suptech
     template_name = 'tools/suptech/suptech_detail.html'
+    form_class = SuptechMessageForm
+
+    def get_success_url(self):
+        from django.urls import reverse
+        return reverse('tools:suptech_detail', kwargs={'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Tools"
         context['card_title'] = _(f"SUPTECH N°{self.object.pk} - Detail")
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        SuptechMessage.objects.create(content=form.cleaned_data['content'], content_object=self.object)
+        messages.success(self.request, _('Success: The message has been added.'))
+        if form.send_email(self.request, self.object):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
+        return super().form_valid(form)
 
 
 class SuptechResponseView(PermissionRequiredMixin, UpdateView):
