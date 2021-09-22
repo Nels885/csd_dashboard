@@ -55,7 +55,8 @@ def validate_xelon(value):
     """
     if re.match(r'^[a-zA-Z]\d{9}$', str(value)):
         try:
-            Xelon.objects.get(numero_de_dossier=value)
+            if not re.match(r'^[pP]\d{9}$', str(value)):
+                Xelon.objects.get(numero_de_dossier=value)
             return None
         except Xelon.DoesNotExist:
             return 'Xelon number no exist'
