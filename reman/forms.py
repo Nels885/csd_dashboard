@@ -402,12 +402,12 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=20,
-                                  widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''}))
+    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=60,
+                                  widget=forms.TextInput(attrs={'class': 'form-control', 'autofocus': ''}))
 
     def clean_psa_barcode(self):
         data = self.cleaned_data['psa_barcode']
-        message = validate_psa_barcode(data)
+        data, message = validate_psa_barcode(data)
         if message:
             raise forms.ValidationError(
                 _("The barcode is invalid"),
