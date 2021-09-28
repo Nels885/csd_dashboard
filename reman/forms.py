@@ -205,7 +205,7 @@ TECHNICIAN FORMS
 
 
 class AddRepairForm(BSModalModelForm):
-    psa_barcode = forms.CharField(label='Code barre PSA', max_length=20,
+    psa_barcode = forms.CharField(label='Code barre PSA', max_length=60,
                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
@@ -233,6 +233,7 @@ class AddRepairForm(BSModalModelForm):
 
     def clean_psa_barcode(self):
         data = self.cleaned_data["psa_barcode"]
+        data, message = validate_psa_barcode(data)
         queryset = self.queryset.filter(ecu_ref_base__ecu_type__ecumodel__psa_barcode=data)
         if not queryset:
             self.add_error('psa_barcode', "Code barre PSA incorrecte")
