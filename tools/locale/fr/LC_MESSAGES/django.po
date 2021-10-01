@@ -153,7 +153,7 @@ msgstr "Succès: L'email a été envoyé."
 
 #: tools/views.py:182
 msgid "Support Tech list"
-msgstr "Liste logiciel"
+msgstr "Liste Support Tech"
 
 #: tools/views.py:210
 #, python-brace-format
