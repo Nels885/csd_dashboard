@@ -28,25 +28,23 @@
 {% block tablecss %}
 
     <!-- SearchPanes css -->
-    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/SearchPanes/css/searchPanes.bootstrap4.min.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Buttons/css/buttons.bootstrap4.min.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Select/css/select.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/SearchPanes/css/searchPanes.dataTables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Select/css/select.bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
 
 {% endblock %}
 
 {% block tablejs %}
+
+    <!-- SearchPanes scripts -->
+    <script type="text/javascript" src="{% static 'vendor/datatables/SearchPanes/js/dataTables.searchPanes.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/datatables/Select/js/dataTables.select.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
 
     <!-- Page level custom scripts -->
     <script type="text/javascript">
         const URL_AJAX = "{% url 'psa:api_corvet-list' %}";
     </script>
     <script type="text/javascript" src="{% static 'psa/js/corvet-tables.js' %}"></script>
-
-    <!-- SearchPanes scripts -->
-    <script type="text/javascript" src="{% static 'vendor/datatables/SearchPanes/js/dataTables.searchPanes.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'vendor/datatables/SearchPanes/js/searchPanes.bootstrap4.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'vendor/datatables/Select/js/dataTables.select.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'vendor/datatables/Buttons/js/buttons.bootstrap4.min.js' %}"></script>
 
 {% endblock %}
