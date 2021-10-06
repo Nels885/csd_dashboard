@@ -1,17 +1,21 @@
-from io import StringIO
+from io import StringIO, BytesIO
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, FileResponse
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
 from django.forms.models import model_to_dict
 from django.core.management import call_command
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+from reportlab.lib.pagesizes import A4
+from reportlab.graphics.barcode import code128
 
 from utils.django.datatables import QueryTableByArgs
 from .serializers import XelonSerializer, XELON_COLUMN_LIST
@@ -100,6 +104,46 @@ def detail(request, pk):
     form = IhmForm(instance=xelon.corvet,
                    initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
     return render(request, 'squalaetp/detail/detail.html', locals())
+
+
+def barcode_pdf_generate(request, pk):
+    xelon = get_object_or_404(Xelon, pk=pk)
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+    p.setTitle(f"xelon_{xelon.numero_de_dossier}")
+    p.setFont('Courier', 15)
+    p.setLineWidth(4)
+    p.drawString(50, 700, "N° Xelon :")
+    p.drawString(50, 600, "V.I.N. :")
+    p.drawString(50, 500, "Modèle véhicule : ")
+    p.drawString(50, 400, "Modèle produit : ")
+    p.drawString(50, 300, "Réf. boitier :")
+    p.drawString(50, 200, "Cal. CORVET :")
+
+    p.setFont('Courier-Bold', 15)
+    p.drawString(250, 700, str(xelon.numero_de_dossier))
+    barcode = code128.Code128(str(xelon.numero_de_dossier), barWidth=0.5 * mm, barHeight=10 * mm)
+    barcode.drawOn(p, 200, 660)
+    p.drawString(250, 600, str(xelon.vin))
+    barcode = code128.Code128(str(xelon.vin), barWidth=0.5 * mm, barHeight=10 * mm)
+    barcode.drawOn(p, 170, 560)
+    p.drawString(250, 500, str(xelon.modele_vehicule))
+    p.drawString(250, 400, str(xelon.modele_produit))
+    p.drawString(250, 300, str(xelon.corvet.prods.btel.hw_reference))
+    barcode = code128.Code128(str(xelon.corvet.prods.btel.hw_reference), barWidth=0.5 * mm, barHeight=10 * mm)
+    barcode.drawOn(p, 210, 260)
+    if xelon.corvet.electronique_94x:
+        p.drawString(250, 200, str(xelon.corvet.electronique_94x))
+        barcode = code128.Code128(str(xelon.corvet.electronique_94x), barWidth=0.5 * mm, barHeight=10 * mm)
+    else:
+        p.drawString(250, 200, str(xelon.corvet.electronique_14x))
+        barcode = code128.Code128(str(xelon.corvet.electronique_14x), barWidth=0.5 * mm, barHeight=10 * mm)
+    barcode.drawOn(p, 210, 160)
+    p.showPage()
+    p.save()
+
+    buffer.seek(0)
+    return FileResponse(buffer, filename=f"xelon_{xelon.numero_de_dossier}.pdf")
 
 
 class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
