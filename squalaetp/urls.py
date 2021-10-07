@@ -10,6 +10,7 @@ app_name = 'squalaetp'
 urlpatterns = [
     path('', include(router.urls)),
     path('<int:pk>/detail/', views.detail, name='detail'),
+    path('<int:pk>/pdf/', views.barcode_pdf_generate, name='barcode_pdf'),
     path('<int:pk>/vin/edit/', views.VinCorvetUpdateView.as_view(), name='vin_edit'),
     path('<int:pk>/vin/email/', views.VinEmailFormView.as_view(), name='vin_email'),
     path('<int:pk>/prod/edit/', views.ProductUpdateView.as_view(), name='prod_edit'),
