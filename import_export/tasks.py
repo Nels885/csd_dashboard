@@ -52,7 +52,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
                             arg = 'DON_LIN_PROD 1'
                         else:
                             arg = 'DON_LIN_PROD 0'
-                    data_list[position] = f"{data_list[position]} - {get_corvet(data_list[position], arg)}"
+                    data_list[position] = f"{get_corvet(data_list[position], arg)} | {data_list[position]}"
         return data_list
 
     def run(self, *args, **kwargs):
