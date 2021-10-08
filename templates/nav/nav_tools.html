@@ -42,6 +42,29 @@
 
     {% endif %}
 
+    <!-- Nav Item - Suptech Settings Menu -->
+    {% with name="Suptech" icon="fa-radiation" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting">{% trans "Suptech table" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting&category=3">Autres moyens</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                    <a class="collapse-item create-suptech" href="#">{% trans "Add Suptech" %}</a>
+
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
     <!-- Nav Item - Tools Consultation Menu -->
     {% with name="toolsConsult" icon="fa-table" %}
         <li class="nav-item">
@@ -58,7 +81,6 @@
                         <a class="collapse-item" href="{% url 'raspeedi:unlock_table' %}">{% trans "Unlock table" %}</a>
                     {% endif %}
                     <a class="collapse-item" href="{% url 'tools:tag_xelon_list' %}">{% trans "tag Xelon table" %}</a>
-                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting">{% trans "Suptech table" %}</a>
                 </div>
             </div>
         </li>
