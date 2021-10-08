@@ -181,13 +181,8 @@ def suptech_list(request):
     """ View of Software list page """
     title = _('Support Tech list')
     status = request.GET.get('filter', 'all')
-    category = request.GET.get('category', '1')
     table_title = 'Total'
-    if category == '3':
-        objects = Suptech.objects.filter(category=3).order_by('-date')
-        title = "Liste Autres Moyens"
-    else:
-        objects = Suptech.objects.exclude(category=3).order_by('-date')
+    objects = Suptech.objects.all().order_by('-date')
     if status == "waiting":
         table_title = 'En Attente'
         objects = objects.filter(status="En Attente")

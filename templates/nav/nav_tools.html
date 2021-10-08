@@ -53,9 +53,11 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting">{% trans "Suptech table" %}</a>
-                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting&category=3">Autres moyens</a>
+                    <h6 class="collapse-header">{% trans "Tabs" %} :</h6>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting">{% trans "Waiting" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=progress">{% trans "Progress" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=close">{% trans "Close" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}">{% trans "All" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans "Editing" %} :</h6>
                     <a class="collapse-item create-suptech" href="#">{% trans "Add Suptech" %}</a>
