@@ -122,7 +122,7 @@ class ToolsAnalysis:
 
     def __init__(self):
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
-        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
+        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False).exclude(category=3)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
