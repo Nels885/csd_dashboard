@@ -281,6 +281,7 @@ CONSTANCE_CONFIG = {
 
     # tools Options
     'SUPTECH_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Suptech TO email list'),
+    'SUPTECH_MANAGER_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Suptech Manager TO email list'),
     'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL'),
     'PROXY_HOST_SCRAPING': ('', 'Proxy HOST for Scraping'),
     'PROXY_PORT_SCRAPING': ('', 'Proxy PORT for Scraping'),
@@ -302,7 +303,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR'
     ),
     '5. Tools Options': (
-        'SUPTECH_TO_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING', 'PROXY_PORT_SCRAPING'
+        'SUPTECH_TO_EMAIL_LIST', 'SUPTECH_MANAGER_TO_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING',
+        'PROXY_PORT_SCRAPING'
     ),
     '6. MQTT Options': (
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'

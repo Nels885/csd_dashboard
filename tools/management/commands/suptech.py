@@ -34,7 +34,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
         if options['email']:
-            self._send_email()
+            date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
+            supject = "Suptech en cours {}".format(date_joined)
+            suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(category=3)).order_by('-date')
+            self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_TO_EMAIL_LIST)
+
+            supject = "Autres Moyens en cours {}".format(date_joined)
+            suptechs = Suptech.objects.filter(category=3).exclude(status="Cloturée").order_by('-date')
+            self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_MANAGER_TO_EMAIL_LIST)
         else:
             try:
                 path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
@@ -143,13 +150,10 @@ class Command(BaseCommand):
         except FileNotFoundError as err:
             self.stdout.write(self.style.ERROR("[SUPTECH] {}".format(err)))
 
-    def _send_email(self):
-        date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
-        subject = "Suptech en cours {}".format(date_joined)
-        suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(category=3)).order_by('-date')
-        if suptechs:
-            waiting_suptechs = suptechs.filter(status="En Attente")
-            progress_suptechs = suptechs.filter(status="En Cours")
+    def _send_email(self, queryset, subject, to_email):
+        if queryset:
+            waiting_suptechs = queryset.filter(status="En Attente")
+            progress_suptechs = queryset.filter(status="En Cours")
             html_message = render_to_string(
                 'tools/email_format/suptech_list_email.html',
                 {
@@ -158,10 +162,7 @@ class Command(BaseCommand):
                 }
             )
             plain_message = strip_tags(html_message)
-            send_mail(
-                subject, plain_message, None, string_to_list(config.SUPTECH_TO_EMAIL_LIST),
-                html_message=html_message
-            )
+            send_mail(subject, plain_message, None, string_to_list(to_email), html_message=html_message)
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des Suptech en cours terminée !"))
         else:
             self.stdout.write(self.style.SUCCESS("Pas de Suptech en cours à envoyer !"))
