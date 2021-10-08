@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-22 16:35+0200\n"
+"POT-Creation-Date: 2021-10-08 12:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: api/views.py:172
 msgid "Time between 2 requests too short"
-msgstr ""
+msgstr "Délai entre 2 requêtes trop court"
 
 #: import_export/templates/import_export/detail_csd.html:21
 #: import_export/templates/import_export/detail_csd.html:45
@@ -102,12 +102,13 @@ msgstr "S'identifier"
 #: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_csd_atelier.html:82
 #: templates/nav/nav_csd_atelier.html:100
 #: templates/nav/nav_csd_atelier.html:118 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:83
+#: templates/nav/nav_tools.html:56 templates/nav/nav_tools.html:105
 msgid "Informations"
 msgstr ""
 
 #: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:63
-#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:88
+#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:60
+#: templates/nav/nav_tools.html:110
 msgid "Editing"
 msgstr "Edition"
 
@@ -175,7 +176,7 @@ msgstr "Tableau de bord"
 msgid "Generate Squalaetp"
 msgstr "Générer Squalaetp"
 
-#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:56
+#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:79
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
@@ -259,23 +260,27 @@ msgstr "Outils"
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: templates/nav/nav_tools.html:58
-msgid "Unlock table"
-msgstr "Tableau dever. VIN"
-
-#: templates/nav/nav_tools.html:60
-msgid "tag Xelon table"
-msgstr "Tableau tag Xelon"
-
-#: templates/nav/nav_tools.html:61
+#: templates/nav/nav_tools.html:57
 msgid "Suptech table"
 msgstr "Tableau Suptech"
 
-#: templates/nav/nav_tools.html:85
+#: templates/nav/nav_tools.html:61
+msgid "Add Suptech"
+msgstr "Ajout Suptech"
+
+#: templates/nav/nav_tools.html:81
+msgid "Unlock table"
+msgstr "Tableau dever. VIN"
+
+#: templates/nav/nav_tools.html:83
+msgid "tag Xelon table"
+msgstr "Tableau tag Xelon"
+
+#: templates/nav/nav_tools.html:107
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:90
+#: templates/nav/nav_tools.html:112
 msgid "Software Add"
 msgstr "Ajout logiciel"
 

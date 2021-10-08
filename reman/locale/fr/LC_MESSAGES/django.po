@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-22 16:35+0200\n"
+"POT-Creation-Date: 2021-10-08 12:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr "Le lot existe déjà !"
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:413 reman/tests/tests_reman_views.py:108
+#: reman/forms.py:414 reman/tests/tests_reman_views.py:108
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
@@ -138,7 +138,7 @@ msgstr "Mise à jour Réf. REMAN"
 msgid "Create Repair"
 msgstr "Création d'un dossier"
 
-#: reman/templates/reman/part/part_check.html:22
+#: reman/templates/reman/part/part_check.html:20
 #: reman/templates/reman/repair/out_table.html:37
 msgid "Validate"
 msgstr "Valider"

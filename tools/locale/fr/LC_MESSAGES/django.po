@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-22 16:35+0200\n"
+"POT-Creation-Date: 2021-10-08 12:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -147,7 +147,7 @@ msgstr "liste Chambre thermique"
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:161 tools/views.py:225 tools/views.py:245
+#: tools/views.py:161 tools/views.py:230 tools/views.py:250
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
@@ -155,20 +155,20 @@ msgstr "Succès: L'email a été envoyé."
 msgid "Support Tech list"
 msgstr "Liste Support Tech"
 
-#: tools/views.py:210
+#: tools/views.py:215
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Detail"
 msgstr "SUPTECH N°{self.object.pk} - Détail"
 
-#: tools/views.py:223
+#: tools/views.py:228
 msgid "Success: The message has been added."
 msgstr "Succès: Le message a été ajouté."
 
-#: tools/views.py:227 tools/views.py:247
+#: tools/views.py:232 tools/views.py:252
 msgid "Warning: Data update but without sending the email"
 msgstr "Attention : mise à jour des données mais sans envoi de l'email"
 
-#: tools/views.py:240
+#: tools/views.py:245
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Response"
 msgstr "SUPTECH N°{self.object.pk} - Réponse"
