@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.html import strip_tags
 from django.utils import timezone
+from django.db.models import Q
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
@@ -145,7 +146,7 @@ class Command(BaseCommand):
     def _send_email(self):
         date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
         subject = "Suptech en cours {}".format(date_joined)
-        suptechs = Suptech.objects.exclude(status="Cloturée").order_by('-date')
+        suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(category=3)).order_by('-date')
         if suptechs:
             waiting_suptechs = suptechs.filter(status="En Attente")
             progress_suptechs = suptechs.filter(status="En Cours")
