@@ -31,6 +31,13 @@ EMF_LIST = [
     ('84L_EMF_DOTE', 'corvet__electronique_84l'), ('94L_EMF_SOFT', 'corvet__electronique_94l')
 ]
 
+CMB_LIST = [
+    ('Modele Radio/Nav', 'corvet__prods__btel__name'), ('Tableau de Bord', 'corvet__prods__cmb__name'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('14K_CMB_HARD', 'corvet__electronique_14k'),
+    ('54K_CMB_FOUN.DATE.FAB', 'corvet__electronique_54k'), ('94K_CMB_SOFT', 'corvet__electronique_94k')
+]
+
 CMM_LIST = [
     ('Modele reel', 'corvet__prods__cmm__name'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
@@ -89,6 +96,7 @@ def get_header_fields(prod_list):
 
 BTEL_HEADER, BTEL_FIELDS = get_header_fields(BTEL_LIST)
 EMF_HEADER, EMF_FIELDS = get_header_fields(EMF_LIST)
+CMB_HEADER, CMB_FIELDS = get_header_fields(CMB_LIST)
 CMM_HEADER, CMM_FIELDS = get_header_fields(CMM_LIST)
 BSI_HEADER, BSI_FIELDS = get_header_fields(BSI_LIST)
 HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
@@ -149,6 +157,9 @@ def extract_corvet(product='corvet'):
     elif product == "emf":
         header, values_list = EMF_HEADER, EMF_FIELDS
         queryset = xelons.exclude(corvet__electronique_14l__exact='')
+    elif product == "cmb":
+        header, values_list = CMB_HEADER, CMB_FIELDS
+        queryset = xelons.exclude(corvet__electronique_14k__exact='')
     elif product == "nac":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
         queryset = xelons.filter(corvet__attribut_drc="NA")
