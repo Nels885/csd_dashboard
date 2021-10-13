@@ -92,9 +92,11 @@
                 <button type="submit" name="btn_repair_save" class="ml-2 btn btn-primary">
                     Sauvegarder
                 </button>
-                <button type="submit" name="btn_repair_close" class="ml-2 btn btn-primary">
-                    Cloturer
-                </button>
+                {% if not prod.checkout %}
+                    <button type="submit" name="btn_repair_close" class="ml-2 btn btn-primary">
+                        Cloturer
+                    </button>
+                {% endif %}
             </div>
 
         </form>
