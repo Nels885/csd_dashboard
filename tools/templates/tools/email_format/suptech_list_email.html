@@ -6,6 +6,8 @@
 
     <body>
 
+    {% if waiting_suptechs %}
+
     <p> Vous trouvez ci-dessous la liste des Suptech en attente de traitement.</p>
 
     <table class="table table-bordered text-nowrap">
@@ -36,6 +38,8 @@
         </tbody>
     </table>
 
+    {% endif %}
+
     {% if progress_suptechs %}
 
         <p> Vous trouvez ci-dessous la liste des Suptech en cours.</p>
@@ -43,6 +47,7 @@
         <table class="table table-bordered text-nowrap">
             <thead>
             <tr>
+                <td>N° Suptech</td>
                 <th>date</th>
                 <th>Qui</th>
                 <th>N° XELON</th>
@@ -56,7 +61,8 @@
             {% for suptech in progress_suptechs %}
 
                 <tr>
-                    <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=progress">{{ suptech.date }}</a></td>
+                    <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=progress">{{ suptech.pk }}</a></td>
+                    <td>{{ suptech.date }}</td>
                     <td>{{ suptech.user }}</td>
                     <td>{{ suptech.xelon }}</td>
                     <td>{{ suptech.item }}</td>
