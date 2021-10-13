@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-08 14:33+0200\n"
+"POT-Creation-Date: 2021-10-13 10:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,13 +41,46 @@ msgstr "Importation Excel"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:165 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:167 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:166 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:168 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
+
+#: templates/400.html:10
+msgid "Bad Request"
+msgstr "Mauvaise demande"
+
+#: templates/400.html:11 templates/404.html:11 templates/500.html:11
+msgid "It looks like you found a glitch in the matrix..."
+msgstr "Il semble que vous ayez trouvé un bug dans la matrice..."
+
+#: templates/400.html:12 templates/403.html:14 templates/404.html:12
+#: templates/500.html:12 templates/registration/password_change_done.html:21
+msgid "Back to Dashboard"
+msgstr "Retour au tableau de bord"
+
+#: templates/403.html:10
+msgid "Access Forbidden"
+msgstr "Accès formellement interdit"
+
+#: templates/403.html:12
+msgid "You do not have the rights to access this content, please contact the "
+msgstr "Vous n'avez pas le droit d'accéder à ce contenu, veuillez contacter le "
+
+#: templates/403.html:12
+msgid "administrators"
+msgstr "administrateurs"
+
+#: templates/404.html:10
+msgid "Page Not Found"
+msgstr "Page non trouvée"
+
+#: templates/500.html:10
+msgid "Internal Server Error"
+msgstr "Erreur Interne du Serveur"
 
 #: templates/base.html:21
 msgid "release"
@@ -102,13 +135,13 @@ msgstr "S'identifier"
 #: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_csd_atelier.html:82
 #: templates/nav/nav_csd_atelier.html:100
 #: templates/nav/nav_csd_atelier.html:118 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:107
+#: templates/nav/nav_tools.html:84
 msgid "Informations"
 msgstr ""
 
 #: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:63
 #: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:62
-#: templates/nav/nav_tools.html:112
+#: templates/nav/nav_tools.html:89
 msgid "Editing"
 msgstr "Edition"
 
@@ -176,7 +209,7 @@ msgstr "Tableau de bord"
 msgid "Generate Squalaetp"
 msgstr "Générer Squalaetp"
 
-#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:81
+#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:110
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
@@ -284,21 +317,21 @@ msgstr "Tous"
 msgid "Add Suptech"
 msgstr "Ajout Suptech"
 
-#: templates/nav/nav_tools.html:83
-msgid "Unlock table"
-msgstr "Tableau dever. VIN"
-
-#: templates/nav/nav_tools.html:85
-msgid "tag Xelon table"
-msgstr "Tableau tag Xelon"
-
-#: templates/nav/nav_tools.html:109
+#: templates/nav/nav_tools.html:86
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:114
+#: templates/nav/nav_tools.html:91
 msgid "Software Add"
 msgstr "Ajout logiciel"
+
+#: templates/nav/nav_tools.html:112
+msgid "Unlock table"
+msgstr "Tableau dever. VIN"
+
+#: templates/nav/nav_tools.html:114
+msgid "tag Xelon table"
+msgstr "Tableau tag Xelon"
 
 #: templates/registration/login.html:20
 msgid "Welcome to CSD Dashboard"
@@ -310,10 +343,6 @@ msgstr "Veuillez renseigner vos informations de connexion pour continuer."
 
 #: templates/registration/login.html:68
 msgid "Forgot Password?"
-msgstr ""
-
-#: templates/registration/password_change_done.html:21
-msgid "Back to Dashboard"
 msgstr ""
 
 #: templates/registration/password_change_form.html:26

@@ -92,7 +92,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
-                'sbadmin.context_processor.get_release'
+                'sbadmin.context_processors.get_release',
+                'sbadmin.context_processors.get_ip',
+                'sbadmin.context_processors.get_admin_emails'
             ],
         },
     },
