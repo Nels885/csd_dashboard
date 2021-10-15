@@ -65,7 +65,7 @@ class AddBatchForm(BSModalModelForm):
         super().__init__(*args, **kwargs)
         try:
             date = timezone.now()
-            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__gte=900)
+            batchs = Batch.objects.filter(year=DICT_YEAR.get(date.year)).exclude(number__gte=900)
             self.fields["number"].initial = batchs.aggregate(Max('number'))['number__max'] + 1
         except TypeError:
             self.fields['number'].initial = 1
