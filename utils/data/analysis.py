@@ -26,6 +26,8 @@ class ProductAnalysis:
             type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
+        self.admin = self.pendingQueryset.filter(type_de_cloture='Admin').count()
+        self.saved = self.pendingQueryset.filter(type_de_cloture='Sauvée').count()
         self.late = self.lateQueryset.count()
         self.percent = self._percent_of_late_products()
 
