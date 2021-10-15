@@ -269,16 +269,20 @@ class EditRepairForm(forms.ModelForm):
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'comment', 'default']
+        fields = ['identify_number', 'product_number', 'remark', 'comment', 'default', 'recovery']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
+            'recovery':  forms.CheckboxInput(attrs={'class': 'form-control'})
         }
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit:
+            if instance.recovery:
+                instance.checkout = False
+                instance.closing_date = None
             instance.save()
             cmd_exportreman_task.delay('--repair')
         return instance
