@@ -26,9 +26,12 @@ class ProductAnalysis:
             type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
-        self.admin = self.pendingQueryset.filter(type_de_cloture='Admin').count()
-        self.saved = self.pendingQueryset.filter(type_de_cloture='Sauvée').count()
+        self.admin = self.QUERYSET.filter(type_de_cloture='Admin').count()
+        self.sp = self.QUERYSET.filter(type_de_cloture='Att SP').count()
+        self.ecu = self.pendingQueryset.filter(product__category='CALCULATEUR').count()
+        self.media = self.pendingQueryset.exclude(product__category='CALCULATEUR').count()
         self.late = self.lateQueryset.count()
+        self.tronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A']).count()
         self.percent = self._percent_of_late_products()
 
     def _percent_of_late_products(self):
@@ -73,6 +76,15 @@ class ProductAnalysis:
             number of Corvet data
         """
         return Corvet.objects.all().count()
+
+    @staticmethod
+    def xelon_count():
+        """
+        Function to count the number of Xelon data
+        :return:
+            number of Xelon data
+        """
+        return Xelon.objects.all().count()
 
 
 class IndicatorAnalysis:
