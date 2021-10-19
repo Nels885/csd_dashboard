@@ -19,6 +19,7 @@
             <th>N° XELON</th>
             <th>Objet</th>
             <th>Infos</th>
+            <th>Pris en charge par</th>
         </tr>
         </thead>
         <tbody>
@@ -32,6 +33,7 @@
                 <td>{{ suptech.xelon }}</td>
                 <td>{{ suptech.item }}</td>
                 <td>{{ suptech.info|truncatechars:50 }}</td>
+                <td>{{ suptech.category.manager.first_name }} {{ suptech.category.manager.last_name }}</td>
             </tr>
         {% endfor %}
 
@@ -67,7 +69,7 @@
                     <td>{{ suptech.xelon }}</td>
                     <td>{{ suptech.item }}</td>
                     <td>{{ suptech.info|truncatechars:50 }}</td>
-                    <td>{{ suptech.modified_by.first_name }} {{ suptech.modified_by.last_name }}</td>
+                    <td>{{ suptech.category.manager.first_name }} {{ suptech.category.manager.last_name }}</td>
                 </tr>
             {% endfor %}
 
