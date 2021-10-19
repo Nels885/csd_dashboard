@@ -172,7 +172,7 @@ class ToolsAnalysis:
         return data
 
     def _percent(self, value, total_multiplier=1):
-        if self.total and value != 0:
+        if self.total and isinstance(value, int) and value != 0:
             return round(100 * value / (self.total * total_multiplier), 1)
         else:
             return 0
