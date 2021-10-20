@@ -408,11 +408,14 @@ def batch_table(request):
     query_param = request.GET.get('filter', None)
     select_tab = 'batch'
     if query_param and query_param == "pending":
-        batchs = Batch.objects.filter(active=True, number__lt=900).order_by('end_date')
+        batchs = Batch.objects.filter(active=True, number__lt=900).exclude(year="X").order_by('end_date')
         select_tab = 'batch_pending'
     elif query_param and query_param == "etude":
         select_tab = 'batch_etude'
         batchs = Batch.objects.filter(number__gte=900).order_by('-end_date')
+    elif query_param and query_param == "workshop":
+        select_tab = 'batch_workshop'
+        batchs = Batch.objects.filter(year="X").order_by('-end_date')
     else:
         batchs = Batch.objects.filter(number__lt=900).order_by('-created_at')
     batchs = batchs.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
