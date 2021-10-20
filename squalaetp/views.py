@@ -22,11 +22,12 @@ from .serializers import XelonSerializer, XELON_COLUMN_LIST
 from .models import Xelon, SparePart, Action
 from .utils import collapse_select
 from psa.models import Corvet
+from psa.forms import CorvetForm
+from psa.templatetags.corvet_tags import get_corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
 from .forms import IhmForm, VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
 from .tasks import cmd_loadsqualaetp_task
-from psa.forms import CorvetForm
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
@@ -115,8 +116,11 @@ def barcode_pdf_generate(request, pk):
     p.setLineWidth(4)
     p.drawString(50, 700, "N° Xelon :")
     p.drawString(50, 600, "V.I.N. :")
-    p.drawString(50, 500, "Modèle véhicule : ")
-    p.drawString(50, 400, "Modèle produit : ")
+    p.line(50, 535, 550, 535)
+    p.drawString(50, 500, "Marque :")
+    p.drawString(50, 450, "Modèle véhicule :")
+    p.drawString(50, 400, "Modèle produit :")
+    p.line(50, 355, 550, 355)
     p.drawString(50, 300, "Réf. boitier :")
     p.drawString(50, 200, "Cal. CORVET :")
 
@@ -127,17 +131,24 @@ def barcode_pdf_generate(request, pk):
     p.drawString(250, 600, str(xelon.vin))
     barcode = code128.Code128(str(xelon.vin), barWidth=0.5 * mm, barHeight=10 * mm)
     barcode.drawOn(p, 170, 560)
-    p.drawString(250, 500, str(xelon.modele_vehicule))
-    p.drawString(250, 400, str(xelon.modele_produit))
-    p.drawString(250, 300, str(xelon.corvet.prods.btel.hw_reference))
-    barcode = code128.Code128(str(xelon.corvet.prods.btel.hw_reference), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 210, 260)
+    p.drawString(250, 500, str(get_corvet(xelon.corvet.donnee_marque_commerciale, "DON_MAR_COMM")))
+    p.drawString(250, 450, str(xelon.modele_vehicule))
     if xelon.corvet.electronique_94x:
-        p.drawString(250, 200, str(xelon.corvet.electronique_94x))
-        barcode = code128.Code128(str(xelon.corvet.electronique_94x), barWidth=0.5 * mm, barHeight=10 * mm)
+        media = xelon.corvet.prods.btel
+        hw_ref = xelon.corvet.electronique_14x
+        sw_ref = xelon.corvet.electronique_94x
     else:
-        p.drawString(250, 200, str(xelon.corvet.electronique_14x))
-        barcode = code128.Code128(str(xelon.corvet.electronique_14x), barWidth=0.5 * mm, barHeight=10 * mm)
+        media = xelon.corvet.prods.radio
+        hw_ref = xelon.corvet.electronique_14f
+        sw_ref = xelon.corvet.electronique_94f
+    p.drawString(250, 400, str(media.get_name_display()))
+    if media.level:
+        p.drawString(400, 400, str(media.level))
+    p.drawString(250, 300, str(hw_ref))
+    barcode = code128.Code128(str(hw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
+    barcode.drawOn(p, 210, 260)
+    p.drawString(250, 200, str(sw_ref))
+    barcode = code128.Code128(str(sw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
     barcode.drawOn(p, 210, 160)
     p.showPage()
     p.save()
