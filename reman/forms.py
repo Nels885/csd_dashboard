@@ -20,6 +20,7 @@ MANAGER FORMS
 """
 
 BOX_NUMBER = [(1, 1), (3, 3), (6, 6)]
+BATCH_TYPE = [('REMAN', 'REMAN'), ('ETUDE', 'ETUDE'), ('ATELIER', 'ATELIER')]
 
 
 class BatchForm(BSModalModelForm):
@@ -43,10 +44,11 @@ class BatchForm(BSModalModelForm):
 
 class AddBatchForm(BSModalModelForm):
     ref_reman = forms.CharField(label="Réf. REMAN", widget=forms.TextInput(), max_length=10)
+    type = forms.CharField(label="Type", widget=forms.Select(choices=BATCH_TYPE), )
 
     class Meta:
         model = Batch
-        fields = ['number', 'quantity', 'box_quantity', 'start_date', 'end_date', 'ref_reman']
+        fields = ['type', 'number', 'quantity', 'box_quantity', 'start_date', 'end_date', 'ref_reman']
         widgets = {
             'number': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3}),
             'quantity': forms.TextInput(attrs={'style': 'width: 40%;', 'maxlength': 3, 'autofocus': ''}),
@@ -72,8 +74,9 @@ class AddBatchForm(BSModalModelForm):
 
     def clean_number(self):
         data = self.cleaned_data['number']
+        batch_type = self.cleaned_data['type']
         date = timezone.now()
-        if data >= 900:
+        if (batch_type == "ETUDE" and data <= 900) or (batch_type == "REMAN" and data >= 900):
             self.add_error('number', _('Unauthorized batch number!'))
         if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
             self.add_error('number', _('The batch already exists!'))
@@ -98,37 +101,12 @@ class AddBatchForm(BSModalModelForm):
         return data
 
     def save(self, commit=True):
+        batch_type = self.cleaned_data['type']
+        del self.fields['type']
         batch = super().save(commit=False)
         if commit and not self.request.is_ajax():
-            batch.save()
-            cmd_exportreman_task.delay('--batch', '--scan_in_out')
-        return batch
-
-
-class AddEtudeBatchForm(AddBatchForm):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        try:
-            date = timezone.now()
-            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
-            self.fields["number"].initial = batchs.aggregate(Max('number'))['number__max'] + 1
-        except TypeError:
-            self.fields['number'].initial = 901
-
-    def clean_number(self):
-        data = self.cleaned_data['number']
-        date = timezone.now()
-        if data <= 900:
-            self.add_error('number', _('Unauthorized batch number!'))
-        if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
-            self.add_error('number', _('The batch already exists!'))
-        return data
-
-    def save(self, commit=True):
-        batch = super().save(commit=False)
-        if commit and not self.request.is_ajax():
-            batch.active = False
+            if batch_type == "ATELIER":
+                batch.year = "X"
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
