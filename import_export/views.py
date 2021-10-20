@@ -14,32 +14,19 @@ from pandas.errors import ParserError
 from .tasks import export_corvet_task, export_reman_task, export_tools_task
 
 context = {
-    'title': 'Import / Export'
+    'title': 'Extraction'
 }
 
 
 @login_required()
 def import_export(request):
     """ View of import/export files page """
-    table_title = 'Import Export'
     form_corvet = ExportCorvetForm()
     form_corvet_vin = ExportCorvetVinListForm()
     form_reman = ExportRemanForm()
     form_tools = ExportToolsForm()
     context.update(locals())
     return render(request, 'import_export/import_export.html', context)
-
-
-# def export_tools(request):
-#     if request.user.has_perm('tools.view_suptech') and request.POST:
-#         form = ExportToolsForm(request.POST or None)
-#         if form.is_valid():
-#             table = form.cleaned_data['tables']
-#             excel_type = form.cleaned_data['formats']
-#             return extract_tools(table, excel_type)
-#     else:
-#         messages.warning(request, _('You do not have the required permissions'))
-#     return redirect('import_export:detail')
 
 
 def import_sparepart(request):
