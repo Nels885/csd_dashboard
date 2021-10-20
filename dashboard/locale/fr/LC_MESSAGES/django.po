@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-13 10:30+0200\n"
+"POT-Creation-Date: 2021-10-20 10:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/charts.html:221
+#: dashboard/templates/dashboard/charts.html:323
 #: dashboard/templates/dashboard/index.html:49
 msgid "Edit"
 msgstr "Editer"
 
-#: dashboard/templates/dashboard/charts.html:224
+#: dashboard/templates/dashboard/charts.html:326
 #: dashboard/templates/dashboard/index.html:53
 #: dashboard/templates/dashboard/modal/post_delete.html:19
 #: dashboard/templates/dashboard/modal/weblink_delete.html:19
