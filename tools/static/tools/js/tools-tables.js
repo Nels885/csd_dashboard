@@ -47,5 +47,17 @@ $(document).ready(function () {
             searchable: false,
             orderable: false,
         }],
+        language: {
+            searchPanes: {
+                collapse: {0: 'Search Options', _: 'Search Options (%d)'}
+            }
+        },
+        buttons: [{
+            extend: 'searchPanes',
+            config: {
+                columns: [3, 5, 6]
+            }
+        }],
+        dom: 'Bfrtip'
     });
 });

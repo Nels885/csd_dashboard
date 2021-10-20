@@ -117,6 +117,7 @@ class EtudeProject(models.Model):
 
 class SuptechCategory(models.Model):
     name = models.CharField('nom', max_length=200)
+    manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name

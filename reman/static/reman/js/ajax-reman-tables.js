@@ -11,7 +11,7 @@ $(document).ready(function () {
                 sortable: false,
                 render: function (data, type, full, meta) {
                     let url = '/reman/repair/' + full.id + '/edit/';
-                    if (PERM && !full.checkout) {
+                    if (PERM) {
                         return '<a href="' + url + '" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>';
                     } else {
                         return '<i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>';

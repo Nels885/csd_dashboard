@@ -45,12 +45,12 @@
                         {% if perms.reman.add_batch %}
                             <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
                             <a class="create-batch collapse-item" href="#">{% trans "Create Batch" %}</a>
-                            <a class="create-etude-batch collapse-item" href="#">{% trans "Create Etude Batch" %}</a>
                             <div class="collapse-divider"></div>
                         {% endif %}
                         <h6 class="collapse-header">Consultation :</h6>
                         <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=pending">{% trans "Current batches" %}</a>
                         <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=etude">{% trans "Etude batches" %}</a>
+                        <a class="collapse-item" href="{% url 'reman:batch_table' %}?filter=workshop">{% trans "Workshop batches" %}</a>
                     </div>
                 </div>
             </li>

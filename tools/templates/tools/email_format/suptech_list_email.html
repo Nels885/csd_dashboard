@@ -6,17 +6,20 @@
 
     <body>
 
+    {% if waiting_suptechs %}
+
     <p> Vous trouvez ci-dessous la liste des Suptech en attente de traitement.</p>
 
     <table class="table table-bordered text-nowrap">
         <thead>
         <tr>
-            <td>N° Suptech</td>
+            <td class="text-nowrap">N° Suptech</td>
             <th>date</th>
             <th>Qui</th>
-            <th>N° XELON</th>
+            <th class="text-nowrap">N° XELON</th>
             <th>Objet</th>
             <th>Infos</th>
+            <th class="text-nowrap">Pris en charge</th>
         </tr>
         </thead>
         <tbody>
@@ -30,11 +33,14 @@
                 <td>{{ suptech.xelon }}</td>
                 <td>{{ suptech.item }}</td>
                 <td>{{ suptech.info|truncatechars:50 }}</td>
+                <td>{{ suptech.category.manager.first_name }} {{ suptech.category.manager.last_name }}</td>
             </tr>
         {% endfor %}
 
         </tbody>
     </table>
+
+    {% endif %}
 
     {% if progress_suptechs %}
 
@@ -43,12 +49,13 @@
         <table class="table table-bordered text-nowrap">
             <thead>
             <tr>
+                <td class="text-nowrap">N° Suptech</td>
                 <th>date</th>
                 <th>Qui</th>
-                <th>N° XELON</th>
+                <th class="text-nowrap">N° XELON</th>
                 <th>Objet</th>
                 <th>Infos</th>
-                <th>Pris en charge par</th>
+                <th class="text-nowrap">Pris en charge</th>
             </tr>
             </thead>
             <tbody>
@@ -56,12 +63,13 @@
             {% for suptech in progress_suptechs %}
 
                 <tr>
-                    <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=progress">{{ suptech.date }}</a></td>
+                    <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=progress">{{ suptech.pk }}</a></td>
+                    <td>{{ suptech.date }}</td>
                     <td>{{ suptech.user }}</td>
                     <td>{{ suptech.xelon }}</td>
                     <td>{{ suptech.item }}</td>
                     <td>{{ suptech.info|truncatechars:50 }}</td>
-                    <td>{{ suptech.modified_by.first_name }} {{ suptech.modified_by.last_name }}</td>
+                    <td>{{ suptech.category.manager.first_name }} {{ suptech.category.manager.last_name }}</td>
                 </tr>
             {% endfor %}
 

@@ -7,7 +7,7 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" role="tablist">
 
-            {% include 'tools/suptech/tab_select.html' with select=query_param %}
+            {% include 'tools/suptech/tab_select.html' with select=status category=category %}
 
         </ul>
     </div>
@@ -16,49 +16,77 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered table-sm display" id="suptechTable" style="width:100%">
-        <thead>
-        <tr>
-            <th></th>
-            <th class="text-nowrap">N° Sup</th>
-            <th>Date</th>
-            <th>Qui</th>
-            <th class="text-nowrap">N° XELON</th>
-            <th>Objet</th>
-            <th>Durée</th>
-            <th>Infos</th>
-            <th>Rmqs</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        {% for obj in objects %}
-
+    <div style="min-height: 100vh;">
+        <table class="table table-bordered table-sm display" id="suptechTable" style="width:100%;">
+            <thead>
             <tr>
-                <td class="bg-white text-nowrap" style="width: 60px;">
-                    {% if perms.tools.change_suptech %}
-                        <a href="{% url 'tools:suptech_update' pk=obj.pk %}" title="Actions réalisées" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                    {% else %}
-                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
-                    {% endif %}
-                    <a href="{% url 'tools:suptech_detail' pk=obj.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
-                </td>
-                <td>{{ obj.id }}</td>
-                <td class="text-nowrap">{{ obj.date }}</td>
-                <td class="text-nowrap">{{ obj.user }}</td>
-                <td>{{ obj.xelon }}</td>
-                <td style="min-width: 15rem;">{{ obj.item }}</td>
-                <td class="text-nowrap">{{ obj.time }}</td>
-                <td style="min-width: 30rem; max-width: 30rem;">{{ obj.info }}</td>
-                <td style="min-width: 30rem; max-width: 30rem;">{{ obj.rmq }}</td>
-                <td style="min-width: 20rem;">{{ obj.action }}</td>
+                <th></th>
+                <th class="text-nowrap">N° Sup</th>
+                <th>Date</th>
+                <th>Qui</th>
+                <th class="text-nowrap">N° XELON</th>
+                <th>Objet</th>
+                <th>Catégorie</th>
+                <th>Durée</th>
+                <th>Infos</th>
+                <th>Rmqs</th>
+                <th>Action</th>
             </tr>
+            </thead>
+            <tbody>
 
-        {% endfor %}
+            {% for obj in objects %}
 
-        </tbody>
-    </table>
+                <tr>
+                    <td class="bg-white text-nowrap" style="width: 60px;">
+                        {% if perms.tools.change_suptech %}
+                            <a href="{% url 'tools:suptech_update' pk=obj.pk %}" title="Actions réalisées" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                        {% else %}
+                            <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                        {% endif %}
+                        <a href="{% url 'tools:suptech_detail' pk=obj.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                    </td>
+                    <td>{{ obj.id }}</td>
+                    <td class="text-nowrap">{{ obj.date }}</td>
+                    <td class="text-nowrap">{{ obj.user }}</td>
+                    <td>{{ obj.xelon }}</td>
+                    <td style="min-width: 15rem;">{{ obj.item }}</td>
+                    <td class="text-nowrap">{{ obj.category|default:"---" }}</td>
+                    <td class="text-nowrap">{{ obj.time }}</td>
+                    <td style="min-width: 30rem; max-width: 30rem;">{{ obj.info }}</td>
+                    <td style="min-width: 30rem; max-width: 30rem;">{{ obj.rmq }}</td>
+                    <td style="min-width: 20rem;">{{ obj.action }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th class="text-nowrap">N° Sup</th>
+                    <th>Date</th>
+                    <th>Qui</th>
+                    <th class="text-nowrap">N° XELON</th>
+                    <th>Objet</th>
+                    <th>Catégorie</th>
+                    <th>Durée</th>
+                    <th>Infos</th>
+                    <th>Rmqs</th>
+                    <th>Action</th>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+
+{% endblock %}
+
+{% block tablecss %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/SearchPanes/css/searchPanes.dataTables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Select/css/select.bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
 
 {% endblock %}
 
@@ -66,5 +94,8 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static 'tools/js/tools-tables.js' %}"></script>
+    <script src="{% static 'vendor/datatables/SearchPanes/js/dataTables.searchPanes.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/Select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
 
 {% endblock %}

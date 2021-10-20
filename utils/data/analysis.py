@@ -26,7 +26,12 @@ class ProductAnalysis:
             type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
+        self.admin = self.QUERYSET.filter(type_de_cloture='Admin').count()
+        self.sp = self.QUERYSET.filter(type_de_cloture='Att SP').count()
+        self.ecu = self.pendingQueryset.filter(product__category='CALCULATEUR').count()
+        self.media = self.pendingQueryset.exclude(product__category='CALCULATEUR').count()
         self.late = self.lateQueryset.count()
+        self.tronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A']).count()
         self.percent = self._percent_of_late_products()
 
     def _percent_of_late_products(self):
@@ -71,6 +76,15 @@ class ProductAnalysis:
             number of Corvet data
         """
         return Corvet.objects.all().count()
+
+    @staticmethod
+    def xelon_count():
+        """
+        Function to count the number of Xelon data
+        :return:
+            number of Xelon data
+        """
+        return Xelon.objects.all().count()
 
 
 class IndicatorAnalysis:
@@ -122,7 +136,7 @@ class ToolsAnalysis:
 
     def __init__(self):
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
-        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
+        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False).exclude(category=3)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
@@ -158,7 +172,7 @@ class ToolsAnalysis:
         return data
 
     def _percent(self, value, total_multiplier=1):
-        if self.total and value != 0:
+        if self.total and isinstance(value, int) and value != 0:
             return round(100 * value / (self.total * total_multiplier), 1)
         else:
             return 0

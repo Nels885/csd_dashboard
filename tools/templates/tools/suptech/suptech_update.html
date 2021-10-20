@@ -104,4 +104,31 @@
 
     </div>
 
+    {% if object.messages.all %}
+
+        <hr class="mt-5">
+
+        <h3>MESSAGES :</h3>
+
+        <table class="table table-striped table-sm">
+            <tbody>
+            {% for message in object.messages.all %}
+
+                <tr>
+                    <td style="width: 14rem;">
+                        <span class="font-weight-bold">{{ message.added_by.first_name }} {{ message.added_by.last_name }}</span><br>
+                        <span>{{ message.added_at }}</span>
+                    </td>
+                    <td>
+                        {{ message.content|linebreaksbr }}
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
 {% endblock %}

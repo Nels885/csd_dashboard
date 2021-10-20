@@ -1,7 +1,8 @@
 import re
 from io import StringIO, BytesIO
 
-from django.http import FileResponse
+from django.utils import timezone
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
@@ -10,7 +11,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.management import call_command
 from django.core.mail import EmailMessage
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Max
 from django.views.generic.edit import CreateView, UpdateView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
@@ -23,7 +24,7 @@ from constance import config
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
 from utils.django.urls import reverse, reverse_lazy, http_referer
 
-from utils.conf import string_to_list
+from utils.conf import string_to_list, DICT_YEAR
 from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
 from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase
@@ -31,7 +32,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm, AddEtudeBatchForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
+    EcuDumpModelForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
 )
 
 context = {
@@ -149,23 +150,35 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
         context['modal_title'] = _('Create Batch')
         return context
 
-    def get_success_url(self):
-        return reverse_lazy('reman:batch_table', get={'filter': 'pending'})
+    def form_valid(self, form):
+        batch_type = form.cleaned_data['type']
+        if batch_type == "ETUDE":
+            filter = 'etude'
+        elif batch_type == "ATELIER":
+            filter = 'workshop'
+        else:
+            filter = 'pending'
+        self.success_url = reverse_lazy('reman:batch_table', get={'filter': filter})
+        return super().form_valid(form)
 
 
-class BatchEtudeCreateView(PermissionRequiredMixin, BSModalCreateView):
-    permission_required = 'reman.add_batch'
-    template_name = 'reman/modal/batch_create.html'
-    form_class = AddEtudeBatchForm
-    success_message = _('Success: Batch was created.')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['modal_title'] = _('Create Etude Batch')
-        return context
-
-    def get_success_url(self):
-        return reverse_lazy('reman:batch_table', get={'filter': 'etude'})
+def batch_type_ajax(request):
+    date = timezone.now()
+    data = {"number": 1}
+    batch_type = request.GET.get('type', None)
+    try:
+        batchs = Batch.objects.filter(year=DICT_YEAR.get(date.year)).exclude(number__gte=900)
+        if batch_type == "ETUDE":
+            data['number'] = 901
+            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
+        elif batch_type == "ATELIER":
+            batchs = Batch.objects.filter(year="X")
+        data["number"] = batchs.aggregate(Max('number'))['number__max'] + 1
+    except TypeError:
+        pass
+    except Batch.DoesNotExist:
+        pass
+    return JsonResponse(data)
 
 
 class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -177,13 +190,13 @@ class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
     def form_valid(self, form):
         if form.cleaned_data['number'] > 900:
-            self.filter = 'etude'
+            filter = 'etude'
+        elif form.cleaned_data['year'] == "X":
+            filter = 'workshop'
         else:
-            self.filter = 'pending'
+            filter = 'pending'
+        self.success_url = reverse_lazy('reman:batch_table', get={'filter': filter})
         return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('reman:batch_table', get={'filter': self.filter})
 
 
 class BatchDeleteView(PermissionRequiredMixin, BSModalDeleteView):
@@ -408,11 +421,14 @@ def batch_table(request):
     query_param = request.GET.get('filter', None)
     select_tab = 'batch'
     if query_param and query_param == "pending":
-        batchs = Batch.objects.filter(active=True, number__lt=900).order_by('end_date')
+        batchs = Batch.objects.filter(active=True, number__lt=900).exclude(year="X").order_by('end_date')
         select_tab = 'batch_pending'
     elif query_param and query_param == "etude":
         select_tab = 'batch_etude'
         batchs = Batch.objects.filter(number__gte=900).order_by('-end_date')
+    elif query_param and query_param == "workshop":
+        select_tab = 'batch_workshop'
+        batchs = Batch.objects.filter(year="X").order_by('-end_date')
     else:
         batchs = Batch.objects.filter(number__lt=900).order_by('-created_at')
     batchs = batchs.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))

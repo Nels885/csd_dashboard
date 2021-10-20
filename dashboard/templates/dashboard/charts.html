@@ -10,13 +10,12 @@
     <div class="row">
 
         <!--  Number of products to be repaired Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">nombre de
-                                produits à réparer
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">à réparer
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.pending }}</div>
                         </div>
@@ -29,13 +28,12 @@
         </div>
 
         <!--  Late products Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-danger shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">produits en
-                                retard
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">en retard
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
@@ -55,24 +53,18 @@
                             <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
                         </div>
                     </div>
-                    <a href="
-
-
-
-
-                            {% if user.is_authenticated %}{% url 'dashboard:late_prod' %}{% else %}#{% endif %}" class="stretched-link"></a>
+                    <a href="{% if user.is_authenticated %}{% url 'dashboard:late_prod' %}{% else %}#{% endif %}" class="stretched-link"></a>
                 </div>
             </div>
         </div>
 
-        <!-- Pending Requests Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <!-- Number of Express products Card -->
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Produits Express
-                            </div>
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">express</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.express }}</div>
                         </div>
                         <div class="col-auto">
@@ -83,15 +75,49 @@
             </div>
         </div>
 
+        <!--  Number of admin products Card -->
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">en admin</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.admin }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-folder fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                    <a href="{% if user.is_authenticated %}{% url 'dashboard:admin_prod' %}{% else %}#{% endif %}" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+
+        <!--  Number of SP products Card -->
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">attente SP
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.sp }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-folder fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Total Data Corvet Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total
-                                données CORVET
-                            </div>
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total CORVET</div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
                                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ prods.corvet_count }}</div>
@@ -108,7 +134,83 @@
     </div>
 
     <!-- Content Row -->
+    <div class="row">
 
+        <!--  Number of Autotronik products Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Produits Autotronik</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.tronik }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-folder fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                    <a href="{% if user.is_authenticated %}{% url 'dashboard:autotronik' %}{% else %}#{% endif %}" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+
+        <!--  Number of ECU products Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Produits ECU</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ prods.ecu }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-folder fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--  Number of media products Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Produits Multimédia</div>
+                            <div class="h6 mb-0 font-weight-bold text-gray-800">{{ prods.media }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-folder fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Data Xelon Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total XELON</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ prods.xelon_count }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-database fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
     <div class="row">
 
         <div id="dataCharts" data-url="{% url 'dashboard:charts_ajax' %}"></div>

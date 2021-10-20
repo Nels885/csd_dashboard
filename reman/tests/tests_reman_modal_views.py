@@ -28,6 +28,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
+                'type': 'REMAN',
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -46,10 +47,34 @@ class MixinsTest(UnitTest):
         batchs = Batch.objects.all()
         self.assertEqual(batchs.count(), 1)
 
-        # Second post request = non-ajax request creating an object
+        # Second post request = ajax request checking if form in view is valid
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
+                'type': 'REMAN',
+                'number': '900',
+                'quantity': '20',
+                'box_quantity': '6',
+                'start_date': '01/01/1970',
+                'end_date': '01/01/1970',
+                'ref_reman': '1234567890'
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        batchs = Batch.objects.all()
+        self.assertEqual(batchs.count(), 1)
+
+        # Third post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:create_batch'),
+            data={
+                'type': 'REMAN',
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -74,8 +99,9 @@ class MixinsTest(UnitTest):
 
         # First post request = ajax request checking if form in view is valid
         response = self.client.post(
-            reverse('reman:create_etude_batch'),
+            reverse('reman:create_batch'),
             data={
+                'type': 'ETUDE',
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -96,8 +122,9 @@ class MixinsTest(UnitTest):
 
         # Second post request = non-ajax request creating an object
         response = self.client.post(
-            reverse('reman:create_etude_batch'),
+            reverse('reman:create_batch'),
             data={
+                'type': 'ETUDE',
                 'number': '901',
                 'quantity': '20',
                 'box_quantity': '6',

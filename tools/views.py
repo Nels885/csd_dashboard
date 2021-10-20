@@ -180,16 +180,16 @@ def suptech_item_ajax(request):
 def suptech_list(request):
     """ View of Software list page """
     title = _('Support Tech list')
-    query_param = request.GET.get('filter', 'all')
+    status = request.GET.get('filter', 'all')
     table_title = 'Total'
     objects = Suptech.objects.all().order_by('-date')
-    if query_param and query_param == "waiting":
+    if status == "waiting":
         table_title = 'En Attente'
         objects = objects.filter(status="En Attente")
-    elif query_param and query_param == "progress":
+    elif status == "progress":
         table_title = 'En Cours'
         objects = objects.filter(status="En Cours")
-    elif query_param and query_param == "close":
+    elif status == "close":
         table_title = 'Cloturées'
         objects = objects.filter(status="Cloturée")
     return render(request, 'tools/suptech/suptech_table.html', locals())

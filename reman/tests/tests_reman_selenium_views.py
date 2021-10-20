@@ -36,7 +36,7 @@ class RemanSeleniumTestCase(FunctionalTest):
 
         # Inserting values into the form
         psa_barcode = driver.find_element_by_name('psa_barcode')
-        submit = driver.find_elements_by_css_selector('button.btn:nth-child(3)')
+        submit = driver.find_elements_by_css_selector('button.btn.btn-success.btn-icon-split')
         psa_barcode.send_keys('9887654321')
         submit[0].click()
 

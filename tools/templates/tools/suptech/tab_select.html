@@ -1,19 +1,19 @@
 {% load i18n %}
 
 <li class="nav-item {% if select == 'waiting' %}active{% endif %}">
-    <a class="nav-link {% if select == 'waiting' %}active{% endif %}" href="{% url 'tools:suptech_list' %}?filter=waiting">
+    <a class="nav-link {% if select == 'waiting' %}active{% endif %}" href="{% url 'tools:suptech_list' %}?filter=waiting&category={{ category }}">
         En Attente
     </a>
 </li>
 
 <li class="nav-item {% if select == 'progress' %}active{% endif %}">
-    <a class="nav-link {% if select == 'progress' %}active{% endif %}" href="{% url 'tools:suptech_list' %}?filter=progress">
+    <a class="nav-link {% if select == 'progress' %}active{% endif %}" href="{% url 'tools:suptech_list' %}?filter=progress&category={{ category }}">
         En cours
     </a>
 </li>
 
 <li class="nav-item {% if select == 'close' %}active{% endif %}">
-    <a class="nav-link {% if select == 'close' %}active{% endif %}" href="{% url 'tools:suptech_list' %}?filter=close">
+    <a class="nav-link {% if select == 'close' %}active{% endif %}" href="{% url 'tools:suptech_list' %}?filter=close&category={{ category }}">
         Cloturées
     </a>
 </li>

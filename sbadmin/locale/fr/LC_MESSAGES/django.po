@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-22 16:35+0200\n"
+"POT-Creation-Date: 2021-10-20 10:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: api/views.py:172
 msgid "Time between 2 requests too short"
-msgstr ""
+msgstr "Délai entre 2 requêtes trop court"
 
 #: import_export/templates/import_export/detail_csd.html:21
 #: import_export/templates/import_export/detail_csd.html:45
@@ -37,17 +37,51 @@ msgstr "Importation CSV"
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/views.py:64 import_export/views.py:87
+#: import_export/views.py:51 import_export/views.py:74
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:165 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:167 templates/base/top_bar.html:97
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:166 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:168 templates/base/top_bar.html:88
 msgid "English"
 msgstr "Anglais"
+
+#: templates/400.html:10
+msgid "Bad Request"
+msgstr "Mauvaise demande"
+
+#: templates/400.html:11 templates/404.html:11 templates/500.html:11
+msgid "It looks like you found a glitch in the matrix..."
+msgstr "Il semble que vous ayez trouvé un bug dans la matrice..."
+
+#: templates/400.html:12 templates/403.html:14 templates/404.html:12
+#: templates/500.html:12 templates/registration/password_change_done.html:21
+msgid "Back to Dashboard"
+msgstr "Retour au tableau de bord"
+
+#: templates/403.html:10
+msgid "Access Forbidden"
+msgstr "Accès formellement interdit"
+
+#: templates/403.html:12
+msgid "You do not have the rights to access this content, please contact the "
+msgstr ""
+"Vous n'avez pas le droit d'accéder à ce contenu, veuillez contacter le "
+
+#: templates/403.html:12
+msgid "administrators"
+msgstr "administrateurs"
+
+#: templates/404.html:10
+msgid "Page Not Found"
+msgstr "Page non trouvée"
+
+#: templates/500.html:10
+msgid "Internal Server Error"
+msgstr "Erreur Interne du Serveur"
 
 #: templates/base.html:21
 msgid "release"
@@ -102,17 +136,18 @@ msgstr "S'identifier"
 #: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_csd_atelier.html:82
 #: templates/nav/nav_csd_atelier.html:100
 #: templates/nav/nav_csd_atelier.html:118 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:83
+#: templates/nav/nav_tools.html:84
 msgid "Informations"
 msgstr ""
 
 #: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:63
-#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:88
+#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:62
+#: templates/nav/nav_tools.html:89
 msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
-#: templates/nav/nav_reman.html:46 templates/nav/nav_reman.html:71
+#: templates/nav/nav_reman.html:46 templates/nav/nav_reman.html:72
 #: templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
@@ -129,7 +164,7 @@ msgstr "Dossiers erreur VIN"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:95
+#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:96
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -175,17 +210,13 @@ msgstr "Tableau de bord"
 msgid "Generate Squalaetp"
 msgstr "Générer Squalaetp"
 
-#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:56
+#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:110
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
 #: templates/nav/nav_general.html:30
 msgid "Other links"
 msgstr "Autres liens"
-
-#: templates/nav/nav_general.html:37
-msgid "Import / Export"
-msgstr ""
 
 #: templates/nav/nav_interface.html:29
 msgid "SignUp"
@@ -215,39 +246,43 @@ msgstr "Lots en cours"
 msgid "Etude batches"
 msgstr "Lots en Etude"
 
-#: templates/nav/nav_reman.html:72
+#: templates/nav/nav_reman.html:54
+msgid "Workshop batches"
+msgstr "Lots Atelier"
+
+#: templates/nav/nav_reman.html:73
 msgid "REMAN References"
 msgstr "Réf. REMAN"
 
-#: templates/nav/nav_reman.html:73
+#: templates/nav/nav_reman.html:74
 msgid "HW References"
 msgstr "Réf. Hardware"
 
-#: templates/nav/nav_reman.html:74
+#: templates/nav/nav_reman.html:75
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: templates/nav/nav_reman.html:77
+#: templates/nav/nav_reman.html:78
 msgid "Etude"
 msgstr ""
 
-#: templates/nav/nav_reman.html:78
+#: templates/nav/nav_reman.html:79
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: templates/nav/nav_reman.html:96
+#: templates/nav/nav_reman.html:97
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:97
+#: templates/nav/nav_reman.html:98
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:108
+#: templates/nav/nav_reman.html:109
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:116
+#: templates/nav/nav_reman.html:117
 msgid "check part"
 msgstr "Vérification pièce"
 
@@ -259,25 +294,45 @@ msgstr "Outils"
 msgid "Add product"
 msgstr "Ajout produit"
 
+#: templates/nav/nav_tools.html:56
+msgid "Tabs"
+msgstr "Onglets"
+
+#: templates/nav/nav_tools.html:57
+msgid "Waiting"
+msgstr "En attente"
+
 #: templates/nav/nav_tools.html:58
-msgid "Unlock table"
-msgstr "Tableau dever. VIN"
+msgid "Progress"
+msgstr "En cours"
+
+#: templates/nav/nav_tools.html:59
+msgid "Close"
+msgstr "Cloturées"
 
 #: templates/nav/nav_tools.html:60
-msgid "tag Xelon table"
-msgstr "Tableau tag Xelon"
+msgid "All"
+msgstr "Tous"
 
-#: templates/nav/nav_tools.html:61
-msgid "Suptech table"
-msgstr "Tableau Suptech"
+#: templates/nav/nav_tools.html:63
+msgid "Add Suptech"
+msgstr "Ajout Suptech"
 
-#: templates/nav/nav_tools.html:85
+#: templates/nav/nav_tools.html:86
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:90
+#: templates/nav/nav_tools.html:91
 msgid "Software Add"
 msgstr "Ajout logiciel"
+
+#: templates/nav/nav_tools.html:112
+msgid "Unlock table"
+msgstr "Tableau dever. VIN"
+
+#: templates/nav/nav_tools.html:114
+msgid "tag Xelon table"
+msgstr "Tableau tag Xelon"
 
 #: templates/registration/login.html:20
 msgid "Welcome to CSD Dashboard"
@@ -289,10 +344,6 @@ msgstr "Veuillez renseigner vos informations de connexion pour continuer."
 
 #: templates/registration/login.html:68
 msgid "Forgot Password?"
-msgstr ""
-
-#: templates/registration/password_change_done.html:21
-msgid "Back to Dashboard"
 msgstr ""
 
 #: templates/registration/password_change_form.html:26

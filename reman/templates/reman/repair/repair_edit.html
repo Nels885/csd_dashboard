@@ -64,6 +64,13 @@
                 </div>
             </div>
 
+            {% if prod.checkout %}
+                <div class="form-group row">
+                    <label for="{{ form.recovery.id_for_label }}" class="col-sm-2 col-form-label">{{ form.recovery.label }} :</label>
+                    <div class="col-sm-6">{{ form.recovery }}</div>
+                </div>
+            {% endif %}
+
 {#            <hr>#}
 {#            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>#}
 {#            <hr>#}
@@ -92,9 +99,11 @@
                 <button type="submit" name="btn_repair_save" class="ml-2 btn btn-primary">
                     Sauvegarder
                 </button>
-                <button type="submit" name="btn_repair_close" class="ml-2 btn btn-primary">
-                    Cloturer
-                </button>
+                {% if not prod.checkout %}
+                    <button type="submit" name="btn_repair_close" class="ml-2 btn btn-primary">
+                        Cloturer
+                    </button>
+                {% endif %}
             </div>
 
         </form>

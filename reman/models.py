@@ -134,6 +134,7 @@ class Repair(models.Model):
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
+    recovery = models.BooleanField("reprise", default=False)
     created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, related_name="repairs_created", editable=False, on_delete=models.CASCADE)
     modified_at = models.DateTimeField('modifié le', auto_now=True)

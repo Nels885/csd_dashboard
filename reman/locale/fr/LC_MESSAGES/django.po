@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-22 16:35+0200\n"
+"POT-Creation-Date: 2021-10-20 10:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr "Le lot existe déjà !"
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:413 reman/tests/tests_reman_views.py:108
+#: reman/forms.py:418 reman/tests/tests_reman_views.py:108
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
@@ -63,7 +63,7 @@ msgstr "Formatage impossible de l'année !"
 #: reman/templates/reman/modal/repair_create.html:38
 #: reman/templates/reman/part/part_create_form.html:47
 #: reman/templates/reman/repair/repair_close.html:93
-#: reman/templates/reman/repair/repair_edit.html:90
+#: reman/templates/reman/repair/repair_edit.html:97
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -138,7 +138,7 @@ msgstr "Mise à jour Réf. REMAN"
 msgid "Create Repair"
 msgstr "Création d'un dossier"
 
-#: reman/templates/reman/part/part_check.html:22
+#: reman/templates/reman/part/part_check.html:20
 #: reman/templates/reman/repair/out_table.html:37
 msgid "Validate"
 msgstr "Valider"
@@ -166,22 +166,26 @@ msgid "Etude batches"
 msgstr "Lots en Etude"
 
 #: reman/templates/reman/tab_select.html:17
+msgid "Workshop batches"
+msgstr "Lots Atelier"
+
+#: reman/templates/reman/tab_select.html:23
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: reman/templates/reman/tab_select.html:23
+#: reman/templates/reman/tab_select.html:29
 msgid "Current files"
 msgstr "Dossiers client"
 
-#: reman/templates/reman/tab_select.html:29
+#: reman/templates/reman/tab_select.html:35
 msgid "Customer files"
 msgstr "Dossiers client"
 
-#: reman/templates/reman/tab_select.html:35
+#: reman/templates/reman/tab_select.html:41
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: reman/templates/reman/tab_select.html:41
+#: reman/templates/reman/tab_select.html:47
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
@@ -254,14 +258,14 @@ msgstr "Mise à jour panne"
 msgid "Repair n°%(repair)s to batch n°%(batch)s ready for shipment"
 msgstr "Réparation n°%(repair)s du lot n°%(batch)s prêt pour expédition."
 
-#: reman/views.py:545
+#: reman/views.py:548
 msgid "Success: Reman ECU HW Reference was created."
 msgstr "Succès: la référence Hardware a été créé."
 
-#: reman/views.py:566
+#: reman/views.py:569
 msgid "Success: Reman ECU HW Reference was updated."
 msgstr "Succès: la référence Hardware a été mise à jour."
 
-#: reman/views.py:584
+#: reman/views.py:587
 msgid "Success: Reman ECU dump was updated."
 msgstr "Succès: La dump ECU Reman a été mise à jour."

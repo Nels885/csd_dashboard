@@ -42,6 +42,60 @@
 
     {% endif %}
 
+    <!-- Nav Item - Suptech Settings Menu -->
+    {% with name="Suptech" icon="fa-radiation" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Tabs" %} :</h6>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting">{% trans "Waiting" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=progress">{% trans "Progress" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=close">{% trans "Close" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}">{% trans "All" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                    <a class="collapse-item create-suptech" href="#">{% trans "Add Suptech" %}</a>
+
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+    {% if perms.tools.view_csdsoftware %}
+        <!-- Nav Item - Software Settings Menu -->
+        {% with name="Software" icon="fa-table" %}
+
+            <!-- Nav Item - Software -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>{{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+                        <a class="collapse-item"
+                           href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
+                        <div class="collapse-divider"></div>
+                        {% if perms.tools.add_csdsoftware %}
+                            <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                            <a class="collapse-item"
+                               href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+    {% endif %}
+
     <!-- Nav Item - Tools Consultation Menu -->
     {% with name="toolsConsult" icon="fa-table" %}
         <li class="nav-item">
@@ -58,53 +112,18 @@
                         <a class="collapse-item" href="{% url 'raspeedi:unlock_table' %}">{% trans "Unlock table" %}</a>
                     {% endif %}
                     <a class="collapse-item" href="{% url 'tools:tag_xelon_list' %}">{% trans "tag Xelon table" %}</a>
-                    <a class="collapse-item" href="{% url 'tools:suptech_list' %}?filter=waiting">{% trans "Suptech table" %}</a>
                 </div>
             </div>
         </li>
     {% endwith %}
 
-    {% if perms.tools %}
-
-        {% if perms.tools.view_csdsoftware %}
-            <!-- Nav Item - Software Settings Menu -->
-            {% with name="Software" icon="fa-table" %}
-
-                <!-- Nav Item - Software -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
-                       aria-expanded="true" aria-controls="collapse{{ name }}">
-                        <i class="fas fa-fw {{ icon }}"></i>
-                        <span>{{ name }}</span>
-                    </a>
-                    <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
-                         data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">{% trans "Informations" %} :</h6>
-                            <a class="collapse-item"
-                               href="{% url 'tools:soft_list' %}">{% trans "Software list" %}</a>
-                            <div class="collapse-divider"></div>
-                            {% if perms.tools.add_csdsoftware %}
-                                <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                                <a class="collapse-item"
-                                   href="{% url 'tools:soft_add' %}">{% trans "Software Add" %}</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </li>
-            {% endwith %}
-
-        {% endif %}
-
-        {% if perms.tools.add_tagxelon %}
-            <!-- Nav Item - TAG Xelon Multi -->
-            <li class="nav-item">
-                <a class="create-tag-xelon nav-link" href="#">
-                    <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
-                </a>
-            </li>
-        {% endif %}
-
+    {% if perms.tools.add_tagxelon %}
+        <!-- Nav Item - TAG Xelon Multi -->
+        <li class="nav-item">
+            <a class="create-tag-xelon nav-link" href="#">
+                <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
+            </a>
+        </li>
     {% endif %}
 
     <!-- Nav Item - Ultimaker Streaming -->

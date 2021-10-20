@@ -72,9 +72,15 @@ def validate_psa_barcode(value):
     :return:
         Error message if not valid
     """
-    if not re.match(r'^9[68]\d{8}\w*$', str(value)) and not re.match(r'^89661-\w{5}$', str(value)):
-        return 'PSA barcode is invalid'
-    return None
+    if re.match(r'^9[68]\d{8}\w*$', str(value)):
+        return value[:10], None
+    elif re.match(r'^89661-\w{5}$', str(value)):
+        return value, None
+    elif re.match(r'55\d{6}$', str(value)):
+        return value, None
+    elif re.match(r'^\[\)>\w{55}$', str(value)):
+        return value[21:29], None
+    return value, 'PSA barcode is invalid'
 
 
 def xml_parser(value):

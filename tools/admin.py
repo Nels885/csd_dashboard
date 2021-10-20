@@ -35,6 +35,10 @@ class SuptechItemAdmin(admin.ModelAdmin):
     search_fields = ('name', 'mailing_list')
 
 
+class SuptechCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'manager')
+
+
 class SuptechMessageAdmin(admin.ModelAdmin):
     list_display = ('content', 'added_at', 'added_by', 'content_object')
 
@@ -44,7 +48,7 @@ admin.site.register(CsdSoftware)
 admin.site.register(EtudeProject)
 admin.site.register(ThermalChamber, ThermalChamberAdmin)
 admin.site.register(Suptech, SuptechAdmin)
-admin.site.register(SuptechCategory)
+admin.site.register(SuptechCategory, SuptechCategoryAdmin)
 admin.site.register(SuptechItem, SuptechItemAdmin)
 admin.site.register(SuptechMessage, SuptechMessageAdmin)
 admin.site.register(BgaTime)

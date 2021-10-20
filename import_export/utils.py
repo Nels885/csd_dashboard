@@ -23,6 +23,21 @@ BTEL_LIST = [
     ('84X_BTEL_DOTE', 'corvet__electronique_84x'), ('94X_BTEL_SOFT', 'corvet__electronique_94x')
 ]
 
+EMF_LIST = [
+    ('Modele Radio/Nav', 'corvet__prods__btel__name'), ('Modele Ecran Multi', 'corvet__prods__emf__name'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('14L_EMF_HARD', 'corvet__electronique_14l'),
+    ('44L_EMF_FOURN.NO.SERIE', 'corvet__electronique_44l'), ('54L_EMF_FOUN.DATE.FAB', 'corvet__electronique_54l'),
+    ('84L_EMF_DOTE', 'corvet__electronique_84l'), ('94L_EMF_SOFT', 'corvet__electronique_94l')
+]
+
+CMB_LIST = [
+    ('Modele Radio/Nav', 'corvet__prods__btel__name'), ('Tableau de Bord', 'corvet__prods__cmb__name'),
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('14K_CMB_HARD', 'corvet__electronique_14k'),
+    ('54K_CMB_FOUN.DATE.FAB', 'corvet__electronique_54k'), ('94K_CMB_SOFT', 'corvet__electronique_94k')
+]
+
 CMM_LIST = [
     ('Modele reel', 'corvet__prods__cmm__name'),
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
@@ -66,6 +81,13 @@ CVM_LIST = [
 ]
 
 
+DAE_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16L_DAE_HARD', 'corvet__electronique_16l'),
+    ('96L_DAE_SOFT', 'corvet__electronique_96l')
+]
+
+
 def get_header_fields(prod_list):
     header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
     fields = [value_tuple[1] for value_tuple in XELON_LIST] + [value_tuple[1] for value_tuple in prod_list]
@@ -73,11 +95,14 @@ def get_header_fields(prod_list):
 
 
 BTEL_HEADER, BTEL_FIELDS = get_header_fields(BTEL_LIST)
+EMF_HEADER, EMF_FIELDS = get_header_fields(EMF_LIST)
+CMB_HEADER, CMB_FIELDS = get_header_fields(CMB_LIST)
 CMM_HEADER, CMM_FIELDS = get_header_fields(CMM_LIST)
 BSI_HEADER, BSI_FIELDS = get_header_fields(BSI_LIST)
 HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
 BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
 CVM_HEADER, CVM_FIELDS = get_header_fields(CVM_LIST)
+DAE_HEADER, DAE_FIELDS = get_header_fields(DAE_LIST)
 
 """
 ##################################
@@ -126,6 +151,15 @@ def extract_corvet(product='corvet'):
     elif product == "cvm":
         header, values_list = CVM_HEADER, CVM_FIELDS
         queryset = xelons.exclude(corvet__electronique_12y__exact='')
+    elif product == "dae":
+        header, values_list = DAE_HEADER, DAE_FIELDS
+        queryset = xelons.exclude(corvet__electronique_16l__exact='')
+    elif product == "emf":
+        header, values_list = EMF_HEADER, EMF_FIELDS
+        queryset = xelons.exclude(corvet__electronique_14l__exact='')
+    elif product == "cmb":
+        header, values_list = CMB_HEADER, CMB_FIELDS
+        queryset = xelons.exclude(corvet__electronique_14k__exact='')
     elif product == "nac":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
         queryset = xelons.filter(corvet__attribut_drc="NA")
