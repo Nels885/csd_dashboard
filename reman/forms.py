@@ -20,7 +20,7 @@ MANAGER FORMS
 """
 
 BOX_NUMBER = [(1, 1), (3, 3), (6, 6)]
-BATCH_TYPE = [('REMAN', 'REMAN'), ('ETUDE', 'ETUDE'), ('ATELIER', 'ATELIER')]
+BATCH_TYPE = [('REMAN', 'REMAN'), ('ETUDE', 'ETUDE'), ('REPAIR', 'REPAIR')]
 
 
 class BatchForm(BSModalModelForm):
