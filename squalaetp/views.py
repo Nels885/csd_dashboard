@@ -140,9 +140,12 @@ def barcode_pdf_generate(request, pk):
         media = xelon.corvet.prods.radio
         hw_ref = xelon.corvet.electronique_14f
         sw_ref = xelon.corvet.electronique_94f
-    p.drawString(250, 400, str(media.get_name_display()))
-    if media.level:
-        p.drawString(400, 400, str(media.level))
+    try:
+        p.drawString(250, 400, str(media.get_name_display()))
+        if media.level:
+            p.drawString(400, 400, str(media.level))
+    except AttributeError:
+        p.drawString(250, 400, str(xelon.modele_produit))
     p.drawString(250, 300, str(hw_ref))
     barcode = code128.Code128(str(hw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
     barcode.drawOn(p, 210, 260)
