@@ -105,7 +105,7 @@ class AddBatchForm(BSModalModelForm):
         del self.fields['type']
         batch = super().save(commit=False)
         if commit and not self.request.is_ajax():
-            if batch_type == "ATELIER":
+            if batch_type == "REPAIR":
                 batch.year = "X"
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
