@@ -90,6 +90,7 @@ def stock_table(request):
 def detail(request, pk):
     """ Detailed view of the selected Xelon number """
     xelon = get_object_or_404(Xelon, pk=pk)
+    title = xelon.numero_de_dossier
     select = "xelon"
     collapse = collapse_select(xelon)
     if xelon.corvet:
