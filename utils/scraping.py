@@ -27,7 +27,8 @@ class ScrapingCorvet(webdriver.Chrome):
         self.username = username
         self.password = password
         options = Options()
-        options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+            options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
         options.add_argument('-headless')
         try:
             # super(ScrapingCorvet, self).__init__(firefox_profile=profile, options=options)
