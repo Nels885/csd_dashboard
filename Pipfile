@@ -17,7 +17,7 @@ gunicorn = "*"
 xlwt = "*"
 djangorestframework = "*"
 pillow = ">=8.3.2"
-selenium = "*"
+selenium = "==3.141.0"
 django-model-utils = "*"
 sentry-sdk = "*"
 django-bootstrap-modal-forms = "==2.2.0"
@@ -36,4 +36,7 @@ django-celery-beat = "*"
 django-celery-results = "*"
 django-searchable-encrypted-fields = "*"
 reportlab = "*"
-django-constance = {extras = ["redis"], version = "*"}
+
+[packages.django-constance]
+extras = [ "redis",]
+version = "*"

@@ -28,7 +28,7 @@ class ScrapingCorvet(webdriver.Firefox):
         options = Options()
         options.add_argument('-headless')
         try:
-            super(ScrapingCorvet, self).__init__(firefox_profile=profile, firefox_options=options)
+            super(ScrapingCorvet, self).__init__(firefox_profile=profile, options=options)
             self.implicitly_wait(10)
             self.get(self.START_URLS)
         except WebDriverException:
