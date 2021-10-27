@@ -1,7 +1,6 @@
 import time
 from django.core.management.base import BaseCommand
 from django.db.models import Q
-from constance import config
 
 from ._excel_squalaetp import ExcelSqualaetp
 from squalaetp.models import Xelon
@@ -28,11 +27,11 @@ class Command(BaseCommand):
         # r'^VF[37]\w{14}$'
         if options['vin']:
             vin = options['vin']
-            scrap = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD)
+            scrap = ScrapingCorvet()
             data = scrap.result(vin)
             data = str(xml_parser(data))
             self.stdout.write(data)
-            scrap.quit()
+            scrap.close()
         elif options['squalaetp']:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
@@ -52,7 +51,7 @@ class Command(BaseCommand):
 
     def _import(self, queryset, limit=False):
         nb_import = 0
-        scrap = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD)
+        scrap = ScrapingCorvet()
         for query in queryset:
             start_time = time.time()
             for attempt in range(2):
@@ -81,5 +80,5 @@ class Command(BaseCommand):
             query.save()
             if limit and nb_import >= 50:
                 break
-        scrap.quit()
+        scrap.close()
         return nb_import
