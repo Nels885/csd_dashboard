@@ -7,8 +7,7 @@
     <table class="table table-bordered table-sm text-nowrap" id="prodTable" style="width:100%">
         <thead>
         <tr>
-            <th class="all"></th>
-            <th class="all"></th>
+            <th></th>
             <th class="all">Code barre PSA</th>
             <th>Modèle</th>
             <th>Façade</th>
@@ -23,10 +22,8 @@
         {% for prod in products %}
 
             <tr {% if prod.dump_renesas %}class="bg-success text-gray-700"{% endif %}>
-                <td class="bg-white">
+                <td class="bg-white text-nowrap" style="width: 60px;">
                     <a href="#" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                </td>
-                <td class="bg-white">
                     <a href="#" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
                 <td>{{ prod.hw_reference }}</td>
