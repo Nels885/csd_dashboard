@@ -16,7 +16,7 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered table-sm text-nowrap" id="repairTable" style="width: 100%;">
+    <table class="table table-bordered table-sm text-nowrap" id="ecuDumpTable" style="width: 100%;">
         <thead>
         <tr>
             <th></th>
@@ -34,7 +34,7 @@
         {% for ecu in ecus %}
 
             <tr>
-                <td class="bg-white">
+                <td class="bg-white" style="width: 30px;">
                     {% if perms.reman.change_ecumodel %}
                         <button title="Modification" class="bs-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:update_ecu_dump' ecu.pk %}">
                             <i class="fas fa-edit"></i>

@@ -492,7 +492,7 @@ class RepairViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         try:
             self._filter(request)
-            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
+            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 1, **request.query_params).values()
             serializer = self.serializer_class(repair["items"], many=True)
             data = {
                 "data": serializer.data,
