@@ -20,6 +20,15 @@ def cmd_exportsqualaetp_task():
     return {"msg": "Exportation Squalaetp terminée."}
 
 
+@celery_app.task()
+def cmd_importcorvet_task(*args):
+    print("cmd_importcorvet_tash in progress...")
+    print(f"cmd : importcorvet {' '.join(args)}")
+    out = StringIO()
+    call_command("importcorvet", f"{' '.join(args)}", stdout=out)
+    return out.getvalue()
+
+
 @celery_app.task(bind=True)
 def send_email_task(self, subject, body, from_email, to, cc, files=None):
     email = EmailMessage(subject=subject, body=body, from_email=from_email, to=to, cc=cc)
