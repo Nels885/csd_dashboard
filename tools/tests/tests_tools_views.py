@@ -108,10 +108,10 @@ class ToolsTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_ajax_temp(self):
-        response = self.client.get(reverse('tools:ajax_temp'), format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {"temp": "Hors ligne"})
+    # def test_ajax_temp(self):
+    #     response = self.client.get(reverse('tools:ajax_temp'), format='json')
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertJSONEqual(response.content, {"temp": "Hors ligne"})
 
     def test_create_suptech_is_disconnected(self):
         url = reverse('tools:suptech_add')
