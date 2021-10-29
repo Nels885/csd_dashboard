@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from django.db.models.functions import ExtractDay, TruncDay
 from django.db.models.aggregates import Count, Sum
-from django.db.models import Q, F
+from django.db.models import Q, F, Case, When, IntegerField
 
 from squalaetp.models import Xelon, Indicator
 from psa.models import Corvet
@@ -156,11 +156,9 @@ class ToolsAnalysis:
         queryset = self._bga_annotate(self.bgaTimes)
         for query in queryset:
             data["bgaAreaLabels"].append(query['sum_date'].strftime("%d/%m/%Y"))
-            data["bgaTotalValue"].append(self._percent(query['sum_duration'], 2))
-        for key, value in self.BGA.items():
-            queryset = self._bga_annotate(self.bgaTimes.filter(name=value))
-            for query in queryset:
-                data[key].append(self._percent(query['sum_duration']))
+            data["bgaTotalValue"].append(self._percent(query['sum_duration']))
+            data["bgaOneValue"].append(self._percent(query['sum_bga_one']))
+            data["bgaTwoValue"].append(self._percent(query['sum_bga_two']))
         return data
 
     def thermal_chamber_measure(self):
@@ -179,5 +177,10 @@ class ToolsAnalysis:
 
     @staticmethod
     def _bga_annotate(queryset):
-        return queryset.annotate(
-            sum_date=TruncDay("date")).values("sum_date").annotate(sum_duration=Sum('duration')).order_by("sum_date")
+        queryset = queryset.annotate(sum_date=TruncDay("date")).values("sum_date").order_by("sum_date")
+        queryset = queryset.annotate(
+            sum_bga_one=Sum(Case(When(name='DES-48', then=F('duration')), output_field=IntegerField(), default=0)))
+        queryset = queryset.annotate(
+            sum_bga_two=Sum(Case(When(name='DES-51', then=F('duration')), output_field=IntegerField(), default=0)))
+        queryset = queryset.annotate(sum_duration=Sum('duration'))
+        return queryset

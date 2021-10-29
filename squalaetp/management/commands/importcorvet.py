@@ -74,6 +74,7 @@ class Command(BaseCommand):
                     break
                 if attempt:
                     query.vin_error = True
+                    query.corvet = None
                     delay_time = time.time() - start_time
                     self.stdout.write(
                         self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error VIN in {delay_time}"))
