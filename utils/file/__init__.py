@@ -40,7 +40,7 @@ class LogFile:
         if keys:
             files = glob.glob(os.path.join(self.paths[keys[0]], f"{keys[0]}*/{file_name}") + "*_Erreur_VIN.txt")
             if files:
-                with open(files[0], 'r') as f:
+                with open(files[0], 'r', encoding='latin1') as f:
                     data = f.read()
                 return data
         return None
