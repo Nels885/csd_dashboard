@@ -112,6 +112,7 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
         context = super(CorvetView, self).get_context_data(**kwargs)
         context['title'] = 'Info PSA'
         context['table_title'] = _('CORVET table')
+        context['query_param'] = self.request.GET.get('filter', '')
         return context
 
 
