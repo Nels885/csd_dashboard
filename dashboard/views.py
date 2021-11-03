@@ -95,12 +95,14 @@ def search(request):
     select = request.GET.get('select')
     if query and select == 'atelier':
         files = Xelon.search(query)
-        if files and len(files) > 1:
-            return redirect(reverse('squalaetp:xelon', get={'filter': query}))
-        elif files:
+        if files:
+            messages.success(request, _(f'Success: The reseach for {query} was successful.'))
+            if len(files) > 1:
+                return redirect(reverse('squalaetp:xelon', get={'filter': query}))
             return redirect('squalaetp:detail', pk=files.first().pk)
     corvets = Corvet.objects.filter(vin=query)
     if corvets:
+        messages.success(request, _(f'Success: The reseach for {query} was successful.'))
         return redirect('psa:corvet_detail', vin=corvets.first().vin)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))
