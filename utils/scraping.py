@@ -23,7 +23,7 @@ class ScrapingCorvet(webdriver.Chrome):
         options = Options()
         if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
             options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-        options.add_argument('-headless')
+        # options.add_argument('-headless')
         try:
             super(ScrapingCorvet, self).__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
             self.implicitly_wait(10)
@@ -53,7 +53,7 @@ class ScrapingCorvet(webdriver.Chrome):
                 if data and len(data) == 0:
                     data = "ERREUR COMMUNICATION SYSTEME CORVET"
             except Exception as err:
-                self._logger_error('result()', err)
+                self._logger_error('CORVET result()', err)
                 data = "Exception or timeout error !"
                 self.ERROR = True
             self.logout()
@@ -106,3 +106,39 @@ class ScrapingCorvet(webdriver.Chrome):
     def _logger_error(message, err):
         exception_type = type(err).__name__
         logger.error(f"{exception_type} - {message}: {err}")
+
+
+class ScrapingSivin(ScrapingCorvet):
+    """ Scraping data SIVIN of the repairnav web site"""
+    SIVIN_URLS = 'https://www.repairnav.com/clarionservice_v2/sivin.xhtml'
+
+    def result(self, immat_value=None):
+        """
+        SIVIN data recovery
+        :param immat_value: Immat number for the SIVIN data
+        :return: SIVIN data
+        """
+        if not self.ERROR and self.login():
+            try:
+                self.get(self.SIVIN_URLS)
+                vin = self.find_element_by_name('form:input_immat')
+                submit = self.find_element_by_id('form:suite')
+                vin.clear()
+                if immat_value:
+                    vin.send_keys(immat_value)
+                submit.click()
+                time.sleep(1)
+                data = WebDriverWait(self, 10).until(
+                    EC.presence_of_element_located((By.NAME, 'form:resultat_SIVIN'))
+                ).text
+                if data and len(data) == 0:
+                    data = "ERREUR COMMUNICATION SYSTEME SIVIN"
+            except Exception as err:
+                self._logger_error('SIVIN result()', err)
+                data = "Exception or timeout error !"
+                self.ERROR = True
+            self.logout()
+            self.get(self.START_URLS)
+        else:
+            data = "Corvet login Error !!!"
+        return data
