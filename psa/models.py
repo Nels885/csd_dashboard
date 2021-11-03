@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class CorvetChoices(models.Model):
@@ -170,6 +171,23 @@ class Corvet(models.Model):
     class Meta:
         verbose_name = "données CORVET"
         ordering = ['vin']
+
+    @classmethod
+    def search(cls, value):
+        if value is not None:
+            query = value.upper().strip()
+            return cls.objects.filter(Q(vin__exact=query) | Q(vin__endswith=query) |
+                                      Q(electronique_44l__contains=query) |
+                                      Q(electronique_44x__contains=query) |
+                                      Q(electronique_44a__contains=query) |
+                                      Q(electronique_14l__exact=query) |
+                                      Q(electronique_14x__exact=query) |
+                                      Q(electronique_14a__exact=query) |
+                                      Q(electronique_14b__exact=query) |
+                                      Q(electronique_44b__exact=query) |
+                                      Q(electronique_16p__exact=query) |
+                                      Q(electronique_46p__exact=query))
+        return None
 
     def __str__(self):
         return self.vin
