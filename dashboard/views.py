@@ -100,9 +100,11 @@ def search(request):
             if len(files) > 1:
                 return redirect(reverse('squalaetp:xelon', get={'filter': query}))
             return redirect('squalaetp:detail', pk=files.first().pk)
-    corvets = Corvet.objects.filter(vin=query)
+    corvets = Corvet.search(query)
     if corvets:
         messages.success(request, _(f'Success: The reseach for {query} was successful.'))
+        if len(corvets) > 1:
+            return redirect(reverse('psa:corvet', get={'filter': query}))
         return redirect('psa:corvet_detail', vin=corvets.first().vin)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))
