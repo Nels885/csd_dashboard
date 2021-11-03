@@ -1,7 +1,7 @@
 from django.utils import timezone
 # import itertools
 
-from django.db.models.functions import ExtractDay, TruncDay
+from django.db.models.functions import ExtractDay, TruncDay, TruncMonth
 from django.db.models.aggregates import Count, Sum
 from django.db.models import Q, F, Case, When, IntegerField
 
@@ -142,12 +142,23 @@ class ToolsAnalysis:
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
         self.total = None
 
+    # def suptech(self):
+    #     self.total = self.suptechs.count()
+    #     data = {"suptechLabels": self.SUPTECH_LABELS, 'suptechValue': []}
+    #     data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__lte=2).count()))
+    #     data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=2, day_number__lte=6).count()))
+    #     data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=6).count()))
+    #     return data
+
     def suptech(self):
         self.total = self.suptechs.count()
-        data = {"suptechLabels": self.SUPTECH_LABELS, 'suptechValue': []}
-        data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__lte=2).count()))
-        data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=2, day_number__lte=6).count()))
-        data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=6).count()))
+        data = {"suptechLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": []}
+        queryset = self._suptech_annotate(self.suptechs)
+        for query in queryset:
+            data["suptechLabels"].append(query['month'].strftime("%m/%Y"))
+            data["twoDays"].append(query['two_days'])
+            data["twoToSixDays"].append(query['two_to_six_days'])
+            data["sixDays"].append(query['six_days'])
         return data
 
     def bga_time(self):
@@ -183,4 +194,12 @@ class ToolsAnalysis:
         queryset = queryset.annotate(
             sum_bga_two=Sum(Case(When(name='DES-51', then=F('duration')), output_field=IntegerField(), default=0)))
         queryset = queryset.annotate(sum_duration=Sum('duration'))
+        return queryset
+
+    @staticmethod
+    def _suptech_annotate(queryset):
+        queryset = queryset.annotate(month=TruncMonth("date")).values("month").order_by("month")
+        queryset = queryset.annotate(two_days=Count("day_number", filter=Q(day_number__lte=2)))
+        queryset = queryset.annotate(two_to_six_days=Count("day_number", filter=Q(day_number__gt=2, day_number__lte=6)))
+        queryset = queryset.annotate(six_days=Count("day_number", filter=Q(day_number__gt=6)))
         return queryset

@@ -12,6 +12,10 @@ $.ajax({
         const {prodsInValue} = data;
         const {prodsExpValue} = data;
         const {prodsLateValue} = data;
+        const {suptechLabels} = data;
+        const {twoDays} = data;
+        const {twoToSixDays} = data;
+        const {sixDays} = data;
         const {bgaAreaLabels} = data;
         const {bgaTotalValue} = data;
         const {bgaOneValue} = data;
@@ -110,9 +114,95 @@ $.ajax({
             },
         });
 
+        // Suptech Area Chart
+        var ctx2 = document.getElementById("suptechAreaChart");
+        var suptechChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: suptechLabels,
+                datasets: [
+                    {
+                        data: twoDays,
+                        label: "1 à 2 jours",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(0, 143, 136, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(0, 143, 136, 1)",
+                        pointBorderColor: "rgba(0, 143, 136, 1)",
+                    },
+                    {
+                        data: twoToSixDays,
+                        label: "3 à 6 jours",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(240, 132, 40, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(240, 132, 40, 1)",
+                        pointBorderColor: "rgba(240, 132, 40, 1)",
+                    },
+                    {
+                        data: sixDays,
+                        label: "7 jours et plus",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(214, 54, 33, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(214, 54, 33, 1)",
+                        pointBorderColor: "rgba(214, 54, 33, 1)",
+                    },
+                ],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 10
+                        }
+                    },
+                    y: {
+                        max: 40,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Nombre Suptech',
+                        },
+                        ticks: {
+                            maxTicksLimit: 6,
+                        },
+                        grid: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            },
+        });
+
         // BGA Duration Area Chart
-        var ctx2 = document.getElementById("bgaAreaChart");
-        var bgaLineChart = new Chart(ctx2, {
+        var ctx3 = document.getElementById("bgaAreaChart");
+        var bgaLineChart = new Chart(ctx3, {
             type: 'line',
             data: {
                 labels: bgaAreaLabels,
@@ -197,8 +287,8 @@ $.ajax({
         });
 
         // Thermal Chamber Temperature Area Chart
-        var ctx3 = document.getElementById("tcAreaChart");
-        var tcLineChart = new Chart(ctx3, {
+        var ctx4 = document.getElementById("tcAreaChart");
+        var tcLineChart = new Chart(ctx4, {
             type: 'line',
             data: {
                 labels: tcAreaLabels,
