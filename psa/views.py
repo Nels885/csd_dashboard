@@ -137,7 +137,8 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
     def _filter(self, request):
         query = request.query_params.get('filter', None)
-        self.queryset = Corvet.search(query)
+        if query:
+            self.queryset = Corvet.search(query)
 
 
 @permission_required('psa.view_corvet')
