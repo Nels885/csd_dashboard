@@ -122,6 +122,7 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
+            self._filter(request)
             corvet = QueryTableByArgs(self.queryset, CORVET_COLUMN_LIST, 1, **request.query_params).values()
             serializer = self.serializer_class(corvet["items"], many=True)
             data = {
@@ -133,6 +134,10 @@ class CorvetViewSet(viewsets.ModelViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+    def _filter(self, request):
+        query = request.query_params.get('filter', None)
+        self.queryset = Corvet.search(query)
 
 
 @permission_required('psa.view_corvet')
