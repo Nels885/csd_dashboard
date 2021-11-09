@@ -66,7 +66,7 @@ def validate_xelon(value):
 
 def validate_psa_barcode(value):
     """
-    Function for the Xelon validation
+    Function for the PSA barcode validation
     :param value:
         Xelon value
     :return:
@@ -80,7 +80,31 @@ def validate_psa_barcode(value):
         return value, None
     elif re.match(r'^\[\)>\w{55}$', str(value)):
         return value[21:29], None
-    return value, 'PSA barcode is invalid'
+    return value, _('PSA barcode is invalid')
+
+
+def validate_identify_number(queryset, value):
+    """
+    Function for the REMAN Repair validation
+    :param queryset:
+        queryset of Batch
+    :param value:
+         identify_number
+    :return:
+        queryset and Error message if not valid
+    """
+    message = None
+    batch_number = value[:-3] + "000"
+    queryset = queryset.filter(batch_number__exact=batch_number)
+    if not re.match(r'^[A-Z]\d{9}$', str(value)):
+        message = _('The number is not correct, it must consist of an uppercase letter and 9 digits')
+    elif value[-3:] == "000":
+        message = _("This number is not authorized")
+    elif not queryset:
+        message = _("The batch does not exist")
+    elif queryset and queryset.filter(repairs__identify_number=value):
+        message = _("This number exists")
+    return queryset, message
 
 
 def xml_parser(value):
