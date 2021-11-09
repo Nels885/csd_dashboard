@@ -221,8 +221,6 @@ class MixinsTest(UnitTest):
             data={
                 'psa_barcode': '',
                 'identify_number': '',
-                'ref_supplier': '1234567890',
-                'product_number': '1234567890',
                 'remark': 'test',
             },
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -243,8 +241,6 @@ class MixinsTest(UnitTest):
                 data={
                     'psa_barcode': barcode,
                     'identify_number': identify_nb,
-                    'ref_supplier': '1234567890',
-                    'product_number': '1234567890',
                     'remark': 'test',
                 },
             )
