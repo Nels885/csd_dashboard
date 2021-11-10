@@ -25,7 +25,7 @@ function clock() {
 }
 
 
-function addMessage(text, extra_tags, fixed = false) {
+function addMessage(text, extra_tags="success", fixed = false) {
     var message = $(`
             <div style="border-radius:0;" class="alert alert-icon alert-${extra_tags} alert-dismissible fade show mb-0" role="alert">\n
                     ${text}\n
@@ -52,7 +52,8 @@ function textCopy(text) {
     elem.select();
     document.execCommand("copy");
     document.body.removeChild(elem);
-    alert("Copied the text: " + elem.value);
+    addMessage(elem.value + " copié !");
+    // alert("Copied the text: " + elem.value);
 }
 
 function excelImport(url) {
