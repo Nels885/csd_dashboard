@@ -128,7 +128,7 @@ class IndicatorAnalysis:
 
 
 class ToolsAnalysis:
-    SUPTECH_LABELS = ["1 à 2 jours", "3 à 6 jours", "7 jours et plus"]
+    SUPTECH_CO_LABELS = ["En Attente", "En Cours", "Cloturée", "Annulée"]
     BGA = {"bgaOneValue": "DES-48", "bgaTwoValue": "DES-51"}
     LAST_60_DAYS = timezone.datetime.today() - timezone.timedelta(60)
     LAST_30_DAYS = timezone.datetime.today() - timezone.timedelta(30)
@@ -136,26 +136,29 @@ class ToolsAnalysis:
 
     def __init__(self):
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
-        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False).exclude(category=3)
+        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
         self.total = None
 
-    # def suptech(self):
-    #     self.total = self.suptechs.count()
-    #     data = {"suptechLabels": self.SUPTECH_LABELS, 'suptechValue': []}
-    #     data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__lte=2).count()))
-    #     data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=2, day_number__lte=6).count()))
-    #     data['suptechValue'].append(self._percent(self.suptechs.filter(day_number__gt=6).count()))
-    #     return data
+    def suptech_co(self):
+        suptechs = Suptech.objects.filter(category=3)
+        self.total = suptechs.count()
+        data = {"suptechCoLabels": self.SUPTECH_CO_LABELS, 'suptechCoValue': []}
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Attente").count()))
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Cours").count()))
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Cloturée").count()))
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Annulée").count()))
+        return data
 
-    def suptech(self):
-        self.total = self.suptechs.count()
-        data = {"suptechLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": []}
-        queryset = self._suptech_annotate(self.suptechs)
+    def suptech_ce(self):
+        suptechs = self.suptechs.exclude(category=3)
+        self.total = suptechs.count()
+        data = {"suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": []}
+        queryset = self._suptech_annotate(suptechs)
         for query in queryset:
-            data["suptechLabels"].append(query['month'].strftime("%m/%Y"))
+            data["suptechCeLabels"].append(query['month'].strftime("%m/%Y"))
             data["twoDays"].append(query['two_days'])
             data["twoToSixDays"].append(query['two_to_six_days'])
             data["sixDays"].append(query['six_days'])
@@ -179,6 +182,9 @@ class ToolsAnalysis:
                 data["tcAreaLabels"].append(timezone.localtime(query.datetime).strftime("%d/%m/%Y %H:%M"))
                 data["tcTempValue"].append(query.temp[:-2])
         return data
+
+    def all(self):
+        return dict(**self.suptech_ce(), **self.suptech_co(), **self.bga_time(), **self.thermal_chamber_measure())
 
     def _percent(self, value, total_multiplier=1):
         if self.total and isinstance(value, int) and value != 0:
