@@ -52,8 +52,7 @@ def charts_ajax(request):
     """
     prod = Indicator.count_prods()
     data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
-    data.update(IndicatorAnalysis().new_result())
-    data.update(ToolsAnalysis().all())
+    data.update(**IndicatorAnalysis().new_result(), **ToolsAnalysis().all())
     return JsonResponse(data)
 
 
