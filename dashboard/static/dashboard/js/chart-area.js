@@ -12,7 +12,7 @@ $.ajax({
         const {prodsInValue} = data;
         const {prodsExpValue} = data;
         const {prodsLateValue} = data;
-        const {suptechLabels} = data;
+        const {suptechCeLabels} = data;
         const {twoDays} = data;
         const {twoToSixDays} = data;
         const {sixDays} = data;
@@ -119,7 +119,7 @@ $.ajax({
         var suptechChart = new Chart(ctx2, {
             type: 'line',
             data: {
-                labels: suptechLabels,
+                labels: suptechCeLabels,
                 datasets: [
                     {
                         data: twoDays,

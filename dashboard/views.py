@@ -50,14 +50,10 @@ def charts_ajax(request):
     """
     API endpoint that allows chart data to be viewed
     """
-    indicator = IndicatorAnalysis()
     prod = Indicator.count_prods()
-    tools = ToolsAnalysis()
     data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
-    data.update(indicator.new_result())
-    data.update(tools.suptech())
-    data.update(tools.bga_time())
-    data.update(tools.thermal_chamber_measure())
+    data.update(IndicatorAnalysis().new_result())
+    data.update(ToolsAnalysis().all())
     return JsonResponse(data)
 
 
