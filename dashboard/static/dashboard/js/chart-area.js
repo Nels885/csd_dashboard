@@ -6,7 +6,7 @@ $.ajax({
     method: "GET",
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
-        console.log(data);
+        // console.log(data);
         const {prodsAreaLabels} = data;
         const {prodsRepValue} = data;
         const {prodsInValue} = data;
@@ -174,11 +174,11 @@ $.ajax({
                         }
                     },
                     y: {
-                        max: 40,
+                        max: 100,
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Nombre Suptech',
+                            text: 'Valeur en %',
                         },
                         ticks: {
                             maxTicksLimit: 6,

@@ -140,39 +140,37 @@ class ToolsAnalysis:
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
-        self.total = None
 
     def suptech_co(self):
         suptechs = Suptech.objects.filter(category=3)
-        self.total = suptechs.count()
+        total = suptechs.count()
         data = {"suptechCoLabels": self.SUPTECH_CO_LABELS, 'suptechCoValue': []}
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Attente").count()))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Cours").count()))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Cloturée").count()))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Annulée").count()))
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Attente").count(), total))
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Cours").count(), total))
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Cloturée").count(), total))
+        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Annulée").count(), total))
         return data
 
     def suptech_ce(self):
         suptechs = self.suptechs.exclude(category=3)
-        self.total = suptechs.count()
         data = {"suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": []}
         queryset = self._suptech_annotate(suptechs)
         for query in queryset:
             data["suptechCeLabels"].append(query['month'].strftime("%m/%Y"))
-            data["twoDays"].append(query['two_days'])
-            data["twoToSixDays"].append(query['two_to_six_days'])
-            data["sixDays"].append(query['six_days'])
+            data["twoDays"].append(self._percent(query['two_days'], query['total']))
+            data["twoToSixDays"].append(self._percent(query['two_to_six_days'], query['total']))
+            data["sixDays"].append(self._percent(query['six_days'], query['total']))
         return data
 
     def bga_time(self):
-        self.total = self.TOTAL_HOURS
+        total = self.TOTAL_HOURS
         data = {"bgaAreaLabels": [], "bgaTotalValue": [], "bgaOneValue": [], "bgaTwoValue": []}
         queryset = self._bga_annotate(self.bgaTimes)
         for query in queryset:
             data["bgaAreaLabels"].append(query['sum_date'].strftime("%d/%m/%Y"))
-            data["bgaTotalValue"].append(self._percent(query['sum_duration']))
-            data["bgaOneValue"].append(self._percent(query['sum_bga_one']))
-            data["bgaTwoValue"].append(self._percent(query['sum_bga_two']))
+            data["bgaTotalValue"].append(self._percent(query['sum_duration'], total))
+            data["bgaOneValue"].append(self._percent(query['sum_bga_one'], total))
+            data["bgaTwoValue"].append(self._percent(query['sum_bga_two'], total))
         return data
 
     def thermal_chamber_measure(self):
@@ -186,9 +184,10 @@ class ToolsAnalysis:
     def all(self):
         return dict(**self.suptech_ce(), **self.suptech_co(), **self.bga_time(), **self.thermal_chamber_measure())
 
-    def _percent(self, value, total_multiplier=1):
-        if self.total and isinstance(value, int) and value != 0:
-            return round(100 * value / (self.total * total_multiplier), 1)
+    @staticmethod
+    def _percent(value, total=None, total_multiplier=1):
+        if isinstance(total, int) and total != 0 and isinstance(value, int) and value != 0:
+            return round(100 * value / (total * total_multiplier), 1)
         else:
             return 0
 
@@ -205,6 +204,7 @@ class ToolsAnalysis:
     @staticmethod
     def _suptech_annotate(queryset):
         queryset = queryset.annotate(month=TruncMonth("date")).values("month").order_by("month")
+        queryset = queryset.annotate(total=Count("month"))
         queryset = queryset.annotate(two_days=Count("day_number", filter=Q(day_number__lte=2)))
         queryset = queryset.annotate(two_to_six_days=Count("day_number", filter=Q(day_number__gt=2, day_number__lte=6)))
         queryset = queryset.annotate(six_days=Count("day_number", filter=Q(day_number__gt=6)))
