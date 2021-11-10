@@ -1,6 +1,7 @@
 from django import template
+from django.core.exceptions import FieldDoesNotExist
 
-from psa.models import CorvetChoices
+from psa.models import CorvetChoices, Corvet
 
 register = template.Library()
 
@@ -23,3 +24,14 @@ def get_corvet(value, args):
         return data
     except (CorvetChoices.DoesNotExist, IndexError):
         return f"* {value} *"
+
+
+@register.filter(name='get_field_name')
+def get_field_name(field_name):
+    """
+    Returns verbose_name for a field.
+    """
+    try:
+        return Corvet._meta.get_field(field_name).verbose_name
+    except FieldDoesNotExist:
+        return "!!! FIELD NOT FOUND !!!"
