@@ -26,7 +26,7 @@ from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
-from .forms import IhmForm, VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
+from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
 from .tasks import cmd_loadsqualaetp_task
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
@@ -90,11 +90,11 @@ def stock_table(request):
 def detail(request, pk):
     """ Detailed view of the selected Xelon number """
     xelon = get_object_or_404(Xelon, pk=pk)
+    corvet = xelon.corvet
     title = xelon.numero_de_dossier
     select = "xelon"
     collapse = collapse_select(xelon)
-    if xelon.corvet:
-        corvet = xelon.corvet
+    if corvet:
         if corvet.electronique_14x.isdigit():
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
         if corvet.electronique_14a.isdigit():
@@ -102,8 +102,6 @@ def detail(request, pk):
         dict_corvet = model_to_dict(corvet)
         select = 'prods'
     select = request.GET.get('select', select)
-    form = IhmForm(instance=xelon.corvet,
-                   initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
     return render(request, 'squalaetp/detail/detail.html', locals())
 
 
