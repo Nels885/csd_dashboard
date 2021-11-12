@@ -107,55 +107,58 @@ def detail(request, pk):
 
 def barcode_pdf_generate(request, pk):
     xelon = get_object_or_404(Xelon, pk=pk)
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer, pagesize=A4)
-    p.setTitle(f"xelon_{xelon.numero_de_dossier}")
-    p.setFont('Courier', 15)
-    p.setLineWidth(4)
-    p.drawString(50, 700, "N° Xelon :")
-    p.drawString(50, 600, "V.I.N. :")
-    p.line(50, 535, 550, 535)
-    p.drawString(50, 500, "Marque :")
-    p.drawString(50, 450, "Modèle véhicule :")
-    p.drawString(50, 400, "Modèle produit :")
-    p.line(50, 355, 550, 355)
-    p.drawString(50, 300, "Réf. boitier :")
-    p.drawString(50, 200, "Cal. CORVET :")
+    if xelon.corvet:
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer, pagesize=A4)
+        p.setTitle(f"xelon_{xelon.numero_de_dossier}")
+        p.setFont('Courier', 15)
+        p.setLineWidth(4)
+        p.drawString(50, 700, "N° Xelon :")
+        p.drawString(50, 600, "V.I.N. :")
+        p.line(50, 535, 550, 535)
+        p.drawString(50, 500, "Marque :")
+        p.drawString(50, 450, "Modèle véhicule :")
+        p.drawString(50, 400, "Modèle produit :")
+        p.line(50, 355, 550, 355)
+        p.drawString(50, 300, "Réf. boitier :")
+        p.drawString(50, 200, "Cal. CORVET :")
 
-    p.setFont('Courier-Bold', 15)
-    p.drawString(250, 700, str(xelon.numero_de_dossier))
-    barcode = code128.Code128(str(xelon.numero_de_dossier), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 200, 660)
-    p.drawString(250, 600, str(xelon.vin))
-    barcode = code128.Code128(str(xelon.vin), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 170, 560)
-    p.drawString(250, 500, str(get_corvet(xelon.corvet.donnee_marque_commerciale, "DON_MAR_COMM")))
-    p.drawString(250, 450, str(xelon.modele_vehicule))
-    if xelon.corvet.electronique_94x:
-        media = xelon.corvet.prods.btel
-        hw_ref = xelon.corvet.electronique_14x
-        sw_ref = xelon.corvet.electronique_94x
-    else:
-        media = xelon.corvet.prods.radio
-        hw_ref = xelon.corvet.electronique_14f
-        sw_ref = xelon.corvet.electronique_94f
-    try:
-        p.drawString(250, 400, str(media.get_name_display()))
-        if media.level:
-            p.drawString(400, 400, str(media.level))
-    except AttributeError:
-        p.drawString(250, 400, str(xelon.modele_produit))
-    p.drawString(250, 300, str(hw_ref))
-    barcode = code128.Code128(str(hw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 210, 260)
-    p.drawString(250, 200, str(sw_ref))
-    barcode = code128.Code128(str(sw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 210, 160)
-    p.showPage()
-    p.save()
+        p.setFont('Courier-Bold', 15)
+        p.drawString(250, 700, str(xelon.numero_de_dossier))
+        barcode = code128.Code128(str(xelon.numero_de_dossier), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 200, 660)
+        p.drawString(250, 600, str(xelon.vin))
+        barcode = code128.Code128(str(xelon.vin), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 170, 560)
+        p.drawString(250, 500, str(get_corvet(xelon.corvet.donnee_marque_commerciale, "DON_MAR_COMM")))
+        p.drawString(250, 450, str(xelon.modele_vehicule))
+        if xelon.corvet.electronique_94x:
+            media = xelon.corvet.prods.btel
+            hw_ref = xelon.corvet.electronique_14x
+            sw_ref = xelon.corvet.electronique_94x
+        else:
+            media = xelon.corvet.prods.radio
+            hw_ref = xelon.corvet.electronique_14f
+            sw_ref = xelon.corvet.electronique_94f
+        try:
+            p.drawString(250, 400, str(media.get_name_display()))
+            if media.level:
+                p.drawString(400, 400, str(media.level))
+        except AttributeError:
+            p.drawString(250, 400, str(xelon.modele_produit))
+        p.drawString(250, 300, str(hw_ref))
+        barcode = code128.Code128(str(hw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 210, 260)
+        p.drawString(250, 200, str(sw_ref))
+        barcode = code128.Code128(str(sw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 210, 160)
+        p.showPage()
+        p.save()
 
-    buffer.seek(0)
-    return FileResponse(buffer, filename=f"xelon_{xelon.numero_de_dossier}.pdf")
+        buffer.seek(0)
+        return FileResponse(buffer, filename=f"xelon_{xelon.numero_de_dossier}.pdf")
+    messages.warning(request, "Génération fichier PDF impossible !")
+    return redirect(http_referer(request))
 
 
 class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
