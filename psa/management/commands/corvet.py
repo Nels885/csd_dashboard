@@ -78,9 +78,11 @@ class Command(BaseCommand):
 
     def _foreignkey_relation(self):
         self.stdout.write("[CORVET_RELATIONSHIPS] Waiting...")
-        corvets = Corvet.objects.filter(Q(prods__btel__isnull=True, prods__radio__isnull=True) |
-                                        Q(prods__bsi__isnull=True) |
-                                        Q(prods__emf__isnull=True))
+        corvets = Corvet.objects.filter(
+            Q(prods__btel__isnull=True, prods__radio__isnull=True) | Q(prods__bsi__isnull=True) |
+            Q(prods__emf__isnull=True) | Q(prods__cmb__isnull=True) | Q(prods__cmm__isnull=True) |
+            Q(prods__bsm__isnull=True) | Q(prods__hdc__isnull=True)
+        )
         for corvet in corvets:
             corvet.save()
         self.stdout.write(
