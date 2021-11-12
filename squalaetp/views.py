@@ -100,6 +100,8 @@ def detail(request, pk):
         if corvet.electronique_14a.isdigit():
             cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
+        if corvet.prods.btel:
+            btel_model = f"{corvet.prods.btel.get_name_display()}  {corvet.prods.btel.level} - {corvet.prods.btel.type}"
         select = 'prods'
     select = request.GET.get('select', select)
     return render(request, 'squalaetp/detail/detail.html', locals())
