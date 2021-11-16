@@ -138,3 +138,14 @@ def xml_parser(value):
     except (ET.ParseError, KeyError, TypeError):
         data = None
     return data
+
+
+def xml_sivin_parser(value):
+    data = {}
+    try:
+        root = ET.fromstring(value)
+        for element in root[0][0][0]:
+            data[element.tag.split('}')[-1]] = element.text
+    except (ET.ParseError, KeyError, TypeError):
+        data = None
+    return data
