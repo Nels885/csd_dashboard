@@ -3,7 +3,7 @@ from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
 
-from .models import Xelon, SparePart, Indicator, Action, ProductCategory
+from .models import Xelon, SparePart, Indicator, Action, ProductCategory, Sivin
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -116,8 +116,17 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     default_category_update.short_description = _('Change category for Default')
 
 
+class SivinAdmin(admin.ModelAdmin):
+    list_display = (
+        'immat_siv', 'codif_vin', 'type_vin_cg', 'n_serie', 'marque', 'modele', 'genre_v', 'nb_portes', 'nb_pl_ass',
+        'version'
+    )
+    list_filter = ('marque', 'nb_portes', 'nb_pl_ass', 'version')
+    search_fields = ('immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v')
+
 admin.site.register(Xelon, XelonAdmin)
 admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(Indicator, IndicatorAdmin)
 admin.site.register(Action, ActionAdmin)
 admin.site.register(ProductCategory, ProductCategoryAdmin)
+admin.site.register(Sivin, SivinAdmin)
