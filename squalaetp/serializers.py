@@ -1,10 +1,14 @@
 from rest_framework import serializers
 
-from .models import Xelon
+from .models import Xelon, Sivin
 
 XELON_COLUMN_LIST = [
     'numero_de_dossier', 'vin', 'modele_produit', 'product__category', 'modele_vehicule', 'date_retour',
     'type_de_cloture', 'nom_technicien'
+]
+
+SIVIN_COLUMN_LIST = [
+    'immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v', 'nb_portes', 'nb_pl_ass', 'version', 'energie'
 ]
 
 
@@ -16,4 +20,12 @@ class XelonSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'numero_de_dossier', 'vin', 'modele_produit', 'activity', 'modele_vehicule', 'date_retour',
             'type_de_cloture', 'nom_technicien', 'corvet'
+        )
+
+
+class SivinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sivin
+        fields = (
+            'immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v', 'nb_portes', 'nb_pl_ass', 'version', 'energie'
         )

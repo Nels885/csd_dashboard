@@ -18,8 +18,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.graphics.barcode import code128
 
 from utils.django.datatables import QueryTableByArgs
-from .serializers import XelonSerializer, XELON_COLUMN_LIST
-from .models import Xelon, SparePart, Action
+from .serializers import XelonSerializer, XELON_COLUMN_LIST, SivinSerializer, SIVIN_COLUMN_LIST
+from .models import Xelon, SparePart, Action, Sivin
 from .utils import collapse_select
 from psa.models import Corvet
 from psa.forms import CorvetForm
@@ -335,3 +335,30 @@ class XelonViewSet(viewsets.ModelViewSet):
                 vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
         elif query:
             self.queryset = Xelon.search(query)
+
+
+@login_required
+def sivin_table(request):
+    """ View of Sivin table page """
+    title = 'Sivin'
+    return render(request, 'squalaetp/sivin_table.html', locals())
+
+
+class SivinViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Sivin.objects.all()
+    serializer_class = SivinSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            sivin = QueryTableByArgs(self.queryset,SIVIN_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(sivin["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": sivin["draw"],
+                "recordsTotal": sivin["total"],
+                "recordsFiltered": sivin["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
