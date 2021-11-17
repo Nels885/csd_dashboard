@@ -37,6 +37,31 @@
             </li>
         {% endwith %}
 
+        <!-- Nav Item - Info SIVIN Settings Menu -->
+        {% with name="SIVIN" icon="fa-info-circle" %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+                   aria-expanded="true" aria-controls="collapse{{ name }}">
+                    <i class="fas fa-fw {{ icon }}"></i>
+                    <span>Info {{ name }}</span>
+                </a>
+                <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">{% trans "Informations" %} :</h6>
+
+                        <a class="collapse-item" href="{% url 'squalaetp:sivin_table' %}">{% trans "SIVIN table" %}</a>
+
+                        {% if perms.squalaetp.add_sivin %}
+                            <div class="collapse-divider"></div>
+                            <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                            <a class="create-sivin collapse-item" href="#">{% trans "Add SIVIN" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+
         <!-- Nav Item - Info PSA Settings Menu -->
         {% with name="PSA" icon="fa-info-circle" %}
             <li class="nav-item">
