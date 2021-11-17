@@ -351,7 +351,7 @@ class SivinViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
-            sivin = QueryTableByArgs(self.queryset,SIVIN_COLUMN_LIST, 1, **request.query_params).values()
+            sivin = QueryTableByArgs(self.queryset, SIVIN_COLUMN_LIST, 1, **request.query_params).values()
             serializer = self.serializer_class(sivin["items"], many=True)
             data = {
                 "data": serializer.data,
