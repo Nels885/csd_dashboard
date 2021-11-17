@@ -1,9 +1,13 @@
+{% load corvet_tags %}
+
 <table class="table table-striped table-condensed table-sm">
     <tbody>
 
     {% for key, value in obj.items %}
         <tr>
-            <td class="text-dark">{{ key }}</td>
+            <td class="text-dark" style="width: 70%;">
+                {{ key|get_field_name }} <span class="font-italic font-weight-light">({{ key }})</span>
+            </td>
             <td>{{ value }}</td>
         </tr>
     {% endfor %}
