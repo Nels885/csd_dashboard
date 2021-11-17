@@ -141,11 +141,26 @@ def xml_parser(value):
 
 
 def xml_sivin_parser(value):
+    fields = {
+        'carrosserie': 'carrosserie', 'carrosserieCG': 'carrosserie_cg', 'co2': 'co2', 'codeMoteur': 'code_moteur',
+        'codifVin': 'codif_vin', 'consExurb': 'cons_exurb', 'consMixte': 'cons_mixte', 'consUrb': 'cons_urb',
+        'couleurVehic': 'couleur_vehic', 'cylindree': 'cylindree', 'date1erCir': 'date_1er_cir', 'dateDCG': 'date_dcg',
+        'depollution': 'depollution', 'empat': 'empat', 'energie': 'energie', 'genreV': 'genre_v',
+        'genreVCG': 'genre_vcg', 'hauteur': 'hauteur', 'immatSiv': 'immat_siv', 'largeur': 'largeur',
+        'longueur': 'longueur', 'marque': 'marque', 'marqueCarros': 'marque_carros', 'modeInject': 'mode_inject',
+        'modele': 'modele', 'modeleEtude': 'modele_etude', 'modelePrf': 'modele_prf', 'nSerie': 'n_serie',
+        'nSiren': 'n_siren', 'nbCylind': 'nb_cylind', 'nbPlAss': 'nb_pl_ass', 'nbPortes': 'nb_portes',
+        'nbSoupape': 'nb_soupape', 'nbVitesse': 'nb_vitesse', 'nbVolume': 'nb_volume', 'poidsVide': 'poids_vide',
+        'prixVehic': 'prix_vehic', 'propulsion': 'propulsion', 'ptr': 'ptr', 'ptrPrf': 'ptr_prf', 'puisCh': 'puis_ch',
+        'puisFisc': 'puis_fisc', 'puisKw': 'puis_kw', 'tpBoiteVit': 'tp_boite_vit', 'turboCompr': 'turbo_compr',
+        'type': 'type', 'typeVarVersPrf': 'type_var_vers_prf', 'typeVinCG': 'type_vin_cg', 'version': 'version',
+        'pneus': 'pneus'
+    }
     data = {}
     try:
         root = ET.fromstring(value)
         for element in root[0][0][0]:
-            data[element.tag.split('}')[-1]] = element.text
+            data[fields[element.tag.split('}')[-1]]] = element.text.strip()
     except (ET.ParseError, KeyError, TypeError):
         data = None
     return data

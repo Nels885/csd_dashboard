@@ -3,10 +3,10 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 
 from ._excel_squalaetp import ExcelSqualaetp
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Sivin
 from psa.models import Corvet
-from utils.scraping import ScrapingCorvet
-from utils.django.validators import xml_parser
+from utils.scraping import ScrapingCorvet, ScrapingSivin
+from utils.django.validators import xml_parser, xml_sivin_parser
 from utils.django.models import defaults_dict
 from utils.conf import XLS_SQUALAETP_FILE
 
@@ -16,6 +16,12 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('vin', nargs="?", type=str)
+        parser.add_argument(
+            '-i',
+            '--immat',
+            dest='immat',
+            help='Vehicle license plate',
+        )
         parser.add_argument(
             '--squalaetp',
             action='store_true',
@@ -32,6 +38,15 @@ class Command(BaseCommand):
             data = str(xml_parser(data))
             self.stdout.write(data)
             scrap.close()
+        elif options['immat']:
+            immat = options['immat']
+            sivin = ScrapingSivin()
+            data = sivin.result(immat)
+            data = xml_sivin_parser(data)
+            defaults = defaults_dict(Sivin, data, "immat_siv")
+            obj, created = Sivin.objects.update_or_create(immat_siv=data["immat_siv"], defaults=defaults)
+            self.stdout.write(str(data))
+            sivin.close()
         elif options['squalaetp']:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
