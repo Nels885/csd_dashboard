@@ -362,3 +362,27 @@ class SivinViewSet(viewsets.ModelViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+
+@login_required
+def sivin_detail(request, immat):
+    """
+    detailed view of Sivin data for a file
+    :param immat:
+        immat for SIVIN data
+    """
+    sivin = get_object_or_404(Sivin, immat_siv=immat)
+    title = 'Info PSA'
+    corvet = sivin.corvet
+    if corvet and corvet.electronique_14x.isdigit():
+        prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
+    if corvet and corvet.electronique_14a.isdigit():
+        cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
+    card_title = _('Detail SIVIN data for the Immat: ') + sivin.immat_siv
+    collapse = {
+        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True,
+        "cmb": True
+    }
+    dict_sivin = model_to_dict(sivin)
+    select = "sivin"
+    return render(request, 'squalaetp/sivin_detail/detail.html', locals())
