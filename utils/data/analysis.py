@@ -26,6 +26,7 @@ class ProductAnalysis:
             type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
+        self.vip = self.pendingQueryset.filter(dossier_vip=True).count()
         self.admin = self.QUERYSET.filter(type_de_cloture='Admin').count()
         self.sp = self.QUERYSET.filter(type_de_cloture='Att SP').count()
         self.ecu = self.pendingQueryset.filter(product__category='CALCULATEUR').count()
