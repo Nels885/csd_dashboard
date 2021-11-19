@@ -55,11 +55,11 @@
     </tr>
     <tr>
         <td class="text-dark">Dossier VIP</td>
-        <td>{{ xelon.dossier_vip }}</td>
+        <td>{{ xelon.dossier_vip|yesno:'OUI,NON' }}</td>
     </tr>
     <tr>
         <td class="text-dark">Express</td>
-        <td>{{ xelon.express }}</td>
+        <td>{{ xelon.express|yesno:'OUI,NON' }}</td>
     </tr>
 
     </tbody>
