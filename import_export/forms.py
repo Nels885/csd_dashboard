@@ -1,16 +1,16 @@
 from django import forms
 
-FORMAT_CHOICES = [('csv', 'CSV'), ('xls', 'XLS'), ('xlsx', 'XLSX')]
+FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
         ('emf', 'DISPLAY'), ('cmb', 'TDB'), ('nac', 'NAC'), ('rcc', 'RCC'), ('rtx', 'RTx'), ('smeg', 'SMEG'),
-        ('rneg', 'RNEG'), ('ng4', 'NG4')
+        ('rneg', 'RNEG'), ('ng4', 'NG4'), ('all', 'ALL')
     ]
 
-    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
+    formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
     products = forms.ChoiceField(label='Produit', required=False, choices=PRODUCTS, widget=forms.Select())
 
 

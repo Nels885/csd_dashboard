@@ -87,6 +87,19 @@ DAE_LIST = [
     ('96L_DAE_SOFT', 'corvet__electronique_96l')
 ]
 
+PRODS_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'),
+    ('Modele Nav', 'corvet__prods__btel__name'), ('Ref. HW Nav (14X)', 'corvet__electronique_14x'),
+    ('Modele Radio', 'corvet__prods__radio__name'), ('Ref. HW Radio (14F)', 'corvet__electronique_14f'),
+    ('Modele Ecran Multi', 'corvet__prods__emf__name'), ('Ref. HW EMF (14L)', 'corvet__electronique_14l'),
+    ('Modele Tableau de Bord', 'corvet__prods__cmb__name'), ('Ref. HW TDB (14K)', 'corvet__electronique_14k'),
+    ('Modele Cal. Moteur', 'corvet__prods__cmm__name'), ('Ref. HW Cal. Moteur (14A)', 'corvet__electronique_14a'),
+    ('Modele BSI.', 'corvet__prods__bsi__name'), ('Ref. HW BSI (14B)', 'corvet__electronique_14b'),
+    ('Ref. HW COM200x (16P)', 'corvet__electronique_16p'),
+    ('Ref. HW BSM (16B)', 'corvet__electronique_16b'),
+]
+
 
 def get_header_fields(prod_list):
     header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
@@ -103,6 +116,7 @@ HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
 BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
 CVM_HEADER, CVM_FIELDS = get_header_fields(CVM_LIST)
 DAE_HEADER, DAE_FIELDS = get_header_fields(DAE_LIST)
+PRODS_HEADER, PRODS_FIELDS = get_header_fields(PRODS_LIST)
 
 """
 ##################################
@@ -178,6 +192,9 @@ def extract_corvet(product='corvet'):
     elif product == "ng4":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
         queryset = xelons.filter(corvet__attribut_drc="G4")
+    elif product == "all":
+        header, values_list = PRODS_HEADER, PRODS_FIELDS
+        queryset = xelons.filter(corvet__isnull=False)
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
