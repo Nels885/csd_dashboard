@@ -89,7 +89,7 @@ class Command(BaseCommand):
                     self.stdout.write(
                         self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error VIN in {delay_time}"))
             query.save()
-            if limit and nb_import >= 50:
+            if limit and nb_import >= 200:
                 break
         scrap.close()
         return nb_import
