@@ -53,7 +53,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             xelons = Xelon.objects.filter(vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False).order_by('-id')
-            xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__prods__update=True))[:50]
+            xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__prods__update=True))[:200]
             nb_file = self._import(xelons, limit=True)
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
 
