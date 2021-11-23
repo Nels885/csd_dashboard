@@ -4,11 +4,11 @@ from django.template.loader import render_to_string
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 
-from utils.django.validators import validate_vin, xml_parser
+from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet
-from .models import Xelon, Action
+from .models import Xelon, Action, Sivin
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
 
@@ -145,3 +145,45 @@ class ProductModalForm(BSModalModelForm):
             if vehicle != self.instance.modele_vehicule:
                 content = "OLD_VEH: {}\nNEW_VEH: {}".format(self.instance.modele_vehicule, vehicle)
                 Action.objects.create(content=content, content_object=self.instance)
+
+
+class SivinModalForm(BSModalModelForm):
+    immat_siv = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': _("Enter the IMMAT number"), 'autofocus': ''}
+        )
+    )
+    xml_data = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _("Data in XML format available on the RepairNAV site during SIVIN extraction..."),
+                'rows': 10,
+            }
+        ),
+        required=True
+    )
+
+    class Meta:
+        model = Sivin
+        exclude = ["corvet"]
+
+    def clean_xml_data(self):
+        xml_data = self.cleaned_data['xml_data']
+        immat_siv = self.cleaned_data.get('immat_siv', '').upper()
+        data = xml_sivin_parser(xml_data)
+        if data and data['immat_siv'] == immat_siv:
+            for field, value in data.items():
+                self.cleaned_data[field] = value
+                print(field, self.cleaned_data[field])
+        elif data and data['immat_siv'] != immat_siv:
+            self.add_error('xml_data', _('XML data does not match IMMAT'))
+        else:
+            self.add_error('xml_data', _('Invalid XML data'))
+        return xml_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+        return instance
