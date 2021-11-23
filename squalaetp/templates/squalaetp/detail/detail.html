@@ -62,11 +62,13 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#tech" role="tab" aria-selected="false">
-                    {% trans "Technician" %}
-                </a>
-            </li>
+            {% if dict_sivin %}
+
+                {% include 'tab_select.html' with name='sivin' tab_title='Info SIVIN Brute' %}
+
+            {% endif %}
+
+            {% include 'tab_select.html' with name='tech' tab_title='Technicien' %}
 
         </ul>
     </div>
@@ -121,7 +123,7 @@
 
         </div>
 
-        <!-- Detail Corvert -->
+        <!-- Detail Corvet -->
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
             {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
@@ -132,6 +134,13 @@
         <div class="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
 
             {% include 'squalaetp/detail/detail_logs.html' %}
+
+        </div>
+
+        <!-- Detail Sivin -->
+        <div class="tab-pane active" id="sivin" role="tabpanel" aria-labelledby="sivin-tab">
+
+            {% include 'squalaetp/sivin_detail/raw_sivin_table_format.html' with obj=dict_sivin %}
 
         </div>
 

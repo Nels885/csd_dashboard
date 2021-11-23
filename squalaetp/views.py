@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib import messages
 from django.http import JsonResponse, Http404, FileResponse
 from django.views.generic import TemplateView
-from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
+from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView, BSModalCreateView
 from django.forms.models import model_to_dict
 from django.core.management import call_command
 from rest_framework.response import Response
@@ -26,7 +26,7 @@ from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
-from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
+from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm
 from .tasks import cmd_loadsqualaetp_task
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
@@ -103,6 +103,8 @@ def detail(request, pk):
         if corvet.prods.btel:
             btel_model = f"{corvet.prods.btel.get_name_display()}  {corvet.prods.btel.level} - {corvet.prods.btel.type}"
         select = 'prods'
+    if Sivin.objects.filter(codif_vin=xelon.vin):
+        dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=xelon.vin).first())
     select = request.GET.get('select', select)
     return render(request, 'squalaetp/detail/detail.html', locals())
 
@@ -386,3 +388,20 @@ def sivin_detail(request, immat):
     dict_sivin = model_to_dict(sivin)
     select = "sivin"
     return render(request, 'squalaetp/sivin_detail/detail.html', locals())
+
+
+class SivinCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'squalaetp.add_sivin'
+    template_name = 'squalaetp/modal/sivin_form.html'
+    form_class = SivinModalForm
+    success_message = _('Modification done successfully!')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('SIVIN integration')
+        return context
+
+    def get_success_url(self):
+        if not self.request.is_ajax():
+            return reverse_lazy('squaletp:sivin_detail', args=[self.object.pk])
+        return http_referer(self.request)
