@@ -83,6 +83,13 @@
                 <td class="text-dark td-ihm">MOTEUR</td>
                 <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 0" }}</td>
             </tr>
+
+            {% if corvet.attribut_daz %}
+                <tr>
+                    <td class="text-dark td-ihm">ALIMENTATION</td>
+                    <td>{{ corvet.attribut_daz|get_corvet:"ATT_DAZ" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dcd %}
                 <tr>
                     <td class="text-dark td-ihm">CARBURANT</td>
@@ -92,6 +99,12 @@
                 <tr>
                     <td class="text-dark td-ihm">CARBURANT</td>
                     <td>{{ corvet.donnee_moteur|get_corvet:"DON_MOT 1" }}</td>
+                </tr>
+            {% endif %}
+            {% if corvet.attribut_ddc %}
+                <tr>
+                    <td class="text-dark td-ihm">DEPOLLUTION (MOTEUR)</td>
+                    <td>{{ corvet.attribut_ddc|get_corvet:"ATT_DDC" }}</td>
                 </tr>
             {% endif %}
             {% if corvet.attribut_dyc %}
@@ -201,6 +214,12 @@
                     <td>{% if corvet.electronique_14r %}AVEC{% else %}SANS{% endif %}</td>
                 {% endif %}
             </tr>
+            {% if corvet.attribut_duz %}
+                <tr>
+                    <td class="text-dark td-ihm">FREQUENCE RADIO</td>
+                    <td>{{ corvet.attribut_duz|get_corvet:"ATT_DUZ" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dym %}
                 <tr>
                     <td class="text-dark td-ihm">PRISE AUXILIAIRE PACK AUDIO</td>
@@ -225,6 +244,12 @@
             {% include 'format/collapse_thead.html' with id="collapseElectric" expanded=user.showcollapse.body thead_title="Electricité :" %}
 
             <tbody class="collapse{% if user.showcollapse.electric %}show{% endif %}" id="collapseElectric">
+            {% if corvet.attribut_djz %}
+                <tr>
+                    <td class="text-dark td-ihm">FRÉQUENCE TÉLÉCOMMANDE DE CONDAMNATION</td>
+                    <td>{{ corvet.attribut_djz|get_corvet:"ATT_DJZ" }}</td>
+                </tr>
+            {% endif %}
             {% if corvet.attribut_dyq %}
                 <tr>
                     <td class="text-dark td-ihm">ALLUMAGE FEUX</td>
