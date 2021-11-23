@@ -98,24 +98,27 @@ class Command(BaseCommand):
         start_time = time.time()
         self.stdout.write("[IMPORT_SIVIN] Waiting...")
         sivin = ScrapingSivin()
-        data = sivin.result(immat)
+        data = xml_sivin_parser(sivin.result(immat))
         sivin.close()
-        delay_time = time.time() - start_time
-        self.stdout.write(self.style.SUCCESS(f"SIVIN Data {data['immat_siv']} updated in {delay_time}"))
-        data = xml_sivin_parser(data)
-        print(data)
-        if Corvet.objects.filter(vin=data['codif_vin']):
-            corvet = ScrapingCorvet()
-            row = corvet.result(data['codif_vin'])
-            corvet.close()
-            row = xml_parser(row)
-            if row and row.get('donnee_date_entree_montage'):
-                def_corvet = defaults_dict(Corvet, row, "vin")
-                Corvet.objects.update_or_create(vin=row["vin"], defaults=def_corvet)
-                delay_time = time.time() - start_time
-                self.stdout.write(self.style.SUCCESS(f"CORVET Data {row['vin']} updated in {delay_time}"))
-        def_sivin = defaults_dict(Sivin, data, "immat_siv")
-        Sivin.objects.update_or_create(immat_siv=data["immat_siv"], defaults=def_sivin)
-        delay_time = time.time() - start_time
+        if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
+            delay_time = time.time() - start_time
+            self.stdout.write(self.style.ERROR(f"{immat} - error SIVIN in {delay_time}"))
+        elif data and data.get('immat_siv'):
+            delay_time = time.time() - start_time
+            self.stdout.write(self.style.SUCCESS(f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"))
+            if Corvet.objects.filter(vin=data.get('codif_vin')):
+                corvet = ScrapingCorvet()
+                row = xml_parser(corvet.result(data.get('codif_vin')))
+                corvet.close()
+                if row and row.get('donnee_date_entree_montage'):
+                    def_corvet = defaults_dict(Corvet, row, "vin")
+                    Corvet.objects.update_or_create(vin=row["vin"], defaults=def_corvet)
+                    delay_time = time.time() - start_time
+                    self.stdout.write(self.style.SUCCESS(f"CORVET Data {row.get('vin')} updated in {delay_time}"))
+            def_sivin = defaults_dict(Sivin, data, "immat_siv")
+            Sivin.objects.update_or_create(immat_siv=data.get("immat_siv"), defaults=def_sivin)
+        else:
+            delay_time = time.time() - start_time
+            self.stdout.write(self.style.ERROR(f"{immat} - not data SIVIN in {delay_time}"))
         self.stdout.write(str(data))
         return data
