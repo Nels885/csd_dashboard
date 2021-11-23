@@ -4,7 +4,7 @@ from django.db.models import Q
 
 from ._excel_squalaetp import ExcelSqualaetp
 from squalaetp.models import Xelon, Sivin
-from psa.models import Corvet, CorvetProduct
+from psa.models import Corvet
 from utils.scraping import ScrapingCorvet, ScrapingSivin
 from utils.django.validators import xml_parser, xml_sivin_parser
 from utils.django.models import defaults_dict

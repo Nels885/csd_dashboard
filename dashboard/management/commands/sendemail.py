@@ -53,7 +53,8 @@ class Command(BaseCommand):
                 data.update({
                     'products_to_repair': indicator.products_to_repair,
                     'late_products': indicator.late_products,
-                    'express_products': indicator.express_products
+                    'express_products': indicator.express_products,
+                    'vip_products': prods.vip
                 })
 
             html_message = render_to_string('dashboard/email_format/lp_email.html', data)
