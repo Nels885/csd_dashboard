@@ -71,7 +71,16 @@ def admin_products(request):
     context = {'title': _("Admin Products"), 'select_tab': 'admin'}
     prods = ProductAnalysis()
     context.update(prods.admin_products())
-    return render(request, 'dashboard/late_products/admin_products.html', context)
+    return render(request, 'dashboard/late_products/list_products.html', context)
+
+
+@login_required
+def vip_products(request):
+    """ View of Autotronik page """
+    context = {'title': _("VIP Products"), 'select_tab': 'vip'}
+    prods = ProductAnalysis()
+    context.update(prods.vip_products())
+    return render(request, 'dashboard/late_products/list_products.html', context)
 
 
 @login_required

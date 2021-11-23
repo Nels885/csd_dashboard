@@ -60,7 +60,11 @@ class ProductAnalysis:
         return locals()
 
     def admin_products(self):
-        admin = self.QUERYSET.filter(type_de_cloture='Admin').order_by('-delai_au_en_jours_ouvres')
+        queryset = self.QUERYSET.filter(type_de_cloture='Admin').order_by('-delai_au_en_jours_ouvres')
+        return locals()
+
+    def vip_products(self):
+        queryset = self.pendingQueryset.filter(dossier_vip=True).order_by('-delai_au_en_jours_ouvres')
         return locals()
 
     def autotronik(self):

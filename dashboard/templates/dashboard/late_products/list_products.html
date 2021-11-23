@@ -37,7 +37,7 @@
         </thead>
         <tbody>
 
-        {% for prod in admin %}
+        {% for prod in queryset %}
 
             <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"
                 {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"
