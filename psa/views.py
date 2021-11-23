@@ -21,6 +21,7 @@ from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
 from .models import Corvet, Multimedia
 from dashboard.models import WebLink
+from squalaetp.models import Sivin
 from raspeedi.models import Programing
 from reman.models import EcuType
 
@@ -160,6 +161,8 @@ def corvet_detail(request, vin):
         cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)
+    if Sivin.objects.filter(codif_vin=vin):
+        dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=vin).first())
     select = "prods"
     context.update(locals())
     return render(request, 'psa/detail/detail.html', context)
