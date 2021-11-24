@@ -136,7 +136,7 @@ def xml_parser(value):
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
     except (ET.ParseError, KeyError, TypeError):
-        data = None
+        data = value
     return data
 
 
@@ -162,5 +162,5 @@ def xml_sivin_parser(value):
         for element in root[0][0][0]:
             data[fields[element.tag.split('}')[-1]]] = element.text.strip()
     except (ET.ParseError, KeyError, TypeError):
-        data = None
+        data = value
     return data

@@ -96,7 +96,7 @@ class VinCorvetModalForm(BSModalModelForm):
             all_data = {key: '' for key in [f.name for f in Corvet._meta.local_fields if f.name not in no_fields]}
             all_data.update({'donnee_date_debut_garantie': None, 'donnee_date_entree_montage': None})
             vin = self.cleaned_data.get("vin")
-            if data:
+            if isinstance(data, dict):
                 all_data.update(data)
                 if data.get('vin') == vin and data.get('donnee_date_entree_montage'):
                     if self.request.is_ajax():
@@ -114,7 +114,7 @@ class VinCorvetModalForm(BSModalModelForm):
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
         if vin and self.request.is_ajax():
-            if data and not data.get('donnee_date_entree_montage'):
+            if isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
                 raise forms.ValidationError(_('VIN error !'))
             elif vin != self.instance.vin:
                 content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)

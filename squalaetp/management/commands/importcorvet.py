@@ -63,9 +63,8 @@ class Command(BaseCommand):
         for query in queryset:
             start_time = time.time()
             for attempt in range(2):
-                data = scrap.result(query.vin)
-                row = xml_parser(data)
-                if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in data:
+                row = xml_parser(scrap.result(query.vin))
+                if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                     nb_import += 1
                     delay_time = time.time() - start_time
                     self.stdout.write(
@@ -77,14 +76,12 @@ class Command(BaseCommand):
                     obj.prods.update = False
                     obj.prods.save()
                     nb_import += 1
-                    query.corvet = obj
                     delay_time = time.time() - start_time
                     self.stdout.write(
                         self.style.SUCCESS(f"{query.numero_de_dossier} - {query.vin} updated in {delay_time}"))
                     break
                 if attempt:
                     query.vin_error = True
-                    query.corvet = None
                     delay_time = time.time() - start_time
                     self.stdout.write(
                         self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error VIN in {delay_time}"))

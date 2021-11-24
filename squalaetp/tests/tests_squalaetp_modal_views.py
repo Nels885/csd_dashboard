@@ -18,8 +18,28 @@ class MixinsTest(UnitTest):
         """
         self.add_perms_user(Xelon, 'change_vin')
         self.login()
+        xelon = Xelon.objects.first()
 
-        # Update object through BSModalUpdateView
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('squalaetp:vin_edit', kwargs={'pk': xelon.pk}),
+            data={
+                'vin': self.vin,
+                # Wrong value
+                'xml_data': 'ERREUR COMMUNICATION SYSTEME CORVET'
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        corvets = Corvet.objects.filter(vin=self.vin)
+        self.assertEqual(corvets.count(), 0)
+
+        # Second post request = Update object through BSModalUpdateView
         xelon = Xelon.objects.first()
         for xml_data, corvet_nb in [('', 0), (self.xmlData, 1)]:
             response = self.client.post(
