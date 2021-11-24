@@ -88,7 +88,6 @@ class CorvetForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(CorvetForm, self).clean()
-        vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
         if isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
             raise forms.ValidationError(_('VIN error !'))
