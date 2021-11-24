@@ -25,6 +25,7 @@ from utils.django.urls import reverse, reverse_lazy, http_referer
 from squalaetp.models import Xelon, Indicator
 from tools.models import EtudeProject
 from psa.models import Corvet
+from psa.tasks import save_corvet_to_models
 from .models import Post, UserProfile, WebLink
 from .forms import (
     UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm
@@ -110,6 +111,8 @@ def search(request):
         if len(corvets) > 1:
             return redirect(reverse('psa:corvet', get={'filter': query}))
         return redirect('psa:corvet_detail', vin=corvets.first().vin)
+    else:
+        save_corvet_to_models.delay(query)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))
 
