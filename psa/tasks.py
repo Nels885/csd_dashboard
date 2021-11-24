@@ -31,6 +31,7 @@ def save_corvet_to_models(vin):
             if attempt:
                 delay_time = time.time() - start_time
                 msg = f"{vin} error VIN in {delay_time}"
+                Corvet.objects.filter(vin=vin).delete()
         scrap.close()
     print(msg)
     return msg
