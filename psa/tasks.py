@@ -15,9 +15,8 @@ def save_corvet_to_models(vin):
         scrap = ScrapingCorvet()
         start_time = time.time()
         for attempt in range(2):
-            data = xml_parser(scrap.result(vin))
-            row = xml_parser(data)
-            if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in data:
+            row = xml_parser(scrap.result(vin))
+            if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                 delay_time = time.time() - start_time
                 msg = f"{vin} error CORVET in {delay_time}"
                 break
@@ -32,5 +31,6 @@ def save_corvet_to_models(vin):
             if attempt:
                 delay_time = time.time() - start_time
                 msg = f"{vin} error VIN in {delay_time}"
+        scrap.close()
     print(msg)
     return msg
