@@ -28,6 +28,12 @@ class Command(BaseCommand):
             dest='squalaetp',
             help='Import Corvet data for Squalaetp',
         )
+        parser.add_argument(
+            '--all',
+            action='store_true',
+            dest='all',
+            help='Import Corvet data for all',
+        )
 
     def handle(self, *args, **options):
         if options['vin']:
@@ -48,19 +54,27 @@ class Command(BaseCommand):
                 numero_de_dossier__in=xelon_list, vin__regex=r'^V((F[37])|(R[137]))\w{14}$',
                 vin_error=False, corvet__isnull=True)
             self.stdout.write(f"[IMPORT_CORVET] Xelon number = {xelons.count()}")
-            nb_file = self._import(xelons)
+            nb_file = self._import_corvet(xelons)
+            self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
+        elif options['all']:
+            self.stdout.write("[IMPORT_CORVET] Waiting...")
+            corvets = Corvet.objects.filter(prods__update=True)[:200]
+            nb_file = self._import_corvet(corvets, squalaetp=False, limit=True)
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
         else:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             xelons = Xelon.objects.filter(vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False).order_by('-id')
             xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__prods__update=True))[:200]
-            nb_file = self._import(xelons, limit=True)
+            nb_file = self._import_corvet(xelons, limit=True)
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
 
-    def _import(self, queryset, limit=False):
+    def _import_corvet(self, queryset, squalaetp=True, limit=False):
         nb_import = 0
         scrap = ScrapingCorvet()
         for query in queryset:
+            start_msg = f"{query.vin}"
+            if squalaetp:
+                start_msg = f"{query.numero_de_dossier} - {start_msg}"
             start_time = time.time()
             for attempt in range(2):
                 row = xml_parser(scrap.result(query.vin))
@@ -68,7 +82,7 @@ class Command(BaseCommand):
                     nb_import += 1
                     delay_time = time.time() - start_time
                     self.stdout.write(
-                        self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error CORVET in {delay_time}"))
+                        self.style.ERROR(f"{start_msg} error CORVET in {delay_time}"))
                     break
                 elif row and row.get('donnee_date_entree_montage'):
                     defaults = defaults_dict(Corvet, row, "vin")
@@ -78,14 +92,17 @@ class Command(BaseCommand):
                     nb_import += 1
                     delay_time = time.time() - start_time
                     self.stdout.write(
-                        self.style.SUCCESS(f"{query.numero_de_dossier} - {query.vin} updated in {delay_time}"))
+                        self.style.SUCCESS(f"{start_msg} updated in {delay_time}"))
                     break
                 if attempt:
-                    query.vin_error = True
+                    if squalaetp:
+                        query.vin_error = True
+                    Corvet.objects.filter(vin=query.vin).delete()
                     delay_time = time.time() - start_time
                     self.stdout.write(
-                        self.style.ERROR(f"{query.numero_de_dossier} - {query.vin} error VIN in {delay_time}"))
-            query.save()
+                        self.style.ERROR(f"{start_msg} error VIN in {delay_time}"))
+            if squalaetp:
+                query.save()
             if limit and nb_import >= 200:
                 break
         scrap.close()
@@ -103,7 +120,7 @@ class Command(BaseCommand):
         elif data and data.get('immat_siv'):
             delay_time = time.time() - start_time
             self.stdout.write(self.style.SUCCESS(f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"))
-            if Corvet.objects.filter(vin=data.get('codif_vin')):
+            if not Corvet.objects.filter(vin=data.get('codif_vin')):
                 corvet = ScrapingCorvet()
                 row = xml_parser(corvet.result(data.get('codif_vin')))
                 corvet.close()
