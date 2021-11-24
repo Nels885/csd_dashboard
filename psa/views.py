@@ -18,7 +18,7 @@ from utils.django.forms import ParaErrorList
 from utils.django.datatables import QueryTableByArgs
 from utils.django.urls import reverse_lazy, http_referer
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
-from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
+from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm
 from .models import Corvet, Multimedia
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
@@ -166,22 +166,6 @@ def corvet_detail(request, vin):
     select = "prods"
     context.update(locals())
     return render(request, 'psa/detail/detail.html', context)
-
-
-@permission_required('psa.add_corvet')
-def corvet_insert(request):
-    """
-    View of Corvet insert page, visible only if authenticated
-    """
-    title = 'Corvet'
-    card_title = _('CORVET integration')
-    form = CorvetForm(request.POST or None, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        form.save()
-        context = {'title': _('Modification done successfully!')}
-        return render(request, 'dashboard/done.html', context)
-    errors = form.errors.items()
-    return render(request, 'psa/corvet_insert.html', locals())
 
 
 class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
