@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -22,7 +23,8 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
 from utils.django.urls import reverse, reverse_lazy, http_referer
-from squalaetp.models import Xelon, Indicator
+from squalaetp.models import Xelon, Indicator, Sivin
+from squalaetp.tasks import save_sivin_to_models
 from tools.models import EtudeProject
 from psa.models import Corvet
 from psa.tasks import save_corvet_to_models
@@ -96,8 +98,14 @@ def autotronik(request):
 @login_required
 def search(request):
     """ View of search page """
-    query = request.GET.get('query')
+    query = request.GET.get('query', '')
     select = request.GET.get('select')
+    immat = re.sub(r'[ -]', '', query.upper())
+    sivins = Sivin.objects.filter(immat_siv=immat)
+    if sivins:
+        query = sivins.first().codif_vin
+    else:
+        save_sivin_to_models.delay(query)
     if query and select == 'atelier':
         files = Xelon.search(query)
         if files:
@@ -105,6 +113,9 @@ def search(request):
             if len(files) > 1:
                 return redirect(reverse('squalaetp:xelon', get={'filter': query}))
             return redirect('squalaetp:detail', pk=files.first().pk)
+    elif query and select == 'sivin':
+        if sivins:
+            return redirect('squalaetp:sivin_detail', immat=sivins.first().immat_siv)
     corvets = Corvet.search(query)
     if corvets:
         messages.success(request, _(f'Success: The reseach for {query} was successful.'))
