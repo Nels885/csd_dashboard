@@ -122,7 +122,7 @@ def search(request):
         if len(corvets) > 1:
             return redirect(reverse('psa:corvet', get={'filter': query}))
         return redirect('psa:corvet_detail', vin=corvets.first().vin)
-    else:
+    elif re.match(r'^[VWZ][FLR0]\w{15}$', str(query)):
         save_corvet_to_models.delay(query)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))

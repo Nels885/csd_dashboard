@@ -1,4 +1,3 @@
-import re
 import time
 from io import StringIO
 from sbadmin import celery_app
