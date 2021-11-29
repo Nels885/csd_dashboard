@@ -104,7 +104,7 @@ def search(request):
     sivins = Sivin.objects.filter(immat_siv=immat)
     if sivins:
         query = sivins.first().codif_vin
-    else:
+    elif not re.match(r'^[a-zA-Z]\d{9}$', str(immat)) and len(immat) < 11:
         save_sivin_to_models.delay(query)
     if query and select == 'atelier':
         files = Xelon.search(query)

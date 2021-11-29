@@ -1,3 +1,4 @@
+import re
 import time
 from io import StringIO
 from sbadmin import celery_app
@@ -48,29 +49,30 @@ def send_email_task(self, subject, body, from_email, to, cc, files=None):
 @celery_app.task
 def save_sivin_to_models(immat):
     msg = "SIVIN not Found"
-    start_time = time.time()
-    sivin = ScrapingSivin()
-    data = xml_sivin_parser(sivin.result(immat))
-    sivin.close()
-    if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
-        delay_time = time.time() - start_time
-        msg = f"{immat} - error SIVIN in {delay_time}"
-    elif data and data.get('immat_siv'):
-        delay_time = time.time() - start_time
-        msg = f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"
-        if not Corvet.objects.filter(vin=data.get('codif_vin')):
-            corvet = ScrapingCorvet()
-            row = xml_parser(corvet.result(data.get('codif_vin')))
-            corvet.close()
-            if row and row.get('donnee_date_entree_montage'):
-                def_corvet = defaults_dict(Corvet, row, "vin")
-                Corvet.objects.update_or_create(vin=row["vin"], defaults=def_corvet)
-                delay_time = time.time() - start_time
-                msg += f"\r\nCORVET Data {row.get('vin')} updated in {delay_time}"
-        def_sivin = defaults_dict(Sivin, data, "immat_siv")
-        Sivin.objects.update_or_create(immat_siv=data.get("immat_siv"), defaults=def_sivin)
-    else:
-        delay_time = time.time() - start_time
-        msg = f"{immat} - not data SIVIN in {delay_time}"
+    if 6 < len(immat) < 11:
+        start_time = time.time()
+        sivin = ScrapingSivin()
+        data = xml_sivin_parser(sivin.result(immat))
+        sivin.close()
+        if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
+            delay_time = time.time() - start_time
+            msg = f"{immat} - error SIVIN in {delay_time}"
+        elif data and data.get('immat_siv'):
+            delay_time = time.time() - start_time
+            msg = f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"
+            if not Corvet.objects.filter(vin=data.get('codif_vin')):
+                corvet = ScrapingCorvet()
+                row = xml_parser(corvet.result(data.get('codif_vin')))
+                corvet.close()
+                if row and row.get('donnee_date_entree_montage'):
+                    def_corvet = defaults_dict(Corvet, row, "vin")
+                    Corvet.objects.update_or_create(vin=row["vin"], defaults=def_corvet)
+                    delay_time = time.time() - start_time
+                    msg += f"\r\nCORVET Data {row.get('vin')} updated in {delay_time}"
+            def_sivin = defaults_dict(Sivin, data, "immat_siv")
+            Sivin.objects.update_or_create(immat_siv=data.get("immat_siv"), defaults=def_sivin)
+        else:
+            delay_time = time.time() - start_time
+            msg = f"{immat} - not data SIVIN in {delay_time}"
     print(msg)
     return msg
