@@ -41,27 +41,3 @@
     </div>
 
 </form>
-
-<script type="text/javascript">
-    function msg(active) {
-        if (active) {
-            $("#id_xml_data").val("Waiting...");
-            $.ajax({
-                method: "get",
-                url: "{% url 'psa:ajax_corvet' %}",
-                data: {
-                    vin: $("#id_vin").val(),
-                },
-                dataType: 'json',
-                success: function (data) {
-                    $("#id_xml_data").val(data["xml_data"]);
-                },
-                error: function (data) {
-                    $('#id_xml_data').val('Récupération des données impossible');
-                }
-            });
-        } else {
-            alert("Fonction désactivée !");
-        }
-    }
-</script>
