@@ -1,6 +1,7 @@
 import re
 import time
 from sbadmin import celery_app
+from celery_progress.backend import ProgressRecorder
 
 from utils.scraping import ScrapingCorvet
 from utils.django.models import defaults_dict
@@ -34,4 +35,21 @@ def save_corvet_to_models(vin):
                 Corvet.objects.filter(vin=vin).delete()
         scrap.close()
     print(msg)
+    return msg
+
+
+@celery_app.task(bind=True)
+def import_corvet_task(self, vin):
+    progress_recorder = ProgressRecorder(self)
+    progress_recorder.set_progress(1, 4)
+    msg = "Not VIN PSA"
+    if re.match(r'^[VWZ][FLR0]\w{15}$', str(vin)):
+        scrap = ScrapingCorvet()
+        progress_recorder.set_progress(2, 4)
+        if scrap.ERROR:
+            msg = f"{vin} error CORVET"
+        else:
+            msg = scrap.result(vin)
+        progress_recorder.set_progress(3, 4)
+        scrap.close()
     return msg
