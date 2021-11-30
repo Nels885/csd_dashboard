@@ -176,7 +176,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'active_import': 'false',
+            'active_import': 'true',
             'xelon': self.object,
             'modal_title': _('CORVET update for %(file)s' % {'file': self.object.numero_de_dossier})
         })
