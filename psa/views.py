@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from django.utils.translation import ugettext as _
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
@@ -181,6 +181,23 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
         if not self.request.is_ajax():
             return reverse_lazy('psa:corvet_detail', args=[self.object.pk])
         return http_referer(self.request)
+
+
+class CorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for updating Corvet and VIN data """
+    model = Corvet
+    permission_required = 'psa.add_corvet'
+    template_name = 'psa/modal/corvet_form.html'
+    form_class = CorvetModalForm
+    success_message = _('Modification done successfully!')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('CORVET update for %(vin)s' % {'vin': self.object.vin})
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('psa:corvet_detail', args=[self.object.pk])
 
 
 @permission_required('psa.view_multimedia')

@@ -3,7 +3,11 @@
 <div class="row">
     <section class="col-sm-6">
 
-            <table class="table table-secondary table-sm">
+        <button class="bs-large-modal btn btn-primary mb-3" data-form-url="{% url 'psa:update_corvet' corvet.pk %}">
+            Mise à jour CORVET
+        </button>
+
+        <table class="table table-secondary table-sm">
             <thead>
             <tr>
                 <th colspan="2" class="text-primary">Info Associées :</th>
@@ -32,7 +36,9 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Dossier(s) Xelon</td>
-                <td>{% for xelon in corvet.xelon_set.all %}<a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a><br>{% endfor %}</td>
+                <td>{% for xelon in corvet.xelon_set.all %}
+                    <a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a>
+                    <br>{% endfor %}</td>
             </tr>
             </tbody>
         </table>
