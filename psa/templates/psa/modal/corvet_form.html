@@ -29,11 +29,21 @@
                 </div>
 
             </div>
+            <div class="col-sm-5 mb-3 mb-sm-0">
+                <input type="button" class="btn btn-success" value="Import CORVET" onclick="msg({{ active_import }})">
+            </div>
         </div>
 
         <div class="form-group">
             Pour récupérer les données XML, cliquer sur le lien
             <a href="https://www.repairnav.com/clarionservice_v2/corvet.xhtml" target="_blank">CORVET</a>.
+        </div>
+
+        <div class="form-group">
+            <div class='progress-wrapper'>
+                <div id='progress-bar' class='progress-bar progress-bar-striped progress-bar-animated' style="width: 0%;">&nbsp;</div>
+            </div>
+            <div id="progress-bar-message">Waiting for progress to start...</div>
         </div>
 
         <div class="form-group">
@@ -53,3 +63,31 @@
         <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
     </div>
 </form>
+
+<script type="text/javascript">
+    function msg() {
+        $.ajax({
+            method: "get",
+            url: "{% url 'psa:import_corvet' %}",
+            data: {
+                vin: $("#id_vin").val(),
+            },
+            dataType: 'json',
+            success: function (data) {
+                var progressUrl = "{% url 'progress' %}?task_id=" + data.task_id;
+                console.log(progressUrl);
+
+                function customResult(resultElement, result) {
+                    $("#id_xml_data").val(result);
+                }
+
+                CeleryProgressBar.initProgressBar(progressUrl, {
+                    onResult: customResult,
+                })
+            },
+            error: function (data) {
+                $('#id_xml_data').val('Récupération des données impossible');
+            }
+        });
+    }
+</script>
