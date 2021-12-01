@@ -3,6 +3,40 @@
 <div class="row">
     <section class="col-sm-6">
 
+            <table class="table table-secondary table-sm">
+            <thead>
+            <tr>
+                <th colspan="2" class="text-primary">Info Associées :</th>
+            </tr>
+            </thead>
+            <tbody class="table-borderless">
+            <tr>
+                <td class="text-dark td-ihm">V.I.N.</td>
+                <td>{{ corvet.vin }}<a href="#" title="copie" onclick="textCopy('{{ corvet.vin }}')"><i class="fas fa-copy ml-2"></i></a></td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Marque/Véhicule</td>
+                <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
+                    <span class="ml-2">
+                        {% if corvet.donnee_marque_commerciale == "0P" %}
+                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
+                        {% else %}
+                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Silhouette</td>
+                <td>{{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">Dossier(s) Xelon</td>
+                <td>{% for xelon in corvet.xelon_set.all %}<a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a><br>{% endfor %}</td>
+            </tr>
+            </tbody>
+        </table>
+
         {% if corvet.prods.btel %}
             {% include 'psa/format/multimedia_table_format.html' with object=corvet.prods.btel %}
         {% else %}
