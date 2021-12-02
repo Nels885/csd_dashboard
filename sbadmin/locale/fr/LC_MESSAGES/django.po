@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-20 10:52+0200\n"
+"POT-Creation-Date: 2021-12-02 12:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,11 +41,11 @@ msgstr "Importation Excel"
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:167 templates/base/top_bar.html:97
+#: sbadmin/settings/__init__.py:167 templates/base/top_bar.html:98
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:168 templates/base/top_bar.html:88
+#: sbadmin/settings/__init__.py:168 templates/base/top_bar.html:89
 msgid "English"
 msgstr "Anglais"
 
@@ -87,67 +87,68 @@ msgstr "Erreur Interne du Serveur"
 msgid "release"
 msgstr "version"
 
-#: templates/base/top_bar.html:24
+#: templates/base/top_bar.html:25
 msgid "Search Xelon, VIN or SN..."
 msgstr "Recherche Xelon, VIN ou SN..."
 
-#: templates/base/top_bar.html:120
+#: templates/base/top_bar.html:121
 msgid "Profile"
 msgstr "Profil"
 
-#: templates/base/top_bar.html:124
+#: templates/base/top_bar.html:125
 msgid "Change password"
 msgstr ""
 
-#: templates/base/top_bar.html:129
+#: templates/base/top_bar.html:130
 msgid "Administration"
 msgstr ""
 
-#: templates/base/top_bar.html:133
+#: templates/base/top_bar.html:134
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: templates/base/top_bar.html:137
+#: templates/base/top_bar.html:138
 msgid "Import Squalaetp"
 msgstr "Import Squalaetp"
 
-#: templates/base/top_bar.html:142
+#: templates/base/top_bar.html:143
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:146
+#: templates/base/top_bar.html:147
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:151 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:152 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:158
+#: templates/base/top_bar.html:159
 msgid "Guest"
 msgstr "Invité"
 
-#: templates/base/top_bar.html:171 templates/nav/nav_interface.html:21
+#: templates/base/top_bar.html:172 templates/nav/nav_interface.html:21
 #: templates/registration/login.html:62
 msgid "Login"
 msgstr "S'identifier"
 
-#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:29
-#: templates/nav/nav_csd_atelier.html:49 templates/nav/nav_csd_atelier.html:82
-#: templates/nav/nav_csd_atelier.html:100
-#: templates/nav/nav_csd_atelier.html:118 templates/nav/nav_tools.html:28
+#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:31
+#: templates/nav/nav_csd_atelier.html:51 templates/nav/nav_csd_atelier.html:76
+#: templates/nav/nav_csd_atelier.html:109
+#: templates/nav/nav_csd_atelier.html:127
+#: templates/nav/nav_csd_atelier.html:145 templates/nav/nav_tools.html:28
 #: templates/nav/nav_tools.html:84
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:63
-#: templates/nav/nav_tools.html:34 templates/nav/nav_tools.html:62
-#: templates/nav/nav_tools.html:89
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:57
+#: templates/nav/nav_csd_atelier.html:90 templates/nav/nav_tools.html:34
+#: templates/nav/nav_tools.html:62 templates/nav/nav_tools.html:89
 msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
-#: templates/nav/nav_reman.html:46 templates/nav/nav_reman.html:72
+#: templates/nav/nav_reman.html:46 templates/nav/nav_reman.html:71
 #: templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
@@ -160,45 +161,57 @@ msgstr "Dossiers en cours"
 msgid "VIN Error files"
 msgstr "Dossiers erreur VIN"
 
-#: templates/nav/nav_csd_atelier.html:27
+#: templates/nav/nav_csd_atelier.html:28
+msgid "CORVET Error files"
+msgstr "Dossiers erreur CORVET"
+
+#: templates/nav/nav_csd_atelier.html:29
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:30 templates/nav/nav_reman.html:96
+#: templates/nav/nav_csd_atelier.html:32 templates/nav/nav_reman.html:95
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: templates/nav/nav_csd_atelier.html:31
+#: templates/nav/nav_csd_atelier.html:33
 msgid "Stock Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_csd_atelier.html:32
+#: templates/nav/nav_csd_atelier.html:34
 msgid "Change history"
 msgstr "Historique modifications"
 
-#: templates/nav/nav_csd_atelier.html:52
+#: templates/nav/nav_csd_atelier.html:53
+msgid "SIVIN table"
+msgstr "Tableau SIVIN"
+
+#: templates/nav/nav_csd_atelier.html:58
+msgid "Add SIVIN"
+msgstr "Ajout SIVIN"
+
+#: templates/nav/nav_csd_atelier.html:79
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:56 templates/nav/nav_tools.html:29
+#: templates/nav/nav_csd_atelier.html:83 templates/nav/nav_tools.html:29
 msgid "Products table"
 msgstr "Tableau produits"
 
-#: templates/nav/nav_csd_atelier.html:59 templates/nav/nav_csd_atelier.html:83
-#: templates/nav/nav_csd_atelier.html:101
-#: templates/nav/nav_csd_atelier.html:119
+#: templates/nav/nav_csd_atelier.html:86 templates/nav/nav_csd_atelier.html:110
+#: templates/nav/nav_csd_atelier.html:128
+#: templates/nav/nav_csd_atelier.html:146
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
-#: templates/nav/nav_csd_atelier.html:64
+#: templates/nav/nav_csd_atelier.html:91
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:127
+#: templates/nav/nav_csd_atelier.html:154
 msgid "supplier links"
 msgstr "Liens fournisseurs"
 
-#: templates/nav/nav_csd_atelier.html:137 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:164 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -234,55 +247,51 @@ msgstr "Création dossier"
 msgid "Create Batch"
 msgstr "Création lot"
 
-#: templates/nav/nav_reman.html:48
-msgid "Create Etude Batch"
-msgstr "Création lot Etude"
-
-#: templates/nav/nav_reman.html:52
+#: templates/nav/nav_reman.html:51
 msgid "Current batches"
 msgstr "Lots en cours"
 
-#: templates/nav/nav_reman.html:53
+#: templates/nav/nav_reman.html:52
 msgid "Etude batches"
 msgstr "Lots en Etude"
 
-#: templates/nav/nav_reman.html:54
+#: templates/nav/nav_reman.html:53
 msgid "Workshop batches"
 msgstr "Lots Atelier"
 
-#: templates/nav/nav_reman.html:73
+#: templates/nav/nav_reman.html:72
 msgid "REMAN References"
 msgstr "Réf. REMAN"
 
-#: templates/nav/nav_reman.html:74
+#: templates/nav/nav_reman.html:73
 msgid "HW References"
 msgstr "Réf. Hardware"
 
-#: templates/nav/nav_reman.html:75
+#: templates/nav/nav_reman.html:74
 msgid "Default list"
 msgstr "Liste des pannes"
 
-#: templates/nav/nav_reman.html:78
+#: templates/nav/nav_reman.html:77
 msgid "Etude"
 msgstr ""
 
-#: templates/nav/nav_reman.html:79
+#: templates/nav/nav_reman.html:78
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: templates/nav/nav_reman.html:97
+#: templates/nav/nav_reman.html:96
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:98
+#: templates/nav/nav_reman.html:97
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:109
+#: templates/nav/nav_reman.html:108
 msgid "Shipment"
 msgstr "Expédition"
 
-#: templates/nav/nav_reman.html:117
+#: templates/nav/nav_reman.html:116
 msgid "check part"
 msgstr "Vérification pièce"
 
@@ -436,3 +445,27 @@ msgid ""
 msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
+
+#: utils/django/validators.py:83
+msgid "PSA barcode is invalid"
+msgstr "Le code bare PSA est invalide"
+
+#: utils/django/validators.py:100
+msgid ""
+"The number is not correct, it must consist of an uppercase letter and 9 "
+"digits"
+msgstr ""
+"Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et de 9 "
+"chiffres"
+
+#: utils/django/validators.py:102
+msgid "This number is not authorized"
+msgstr "Ce numéro n'est pas autorisé"
+
+#: utils/django/validators.py:104
+msgid "The batch does not exist"
+msgstr "Le lot n'existe pas"
+
+#: utils/django/validators.py:106
+msgid "This number exists"
+msgstr "Ce numéro existe"

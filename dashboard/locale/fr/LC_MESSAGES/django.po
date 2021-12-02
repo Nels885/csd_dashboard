@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-20 10:52+0200\n"
+"POT-Creation-Date: 2021-12-02 12:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/charts.html:323
+#: dashboard/templates/dashboard/charts.html:345
 #: dashboard/templates/dashboard/index.html:49
 msgid "Edit"
 msgstr "Editer"
 
-#: dashboard/templates/dashboard/charts.html:326
+#: dashboard/templates/dashboard/charts.html:348
 #: dashboard/templates/dashboard/index.html:53
 #: dashboard/templates/dashboard/modal/post_delete.html:19
 #: dashboard/templates/dashboard/modal/weblink_delete.html:19
@@ -40,12 +40,17 @@ msgid "Create Post"
 msgstr "Ajout d'un Post"
 
 #: dashboard/templates/dashboard/late_products/tab_select.html:5
-#: dashboard/views.py:67 dashboard/views.py:85
+#: dashboard/views.py:65 dashboard/views.py:92
 msgid "Late Products"
 msgstr "Produits en retard"
 
 #: dashboard/templates/dashboard/late_products/tab_select.html:11
-#: dashboard/views.py:76
+#: dashboard/views.py:83
+msgid "VIP Products"
+msgstr "Produits VIP"
+
+#: dashboard/templates/dashboard/late_products/tab_select.html:17
+#: dashboard/views.py:74
 msgid "Admin Products"
 msgstr "Produits en Admin"
 
@@ -171,80 +176,84 @@ msgstr "Ajouter un lien Web"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: dashboard/views.py:36
+#: dashboard/views.py:39
 msgid "Home"
 msgstr "Acceuil"
 
-#: dashboard/views.py:43 dashboard/views.py:123
+#: dashboard/views.py:46 dashboard/views.py:145
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: dashboard/views.py:105
+#: dashboard/views.py:112 dashboard/views.py:121
+msgid "Success: The reseach for {query} was successful."
+msgstr "Succès: la recherche pour {query} a été couronnée de succès."
+
+#: dashboard/views.py:127
 msgid "Warning: The research was not successful."
 msgstr "Avertissement: la recherche n'a pas réussi."
 
-#: dashboard/views.py:124
+#: dashboard/views.py:146
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:132
+#: dashboard/views.py:154
 msgid "User Profile"
 msgstr "Mon Profil"
 
-#: dashboard/views.py:139
+#: dashboard/views.py:161
 msgid "Success: Update profile picture!"
 msgstr "Succès: mise à jour de la photo de profil !"
 
-#: dashboard/views.py:144
+#: dashboard/views.py:166
 msgid "Success: Update display configuration!"
 msgstr "Succès: mise à jour de la configuration de l'affichage !"
 
-#: dashboard/views.py:154
+#: dashboard/views.py:176
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: dashboard/views.py:155
+#: dashboard/views.py:177
 msgid "Create an Account!"
 msgstr "Création d'un compte !"
 
-#: dashboard/views.py:180
+#: dashboard/views.py:202
 msgid "Success: Sign up succeeded. You can now Log in."
 msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
 
-#: dashboard/views.py:196
+#: dashboard/views.py:218
 msgid "Thank you for your email confirmation. Now you can login your account."
 msgstr ""
 "Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous "
 "connecter à votre compte."
 
-#: dashboard/views.py:199
+#: dashboard/views.py:221
 msgid "Activation link is invalid!"
 msgstr "Le lien d'activation n'est pas valide !"
 
-#: dashboard/views.py:207
+#: dashboard/views.py:229
 msgid "Success: You are logged in."
 msgstr "Succès: vous êtes connecté."
 
-#: dashboard/views.py:221
+#: dashboard/views.py:243
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été créé."
 
-#: dashboard/views.py:231
+#: dashboard/views.py:253
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:240
+#: dashboard/views.py:262
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."
 
-#: dashboard/views.py:248
+#: dashboard/views.py:270
 msgid "Success: Web link was created"
 msgstr "Succès: Le lien Web a été créé."
 
-#: dashboard/views.py:259
+#: dashboard/views.py:281
 msgid "Success: Web link was updated"
 msgstr "Succès: Le lien Web a été mis à jour."
 
-#: dashboard/views.py:270
+#: dashboard/views.py:292
 msgid "Success: Web link was deleted."
 msgstr "Succès: Le lien Web a été supprimé."
