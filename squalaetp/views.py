@@ -16,6 +16,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.lib.pagesizes import A4
 from reportlab.graphics.barcode import code128
+from constance import config
 
 from utils.django.datatables import QueryTableByArgs
 from .serializers import XelonSerializer, XELON_COLUMN_LIST, SivinSerializer, SIVIN_COLUMN_LIST
@@ -240,6 +241,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+        initial['to'] = config.CHANGE_VIN_TO_EMAIL_LIST
         initial['subject'] = f"[{xelon.numero_de_dossier}] {xelon.modele_produit} Erreur VIN Xelon"
         initial['message'] = self.form_class.vin_message(xelon, self.request)
         return initial
@@ -266,6 +268,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+        initial['to'] = config.CHANGE_PROD_TO_EMAIL_LIST
         initial['subject'] = f"[{xelon.numero_de_dossier}] Erreur modèle produit Xelon"
         initial['message'] = self.form_class.prod_message(xelon, self.request)
         return initial

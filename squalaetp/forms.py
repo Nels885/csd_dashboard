@@ -24,7 +24,6 @@ class IhmEmailModalForm(BSModalForm):
         cc_email_list = config.CSD_CC_EMAIL_LIST
         if self.request.user.email not in cc_email_list:
             cc_email_list = f"{self.request.user.email}; {cc_email_list}"
-        self.fields['to'].initial = config.CHANGE_VIN_TO_EMAIL_LIST
         self.fields['cc'].initial = cc_email_list
 
     def send_email(self):
