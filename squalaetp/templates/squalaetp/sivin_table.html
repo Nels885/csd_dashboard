@@ -1,0 +1,34 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block table_content %}
+
+    <table class="table table-bordered table-sm text-nowrap display" id="sivinTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Immatriculation</th>
+            <th>V.I.N.</th>
+            <th>Marque</th>
+            <th>Modèle</th>
+            <th>Genre véhicule</th>
+            <th>Nb portes</th>
+            <th>Nb places assises</th>
+            <th>Version</th>
+            <th>Energie</th>
+        </tr>
+        </thead>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript">
+        const URL_AJAX = "{% url 'squalaetp:api_sivin-list' %}";
+    </script>
+    <script type="text/javascript" src="{% static 'squalaetp/js/sivin-table.js' %}"></script>
+
+{% endblock %}

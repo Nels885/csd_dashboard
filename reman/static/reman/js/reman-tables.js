@@ -29,9 +29,9 @@ $(document).ready(function () {
         pagingType: "full_numbers",
         lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
-        order: [[2, "asc"]],
+        order: [[1, "asc"]],
         columnDefs: [{
-            targets: [0, 1],
+            targets: 0,
             searchable: false,
             orderable: false,
         }],
@@ -40,9 +40,9 @@ $(document).ready(function () {
     $('#ecuTypeTable').DataTable({
         paging: false,
         scrollX: true,
-        order: [[2, "asc"]],
+        order: [[1, "asc"]],
         columnDefs: [{
-            targets: [0, 1],
+            targets: 0,
             searchable: false,
             orderable: false,
         }],
@@ -53,5 +53,16 @@ $(document).ready(function () {
         lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[0, "asc"]],
+    });
+
+    $('#ecuDumpTable').DataTable({
+        paging: false,
+        scrollX: true,
+        order: [[1, "asc"]],
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
     });
 });

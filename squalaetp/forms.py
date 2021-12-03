@@ -4,11 +4,11 @@ from django.template.loader import render_to_string
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 
-from utils.django.validators import validate_vin, xml_parser
+from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet
-from .models import Xelon, Action
+from .models import Xelon, Action, Sivin
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
 
@@ -24,7 +24,6 @@ class IhmEmailModalForm(BSModalForm):
         cc_email_list = config.CSD_CC_EMAIL_LIST
         if self.request.user.email not in cc_email_list:
             cc_email_list = f"{self.request.user.email}; {cc_email_list}"
-        self.fields['to'].initial = config.CHANGE_VIN_TO_EMAIL_LIST
         self.fields['cc'].initial = cc_email_list
 
     def send_email(self):
@@ -54,28 +53,6 @@ class IhmEmailModalForm(BSModalForm):
             prods = None
         message = render_to_string('squalaetp/email_format/prod_error_email.html', locals())
         return message
-
-
-class IhmForm(forms.ModelForm):
-    vin = forms.CharField(label="V.I.N. (XELON)")
-    modele_produit = forms.CharField(label="Modèle produit (XELON)")
-    modele_vehicule = forms.CharField(label="Modèle véhicule (XELON)")
-
-    class Meta:
-        model = Corvet
-        fields = [
-            'vin', 'modele_produit', 'modele_vehicule',
-            'electronique_14x', 'electronique_94x', 'electronique_44x',
-            'electronique_14f', 'electronique_94f', 'electronique_44f',
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super(IhmForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance:
-            for field in self.fields:
-                self.fields[field].widget.attrs['readonly'] = True
-                # self.fields[field].widget.attrs['style'] = 'width: 50%;'
 
 
 class VinCorvetModalForm(BSModalModelForm):
@@ -118,7 +95,7 @@ class VinCorvetModalForm(BSModalModelForm):
             all_data = {key: '' for key in [f.name for f in Corvet._meta.local_fields if f.name not in no_fields]}
             all_data.update({'donnee_date_debut_garantie': None, 'donnee_date_entree_montage': None})
             vin = self.cleaned_data.get("vin")
-            if data:
+            if isinstance(data, dict):
                 all_data.update(data)
                 if data.get('vin') == vin and data.get('donnee_date_entree_montage'):
                     if self.request.is_ajax():
@@ -136,7 +113,7 @@ class VinCorvetModalForm(BSModalModelForm):
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
         if vin and self.request.is_ajax():
-            if data and not data.get('donnee_date_entree_montage'):
+            if isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
                 raise forms.ValidationError(_('VIN error !'))
             elif vin != self.instance.vin:
                 content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)
@@ -167,3 +144,45 @@ class ProductModalForm(BSModalModelForm):
             if vehicle != self.instance.modele_vehicule:
                 content = "OLD_VEH: {}\nNEW_VEH: {}".format(self.instance.modele_vehicule, vehicle)
                 Action.objects.create(content=content, content_object=self.instance)
+
+
+class SivinModalForm(BSModalModelForm):
+    immat_siv = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': _("Enter the IMMAT number"), 'autofocus': ''}
+        )
+    )
+    xml_data = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _("Data in XML format available on the RepairNAV site during SIVIN extraction..."),
+                'rows': 10,
+            }
+        ),
+        required=True
+    )
+
+    class Meta:
+        model = Sivin
+        exclude = ["corvet"]
+
+    def clean_xml_data(self):
+        xml_data = self.cleaned_data['xml_data']
+        immat_siv = self.cleaned_data.get('immat_siv', '').upper()
+        data = xml_sivin_parser(xml_data)
+        if data and data['immat_siv'] == immat_siv:
+            for field, value in data.items():
+                self.cleaned_data[field] = value
+                print(field, self.cleaned_data[field])
+        elif data and data['immat_siv'] != immat_siv:
+            self.add_error('xml_data', _('XML data does not match IMMAT'))
+        else:
+            self.add_error('xml_data', _('Invalid XML data'))
+        return xml_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.save()
+        return instance

@@ -3,11 +3,11 @@
 
     <tr>
         <td class="text-dark">Numéro de dossier</td>
-        <td>{{ xelon.numero_de_dossier }}</td>
+        <td>{{ xelon.numero_de_dossier }}<a href="#" title="copie" onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i class="fas fa-copy ml-2"></i></a></td>
     </tr>
     <tr>
         <td class="text-dark">V.I.N.</td>
-        <td>{{ xelon.vin }}</td>
+        <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i class="fas fa-copy ml-2"></i></a></td>
     </tr>
     <tr>
         <td class="text-dark">Modèle produit</td>
@@ -55,11 +55,11 @@
     </tr>
     <tr>
         <td class="text-dark">Dossier VIP</td>
-        <td>{{ xelon.dossier_vip }}</td>
+        <td>{{ xelon.dossier_vip|yesno:'OUI,NON' }}</td>
     </tr>
     <tr>
         <td class="text-dark">Express</td>
-        <td>{{ xelon.express }}</td>
+        <td>{{ xelon.express|yesno:'OUI,NON' }}</td>
     </tr>
 
     </tbody>

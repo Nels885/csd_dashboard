@@ -76,6 +76,8 @@
 
         $(".create-corvet").modalForm({formURL: "{% url 'psa:create_corvet' %}", modalID: "#large-modal"});
 
+        $(".create-sivin").modalForm({formURL: "{% url 'squalaetp:sivin_create' %}", modalID: "#large-modal"});
+
         $(".create-batch").modalForm({formURL: "{% url 'reman:create_batch' %}"});
 
         $(".create-repair").modalForm({formURL: "{% url 'reman:create_repair' %}"});

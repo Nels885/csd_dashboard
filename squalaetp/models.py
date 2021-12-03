@@ -6,6 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from crum import get_current_user
 
+from psa.models import Corvet
+
 
 class Xelon(models.Model):
     numero_de_dossier = models.CharField('numéro de dossier', max_length=10, unique=True)
@@ -58,19 +60,21 @@ class Xelon(models.Model):
 
     @classmethod
     def search(cls, value):
-        query = value.upper().strip()
-        return cls.objects.filter(Q(numero_de_dossier__exact=query) |
-                                  Q(vin__exact=query) | Q(vin__endswith=query) |
-                                  Q(corvet__electronique_44l__contains=query) |
-                                  Q(corvet__electronique_44x__contains=query) |
-                                  Q(corvet__electronique_44a__contains=query) |
-                                  Q(corvet__electronique_14l__exact=query) |
-                                  Q(corvet__electronique_14x__exact=query) |
-                                  Q(corvet__electronique_14a__exact=query) |
-                                  Q(corvet__electronique_14b__exact=query) |
-                                  Q(corvet__electronique_44b__exact=query) |
-                                  Q(corvet__electronique_16p__exact=query) |
-                                  Q(corvet__electronique_46p__exact=query))
+        if value is not None:
+            query = value.upper().strip()
+            return cls.objects.filter(Q(numero_de_dossier__exact=query) |
+                                      Q(vin__exact=query) | Q(vin__endswith=query) |
+                                      Q(corvet__electronique_44l__contains=query) |
+                                      Q(corvet__electronique_44x__contains=query) |
+                                      Q(corvet__electronique_44a__contains=query) |
+                                      Q(corvet__electronique_14l__exact=query) |
+                                      Q(corvet__electronique_14x__exact=query) |
+                                      Q(corvet__electronique_14a__exact=query) |
+                                      Q(corvet__electronique_14b__exact=query) |
+                                      Q(corvet__electronique_44b__exact=query) |
+                                      Q(corvet__electronique_16p__exact=query) |
+                                      Q(corvet__electronique_46p__exact=query))
+        return None
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
@@ -160,3 +164,64 @@ class ProductCategory(models.Model):
 
     def __str__(self):
         return self.product_model
+
+
+class Sivin(models.Model):
+    immat_siv = models.CharField('Immatriculation SIV', max_length=20, primary_key=True)
+    codif_vin = models.CharField('V.I.N.', max_length=17)
+    type_vin_cg = models.CharField('Type VIN C.G. (VDS)', max_length=6, blank=True)
+    type_var_vers_prf = models.CharField('Type var vers prf', max_length=100, blank=True)
+    n_serie = models.CharField('Numéro de série (VIS)', max_length=8, blank=True)
+    n_siren = models.CharField('Numéro Siren', max_length=100, blank=True)
+    date_1er_cir = models.CharField('Date 1ère circulation', max_length=100, blank=True)
+    date_dcg = models.CharField('Date C.G.', max_length=100, blank=True)
+    marque = models.CharField('Marque', max_length=100, blank=True)
+    marque_carros = models.CharField('Marque carrosserie', max_length=100, blank=True)
+    modele = models.CharField('Modèle', max_length=100, blank=True)
+    modele_etude = models.CharField('Modèle étude', max_length=100, blank=True)
+    modele_prf = models.CharField('Modèle préférence', max_length=100, blank=True)
+    genre_v = models.CharField('Genre véhicule', max_length=100, blank=True)
+    genre_vcg = models.CharField('Genre véhicule C.G.', max_length=100, blank=True)
+    nb_portes = models.CharField('Nombre portes', max_length=100, blank=True)
+    nb_pl_ass = models.CharField('Nombre de places assises', max_length=100, blank=True)
+    version = models.CharField('Version', max_length=100, blank=True)
+    energie = models.CharField('Energie', max_length=100, blank=True)
+    puis_ch = models.CharField('Puissance chevau', max_length=100, blank=True)
+    puis_fisc = models.CharField('Puissance fiscale', max_length=100, blank=True)
+    puis_kw = models.CharField('Puissance Kw', max_length=100, blank=True)
+    cons_exurb = models.CharField('Consommation hors agglomération', max_length=100, blank=True)
+    cons_mixte = models.CharField('Consommation mixte', max_length=100, blank=True)
+    cons_urb = models.CharField('Consommation agglomération', max_length=100, blank=True)
+    carrosserie = models.CharField('Carrosserie', max_length=100, blank=True)
+    carrosserie_cg = models.CharField('Carrosserie C.G.', max_length=100, blank=True)
+    couleur_vehic = models.CharField('Couleur véhicule', max_length=100, blank=True)
+    empat = models.CharField('Empattement véhicule', max_length=100, blank=True)
+    hauteur = models.CharField('Hauteur', max_length=100, blank=True)
+    largeur = models.CharField('Largeur', max_length=100, blank=True)
+    longueur = models.CharField('Longueur', max_length=100, blank=True)
+    poids_vide = models.CharField('Poids à vide', max_length=100, blank=True)
+    ptr = models.CharField('PTR', max_length=100, blank=True)
+    ptr_prf = models.CharField('PTR Prf', max_length=100, blank=True)
+    pneus = models.CharField('Pneus', max_length=100, blank=True)
+    code_moteur = models.CharField('Code moteur', max_length=100, blank=True)
+    mode_inject = models.CharField("Mode d'injection", max_length=100, blank=True)
+    cylindree = models.CharField('Cylindrée', max_length=100, blank=True)
+    nb_cylind = models.CharField('Nombre cylindres', max_length=100, blank=True)
+    nb_soupape = models.CharField('Nombre soupapes', max_length=100, blank=True)
+    turbo_compr = models.CharField('Turbo compresseur', max_length=100, blank=True)
+    co2 = models.CharField('Emission CO2', max_length=100, blank=True)
+    depollution = models.CharField('Dépollution', max_length=100, blank=True)
+    tp_boit_vit = models.CharField('Type de boîte de vitesse', max_length=100, blank=True)
+    nb_vitesse = models.CharField('Nombre de vitesses', max_length=100, blank=True)
+    nb_volume = models.CharField('Nombre de volume', max_length=100, blank=True)
+    propulsion = models.CharField('Type propulsion', max_length=100, blank=True)
+    type = models.CharField('Type', max_length=100, blank=True)
+    prix_vehic = models.CharField('Prix véhicule', max_length=100, blank=True)
+    corvet = models.OneToOneField(Corvet, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Données SIVIN"
+        ordering = ['immat_siv']
+
+    def __str__(self):
+        return f"{self.immat_siv} - {self.codif_vin}"

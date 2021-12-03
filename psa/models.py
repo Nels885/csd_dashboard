@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class CorvetChoices(models.Model):
@@ -7,15 +8,21 @@ class CorvetChoices(models.Model):
         ('DON_SIL', 'donnee_silhouette'), ('DON_GEN_PROD', 'donnee_genre_de_produit'), ('DON_MOT', 'MOTEUR'),
         ('DON_TRA', 'TRANSMISSION'),
 
-        ('ATT_DAO', 'SURVEILLANCE VOIE LATERALE'), ('ATT_DGM', 'COMBINE (CARACTERISTIQUES)'),
+        ('ATT_D5J', 'VERSIONS RADIO'), ('ATT_DAO', 'SURVEILLANCE VOIE LATERALE'), ('ATT_DAZ', 'ALIMENTATION'),
+        ('ATT_DCP', 'GRADUATION VITESSES'), ('ATT_DDC', 'DEPOLLUTION (MOTEUR)'),
         ('ATT_DHB', 'HAUT PARLEUR'), ('ATT_DHG', 'COMMANDE AUTO-RADIO'), ('ATT_DJY', 'SYSTEME NAVIGATION'),
         ('ATT_DLX', 'AFFICHEUR AV'), ('ATT_DUN', 'AMPLI EQUALISEUR'), ('ATT_DYM', 'PRISE AUXILIAIRE PACK AUDIO'),
         ('ATT_DYR', 'BOITIER TELEMATIQUE'), ('ATT_DAT', 'ANTENNE'), ('ATT_DCD', 'CARBURANT (RON MINI MOTEUR)'),
         ('ATT_DCX', 'COTE CONDUITE/POSTE CONDUITE'), ('ATT_DE2', 'MIRROR LINK'), ('ATT_DE3', 'RECHARGE NOMADE'),
-        ('ATT_DE4', 'JUKE BOX'), ('ATT_DPR', 'PROJECTEUR ANTI-BROUILLARD'), ('ATT_DQK', 'AIDE VISUELLE PANORAMIQUE'),
-        ('ATT_DQP', 'AFFICHAGE COMPL DETECTION EXT'), ('ATT_DRC', 'RECEPTEUR RADIO'), ('ATT_DTI', 'TUNER-RADIO'),
-        ('ATT_DUB', 'DETECTION OBSTACLE'), ('ATT_DUE', 'DETECTION SOUS GONFLAGE'), ('ATT_DUF', 'SYSTEME ESP/ESC'),
-        ('ATT_DYC', 'STOP AND START'), ('ATT_DYQ', 'ALLUMAGE FEUX'), ('ATT_DZE', 'PACK VISION'),
+        ('ATT_DE4', 'JUKE BOX'), ('ATT_DE7', 'AFFICHAGE PANNEAU ROUTIER'), ('ATT_DES', 'PRISE ACCESSOIRES'),
+        ('ATT_DGM', 'COMBINE (CARACTERISTIQUES)'), ('ATT_DI2', 'RECONNAISSANCE VOCALE'),
+        ('ATT_DJZ', 'FREQUENCE TELECDE CONDAMNATION'), ('ATT_DN1', 'NIGHT VISION'),
+        ('ATT_DPR', 'PROJECTEUR ANTI-BROUILLARD'), ('ATT_DQK', 'AIDE VISUELLE PANORAMIQUE'),
+        ('ATT_DQP', 'AFFICHAGE COMPL DETECTION EXT'), ('ATT_DRC', 'RECEPTEUR RADIO'),
+        ('ATT_DSB', 'SURVEILLANCE / LIMITATION VIT'), ('ATT_DTI', 'TUNER-RADIO'), ('ATT_DUB', 'DETECTION OBSTACLE'),
+        ('ATT_DUE', 'DETECTION SOUS GONFLAGE'), ('ATT_DUF', 'SYSTEME ESP/ESC'), ('ATT_DUO', 'AFFICHEUR COMPLEMENTAIRE'),
+        ('ATT_DUZ', 'FREQUENCE RADIO'), ('ATT_DYC', 'STOP AND START'), ('ATT_DYQ', 'ALLUMAGE FEUX'),
+        ('ATT_DZE', 'PACK VISION'),
 
         ('ELE_14R', 'AAS HARD - Aide Au Stationnement')
     ]
@@ -167,9 +174,55 @@ class Corvet(models.Model):
     electronique_18z = models.CharField('TNB HARD - Boitier de non Bouclage Ceinture Securite', max_length=200, blank=True)
     electronique_11m = models.CharField('VMF HARD - MODULE COMMUTATION INTEGRE', max_length=200, blank=True)
 
+    # Adding the 22/11/2021
+    electronique_19k = models.CharField('ARTIV HARD - Boitier Aide au Respect du Temps Inter Vehicule', max_length=200, blank=True)
+    electronique_49k = models.CharField('ARTIV FOURN.NO.SERIE - Boitier Aide au Respect du Temps Inter Vehicule', max_length=200, blank=True)
+    electronique_59k = models.CharField('ARTIV FOURN.DATE.FAB - Boitier Aide au Respect du Temps Inter Vehicule', max_length=200, blank=True)
+    electronique_69k = models.CharField('ARTIV FOURN.CODE - Boitier Aide au Respect du Temps Inter Vehicule', max_length=200, blank=True)
+    electronique_99k = models.CharField('ARTIV SOFT - Boitier Aide au Respect du Temps Inter Vehicule', max_length=200, blank=True)
+    electronique_12e = models.CharField('AVM - HARD - AIDE VISUELLE A LA MANOEUVRE', max_length=200, blank=True)
+    electronique_42e = models.CharField('AVM - FNR NO SERIE - AIDE VISUELLE A LA MANŒUVRE', max_length=200, blank=True)
+    electronique_52e = models.CharField('AVM - FNR DATE - AIDE VISUELLE A LA MANŒUVRE', max_length=200, blank=True)
+    electronique_62e = models.CharField('AVM - FNR CODE - AIDE VISUELLE A LA MANŒUVRE', max_length=200, blank=True)
+    electronique_92e = models.CharField('AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE', max_length=200, blank=True)
+    electronique_k9h = models.CharField('BTA - NUMERO IMEI: INTERNATIONAL MOBILE EQUIPMENT IDENTITY', max_length=200, blank=True)
+    electronique_m9h = models.CharField('BTA - NUMERO IMSI: INTERNATIONAL MOBILE SUBSCRIBER IDENTITY', max_length=200, blank=True)
+    electronique_r9h = models.CharField('BTA - NUMERO ICCID: INTEGRATED CICUIT CARD ID', max_length=200, blank=True)
+    electronique_t2y = models.CharField('CVM2_2_CODE CAMERA VIDEO MULTIFONCTION V2', max_length=200, blank=True)
+    attribut_d5j = models.CharField('VERSIONS RADIO', max_length=200, blank=True)
+    attribut_daz = models.CharField('ALIMENTATION', max_length=200, blank=True)
+    attribut_dcp = models.CharField('GRADUATION VITESSES', max_length=200, blank=True)
+    attribut_ddc = models.CharField('DEPOLLUTION (MOTEUR)', max_length=200, blank=True)
+    attribut_de7 = models.CharField('AFFICHAGE PANNEAU ROUTIER', max_length=200, blank=True)
+    attribut_de8 = models.CharField('ALERTE VIGILANCE CONDUCTEUR', max_length=200, blank=True)
+    attribut_des = models.CharField('PRISE ACCESSOIRES', max_length=200, blank=True)
+    attribut_di2 = models.CharField('RECONNAISSANCE VOCALE', max_length=200, blank=True)
+    attribut_djz = models.CharField('FREQUENCE TELECDE CONDAMNATION', max_length=200, blank=True)
+    attribut_dn1 = models.CharField('NIGHT VISION', max_length=200, blank=True)
+    attribut_dsb = models.CharField('SURVEILLANCE / LIMITATION VIT', max_length=200, blank=True)
+    attribut_duo = models.CharField('AFFICHEUR COMPLEMENTAIRE', max_length=200, blank=True)
+    attribut_duz = models.CharField('FREQUENCE RADIO', max_length=200, blank=True)
+
     class Meta:
         verbose_name = "données CORVET"
         ordering = ['vin']
+
+    @classmethod
+    def search(cls, value):
+        if value is not None:
+            query = value.upper().strip()
+            return cls.objects.filter(Q(vin__exact=query) | Q(vin__endswith=query) |
+                                      Q(electronique_44l__contains=query) |
+                                      Q(electronique_44x__contains=query) |
+                                      Q(electronique_44a__contains=query) |
+                                      Q(electronique_14l__exact=query) |
+                                      Q(electronique_14x__exact=query) |
+                                      Q(electronique_14a__exact=query) |
+                                      Q(electronique_14b__exact=query) |
+                                      Q(electronique_44b__exact=query) |
+                                      Q(electronique_16p__exact=query) |
+                                      Q(electronique_46p__exact=query))
+        return None
 
     def __str__(self):
         return self.vin
@@ -187,6 +240,7 @@ class CorvetProduct(models.Model):
     cmb = models.ForeignKey('psa.Ecu', related_name='corvet_cmb', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMB'}, null=True, blank=True)
     fmux = models.ForeignKey('psa.Ecu', related_name='corvet_fmux', on_delete=models.SET_NULL, limit_choices_to={'type': 'FMUX'}, null=True, blank=True)
     mds = models.ForeignKey('psa.Ecu', related_name='corvet_mds', on_delete=models.SET_NULL, limit_choices_to={'type': 'MDS'}, null=True, blank=True)
+    update = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "produits CORVET"

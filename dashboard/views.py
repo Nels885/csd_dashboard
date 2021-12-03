@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -22,9 +23,11 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
 from utils.django.urls import reverse, reverse_lazy, http_referer
-from squalaetp.models import Xelon, Indicator
+from squalaetp.models import Xelon, Indicator, Sivin
+from squalaetp.tasks import save_sivin_to_models
 from tools.models import EtudeProject
 from psa.models import Corvet
+from psa.tasks import save_corvet_to_models
 from .models import Post, UserProfile, WebLink
 from .forms import (
     UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm
@@ -50,14 +53,9 @@ def charts_ajax(request):
     """
     API endpoint that allows chart data to be viewed
     """
-    indicator = IndicatorAnalysis()
     prod = Indicator.count_prods()
-    tools = ToolsAnalysis()
     data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
-    data.update(indicator.new_result())
-    data.update(tools.suptech())
-    data.update(tools.bga_time())
-    data.update(tools.thermal_chamber_measure())
+    data.update(**IndicatorAnalysis().new_result(), **ToolsAnalysis().all())
     return JsonResponse(data)
 
 
@@ -76,7 +74,16 @@ def admin_products(request):
     context = {'title': _("Admin Products"), 'select_tab': 'admin'}
     prods = ProductAnalysis()
     context.update(prods.admin_products())
-    return render(request, 'dashboard/late_products/admin_products.html', context)
+    return render(request, 'dashboard/late_products/list_products.html', context)
+
+
+@login_required
+def vip_products(request):
+    """ View of Autotronik page """
+    context = {'title': _("VIP Products"), 'select_tab': 'vip'}
+    prods = ProductAnalysis()
+    context.update(prods.vip_products())
+    return render(request, 'dashboard/late_products/list_products.html', context)
 
 
 @login_required
@@ -91,17 +98,32 @@ def autotronik(request):
 @login_required
 def search(request):
     """ View of search page """
-    query = request.GET.get('query')
+    query = request.GET.get('query', '')
     select = request.GET.get('select')
+    immat = re.sub(r'[ -]', '', query.upper())
+    sivins = Sivin.objects.filter(immat_siv=immat)
+    if sivins:
+        query = sivins.first().codif_vin
+    elif not re.match(r'^[a-zA-Z]\d{9}$', str(immat)) and len(immat) < 11:
+        save_sivin_to_models.delay(query)
     if query and select == 'atelier':
         files = Xelon.search(query)
-        if files and len(files) > 1:
-            return redirect(reverse('squalaetp:xelon', get={'filter': query}))
-        elif files:
+        if files:
+            messages.success(request, _(f'Success: The reseach for {query} was successful.'))
+            if len(files) > 1:
+                return redirect(reverse('squalaetp:xelon', get={'filter': query}))
             return redirect('squalaetp:detail', pk=files.first().pk)
-    corvets = Corvet.objects.filter(vin=query)
+    elif query and select == 'sivin':
+        if sivins:
+            return redirect('squalaetp:sivin_detail', immat=sivins.first().immat_siv)
+    corvets = Corvet.search(query)
     if corvets:
+        messages.success(request, _(f'Success: The reseach for {query} was successful.'))
+        if len(corvets) > 1:
+            return redirect(reverse('psa:corvet', get={'filter': query}))
         return redirect('psa:corvet_detail', vin=corvets.first().vin)
+    elif re.match(r'^[VWZ][FLR0]\w{15}$', str(query)):
+        save_corvet_to_models.delay(query)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))
 

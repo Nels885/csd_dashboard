@@ -15,6 +15,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
         default.update({"bsi": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14b, type='BSI').first()})
     if instance.electronique_14l.isdigit():
         default.update({"emf": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14l, type='EMF').first()})
+    if instance.electronique_14k.isdigit():
+        default.update({"cmb": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14k, type='CMB').first()})
     if instance.electronique_14a.isdigit():
         default.update({"cmm": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14a, type='CMM').first()})
     if instance.electronique_16b.isdigit():

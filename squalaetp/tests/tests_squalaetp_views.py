@@ -83,3 +83,11 @@ class XelonTestCase(UnitTest):
     #     response = self.client.get(reverse('squalaetp:api_xelon-list'), format='json')
     #     self.assertEqual(response.status_code, 200)
     #     self.assertEqual(len(response.data), 4)
+
+    def test_sivin_table(self):
+        url = reverse('squalaetp:sivin_table')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

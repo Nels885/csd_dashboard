@@ -10,7 +10,7 @@ from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuM
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
-from utils.django.validators import validate_psa_barcode
+from utils.django.validators import validate_psa_barcode, validate_identify_number
 
 
 """
@@ -20,7 +20,7 @@ MANAGER FORMS
 """
 
 BOX_NUMBER = [(1, 1), (3, 3), (6, 6)]
-BATCH_TYPE = [('REMAN', 'REMAN'), ('ETUDE', 'ETUDE'), ('ATELIER', 'ATELIER')]
+BATCH_TYPE = [('REMAN', 'REMAN'), ('ETUDE', 'ETUDE'), ('REPAIR', 'REPAIR')]
 
 
 class BatchForm(BSModalModelForm):
@@ -105,7 +105,7 @@ class AddBatchForm(BSModalModelForm):
         del self.fields['type']
         batch = super().save(commit=False)
         if commit and not self.request.is_ajax():
-            if batch_type == "ATELIER":
+            if batch_type == "REPAIR":
                 batch.year = "X"
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
@@ -201,20 +201,16 @@ class AddRepairForm(BSModalModelForm):
 
     def clean_identify_number(self):
         data = self.cleaned_data["identify_number"]
-        batch_number = data[:-3] + "000"
-        self.queryset = self.queryset.filter(batch_number__exact=batch_number)
-        if self.queryset and self.queryset.filter(repairs__identify_number=data):
-            self.add_error("identify_number", "Ce numéro éxiste")
-        elif data[-3:] == "000":
-            self.add_error("identify_number", "Ce numéro n'est pas autorisé")
+        self.queryset, message = validate_identify_number(self.queryset, data)
+        if message:
+            self.add_error('identify_number', message)
         return data
 
     def clean_psa_barcode(self):
         data = self.cleaned_data["psa_barcode"]
         data, message = validate_psa_barcode(data)
-        queryset = self.queryset.filter(ecu_ref_base__ecu_type__ecumodel__psa_barcode=data)
-        if not queryset:
-            self.add_error('psa_barcode', "Code barre PSA incorrecte")
+        if message or not self.queryset.filter(ecu_ref_base__ecu_type__ecumodel__psa_barcode=data):
+            self.add_error('psa_barcode', _('PSA barcode is invalid'))
         return data
 
     def clean(self):

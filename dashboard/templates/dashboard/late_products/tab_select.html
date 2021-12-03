@@ -6,6 +6,12 @@
     </a>
 </li>
 
+<li class="nav-item {% if select == 'vip' %}active{% endif %}">
+    <a class="nav-link {% if select == 'vip' %}active{% endif %}" href="{% url 'dashboard:vip_prod' %}">
+        {% trans "VIP Products" %}
+    </a>
+</li>
+
 <li class="nav-item {% if select == 'admin' %}active{% endif %}">
     <a class="nav-link {% if select == 'admin' %}active{% endif %}" href="{% url 'dashboard:admin_prod' %}">
         {% trans "Admin Products" %}

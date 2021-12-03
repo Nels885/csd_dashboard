@@ -76,14 +76,21 @@ class CorvetForm(forms.ModelForm):
         xml_data = self.cleaned_data['xml_data']
         data = xml_parser(xml_data)
         vin = self.cleaned_data.get("vin")
-        if data and data['vin'] == vin:
-            for field, value in data.items():
-                self.cleaned_data[field] = value
-        elif data and data['vin'] != vin:
-            self.add_error('xml_data', _('XML data does not match VIN'))
+        if isinstance(data, dict):
+            if data.get('vin') == vin and data.get('donnee_date_entree_montage'):
+                for field, value in data.items():
+                    self.cleaned_data[field] = value
+            elif data.get('vin') != vin:
+                self.add_error('xml_data', _('XML data does not match VIN'))
         else:
             self.add_error('xml_data', _('Invalid XML data'))
-        return xml_data
+        return data
+
+    def clean(self):
+        cleaned_data = super(CorvetForm, self).clean()
+        data = cleaned_data.get('xml_data')
+        if isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
+            raise forms.ValidationError(_('VIN error !'))
 
 
 class CorvetModalForm(CorvetForm, BSModalModelForm):

@@ -3,10 +3,10 @@ $(document).ready(function () {
     $('#prodTable').DataTable({
         pagingType: "full_numbers",
         scrollX: true,
-        order: [[2, "asc"]],
+        order: [[1, "asc"]],
         // Disable sorting for the Tags and Actions columns.
         columnDefs: [{
-            targets: [0, 1],
+            targets: 0,
             searchable: false,
             orderable: false,
         }],

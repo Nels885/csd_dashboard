@@ -7,9 +7,11 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">
             {{ xelon.numero_de_dossier }} - {{ xelon.modele_vehicule }} - {{ xelon.vin }}
-            <a href="{% url 'squalaetp:barcode_pdf' xelon.pk %}" class="ml-2" target="_blank" title="Impression code barre">
-                <i class="fas fa-print"></i>
-            </a>
+            {% if corvet %}
+                <a href="{% url 'squalaetp:barcode_pdf' xelon.pk %}" class="ml-2" target="_blank" title="Impression code barre">
+                    <i class="fas fa-print"></i>
+                </a>
+            {% endif %}
         </h1>
         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger create-suptech shadow-sm"><i
                 class="fas fa-radiation fa-sm text-white-50"></i> Support Tech</a>
@@ -60,11 +62,13 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="#tech" role="tab" aria-selected="false">
-                    {% trans "Technician" %}
-                </a>
-            </li>
+            {% if dict_sivin %}
+
+                {% include 'tab_select.html' with name='sivin' tab_title='Info SIVIN Brute' %}
+
+            {% endif %}
+
+            {% include 'tab_select.html' with name='tech' tab_title='Technicien' %}
 
         </ul>
     </div>
@@ -119,7 +123,7 @@
 
         </div>
 
-        <!-- Detail Corvert -->
+        <!-- Detail Corvet -->
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
             {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
@@ -130,6 +134,13 @@
         <div class="tab-pane" id="logs" role="tabpanel" aria-labelledby="logs-tab">
 
             {% include 'squalaetp/detail/detail_logs.html' %}
+
+        </div>
+
+        <!-- Detail Sivin -->
+        <div class="tab-pane" id="sivin" role="tabpanel" aria-labelledby="sivin-tab">
+
+            {% include 'squalaetp/sivin_detail/raw_sivin_table_format.html' with obj=dict_sivin %}
 
         </div>
 

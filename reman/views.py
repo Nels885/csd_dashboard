@@ -154,7 +154,7 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
         batch_type = form.cleaned_data['type']
         if batch_type == "ETUDE":
             filter = 'etude'
-        elif batch_type == "ATELIER":
+        elif batch_type == "REPAIR":
             filter = 'workshop'
         else:
             filter = 'pending'
@@ -171,7 +171,7 @@ def batch_type_ajax(request):
         if batch_type == "ETUDE":
             data['number'] = 901
             batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
-        elif batch_type == "ATELIER":
+        elif batch_type == "REPAIR":
             batchs = Batch.objects.filter(year="X")
         data["number"] = batchs.aggregate(Max('number'))['number__max'] + 1
     except TypeError:
@@ -492,7 +492,7 @@ class RepairViewSet(viewsets.ModelViewSet):
     def list(self, request, **kwargs):
         try:
             self._filter(request)
-            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 2, **request.query_params).values()
+            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 1, **request.query_params).values()
             serializer = self.serializer_class(repair["items"], many=True)
             data = {
                 "data": serializer.data,

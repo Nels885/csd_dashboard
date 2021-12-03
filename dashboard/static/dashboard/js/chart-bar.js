@@ -7,20 +7,23 @@ $.ajax({
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
         // console.log(data);
-        const {suptechLabels} = data;
-        const {suptechValue} = data;
+        const {suptechCoLabels} = data;
+        const {suptechCoValue} = data;
 
         // Area Chart Example
-        var ctx = document.getElementById("supTechChart");
+        var ctx = document.getElementById("supTechCoChart");
         var repairLineChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: suptechLabels,
+                labels: suptechCoLabels,
                 datasets: [
                     {
                         label: "Demandes Suptech",
-                        data: suptechValue,
-                        backgroundColor: ['#4FC88B', '#F6C23E', '#E74A3B'],
+                        data: suptechCoValue,
+                        backgroundColor: [
+                            "rgba(214, 54, 33, 1)", "rgba(240, 132, 40, 1)", "rgba(0, 143, 136, 1)",
+                            "rgba(78, 115, 223, 1)"
+                        ],
                         borderWidth: 1
                     },
                 ],
@@ -31,7 +34,7 @@ $.ajax({
                     x: {
                         title: {
                             display: true,
-                            text: 'Délai de traitement'
+                            text: 'Statut'
                         },
                         grid: {
                             display: false,

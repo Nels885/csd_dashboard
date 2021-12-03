@@ -4,6 +4,7 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'api/xelon', views.XelonViewSet, basename='api_xelon')
+router.register(r'api/sivin', views.SivinViewSet, basename='api_sivin')
 
 app_name = 'squalaetp'
 
@@ -21,5 +22,8 @@ urlpatterns = [
     path('xelon/', views.xelon_table, name='xelon'),
     path('stock-parts/', views.stock_table, name='stock_parts'),
     path('log/<int:pk>/detail/', views.LogFileView.as_view(), name='log_detail'),
-    path('change/', views.change_table, name='change_table')
+    path('change/', views.change_table, name='change_table'),
+    path('sivin/', views.sivin_table, name='sivin_table'),
+    path('sivin/<slug:immat>/detail/', views.sivin_detail, name='sivin_detail'),
+    path('sivin/create/', views.SivinCreateView.as_view(), name='sivin_create'),
 ]

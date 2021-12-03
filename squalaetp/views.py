@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib import messages
 from django.http import JsonResponse, Http404, FileResponse
 from django.views.generic import TemplateView
-from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView
+from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView, BSModalCreateView
 from django.forms.models import model_to_dict
 from django.core.management import call_command
 from rest_framework.response import Response
@@ -16,17 +16,18 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.lib.pagesizes import A4
 from reportlab.graphics.barcode import code128
+from constance import config
 
 from utils.django.datatables import QueryTableByArgs
-from .serializers import XelonSerializer, XELON_COLUMN_LIST
-from .models import Xelon, SparePart, Action
+from .serializers import XelonSerializer, XELON_COLUMN_LIST, SivinSerializer, SIVIN_COLUMN_LIST
+from .models import Xelon, SparePart, Action, Sivin
 from .utils import collapse_select
 from psa.models import Corvet
 from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
-from .forms import IhmForm, VinCorvetModalForm, ProductModalForm, IhmEmailModalForm
+from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm
 from .tasks import cmd_loadsqualaetp_task
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
@@ -90,70 +91,79 @@ def stock_table(request):
 def detail(request, pk):
     """ Detailed view of the selected Xelon number """
     xelon = get_object_or_404(Xelon, pk=pk)
+    corvet = xelon.corvet
+    title = xelon.numero_de_dossier
     select = "xelon"
     collapse = collapse_select(xelon)
-    if xelon.corvet:
-        corvet = xelon.corvet
+    if corvet:
         if corvet.electronique_14x.isdigit():
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
         if corvet.electronique_14a.isdigit():
             cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
+        if corvet.prods.btel:
+            btel_model = f"{corvet.prods.btel.get_name_display()}  {corvet.prods.btel.level} - {corvet.prods.btel.type}"
         select = 'prods'
+    if Sivin.objects.filter(codif_vin=xelon.vin):
+        dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=xelon.vin).first())
     select = request.GET.get('select', select)
-    form = IhmForm(instance=xelon.corvet,
-                   initial=model_to_dict(xelon, fields=('vin', 'modele_produit', 'modele_vehicule')))
     return render(request, 'squalaetp/detail/detail.html', locals())
 
 
 def barcode_pdf_generate(request, pk):
     xelon = get_object_or_404(Xelon, pk=pk)
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer, pagesize=A4)
-    p.setTitle(f"xelon_{xelon.numero_de_dossier}")
-    p.setFont('Courier', 15)
-    p.setLineWidth(4)
-    p.drawString(50, 700, "N° Xelon :")
-    p.drawString(50, 600, "V.I.N. :")
-    p.line(50, 535, 550, 535)
-    p.drawString(50, 500, "Marque :")
-    p.drawString(50, 450, "Modèle véhicule :")
-    p.drawString(50, 400, "Modèle produit :")
-    p.line(50, 355, 550, 355)
-    p.drawString(50, 300, "Réf. boitier :")
-    p.drawString(50, 200, "Cal. CORVET :")
+    if xelon.corvet:
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer, pagesize=A4)
+        p.setTitle(f"xelon_{xelon.numero_de_dossier}")
+        p.setFont('Courier', 15)
+        p.setLineWidth(4)
+        p.drawString(50, 700, "N° Xelon :")
+        p.drawString(50, 600, "V.I.N. :")
+        p.line(50, 535, 550, 535)
+        p.drawString(50, 500, "Marque :")
+        p.drawString(50, 450, "Modèle véhicule :")
+        p.drawString(50, 400, "Modèle produit :")
+        p.line(50, 355, 550, 355)
+        p.drawString(50, 300, "Réf. boitier :")
+        p.drawString(50, 200, "Cal. CORVET :")
 
-    p.setFont('Courier-Bold', 15)
-    p.drawString(250, 700, str(xelon.numero_de_dossier))
-    barcode = code128.Code128(str(xelon.numero_de_dossier), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 200, 660)
-    p.drawString(250, 600, str(xelon.vin))
-    barcode = code128.Code128(str(xelon.vin), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 170, 560)
-    p.drawString(250, 500, str(get_corvet(xelon.corvet.donnee_marque_commerciale, "DON_MAR_COMM")))
-    p.drawString(250, 450, str(xelon.modele_vehicule))
-    if xelon.corvet.electronique_94x:
-        media = xelon.corvet.prods.btel
-        hw_ref = xelon.corvet.electronique_14x
-        sw_ref = xelon.corvet.electronique_94x
-    else:
-        media = xelon.corvet.prods.radio
-        hw_ref = xelon.corvet.electronique_14f
-        sw_ref = xelon.corvet.electronique_94f
-    p.drawString(250, 400, str(media.get_name_display()))
-    if media.level:
-        p.drawString(400, 400, str(media.level))
-    p.drawString(250, 300, str(hw_ref))
-    barcode = code128.Code128(str(hw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 210, 260)
-    p.drawString(250, 200, str(sw_ref))
-    barcode = code128.Code128(str(sw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 210, 160)
-    p.showPage()
-    p.save()
+        p.setFont('Courier-Bold', 15)
+        p.drawString(250, 700, str(xelon.numero_de_dossier))
+        barcode = code128.Code128(str(xelon.numero_de_dossier), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 200, 660)
+        p.drawString(250, 600, str(xelon.vin))
+        barcode = code128.Code128(str(xelon.vin), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 170, 560)
+        p.drawString(250, 500, str(get_corvet(xelon.corvet.donnee_marque_commerciale, "DON_MAR_COMM")))
+        p.drawString(250, 450, str(xelon.modele_vehicule))
+        if xelon.corvet.electronique_94x:
+            media = xelon.corvet.prods.btel
+            hw_ref = xelon.corvet.electronique_14x
+            sw_ref = xelon.corvet.electronique_94x
+        else:
+            media = xelon.corvet.prods.radio
+            hw_ref = xelon.corvet.electronique_14f
+            sw_ref = xelon.corvet.electronique_94f
+        try:
+            p.drawString(250, 400, str(media.get_name_display()))
+            if media.level:
+                p.drawString(400, 400, str(media.level))
+        except AttributeError:
+            p.drawString(250, 400, str(xelon.modele_produit))
+        p.drawString(250, 300, str(hw_ref))
+        barcode = code128.Code128(str(hw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 210, 260)
+        p.drawString(250, 200, str(sw_ref))
+        barcode = code128.Code128(str(sw_ref), barWidth=0.5 * mm, barHeight=10 * mm)
+        barcode.drawOn(p, 210, 160)
+        p.showPage()
+        p.save()
 
-    buffer.seek(0)
-    return FileResponse(buffer, filename=f"xelon_{xelon.numero_de_dossier}.pdf")
+        buffer.seek(0)
+        return FileResponse(buffer, filename=f"xelon_{xelon.numero_de_dossier}.pdf")
+    messages.warning(request, "Génération fichier PDF impossible !")
+    return redirect(http_referer(request))
 
 
 class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -167,7 +177,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'active_import': 'false',
+            'active_import': 'true',
             'xelon': self.object,
             'modal_title': _('CORVET update for %(file)s' % {'file': self.object.numero_de_dossier})
         })
@@ -231,6 +241,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+        initial['to'] = config.CHANGE_VIN_TO_EMAIL_LIST
         initial['subject'] = f"[{xelon.numero_de_dossier}] {xelon.modele_produit} Erreur VIN Xelon"
         initial['message'] = self.form_class.vin_message(xelon, self.request)
         return initial
@@ -257,6 +268,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
     def get_initial(self):
         initial = super().get_initial()
         xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+        initial['to'] = config.CHANGE_PROD_TO_EMAIL_LIST
         initial['subject'] = f"[{xelon.numero_de_dossier}] Erreur modèle produit Xelon"
         initial['message'] = self.form_class.prod_message(xelon, self.request)
         return initial
@@ -328,3 +340,71 @@ class XelonViewSet(viewsets.ModelViewSet):
                 vin__regex=r'^VF[37]\w{14}$', vin_error=False, corvet__isnull=True).order_by('-date_retour')
         elif query:
             self.queryset = Xelon.search(query)
+
+
+@login_required
+def sivin_table(request):
+    """ View of Sivin table page """
+    title = 'Sivin'
+    return render(request, 'squalaetp/sivin_table.html', locals())
+
+
+class SivinViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Sivin.objects.all()
+    serializer_class = SivinSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            sivin = QueryTableByArgs(self.queryset, SIVIN_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(sivin["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": sivin["draw"],
+                "recordsTotal": sivin["total"],
+                "recordsFiltered": sivin["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+
+@login_required
+def sivin_detail(request, immat):
+    """
+    detailed view of Sivin data for a file
+    :param immat:
+        immat for SIVIN data
+    """
+    sivin = get_object_or_404(Sivin, immat_siv=immat)
+    title = 'Info PSA'
+    corvet = sivin.corvet
+    if corvet and corvet.electronique_14x.isdigit():
+        prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
+    if corvet and corvet.electronique_14a.isdigit():
+        cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
+    card_title = _('Detail SIVIN data for the Immat: ') + sivin.immat_siv
+    collapse = {
+        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True,
+        "cmb": True
+    }
+    dict_sivin = model_to_dict(sivin)
+    select = "sivin"
+    return render(request, 'squalaetp/sivin_detail/detail.html', locals())
+
+
+class SivinCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'squalaetp.add_sivin'
+    template_name = 'squalaetp/modal/sivin_form.html'
+    form_class = SivinModalForm
+    success_message = _('Modification done successfully!')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('SIVIN integration')
+        return context
+
+    def get_success_url(self):
+        if not self.request.is_ajax():
+            return reverse_lazy('squaletp:sivin_detail', args=[self.object.pk])
+        return http_referer(self.request)

@@ -87,6 +87,27 @@ DAE_LIST = [
     ('96L_DAE_SOFT', 'corvet__electronique_96l')
 ]
 
+PRODS_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'),
+    ('Modele NAV', 'corvet__prods__btel__name'), ('Marque NAV', 'corvet__prods__btel__supplier_oe'),
+    ('Ref HW NAV', 'corvet__electronique_14x'),
+    ('Modele RADIO', 'corvet__prods__radio__name'), ('Marque RADIO', 'corvet__prods__radio__supplier_oe'),
+    ('Ref HW RADIO', 'corvet__electronique_14f'),
+    ('Modele EMF', 'corvet__prods__emf__name'), ('Marque EMF', 'corvet__prods__emf__supplier_oe'),
+    ('Ref HW EMF', 'corvet__electronique_14l'),
+    ('Modele TDB', 'corvet__prods__cmb__name'), ('Marque TDB', 'corvet__prods__cmb__supplier_oe'),
+    ('Ref HW TDB', 'corvet__electronique_14k'),
+    ('Modele ECU MOTEUR', 'corvet__prods__cmm__name'), ('Marque ECU MOTEUR', 'corvet__prods__cmm__supplier_oe'),
+    ('Ref HW ECU MOTEUR', 'corvet__electronique_14a'),
+    ('Modele BSI', 'corvet__prods__bsi__name'), ('Marque BSI', 'corvet__prods__bsi__supplier_oe'),
+    ('Ref HW BSI', 'corvet__electronique_14b'),
+    ('Modele COM200x', 'corvet__prods__hdc__name'), ('Marque COM200x', 'corvet__prods__hdc__supplier_oe'),
+    ('Ref HW COM200x', 'corvet__electronique_16p'),
+    ('Modele BSM', 'corvet__prods__bsm__name'), ('Marque BSM', 'corvet__prods__bsm__supplier_oe'),
+    ('Ref HW BSM', 'corvet__electronique_16b'),
+]
+
 
 def get_header_fields(prod_list):
     header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
@@ -103,6 +124,7 @@ HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
 BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
 CVM_HEADER, CVM_FIELDS = get_header_fields(CVM_LIST)
 DAE_HEADER, DAE_FIELDS = get_header_fields(DAE_LIST)
+PRODS_HEADER, PRODS_FIELDS = get_header_fields(PRODS_LIST)
 
 """
 ##################################
@@ -178,6 +200,9 @@ def extract_corvet(product='corvet'):
     elif product == "ng4":
         header, values_list = BTEL_HEADER, BTEL_FIELDS
         queryset = xelons.filter(corvet__attribut_drc="G4")
+    elif product == "all":
+        header, values_list = PRODS_HEADER, PRODS_FIELDS
+        queryset = xelons.filter(corvet__isnull=False)
     elif product == 'corvet':
         header = [
             'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',

@@ -1,6 +1,4 @@
 # import requests
-from io import StringIO
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
@@ -9,8 +7,7 @@ from django.views.generic import TemplateView
 from django.utils.translation import ugettext as _
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
-from django.core.management import call_command
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
@@ -18,9 +15,11 @@ from utils.django.forms import ParaErrorList
 from utils.django.datatables import QueryTableByArgs
 from utils.django.urls import reverse_lazy, http_referer
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
-from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, CorvetForm
+from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm
 from .models import Corvet, Multimedia
+from .tasks import import_corvet_task
 from dashboard.models import WebLink
+from squalaetp.models import Sivin
 from raspeedi.models import Programing
 from reman.models import EcuType
 
@@ -112,6 +111,7 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
         context = super(CorvetView, self).get_context_data(**kwargs)
         context['title'] = 'Info PSA'
         context['table_title'] = _('CORVET table')
+        context['query_param'] = self.request.GET.get('filter', '')
         return context
 
 
@@ -122,6 +122,7 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
     def list(self, request, **kwargs):
         try:
+            self._filter(request)
             corvet = QueryTableByArgs(self.queryset, CORVET_COLUMN_LIST, 1, **request.query_params).values()
             serializer = self.serializer_class(corvet["items"], many=True)
             data = {
@@ -133,6 +134,11 @@ class CorvetViewSet(viewsets.ModelViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+    def _filter(self, request):
+        query = request.query_params.get('filter', None)
+        if query:
+            self.queryset = Corvet.search(query)
 
 
 @permission_required('psa.view_corvet')
@@ -153,25 +159,11 @@ def corvet_detail(request, vin):
         cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)
+    if Sivin.objects.filter(codif_vin=vin):
+        dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=vin).first())
     select = "prods"
     context.update(locals())
     return render(request, 'psa/detail/detail.html', context)
-
-
-@permission_required('psa.add_corvet')
-def corvet_insert(request):
-    """
-    View of Corvet insert page, visible only if authenticated
-    """
-    title = 'Corvet'
-    card_title = _('CORVET integration')
-    form = CorvetForm(request.POST or None, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        form.save()
-        context = {'title': _('Modification done successfully!')}
-        return render(request, 'dashboard/done.html', context)
-    errors = form.errors.items()
-    return render(request, 'psa/corvet_insert.html', locals())
 
 
 class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
@@ -191,6 +183,23 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
         return http_referer(self.request)
 
 
+class CorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for updating Corvet and VIN data """
+    model = Corvet
+    permission_required = 'psa.add_corvet'
+    template_name = 'psa/modal/corvet_form.html'
+    form_class = CorvetModalForm
+    success_message = _('Modification done successfully!')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('CORVET update for %(vin)s' % {'vin': self.object.vin})
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('psa:corvet_detail', args=[self.object.pk])
+
+
 @permission_required('psa.view_multimedia')
 def product_table(request):
     """
@@ -206,17 +215,9 @@ def product_table(request):
     return render(request, 'psa/product_table.html', context)
 
 
-@permission_required('psa.change_corvet')
-def ajax_corvet(request):
-    """
-    View for import CORVET data
-    """
+def import_corvet_async(request):
     vin = request.GET.get('vin')
-    if request.GET and vin:
-        out = StringIO()
-        call_command("importcorvet", vin, stdout=out)
-        data = out.getvalue()
-        # data = ScrapingCorvet(config.CORVET_USER, config.CORVET_PWD).result(vin)
-        context = {'xml_data': data}
-        return JsonResponse(context, status=200)
+    if vin:
+        task = import_corvet_task.delay(vin=vin)
+        return JsonResponse({"task_id": task.id})
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)

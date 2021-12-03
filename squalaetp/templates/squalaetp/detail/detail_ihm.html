@@ -1,4 +1,4 @@
-{% load i18n widget_tweaks %}
+{% load i18n widget_tweaks corvet_tags %}
 
 <div class="{% if form.non_field_errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
     {% for error in form.non_field_errors %}
@@ -25,27 +25,67 @@
         {% if xelon.is_active %}
             <a class="btn btn-secondary btn-block mb-3" href="#">PROG Actif</a>
         {% else %}
-                <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer PROG</a>
+            <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer PROG</a>
         {% endif %}
         <a class="btn btn-secondary btn-block mb-3" href="{% url 'squalaetp:barcode_pdf' pk=xelon.pk %}" target="_blank">Générer code barre</a>
         <a class="btn btn-success btn-block" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
     </section>
+    {#    <section class="col-sm-9">#}
+    {#        {% for field in form %}#}
+    {#            <div class="form-group">#}
+    {#                <div class="form-group row">#}
+    {#                    <label for="{{ field.id_for_label }}" class="col-sm-7 col-form-label">{{ field.label }}</label>#}
+    {#                    <div class="col-sm-5">#}
+    {#                        {% render_field field class="form-control" %}#}
+    {#                        <div class="{% if field.errors %} invalid{% endif %}">#}
+    {#                            {% for error in field.errors %}#}
+    {#                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>#}
+    {#                            {% endfor %}#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        {% endfor %}#}
+    {#    </section>#}
+
     <section class="col-sm-9">
-        {% for field in form %}
-            <div class="form-group">
-                <div class="form-group row">
-                    <label for="{{ field.id_for_label }}" class="col-sm-7 col-form-label">{{ field.label }}</label>
-                    <div class="col-sm-5">
-                        {% render_field field class="form-control" %}
-                        <div class="{% if field.errors %} invalid{% endif %}">
-                            {% for error in field.errors %}
-                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="V.I.N. (XELON)" value=xelon.vin %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="Modèle produit (XELON)" value=xelon.modele_produit %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="Modèle véhicule (XELON)" value=xelon.modele_vehicule %}
+
+        {% if corvet.donnee_marque_commerciale == "0P" %}
+            {% include 'squalaetp/detail/input_ihm_format.html' with label="Modèle véhicule (CORVET)" value=corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" %}
+        {% else %}
+            {% include 'squalaetp/detail/input_ihm_format.html' with label="Modèle véhicule (CORVET)" value=corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" %}
+        {% endif %}
+
+        <hr>
+
+        <!-- BTEL Info -->
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="BTEL MODEL - Boitier Télématique" value=btel_model %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="electronique_14x"|get_field_name value=corvet.electronique_14x %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="electronique_94x"|get_field_name value=corvet.electronique_94x %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="electronique_44x"|get_field_name value=corvet.electronique_44x %}
+
+        <hr>
+
+        <!-- RADIO Info -->
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="RADIO MODEL - Recepteur Radio" value=corvet.prods.radio.get_name_display %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="electronique_14f"|get_field_name value=corvet.electronique_14f %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="electronique_94f"|get_field_name value=corvet.electronique_94f %}
+
+        {% include 'squalaetp/detail/input_ihm_format.html' with label="electronique_44f"|get_field_name value=corvet.electronique_44f %}
+
     </section>
 </div>
 

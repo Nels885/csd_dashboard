@@ -43,6 +43,12 @@
                 </a>
             </li>
 
+            {% if dict_sivin %}
+
+                {% include 'tab_select.html' with name='sivin' tab_title='Info SIVIN Brute' %}
+
+            {% endif %}
+
         </ul>
     </div>
 
@@ -78,6 +84,13 @@
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
             {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
+
+        </div>
+
+        <!-- Detail Sivin -->
+        <div class="tab-pane" id="sivin" role="tabpanel" aria-labelledby="sivin-tab">
+
+            {% include 'squalaetp/sivin_detail/raw_sivin_table_format.html' with obj=dict_sivin %}
 
         </div>
 

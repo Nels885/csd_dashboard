@@ -80,11 +80,6 @@ class PsaTestCase(UnitTest):
         response = self.client.get(reverse('psa:corvet_detail', kwargs={'vin': "123456789"}))
         self.assertEqual(response.status_code, 404)
 
-        # # Detail is valid
-        # self.client.post(reverse('squalaetp:corvet_insert'), {'vin': self.vin, 'xml_data': self.xmlData})
-        # response = self.client.get(url)
-        # self.assertEqual(response.status_code, 200)
-
     def test_corvet_view_set_is_disconnected(self):
         response = self.client.get(reverse('psa:api_corvet-list'), format='json')
         self.assertEqual(response.status_code, 403)
