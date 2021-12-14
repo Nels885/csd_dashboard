@@ -65,7 +65,7 @@
 
 <script type="text/javascript">
 
-    $(function () {
+    $(document).ready(function() {
         // Log in buttons
         $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
         $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
@@ -96,13 +96,13 @@
     getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
         var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;
 
-        function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
+        function onCustomProgress(progressBarElement, progressBarMessageElement, progress) {
             progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
             progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
             progressBarElement.setAttribute("aria-valuenow", progress.percent)
         }
 
-        function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
+        function onCustomSuccess(progressBarElement, progressBarMessageElement, result) {
             // display message
             if ("msg" in result) {
                 addMessage(result["msg"], "success");
@@ -118,8 +118,8 @@
         CeleryProgressBar.initProgressBar(progressUrl, {
             progressBarId: progressBarId,
             progressBarMessageId: progressBarMessageId,
-            onProgress: onExportUserProgress,
-            onSuccess: onExportUserSuccess,
+            onProgress: onCustomProgress,
+            onSuccess: onCustomSuccess,
         });
     }
 
