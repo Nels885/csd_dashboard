@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import CorvetProduct, Corvet, Multimedia, Ecu
+from .models import CorvetProduct, Corvet, Multimedia, Ecu, CorvetOption
 
 
 @receiver(post_save, sender=Corvet)
@@ -24,3 +24,4 @@ def post_save_corvet(sender, created, instance, **kwargs):
     if instance.electronique_16p.isdigit():
         default.update({"hdc": Ecu.objects.filter(comp_ref__startswith=instance.electronique_16p, type='HDC').first()})
     CorvetProduct.objects.update_or_create(corvet=instance, defaults=default)
+    CorvetOption.objects.update_or_create(corvet=instance)

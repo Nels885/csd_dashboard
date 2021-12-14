@@ -250,6 +250,19 @@ class CorvetProduct(models.Model):
         return self.corvet.vin
 
 
+class CorvetOption(models.Model):
+    corvet = models.OneToOneField('psa.Corvet', related_name='opts', on_delete=models.CASCADE, primary_key=True)
+    filter = models.CharField('filtre', max_length=100, blank=True)
+    update = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Options CORVET"
+        ordering = ['corvet']
+
+    def __str__(self):
+        return self.corvet.vin
+
+
 class Multimedia(models.Model):
     TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
