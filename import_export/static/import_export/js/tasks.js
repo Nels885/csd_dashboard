@@ -51,6 +51,31 @@ $(function () {
         });
     });
 
+    $("#import-corvet-vin").on("submit", (e) => {
+        e.preventDefault();
+        let formData = new FormData($("#import-corvet-vin")[0]);
+        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}");
+        $.ajax({
+            type: "POST",
+            url: IMPORT_CORVET_URL,
+            data: formData,
+            contentType: false,
+            processData: false,
+            cache: false,
+            async: true,
+            success: function (res) {
+                getProgress(
+                    res.task_id,
+                    progressBarId = "import-corvet-vin-progress-bar",
+                    progressBarMessageId = "import-corvet-vin-progress-message",
+                )
+            },
+            error: function (err) {
+                console.log(err);
+            },
+        });
+    });
+
     $("#export-reman").on("submit", (e) => {
         e.preventDefault();
         let formData = new FormData($("#export-reman")[0]);

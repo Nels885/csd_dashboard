@@ -12,6 +12,7 @@ from .forms import ExportCorvetForm, ExportRemanForm, CorvetVinListForm, ExportT
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 from .tasks import export_corvet_task, export_reman_task, export_tools_task
+from psa.tasks import import_corvet_list_task
 
 context = {
     'title': 'Extraction'
@@ -90,6 +91,15 @@ def export_corvet_vin_async(request):
     if form.is_valid():
         vin_list = form.cleaned_data['vin_list'].split('\r\n')
         task = export_corvet_task.delay(vin_list=vin_list)
+        return JsonResponse({"task_id": task.id})
+    raise Http404
+
+
+def import_corvet_vin_async(request):
+    form = CorvetVinListForm(request.POST or None)
+    if form.is_valid():
+        vin_list = form.cleaned_data['vin_list'].split('\r\n')
+        task = import_corvet_list_task.delay(*vin_list)
         return JsonResponse({"task_id": task.id})
     raise Http404
 
