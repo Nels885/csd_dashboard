@@ -8,7 +8,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 from django.http import JsonResponse, Http404
 
-from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm, ExportToolsForm
+from .forms import ExportCorvetForm, ExportRemanForm, CorvetVinListForm, ExportToolsForm
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 from .tasks import export_corvet_task, export_reman_task, export_tools_task
@@ -22,7 +22,7 @@ context = {
 def import_export(request):
     """ View of import/export files page """
     form_corvet = ExportCorvetForm()
-    form_corvet_vin = ExportCorvetVinListForm()
+    form_corvet_vin = CorvetVinListForm()
     form_reman = ExportRemanForm()
     form_tools = ExportToolsForm()
     context.update(locals())
@@ -86,7 +86,7 @@ def export_corvet_async(request):
 
 
 def export_corvet_vin_async(request):
-    form = ExportCorvetVinListForm(request.POST or None)
+    form = CorvetVinListForm(request.POST or None)
     if form.is_valid():
         vin_list = form.cleaned_data['vin_list'].split('\r\n')
         task = export_corvet_task.delay(vin_list=vin_list)

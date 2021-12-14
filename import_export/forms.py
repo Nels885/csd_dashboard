@@ -21,7 +21,7 @@ class ExportRemanForm(forms.Form):
     tables = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
 
 
-class ExportCorvetVinListForm(forms.Form):
+class CorvetVinListForm(forms.Form):
     vin_list = forms.CharField(label='Liste de V.I.N.', required=True, widget=forms.Textarea())
 
 
