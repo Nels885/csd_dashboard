@@ -25,7 +25,7 @@
     </div>
 </form>
 
-{% include 'format/progress_bar.html' with name='corvet' %}
+{% include 'format/progress_bar.html' with name='export-corvet' %}
 
 <hr>
 
@@ -49,6 +49,28 @@
 
 </form>
 
-{% include 'format/progress_bar.html' with name='corvet-vin' %}
+{% include 'format/progress_bar.html' with name='export-corvet-vin' %}
 
 <hr>
+
+<h3 class="mb-4 mt-5 text-gray-800">Importation des données CORVET par liste de V.I.N. :</h3>
+
+<form id="import-corvet-vin" method="post" action="">
+
+    {% csrf_token %}
+
+    <div class="form-group row">
+        <label for="{{ form_corvet_vin.vin_list.id_for_label }}" class="col-form-label col-sm-2">{{ form_corvet_vin.vin_list.label }}</label>
+        <div class="col-sm-5">
+            {% render_field form_corvet_vin.vin_list class="form-control" rows=8 %}
+        </div>
+        <div class="col-sm-auto">
+            <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Import" %}</span>
+            </button>
+        </div>
+    </div>
+
+</form>
+
+{% include 'format/progress_bar.html' with name='import-corvet-vin' %}
