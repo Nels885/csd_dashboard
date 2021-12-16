@@ -240,7 +240,6 @@ class CorvetProduct(models.Model):
     cmb = models.ForeignKey('psa.Ecu', related_name='corvet_cmb', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMB'}, null=True, blank=True)
     fmux = models.ForeignKey('psa.Ecu', related_name='corvet_fmux', on_delete=models.SET_NULL, limit_choices_to={'type': 'FMUX'}, null=True, blank=True)
     mds = models.ForeignKey('psa.Ecu', related_name='corvet_mds', on_delete=models.SET_NULL, limit_choices_to={'type': 'MDS'}, null=True, blank=True)
-    update = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "produits CORVET"
@@ -252,7 +251,7 @@ class CorvetProduct(models.Model):
 
 class CorvetOption(models.Model):
     corvet = models.OneToOneField('psa.Corvet', related_name='opts', on_delete=models.CASCADE, primary_key=True)
-    filter = models.CharField('filtre', max_length=100, blank=True)
+    tag = models.CharField('tag', max_length=100, blank=True)
     update = models.BooleanField(default=False)
 
     class Meta:
