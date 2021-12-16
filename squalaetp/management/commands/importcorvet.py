@@ -58,13 +58,13 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
         elif options['all']:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
-            corvets = Corvet.objects.filter(prods__update=True)[:200]
+            corvets = Corvet.objects.filter(opts__update=True)[:200]
             nb_file = self._import_corvet(corvets, squalaetp=False, limit=True)
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
         else:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             xelons = Xelon.objects.filter(vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False).order_by('-id')
-            xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__prods__update=True))[:200]
+            xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__opts__update=True))[:200]
             nb_file = self._import_corvet(xelons, limit=True)
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
 
@@ -87,8 +87,8 @@ class Command(BaseCommand):
                 elif row and row.get('donnee_date_entree_montage'):
                     defaults = defaults_dict(Corvet, row, "vin")
                     obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
-                    obj.prods.update = False
-                    obj.prods.save()
+                    obj.opts.update = False
+                    obj.opts.save()
                     nb_import += 1
                     delay_time = time.time() - start_time
                     self.stdout.write(
