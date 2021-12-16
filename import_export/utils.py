@@ -202,7 +202,7 @@ def extract_corvet(product='corvet'):
         queryset = xelons.filter(corvet__attribut_drc="G4")
     elif product == "icare":
         header, values_list = PRODS_HEADER, PRODS_FIELDS
-        queryset = xelons.filter(corvet__isnull=False, corvet__opts__filter="ICARE")
+        queryset = xelons.filter(corvet__isnull=False, corvet__opts__tag="ICARE")
     elif product == "all":
         header, values_list = PRODS_HEADER, PRODS_FIELDS
         queryset = xelons.filter(corvet__isnull=False)
