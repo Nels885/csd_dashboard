@@ -59,10 +59,10 @@ def import_corvet_task(self, vin):
 def import_corvet_list_task(self, *args):
     progress_recorder = ProgressRecorder(self)
     list_args, msg = args, ""
-    CorvetOption.objects.update(filter="")
+    CorvetOption.objects.update(tag="")
     for count, vin in enumerate(list_args):
-        corvets = Corvet.objects.filter(vin=vin, prods__update=False)
-        CorvetOption.objects.filter(corvet=vin).update(filter="ICARE")
+        corvets = Corvet.objects.filter(vin=vin, opts__update=False)
+        CorvetOption.objects.filter(corvet=vin).update(tag="ICARE")
         progress_recorder.set_progress(count, len(list_args))
         if not corvets:
             if re.match(r'^[VWZ][FLR0]\w{15}$', str(vin)):
