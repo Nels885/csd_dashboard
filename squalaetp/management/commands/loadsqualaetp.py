@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from squalaetp.models import Xelon, ProductCategory, Indicator
+from psa.models import Multimedia, Ecu
 from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
 from utils.django.models import defaults_dict
 from utils.data.analysis import ProductAnalysis
@@ -50,6 +51,12 @@ class Command(BaseCommand):
             dest='prod_category',
             help='Add values in ProductCategory table',
         )
+        parser.add_argument(
+            '--xelon_name_update',
+            action='store_true',
+            dest='xelon_name',
+            help='Update Xelon name'
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[SQUALAETP] Waiting...")
@@ -74,6 +81,9 @@ class Command(BaseCommand):
 
         elif options['prod_category']:
             self._product_category()
+
+        elif options['xelon_name']:
+            self._xelon_name_update()
 
     def _foreignkey_relation(self):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
@@ -220,3 +230,31 @@ class Command(BaseCommand):
         for query in prod.pendingQueryset:
             obj.xelons.add(query)
         self.stdout.write(self.style.SUCCESS("[INDICATOR] data update completed"))
+
+    def _xelon_name_update(self):
+        self.stdout.write("[ECU & MEDIA] Waiting...")
+        xelons = Xelon.objects.filter(corvet__isnull=False)
+        for xelon in xelons:
+            product = xelon.product
+            if product and product.corvet_type == "NAV":
+                comp_ref = xelon.corvet.electronique_14x
+                if comp_ref.isdigit():
+                    Multimedia.objects.update_or_create(
+                        hw_reference=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
+            elif product and product.corvet_type == "RAD":
+                comp_ref = xelon.corvet.electronique_14f
+                if comp_ref.isdigit():
+                    Multimedia.objects.update_or_create(
+                        hw_reference=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
+            elif product and product.corvet_type == "BSI":
+                comp_ref = xelon.corvet.electronique_14b
+                if comp_ref.isdigit():
+                    Ecu.objects.update_or_create(
+                        comp_ref=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
+        self.stdout.write(self.style.SUCCESS("[ECU & MEDIA] data update completed"))
