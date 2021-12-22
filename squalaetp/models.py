@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from crum import get_current_user
 
-from psa.models import Corvet
+from psa.models import Corvet, Multimedia, Ecu
 
 
 class Xelon(models.Model):
@@ -152,9 +152,11 @@ class ProductCategory(models.Model):
         ('PSA', 'Produits PSA'), ('AUTRE', 'Autres produits'), ('CLARION', 'Clarion'), ('ETUDE', 'Etude'),
         ('CALCULATEUR', 'Calculateurs'), ('DEFAUT', 'Defaut')
     ]
+    TYPES = Multimedia.TYPE_CHOICES + Ecu.TYPE_CHOICES
 
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
     category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
+    corvet_type = models.CharField('Type Corvet', max_length=50, choices=TYPES, blank=True)
     niv_i_users = models.ManyToManyField(User, related_name='niv_i_prods', blank=True)
     niv_l_users = models.ManyToManyField(User, related_name='niv_l_prods', blank=True)
     niv_u_users = models.ManyToManyField(User, related_name='niv_u_prods', blank=True)
