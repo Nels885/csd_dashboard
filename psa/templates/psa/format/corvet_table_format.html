@@ -5,7 +5,10 @@
     <tbody class="collapse {% if collapse.display %}show{% endif %}" id="collapseDisplay">
     <tr>
         <td class="text-dark td-ihm">Réf HW TDB</td>
-        <td>{{ object.electronique_14k }}</td>
+        <td>
+            {{ object.electronique_14k }}
+            {% if object.prods.cmb.productcode_set.all %}<span class="fas fa-industry ml-2"></span>{% endif %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">SOFT TDB</td>
@@ -13,7 +16,10 @@
     </tr>
     <tr>
         <td class="text-dark td-ihm">Réf HW EMF</td>
-        <td>{{ object.electronique_14l }}</td>
+        <td>
+            {{ object.electronique_14l }}
+            {% if object.prods.emf.productcode_set.all %}<span class="fas fa-industry ml-2"></span>{% endif %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">SOFT EMF</td>
@@ -34,7 +40,10 @@
     {% if object.electronique_14f %}
         <tr>
             <td class="text-dark td-ihm">Réf HW RAD</td>
-            <td>{{ object.electronique_14f }}</td>
+            <td>
+                {{ object.electronique_14f }}
+                {% if object.prods.radio.productcode_set.all %}<span class="fas fa-industry ml-2"></span>{% endif %}
+            </td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">CAL RAD</td>
@@ -48,7 +57,10 @@
     {% if object.electronique_14x %}
         <tr>
             <td class="text-dark td-ihm">Réf HW NAV</td>
-            <td>{{ object.electronique_14x }}</td>
+            <td>
+                {{ object.electronique_14x }}
+                {% if object.prods.btel.productcode_set.all %}<span class="fas fa-industry ml-2"></span>{% endif %}
+            </td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">CAL NAV</td>
@@ -70,7 +82,10 @@
     <!-- ECU MOTOR -->
     <tr>
         <td class="text-dark td-ihm">Réf HW ECU moteur</td>
-        <td>{{ object.electronique_14a }}</td>
+        <td>
+            {{ object.electronique_14a }}
+            {% if object.prods.cmm.productcode_set.all %}<span class="fas fa-industry ml-2"></span>{% endif %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">CAL LIVRE ECU moteur</td>
@@ -87,7 +102,10 @@
     <!-- BSI -->
     <tr>
         <td class="text-dark td-ihm">Réf HW BSI</td>
-        <td>{{ object.electronique_14b }}</td>
+        <td>
+            {{ object.electronique_14b }}
+            {% if object.prods.bsi.productcode_set.all %}<span class="fas fa-industry ml-2"></span>{% endif %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">CAL BSI</td>
@@ -100,7 +118,10 @@
     <!-- COM200x -->
     <tr>
         <td class="text-dark td-ihm">Réf HW COM200x</td>
-        <td>{{ object.electronique_16p }}</td>
+        <td>
+            {{ object.electronique_16p }}
+            {% if object.prods.hdc.productcode_set.all %}<span class="fas fa-industry ml-2"></span>{% endif %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">N° série COM200x</td>

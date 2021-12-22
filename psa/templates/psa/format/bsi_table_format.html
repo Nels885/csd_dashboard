@@ -25,6 +25,16 @@
             <td class="text-dark td-ihm">Fabriquant</td>
             <td>{{ object.supplier_oe }}</td>
         </tr>
+        <tr>
+            <td class="text-dark td-ihm">Réference PR</td>
+            <td>{{ object.pr_reference }}</td>
+        </tr>
+        {% if object.productcode_set.all %}
+            <tr>
+                <td class="text-dark td-ihm">Pièces Xelon</td>
+                <td>{% for part in object.productcode_set.all %}{{ part.name }}<br>{% endfor %}</td>
+            </tr>
+        {% endif %}
         </tbody>
     </table>
 

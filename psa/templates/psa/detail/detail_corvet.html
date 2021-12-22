@@ -16,7 +16,8 @@
             <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm">V.I.N.</td>
-                <td>{{ corvet.vin }}<a href="#" title="copie" onclick="textCopy('{{ corvet.vin }}')"><i class="fas fa-copy ml-2"></i></a></td>
+                <td>{{ corvet.vin }}<a href="#" title="copie" onclick="textCopy('{{ corvet.vin }}')"><i class="fas fa-copy ml-2"></i></a>
+                </td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Marque/Véhicule</td>
@@ -36,9 +37,11 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Dossier(s) Xelon</td>
-                <td>{% for xelon in corvet.xelon_set.all %}
-                    <a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a>
-                    <br>{% endfor %}</td>
+                <td>
+                    {% for xelon in corvet.xelon_set.all %}
+                        <a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a><br>
+                    {% endfor %}
+                </td>
             </tr>
             </tbody>
         </table>
