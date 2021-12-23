@@ -86,7 +86,7 @@ class Command(BaseCommand):
     def _relation_update(self):
         self.stdout.write("[PRODUCTCODE] Waiting...")
         for ecu in Ecu.objects.all():
-            if str(ecu.comp_ref)[:-2] == "77":
+            if str(ecu.comp_ref)[-2:] == "77":
                 ProductCode.objects.filter(name__contains=str(ecu.comp_ref[:-2])).update(ecu=ecu)
             else:
                 ProductCode.objects.filter(name__contains=ecu.comp_ref).update(ecu=ecu)
