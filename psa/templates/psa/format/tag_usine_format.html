@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% with part=obj %}
+    {% if part %}
+        <i class="{% if part.sparepart_set.first.cumul_dispo < 5 %}text-danger{% else %}text-success{% endif %} fas fa-industry ml-2"></i>
+    {% endif %}
+{% endwith %}
