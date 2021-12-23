@@ -30,19 +30,19 @@ def pre_save_xelon(sender, instance, **kwargs):
                     Multimedia.objects.get_or_create(
                         hw_reference=comp_ref,
                         defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type})
-            if product.corvet_type in ["EMF", "CMB", "BSI", "CMM", "HDC", "BSM"]:
+            if product and product.corvet_type in ["EMF", "CMB", "BSI", "CMM", "HDC", "BSM"]:
                 comp_ref = None
-                if product and product.corvet_type == "EMF":
+                if product.corvet_type == "EMF":
                     comp_ref = instance.corvet.electronique_14l
-                elif product and product.corvet_type == "CMB":
+                elif product.corvet_type == "CMB":
                     comp_ref = instance.corvet.electronique_14k
-                elif product and product.corvet_type == "BSI":
+                elif product.corvet_type == "BSI":
                     comp_ref = instance.corvet.electronique_14b
-                elif product and product.corvet_type == "CMM":
+                elif product.corvet_type == "CMM":
                     comp_ref = instance.corvet.electronique_14a
-                elif product and product.corvet_type == "HDC":
+                elif product.corvet_type == "HDC":
                     comp_ref = instance.corvet.electronique_16p
-                elif product and product.corvet_type == "BSM":
+                elif product.corvet_type == "BSM":
                     comp_ref = instance.corvet.electronique_16b
                 if comp_ref and comp_ref.isdigit():
                     Ecu.objects.get_or_create(
