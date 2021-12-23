@@ -19,6 +19,7 @@ logger = logging.getLogger('command')
 
 class Command(BaseCommand):
     help = 'Interact with the Squalaetp tables in the database'
+    MAX_SIZE = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -233,7 +234,8 @@ class Command(BaseCommand):
 
     def _xelon_name_update(self):
         self.stdout.write("[ECU & MEDIA] Waiting...")
-        xelons = Xelon.objects.filter(corvet__isnull=False)
+        xelons = Xelon.objects.filter(corvet__isnull=False, date_retour__isnull=False).order_by('date_retour')
+        self.MAX_SIZE, number = xelons.count(), 0
         for xelon in xelons:
             product = xelon.product
             if product and product.corvet_type == "NAV":
@@ -257,4 +259,14 @@ class Command(BaseCommand):
                         comp_ref=comp_ref,
                         defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
                     )
-        self.stdout.write(self.style.SUCCESS("[ECU & MEDIA] data update completed"))
+            if number % 1000 == 1:
+                self._progress_bar(number)
+            number += 1
+        self.stdout.write(self.style.SUCCESS(f"\r\n[ECU & MEDIA] data update completed {self.MAX_SIZE}"))
+
+    def _progress_bar(self, current_size, bar_length=80):
+        if self.MAX_SIZE is not None:
+            percent = float(current_size) / self.MAX_SIZE
+            arrow = '-' * int(round(percent*bar_length) - 1) + '>'
+            spaces = ' ' * (bar_length - len(arrow))
+            print("\r[{0}]{1}% ".format(arrow + spaces, int(round(percent*100))), end="", flush=True)
