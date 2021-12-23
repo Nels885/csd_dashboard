@@ -11,7 +11,11 @@
         </tr>
         <tr>
             <td class="text-dark td-ihm">Modèle</td>
-            <td>{{ object.name }}</td>
+            <td>{{ object.name|default:"???" }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Modèle Xelon</td>
+            <td>{{ object.xelon_name|default:"???" }}</td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">HW</td>
