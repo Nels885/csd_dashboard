@@ -252,8 +252,43 @@ class Command(BaseCommand):
                         hw_reference=comp_ref,
                         defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
                     )
+            elif product and product.corvet_type == "EMF":
+                comp_ref = xelon.corvet.electronique_14l
+                if comp_ref.isdigit():
+                    Ecu.objects.update_or_create(
+                        comp_ref=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
+            elif product and product.corvet_type == "CMB":
+                comp_ref = xelon.corvet.electronique_14k
+                if comp_ref.isdigit():
+                    Ecu.objects.update_or_create(
+                        comp_ref=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
             elif product and product.corvet_type == "BSI":
                 comp_ref = xelon.corvet.electronique_14b
+                if comp_ref.isdigit():
+                    Ecu.objects.update_or_create(
+                        comp_ref=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
+            elif product and product.corvet_type == "CMM":
+                comp_ref = xelon.corvet.electronique_14a
+                if comp_ref.isdigit():
+                    Ecu.objects.update_or_create(
+                        comp_ref=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
+            elif product and product.corvet_type == "HDC":
+                comp_ref = xelon.corvet.electronique_16p
+                if comp_ref.isdigit():
+                    Ecu.objects.update_or_create(
+                        comp_ref=comp_ref,
+                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                    )
+            elif product and product.corvet_type == "BSM":
+                comp_ref = xelon.corvet.electronique_16b
                 if comp_ref.isdigit():
                     Ecu.objects.update_or_create(
                         comp_ref=comp_ref,
