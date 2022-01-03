@@ -1,0 +1,5 @@
+{% load psa_extras %}
+
+{% if obj %}
+    <i class="{% if obj|part_count < 5 %}text-danger{% else %}text-success{% endif %} fas fa-cog ml-2" title="{{ obj|part_count }} carcasse(s)"></i>
+{% endif %}

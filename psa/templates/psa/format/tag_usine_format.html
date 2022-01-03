@@ -1,5 +1,5 @@
-{% with part=obj %}
-    {% if part %}
-        <i class="{% if part.sparepart_set.first.cumul_dispo < 5 %}text-danger{% else %}text-success{% endif %} fas fa-industry ml-2"></i>
-    {% endif %}
-{% endwith %}
+{% load psa_extras %}
+
+{% if obj %}
+    <i class="{% if obj|part_count < 5 %}text-danger{% else %}text-success{% endif %} fas fa-industry ml-2" title="{{ obj|part_count }} pièce(s) usine"></i>
+{% endif %}
