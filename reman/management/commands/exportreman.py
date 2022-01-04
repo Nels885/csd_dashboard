@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
                 'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
             ]
-            batch = Batch.objects.all().order_by('batch_number')
+            batch = Batch.objects.filter(active=True).order_by('batch_number')
             values_list = batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
