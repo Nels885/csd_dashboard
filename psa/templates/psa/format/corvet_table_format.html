@@ -7,7 +7,7 @@
         <td class="text-dark td-ihm">Réf HW TDB</td>
         <td>
             {{ object.electronique_14k }}
-            {% include 'psa/format/tag_usine_format.html' with obj=object.prods.cmb.productcode_set %}
+            {% include 'psa/format/tag_usine_format.html' with obj=object.prods.cmb %}
         </td>
     </tr>
     <tr>
@@ -18,7 +18,7 @@
         <td class="text-dark td-ihm">Réf HW EMF</td>
         <td>
             {{ object.electronique_14l }}
-            {% include 'psa/format/tag_usine_format.html' with obj=object.prods.emf.productcode_set %}
+            {% include 'psa/format/tag_usine_format.html' with obj=object.prods.emf %}
         </td>
     </tr>
     <tr>
@@ -42,7 +42,7 @@
             <td class="text-dark td-ihm">Réf HW RAD</td>
             <td>
                 {{ object.electronique_14f }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.radio.productcode_set %}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.radio %}
             </td>
         </tr>
         <tr>
@@ -59,7 +59,7 @@
             <td class="text-dark td-ihm">Réf HW NAV</td>
             <td>
                 {{ object.electronique_14x }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.btel.productcode_set %}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.btel %}
             </td>
         </tr>
         <tr>
@@ -84,7 +84,7 @@
         <td class="text-dark td-ihm">Réf HW ECU moteur</td>
         <td>
             {{ object.electronique_14a }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmm.productcode_set %}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmm %}
         </td>
     </tr>
     <tr>
@@ -104,7 +104,7 @@
         <td class="text-dark td-ihm">Réf HW BSI</td>
         <td>
             {{ object.electronique_14b }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bsi.productcode_set %}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bsi %}
         </td>
     </tr>
     <tr>
@@ -120,7 +120,7 @@
         <td class="text-dark td-ihm">Réf HW COM200x</td>
         <td>
             {{ object.electronique_16p }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.hdc.productcode_set %}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.hdc %}
         </td>
     </tr>
     <tr>
