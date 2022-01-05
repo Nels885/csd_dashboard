@@ -23,36 +23,25 @@ def pre_save_xelon(sender, instance, **kwargs):
             instance.vin_error = False
         if instance.modele_produit:
             instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
-    #         product = instance.product
-    #         if product and product.corvet_type in ["NAV", "RAD"]:
-    #             if product.corvet_type == "NAV":
-    #                 comp_ref = instance.corvet.electronique_14x
-    #             else:
-    #                 comp_ref = instance.corvet.electronique_14f
-    #             if comp_ref.isdigit():
-    #                 Multimedia.objects.get_or_create(
-    #                     hw_reference=comp_ref,
-    #                     defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type})
-    #         if product and product.corvet_type in ["EMF", "CMB", "BSI", "CMM", "HDC", "BSM"]:
-    #             comp_ref = None
-    #             if product.corvet_type == "EMF":
-    #                 comp_ref = instance.corvet.electronique_14l
-    #             elif product.corvet_type == "CMB":
-    #                 comp_ref = instance.corvet.electronique_14k
-    #             elif product.corvet_type == "BSI":
-    #                 comp_ref = instance.corvet.electronique_14b
-    #             elif product.corvet_type == "CMM":
-    #                 comp_ref = instance.corvet.electronique_14a
-    #             elif product.corvet_type == "HDC":
-    #                 comp_ref = instance.corvet.electronique_16p
-    #             elif product.corvet_type == "BSM":
-    #                 comp_ref = instance.corvet.electronique_16b
-    #             if comp_ref and comp_ref.isdigit():
-    #                 Ecu.objects.get_or_create(
-    #                     comp_ref=comp_ref,
-    #                     defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type}
-    #                 )
-    # except ProductCategory.DoesNotExist:
-    #     instance.product = None
+        corvet, product = instance.corvet, instance.product
+        if corvet and product:
+            media_dict = {"NAV": corvet.electronique_14x, "RAD": corvet.electronique_14f}
+            ecu_dict = {
+                "EMF": corvet.electronique_14l, "CMB": corvet.electronique_14k, "BSI": corvet.electronique_14b,
+                "CMM": corvet.electronique_14a, "HDC": corvet.electronique_16p, "BSM": corvet.electronique_16b
+            }
+            for corvet_type, comp_ref in media_dict.items():
+                if product.corvet_type == corvet_type and comp_ref and comp_ref.isdigit():
+                    Multimedia.objects.get_or_create(
+                        hw_reference=comp_ref,
+                        defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type})
+                    break
+            for corvet_type, comp_ref in ecu_dict.items():
+                if product.corvet_type == corvet_type and comp_ref and comp_ref.isdigit():
+                    Ecu.objects.get_or_create(
+                        comp_ref=comp_ref,
+                        defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type}
+                    )
+                    break
     except Corvet.DoesNotExist:
         instance.corvet = None

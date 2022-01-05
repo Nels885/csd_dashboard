@@ -237,63 +237,26 @@ class Command(BaseCommand):
         xelons = Xelon.objects.filter(corvet__isnull=False, date_retour__isnull=False).order_by('date_retour')
         self.MAX_SIZE, number = xelons.count(), 0
         for xelon in xelons:
-            product = xelon.product
-            if product and product.corvet_type == "NAV":
-                comp_ref = xelon.corvet.electronique_14x
-                if comp_ref.isdigit():
-                    Multimedia.objects.update_or_create(
-                        hw_reference=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
-            elif product and product.corvet_type == "RAD":
-                comp_ref = xelon.corvet.electronique_14f
-                if comp_ref.isdigit():
-                    Multimedia.objects.update_or_create(
-                        hw_reference=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
-            elif product and product.corvet_type == "EMF":
-                comp_ref = xelon.corvet.electronique_14l
-                if comp_ref.isdigit():
-                    Ecu.objects.update_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
-            elif product and product.corvet_type == "CMB":
-                comp_ref = xelon.corvet.electronique_14k
-                if comp_ref.isdigit():
-                    Ecu.objects.update_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
-            elif product and product.corvet_type == "BSI":
-                comp_ref = xelon.corvet.electronique_14b
-                if comp_ref.isdigit():
-                    Ecu.objects.update_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
-            elif product and product.corvet_type == "CMM":
-                comp_ref = xelon.corvet.electronique_14a
-                if comp_ref.isdigit():
-                    Ecu.objects.update_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
-            elif product and product.corvet_type == "HDC":
-                comp_ref = xelon.corvet.electronique_16p
-                if comp_ref.isdigit():
-                    Ecu.objects.update_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
-            elif product and product.corvet_type == "BSM":
-                comp_ref = xelon.corvet.electronique_16b
-                if comp_ref.isdigit():
-                    Ecu.objects.update_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                    )
+            corvet, product = xelon.corvet, xelon.product
+            if corvet and product:
+                media_dict = {"NAV": corvet.electronique_14x, "RAD": corvet.electronique_14f}
+                ecu_dict = {
+                    "EMF": corvet.electronique_14l, "CMB": corvet.electronique_14k, "BSI": corvet.electronique_14b,
+                    "CMM": corvet.electronique_14a, "HDC": corvet.electronique_16p, "BSM": corvet.electronique_16b
+                }
+                for corvet_type, comp_ref in media_dict.items():
+                    if product.corvet_type == corvet_type and comp_ref and comp_ref.isdigit():
+                        Multimedia.objects.update_or_create(
+                            hw_reference=comp_ref,
+                            defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type})
+                        break
+                for corvet_type, comp_ref in ecu_dict.items():
+                    if product.corvet_type == corvet_type and comp_ref and comp_ref.isdigit():
+                        Ecu.objects.update_or_create(
+                            comp_ref=comp_ref,
+                            defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                        )
+                        break
             if number % 1000 == 1:
                 self._progress_bar(number)
             number += 1
