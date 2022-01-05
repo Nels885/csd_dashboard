@@ -1,7 +1,0 @@
-{% load psa_extras %}
-
-{% with prods=obj.productcode_set %}
-    {% if prods.all %}
-        <i class="{% if prods|part_count < 5 %}text-danger{% else %}text-success{% endif %} fas fa-industry ml-2" title="{{ prods|part_count }} pièce(s) usine"></i>
-    {% endif %}
-{% endwith %}

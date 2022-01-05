@@ -1,7 +1,23 @@
-{% load psa_extras %}
+{% load squalaetp_extras %}
 
 {% with prods=obj.productcode_set %}
-    {% if prods.all %}
-        <i class="{% if prods|part_count < 5 %}text-danger{% else %}text-success{% endif %} fas fa-cog ml-2" title="{{ prods|part_count }} carcasse(s)"></i>
+    {% if prods|part_count != 0 %}
+        {% if prods|part_count < 5 %}
+            <i class="text-danger fas fa-cog ml-2" title="{{ prods|part_count }} carcasse(s)"></i>
+        {% elif prods|part_count < 10 %}
+            <i class="text-warning fas fa-cog ml-2" title="{{ prods|part_count }} carcasse(s)"></i>
+        {% else %}
+            <i class="text-success fas fa-cog ml-2" title="{{ prods|part_count }} carcasse(s)"></i>
+        {% endif %}
+    {% endif %}
+    {% if prods|factory_count != 0 %}
+        {% if prods|factory_count < 5 %}
+            <i class="text-danger fas fa-industry ml-2" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
+        {% elif prods|factory_count < 10 %}
+            <i class="text-warning fas fa-industry ml-2" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
+        {% else %}
+            <i class="text-success fas fa-industry ml-2" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
+        {% endif %}
     {% endif %}
 {% endwith %}
+
