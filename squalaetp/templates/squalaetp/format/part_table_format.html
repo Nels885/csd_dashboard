@@ -1,0 +1,38 @@
+<div class="row">
+    {% if obj.productcode_set.all %}
+
+        <section id="{{ id }}" class="col-sm-12">
+            <table class="table table-bordered table-striped table-sm mt-4">
+
+                <thead class="table-primary">
+                <tr>
+                    <th colspan="5" class="text-primary text-uppercase">
+                        <i class="fas fa-cog mr-2"></i><span>{{ title }}</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th style="width: 40%;">Code Produit</th>
+                    <th style="width: 15%;">Code Zone</th>
+                    <th style="width: 15%;">Code Emplacement</th>
+                    <th style="width: 15%;">Cumul Dispo</th>
+                    <th style="width: 15%;">Code Magasin</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for part in obj.productcode_set.all %}
+                    {% for spare in part.sparepart_set.all %}
+                        <tr>
+                            <td>{{ part.name }}</td>
+                            <td>{{ spare.code_zone }}</td>
+                            <td>{{ spare.code_emplacement }}</td>
+                            <td>{{ spare.cumul_dispo }}</td>
+                            <td>{{ spare.code_magasin }}
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    {% endif %}
+</div>

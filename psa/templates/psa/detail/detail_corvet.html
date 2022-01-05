@@ -39,7 +39,8 @@
                 <td class="text-dark td-ihm">Dossier(s) Xelon</td>
                 <td>
                     {% for xelon in corvet.xelon_set.all %}
-                        <a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a><br>
+                        <a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a>
+                        <br>
                     {% endfor %}
                 </td>
             </tr>
@@ -72,3 +73,5 @@
 
     </section>
 </div>
+
+{% include 'squalaetp/detail/detail_sparepart.html' %}
