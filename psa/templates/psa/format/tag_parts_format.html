@@ -2,22 +2,26 @@
 
 {% with prods=obj.productcode_set %}
     {% if prods|part_count != 0 %}
-        {% if prods|part_count < 5 %}
-            <i class="text-danger fas fa-cog ml-2" title="{{ prods|part_count }} carcasse(s)"></i>
-        {% elif prods|part_count < 10 %}
-            <i class="text-warning fas fa-cog ml-2" title="{{ prods|part_count }} carcasse(s)"></i>
-        {% else %}
-            <i class="text-success fas fa-cog ml-2" title="{{ prods|part_count }} carcasse(s)"></i>
-        {% endif %}
+        <a href="#{{ id }}" class="ml-2">
+            {% if prods|part_count < 5 %}
+                <i class="text-danger fas fa-cog" title="{{ prods|part_count }} carcasse(s)"></i>
+            {% elif prods|part_count < 10 %}
+                <i class="text-warning fas fa-cog" title="{{ prods|part_count }} carcasse(s)"></i>
+            {% else %}
+                <i class="text-success fas fa-cog" title="{{ prods|part_count }} carcasse(s)"></i>
+            {% endif %}
+        </a>
     {% endif %}
     {% if prods|factory_count != 0 %}
-        {% if prods|factory_count < 5 %}
-            <i class="text-danger fas fa-industry ml-2" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
-        {% elif prods|factory_count < 10 %}
-            <i class="text-warning fas fa-industry ml-2" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
-        {% else %}
-            <i class="text-success fas fa-industry ml-2" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
-        {% endif %}
+        <a href="#{{ id }}" class="ml-2">
+            {% if prods|factory_count < 5 %}
+                <i class="text-danger fas fa-industry" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
+            {% elif prods|factory_count < 10 %}
+                <i class="text-warning fas fa-industry" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
+            {% else %}
+                <i class="text-success fas fa-industry" title="{{ prods|factory_count }} pièce(s) neuve(s)"></i>
+            {% endif %}
+        </a>
     {% endif %}
 {% endwith %}
 
