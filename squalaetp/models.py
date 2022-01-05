@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -44,19 +43,6 @@ class Xelon(models.Model):
             ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
             ("active_xelon", "Can active xelon")
         ]
-
-    def save(self, *args, **kwargs):
-        from psa.models import Corvet
-        try:
-            self.corvet = Corvet.objects.get(pk=self.vin)
-            self.vin_error = False
-        except ObjectDoesNotExist:
-            self.corvet = None
-        if self.modele_produit:
-            if not ProductCategory.objects.filter(product_model=self.modele_produit):
-                ProductCategory.objects.create(product_model=self.modele_produit)
-            self.product = ProductCategory.objects.get(product_model=self.modele_produit)
-        super(Xelon, self).save(*args, **kwargs)
 
     @classmethod
     def search(cls, value):

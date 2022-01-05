@@ -20,6 +20,9 @@ def pre_save_xelon(sender, instance, **kwargs):
     try:
         if re.match(r'^[VWZ][FLR0]\w{15}$', str(instance.vin)):
             instance.corvet = Corvet.objects.get(vin=instance.vin)
+            instance.vin_error = False
+        if instance.modele_produit:
+            instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
     #         product = instance.product
     #         if product and product.corvet_type in ["NAV", "RAD"]:
     #             if product.corvet_type == "NAV":
