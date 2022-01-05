@@ -6,21 +6,39 @@
 
         <tbody class="collapse {% if collapse.cmm %}show{% endif %}" id="collapseCmm">
         <tr>
-            <td class="text-dark td-ihm">Référence HW</td>
-            <td>{{ object.hw_reference }}</td>
+            <td class="text-dark td-ihm">Référence Comp. Mat.</td>
+            <td>{{ object.comp_ref }}</td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">Modèle</td>
-            <td>{{ object.technical_data }}</td>
+            <td>{{ object.name|default:"???" }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Modèle Xelon</td>
+            <td>{{ object.xelon_name|default:"???" }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">HW</td>
+            <td>{{ object.hw }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">SW</td>
+            <td>{{ object.sw }}</td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">Fabriquant</td>
             <td>{{ object.supplier_oe }}</td>
         </tr>
         <tr>
-            <td class="text-dark td-ihm">Pièce Xelon</td>
-            <td>{{ object.spare_part }}</td>
+            <td class="text-dark td-ihm">Réference PR</td>
+            <td>{{ object.pr_reference }}</td>
         </tr>
+        {% if object.productcode_set.all %}
+            <tr>
+                <td class="text-dark td-ihm">Pièces Xelon</td>
+                <td>{% for part in object.productcode_set.all %}{{ part.name }}<br>{% endfor %}</td>
+            </tr>
+        {% endif %}
         </tbody>
     </table>
 
