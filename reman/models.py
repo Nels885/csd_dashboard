@@ -92,12 +92,14 @@ class Batch(models.Model):
     box_quantity = models.IntegerField('quantité du carton', default=6,
                                        validators=[MaxValueValidator(6), MinValueValidator(1)])
     batch_number = models.CharField("numéro de lot", max_length=10, blank=True, unique=True)
+    brand = models.CharField("marque", max_length=50, default="PSA")
     active = models.BooleanField(default=True)
     start_date = models.DateField("date de début", null=True)
     end_date = models.DateField("date de fin", null=True)
     created_at = models.DateTimeField(editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
-    ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.CASCADE)
+    ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.SET_NULL, null=True, blank=True)
+    sem_ref_base = models.ForeignKey("volvo.SemRefBase", on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         permissions = [("pdfgen_batch", "Can pdfgen batch")]
