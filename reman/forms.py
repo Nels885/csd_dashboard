@@ -8,6 +8,7 @@ from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from .tasks import cmd_exportreman_task
+from volvo.models import SemRefBase
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
 from utils.django.validators import validate_psa_barcode, validate_identify_number
@@ -20,7 +21,10 @@ MANAGER FORMS
 """
 
 BOX_NUMBER = [(1, 1), (3, 3), (6, 6)]
-BATCH_TYPE = [('REMAN', 'REMAN'), ('ETUDE', 'ETUDE'), ('REPAIR', 'REPAIR')]
+BATCH_TYPE = [
+    ('REMAN_PSA', 'REMAN PSA'), ('ETUDE_PSA', 'ETUDE PSA'), ('REMAN_VOLVO', 'REMAN VOLVO'),
+    ('ETUDE_VOLVO', 'ETUDE VOLVO'), ('REPAIR', 'REPAIR')
+]
 
 
 class BatchForm(BSModalModelForm):
@@ -76,9 +80,14 @@ class AddBatchForm(BSModalModelForm):
         data = self.cleaned_data['number']
         batch_type = self.cleaned_data['type']
         date = timezone.now()
-        if (batch_type == "ETUDE" and data <= 900) or (batch_type == "REMAN" and data >= 900):
+        year = DICT_YEAR.get(date.year)
+        if (batch_type == "ETUDE_PSA" and data <= 900) or (batch_type == "REMAN_PSA" and data >= 900):
             self.add_error('number', _('Unauthorized batch number!'))
-        if Batch.objects.filter(year=DICT_YEAR[date.year], number=data):
+        if batch_type in ["REMAN_VOLVO", "ETUDE_VOLVO"]:
+            year = "V"
+        elif batch_type == "REPAIR":
+            year = "X"
+        if Batch.objects.filter(year=year, number=data):
             self.add_error('number', _('The batch already exists!'))
         return data
 
@@ -91,12 +100,19 @@ class AddBatchForm(BSModalModelForm):
 
     def clean_ref_reman(self):
         data = self.cleaned_data['ref_reman']
+        batch_type = self.cleaned_data['type']
         try:
-            ecu = EcuRefBase.objects.get(reman_reference__exact=data)
-            if not self.errors:
-                batch = super().save(commit=False)
-                batch.ecu_ref_base = ecu
-        except EcuRefBase.DoesNotExist:
+            if "VOLVO" in batch_type:
+                ecu = SemRefBase.objects.get(reman_reference__exact=data)
+                if not self.errors:
+                    batch = super().save(commit=False)
+                    batch.sem_ref_base = ecu
+            else:
+                ecu = EcuRefBase.objects.get(reman_reference__exact=data)
+                if not self.errors:
+                    batch = super().save(commit=False)
+                    batch.ecu_ref_base = ecu
+        except (EcuRefBase.DoesNotExist, SemRefBase.DoesNotExist):
             self.add_error('ref_reman', 'reference non valide')
         return data
 
@@ -107,6 +123,9 @@ class AddBatchForm(BSModalModelForm):
         if commit and not self.request.is_ajax():
             if batch_type == "REPAIR":
                 batch.year = "X"
+            elif batch_type in ["REMAN_VOLVO", "ETUDE_VOLVO"]:
+                batch.year = "V"
+                batch.brand = "VOLVO"
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch

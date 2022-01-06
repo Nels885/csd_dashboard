@@ -168,9 +168,14 @@ def batch_type_ajax(request):
     batch_type = request.GET.get('type', None)
     try:
         batchs = Batch.objects.filter(year=DICT_YEAR.get(date.year)).exclude(number__gte=900)
-        if batch_type == "ETUDE":
+        if batch_type == "ETUDE_PSA":
             data['number'] = 901
             batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
+        if batch_type == "REMAN_VOLVO":
+            batchs = Batch.objects.filter(year="V")
+        if batch_type == "ETUDE_VOLVO":
+            data['number'] = 901
+            batchs = Batch.objects.filter(year="V").exclude(number__lt=900)
         elif batch_type == "REPAIR":
             batchs = Batch.objects.filter(year="X")
         data["number"] = batchs.aggregate(Max('number'))['number__max'] + 1

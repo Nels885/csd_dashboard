@@ -28,7 +28,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
-                'type': 'REMAN',
+                'type': 'REMAN_PSA',
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -51,7 +51,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
-                'type': 'REMAN',
+                'type': 'REMAN_PSA',
                 'number': '900',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -74,7 +74,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
-                'type': 'REMAN',
+                'type': 'REMAN_PSA',
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -101,7 +101,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
-                'type': 'ETUDE',
+                'type': 'ETUDE_PSA',
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -124,7 +124,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
-                'type': 'ETUDE',
+                'type': 'ETUDE_PSA',
                 'number': '901',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -157,6 +157,7 @@ class MixinsTest(UnitTest):
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
+                'brand': 'PSA',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ecu_ref_base': self.refBase.id
@@ -184,6 +185,7 @@ class MixinsTest(UnitTest):
                 'number': '902',
                 'quantity': '20',
                 'box_quantity': '6',
+                'brand': 'PSA',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ecu_ref_base': self.refBase.id
