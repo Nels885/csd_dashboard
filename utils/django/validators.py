@@ -9,6 +9,22 @@ from datetime import datetime
 from squalaetp.models import Xelon
 from psa.models import Corvet
 
+VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137]))\w{14}$'
+# VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
+COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
+
+
+def comp_ref_isvalid(value):
+    if re.match(COMP_REF_REGEX, str(value)):
+        return True
+    return False
+
+
+def vin_psa_isvalid(value):
+    if re.match(VIN_PSA_REGEX, str(value)):
+        return True
+    return False
+
 
 def validate_vin(value):
     """
@@ -18,8 +34,7 @@ def validate_vin(value):
     :return:
         Error message if not valid
     """
-    # if not re.match(r'^VF[37]\w{14}$', str(value)):
-    if not re.match(r'^[VWZ][FLR0]\w{15}$', str(value)):
+    if not vin_psa_isvalid(value):
         return _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles')
     return None
 
@@ -32,7 +47,7 @@ def validate_nac(value):
     :return:
         UIN and Error message if not valid
     """
-    if re.match(r'^[VW][FR0]\w{15}$', str(value)):
+    if vin_psa_isvalid(value):
         try:
             uin = Corvet.objects.get(vin=value).electronique_44x
             if not uin:

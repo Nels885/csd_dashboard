@@ -6,7 +6,7 @@ from ._excel_squalaetp import ExcelSqualaetp
 from squalaetp.models import Xelon, Sivin
 from psa.models import Corvet
 from utils.scraping import ScrapingCorvet, ScrapingSivin
-from utils.django.validators import xml_parser, xml_sivin_parser
+from utils.django.validators import xml_parser, xml_sivin_parser, VIN_PSA_REGEX
 from utils.django.models import defaults_dict
 from utils.conf import XLS_SQUALAETP_FILE
 
@@ -51,7 +51,7 @@ class Command(BaseCommand):
             squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             xelon_list = squalaetp.xelon_number_list()
             xelons = Xelon.objects.filter(
-                numero_de_dossier__in=xelon_list, vin__regex=r'^V((F[37])|(R[137]))\w{14}$',
+                numero_de_dossier__in=xelon_list, vin__regex=VIN_PSA_REGEX,
                 vin_error=False, corvet__isnull=True)
             self.stdout.write(f"[IMPORT_CORVET] Xelon number = {xelons.count()}")
             nb_file = self._import_corvet(xelons)
@@ -63,7 +63,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
         else:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
-            xelons = Xelon.objects.filter(vin__regex=r'^V((F[37])|(R[137]))\w{14}$', vin_error=False).order_by('-id')
+            xelons = Xelon.objects.filter(vin__regex=VIN_PSA_REGEX, vin_error=False).order_by('-id')
             xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__opts__update=True))[:200]
             nb_file = self._import_corvet(xelons, limit=True)
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
