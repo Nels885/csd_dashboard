@@ -9,3 +9,5 @@ class SemRefBase(models.Model):
     asm = models.CharField("ASM", max_length=12, blank=True)
     hw = models.CharField("HW", max_length=12, blank=True)
 
+    def __str__(self):
+        return self.reman_reference
