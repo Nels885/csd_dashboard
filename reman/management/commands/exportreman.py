@@ -53,17 +53,26 @@ class Command(BaseCommand):
                 'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
                 'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
             ]
-            batch = Batch.objects.filter(active=True).order_by('batch_number')
-            values_list = batch.values_list(
+            # Batch for PSA
+            psa_batch = Batch.objects.filter(active=True, ecu_ref_base__isnull=False).order_by('batch_number')
+            values_list = list(psa_batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
                 'active', 'created_by__username', 'created_at'
-            ).distinct()
+            ).distinct())
+
+            # Batch for VOLVO
+            volvo_batch = Batch.objects.filter(active=True, sem_ref_base__isnull=False).order_by('batch_number')
+            values_list += list(volvo_batch.values_list(
+                'batch_number', 'quantity', 'sem_ref_base__reman_reference', 'brand',
+                'sem_ref_base__hw', 'brand', 'start_date', 'end_date',
+                'active', 'created_by__username', 'created_at'
+            ).distinct())
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
-                        batch.count(), os.path.join(path, filename)
+                        psa_batch.count() + volvo_batch.count(), os.path.join(path, filename)
                     )
                 )
             )
