@@ -6,9 +6,9 @@ from .models import Batch, EcuModel, Repair, SparePart, Default, EcuRefBase, Ecu
 
 
 class BatchAdmin(admin.ModelAdmin):
-    list_display = ('batch_number', 'quantity', 'box_quantity', 'created_by', 'created_at', 'active')
+    list_display = ('batch_number', 'brand', 'quantity', 'box_quantity', 'created_by', 'created_at', 'active')
     ordering = ('batch_number',)
-    list_filter = ('active',)
+    list_filter = ('active', 'brand')
     search_fields = ('batch_number',)
 
     def batch_number(self, obj):
