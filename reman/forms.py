@@ -81,12 +81,11 @@ class AddBatchForm(BSModalModelForm):
         batch_type = self.cleaned_data['type']
         date = timezone.now()
         year = DICT_YEAR.get(date.year)
-        if (batch_type == "ETUDE_PSA" and data <= 900) or (batch_type == "REMAN_PSA" and data >= 900):
+        for key, value in [("REPAIR", "X"), ("VOLVO", "V")]:
+            if key in batch_type:
+                year = value
+        if ("ETUDE" in batch_type and data <= 900) or ("REMAN" in batch_type and data >= 900):
             self.add_error('number', _('Unauthorized batch number!'))
-        if batch_type in ["REMAN_VOLVO", "ETUDE_VOLVO"]:
-            year = "V"
-        elif batch_type == "REPAIR":
-            year = "X"
         if Batch.objects.filter(year=year, number=data):
             self.add_error('number', _('The batch already exists!'))
         return data
