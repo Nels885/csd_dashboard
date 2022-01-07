@@ -309,11 +309,6 @@ class Multimedia(models.Model):
         verbose_name = "Données Multimédia"
         ordering = ['hw_reference']
 
-    def save(self, *args, **kwargs):
-        super(Multimedia, self).save(*args, **kwargs)
-        CorvetProduct.objects.filter(corvet__electronique_14x__exact=self.hw_reference).update(btel=self.pk)
-        CorvetProduct.objects.filter(corvet__electronique_14f__exact=self.hw_reference).update(radio=self.pk)
-
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
@@ -390,25 +385,6 @@ class Ecu(models.Model):
     class Meta:
         verbose_name = "Données ECU"
         ordering = ['comp_ref']
-
-    def save(self, *args, **kwargs):
-        super(Ecu, self).save(*args, **kwargs)
-        if self.type == "BSI":
-            CorvetProduct.objects.filter(corvet__electronique_14b__startswith=self.comp_ref).update(bsi=self.pk)
-        if self.type == "BSM":
-            CorvetProduct.objects.filter(corvet__electronique_16b__startswith=self.comp_ref).update(bsm=self.pk)
-        if self.type == "CMB":
-            CorvetProduct.objects.filter(corvet__electronique_14k__startswith=self.comp_ref).update(cmb=self.pk)
-        if self.type == "CMM":
-            CorvetProduct.objects.filter(corvet__electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
-        if self.type == "EMF":
-            CorvetProduct.objects.filter(corvet__electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
-        if self.type == "FMUX":
-            CorvetProduct.objects.filter(corvet__electronique_19z__startswith=self.comp_ref).update(fmux=self.pk)
-        if self.type == "HDC":
-            CorvetProduct.objects.filter(corvet__electronique_16p__startswith=self.comp_ref).update(hdc=self.pk)
-        if self.type == "MDS":
-            CorvetProduct.objects.filter(corvet__electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
 
     def __iter__(self):
         for field in self._meta.fields:
