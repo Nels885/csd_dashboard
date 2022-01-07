@@ -9,6 +9,7 @@ from squalaetp.models import Xelon, ProductCategory, Indicator
 from psa.models import Multimedia, Ecu
 from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
 from utils.django.models import defaults_dict
+from utils.django.validators import comp_ref_isvalid
 from utils.data.analysis import ProductAnalysis
 
 from ._excel_squalaetp import ExcelSqualaetp
@@ -234,33 +235,33 @@ class Command(BaseCommand):
 
     def _xelon_name_update(self):
         self.stdout.write("[ECU & MEDIA] Waiting...")
-        xelons = Xelon.objects.filter(corvet__isnull=False, date_retour__isnull=False).order_by('date_retour')
+        xelons = Xelon.objects.filter(
+            corvet__isnull=False, product__isnull=False, date_retour__isnull=False).order_by('date_retour')
         self.MAX_SIZE, number = xelons.count(), 0
         for xelon in xelons:
             corvet, product = xelon.corvet, xelon.product
             if corvet and product:
-                media_dict = {"NAV": corvet.electronique_14x, "RAD": corvet.electronique_14f}
                 ecu_dict = {
+                    "NAV": corvet.electronique_14x, "RAD": corvet.electronique_14f,
                     "EMF": corvet.electronique_14l, "CMB": corvet.electronique_14k, "BSI": corvet.electronique_14b,
                     "CMM": corvet.electronique_14a, "HDC": corvet.electronique_16p, "BSM": corvet.electronique_16b
                 }
-                for corvet_type, comp_ref in media_dict.items():
-                    if product.corvet_type == corvet_type and comp_ref and comp_ref.isdigit():
-                        Multimedia.objects.update_or_create(
-                            hw_reference=comp_ref,
-                            defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type})
-                        break
                 for corvet_type, comp_ref in ecu_dict.items():
-                    if product.corvet_type == corvet_type and comp_ref and comp_ref.isdigit():
-                        Ecu.objects.update_or_create(
-                            comp_ref=comp_ref,
-                            defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
-                        )
+                    if product.corvet_type == corvet_type and comp_ref_isvalid(comp_ref):
+                        if product.corvet_type in ["NAV", "RAD"]:
+                            obj, created = Multimedia.objects.update_or_create(
+                                hw_reference=comp_ref,
+                                defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type})
+                        else:
+                            obj, created = Ecu.objects.update_or_create(
+                                comp_ref=comp_ref,
+                                defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                            )
                         break
-            if number % 1000 == 1:
+            if number % 100 == 1:
                 self._progress_bar(number)
             number += 1
-        self.stdout.write(self.style.SUCCESS(f"\r\n[ECU & MEDIA] data update completed {self.MAX_SIZE}"))
+        self.stdout.write(self.style.SUCCESS(f"\r\n[ECU & MEDIA] data update completed: NB_UPDATE={self.MAX_SIZE}"))
 
     def _progress_bar(self, current_size, bar_length=80):
         if self.MAX_SIZE is not None:
