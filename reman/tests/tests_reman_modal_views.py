@@ -3,6 +3,7 @@ from django.contrib.messages import get_messages
 from dashboard.tests.base import UnitTest, reverse
 
 from reman.models import EcuModel, Batch, Repair, EcuRefBase, EcuType, Default
+from volvo.models import SemRefBase
 
 
 class MixinsTest(UnitTest):
@@ -11,11 +12,14 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
+        sem_ref_base = SemRefBase.objects.create(reman_reference='1234567890')
         ecu = EcuModel.objects.create(oe_raw_reference='1699999999', psa_barcode='9876543210', ecu_type=ecu_type)
         EcuModel.objects.create(psa_barcode='9876543210azertyuiop', ecu_type=ecu_type)
         self.batch = Batch.objects.create(year="C", number=1, quantity=2, created_by=self.user, ecu_ref_base=ref_base)
+        Batch.objects.create(
+            year="V", number=1, quantity=2, brand="VOLVO", created_by=self.user, sem_ref_base=sem_ref_base)
         self.ecuId = ecu.id
-        self.refBase = ref_base
+        self.psaRefBase = ref_base
 
     def test_create_batch_ajax_mixin(self):
         """
@@ -24,57 +28,58 @@ class MixinsTest(UnitTest):
         self.add_perms_user(Batch, 'add_batch')
         self.login()
 
-        # First post request = ajax request checking if form in view is valid
-        response = self.client.post(
-            reverse('reman:create_batch'),
-            data={
-                'type': 'REMAN_PSA',
-                'number': '2',
-                'quantity': '20',
-                'box_quantity': '6',
-                'start_date': '02/01/1970',
-                'end_date': '01/01/1970',
-                'ref_reman': ''
-            },
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
-        )
+        for reman_type in ['REMAN_PSA', 'REMAN_VOLVO']:
+            # First post request = ajax request checking if form in view is valid
+            response = self.client.post(
+                reverse('reman:create_batch'),
+                data={
+                    'type': reman_type,
+                    'number': '2',
+                    'quantity': '20',
+                    'box_quantity': '6',
+                    'start_date': '02/01/1970',
+                    'end_date': '01/01/1970',
+                    'ref_reman': ''
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
 
-        # Form has errors
-        self.assertTrue(response.context_data['form'].errors)
-        # No redirection
-        self.assertEqual(response.status_code, 200)
-        # Object is not created
-        batchs = Batch.objects.all()
-        self.assertEqual(batchs.count(), 1)
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            self.assertEqual(batchs.count(), 1)
 
-        # Second post request = ajax request checking if form in view is valid
-        response = self.client.post(
-            reverse('reman:create_batch'),
-            data={
-                'type': 'REMAN_PSA',
-                'number': '900',
-                'quantity': '20',
-                'box_quantity': '6',
-                'start_date': '01/01/1970',
-                'end_date': '01/01/1970',
-                'ref_reman': '1234567890'
-            },
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
-        )
+            # Second post request = ajax request checking if form in view is valid
+            response = self.client.post(
+                reverse('reman:create_batch'),
+                data={
+                    'type': reman_type,
+                    'number': '900',
+                    'quantity': '20',
+                    'box_quantity': '6',
+                    'start_date': '01/01/1970',
+                    'end_date': '01/01/1970',
+                    'ref_reman': '1234567890'
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
 
-        # Form has errors
-        self.assertTrue(response.context_data['form'].errors)
-        # No redirection
-        self.assertEqual(response.status_code, 200)
-        # Object is not created
-        batchs = Batch.objects.all()
-        self.assertEqual(batchs.count(), 1)
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            self.assertEqual(batchs.count(), 1)
 
         # Third post request = non-ajax request creating an object
         response = self.client.post(
             reverse('reman:create_batch'),
             data={
-                'type': 'REMAN_PSA',
+                'type': reman_type,
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
@@ -87,7 +92,7 @@ class MixinsTest(UnitTest):
         # redirection
         self.assertEqual(response.status_code, 302)
         # Object is not created
-        batchs = Batch.objects.all()
+        batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
         self.assertEqual(batchs.count(), 2)
 
     def test_create_etude_batch_ajax_mixin(self):
@@ -97,49 +102,50 @@ class MixinsTest(UnitTest):
         self.add_perms_user(Batch, 'add_batch')
         self.login()
 
-        # First post request = ajax request checking if form in view is valid
-        response = self.client.post(
-            reverse('reman:create_batch'),
-            data={
-                'type': 'ETUDE_PSA',
-                'number': '2',
-                'quantity': '20',
-                'box_quantity': '6',
-                'start_date': '01/01/1970',
-                'end_date': '01/01/1970',
-                'ref_reman': '1234567890'
-            },
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
-        )
+        for reman_type in ["ETUDE_PSA"]:
+            # First post request = ajax request checking if form in view is valid
+            response = self.client.post(
+                reverse('reman:create_batch'),
+                data={
+                    'type': reman_type,
+                    'number': '2',
+                    'quantity': '20',
+                    'box_quantity': '6',
+                    'start_date': '01/01/1970',
+                    'end_date': '01/01/1970',
+                    'ref_reman': '1234567890'
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
 
-        # Form has errors
-        self.assertTrue(response.context_data['form'].errors)
-        # No redirection
-        self.assertEqual(response.status_code, 200)
-        # Object is not created
-        batchs = Batch.objects.all()
-        self.assertEqual(batchs.count(), 1)
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            self.assertEqual(batchs.count(), 1)
 
-        # Second post request = non-ajax request creating an object
-        response = self.client.post(
-            reverse('reman:create_batch'),
-            data={
-                'type': 'ETUDE_PSA',
-                'number': '901',
-                'quantity': '20',
-                'box_quantity': '6',
-                'start_date': '01/01/1970',
-                'end_date': '01/01/1970',
-                'ref_reman': '1234567890'
-            },
-        )
+            # Second post request = non-ajax request creating an object
+            response = self.client.post(
+                reverse('reman:create_batch'),
+                data={
+                    'type': reman_type,
+                    'number': '901',
+                    'quantity': '20',
+                    'box_quantity': '6',
+                    'start_date': '01/01/1970',
+                    'end_date': '01/01/1970',
+                    'ref_reman': '1234567890'
+                },
+            )
 
-        # redirection
-        self.assertEqual(response.status_code, 302)
-        # Object is not created
-        batchs = Batch.objects.all()
-        self.assertEqual(batchs.count(), 2)
-        self.assertEqual(batchs.last().number, 901)
+            # redirection
+            self.assertEqual(response.status_code, 302)
+            # Object is not created
+            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            self.assertEqual(batchs.count(), 2)
+            self.assertEqual(batchs.last().number, 901)
 
     def test_update_batch_ajax_mixin(self):
         """
@@ -160,7 +166,7 @@ class MixinsTest(UnitTest):
                 'brand': 'PSA',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_ref_base': self.refBase.id
+                'ecu_ref_base': self.psaRefBase.id
             },
         )
         # redirection
@@ -188,7 +194,7 @@ class MixinsTest(UnitTest):
                 'brand': 'PSA',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_ref_base': self.refBase.id
+                'ecu_ref_base': self.psaRefBase.id
             },
         )
         # redirection
