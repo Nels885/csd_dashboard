@@ -5,7 +5,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import WebDriverException
 from constance import config
 
 logger = logging.getLogger('command')
@@ -20,15 +19,15 @@ class ScrapingCorvet(webdriver.Chrome):
         """ Initialization """
         self.username = username
         self.password = password
-        options = Options()
-        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-            options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-        options.add_argument('-headless')
         try:
-            super(ScrapingCorvet, self).__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
+            options = Options()
+            if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+                options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+            super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
             self.implicitly_wait(10)
+            self.set_page_load_timeout(30)
             self.get(self.START_URLS)
-        except (WebDriverException, Exception) as err:
+        except Exception as err:
             self._logger_error('__init__()', err)
             self.close(error=True)
 
@@ -46,7 +45,6 @@ class ScrapingCorvet(webdriver.Chrome):
                 if vin_value:
                     vin.send_keys(vin_value)
                 submit.click()
-                time.sleep(1)
                 data = WebDriverWait(self, 10).until(
                     EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
                 ).text
