@@ -47,6 +47,7 @@ urlpatterns = [
     path('ford/', include('ford.urls')),
     path('renault/', include('renault.urls')),
     path('vag/', include('vag.urls')),
+    path('volvo/', include('volvo.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
