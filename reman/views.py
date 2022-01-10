@@ -529,19 +529,19 @@ def part_table(request):
 @permission_required('reman.view_ecurefbase')
 def base_ref_table(request):
     """ View of EcuRefBase table page """
+    title = "Reman PSA"
     table_title = 'REMAN Référence'
     refs = EcuRefBase.objects.all()
-    context.update(locals())
-    return render(request, 'reman/base_ref_table.html', context)
+    return render(request, 'reman/base_ref_table.html', locals())
 
 
 @login_required()
 def ecu_hw_table(request):
     """ View of EcuType table page """
+    title = "Reman PSA"
     table_title = 'Référence Hardware'
     ecus = EcuType.objects.all()
-    context.update(locals())
-    return render(request, 'reman/ecu_hw_table.html', context)
+    return render(request, 'reman/ecu_hw_table.html', locals())
 
 
 @login_required
