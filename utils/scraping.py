@@ -28,7 +28,7 @@ class ScrapingCorvet(webdriver.Chrome):
             super(ScrapingCorvet, self).__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
             self.implicitly_wait(10)
             self.get(self.START_URLS)
-        except WebDriverException as err:
+        except (WebDriverException, Exception) as err:
             self._logger_error('__init__()', err)
             self.close(error=True)
 
@@ -99,7 +99,7 @@ class ScrapingCorvet(webdriver.Chrome):
         try:
             if not self.ERROR:
                 self.quit()
-        except AttributeError as err:
+        except Exception as err:
             self._logger_error('close()', err)
 
     @staticmethod
