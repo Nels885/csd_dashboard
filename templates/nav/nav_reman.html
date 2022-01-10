@@ -68,14 +68,19 @@
             <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
+                    <h6 class="collapse-header">P.S.A. :</h6>
                     <a class="collapse-item" href="{% url 'reman:base_ref_table' %}">{% trans "REMAN References" %}</a>
                     <a class="collapse-item" href="{% url 'reman:ecu_hw_table' %}">{% trans "HW References" %}</a>
-                    <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
 
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">{% trans "Etude" %} :</h6>
-                    <a class="collapse-item" href="{% url 'reman:ecu_dump_table' %}">{% trans "ECU to Dump" %}</a>
+                    <h6 class="collapse-header">VOLVO :</h6>
+                    <a class="collapse-item" href="{% url 'volvo:reman_ref_table' %}">{% trans "REMAN References" %}</a>
+                    <a class="collapse-item" href="#">{% trans "HW References" %}</a>
+
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans 'Common' %} :</h6>
+                    <a class="collapse-item" href="{% url 'reman:default_table' %}">{% trans "Default list" %}</a>
                 </div>
             </div>
         </li>

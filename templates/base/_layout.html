@@ -86,6 +86,8 @@
 
         $(".create-ref-reman").modalForm({formURL: "{% url 'reman:ref_reman_create' %}", modalID: "#create-large-modal"});
 
+        $(".create-volvo-reman").modalForm({formURL: "{% url 'volvo:reman_ref_create' %}", modalID: "#create-modal"});
+
         $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}"});
 
         $(".create-tag-xelon").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
