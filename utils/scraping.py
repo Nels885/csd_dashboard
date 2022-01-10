@@ -23,6 +23,9 @@ class ScrapingCorvet(webdriver.Chrome):
             options = Options()
             if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
                 options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+            options.add_argument('-headless')
+            options.add_argument("--no-sandbox")  # bypass OS security model
+            options.add_argument("--disable-dev-shm-usage")  # overcome limited resource problems
             super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
             self.implicitly_wait(10)
             self.set_page_load_timeout(30)
