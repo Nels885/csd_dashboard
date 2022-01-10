@@ -44,10 +44,12 @@ class ScrapingCorvet(webdriver.Chrome):
             try:
                 vin = self.find_element_by_name('form:input_vin')
                 submit = self.find_element_by_id('form:suite')
+                self.find_element_by_id('form:resultat_CORVET').clear()
                 vin.clear()
                 if vin_value:
                     vin.send_keys(vin_value)
                 submit.click()
+                time.sleep(1)
                 data = WebDriverWait(self, 10).until(
                     EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
                 ).text
