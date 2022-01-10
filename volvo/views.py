@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.translation import ugettext as _
 
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
-from utils.django.urls import reverse, reverse_lazy, http_referer
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
+from utils.django.urls import reverse_lazy
 
 from .models import SemRefBase
 from .forms import RemanForm, UpdateRemanForm
