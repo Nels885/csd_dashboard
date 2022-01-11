@@ -42,10 +42,9 @@ class ScrapingCorvet(webdriver.Chrome):
         """
         if not self.ERROR and self.login():
             try:
+                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
                 vin = self.find_element_by_name('form:input_vin')
                 submit = self.find_element_by_id('form:suite')
-                self.find_element_by_id('form:resultat_CORVET').clear()
-                vin.clear()
                 if vin_value:
                     vin.send_keys(vin_value)
                 submit.click()
@@ -69,6 +68,7 @@ class ScrapingCorvet(webdriver.Chrome):
         Login on the web site
         """
         try:
+            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:identifiant2')))
             username = self.find_element_by_name('form:identifiant2')
             password = self.find_element_by_name('form:password2')
             login = self.find_element_by_id('form:login2')
@@ -76,7 +76,6 @@ class ScrapingCorvet(webdriver.Chrome):
                 element.clear()
                 element.send_keys(value)
             login.click()
-            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin')))
         except Exception as err:
             self._logger_error('login()', err)
             self.close(error=True)
@@ -89,8 +88,7 @@ class ScrapingCorvet(webdriver.Chrome):
         :return:
         """
         try:
-            logout = self.find_element_by_id('form:deconnect2')
-            logout.click()
+            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'form:deconnect2'))).click()
         except Exception as err:
             self._logger_error('logout()', err)
             self.quit()
@@ -124,7 +122,7 @@ class ScrapingSivin(ScrapingCorvet):
         if not self.ERROR and self.login():
             try:
                 self.get(self.SIVIN_URLS)
-                vin = self.find_element_by_name('form:input_immat')
+                vin = self.find_element_by_id('form:input_immat')
                 submit = self.find_element_by_id('form:suite')
                 vin.clear()
                 if immat_value:
@@ -132,7 +130,7 @@ class ScrapingSivin(ScrapingCorvet):
                 submit.click()
                 time.sleep(1)
                 data = WebDriverWait(self, 10).until(
-                    EC.presence_of_element_located((By.NAME, 'form:resultat_SIVIN'))
+                    EC.presence_of_element_located((By.ID, 'form:resultat_SIVIN'))
                 ).text
                 if data and len(data) == 0:
                     data = "ERREUR COMMUNICATION SYSTEME SIVIN"
