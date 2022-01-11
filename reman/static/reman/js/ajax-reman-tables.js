@@ -23,6 +23,7 @@ $(document).ready(function () {
             },
             {data: "identify_number"},
             {data: "batch"},
+            {data: "brand"},
             {data: "technical_data"},
             {data: "supplier_oe"},
             {data: "hw_reference"},
