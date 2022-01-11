@@ -122,15 +122,15 @@ class ScrapingSivin(ScrapingCorvet):
         if not self.ERROR and self.login():
             try:
                 self.get(self.SIVIN_URLS)
-                vin = self.find_element_by_id('form:input_immat')
+                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_immat'))).clear()
+                immat = self.find_element_by_name('form:input_immat')
                 submit = self.find_element_by_id('form:suite')
-                vin.clear()
                 if immat_value:
-                    vin.send_keys(immat_value)
+                    immat.send_keys(immat_value)
                 submit.click()
                 time.sleep(1)
                 data = WebDriverWait(self, 10).until(
-                    EC.presence_of_element_located((By.ID, 'form:resultat_SIVIN'))
+                    EC.presence_of_element_located((By.NAME, 'form:resultat_SIVIN'))
                 ).text
                 if data and len(data) == 0:
                     data = "ERREUR COMMUNICATION SYSTEME SIVIN"
