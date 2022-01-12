@@ -2,12 +2,40 @@
 
 {% load static i18n %}
 
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            <li class="nav-item active">
+                <a class="nav-link active" href="{% url 'reman:base_ref_table' %}">Réf. REMAN ECU</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'reman:ecu_hw_table' %}">Réf. HW ECU</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'volvo:reman_ref_table' %}">Réf. REMAN SEM</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">Réf. HW SEM</a>
+            </li>
+
+        </ul>
+    </div>
+
+{% endblock %}
+
 {% block table_content %}
 
-    <button class="create-ref-reman btn btn-sm btn-primary mb-3" {% if not perms.reman.add_ecurefbase %}disabled{% endif %}>
+    <button class="create-ref-reman btn btn-sm btn-primary mb-3"
+            {% if not perms.reman.add_ecurefbase %}disabled{% endif %}>
         <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. REMAN
     </button>
-    <button class="create-ecu-hw btn btn-sm btn-primary mb-3 ml-3" {% if not perms.reman.add_ecutype %}disabled{% endif %}>
+    <button class="create-ecu-hw btn btn-sm btn-primary mb-3 ml-3"
+            {% if not perms.reman.add_ecutype %}disabled{% endif %}>
         <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. HW
     </button>
     <a class="btn btn-sm btn-success mb-3 ml-3" href="{% url 'reman:ecu_hw_generate' %}">Générer Scan IN/OUT</a>
@@ -43,14 +71,16 @@
             <tr>
                 <td class="bg-white text-nowrap" style="width: 60px;">
                     {% if perms.reman.change_ecurefbase %}
-                        <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'reman:ref_reman_update' ref.pk %}">
+                        <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm"
+                                data-form-url="{% url 'reman:ref_reman_update' ref.pk %}">
                             <i class="fas fa-edit"></i>
                         </button>
                     {% else %}
                         <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                     {% endif %}
                     {% if perms.reman.add_ecurefbase %}
-                        <button title="Copie" class="bs-large-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'reman:ref_reman_create' %}?ref={{ ref.reman_reference }}">
+                        <button title="Copie" class="bs-large-modal btn btn-primary btn-circle btn-sm"
+                                data-form-url="{% url 'reman:ref_reman_create' %}?ref={{ ref.reman_reference }}">
                             <i class="fas fa-copy"></i>
                         </button>
                     {% else %}
