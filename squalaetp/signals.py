@@ -1,10 +1,10 @@
 import re
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from .models import Sivin, Xelon, ProductCategory
 from psa.models import Corvet, Ecu, Multimedia
-from utils.django.validators import comp_ref_isvalid
+from utils.django.validators import comp_ref_isvalid, VIN_PSA_REGEX
 
 
 def product_update(instance):
@@ -35,7 +35,7 @@ def product_update(instance):
 @receiver(pre_save, sender=Sivin)
 def pre_save_sivin(sender, instance, **kwargs):
     try:
-        if re.match(r'^[VWZ][FLR0]\w{15}$', str(instance.codif_vin)):
+        if not instance.corvet and re.match(VIN_PSA_REGEX, str(instance.codif_vin)):
             instance.corvet = Corvet.objects.get(vin=instance.codif_vin)
     except Corvet.DoesNotExist as err:
         print(f"DoesNotExist: {instance} => {err}")
@@ -44,11 +44,16 @@ def pre_save_sivin(sender, instance, **kwargs):
 @receiver(pre_save, sender=Xelon)
 def pre_save_xelon(sender, instance, **kwargs):
     try:
-        if re.match(r'^[VWZ][FLR0]\w{15}$', str(instance.vin)):
+        if re.match(VIN_PSA_REGEX, str(instance.vin)):
             instance.corvet = Corvet.objects.get(vin=instance.vin)
             instance.vin_error = False
         if instance.modele_produit:
             instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
-        product_update(instance)
     except Corvet.DoesNotExist:
         instance.corvet = None
+
+
+@receiver(post_save, sender=Xelon)
+def post_save_xelon(sender, created, instance, **kwargs):
+    if created:
+        product_update(instance)

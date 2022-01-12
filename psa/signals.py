@@ -24,7 +24,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
     if instance.electronique_16p.isdigit():
         default.update({"hdc": Ecu.objects.filter(comp_ref__startswith=instance.electronique_16p, type='HDC').first()})
     CorvetProduct.objects.update_or_create(corvet=instance, defaults=default)
-    CorvetOption.objects.update_or_create(corvet=instance)
+    if created:
+        CorvetOption.objects.get_or_create(corvet=instance)
 
 
 @receiver(post_save, sender=Multimedia)
