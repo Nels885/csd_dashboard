@@ -37,8 +37,8 @@ def pre_save_sivin(sender, instance, **kwargs):
     try:
         if not instance.corvet and re.match(VIN_PSA_REGEX, str(instance.codif_vin)):
             instance.corvet = Corvet.objects.get(vin=instance.codif_vin)
-    except Corvet.DoesNotExist as err:
-        print(f"DoesNotExist: {instance} => {err}")
+    except Corvet.DoesNotExist:
+        instance.corvet = None
 
 
 @receiver(pre_save, sender=Xelon)
