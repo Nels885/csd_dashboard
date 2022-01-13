@@ -1,5 +1,5 @@
 import re
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from .models import Sivin, Xelon, ProductCategory
@@ -47,13 +47,9 @@ def pre_save_xelon(sender, instance, **kwargs):
         if re.match(VIN_PSA_REGEX, str(instance.vin)):
             instance.corvet = Corvet.objects.get(vin=instance.vin)
             instance.vin_error = False
-        if instance.modele_produit:
-            instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
     except Corvet.DoesNotExist:
         instance.corvet = None
-
-
-@receiver(post_save, sender=Xelon)
-def post_save_xelon(sender, created, instance, **kwargs):
-    if created:
-        product_update(instance)
+    finally:
+        if instance.modele_produit:
+            instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
+            product_update(instance)
