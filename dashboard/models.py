@@ -5,7 +5,7 @@ from crum import get_current_user
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
 
     def __str__(self):
@@ -13,7 +13,7 @@ class UserProfile(models.Model):
 
 
 class ShowCollapse(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     general = models.BooleanField('informations générales', default=False)
     motor = models.BooleanField('alimentation moteur', default=False)
     axle = models.BooleanField('suspension direction freinage', default=False)
@@ -33,12 +33,12 @@ class Post(models.Model):
     title = models.CharField('titre', max_length=100)
     overview = RichTextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         user = get_current_user()
         if user and user.pk:
-            self.author = UserProfile.objects.get(user=user)
+            self.author = user
         super(Post, self).save(*args, **kwargs)
 
     def __str__(self):

@@ -11,8 +11,7 @@ class DashboardCommandTestCase(UnitTest):
     def setUp(self):
         super(type(self), self).setUp()
         Group.objects.create(name='Test')
-        author = UserProfile.objects.first()
-        Post.objects.create(title='Test', overview='test', author=author)
+        Post.objects.create(title='Test', overview='test', author=self.user)
         WebLink.objects.create(title='Test', url='https://test.com', type='PSA', description='test')
         self.out = StringIO()
 
