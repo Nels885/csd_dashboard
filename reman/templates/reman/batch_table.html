@@ -22,7 +22,7 @@
             <th></th>
             <th>Numéro de lot</th>
             <th>Réf. REMAN</th>
-            <th>Marque</th>
+            <th>Client</th>
             <th>Type ECU</th>
             <th>Réparés</th>
             <th>Rebuts</th>
@@ -72,7 +72,7 @@
                     </td>
                     <td>{{ batch }}</td>
                     <td>{{ batch.ecu_ref_base.reman_reference }}</td>
-                    <td>{{ batch.brand }}</td>
+                    <td>{{ batch.customer }}</td>
                     <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
                     <td>{{ batch.repaired }}</td>
                     <td>{{ batch.rebutted }}</td>

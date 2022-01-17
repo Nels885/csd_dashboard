@@ -152,9 +152,9 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
 
     def form_valid(self, form):
         batch_type = form.cleaned_data['type']
-        if batch_type == "ETUDE":
+        if "ETUDE" in batch_type:
             filter = 'etude'
-        elif batch_type == "REPAIR":
+        elif "REPAIR" in batch_type:
             filter = 'workshop'
         else:
             filter = 'pending'
