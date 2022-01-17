@@ -332,20 +332,24 @@ class CheckOutSelectBatchForm(BSModalForm):
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         self.batch = Batch.objects.all().annotate(repaired=repaired, packed=packed)
 
-    def clean_batch(self):
-        data = self.cleaned_data["batch"]
-        batchs = self.batch.filter(batch_number=data)
-        if not batchs:
-            self.add_error("batch", "Pas de lot associé")
-        elif len(batchs) > 1:
-            self.add_error("batch", "Il y a plusieurs lots associés")
-        # else:
-        #     batch = batchs.first()
-        #     if batch.repaired != batch.quantity:
-        #         self.add_error(
-        #             "batch", "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
-        #         )
-        return data
+    def clean(self):
+        cleaned_data = super().clean()
+        data = cleaned_data.get("batch")
+        if data:
+            try:
+                batch = self.batch.get(batch_number__startswith=data)
+                if batch.number >= 900:
+                    raise forms.ValidationError("Erreur, il s'agit d'un lot d'Etude")
+                elif batch.year == "X":
+                    raise forms.ValidationError("Erreur, il s'agit d'un lot pour le stock")
+                # elif batch.repaired != batch.quantity:
+                #     raise forms.ValidationError(
+                #         "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
+                #     )
+            except Batch.DoesNotExist:
+                raise forms.ValidationError("Pas de lot associé")
+            except Batch.MultipleObjectsReturned:
+                raise forms.ValidationError("Il y a plusieurs lots associés")
 
 
 class CheckOutRepairForm(forms.Form):
