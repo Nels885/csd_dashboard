@@ -4,7 +4,7 @@ from reman.models import Batch, EcuModel, Repair, EcuRefBase
 
 REPAIR_COLUMN_LIST = [
     'identify_number', 'batch__batch_number', 'batch__customer', 'batch__ecu_ref_base__ecu_type__technical_data',
-    'batch__ecu_ref_base__ecu_type__supplier_oe', 'batch__ecu_ref_base__ecu_type__hw_reference', 'psa_barcode',
+    'batch__ecu_ref_base__ecu_type__supplier_oe', 'batch__ecu_ref_base__ecu_type__hw_reference', 'barcode',
     'status', 'quality_control', 'closing_date', 'modified_by__username', 'modified_at', 'created_by__username',
     'created_at'
 ]
