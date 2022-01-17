@@ -17,7 +17,7 @@ class MixinsTest(UnitTest):
         EcuModel.objects.create(psa_barcode='9876543210azertyuiop', ecu_type=ecu_type)
         self.batch = Batch.objects.create(year="C", number=1, quantity=2, created_by=self.user, ecu_ref_base=ref_base)
         Batch.objects.create(
-            year="V", number=1, quantity=2, brand="VOLVO", created_by=self.user, sem_ref_base=sem_ref_base)
+            year="V", number=1, quantity=2, customer="VOLVO", created_by=self.user, sem_ref_base=sem_ref_base)
         self.ecuId = ecu.id
         self.psaRefBase = ref_base
 
@@ -49,7 +49,7 @@ class MixinsTest(UnitTest):
             # No redirection
             self.assertEqual(response.status_code, 200)
             # Object is not created
-            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            batchs = Batch.objects.filter(customer=reman_type.split('_')[-1])
             self.assertEqual(batchs.count(), 1)
 
             # Second post request = ajax request checking if form in view is valid
@@ -72,28 +72,28 @@ class MixinsTest(UnitTest):
             # No redirection
             self.assertEqual(response.status_code, 200)
             # Object is not created
-            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            batchs = Batch.objects.filter(customer=reman_type.split('_')[-1])
             self.assertEqual(batchs.count(), 1)
 
-        # Third post request = non-ajax request creating an object
-        response = self.client.post(
-            reverse('reman:create_batch'),
-            data={
-                'type': reman_type,
-                'number': '2',
-                'quantity': '20',
-                'box_quantity': '6',
-                'start_date': '01/01/1970',
-                'end_date': '01/01/1970',
-                'ref_reman': '1234567890'
-            },
-        )
+            # Third post request = non-ajax request creating an object
+            response = self.client.post(
+                reverse('reman:create_batch'),
+                data={
+                    'type': reman_type,
+                    'number': '2',
+                    'quantity': '20',
+                    'box_quantity': '6',
+                    'start_date': '01/01/1970',
+                    'end_date': '01/01/1970',
+                    'ref_reman': '1234567890'
+                },
+            )
 
-        # redirection
-        self.assertEqual(response.status_code, 302)
-        # Object is not created
-        batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
-        self.assertEqual(batchs.count(), 2)
+            # redirection
+            self.assertEqual(response.status_code, 302)
+            # Object is not created
+            batchs = Batch.objects.filter(customer=reman_type.split('_')[-1])
+            self.assertEqual(batchs.count(), 2)
 
     def test_create_etude_batch_ajax_mixin(self):
         """
@@ -123,7 +123,7 @@ class MixinsTest(UnitTest):
             # No redirection
             self.assertEqual(response.status_code, 200)
             # Object is not created
-            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            batchs = Batch.objects.filter(customer=reman_type.split('_')[-1])
             self.assertEqual(batchs.count(), 1)
 
             # Second post request = non-ajax request creating an object
@@ -143,7 +143,7 @@ class MixinsTest(UnitTest):
             # redirection
             self.assertEqual(response.status_code, 302)
             # Object is not created
-            batchs = Batch.objects.filter(brand=reman_type.split('_')[-1])
+            batchs = Batch.objects.filter(customer=reman_type.split('_')[-1])
             self.assertEqual(batchs.count(), 2)
             self.assertEqual(batchs.last().number, 901)
 
@@ -163,7 +163,7 @@ class MixinsTest(UnitTest):
                 'number': '2',
                 'quantity': '20',
                 'box_quantity': '6',
-                'brand': 'PSA',
+                'customer': 'PSA',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ecu_ref_base': self.psaRefBase.id
@@ -191,7 +191,7 @@ class MixinsTest(UnitTest):
                 'number': '902',
                 'quantity': '20',
                 'box_quantity': '6',
-                'brand': 'PSA',
+                'customer': 'PSA',
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
                 'ecu_ref_base': self.psaRefBase.id
@@ -227,7 +227,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:create_repair'),
             data={
-                'psa_barcode': '',
+                'barcode': '',
                 'identify_number': '',
                 'remark': 'test',
             },
@@ -247,7 +247,7 @@ class MixinsTest(UnitTest):
             response = self.client.post(
                 reverse('reman:create_repair'),
                 data={
-                    'psa_barcode': barcode,
+                    'barcode': barcode,
                     'identify_number': identify_nb,
                     'remark': 'test',
                 },
@@ -278,7 +278,7 @@ class MixinsTest(UnitTest):
         self.assertEqual(response.status_code, 200)
 
         # Second search request = non-ajax request creating an object
-        Repair.objects.create(identify_number='C001002001', psa_barcode='9876543210', status='Réparé',
+        Repair.objects.create(identify_number='C001002001', barcode='9876543210', status='Réparé',
                               quality_control=True, created_by=self.user, batch=self.batch)
         response = self.client.post(
             reverse('reman:out_filter'),
