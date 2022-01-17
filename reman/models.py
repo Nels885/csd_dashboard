@@ -92,7 +92,7 @@ class Batch(models.Model):
     box_quantity = models.IntegerField('quantité du carton', default=6,
                                        validators=[MaxValueValidator(6), MinValueValidator(1)])
     batch_number = models.CharField("numéro de lot", max_length=10, blank=True, unique=True)
-    brand = models.CharField("marque", max_length=50, default="PSA")
+    customer = models.CharField("client", max_length=50, default="PSA")
     active = models.BooleanField(default=True)
     start_date = models.DateField("date de début", null=True)
     end_date = models.DateField("date de fin", null=True)
@@ -128,7 +128,8 @@ class Default(models.Model):
 class Repair(models.Model):
 
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
-    psa_barcode = models.CharField("code barre PSA", max_length=20, blank=True)
+    barcode = models.CharField("code barre PSA", max_length=20, blank=True)
+    new_barcode = models.CharField("nouveau code barre", max_length=100, blank=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=200, blank=True)
     comment = RichTextField("Commentaires action", max_length=500, config_name="comment", blank=True)

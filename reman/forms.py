@@ -124,7 +124,7 @@ class AddBatchForm(BSModalModelForm):
                 batch.year = "X"
             elif batch_type in ["REMAN_VOLVO", "ETUDE_VOLVO"]:
                 batch.year = "V"
-                batch.brand = "VOLVO"
+                batch.customer = "VOLVO"
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
@@ -201,12 +201,12 @@ TECHNICIAN FORMS
 
 
 class AddRepairForm(BSModalModelForm):
-    psa_barcode = forms.CharField(label='Code barre PSA', max_length=60,
-                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
+    barcode = forms.CharField(label='Code barre', max_length=100,
+                              widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'psa_barcode', 'remark']
+        fields = ['identify_number', 'barcode', 'remark']
         widgets = {
             'identify_number': forms.TextInput(
                 attrs={'class': 'form-control', 'style': 'width: 50%;', 'autofocus': ''}),
@@ -224,18 +224,18 @@ class AddRepairForm(BSModalModelForm):
             self.add_error('identify_number', message)
         return data
 
-    def clean_psa_barcode(self):
-        data = self.cleaned_data["psa_barcode"]
+    def clean_barcode(self):
+        data = self.cleaned_data["barcode"]
         data, message = validate_psa_barcode(data)
         if message or not self.queryset.filter(ecu_ref_base__ecu_type__ecumodel__psa_barcode=data):
-            self.add_error('psa_barcode', _('PSA barcode is invalid'))
+            self.add_error('barcode', _('barcode is invalid'))
         return data
 
     def clean(self):
         cleaned_data = super().clean()
         identify_number = cleaned_data.get("identify_number")
-        psa_barcode = cleaned_data.get("psa_barcode")
-        if psa_barcode and identify_number:
+        barcode = cleaned_data.get("barcode")
+        if barcode and identify_number:
             if not self.queryset:
                 raise forms.ValidationError("Pas de lot associé")
             elif not self.queryset.first().active:
