@@ -50,7 +50,7 @@ class Command(BaseCommand):
             filename = conf.BATCH_EXPORT_FILE
 
             header = [
-                'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
+                'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Client', 'Date_de_Debut',
                 'Date_de_fin', 'Actif', 'Marque', 'Ajoute par', 'Ajoute le'
             ]
             # Batch for PSA
@@ -58,15 +58,15 @@ class Command(BaseCommand):
             values_list = list(psa_batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
-                'active', 'brand', 'created_by__username', 'created_at'
+                'active', 'customer', 'created_by__username', 'created_at'
             ).distinct())
 
             # Batch for VOLVO
             volvo_batch = Batch.objects.filter(active=True, sem_ref_base__isnull=False).order_by('batch_number')
             values_list += list(volvo_batch.values_list(
-                'batch_number', 'quantity', 'sem_ref_base__reman_reference', 'brand',
-                'sem_ref_base__hw', 'brand', 'start_date', 'end_date',
-                'active', 'brand', 'created_by__username', 'created_at'
+                'batch_number', 'quantity', 'sem_ref_base__reman_reference', 'customer',
+                'sem_ref_base__hw', 'customer', 'start_date', 'end_date',
+                'active', 'customer', 'created_by__username', 'created_at'
             ).distinct())
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
             self.stdout.write(
@@ -80,9 +80,9 @@ class Command(BaseCommand):
             self.stdout.write("[REPAIR] Waiting...")
 
             filename = conf.REPAIR_EXPORT_FILE
-            header = ['Numero_Identification', 'Code_Barre_PSA', 'Status', 'Controle_Qualite']
+            header = ['Numero_Identification', 'Code_Barre', 'Status', 'Controle_Qualite']
             repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
-            values_list = repairs.values_list('identify_number', 'psa_barcode', 'status', 'quality_control').distinct()
+            values_list = repairs.values_list('identify_number', 'barcode', 'status', 'quality_control').distinct()
             # values_list = self._repair_list_generate(values_list)
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
