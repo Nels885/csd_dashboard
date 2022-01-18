@@ -60,7 +60,7 @@ class ExcelDelayAnalysis(ExcelFormat):
             data = [self._key_formatting(dict(self.sheet.loc[line].fillna(''))) for line in range(self.nrows)]
             for row in data:
                 for key, value in dict(row).items():
-                    if key in self.COLS_DATE and not value:
+                    if key in self.COLS_DATE or not value:
                         del row[key]
                 data1.append(row)
         return data1

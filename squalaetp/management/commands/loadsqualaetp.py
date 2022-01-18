@@ -1,7 +1,5 @@
 import logging
 from django.core.management.base import BaseCommand
-from django.core.exceptions import FieldDoesNotExist, ValidationError
-from django.db.utils import IntegrityError, DataError
 from django.db.models import Q
 from django.utils import timezone
 
@@ -121,10 +119,8 @@ class Command(BaseCommand):
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                     if not created:
                         nb_prod_update += 1
-                except IntegrityError as err:
-                    logger.error(f"[XELON_CMD] IntegrityError: {xelon_number} -{err}")
-                except DataError as err:
-                    logger.error(f"[XELON_CMD] DataError: {xelon_number} - {err}")
+                except Exception as err:
+                    logger.error(f"[XELON_CMD] {xelon_number} - {err}")
             model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
             nb_prod_after = model.objects.count()
             self.stdout.write(
@@ -158,18 +154,10 @@ class Command(BaseCommand):
                     if product_model and not obj.modele_produit:
                         obj.modele_produit = product_model
                         obj.save()
-                except IntegrityError as err:
-                    logger.error(f"[DELAY_CMD] IntegrityError row {xelon_number} : {err}")
-                except DataError as err:
-                    logger.error(f"[DELAY_CMD] DataError row {xelon_number} : {err}")
-                except FieldDoesNotExist as err:
-                    logger.error(f"[DELAY_CMD] FieldDoesNotExist row {xelon_number} : {err}")
-                except KeyError as err:
-                    logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
-                except ValidationError as err:
-                    logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
                 except ValueError:
                     value_error_list.append(xelon_number)
+                except Exception as err:
+                    logger.error(f"[DELAY_CMD] {xelon_number} - {err}")
             if value_error_list:
                 logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
 
