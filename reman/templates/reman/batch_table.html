@@ -34,7 +34,7 @@
             <th>Quantité</th>
             <th>Nb / carton</th>
             <th>Réf. Hardware</th>
-            <th>Codes barre PSA</th>
+            <th>Codes barre</th>
             <th>Fabriquant</th>
             <th>XELON - Code produit</th>
             <th>XELON - Emplacement</th>
@@ -45,64 +45,11 @@
         <tbody>
 
         {% for batch in batchs %}
-            {% with ecus=batch.ecu_ref_base.ecu_type.ecumodel_set.all %}
-
-                <tr>
-                    <td class="text-nowrap">
-                        {% if perms.reman.pdfgen_batch %}
-                            <a href="{% url 'reman:batch_pdf' batch.pk %}"
-                               class="bs-modal btn btn-primary btn-circle btn-sm" target="_blank"
-                               title="Impression lot">
-                                <i class="fas fa-print"></i></a>
-                        {% endif %}
-                        {% if perms.reman.change_batch %}
-                            <button data-form-url="{% url 'reman:update_batch' batch.pk %}"
-                                    class="bs-modal btn btn-success btn-circle btn-sm" title="Modification dossier">
-                                <i class="fas fa-edit"></i></button>
-                        {% endif %}
-                        {% if perms.reman.delete_batch %}
-                            {% if not batch.total %}
-                                <button data-form-url="{% url 'reman:delete_batch' batch.pk %}"
-                                        class="bs-modal btn btn-danger btn-circle btn-sm" title="Suppression">
-                                    <i class="fas fa-trash-alt"></i></button>
-                            {% else %}
-                                <i class="btn btn-dark btn-circle btn-sm fas fa-trash-alt"></i>
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                    <td>{{ batch }}</td>
-                    <td>{{ batch.ecu_ref_base.reman_reference }}</td>
-                    <td>{{ batch.customer }}</td>
-                    <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
-                    <td>{{ batch.repaired }}</td>
-                    <td>{{ batch.rebutted }}</td>
-                    <td>{{ batch.packed }}</td>
-                    <td>{{ batch.total }}</td>
-                    <td>{% if batch.active %}En cours{% else %}Terminé{% endif %}</td>
-                    <td>{{ batch.start_date }}</td>
-                    <td>{{ batch.end_date }}</td>
-                    <td>{{ batch.quantity }}</td>
-                    <td>{{ batch.box_quantity }}</td>
-                    <td>{{ batch.ecu_ref_base.ecu_type.hw_reference }}</td>
-                    <td>
-                        {% if ecus|length > 1 %}
-                            <a data-toggle="collapse" href="#{{ batch }}" role="button" aria-expanded="false">
-                                Afficher
-                            </a>
-                            <div class="collapse mt-2" id="{{ batch }}">
-                                {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
-                            </div>
-                        {% else %}
-                            {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
-                        {% endif %}
-                    </td>
-                    <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
-                    <td>{{ batch.ecu_ref_base.ecu_type.spare_part.code_produit }}</td>
-                    <td>{{ batch.ecu_ref_base.ecu_type.spare_part.code_emplacement }}</td>
-                    <td>{{ batch.created_by }}</td>
-                    <td>{{ batch.created_at }}</td>
-                </tr>
-            {% endwith %}
+            {% if batch.ecu_ref_base %}
+                {% include 'reman/format/psa_row_format.html' %}
+            {% else %}
+                {% include 'reman/format/volvo_row_format.html' %}
+            {% endif %}
 
         {% endfor %}
 
