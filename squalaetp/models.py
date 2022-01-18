@@ -29,6 +29,8 @@ class Xelon(models.Model):
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
     ilot = models.CharField('ilot', max_length=100, blank=True)
+    date_expedition_attendue = models.DateField('date expédition attendue', null=True, blank=True)
+    delai_expedition_attendue = models.IntegerField('délai expédition attendue', null=True, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
