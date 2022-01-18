@@ -22,7 +22,10 @@ class BaseFormat:
             list of columns to convert
         """
         for col_date, col_format in columns.items():
-            self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', format=col_format, utc=True)
+            try:
+                self.sheet[col_date] = pd.to_datetime(self.sheet[col_date], errors='coerce', format=col_format, utc=True)
+            except KeyError:
+                pass
 
     def _columns_convert(self, digit=True):
         """

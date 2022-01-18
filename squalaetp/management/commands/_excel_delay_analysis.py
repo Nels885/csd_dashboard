@@ -10,7 +10,8 @@ class ExcelDelayAnalysis(ExcelFormat):
     ERROR = False
     DROP_COLS = ['ref_produit_clarion', 'code_pdv', 'nom_pdv', 'date_daccord_de_la_demande', 'delai_prevu_sp',
                  'nom_equipe', 'n_commande_de_travaux']
-    COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S"}
+    COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S",
+                 'date_expedition_attendue': "'%d/%m/%Y"}
 
     def __init__(self, files, sheet_name=0, columns=None):
         """
@@ -60,7 +61,7 @@ class ExcelDelayAnalysis(ExcelFormat):
             data = [self._key_formatting(dict(self.sheet.loc[line].fillna(''))) for line in range(self.nrows)]
             for row in data:
                 for key, value in dict(row).items():
-                    if key in self.COLS_DATE or not value:
+                    if not value:
                         del row[key]
                 data1.append(row)
         return data1
