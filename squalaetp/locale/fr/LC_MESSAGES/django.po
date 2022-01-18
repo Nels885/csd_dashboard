@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-02 12:36+0100\n"
+"POT-Creation-Date: 2022-01-18 09:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/admin.py:24 squalaetp/admin.py:80
+#: squalaetp/admin.py:24 squalaetp/admin.py:82
 #, python-brace-format
 msgid "{0} product{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: squalaetp/admin.py:27 squalaetp/admin.py:83
+#: squalaetp/admin.py:27 squalaetp/admin.py:85
 msgid "was,were"
 msgstr "était, étaient"
 
@@ -31,29 +31,71 @@ msgstr "était, étaient"
 msgid "Vin error disabled"
 msgstr "Erreur Vin désactivée"
 
-#: squalaetp/admin.py:91
+#: squalaetp/admin.py:93
 msgid "Change category for PSA products"
 msgstr "Changer de catégorie pour les produits PSA"
 
-#: squalaetp/admin.py:96
+#: squalaetp/admin.py:98
 msgid "Change category for Others products"
 msgstr "Changer de catégorie pour les autres produits"
 
-#: squalaetp/admin.py:101
+#: squalaetp/admin.py:103
 msgid "Change category for Clarion"
 msgstr "Changer de catégorie pour Clarion"
 
-#: squalaetp/admin.py:106
+#: squalaetp/admin.py:108
 msgid "Change category for Etude"
 msgstr "Changer de catégorie pour Etude"
 
-#: squalaetp/admin.py:111
+#: squalaetp/admin.py:113
 msgid "Change category for Calculators"
 msgstr "Changer de catégorie pour les calculateurs"
 
-#: squalaetp/admin.py:116
+#: squalaetp/admin.py:118
 msgid "Change category for Default"
 msgstr "Changer de catégorie pour Par défaut"
+
+#: squalaetp/admin.py:123
+#, fuzzy
+#| msgid "Change category for Clarion"
+msgid "Change Corvet type for Radio"
+msgstr "Changer de catégorie pour Clarion"
+
+#: squalaetp/admin.py:128
+#, fuzzy
+#| msgid "Change category for Clarion"
+msgid "Change Corvet type for Navigation"
+msgstr "Changer de catégorie pour Clarion"
+
+#: squalaetp/admin.py:133
+#, fuzzy
+#| msgid "Change category for Etude"
+msgid "Change Corvet type for EMF"
+msgstr "Changer de catégorie pour Etude"
+
+#: squalaetp/admin.py:138
+#, fuzzy
+#| msgid "Change category for Clarion"
+msgid "Change Corvet type for CMB"
+msgstr "Changer de catégorie pour Clarion"
+
+#: squalaetp/admin.py:143
+msgid "Change Corvet type for BSI"
+msgstr ""
+
+#: squalaetp/admin.py:148
+msgid "Change Corvet type for BSM"
+msgstr ""
+
+#: squalaetp/admin.py:153
+msgid "Change Corvet type for COM200x"
+msgstr ""
+
+#: squalaetp/admin.py:158
+#, fuzzy
+#| msgid "Change category for Clarion"
+msgid "Change Corvet type for CMM"
+msgstr "Changer de catégorie pour Clarion"
 
 #: squalaetp/forms.py:63
 msgid ""
@@ -87,7 +129,8 @@ msgstr "Entrez le numéro d'IMMAT"
 msgid ""
 "Data in XML format available on the RepairNAV site during SIVIN extraction..."
 msgstr ""
-"Données au format XML disponibles sur le site RepairNAV lors de l'extraction SIVIN..."
+"Données au format XML disponibles sur le site RepairNAV lors de l'extraction "
+"SIVIN..."
 
 #: squalaetp/forms.py:179
 msgid "XML data does not match IMMAT"

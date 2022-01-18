@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-02 12:36+0100\n"
+"POT-Creation-Date: 2022-01-18 09:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,6 +29,10 @@ msgstr "Délai entre 2 requêtes trop court"
 msgid "Data Export"
 msgstr "Exportation de données"
 
+#: import_export/templates/import_export/detail_csd.html:69
+msgid "Data Import"
+msgstr "Importation de données"
+
 #: import_export/templates/import_export/detail_reman.html:50
 msgid "Csv Import"
 msgstr "Importation CSV"
@@ -37,15 +41,15 @@ msgstr "Importation CSV"
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/views.py:51 import_export/views.py:74
+#: import_export/views.py:52 import_export/views.py:75
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: sbadmin/settings/__init__.py:167 templates/base/top_bar.html:98
+#: sbadmin/settings/__init__.py:168 templates/base/top_bar.html:98
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:168 templates/base/top_bar.html:89
+#: sbadmin/settings/__init__.py:169 templates/base/top_bar.html:89
 msgid "English"
 msgstr "Anglais"
 
@@ -148,8 +152,7 @@ msgid "Editing"
 msgstr "Edition"
 
 #: templates/nav/nav_csd_atelier.html:22 templates/nav/nav_reman.html:21
-#: templates/nav/nav_reman.html:46 templates/nav/nav_reman.html:71
-#: templates/nav/nav_tools.html:23
+#: templates/nav/nav_reman.html:46 templates/nav/nav_tools.html:23
 msgid "Treatments"
 msgstr "traitements"
 
@@ -169,7 +172,7 @@ msgstr "Dossiers erreur CORVET"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:32 templates/nav/nav_reman.html:95
+#: templates/nav/nav_csd_atelier.html:32 templates/nav/nav_reman.html:100
 msgid "Customer files"
 msgstr "Dossiers clients"
 
@@ -259,39 +262,43 @@ msgstr "Lots en Etude"
 msgid "Workshop batches"
 msgstr "Lots Atelier"
 
-#: templates/nav/nav_reman.html:72
+#: templates/nav/nav_reman.html:72 templates/nav/nav_reman.html:78
 msgid "REMAN References"
 msgstr "Réf. REMAN"
 
-#: templates/nav/nav_reman.html:73
+#: templates/nav/nav_reman.html:73 templates/nav/nav_reman.html:79
 msgid "HW References"
 msgstr "Réf. Hardware"
 
 #: templates/nav/nav_reman.html:74
-msgid "Default list"
-msgstr "Liste des pannes"
-
-#: templates/nav/nav_reman.html:77
-msgid "Etude"
-msgstr ""
-
-#: templates/nav/nav_reman.html:78
 msgid "ECU to Dump"
 msgstr "ECU à Dumper"
 
-#: templates/nav/nav_reman.html:96
+#: templates/nav/nav_reman.html:82
+msgid "Common"
+msgstr "Commun"
+
+#: templates/nav/nav_reman.html:83
+msgid "Default list"
+msgstr "Liste des pannes"
+
+#: templates/nav/nav_reman.html:101
 msgid "Batch list"
 msgstr "Liste des lots"
 
-#: templates/nav/nav_reman.html:97
+#: templates/nav/nav_reman.html:102
 msgid "Spare Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_reman.html:108
-msgid "Shipment"
-msgstr "Expédition"
+#: templates/nav/nav_reman.html:113
+msgid "Cartoning"
+msgstr "Mise en carton"
 
-#: templates/nav/nav_reman.html:116
+#: templates/nav/nav_reman.html:121
+msgid "Storage"
+msgstr "Mise en stock"
+
+#: templates/nav/nav_reman.html:129
 msgid "check part"
 msgstr "Vérification pièce"
 
@@ -431,14 +438,14 @@ msgstr ""
 msgid "Reset my password"
 msgstr "Réinitialiser mon mot de passe"
 
-#: utils/django/validators.py:23
+#: utils/django/validators.py:38
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie "
 "des véhicules PSA"
 
-#: utils/django/validators.py:44
+#: utils/django/validators.py:59
 msgid ""
 "The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part "
 "of PSA vehicles"
@@ -446,26 +453,43 @@ msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
 
-#: utils/django/validators.py:83
+#: utils/django/validators.py:98
 msgid "PSA barcode is invalid"
 msgstr "Le code bare PSA est invalide"
 
-#: utils/django/validators.py:100
+#: utils/django/validators.py:115
 msgid ""
 "The number is not correct, it must consist of an uppercase letter and 9 "
 "digits"
 msgstr ""
-"Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et de 9 "
-"chiffres"
+"Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et "
+"de 9 chiffres"
 
-#: utils/django/validators.py:102
+#: utils/django/validators.py:117
 msgid "This number is not authorized"
 msgstr "Ce numéro n'est pas autorisé"
 
-#: utils/django/validators.py:104
+#: utils/django/validators.py:119
 msgid "The batch does not exist"
 msgstr "Le lot n'existe pas"
 
-#: utils/django/validators.py:106
+#: utils/django/validators.py:121
 msgid "This number exists"
 msgstr "Ce numéro existe"
+
+#~ msgid "Create REMAN Reference"
+#~ msgstr "Ajout Réf. REMAN"
+
+#, fuzzy
+#~| msgid "Create file"
+#~ msgid "Create"
+#~ msgstr "Création dossier"
+
+#~ msgid "Update REMAN Reference"
+#~ msgstr "Mise à jour Réf. REMAN"
+
+#~ msgid "Success: Reman reference was created."
+#~ msgstr "Succès: la référence Reman a été créée."
+
+#~ msgid "Success: Reman reference was updated."
+#~ msgstr "Succès: la référence Reman a été mise à jour."
