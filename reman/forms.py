@@ -391,6 +391,28 @@ SPARE PARTS FORMS
 """
 
 
+class StockSelectBatchForm(CheckOutSelectBatchForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data = cleaned_data.get("batch")
+        if data:
+            try:
+                batch = self.batch.get(batch_number__startswith=data)
+                if batch.number >= 900:
+                    raise forms.ValidationError("Erreur, il s'agit d'un lot d'Etude")
+                elif batch.year != "X":
+                    raise forms.ValidationError("Erreur, il s'agit d'un lot pour le IN/OUT")
+                # elif batch.repaired != batch.quantity:
+                #     raise forms.ValidationError(
+                #         "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
+                #     )
+            except Batch.DoesNotExist:
+                raise forms.ValidationError("Pas de lot associé")
+            except Batch.MultipleObjectsReturned:
+                raise forms.ValidationError("Il y a plusieurs lots associés")
+
+
 class SparePartForm(forms.Form):
     spare_parts = forms.ModelChoiceField(
         queryset=SparePart.objects.filter(code_zone="REMAN PSA").order_by('code_produit'), required=False, label='Nom',

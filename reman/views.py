@@ -32,7 +32,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
+    StockSelectBatchForm, EcuDumpModelForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
 )
 
 context = {
@@ -376,7 +376,12 @@ IN / OUT VIEWS
 class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
     permission_required = 'reman.close_repair'
     template_name = 'reman/modal/batch_select.html'
-    form_class = CheckOutSelectBatchForm
+
+    def get_form_class(self):
+        select = self.request.GET.get('select', None)
+        # if select == "stock":
+        return StockSelectBatchForm
+        # return CheckOutSelectBatchForm
 
     def form_valid(self, form):
         self.filter = '?filter=' + str(form.cleaned_data['batch'])

@@ -115,6 +115,14 @@
         </li>
     {% endif %}
 
+    {% if perms.reman.stock_repair %}
+        <li class="nav-item">
+            <a class="out-filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}?select=stock">
+                <i class="fas fa-fw fa-truck"></i><span>Mise en sock</span>
+            </a>
+        </li>
+    {% endif %}
+
     {% if perms.reman.check_ecumodel %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'reman:part_check' %}">
