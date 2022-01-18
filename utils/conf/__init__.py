@@ -26,6 +26,7 @@ XLS_ATTRIBUTS_FILE = os.path.join(CSD_ROOT, conf.XLS_ATTRIBUTS_FILE)
 XLS_DELAY_FILES = [os.path.join(XLS_DELAY_PATH, file) for file in string_to_list(conf.XLS_DELAY_FILES)]
 CSV_EXTRACTION_FILE = os.path.join(CSD_ROOT, conf.CSV_EXTRACTION_FILE)
 XLS_ECU_REF_BASE = os.path.join(CSD_ROOT, conf.XLS_ECU_REF_BASE)
+XLS_SEM_REF_BASE = os.path.join(CSD_ROOT, conf.XLS_SEM_REF_BASE)
 
 
 XML_CORVET_PATH = os.path.join(CSD_ROOT, conf.XML_CORVET_PATH)
