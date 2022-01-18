@@ -379,9 +379,9 @@ class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
 
     def get_form_class(self):
         select = self.request.GET.get('select', None)
-        # if select == "stock":
-        return StockSelectBatchForm
-        # return CheckOutSelectBatchForm
+        if select == "stock":
+            return StockSelectBatchForm
+        return CheckOutSelectBatchForm
 
     def form_valid(self, form):
         self.filter = '?filter=' + str(form.cleaned_data['batch'])

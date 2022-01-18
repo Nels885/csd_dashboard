@@ -110,7 +110,7 @@
     {% if perms.reman.close_repair %}
         <li class="nav-item">
             <a class="out-filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}">
-                <i class="fas fa-fw fa-truck"></i><span>{% trans "Shipment" %}</span>
+                <i class="fas fa-fw fa-boxes"></i><span>{% trans "Cartoning" %}</span>
             </a>
         </li>
     {% endif %}
@@ -118,7 +118,7 @@
     {% if perms.reman.stock_repair %}
         <li class="nav-item">
             <a class="out-filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}?select=stock">
-                <i class="fas fa-fw fa-truck"></i><span>Mise en sock</span>
+                <i class="fas fa-fw fa-warehouse"></i><span>{% trans 'Storage' %}</span>
             </a>
         </li>
     {% endif %}

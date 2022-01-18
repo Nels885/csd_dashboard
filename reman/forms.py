@@ -317,7 +317,7 @@ IN / OUT FORMS
 """
 
 
-class CheckOutSelectBatchForm(BSModalForm):
+class SelectBatchForm(forms.Form):
     batch = forms.CharField(
         label="Numéro de lot", max_length=10, required=True,
         widget=forms.TextInput(attrs={'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''})
@@ -331,6 +331,9 @@ class CheckOutSelectBatchForm(BSModalForm):
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         self.batch = Batch.objects.all().annotate(repaired=repaired, packed=packed)
+
+
+class CheckOutSelectBatchForm(SelectBatchForm, BSModalForm):
 
     def clean(self):
         cleaned_data = super().clean()
@@ -391,7 +394,7 @@ SPARE PARTS FORMS
 """
 
 
-class StockSelectBatchForm(CheckOutSelectBatchForm):
+class StockSelectBatchForm(SelectBatchForm, BSModalForm):
 
     def clean(self):
         cleaned_data = super().clean()
