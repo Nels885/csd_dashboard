@@ -34,6 +34,7 @@ from .forms import (
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
     StockSelectBatchForm, EcuDumpModelForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
 )
+from .utils import batch_pdf_data
 
 context = {
     'title': 'Reman'
@@ -449,6 +450,7 @@ def batch_table(request):
 @permission_required('reman.pdfgen_batch')
 def batch_pdf_generate(request, pk):
     batch = get_object_or_404(Batch, pk=pk)
+    reman_reference, part_name = batch_pdf_data(batch)
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
     p.setTitle(f"batch_{batch.batch_number}")
@@ -461,10 +463,10 @@ def batch_pdf_generate(request, pk):
     p.drawString(60, -430, "Quantité carton :")
 
     p.setFont('Courier-Bold', 36)
-    p.drawString(380, -130, str(batch.ecu_ref_base.reman_reference))
-    barcode = code128.Code128(str(batch.ecu_ref_base.reman_reference), barWidth=0.5 * mm, barHeight=10 * mm)
+    p.drawString(380, -130, str(reman_reference))
+    barcode = code128.Code128(str(reman_reference), barWidth=0.5 * mm, barHeight=10 * mm)
     barcode.drawOn(p, 610, -130)
-    p.drawString(380, -230, str(batch.ecu_ref_base.ecu_type.technical_data[:20]))
+    p.drawString(380, -230, str(part_name))
     p.drawString(380, -330, str(batch.batch_number))
     p.line(470, -340, 530, -340)
     barcode = code128.Code128(str(batch.batch_number), barWidth=0.5 * mm, barHeight=10 * mm)
