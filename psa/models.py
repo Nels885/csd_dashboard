@@ -240,6 +240,7 @@ class CorvetProduct(models.Model):
     cmb = models.ForeignKey('psa.Ecu', related_name='corvet_cmb', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMB'}, null=True, blank=True)
     fmux = models.ForeignKey('psa.Ecu', related_name='corvet_fmux', on_delete=models.SET_NULL, limit_choices_to={'type': 'FMUX'}, null=True, blank=True)
     mds = models.ForeignKey('psa.Ecu', related_name='corvet_mds', on_delete=models.SET_NULL, limit_choices_to={'type': 'MDS'}, null=True, blank=True)
+    cvm2 = models.ForeignKey('psa.Ecu', related_name='corvet_cvm2', on_delete=models.SET_NULL, limit_choices_to={'type': 'CVM2'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"
@@ -366,7 +367,8 @@ class Ecu(models.Model):
         ('BSI', 'Boitier Servitude Intelligent'), ('BSM', 'Boitier Servitude Moteur'),
         ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
         ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
-        ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique')
+        ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
+        ('CVM2', 'Camera Video Multifonction V2')
     ]
 
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)

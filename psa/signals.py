@@ -15,14 +15,20 @@ def post_save_corvet(sender, created, instance, **kwargs):
         default.update({"bsi": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14b, type='BSI').first()})
     if instance.electronique_14l.isdigit():
         default.update({"emf": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14l, type='EMF').first()})
-    if instance.electronique_14k.isdigit():
-        default.update({"cmb": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14k, type='CMB').first()})
     if instance.electronique_14a.isdigit():
         default.update({"cmm": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14a, type='CMM').first()})
     if instance.electronique_16b.isdigit():
         default.update({"bsm": Ecu.objects.filter(comp_ref__startswith=instance.electronique_16b, type='BSM').first()})
     if instance.electronique_16p.isdigit():
         default.update({"hdc": Ecu.objects.filter(comp_ref__startswith=instance.electronique_16p, type='HDC').first()})
+    if instance.electronique_14k.isdigit():
+        default.update({"cmb": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14k, type='CMB').first()})
+    if instance.electronique_19z.isdigit():
+        default.update({"fmux": Ecu.objects.filter(comp_ref__startswith=instance.electronique_19z, type='FMUX').first()})
+    if instance.electronique_19h.isdigit():
+        default.update({"mds": Ecu.objects.filter(comp_ref__startswith=instance.electronique_19h, type='MDS').first()})
+    if instance.electronique_12y.isdigit():
+        default.update({"cvm2": Ecu.objects.filter(comp_ref__startswith=instance.electronique_12y, type='CVM2').first()})
     CorvetProduct.objects.update_or_create(corvet=instance, defaults=default)
     if created:
         CorvetOption.objects.get_or_create(corvet=instance)
@@ -52,3 +58,5 @@ def post_save_ecu(sender, created, instance, **kwargs):
         CorvetProduct.objects.filter(corvet__electronique_16p__startswith=instance.comp_ref).update(hdc=instance.pk)
     if instance.type == "MDS":
         CorvetProduct.objects.filter(corvet__electronique_19h__startswith=instance.comp_ref).update(mds=instance.pk)
+    if instance.type == "CVM2":
+        CorvetProduct.objects.filter(corvet__electronique_12y__startswith=instance.comp_ref).update(cvm2=instance.pk)
