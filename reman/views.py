@@ -395,7 +395,8 @@ class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
         return reverse_lazy('reman:out_table') + self.filter
 
 
-@permission_required('reman.close_repair')
+# @permission_required('reman.close_repair')
+@login_required()
 def out_table(request):
     """ View of Reman Out Repair table page """
     batch_number = request.GET.get('filter')
