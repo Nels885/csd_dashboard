@@ -20,7 +20,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#">Réf. HW SEM</a>
+                <a class="nav-link" href="{% url 'volvo:sem_hw_table' %}">Réf. HW SEM</a>
             </li>
 
         </ul>
@@ -43,6 +43,7 @@
         <tr>
             <th></th>
             <th>Référence REMAN</th>
+            <th>Marque</th>
             <th>MAP DATA</th>
             <th>PRODUCT PART</th>
             <th>PF code</th>
@@ -72,11 +73,12 @@
                     {% endif %}
                 </td>
                 <td>{{ ref.reman_reference }}</td>
+                <td>{{ ref.brand }}</td>
                 <td>{{ ref.map_data }}</td>
-                <td>{{ ref.oe_reference }}</td>
+                <td>{{ ref.product_part }}</td>
                 <td>{{ ref.pf_code }}</td>
-                <td>{{ ref.asm }}</td>
-                <td>{{ ref.hw }}</td>
+                <td>{{ ref.ecu_type.asm_reference }}</td>
+                <td>{{ ref.ecu_type.hw_reference }}</td>
             </tr>
         {% endfor %}
 

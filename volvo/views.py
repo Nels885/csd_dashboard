@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.translation import ugettext as _
 
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from utils.django.urls import reverse_lazy
 
-from .models import SemRefBase
+from .models import SemRefBase, SemType
 from .forms import RemanForm, UpdateRemanForm
 
 context = {
@@ -40,3 +40,12 @@ class SemRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     form_class = UpdateRemanForm
     success_message = _('Success: Reman reference was updated.')
     success_url = reverse_lazy('volvo:reman_ref_table')
+
+
+@login_required()
+def sem_hw_table(request):
+    """ View of SemType table page """
+    title = "Reman VOLVO"
+    table_title = 'Référence Hardware'
+    obj = SemType.objects.all()
+    return render(request, 'volvo/sem_hw_table.html', locals())
