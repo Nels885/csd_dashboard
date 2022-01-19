@@ -375,7 +375,6 @@ IN / OUT VIEWS
 
 
 class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
-    permission_required = 'reman.close_repair'
     template_name = 'reman/modal/batch_select.html'
 
     def get_form_class(self):
@@ -383,6 +382,10 @@ class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
         if select == "stock":
             return StockSelectBatchForm
         return CheckOutSelectBatchForm
+
+    def has_permission(self):
+        user = self.request.user
+        return user.has_perm('reman.stock_repair') or user.has_perm('reman.close_repair')
 
     def form_valid(self, form):
         self.filter = '?filter=' + str(form.cleaned_data['batch'])
