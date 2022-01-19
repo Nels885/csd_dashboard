@@ -54,7 +54,7 @@ class Command(BaseCommand):
                 'Date_de_fin', 'Actif', 'Client', 'Ajoute par', 'Ajoute le'
             ]
             # Batch for PSA
-            psa_batch = Batch.objects.filter(active=True, ecu_ref_base__isnull=False).order_by('batch_number')
+            psa_batch = Batch.objects.filter(ecu_ref_base__isnull=False).order_by('batch_number')
             values_list = list(psa_batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
@@ -62,7 +62,7 @@ class Command(BaseCommand):
             ).distinct())
 
             # Batch for VOLVO
-            volvo_batch = Batch.objects.filter(active=True, sem_ref_base__isnull=False).order_by('batch_number')
+            volvo_batch = Batch.objects.filter(sem_ref_base__isnull=False).order_by('batch_number')
             values_list += list(volvo_batch.values_list(
                 'batch_number', 'quantity', 'sem_ref_base__reman_reference', 'sem_ref_base__ecu_type__technical_data',
                 'sem_ref_base__ecu_type__hw_reference', 'sem_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
