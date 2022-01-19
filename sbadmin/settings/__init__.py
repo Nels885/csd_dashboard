@@ -241,8 +241,6 @@ CONSTANCE_CONFIG = {
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
     'XLS_ATTRIBUTS_FILE': ('EXTS/Attributs CORVET.xlsx', 'xls attributs file'),
     'CSV_EXTRACTION_FILE': ('EXTS/extraction.csv', 'csv extraction file'),
-    'XLS_ECU_REF_BASE': ('REMAN/PSA/Base ref REMAN.xlsx', 'xls ECU ref base'),
-    'XLS_SEM_REF_BASE': ('', 'xls SEM ref base'),
     'XLS_DELAY_PATH': ('RH/AnalyseRetards', 'Path of xls delay files'),
     'XLS_DELAY_FILES': (
         'PSA.xlsx, ILOTAUTRE.xlsx, LaboQual.xlsx, DEFAUT.xlsx, CLARION.xlsx', 'List of xls delay file'
@@ -296,8 +294,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
     '2. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
-        'XLS_ECU_REF_BASE', 'XLS_SEM_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XML_CORVET_PATH',
-        'TAG_XELON_PATH', 'TAG_XELON_LOG_PATH'
+        'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XML_CORVET_PATH', 'TAG_XELON_PATH', 'TAG_XELON_LOG_PATH'
     ),
     '3. CSD Repair Options': (
         'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',

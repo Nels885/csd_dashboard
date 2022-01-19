@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from django.db.utils import DataError, IntegrityError
 
 from volvo.models import SemRefBase, SemModel, SemType
-from utils.conf import XLS_SEM_REF_BASE
 from utils.django.models import defaults_dict
 
 from ._excel_sem_reman import ExcelSemRefBase
@@ -33,9 +32,7 @@ class Command(BaseCommand):
         self.stdout.write("[SEMREFBASE] Waiting...")
         if options['filename'] is not None:
             extraction = ExcelSemRefBase(options['filename'], sheet_name=options['sheet_id'])
-        else:
-            extraction = ExcelSemRefBase(XLS_SEM_REF_BASE, sheet_name=options['sheet_id'])
-        self._update_or_create(extraction.read_all())
+            self._update_or_create(extraction.read_all())
 
     def _update_or_create(self, data):
         nb_base_before, nb_ecu_before = SemRefBase.objects.count(), SemModel.objects.count()
