@@ -10,29 +10,7 @@
         </button>
     </div>
 
-    <div class="modal-body">
-        <div class="{% if form.non_field_errors %}invalid{% endif %} text-center text-danger text-uppercase mb-2">
-            {% for error in form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-        </div>
-
-        {% for field in form %}
-            <div class="form-group">
-                <div class="form-group row">
-                    <label for="{{ field.id_for_label }}" class="col-sm-6 col-form-label">{{ field.label }}</label>
-                    <div class="col-sm-6">
-                        {% render_field field class="form-control" %}
-                        <div class="{% if field.errors %} invalid{% endif %}">
-                            {% for error in field.errors %}
-                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+    {% include 'format/modal_form_format.html' %}
 
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
