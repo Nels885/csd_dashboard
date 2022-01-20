@@ -10,6 +10,7 @@ from constance import config
 from squalaetp.models import Xelon, Indicator
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
+from utils.django.validators import VIN_PSA_REGEX
 
 
 class Command(BaseCommand):
@@ -83,7 +84,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Pas d'erreurs de VIN a envoyer !"))
         if options['vin_corvet']:
             subject = "Problème CORVET {}".format(date_joined)
-            xelons = Xelon.objects.filter(date_retour__gte=last_7_days, vin__regex=r'^V((F[37])|(R[137]))\w{14}$',
+            xelons = Xelon.objects.filter(date_retour__gte=last_7_days, vin__regex=VIN_PSA_REGEX,
                                           vin_error=False, corvet__isnull=True).order_by('-date_retour')[:10]
             if xelons:
                 html_message = render_to_string(
