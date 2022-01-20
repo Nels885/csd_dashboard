@@ -167,7 +167,7 @@ class UpdateRefRemanForm(AddRefRemanForm):
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         super().__init__(*args, **kwargs)
-        if instance:
+        if instance and instance.pk:
             self.initial['hw_reference'] = instance.ecu_type.hw_reference
 
     class Meta:
