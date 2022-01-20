@@ -90,6 +90,8 @@
 
         $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}"});
 
+        $(".create-sem-hw").modalForm({formURL: "{% url 'volvo:sem_hw_create' %}"});
+
         $(".create-tag-xelon").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
 
         $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});

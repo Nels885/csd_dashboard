@@ -4,10 +4,10 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.translation import ugettext as _
 
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
-from utils.django.urls import reverse_lazy
+from utils.django.urls import reverse_lazy, http_referer
 
 from .models import SemRefBase, SemType
-from .forms import RemanForm, UpdateRemanForm
+from .forms import RemanForm, SemTypeForm
 
 context = {
     'title': 'Reman VOLVO'
@@ -31,13 +31,24 @@ class SemRemanCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = _('Success: Reman reference was created.')
     success_url = reverse_lazy('volvo:reman_ref_table')
 
+    def get_initial(self):
+        initial = super().get_initial()
+        ecu_dict = SemRefBase.objects.filter(reman_reference=self.request.GET.get('ref', None)).values().first()
+        if ecu_dict:
+            for field, value in ecu_dict.items():
+                if field not in ['reman_reference']:
+                    initial[field] = value
+                if field == 'ecu_type_id' and value is not None:
+                    initial['asm_reference'] = SemType.objects.get(pk=value).asm_reference
+        return initial
+
 
 class SemRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     """ View of modal ECU Hardware update """
     model = SemRefBase
     permission_required = 'volvo.change_semrefbase'
     template_name = 'volvo/modal/ref_reman_update.html'
-    form_class = UpdateRemanForm
+    form_class = RemanForm
     success_message = _('Success: Reman reference was updated.')
     success_url = reverse_lazy('volvo:reman_ref_table')
 
@@ -49,3 +60,33 @@ def sem_hw_table(request):
     table_title = 'Référence Hardware'
     obj = SemType.objects.all()
     return render(request, 'volvo/sem_hw_table.html', locals())
+
+
+class SemHwCreateView(PermissionRequiredMixin, BSModalCreateView):
+    """ View of modal SEM Hardware update """
+    permission_required = 'volvo.add_semtype'
+    template_name = 'volvo/modal/sem_hw_create.html'
+    form_class = SemTypeForm
+    success_message = _('Success: Reman SEM HW Reference was created.')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        ecu_dict = SemType.objects.filter(asm_reference=self.request.GET.get('asm', None)).values().first()
+        if ecu_dict:
+            for field, value in ecu_dict.items():
+                if field not in ['asm_reference']:
+                    initial[field] = value
+        return initial
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+class SemHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ View of modal SEM Hardware update """
+    model = SemType
+    permission_required = 'volvo.change_semtype'
+    template_name = 'volvo/modal/sem_hw_update.html'
+    form_class = SemTypeForm
+    success_message = _('Success: Reman SEM HW Reference was updated.')
+    success_url = reverse_lazy('reman:sem_hw_table')
