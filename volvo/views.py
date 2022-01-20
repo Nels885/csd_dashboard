@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.translation import ugettext as _
 
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
-from utils.django.urls import reverse_lazy, http_referer
+from utils.django.urls import reverse_lazy
 
 from .models import SemRefBase, SemType
 from .forms import RemanForm, SemTypeForm
@@ -68,6 +68,7 @@ class SemHwCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'volvo/modal/sem_hw_create.html'
     form_class = SemTypeForm
     success_message = _('Success: Reman SEM HW Reference was created.')
+    success_url = reverse_lazy('volvo:sem_hw_table')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -78,9 +79,6 @@ class SemHwCreateView(PermissionRequiredMixin, BSModalCreateView):
                     initial[field] = value
         return initial
 
-    def get_success_url(self):
-        return http_referer(self.request)
-
 
 class SemHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     """ View of modal SEM Hardware update """
@@ -89,4 +87,4 @@ class SemHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     template_name = 'volvo/modal/sem_hw_update.html'
     form_class = SemTypeForm
     success_message = _('Success: Reman SEM HW Reference was updated.')
-    success_url = reverse_lazy('reman:sem_hw_table')
+    success_url = reverse_lazy('volvo:sem_hw_table')

@@ -53,14 +53,14 @@
         <tr>
             <td class="bg-white text-nowrap" style="width: 60px;">
                 {% if perms.volvo.change_semtype %}
-                    <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_update' type.pk %}">
+                    <button title="Modification" class="bs-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_update' type.pk %}">
                         <i class="fas fa-edit"></i>
                     </button>
                 {% else %}
                     <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                 {% endif %}
                 {% if perms.volvo.add_semtype %}
-                    <button title="Copie" class="bs-large-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_create' %}?asm={{ type.asm_reference }}">
+                    <button title="Copie" class="bs-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_create' %}?asm={{ type.asm_reference }}">
                         <i class="fas fa-copy"></i>
                     </button>
                 {% else %}
