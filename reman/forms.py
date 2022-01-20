@@ -130,7 +130,7 @@ class AddBatchForm(BSModalModelForm):
         return batch
 
 
-class AddRefRemanForm(BSModalModelForm):
+class RefRemanForm(BSModalModelForm):
     hw_reference = forms.CharField(label="Réf. HW", widget=forms.TextInput(), max_length=20)
 
     class Meta:
@@ -141,6 +141,10 @@ class AddRefRemanForm(BSModalModelForm):
         ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
         _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
         super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance', None)
+        if instance and instance.pk:
+            self.fields['reman_reference'].widget.attrs['readonly'] = True
+            self.fields['hw_reference'].initial = instance.ecu_type.hw_reference
         self.fields['hw_reference'].widget = ListTextWidget(data_list=_data_list, name='value-list')
 
     def clean_hw_reference(self):
@@ -160,22 +164,6 @@ class AddRefRemanForm(BSModalModelForm):
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
         return instance
-
-
-class UpdateRefRemanForm(AddRefRemanForm):
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        super().__init__(*args, **kwargs)
-        if instance and instance.pk:
-            self.initial['hw_reference'] = instance.ecu_type.hw_reference
-
-    class Meta:
-        model = EcuRefBase
-        exclude = ['ecu_type']
-        widgets = {
-            'reman_reference': forms.TextInput(attrs={"readonly": ""})
-        }
 
 
 class DefaultForm(forms.ModelForm):
@@ -209,7 +197,7 @@ class AddRepairForm(BSModalModelForm):
         fields = ['identify_number', 'barcode', 'remark']
         widgets = {
             'identify_number': forms.TextInput(
-                attrs={'class': 'form-control', 'style': 'width: 50%;', 'autofocus': ''}),
+                attrs={'class': 'form-control', 'style': 'width: 60%;', 'autofocus': ''}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
 
@@ -451,10 +439,16 @@ class EcuModelForm(forms.ModelForm):
         exclude = ['ecu_type']
 
 
-class AddEcuTypeForm(BSModalModelForm):
+class EcuTypeForm(BSModalModelForm):
     class Meta:
         model = EcuType
         exclude = ['spare_part']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['hw_reference'].widget.attrs['readonly'] = True
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -462,15 +456,6 @@ class AddEcuTypeForm(BSModalModelForm):
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
         return instance
-
-
-class UpdateEcuTypeForm(AddEcuTypeForm):
-    class Meta:
-        model = EcuType
-        exclude = ['spare_part']
-        widgets = {
-            'hw_reference': forms.TextInput(attrs={"readonly": ""})
-        }
 
 
 class EcuDumpModelForm(BSModalModelForm):

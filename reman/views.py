@@ -32,7 +32,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    StockSelectBatchForm, EcuDumpModelForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
+    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm
 )
 from .utils import batch_pdf_data
 
@@ -217,7 +217,7 @@ class RefRemanCreateView(PermissionRequiredMixin, BSModalCreateView):
     """ View of modal default create """
     permission_required = 'reman.add_ecurefbase'
     template_name = 'reman/modal/ref_reman_create.html'
-    form_class = AddRefRemanForm
+    form_class = RefRemanForm
     success_message = _('Success: Reman reference was created.')
     success_url = reverse_lazy('reman:base_ref_table')
 
@@ -238,7 +238,7 @@ class RefRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = EcuRefBase
     permission_required = 'reman.change_ecurefbase'
     template_name = 'reman/modal/ref_reman_update.html'
-    form_class = UpdateRefRemanForm
+    form_class = RefRemanForm
     success_message = _('Success: Reman reference was updated.')
     success_url = reverse_lazy('reman:base_ref_table')
 
@@ -573,7 +573,7 @@ class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
     """ View of modal ECU Hardware update """
     permission_required = 'reman.add_ecutype'
     template_name = 'reman/modal/ecu_hw_create.html'
-    form_class = AddEcuTypeForm
+    form_class = EcuTypeForm
     success_message = _('Success: Reman ECU HW Reference was created.')
 
     def get_initial(self):
@@ -594,7 +594,7 @@ class EcuHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = EcuType
     permission_required = 'reman.change_ecutype'
     template_name = 'reman/modal/ecu_hw_update.html'
-    form_class = UpdateEcuTypeForm
+    form_class = EcuTypeForm
     success_message = _('Success: Reman ECU HW Reference was updated.')
     success_url = reverse_lazy('reman:ecu_hw_table')
 
