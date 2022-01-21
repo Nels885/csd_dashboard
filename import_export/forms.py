@@ -7,7 +7,7 @@ class ExportCorvetForm(forms.Form):
     PRODUCTS = [
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
         ('emf', 'DISPLAY'), ('cmb', 'TDB'), ('nac', 'NAC'), ('rcc', 'RCC'), ('rtx', 'RTx'), ('smeg', 'SMEG'),
-        ('rneg', 'RNEG'), ('ng4', 'NG4'), ('icare', 'ICARE'), ('all', 'ALL')
+        ('rneg', 'RNEG'), ('ng4', 'NG4'), ('icare', 'ICARE'), ('all', 'ALL'), ('xelon', 'ALL Xelon')
     ]
 
     formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())

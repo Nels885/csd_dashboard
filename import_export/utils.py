@@ -108,6 +108,27 @@ PRODS_LIST = [
     ('Ref HW BSM', 'corvet__electronique_16b'),
 ]
 
+PRODS_XELON_LIST = [
+    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('NAV (XELON)', 'corvet__prods__btel__xelon_name'),
+    ('Modele NAV', 'corvet__prods__btel__name'), ('Marque NAV', 'corvet__prods__btel__supplier_oe'),
+    ('Ref HW NAV', 'corvet__electronique_14x'), ('RADIO (XELON)', 'corvet__prods__radio__xelon_name'),
+    ('Modele RADIO', 'corvet__prods__radio__name'), ('Marque RADIO', 'corvet__prods__radio__supplier_oe'),
+    ('Ref HW RADIO', 'corvet__electronique_14f'), ('EMF (XELON)', 'corvet__prods__emf__xelon_name'),
+    ('Modele EMF', 'corvet__prods__emf__name'), ('Marque EMF', 'corvet__prods__emf__supplier_oe'),
+    ('Ref HW EMF', 'corvet__electronique_14l'), ('TDB (XELON)', 'corvet__prods__cmb__xelon_name'),
+    ('Modele TDB', 'corvet__prods__cmb__name'), ('Marque TDB', 'corvet__prods__cmb__supplier_oe'),
+    ('Ref HW TDB', 'corvet__electronique_14k'), ('ECU (XELON)', 'corvet__prods__cmm__xelon_name'),
+    ('Modele ECU MOTEUR', 'corvet__prods__cmm__name'), ('Marque ECU MOTEUR', 'corvet__prods__cmm__supplier_oe'),
+    ('Ref HW ECU MOTEUR', 'corvet__electronique_14a'), ('BSI (XELON)', 'corvet__prods__bsi__xelon_name'),
+    ('Modele BSI', 'corvet__prods__bsi__name'), ('Marque BSI', 'corvet__prods__bsi__supplier_oe'),
+    ('Ref HW BSI', 'corvet__electronique_14b'), ('COM200X (XELON)', 'corvet__prods__hdc__xelon_name'),
+    ('Modele COM200x', 'corvet__prods__hdc__name'), ('Marque COM200x', 'corvet__prods__hdc__supplier_oe'),
+    ('Ref HW COM200x', 'corvet__electronique_16p'), ('BSM (XELON', 'corvet__prods__bsm__xelon_name'),
+    ('Modele BSM', 'corvet__prods__bsm__name'), ('Marque BSM', 'corvet__prods__bsm__supplier_oe'),
+    ('Ref HW BSM', 'corvet__electronique_16b'),
+]
+
 
 def get_header_fields(prod_list):
     header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
@@ -125,6 +146,7 @@ BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
 CVM_HEADER, CVM_FIELDS = get_header_fields(CVM_LIST)
 DAE_HEADER, DAE_FIELDS = get_header_fields(DAE_LIST)
 PRODS_HEADER, PRODS_FIELDS = get_header_fields(PRODS_LIST)
+PRODS_XELON_HEADER, PRODS_XELON_FIELDS = get_header_fields(PRODS_XELON_LIST)
 
 """
 ##################################
@@ -205,6 +227,9 @@ def extract_corvet(product='corvet'):
         queryset = xelons.filter(corvet__isnull=False, corvet__opts__tag="ICARE")
     elif product == "all":
         header, values_list = PRODS_HEADER, PRODS_FIELDS
+        queryset = xelons.filter(corvet__isnull=False)
+    elif product == "xelon":
+        header, values_list = PRODS_XELON_HEADER, PRODS_XELON_FIELDS
         queryset = xelons.filter(corvet__isnull=False)
     elif product == 'corvet':
         header = [
