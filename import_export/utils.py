@@ -177,7 +177,8 @@ def extract_ecu(vin_list=None):
 def extract_corvet(product='corvet'):
     values_list = ()
     header = queryset = None
-    xelons = Xelon.objects.filter(corvet__isnull=False).annotate(
+    xelons = Xelon.objects.filter(
+        date_retour__isnull=False, corvet__isnull=False).order_by('-numero_de_dossier').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
     if product == "ecu":
@@ -245,7 +246,7 @@ def extract_corvet(product='corvet'):
         values_list = tuple([field.name for col_nb, field in enumerate(Corvet._meta.fields)
                              if col_nb < len(header)])
     fields = values_list
-    values_list = queryset.values_list(*values_list).distinct()
+    values_list = queryset.values_list(*values_list).distinct()[:30000]
     return header, fields, values_list
 
 
