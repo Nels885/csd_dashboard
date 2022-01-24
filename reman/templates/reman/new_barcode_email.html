@@ -3,7 +3,7 @@ Bonjour,
 
 Le code barre PSA ci-dessous n'est pas associé à une réf. REMAN.
 
-    - Code barre PSA  : {{ ecu.psa_barcode|default:"---" }}
+    - Code barre      : {{ ecu.barcode|default:"---" }}
     - Référence HW    : {{ ecu.ecu_type.hw_reference|default:"---" }}
     - Modèle produit  : {{ ecu.ecu_type.technical_data|default:"---" }}
     - Fabriquant      : {{ ecu.ecu_type.supplier_oe|default:"---" }}
