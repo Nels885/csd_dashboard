@@ -37,7 +37,7 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseGeneral" expanded=user.showcollapse.general thead_title="Informations générales :" %}
+            {% include 'format/collapse_thead.html' with id="collapseGeneral" expanded=user.showcollapse.general thead_title="Informations générales" %}
 
             <tbody class="collapse {% if user.showcollapse.general %}show{% endif %}" id="collapseGeneral">
             <tr>
@@ -76,7 +76,7 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseMotor" expanded=user.showcollapse.motor thead_title="Alimentation moteur :" %}
+            {% include 'format/collapse_thead.html' with id="collapseMotor" expanded=user.showcollapse.motor thead_title="Alimentation moteur" %}
 
             <tbody class="collapse{% if user.showcollapse.motor %}show{% endif %}" id="collapseMotor">
             <tr>
@@ -118,7 +118,7 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseBody" expanded=user.showcollapse.body thead_title="Carrosserie Equipements :" %}
+            {% include 'format/collapse_thead.html' with id="collapseBody" expanded=user.showcollapse.body thead_title="Carrosserie Equipements" %}
 
             <tbody class="collapse{% if user.showcollapse.body %}show{% endif %}" id="collapseBody">
             {% if corvet.attribut_dat %}
@@ -139,7 +139,7 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseInterior" expanded=user.showcollapse.interior thead_title="Equipement intérieur :" %}
+            {% include 'format/collapse_thead.html' with id="collapseInterior" expanded=user.showcollapse.interior thead_title="Equipement intérieur" %}
 
             <tbody class="collapse {% if user.showcollapse.interior %}show{% endif %}" id="collapseInterior">
             {% if corvet.attribut_de2 %}
@@ -241,7 +241,7 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseElectric" expanded=user.showcollapse.body thead_title="Electricité :" %}
+            {% include 'format/collapse_thead.html' with id="collapseElectric" expanded=user.showcollapse.body thead_title="Electricité" %}
 
             <tbody class="collapse{% if user.showcollapse.electric %}show{% endif %}" id="collapseElectric">
             {% if corvet.attribut_djz %}
@@ -261,7 +261,7 @@
 
         <table class="table table-bordered table-striped table-sm mt-4">
 
-            {% include 'format/collapse_thead.html' with id="collapseDivers" exp=user.showcollapse.diverse thead_title="Divers :" %}
+            {% include 'format/collapse_thead.html' with id="collapseDivers" exp=user.showcollapse.diverse thead_title="Divers" %}
 
             <tbody class="collapse {% if user.showcollapse.diverse %}show{% endif %}" id="collapseDivers">
             <tr>

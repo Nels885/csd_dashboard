@@ -1,0 +1,47 @@
+{% if object %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        <thead class="table-primary">
+        <tr>
+            <th colspan="2" class="collapsed text-dark">
+                <a class="card-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-{{ title|slugify }}"
+                   aria-expanded="{% if expanded %}true{% else %}false{% endif %}" aria-controls="collapse-{{ title|slugify }}">
+                    <i class="fas fa-minus-square mr-2"></i><span>{{ title|upper }} :</span>
+                </a>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody class="collapse" id="collapse-{{ title|slugify }}">
+        <tr>
+            <td class="text-dark td-ihm">Référence Comp. Mat.</td>
+            <td>{{ object.comp_ref }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Modèle</td>
+            <td>{{ object.name|default:"???" }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Modèle Xelon</td>
+            <td>{{ object.xelon_name|default:"???" }}</td>
+        </tr>
+        {% include 'format/collapse_tr.html' with name="HW" value=object.hw %}
+
+        {% include 'format/collapse_tr.html' with name="SW" value=object.sw %}
+
+        {% include 'format/collapse_tr.html' with name="Fabriquant" value=object.supplier_oe %}
+
+        {% include 'format/collapse_tr.html' with name="Référence PR" value=object.pr_reference %}
+
+        {% if object.productcode_set.all %}
+            <tr>
+                <td class="text-dark td-ihm">Pièces Xelon</td>
+                <td>{% for part in object.productcode_set.all %}{{ part.name }}<br>{% endfor %}</td>
+            </tr>
+        {% endif %}
+        </tbody>
+
+    </table>
+
+{% endif %}

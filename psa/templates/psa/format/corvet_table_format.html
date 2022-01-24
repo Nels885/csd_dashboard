@@ -1,6 +1,6 @@
 <table class="table table-bordered table-striped table-sm">
 
-    {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display thead_title="AFFICHAGE :" %}
+    {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display upper_title="affichage" %}
 
     <tbody class="collapse {% if collapse.display %}show{% endif %}" id="collapseDisplay">
     <tr>
@@ -34,7 +34,7 @@
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio thead_title="AUDIO :" %}
+    {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio upper_title="audio" %}
 
     <tbody class="collapse {% if collapse.audio %}show{% endif %}" id="collapseAudio">
     {% if object.electronique_14f %}
@@ -76,7 +76,7 @@
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseEcu" expanded=collapse.ecu thead_title="CALCULATEUR :" %}
+    {% include 'format/collapse_thead.html' with id="collapseEcu" expanded=collapse.ecu upper_title="calculateur" %}
 
     <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseEcu">
     <!-- ECU MOTOR -->
@@ -145,7 +145,7 @@
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.ecu thead_title="SECURITE :" %}
+    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.ecu upper_title="sécurité" %}
 
     <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseSecu">
     <!-- ASS -->
