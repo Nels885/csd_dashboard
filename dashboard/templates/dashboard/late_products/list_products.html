@@ -53,8 +53,8 @@
                 <td>{{ prod.modele_produit }}</td>
                 <td>{{ prod.date_retour }}</td>
                 <td>{{ prod.date_expedition_attendue|default:"" }}</td>
-                <td>{{ prod.delai_expedition_attendue|default:"" }}</td>
-                <td>{{ prod.delai_au_en_jours_ouvres }}</td>
+                <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
+                <td>{{ prod.delai_au_en_jours_ouvres|default_if_none:"" }}</td>
                 <td>{{ prod.nom_technicien }}</td>
                 <td>{{ prod.famille_produit }}</td>
             </tr>
