@@ -26,7 +26,7 @@ class EcuType(models.Model):
 
 
 class EcuModel(models.Model):
-    psa_barcode = models.CharField("code barre PSA", max_length=20, unique=True)
+    barcode = models.CharField("code barre PSA", max_length=20, unique=True)
     oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
     oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
     sw_reference = models.CharField("software", max_length=10, blank=True)
@@ -39,8 +39,8 @@ class EcuModel(models.Model):
         permissions = [("check_ecumodel", "Can check ecu model")]
 
     @staticmethod
-    def part_list(psa_barcode):
-        ecu_models = EcuModel.objects.filter(psa_barcode__exact=psa_barcode)
+    def part_list(barcode):
+        ecu_models = EcuModel.objects.filter(barcode__exact=barcode)
         msg_list = []
         if ecu_models:
             for ecu_model in ecu_models:
@@ -61,7 +61,7 @@ class EcuModel(models.Model):
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return "PSA_barcode_{}".format(self.psa_barcode)
+        return "barcode_{}".format(self.barcode)
 
 
 class EcuRefBase(models.Model):

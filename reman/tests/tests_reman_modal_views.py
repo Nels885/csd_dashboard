@@ -13,8 +13,8 @@ class MixinsTest(UnitTest):
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
         sem_ref_base = SemRefBase.objects.create(reman_reference='1234567890')
-        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', psa_barcode='9876543210', ecu_type=ecu_type)
-        EcuModel.objects.create(psa_barcode='9876543210azertyuiop', ecu_type=ecu_type)
+        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', barcode='9876543210', ecu_type=ecu_type)
+        EcuModel.objects.create(barcode='9876543210azertyuiop', ecu_type=ecu_type)
         self.batch = Batch.objects.create(year="C", number=1, quantity=2, created_by=self.user, ecu_ref_base=ref_base)
         Batch.objects.create(
             year="V", number=1, quantity=2, customer="VOLVO", created_by=self.user, sem_ref_base=sem_ref_base)
@@ -302,7 +302,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(
             reverse('reman:update_ecu_dump', kwargs={'pk': ecu_model.pk}),
             data={
-                'psa_barcode': ecu_model.psa_barcode,
+                'barcode': ecu_model.barcode,
                 'to_dump': True,
             }
         )

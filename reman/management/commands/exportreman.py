@@ -112,7 +112,7 @@ class Command(BaseCommand):
             queryset = EcuRefBase.objects.exclude(ref_cal_out__exact='').order_by('reman_reference')
             values_list = queryset.values_list(
                 'reman_reference', 'ecu_type__hw_reference', 'ecu_type__technical_data', 'ecu_type__supplier_oe',
-                'ecu_type__ecumodel__psa_barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
+                'ecu_type__ecumodel__barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
                 'cal_ktag', 'status'
             ).distinct()
             ExportExcel(
@@ -136,7 +136,7 @@ class Command(BaseCommand):
             queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
             values_list = (
                 'ecu_type__ecumodel__oe_raw_reference', 'reman_reference', 'ecu_type__technical_data',
-                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__psa_barcode',
+                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__barcode',
                 'ecu_type__ecumodel__former_oe_reference', 'ref_cal_out', 'ecu_type__spare_part__code_produit',
                 'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag',
                 'req_status', 'status', 'test_clear_memory', 'cle_appli'

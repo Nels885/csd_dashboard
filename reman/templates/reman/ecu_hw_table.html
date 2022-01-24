@@ -42,7 +42,7 @@
             <th>Réf. Hardware</th>
             <th>Module Moteur</th>
             <th>Fournisseur</th>
-            <th>Code barre PSA</th>
+            <th>Code barre</th>
             <th>XELON - Code produit</th>
             <th>XELON - Emplacement</th>
         </tr>
@@ -79,10 +79,10 @@
                                 Afficher
                             </a>
                             <div class="collapse mt-2" id="ref_{{ type.hw_reference }}">
-                                {% for model in models %}{{ model.psa_barcode }}<br>{% endfor %}
+                                {% for model in models %}{{ model.barcode }}<br>{% endfor %}
                             </div>
                         {% else %}
-                            {% for model in models %}{{ model.psa_barcode }}<br>{% endfor %}
+                            {% for model in models %}{{ model.barcode }}<br>{% endfor %}
                         {% endif %}
                     </td>
                     <td>{{ type.spare_part.code_produit }}</td>

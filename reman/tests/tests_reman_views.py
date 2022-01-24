@@ -11,11 +11,11 @@ class RemanTestCase(UnitTest):
 
     def setUp(self):
         super(RemanTestCase, self).setUp()
-        self.psaBarcode = '9612345678'
+        self.barcode = '9612345678'
         spare_part = SparePart.objects.create(code_produit='test HW_9876543210')
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test', spare_part=spare_part)
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
-        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_type=ecu_type, psa_barcode=self.psaBarcode)
+        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_type=ecu_type, barcode=self.barcode)
         self.batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         self.repair = Repair.objects.create(
             batch=self.batch, identify_number="C001010001", created_by=self.user, status="Réparé", quality_control=True)
@@ -101,11 +101,11 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
         # Invalid form
-        response = self.client.post(url, {'psa_barcode': ''})
-        self.assertFormError(response, 'form', 'psa_barcode', _('This field is required.'))
+        response = self.client.post(url, {'barcode': ''})
+        self.assertFormError(response, 'form', 'barcode', _('This field is required.'))
         for barcode in ['123456789', '96123']:
-            response = self.client.post(url, {'psa_barcode': barcode})
-            self.assertFormError(response, 'form', 'psa_barcode', _('The barcode is invalid'))
+            response = self.client.post(url, {'barcode': barcode})
+            self.assertFormError(response, 'form', 'barcode', _('The barcode is invalid'))
 
         # Valid form
         barcode_list = [
@@ -113,15 +113,15 @@ class RemanTestCase(UnitTest):
             ('9887654321', '9887654321'), ('96876543210000000000', '9687654321'), ('89661-0H390', '89661-0H390')
         ]
         for barcode in barcode_list:
-            response = self.client.post(url, {'psa_barcode': barcode[0]})
+            response = self.client.post(url, {'barcode': barcode[0]})
             self.assertRedirects(
-                response, reverse('reman:part_create', kwargs={'psa_barcode': barcode[1]}), status_code=302)
-        response = self.client.post(url, {'psa_barcode': self.psaBarcode})
-        ecu = EcuModel.objects.get(psa_barcode=self.psaBarcode)
+                response, reverse('reman:part_create', kwargs={'barcode': barcode[1]}), status_code=302)
+        response = self.client.post(url, {'barcode': self.barcode})
+        ecu = EcuModel.objects.get(barcode=self.barcode)
         self.assertEquals(response.context['ecu'], ecu)
 
     def test_new_part_email(self):
-        url = reverse('reman:part_email', kwargs={'psa_barcode': self.psaBarcode})
+        url = reverse('reman:part_email', kwargs={'barcode': self.barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -185,8 +185,8 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.data, self.authError)
 
     def test_part_create_view(self):
-        psa_barcode = '9676543210'
-        url = reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode})
+        barcode = '9676543210'
+        url = reverse('reman:part_create', kwargs={'barcode': barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -200,7 +200,7 @@ class RemanTestCase(UnitTest):
                 self.assertEqual(response.status_code, 200)
 
     def test_ref_base_edit_view(self):
-        url = reverse('reman:edit_ref_base', kwargs={'psa_barcode': self.psaBarcode})
+        url = reverse('reman:edit_ref_base', kwargs={'barcode': self.barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 

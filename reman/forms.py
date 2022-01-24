@@ -11,7 +11,7 @@ from .tasks import cmd_exportreman_task
 from volvo.models import SemRefBase
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
-from utils.django.validators import validate_psa_barcode, validate_identify_number
+from utils.django.validators import validate_psa_barcode, validate_identify_number, validate_barcode
 
 
 """
@@ -214,8 +214,13 @@ class AddRepairForm(BSModalModelForm):
 
     def clean_barcode(self):
         data = self.cleaned_data["barcode"]
-        data, message = validate_psa_barcode(data)
-        if message or not self.queryset.filter(ecu_ref_base__ecu_type__ecumodel__psa_barcode=data):
+        data, batch_type = validate_barcode(data)
+        try:
+            if batch_type == "PSA":
+                self.queryset.get(ecu_ref_base__ecu_type__ecumodel__barcode=data)
+            else:
+                self.queryset.get(sem_ref_base__ecu_type__semmodel__pf_code_oe__startwith=data[:10])
+        except Batch.DoesNotExist:
             self.add_error('barcode', _('barcode is invalid'))
         return data
 
@@ -416,11 +421,11 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    psa_barcode = forms.CharField(label="Code Barre PSA", max_length=60,
-                                  widget=forms.TextInput(attrs={'class': 'form-control', 'autofocus': ''}))
+    barcode = forms.CharField(label="Code Barre", max_length=60,
+                              widget=forms.TextInput(attrs={'class': 'form-control', 'autofocus': ''}))
 
-    def clean_psa_barcode(self):
-        data = self.cleaned_data['psa_barcode']
+    def clean_barcode(self):
+        data = self.cleaned_data['barcode']
         data, message = validate_psa_barcode(data)
         if message:
             raise forms.ValidationError(
@@ -461,9 +466,9 @@ class EcuTypeForm(BSModalModelForm):
 class EcuDumpModelForm(BSModalModelForm):
     class Meta:
         model = EcuModel
-        fields = ['psa_barcode', 'to_dump']
+        fields = ['barcode', 'to_dump']
         widgets = {
-            'psa_barcode': forms.TextInput(attrs={"readonly": ""})
+            'barcode': forms.TextInput(attrs={"readonly": ""})
         }
 
 
@@ -472,12 +477,12 @@ class PartEcuModelForm(forms.ModelForm):
 
     class Meta:
         model = EcuModel
-        fields = ['psa_barcode', 'hw_reference', 'oe_raw_reference', 'former_oe_reference']
+        fields = ['barcode', 'hw_reference', 'oe_raw_reference', 'former_oe_reference']
         widgets = {
-            'psa_barcode': forms.TextInput(attrs={'readonly': None})
+            'barcode': forms.TextInput(attrs={'readonly': None})
         }
         labels = {
-            'psa_barcode': 'Code barre PSA *'
+            'barcode': 'Code barre PSA *'
         }
 
     def save(self, commit=True):

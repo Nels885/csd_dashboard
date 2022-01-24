@@ -43,10 +43,10 @@
                         Afficher
                     </a>
                     <div class="collapse mt-2" id="{{ batch }}">
-                        {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
+                        {% for ecu in ecus %}{{ ecu.barcode }}<br>{% endfor %}
                     </div>
                 {% else %}
-                    {% for ecu in ecus %}{{ ecu.psa_barcode }}<br>{% endfor %}
+                    {% for ecu in ecus %}{{ ecu.barcode }}<br>{% endfor %}
                 {% endif %}
             {% endwith %}
         </td>

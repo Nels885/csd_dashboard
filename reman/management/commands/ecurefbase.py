@@ -68,7 +68,7 @@ class Command(BaseCommand):
                     ecu_model_values = defaults_dict(EcuModel, row, "psa_barcode")
                     ecu_model_values['ecu_type'] = type_obj
                     ecu_obj, ecu_created = EcuModel.objects.update_or_create(
-                        psa_barcode=row['psa_barcode'], defaults=ecu_model_values
+                        barcode=row['psa_barcode'], defaults=ecu_model_values
                     )
                     if not ecu_created:
                         nb_ecu_update += 1

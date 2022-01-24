@@ -102,10 +102,10 @@ class RemanCheckOutViewSet(viewsets.ModelViewSet):
     """ API endpoint that allows users to be viewed or edited. """
     authentication_classes = (TokenAuthSupportQueryString,)
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = EcuModel.objects.all().order_by('psa_barcode')
+    queryset = EcuModel.objects.all().order_by('barcode')
     serializer_class = RemanCheckOutSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['psa_barcode', 'ecu_type__ecurefbase__reman_reference', 'ecu_type__hw_reference']
+    search_fields = ['barcode', 'ecu_type__ecurefbase__reman_reference', 'ecu_type__hw_reference']
     http_method_names = ['get']
 
 
@@ -116,7 +116,7 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
     serializer_class = RemanRepairSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = [
-        'identify_number', 'batch__batch_number', 'psa_barcode', 'batch__ecu_ref_base__ecu_type__hw_reference'
+        'identify_number', 'batch__batch_number', 'barcode', 'batch__ecu_ref_base__ecu_type__hw_reference'
     ]
     http_method_names = ['get']
 

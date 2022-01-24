@@ -10,9 +10,9 @@
             {% csrf_token %}
 
             <div class="form-group row">
-                <label for="{{ form.psa_barcode.id_for_label }}" class="col-form-label col-sm-2">{{ form.psa_barcode.label }}</label>
+                <label for="{{ form.barcode.id_for_label }}" class="col-form-label col-sm-2">{{ form.barcode.label }}</label>
                 <div class="col-sm-6">
-                    {{ form.psa_barcode }}
+                    {{ form.barcode }}
                 </div>
                 <div class="col-sm-4">
                     <button type="submit" class="btn btn-success btn-icon-split">
