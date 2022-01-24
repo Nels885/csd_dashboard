@@ -1,7 +1,7 @@
 {% if object %}
     <table class="table table-bordered table-striped table-sm mt-4">
 
-        {% include 'format/collapse_thead.html' with id="collapseProg" expanded=collapse.prog thead_title="PROGRAMMATION :" %}
+        {% include 'format/collapse_thead.html' with id="collapseProg" expanded=collapse.prog upper_title="programmation" %}
 
         <tbody class="collapse {% if collapse.prog %}show{% endif %}" id="collapseProg">
         <tr>
