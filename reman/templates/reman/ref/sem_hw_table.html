@@ -4,27 +4,7 @@
 
 {% block card_header %}
 
-    <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs" role="tablist">
-
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'reman:base_ref_table' %}">Réf. REMAN ECU</a>
-            </li>
-
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'reman:ecu_hw_table' %}">Réf. HW ECU</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'volvo:reman_ref_table' %}">Réf. REMAN SEM</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link active" href="{% url 'volvo:sem_hw_table' %}">Réf. HW SEM</a>
-            </li>
-
-        </ul>
-    </div>
+    {% include 'reman/format/ref_card_header.html' with active=4 %}
 
 {% endblock %}
 
@@ -49,7 +29,7 @@
     </thead>
     <tbody>
 
-    {% for type in obj %}
+    {% for type in ecus %}
         <tr>
             <td class="bg-white text-nowrap" style="width: 60px;">
                 {% if perms.volvo.change_semtype %}
@@ -60,7 +40,7 @@
                     <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
                 {% endif %}
                 {% if perms.volvo.add_semtype %}
-                    <button title="Copie" class="bs-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_create' %}?asm={{ type.asm_reference }}">
+                    <button title="Copie" class="bs-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_create' %}?hw={{ type.hw_reference }}">
                         <i class="fas fa-copy"></i>
                     </button>
                 {% else %}
@@ -72,33 +52,33 @@
             <td>{{ type.technical_data }}</td>
             <td>{{ type.supplier_oe }}</td>
             <td>
-                {% with models=type.semmodel_set.all %}
+                {% with models=type.ecumodel_set.all %}
 
                     {% if models|length > 1 %}
                         <a data-toggle="collapse" href="#ref_{{ type.pk }}" role="button" aria-expanded="false">
                             Afficher
                         </a>
                         <div class="collapse mt-2" id="ref_{{ type.pk }}">
-                            {% for model in models %}{{ model.pf_code_oe }}<br>{% endfor %}
+                            {% for model in models %}{{ model.barcode }}<br>{% endfor %}
                         </div>
                     {% else %}
-                        {% for model in models %}{{ model.pf_code_oe }}<br>{% endfor %}
+                        {% for model in models %}{{ model.barcode }}<br>{% endfor %}
                     {% endif %}
 
                 {% endwith %}
             </td>
             <td>
-                {% with models=type.semmodel_set.all %}
+                {% with models=type.ecumodel_set.all %}
 
                     {% if models|length > 1 %}
                         <a data-toggle="collapse" href="#ref_{{ type.pk }}" role="button" aria-expanded="false">
                             Afficher
                         </a>
                         <div class="collapse mt-2" id="ref_{{ type.pk }}">
-                            {% for model in models %}{{ model.pi_code_oe }}<br>{% endfor %}
+                            {% for model in models %}{{ model.oe_reference }}<br>{% endfor %}
                         </div>
                     {% else %}
-                        {% for model in models %}{{ model.pi_code_oe }}<br>{% endfor %}
+                        {% for model in models %}{{ model.oe_reference }}<br>{% endfor %}
                     {% endif %}
 
                 {% endwith %}

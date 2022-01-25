@@ -540,19 +540,26 @@ def part_table(request):
 @permission_required('reman.view_ecurefbase')
 def base_ref_table(request):
     """ View of EcuRefBase table page """
+    if request.GET.get('customer', None) == "volvo":
+        title = "Reman VOLVO"
+        refs = EcuRefBase.objects.filter(brand__in=['VOLVO', 'RENAULT'])
+        return render(request, 'reman/ref/sem_ref_table.html', locals())
     title = "Reman PSA"
-    table_title = 'REMAN Référence'
-    refs = EcuRefBase.objects.all()
-    return render(request, 'reman/base_ref_table.html', locals())
+    refs = EcuRefBase.objects.exclude(brand__in=['VOLVO', 'RENAULT'])
+    return render(request, 'reman/ref/base_ref_table.html', locals())
 
 
 @login_required()
 def ecu_hw_table(request):
     """ View of EcuType table page """
+    if request.GET.get('customer', None) == "volvo":
+        title = "Reman VOLVO"
+        ecus = EcuType.objects.filter(technical_data="SEM")
+        return render(request, 'reman/ref/sem_hw_table.html', locals())
     title = "Reman PSA"
     table_title = 'Référence Hardware'
-    ecus = EcuType.objects.all()
-    return render(request, 'reman/ecu_hw_table.html', locals())
+    ecus = EcuType.objects.exclude(technical_data="SEM")
+    return render(request, 'reman/ref/ecu_hw_table.html', locals())
 
 
 @login_required

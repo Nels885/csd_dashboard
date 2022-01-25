@@ -45,11 +45,8 @@
         <tbody>
 
         {% for batch in batchs %}
-            {% if batch.ecu_ref_base %}
-                {% include 'reman/format/psa_row_format.html' %}
-            {% else %}
-                {% include 'reman/format/volvo_row_format.html' %}
-            {% endif %}
+
+            {% include 'reman/format/psa_row_format.html' %}
 
         {% endfor %}
 

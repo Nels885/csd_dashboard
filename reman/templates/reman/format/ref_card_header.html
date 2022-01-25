@@ -1,0 +1,21 @@
+<div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+        <li class="nav-item {% if active == 1 %}active{% endif %}">
+            <a class="nav-link {% if active == 1 %}active{% endif %}" href="{% url 'reman:base_ref_table' %}">Réf. REMAN ECU</a>
+        </li>
+
+        <li class="nav-item {% if active == 2 %}active{% endif %}">
+            <a class="nav-link {% if active == 2 %}active{% endif %}" href="{% url 'reman:ecu_hw_table' %}">Réf. HW ECU</a>
+        </li>
+
+        <li class="nav-item {% if active == 3 %}active{% endif %}">
+            <a class="nav-link {% if active == 3 %}active{% endif %}" href="{% url 'reman:base_ref_table' %}?customer=volvo">Réf. REMAN SEM</a>
+        </li>
+
+        <li class="nav-item {% if active == 4 %}active{% endif %}">
+            <a class="nav-link {% if active == 4 %}active{% endif %}" href="{% url 'reman:ecu_hw_table' %}?customer=volvo">Réf. HW SEM</a>
+        </li>
+
+    </ul>
+</div>
