@@ -78,7 +78,7 @@ class SparePartAdmin(admin.ModelAdmin):
 
 
 class EcuModelAdmin(admin.ModelAdmin):
-    list_display = ('barcode', 'oe_raw_reference', 'sw_reference', 'get_ecu_type', 'to_dump')
+    list_display = ('barcode', 'oe_raw_reference', 'oe_reference', 'get_ecu_type', 'to_dump')
     ordering = ('barcode', 'oe_raw_reference')
     list_filter = ('ecu_type', 'to_dump')
     search_fields = ('barcode', 'ecu_type__hw_reference', 'ecu_type__technical_data')

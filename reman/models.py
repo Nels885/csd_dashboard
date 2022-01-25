@@ -26,12 +26,13 @@ class EcuType(models.Model):
 
 
 class EcuModel(models.Model):
-    barcode = models.CharField("code barre PSA", max_length=20, unique=True)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
-    oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
-    sw_reference = models.CharField("software", max_length=10, blank=True)
+    barcode = models.CharField("code barre PSA", max_length=50, unique=True)
+    oe_raw_reference = models.CharField("référence OEM brute", max_length=50, blank=True)
+    oe_reference = models.CharField("référence OEM", max_length=50, blank=True)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
-    supplier_es = models.CharField("service après vente", max_length=50, blank=True)
+    vehicle = models.CharField("vehicule", max_length=50, blank=True)
+    fan = models.CharField('FAN', max_length=100, blank=True)
+    rear_bolt = models.CharField('REAR BOLT', max_length=100, blank=True)
     ecu_type = models.ForeignKey("EcuType", on_delete=models.SET_NULL, null=True, blank=True)
     to_dump = models.BooleanField("à dumper", default=False)
 
@@ -66,6 +67,7 @@ class EcuModel(models.Model):
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
+    brand = models.CharField("Marque", max_length=50, blank=True)
     ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
     ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
     req_diag = models.CharField("REQ_DIAG", max_length=50, blank=True)
@@ -79,6 +81,9 @@ class EcuRefBase(models.Model):
     status = models.CharField("STATUT", max_length=50, blank=True)
     test_clear_memory = models.CharField("TEST_CLEAR_MEMORY", max_length=10, blank=True)
     cle_appli = models.CharField("CLE_APPLI", max_length=50, blank=True)
+    map_data = models.CharField("map data", max_length=100, blank=True)
+    product_part = models.CharField("product part", max_length=8, blank=True)
+    pf_code = models.CharField("PF code REMAN", max_length=10, blank=True)
     ecu_type = models.ForeignKey("EcuType", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
