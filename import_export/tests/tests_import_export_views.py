@@ -20,11 +20,11 @@ class ImportExportTestCase(UnitTest):
             electronique_16p='9812345680', electronique_16b='9812345680'
         )
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, corvet=corvet)
-        psaBarcode = '9612345678'
+        barcode = '9612345678'
         spare_part = SparePart.objects.create(code_produit='test HW_9876543210')
         ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test', spare_part=spare_part)
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
-        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_type=ecu_type, psa_barcode=psaBarcode)
+        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_type=ecu_type, barcode=barcode)
         batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
         Repair.objects.create(batch=batch, identify_number="C001010001", created_by=self.user)
         Suptech.objects.create(
