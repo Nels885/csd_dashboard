@@ -4,6 +4,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from ckeditor.fields import RichTextField
 
 from utils.django.urls import reverse_lazy
@@ -102,10 +104,10 @@ class Batch(models.Model):
     is_barcode = models.BooleanField(default=False)
     start_date = models.DateField("date de début", null=True)
     end_date = models.DateField("date de fin", null=True)
+    closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
     created_at = models.DateTimeField(editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
     ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.SET_NULL, null=True, blank=True)
-    sem_ref_base = models.ForeignKey("volvo.SemRefBase", on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         permissions = [("pdfgen_batch", "Can pdfgen batch")]
@@ -151,6 +153,7 @@ class Repair(models.Model):
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
     default = models.ForeignKey("Default", related_name="repairs", on_delete=models.SET_NULL, null=True, blank=True)
+    parts = GenericRelation('RepairPart')
 
     class Meta:
         permissions = [
@@ -177,3 +180,17 @@ class SparePart(models.Model):
 
     def __str__(self):
         return self.code_produit
+
+
+class RepairPart(models.Model):
+    product_code = models.CharField('code produit', max_length=100)
+    part_number = models.CharField('n° de pièce', max_length=100)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Pièce réparation"
+
+    def __str__(self):
+        return f"Pièces sur {self.content_object}"

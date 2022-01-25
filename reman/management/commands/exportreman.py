@@ -60,19 +60,11 @@ class Command(BaseCommand):
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
                 'active', 'customer', 'created_by__username', 'created_at'
             ).distinct())
-
-            # Batch for VOLVO
-            volvo_batch = Batch.objects.filter(sem_ref_base__isnull=False).order_by('batch_number')
-            values_list += list(volvo_batch.values_list(
-                'batch_number', 'quantity', 'sem_ref_base__reman_reference', 'sem_ref_base__ecu_type__technical_data',
-                'sem_ref_base__ecu_type__hw_reference', 'sem_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
-                'active', 'customer', 'created_by__username', 'created_at'
-            ).distinct())
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
-                        psa_batch.count() + volvo_batch.count(), os.path.join(path, filename)
+                        psa_batch.count(), os.path.join(path, filename)
                     )
                 )
             )

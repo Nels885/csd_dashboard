@@ -8,7 +8,6 @@ from tempus_dominus.widgets import DatePicker
 
 from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from .tasks import cmd_exportreman_task
-from volvo.models import SemRefBase
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
 from utils.django.validators import validate_psa_barcode, validate_identify_number, validate_barcode
@@ -99,19 +98,12 @@ class AddBatchForm(BSModalModelForm):
 
     def clean_ref_reman(self):
         data = self.cleaned_data['ref_reman']
-        batch_type = self.cleaned_data['type']
         try:
-            if "VOLVO" in batch_type:
-                ecu = SemRefBase.objects.get(reman_reference__exact=data)
-                if not self.errors:
-                    batch = super().save(commit=False)
-                    batch.sem_ref_base = ecu
-            else:
-                ecu = EcuRefBase.objects.get(reman_reference__exact=data)
-                if not self.errors:
-                    batch = super().save(commit=False)
-                    batch.ecu_ref_base = ecu
-        except (EcuRefBase.DoesNotExist, SemRefBase.DoesNotExist):
+            ecu = EcuRefBase.objects.get(reman_reference__exact=data)
+            if not self.errors:
+                batch = super().save(commit=False)
+                batch.ecu_ref_base = ecu
+        except EcuRefBase.DoesNotExist:
             self.add_error('ref_reman', 'reference non valide')
         return data
 
