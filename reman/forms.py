@@ -214,15 +214,13 @@ class AddRepairForm(BSModalModelForm):
 
     def clean_barcode(self):
         data = self.cleaned_data["barcode"]
-        data, batch_type = validate_barcode(data)
+        barcode, batch_type = validate_barcode(data)
         try:
-            if batch_type == "PSA":
-                self.queryset.get(ecu_ref_base__ecu_type__ecumodel__barcode=data)
-            else:
-                self.queryset.get(sem_ref_base__ecu_type__semmodel__pf_code_oe__startwith=data[:10])
+            self.queryset.get(ecu_ref_base__ecu_type__ecumodel__barcode__startwith=barcode[:10])
         except Batch.DoesNotExist:
             self.add_error('barcode', _('barcode is invalid'))
-        return data
+        finally:
+            return data
 
     def clean(self):
         cleaned_data = super().clean()
