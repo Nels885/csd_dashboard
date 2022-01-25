@@ -11,7 +11,7 @@ class RemanForm(BSModalModelForm):
 
     class Meta:
         model = EcuRefBase
-        fields = ['reman_reference','hw_reference', 'brand', 'map_data', 'pf_code', 'product_part']
+        fields = ['reman_reference', 'hw_reference', 'brand', 'map_data', 'pf_code', 'product_part']
 
     def __init__(self, *args, **kwargs):
         ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')

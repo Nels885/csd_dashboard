@@ -23,7 +23,7 @@ class MixinsTest(UnitTest):
         self.login()
 
         # First post request = ajax request checking if form in view is valid
-        for hw_ref in ['', '0123456789', '9876543210']:
+        for hw_ref in ['', '9876543210']:
             response = self.client.post(
                 reverse('volvo:sem_hw_create'),
                 data={
