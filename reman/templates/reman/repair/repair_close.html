@@ -34,6 +34,13 @@
                 </div>
             </div>
 
+            {% if form.new_barcode.field.required %}
+                <div class="form-group row">
+                    <label for="{{ form.new_barcode.id_for_label }}" class="col-sm-2 col-form-label">{{ form.new_barcode.label }} :</label>
+                    <div class="col-sm-4">{{ form.new_barcode }}</div>
+                </div>
+            {% endif %}
+
             <hr>
             <h5 class="text-gray-800 mt-5">Contrôles :</h5>
             <hr>

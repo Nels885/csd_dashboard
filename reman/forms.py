@@ -264,6 +264,8 @@ class EditRepairForm(forms.ModelForm):
 
 
 class CloseRepairForm(forms.ModelForm):
+    new_barcode = forms.CharField(label='Nouveau code barre', max_length=20, required=True,
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -273,10 +275,12 @@ class CloseRepairForm(forms.ModelForm):
         if instance and instance.checkout:
             self.fields['status'].widget.attrs['disabled'] = 'disabled'
             self.fields['quality_control'].widget.attrs['disabled'] = 'disabled'
+        if instance and not instance.batch.is_barcode:
+            self.fields['new_barcode'].required = False
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'status', 'quality_control']
+        fields = ['identify_number', 'product_number', 'remark', 'new_barcode', 'status', 'quality_control']
         widgets = {
             'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
             'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
