@@ -50,15 +50,15 @@ class Command(BaseCommand):
             filename = conf.BATCH_EXPORT_FILE
 
             header = [
-                'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
-                'Date_de_fin', 'Actif', 'Client', 'Ajoute par', 'Ajoute le'
+                'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'PF_Code', 'Fabriquant',
+                'Date_de_Debut', 'Date_de_fin', 'Actif', 'Client', 'Ajoute par', 'Ajoute le'
             ]
             # Batch for PSA
             psa_batch = Batch.objects.filter(ecu_ref_base__isnull=False).order_by('batch_number')
             values_list = list(psa_batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
-                'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
-                'active', 'customer', 'created_by__username', 'created_at'
+                'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__pf_code', 'ecu_ref_base__ecu_type__supplier_oe',
+                'start_date', 'end_date', 'active', 'customer', 'created_by__username', 'created_at'
             ).distinct())
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
             self.stdout.write(
