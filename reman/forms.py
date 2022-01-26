@@ -117,6 +117,7 @@ class AddBatchForm(BSModalModelForm):
             elif batch_type in ["REMAN_VOLVO", "ETUDE_VOLVO"]:
                 batch.year = "V"
                 batch.customer = "VOLVO"
+                batch.is_barcode = True
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
@@ -181,7 +182,7 @@ TECHNICIAN FORMS
 
 
 class AddRepairForm(BSModalModelForm):
-    barcode = forms.CharField(label='Code barre', max_length=100,
+    barcode = forms.CharField(label='Code barre', max_length=50,
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
@@ -207,12 +208,12 @@ class AddRepairForm(BSModalModelForm):
     def clean_barcode(self):
         data = self.cleaned_data["barcode"]
         barcode, batch_type = validate_barcode(data)
+        print(self.queryset)
         try:
-            self.queryset.get(ecu_ref_base__ecu_type__ecumodel__barcode__startwith=barcode[:10])
+            self.queryset.get(ecu_ref_base__ecu_type__ecumodel__barcode__startswith=barcode[:10])
         except Batch.DoesNotExist:
             self.add_error('barcode', _('barcode is invalid'))
-        finally:
-            return data
+        return data
 
     def clean(self):
         cleaned_data = super().clean()
@@ -264,7 +265,7 @@ class EditRepairForm(forms.ModelForm):
 
 
 class CloseRepairForm(forms.ModelForm):
-    new_barcode = forms.CharField(label='Nouveau code barre', max_length=20, required=True,
+    new_barcode = forms.CharField(label='Nouveau code barre', max_length=100, required=True,
                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
@@ -415,7 +416,7 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    barcode = forms.CharField(label="Code Barre", max_length=60,
+    barcode = forms.CharField(label="Code Barre", max_length=50,
                               widget=forms.TextInput(attrs={'class': 'form-control', 'autofocus': ''}))
 
     def clean_barcode(self):

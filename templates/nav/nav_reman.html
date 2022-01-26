@@ -76,7 +76,7 @@
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">VOLVO :</h6>
                     <a class="collapse-item" href="{% url 'reman:base_ref_table' %}?customer=volvo">{% trans "REMAN References" %}</a>
-                    <a class="collapse-item" href="#">{% trans "HW References" %}</a>
+                    <a class="collapse-item" href="{% url 'reman:ecu_hw_table' %}?customer=volvo">{% trans "HW References" %}</a>
 
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans 'Common' %} :</h6>

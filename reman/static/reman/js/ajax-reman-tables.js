@@ -4,7 +4,7 @@ $(document).ready(function () {
         serverSide: true,
         lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
-        order: [[1, "asc"]],
+        order: [[12, "desc"]],
         ajax: URL_AJAX,
         columns: [
             {
