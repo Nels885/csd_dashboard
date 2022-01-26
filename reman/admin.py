@@ -29,13 +29,13 @@ class EcuRefBaseAdmin(admin.ModelAdmin):
 
 class RepairAdmin(admin.ModelAdmin):
     list_display = (
-        'identify_number', 'get_batch_number', 'get_brand', 'get_hw_reference', 'barcode', 'created_at', 'status',
+        'identify_number', 'get_batch_number', 'get_customer', 'get_hw_reference', 'barcode', 'created_at', 'status',
         'quality_control', 'checkout', 'closing_date'
     )
     ordering = ('identify_number', 'batch__batch_number')
     list_filter = ('status', 'quality_control', 'checkout')
     search_fields = (
-        'identify_number', 'batch__batch_number', 'batch__brand', 'batch__ecu_ref_base__ecu_type__hw_reference')
+        'identify_number', 'batch__batch_number', 'batch__customer', 'batch__ecu_ref_base__ecu_type__hw_reference')
     actions = ('checkout_enabled',)
 
     def _message_user_about_update(self, request, rows_updated, verb):
@@ -60,14 +60,14 @@ class RepairAdmin(admin.ModelAdmin):
     def get_batch_number(self, obj):
         return obj.batch.batch_number
 
-    def get_brand(self, obj):
-        return obj.batch.brand
+    def get_customer(self, obj):
+        return obj.batch.customer
 
     def get_hw_reference(self, obj):
         return obj.batch.ecu_ref_base.ecu_type.hw_reference
 
     get_batch_number.short_description = "batch number"
-    get_brand.short_description = "brand"
+    get_customer.short_description = "customer"
     get_hw_reference.short_description = "hw reference"
 
 
