@@ -324,6 +324,7 @@ class MixinsTest(UnitTest):
                 reverse('reman:ecu_hw_create'),
                 data={
                     'hw_reference': hw_ref,
+                    'hw_type': 'ECU',
                     'technical_data': tech_data,
                 },
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -342,6 +343,7 @@ class MixinsTest(UnitTest):
             reverse('reman:ecu_hw_create'),
             data={
                 'hw_reference': '1234567890',
+                'hw_type': 'ECU',
                 'technical_data': 'test',
                 'status': 'test'
             },
@@ -367,6 +369,7 @@ class MixinsTest(UnitTest):
             reverse('reman:ecu_hw_update', kwargs={'pk': ecu_type.pk}),
             data={
                 'hw_reference': ecu_type.hw_reference,
+                'hw_type': 'ECU',
                 'technical_data': 'test',
             }
         )

@@ -114,7 +114,9 @@ def validate_barcode(value):
         return value, "PSA"
     elif re.match(r'^\[\)>\w{55}$', str(value)):
         return value[21:29], "PSA"
-    return value, "VOLVO"
+    elif re.match(r'^PF\w{16}$', str(value)):
+        return value[:10], "VOLVO"
+    return value, None
 
 
 def validate_identify_number(queryset, value):
