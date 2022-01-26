@@ -12,10 +12,12 @@ from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
 
 STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 'Rebut')]
+HW_TYPE_CHOICES = [('ECU', 'ECU'), ('NAV', 'NAV')]
 
 
 class EcuType(models.Model):
-    hw_reference = models.CharField("hardware", max_length=20, unique=True)
+    hw_reference = models.CharField("hardware", max_length=50, unique=True)
+    hw_type = models.CharField("type HW", max_length=50, choices=HW_TYPE_CHOICES, default="ECU")
     technical_data = models.CharField("modèle produit", max_length=50)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
@@ -141,6 +143,11 @@ class Repair(models.Model):
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=200, blank=True)
     comment = RichTextField("Commentaires action", max_length=500, config_name="comment", blank=True)
+    face_plate = models.BooleanField("façade", default=False)
+    metal_case = models.BooleanField("boitier", default=False)
+    fan = models.BooleanField("ventilateur", default=False)
+    locating_pin = models.BooleanField("goupille d'emplacement", default=False)
+    spring_locking = models.BooleanField("verrouillage à ressort", default=False)
     status = models.CharField("status", max_length=50, default='En cours', choices=STATUS_CHOICES)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
@@ -156,6 +163,7 @@ class Repair(models.Model):
     parts = GenericRelation('RepairPart')
 
     class Meta:
+        ordering = ['-modified_at']
         permissions = [
             ("close_repair", "Can close repair"),
             ("stock_repair", "Can stock repair")

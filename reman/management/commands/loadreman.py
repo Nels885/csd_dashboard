@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 # Update or Create SemType
                 if row.get('hw_reference'):
                     type_values = defaults_dict(EcuType, row, "hw_reference")
-                    type_values.update({'technical_data': 'SEM', 'supplier_oe': 'PARROT'})
+                    type_values.update({'hw_type': 'NAV', 'technical_data': 'SEM', 'supplier_oe': 'PARROT'})
                     type_obj, type_created = EcuType.objects.update_or_create(
                         hw_reference=row.get('hw_reference'), defaults=type_values)
                     if not type_created:

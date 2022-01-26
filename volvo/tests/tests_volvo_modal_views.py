@@ -28,6 +28,7 @@ class MixinsTest(UnitTest):
                 reverse('volvo:sem_hw_create'),
                 data={
                     'hw_reference': hw_ref,
+                    'hw_type': 'ECU',
                     'technical_data': 'SEM',
                     'supplier_oe': 'PARROT',
                 },
@@ -47,6 +48,7 @@ class MixinsTest(UnitTest):
             reverse('volvo:sem_hw_create'),
             data={
                 'hw_reference': '1234567890',
+                'hw_type': 'ECU',
                 'technical_data': 'SEM',
                 'supplier_oe': 'PARROT',
             },

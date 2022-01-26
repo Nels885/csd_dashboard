@@ -19,9 +19,9 @@
     <thead>
     <tr>
         <th></th>
-        <th>Réf. ASM OE</th>
         <th>Réf. Hardware</th>
-        <th>Module Moteur</th>
+        <th>Type Hardware</th>
+        <th>Modèle</th>
         <th>Fournisseur</th>
         <th>PF code OE</th>
         <th>PI code OE</th>
@@ -47,8 +47,8 @@
                     <i class="btn btn-dark btn-circle btn-sm fas fa-copy"></i>
                 {% endif %}
             </td>
-            <td>{{ type.asm_reference }}</td>
             <td>{{ type.hw_reference }}</td>
+            <td>{{ type.hw_type }}</td>
             <td>{{ type.technical_data }}</td>
             <td>{{ type.supplier_oe }}</td>
             <td>
