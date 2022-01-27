@@ -4,7 +4,7 @@ from io import StringIO, BytesIO
 from django.utils import timezone
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -27,12 +27,12 @@ from utils.django.urls import reverse, reverse_lazy, http_referer
 from utils.conf import string_to_list, DICT_YEAR
 from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase
+from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase, RepairPart
 from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm
+    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm, RepairPartForm
 )
 from .utils import batch_pdf_data
 
@@ -53,12 +53,20 @@ def repair_edit(request, pk):
     card_title = _('Modification customer file')
     prod = get_object_or_404(Repair, pk=pk)
     form = EditRepairForm(request.POST or None, instance=prod)
-    if request.POST and form.is_valid():
-        form.save()
-        messages.success(request, _('Modification done successfully!'))
-        if "btn_repair_close" in request.POST:
-            return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
-        return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
+    form2 = RepairPartForm(request.GET or None)
+    if request.POST:
+        form2 = RepairPartForm(request.POST)
+        if "repair_part" in request.POST and form2.is_valid():
+            product_code = form2.cleaned_data['product_code']
+            part_number = form2.cleaned_data['part_number']
+            RepairPart.objects.create(product_code=product_code, part_number=part_number, content_object=prod)
+            form2 = RepairPartForm()
+        elif "repair_part" not in request.POST and form.is_valid():
+            form.save()
+            messages.success(request, _('Modification done successfully!'))
+            if "btn_repair_close" in request.POST:
+                return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
+            return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
     return render(request, 'reman/repair/repair_edit.html', context)
 
@@ -92,6 +100,20 @@ class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/repair_create.html'
     form_class = AddRepairForm
     success_message = _('Success: Repair was created.')
+
+
+class RepairPartDeleteView(LoginRequiredMixin, BSModalDeleteView):
+    model = RepairPart
+    template_name = 'format/modal_delete.html'
+    success_message = _('Success: Repair part was deleted.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Repair part delete')
+        return context
+
+    def get_success_url(self):
+        return http_referer(self.request)
 
 
 """

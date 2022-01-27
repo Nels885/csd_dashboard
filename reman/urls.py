@@ -14,6 +14,7 @@ urlpatterns = [
     path('repair/<int:pk>/edit/', views.repair_edit, name='edit_repair'),
     path('repair/<int:pk>/close/', views.repair_close, name='close_repair'),
     path('repair/<int:pk>/detail/', views.repair_detail, name='detail_repair'),
+    path('repair-part/<int:pk>/delete/', views.RepairPartDeleteView.as_view(), name='delete_repair_part'),
     path('out/filter/', views.CheckOutFilterView.as_view(), name='out_filter'),
     path('out/table/', views.out_table, name='out_table'),
     path('part/table/', views.part_table, name='part_table'),

@@ -37,6 +37,46 @@
                 </div>
             {% endif %}
 
+            <hr>
+            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
+            <hr>
+
+            {% if prod.parts.all %}
+                {% for part in prod.parts.all %}
+                    <div class="form-group row">
+                        <label for="form-product_code" class="col-sm-2 col-form-label">Code produit :</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}">
+                        </div>
+
+                        <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}">
+                        </div>
+
+                        <div class="col-sm-1">
+                            <a href="#" data-form-url="{% url 'reman:delete_repair_part' part.pk %}" class="bs-modal btn btn-danger add-form-row">-</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">{{ form2.product_code.label }} :</label>
+                <div class="col-sm-3">{{ form2.product_code }}</div>
+                <label class="col-sm-2 col-form-label">{{ form2.part_number.label }} :</label>
+                <div class="col-sm-2">{{ form2.part_number }}</div>
+                <div class="col-sm-1">
+                    <button name="repair_part" class="btn btn-success">+</button>
+                </div>
+            </div>
+            <div class="{% if form2.non_field_errors %}invalid{% endif %} text-danger mb-2">
+                {% for error in form2.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+
+
             {% if prod.batch.ecu_ref_base.ecu_type.hw_type == "NAV" %}
                 <hr>
                 <h5 class="text-gray-800 mt-5">Esthétiques :</h5>
@@ -56,25 +96,6 @@
                     <div class="col-sm-2">{{ form.metal_case }}</div>
                 </div>
             {% endif %}
-
-{#            <hr>#}
-{#            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>#}
-{#            <hr>#}
-{##}
-{#            {{ formset.management_form }}#}
-{#            {% for form in formset %}#}
-{#                <div class="form-group row">#}
-{#                    <label class="col-sm-1 col-form-label">{{ form.spare_parts.label }} :</label>#}
-{#                    <div class="col-sm-4">{{ form.spare_parts }}</div>#}
-{##}
-{#                    <label class="col-sm-2 col-form-label">{{ form.quantity.label }} :</label>#}
-{#                    <div class="col-sm-1">{{ form.quantity }}</div>#}
-{##}
-{#                    <div class="col-sm-2">#}
-{#                        <button class="btn btn-success">+</button>#}
-{#                    </div>#}
-{#                </div>#}
-{#            {% endfor %}#}
 
             <hr>
 

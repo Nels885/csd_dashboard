@@ -6,7 +6,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
-from .models import Batch, Repair, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
+from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
@@ -276,6 +276,29 @@ class EditRepairForm(forms.ModelForm):
             instance.save()
             cmd_exportreman_task.delay('--repair')
         return instance
+
+
+class RepairPartForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['product_code'].required = False
+        self.fields['part_number'].required = False
+
+    class Meta:
+        model = RepairPart
+        fields = ['product_code', 'part_number']
+        widgets = {
+            'product_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'part_number': forms.TextInput(attrs={'class': 'form-control'})
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        product_code = cleaned_data.get("product_code")
+        part_number = cleaned_data.get("part_number")
+        if not product_code or not part_number:
+            raise forms.ValidationError("Veuillez remplir les 2 champs")
 
 
 class CloseRepairForm(forms.ModelForm):
