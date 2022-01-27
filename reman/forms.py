@@ -238,9 +238,17 @@ class EditRepairForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.batch.ecu_ref_base:
+        if self.instance and self.instance.batch.ecu_ref_base:
             hw_reference = self.instance.batch.ecu_ref_base.ecu_type.hw_reference
             self.fields['default'].queryset = Default.objects.filter(ecu_type__hw_reference=hw_reference)
+        try:
+            ecu_model = EcuModel.objects.get(barcode=self.instance.barcode[:10])
+            if ecu_model and ecu_model.fan == "OLD":
+                self.fields['fan'].required = True
+            if ecu_model and ecu_model.rear_bolt == "CHANGE":
+                self.fields['locating_pin'].required = True
+        except EcuModel.DoesNotExist:
+            pass
 
     class Meta:
         model = Repair
