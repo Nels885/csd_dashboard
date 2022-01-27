@@ -5,10 +5,12 @@ from django.contrib.auth.models import User
 
 from rest_framework.authtoken.models import Token
 
+from utils.django.decorators import disable_for_loaddata
 from .models import UserProfile, ShowCollapse
 
 
 @receiver(post_save, sender=User)
+@disable_for_loaddata
 def create_user_profile(sender, created, instance, **kwargs):
     if created:
         UserProfile.objects.get_or_create(user=instance)
@@ -16,6 +18,7 @@ def create_user_profile(sender, created, instance, **kwargs):
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@disable_for_loaddata
 def create_auth_token(sender, instance=None, created=None, **kwargs):
     if created:
         Token.objects.get_or_create(user=instance)

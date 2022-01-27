@@ -1,10 +1,12 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from utils.django.decorators import disable_for_loaddata
 from .models import CorvetProduct, Corvet, Multimedia, Ecu, CorvetOption
 
 
 @receiver(post_save, sender=Corvet)
+@disable_for_loaddata
 def post_save_corvet(sender, created, instance, **kwargs):
     default = {}
     if instance.electronique_14x.isdigit():
@@ -35,12 +37,14 @@ def post_save_corvet(sender, created, instance, **kwargs):
 
 
 @receiver(post_save, sender=Multimedia)
+@disable_for_loaddata
 def post_save_multimedia(sender, created, instance, **kwargs):
     CorvetProduct.objects.filter(corvet__electronique_14x__exact=instance.hw_reference).update(btel=instance.pk)
     CorvetProduct.objects.filter(corvet__electronique_14f__exact=instance.hw_reference).update(radio=instance.pk)
 
 
 @receiver(post_save, sender=Ecu)
+@disable_for_loaddata
 def post_save_ecu(sender, created, instance, **kwargs):
     if instance.type == "BSI":
         CorvetProduct.objects.filter(corvet__electronique_14b__startswith=instance.comp_ref).update(bsi=instance.pk)

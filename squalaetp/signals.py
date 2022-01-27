@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from .models import Sivin, Xelon, ProductCategory
 from psa.models import Corvet, Ecu, Multimedia
 from utils.django.validators import comp_ref_isvalid, VIN_PSA_REGEX
+from utils.django.decorators import disable_for_loaddata
 
 
 def product_update(instance):
@@ -33,6 +34,7 @@ def product_update(instance):
 
 
 @receiver(pre_save, sender=Sivin)
+@disable_for_loaddata
 def pre_save_sivin(sender, instance, **kwargs):
     try:
         if not instance.corvet and re.match(VIN_PSA_REGEX, str(instance.codif_vin)):
@@ -42,6 +44,7 @@ def pre_save_sivin(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=Xelon)
+@disable_for_loaddata
 def pre_save_xelon(sender, instance, **kwargs):
     try:
         if re.match(VIN_PSA_REGEX, str(instance.vin)):
