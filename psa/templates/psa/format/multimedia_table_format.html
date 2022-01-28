@@ -33,6 +33,12 @@
             <td>{{ object.extra }}</td>
         </tr>
     {% endif %}
+    {% if object.emmc %}
+        <tr>
+            <td class="text-dark td-ihm">Réf eMMC</td>
+            <td>{{ object.emmc }}</td>
+        </tr>
+    {% endif %}
     {% if object.supplier_oe %}
         <tr>
             <td class="text-dark td-ihm">Fabriquant</td>
