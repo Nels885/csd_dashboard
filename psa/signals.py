@@ -12,7 +12,7 @@ def post_save_corvet(sender, created, instance, **kwargs):
     if instance.electronique_14x.isdigit():
         default.update({"btel": Multimedia.objects.filter(comp_ref__startswith=instance.electronique_14x).first()})
     if instance.electronique_14f.isdigit():
-        default.update({"radio": Multimedia.objects.filter(comp_ref__startswitch=instance.electronique_14f).first()})
+        default.update({"radio": Multimedia.objects.filter(comp_ref__startswith=instance.electronique_14f).first()})
     if instance.electronique_14b.isdigit():
         default.update({"bsi": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14b, type='BSI').first()})
     if instance.electronique_14l.isdigit():
