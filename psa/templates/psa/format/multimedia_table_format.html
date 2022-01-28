@@ -5,7 +5,7 @@
     <tbody class="collapse {% if collapse.media %}show{% endif %}" id="collapseMedia">
     <tr>
         <td class="text-dark td-ihm">Référence Comp. Mat.</td>
-        <td>{{ object.hw_reference|default:"???" }}</td>
+        <td>{{ object.comp_ref|default:"???" }}</td>
     </tr>
     {% if object.label_ref %}
         <tr>

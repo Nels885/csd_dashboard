@@ -281,8 +281,8 @@ class Multimedia(models.Model):
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
     ANT_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
 
-    hw_reference = models.BigIntegerField('référence HW', primary_key=True)
-    hw_type = models.CharField('type HW', max_length=10, blank=True)
+    comp_ref = models.BigIntegerField('réf. comp. matériel', primary_key=True)
+    mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
@@ -290,8 +290,11 @@ class Multimedia(models.Model):
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     pr_reference = models.CharField("référence PR", max_length=10, blank=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
-    level = models.CharField('niveau', max_length=2, blank=True)
+    level = models.CharField('niveau', max_length=100, blank=True)
     extra = models.CharField('supplément', max_length=100, blank=True)
+    flash_nor = models.CharField('flashNOR', max_length=100, blank=True)
+    flash_nand = models.CharField('flashNAND', max_length=100, blank=True)
+    emmc = models.CharField('eMMC', max_length=100, blank=True)
     dab = models.BooleanField('DAB', default=False)
     cam = models.BooleanField('caméra de recul', default=False)
     cd_player = models.BooleanField('lecteur CD', default=False)
@@ -308,14 +311,14 @@ class Multimedia(models.Model):
 
     class Meta:
         verbose_name = "Données Multimédia"
-        ordering = ['hw_reference']
+        ordering = ['comp_ref']
 
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return f"{self.hw_reference}_{self.name}_{self.level}_{self.type}"
+        return f"{self.comp_ref}_{self.name}_{self.level}_{self.type}"
 
 
 class Firmware(models.Model):

@@ -10,9 +10,9 @@ from .models import CorvetProduct, Corvet, Multimedia, Ecu, CorvetOption
 def post_save_corvet(sender, created, instance, **kwargs):
     default = {}
     if instance.electronique_14x.isdigit():
-        default.update({"btel": Multimedia.objects.filter(hw_reference=instance.electronique_14x).first()})
+        default.update({"btel": Multimedia.objects.filter(comp_ref__startswith=instance.electronique_14x).first()})
     if instance.electronique_14f.isdigit():
-        default.update({"radio": Multimedia.objects.filter(hw_reference=instance.electronique_14f).first()})
+        default.update({"radio": Multimedia.objects.filter(comp_ref__startswitch=instance.electronique_14f).first()})
     if instance.electronique_14b.isdigit():
         default.update({"bsi": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14b, type='BSI').first()})
     if instance.electronique_14l.isdigit():
@@ -39,8 +39,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
 @receiver(post_save, sender=Multimedia)
 @disable_for_loaddata
 def post_save_multimedia(sender, created, instance, **kwargs):
-    CorvetProduct.objects.filter(corvet__electronique_14x__exact=instance.hw_reference).update(btel=instance.pk)
-    CorvetProduct.objects.filter(corvet__electronique_14f__exact=instance.hw_reference).update(radio=instance.pk)
+    CorvetProduct.objects.filter(corvet__electronique_14x__exact=instance.comp_ref).update(btel=instance.pk)
+    CorvetProduct.objects.filter(corvet__electronique_14f__exact=instance.comp_ref).update(radio=instance.pk)
 
 
 @receiver(post_save, sender=Ecu)

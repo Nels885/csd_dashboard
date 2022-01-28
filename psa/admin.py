@@ -17,12 +17,12 @@ class CorvetAdmin(admin.ModelAdmin):
 
 class MultimediaAdmin(admin.ModelAdmin):
     list_display = (
-        'hw_reference', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam', 'media',
-        'firmware'
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
+        'media', 'firmware'
     )
     list_filter = ('name', 'level', 'type', 'media')
-    ordering = ('hw_reference',)
-    search_fields = ('hw_reference', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference')
+    ordering = ('comp_ref',)
+    search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference')
 
 
 class FirmwareAdmin(admin.ModelAdmin):
