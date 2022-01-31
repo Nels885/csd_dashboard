@@ -3,22 +3,23 @@ from django.contrib.messages import get_messages
 from dashboard.tests.base import UnitTest, reverse
 
 from reman.models import EcuModel, Batch, Repair, EcuRefBase, EcuType, Default
-from volvo.models import SemRefBase
 
 
 class MixinsTest(UnitTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
-        ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
-        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', barcode='9876543210', ecu_type=ecu_type)
-        EcuModel.objects.create(barcode='9876543210azertyuiop', ecu_type=ecu_type)
-        self.batch = Batch.objects.create(year="C", number=1, quantity=2, created_by=self.user, ecu_ref_base=ref_base)
-        Batch.objects.create(
-            year="V", number=1, quantity=2, customer="VOLVO", created_by=self.user, ecu_ref_base=ref_base)
-        self.ecuId = ecu.id
-        self.psaRefBase = ref_base
+        psa_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
+        psa_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=psa_type)
+        EcuModel.objects.create(barcode='9876543210', oe_raw_reference='1699999999', ecu_type=psa_type)
+        EcuModel.objects.create(barcode='9876543210azertyuiop', ecu_type=psa_type)
+        self.ecuBatch = Batch.objects.create(year="C", number=1, quantity=2, created_by=self.user, ecu_ref_base=psa_base)
+        sem_type = EcuType.objects.create(hw_reference='85023924.P01', hw_type='NAV', technical_data='SEM')
+        sem_base = EcuRefBase.objects.create(reman_reference='85123456', brand='VOLVO')
+        EcuModel.objects.create(barcode='PF832200DF', oe_raw_reference='22996488.P02', ecu_type=sem_type)
+        self.semBatch = Batch.objects.create(
+            year="V", number=1, quantity=2, customer="VOLVO", created_by=self.user, ecu_ref_base=sem_base)
+        self.psaRefBase = psa_base
 
     def test_create_batch_ajax_mixin(self):
         """
@@ -101,7 +102,7 @@ class MixinsTest(UnitTest):
         self.add_perms_user(Batch, 'add_batch')
         self.login()
 
-        for reman_type in ["ETUDE_PSA"]:
+        for reman_type in ["ETUDE_PSA", "ETUDE_VOLVO"]:
             # First post request = ajax request checking if form in view is valid
             response = self.client.post(
                 reverse('reman:create_batch'),
@@ -278,16 +279,19 @@ class MixinsTest(UnitTest):
 
         # Second search request = non-ajax request creating an object
         Repair.objects.create(identify_number='C001002001', barcode='9876543210', status='Réparé',
-                              quality_control=True, created_by=self.user, batch=self.batch)
-        response = self.client.post(
-            reverse('reman:out_filter'),
-            data={
-                'batch': 'C001002000',
-            },
-        )
+                              quality_control=True, created_by=self.user, batch=self.ecuBatch)
+        Repair.objects.create(identify_number='V001002001', barcode='PF832200DF', status='Réparé',
+                              quality_control=True, created_by=self.user, batch=self.ecuBatch)
+        for batch in ['C001002000', 'V001002000']:
+            response = self.client.post(
+                reverse('reman:out_filter'),
+                data={
+                    'batch': batch,
+                },
+            )
 
-        # redirection
-        self.assertEqual(response.status_code, 302)
+            # redirection
+            self.assertEqual(response.status_code, 302)
 
     def test_update_ecu_dump_ajax_mixin(self):
         """
@@ -335,7 +339,7 @@ class MixinsTest(UnitTest):
             # No redirection
             self.assertEqual(response.status_code, 200)
             # Object is not created
-            ecu_type = EcuType.objects.all()
+            ecu_type = EcuType.objects.filter(hw_type='ECU')
             self.assertEqual(ecu_type.count(), 1)
 
         # Second post request = non-ajax request creating an object
@@ -352,7 +356,7 @@ class MixinsTest(UnitTest):
         # redirection
         self.assertEqual(response.status_code, 302)
         # Object is not created
-        ecu_type = EcuType.objects.all()
+        ecu_type = EcuType.objects.filter(hw_type='ECU')
         self.assertEqual(ecu_type.count(), 2)
         self.assertEqual(ecu_type.last().hw_reference, '1234567890')
 
@@ -364,20 +368,88 @@ class MixinsTest(UnitTest):
         self.login()
 
         # Update object through BSModalUpdateView
-        ecu_type = EcuType.objects.first()
+        ecu_type = EcuType.objects.filter(hw_type='ECU').first()
         response = self.client.post(
             reverse('reman:ecu_hw_update', kwargs={'pk': ecu_type.pk}),
             data={
                 'hw_reference': ecu_type.hw_reference,
                 'hw_type': 'ECU',
-                'technical_data': 'test',
+                'technical_data': 'test_new',
             }
         )
         # redirection
         self.assertRedirects(response, reverse('reman:ecu_hw_table'), status_code=302)
         # Object is updated
         ecu_type = EcuType.objects.first()
-        self.assertEqual(ecu_type.technical_data, 'test')
+        self.assertEqual(ecu_type.technical_data, 'test_new')
+
+    def test_create_sem_hw_ajax_mixin(self):
+        """
+        Create ECU Type throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuType, 'add_ecutype')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        for hw_ref, tech_data in [('', ''), ('0123456789', ''), ('85023924.P01', 'SEM_new')]:
+            response = self.client.post(
+                reverse('reman:ecu_hw_create'),
+                data={
+                    'hw_reference': hw_ref,
+                    'hw_type': 'NAV',
+                    'technical_data': tech_data,
+                },
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            )
+
+            # Form has errors
+            self.assertTrue(response.context_data['form'].errors)
+            # No redirection
+            self.assertEqual(response.status_code, 200)
+            # Object is not created
+            ecu_type = EcuType.objects.filter(hw_type='NAV')
+            self.assertEqual(ecu_type.count(), 1)
+
+        # Second post request = non-ajax request creating an object
+        response = self.client.post(
+            reverse('reman:ecu_hw_create'),
+            data={
+                'hw_reference': '85023925.P01',
+                'hw_type': 'NAV',
+                'technical_data': 'SEM',
+                'supplier_oe': 'PARROT'
+            },
+        )
+
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is not created
+        ecu_type = EcuType.objects.filter(hw_type='NAV')
+        self.assertEqual(ecu_type.count(), 2)
+        self.assertEqual(ecu_type.last().hw_reference, '85023925.P01')
+
+    def test_update_sem_hw_ajax_mixin(self):
+        """
+        Update SEM Type throught BSModalUpdateView.
+        """
+        self.add_perms_user(EcuType, 'change_ecutype')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        ecu_type = EcuType.objects.filter(hw_type='NAV').first()
+        response = self.client.post(
+            reverse('reman:ecu_hw_update', kwargs={'pk': ecu_type.pk}),
+            data={
+                'hw_reference': ecu_type.hw_reference,
+                'hw_type': 'NAV',
+                'technical_data': 'SEM_new',
+            }
+        )
+        # redirection
+        self.assertRedirects(response, reverse('reman:ecu_hw_table'), status_code=302)
+        # Object is updated
+        ecu_type = EcuType.objects.filter(hw_type='NAV').first()
+        self.assertEqual(ecu_type.technical_data, 'SEM_new')
 
     def test_create_ref_reman_ajax_mixin(self):
         """
@@ -404,7 +476,7 @@ class MixinsTest(UnitTest):
             self.assertEqual(response.status_code, 200)
             # Object is not created
             ecu_type = EcuType.objects.all()
-            self.assertEqual(ecu_type.count(), 1)
+            self.assertEqual(ecu_type.count(), 2)
 
         # Second post request = non-ajax request creating an object
         response = self.client.post(
@@ -420,6 +492,6 @@ class MixinsTest(UnitTest):
         self.assertEqual(response.status_code, 302)
         # Object is not created
         remans = EcuRefBase.objects.all()
-        self.assertEqual(remans.count(), 2)
+        self.assertEqual(remans.count(), 3)
         self.assertEqual(remans.last().reman_reference, '1234567891')
         self.assertEqual(remans.last().status, 'test')
