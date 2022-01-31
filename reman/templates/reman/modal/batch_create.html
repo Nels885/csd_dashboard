@@ -28,7 +28,6 @@
             method: "GET",
             url: "{% url 'reman:batch_type_ajax' %}" + "?type=" + $(this).val(),
             success: function (data) {
-                console.log(data);
                 $('#id_number').attr({'value': data.number});
             },
             error: function (error_data) {

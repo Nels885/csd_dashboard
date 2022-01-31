@@ -190,21 +190,19 @@ def batch_type_ajax(request):
     data = {"number": 1}
     batch_type = request.GET.get('type', None)
     try:
-        batchs = Batch.objects.filter(year=DICT_YEAR.get(date.year)).exclude(number__gte=900)
-        if batch_type == "ETUDE_PSA":
-            data['number'] = 901
-            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
-        if batch_type == "REMAN_VOLVO":
-            batchs = Batch.objects.filter(year="V")
-        if batch_type == "ETUDE_VOLVO":
-            data['number'] = 901
-            batchs = Batch.objects.filter(year="V").exclude(number__lt=900)
-        elif batch_type == "REPAIR":
-            batchs = Batch.objects.filter(year="X")
+        if "ETUDE" in batch_type:
+            data = {"number": 901}
+            batchs = Batch.objects.all().exclude(number__lt=900)
+        else:
+            batchs = Batch.objects.all().exclude(number__gte=900)
+        if "VOLVO" in batch_type:
+            batchs = batchs.filter(year="V")
+        elif "REPAIR" in batch_type:
+            batchs = batchs.filter(year="X")
+        else:
+            batchs = batchs.filter(year=DICT_YEAR.get(date.year))
         data["number"] = batchs.aggregate(Max('number'))['number__max'] + 1
     except TypeError:
-        pass
-    except Batch.DoesNotExist:
         pass
     return JsonResponse(data)
 
