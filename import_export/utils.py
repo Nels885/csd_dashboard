@@ -106,6 +106,8 @@ PRODS_LIST = [
     ('Ref HW COM200x', 'corvet__electronique_16p'),
     ('Modele BSM', 'corvet__prods__bsm__name'), ('Marque BSM', 'corvet__prods__bsm__supplier_oe'),
     ('Ref HW BSM', 'corvet__electronique_16b'),
+    ('Modele CVM2', 'corvet__prods__cvm2__name'), ('Marque CVM2', 'corvet__prods__cvm2__supplier_oe'),
+    ('12Y_CVM2_2_HARD', 'corvet__electronique_12y'), ('92Y_CVM2_2_SOFT', 'corvet__electronique_92y')
 ]
 
 PRODS_XELON_LIST = [
