@@ -79,6 +79,8 @@ def import_corvet_list_task(self, *args):
                         obj, created = Corvet.objects.update_or_create(vin=row.get("vin"), defaults=defaults)
                         obj.prods.update = False
                         obj.prods.save()
+                        obj.opts.tag = "ICARE"
+                        obj.opts.save()
                         delay_time = time.time() - start_time
                         msg += f"{vin} updated in {delay_time}"
                         break
