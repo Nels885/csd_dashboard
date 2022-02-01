@@ -7,21 +7,37 @@
     {% csrf_token %}
 
     <div class="form-group row">
-        <label for="{{ form_corvet.formats.id_for_label }}" class="col-form-label col-sm-2">Format :</label>
+        <label for="{{ form_corvet.product.id_for_label }}" class="col-form-label col-sm-2">{{ form_corvet.product.label }} :</label>
+        <div class="col-sm-2">
+            {% render_field form_corvet.product class="custom-select form-control" %}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="{{ form_corvet.columns.id_for_label }}" class="col-form-label col-sm-2">{{ form_corvet.columns.label }} :</label>
+        <div class="col-sm-10">
+            {% for col in form_corvet.columns %}
+                <div class="form-check-inline col-sm-2">{{ col }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="{{ form_corvet.formats.id_for_label }}" class="col-form-label col-sm-2">{{ form_corvet.formats.label }} :</label>
         <div class="col-sm-2">
             {% render_field form_corvet.formats class="custom-select form-control" %}
         </div>
-        <label for="{{ form_corvet.products.id_for_label }}" class="col-form-label col-sm-1">Produit :</label>
-
-        <div class="col-sm-2">
-            {% render_field form_corvet.products class="custom-select form-control" %}
+        <label for="{{ form_corvet.tag.id_for_label }}" class="col-form-label col-sm-2">{{ form_corvet.tag.label }} :</label>
+        <div class="col-sm-4">
+            {% render_field form_corvet.tag class="form-control" %}
         </div>
-        <div class="col-sm-auto">
-            <button type="submit" class="btn btn-success btn-icon-split mb-2">
+    </div>
+    <div class="form-group row">
+        <div class="col text-center mt-2 mb-2">
+            <button type="submit" class="btn btn-success btn-icon-split">
                 <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
             </button>
         </div>
-
     </div>
 </form>
 

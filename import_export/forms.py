@@ -6,12 +6,19 @@ FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
-        ('emf', 'DISPLAY'), ('cmb', 'TDB'), ('nac', 'NAC'), ('rcc', 'RCC'), ('rtx', 'RTx'), ('smeg', 'SMEG'),
-        ('rneg', 'RNEG'), ('ng4', 'NG4'), ('icare', 'ICARE'), ('all', 'ALL'), ('xelon', 'ALL Xelon')
+        ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('nac', 'NAC'), ('rcc', 'RCC'), ('rtx', 'RTx'), ('rdx', 'RDx'),
+        ('smeg', 'SMEG'), ('rneg', 'RNEG'), ('ng4', 'NG4'), ('icare', 'ICARE'), ('all', 'ALL'), ('xelon', 'ALL Xelon')
+    ]
+    COLS = [
+        ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
+        ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('btel', 'NAV'), ('rad', 'RADIO')
     ]
 
+    product = forms.ChoiceField(label='Produit', required=False, choices=PRODUCTS, widget=forms.Select())
+    columns = forms.MultipleChoiceField(
+        label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
     formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
-    products = forms.ChoiceField(label='Produit', required=False, choices=PRODUCTS, widget=forms.Select())
+    tag = forms.CharField(label="TAG Corvet", required=False)
 
 
 class ExportRemanForm(forms.Form):

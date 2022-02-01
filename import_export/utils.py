@@ -6,90 +6,80 @@ from psa.models import Corvet
 from reman.models import Batch, Repair, EcuRefBase
 from tools.models import Suptech, BgaTime
 
+CORVET_DICT = {
+    'xelon': [
+        ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
+        ('Vehicule (XELON)', 'modele_vehicule'), ('Date Retour (XELON)', 'date_retour')
+    ],
+    'data': [
+        ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
+        ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
+        ('MOTEUR', 'corvet__donnee_moteur'),
+    ],
+    'btel': [
+        ('Modele NAV', 'corvet__prods__btel__name'), ('Réf. Setplate', 'corvet__prods__btel__label_ref'),
+        ('Niv.', 'corvet__prods__btel__level'), ('HW variant', 'corvet__prods__btel__extra'),
+        ('DHB_HAUT_PARLEUR', 'corvet__attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'corvet__attribut_drc'),
+        ('DUN_AMPLI_EQUALISEUR', 'corvet__attribut_dun'),
+        ('DYR_BTA', 'corvet__attribut_dyr'), ('14X_BTEL_HARD', 'corvet__electronique_14x'),
+        ('44X_BTEL_FOURN.NO.SERIE', 'corvet__electronique_44x'), ('64X_BTEL_FOURN.CODE', 'corvet__electronique_64x'),
+        ('84X_BTEL_DOTE', 'corvet__electronique_84x'), ('94X_BTEL_SOFT', 'corvet__electronique_94x')
+    ],
+    'rad': [
+        ('Modele RADIO', 'corvet__prods__radio__name'), ('Réf. Setplate', 'corvet__prods__radio__label_ref'),
+        ('Niv.', 'corvet__prods__radio__level'), ('HW variant', 'corvet__prods__radio__extra'),
+        ('DHB_HAUT_PARLEUR', 'corvet__attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'corvet__attribut_drc'),
+        ('DUN_AMPLI_EQUALISEUR', 'corvet__attribut_dun'),
+        ('DYR_BTA', 'corvet__attribut_dyr'), ('14F_RADIO_HARD', 'corvet__electronique_14f'),
+        ('44F_RADIO_FOURN.NO.SERIE', 'corvet__electronique_44f'), ('64F_RADIO_FOURN.CODE', 'corvet__electronique_64f'),
+        ('84F_RADIO_DOTE', 'corvet__electronique_84f'), ('94F_RADIO_SOFT', 'corvet__electronique_94f')
+    ],
+    'emf': [
+        ('Modèle Ecran Multi', 'corvet__prods__emf__name'), ('14L_EMF_HARD', 'corvet__electronique_14l'),
+        ('44L_EMF_FOURN.NO.SERIE', 'corvet__electronique_44l'), ('54L_EMF_FOUN.DATE.FAB', 'corvet__electronique_54l'),
+        ('84L_EMF_DOTE', 'corvet__electronique_84l'), ('94L_EMF_SOFT', 'corvet__electronique_94l')
+    ],
+    'cmb': [
+        ('Modèle COMBINE', 'corvet__prods__cmb__name'), ('14K_CMB_HARD', 'corvet__electronique_14k'),
+        ('54K_CMB_FOUN.DATE.FAB', 'corvet__electronique_54k'), ('94K_CMB_SOFT', 'corvet__electronique_94k')
+    ],
+    'cmm': [
+        ('Modèle ECU', 'corvet__prods__cmm__name'),
+        ('14A_CMM_HARD', 'corvet__electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'corvet__electronique_34a'),
+        ('94A_CMM_SOFT', 'corvet__electronique_94a'), ('44A_CMM_FOURN.NO.SERIE', 'corvet__electronique_44b'),
+        ('54A_CMM_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64A_CMM_FOURN.CODE', 'corvet__electronique_64b'),
+        ('84A_CMM_DOTE', 'corvet__electronique_84a'), ('P4A_CMM_EOBD', 'corvet__electronique_p4a')
+    ],
+    'bsi': [
+        ('Modèle B.S.I.', 'corvet__prods__bsi__name'), ('HW', 'corvet__prods__bsi__hw'),
+        ('SW', 'corvet__prods__bsi__sw'),
+        ('14B_BSI_HARD', 'corvet__electronique_14b'),
+        ('94B_BSI_SOFT', 'corvet__electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'corvet__electronique_44b'),
+        ('54B_BSI_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64B_BSI_FOURN.CODE', 'corvet__electronique_64b'),
+        ('84B_BSI_DOTE', 'corvet__electronique_84b')
+    ],
+    'cvm': [
+        ('Modèle CVM_2', 'corvet__prods__cvm2__name'),
+        ('12Y_CVM2_2_HARD', 'corvet__electronique_12y'), ('92Y_CVM2_2_SOFT', 'corvet__electronique_92y')
+    ],
+    'dae': [
+        ('16L_DAE_HARD', 'corvet__electronique_16l'),
+        ('96L_DAE_SOFT', 'corvet__electronique_96l')
+    ]
+}
+
 XELON_LIST = [
     ('Dossier (XELON)', 'numero_de_dossier'), ('V.I.N. (XELON)', 'vin'), ('Produit (XELON)', 'modele_produit'),
     ('Vehicule (XELON)', 'modele_vehicule'), ('Date Retour (XELON)', 'date_retour')
 ]
 
-BTEL_LIST = [
-    ('Modele reel', 'corvet__prods__btel__name'), ('Réf. Setplate', 'corvet__prods__btel__label_ref'),
-    ('Niv.', 'corvet__prods__btel__level'), ('HW variant', 'corvet__prods__btel__extra'),
+DATA_LIST = [
     ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
     ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
-    ('DHB_HAUT_PARLEUR', 'corvet__attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'corvet__attribut_drc'),
-    ('DUN_AMPLI_EQUALISEUR', 'corvet__attribut_dun'),
-    ('DYR_BTA', 'corvet__attribut_dyr'), ('14X_BTEL_HARD', 'corvet__electronique_14x'),
-    ('44X_BTEL_FOURN.NO.SERIE', 'corvet__electronique_44x'), ('64X_BTEL_FOURN.CODE', 'corvet__electronique_64x'),
-    ('84X_BTEL_DOTE', 'corvet__electronique_84x'), ('94X_BTEL_SOFT', 'corvet__electronique_94x')
-]
-
-EMF_LIST = [
-    ('Modele Radio/Nav', 'corvet__prods__btel__name'), ('Modele Ecran Multi', 'corvet__prods__emf__name'),
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('14L_EMF_HARD', 'corvet__electronique_14l'),
-    ('44L_EMF_FOURN.NO.SERIE', 'corvet__electronique_44l'), ('54L_EMF_FOUN.DATE.FAB', 'corvet__electronique_54l'),
-    ('84L_EMF_DOTE', 'corvet__electronique_84l'), ('94L_EMF_SOFT', 'corvet__electronique_94l')
-]
-
-CMB_LIST = [
-    ('Modele Radio/Nav', 'corvet__prods__btel__name'), ('Tableau de Bord', 'corvet__prods__cmb__name'),
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('14K_CMB_HARD', 'corvet__electronique_14k'),
-    ('54K_CMB_FOUN.DATE.FAB', 'corvet__electronique_54k'), ('94K_CMB_SOFT', 'corvet__electronique_94k')
-]
-
-CMM_LIST = [
-    ('Modele reel', 'corvet__prods__cmm__name'),
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('GENRE_DE_PRODUIT', 'corvet__donnee_genre_de_produit'),
-    ('14A_CMM_HARD', 'corvet__electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'corvet__electronique_34a'),
-    ('94A_CMM_SOFT', 'corvet__electronique_94a'), ('44A_CMM_FOURN.NO.SERIE', 'corvet__electronique_44b'),
-    ('54A_CMM_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64A_CMM_FOURN.CODE', 'corvet__electronique_64b'),
-    ('84A_CMM_DOTE', 'corvet__electronique_84a'), ('P4A_CMM_EOBD', 'corvet__electronique_p4a')
-]
-
-BSI_LIST = [
-    ('Modele reel', 'corvet__prods__bsi__name'), ('HW', 'corvet__prods__bsi__hw'), ('SW', 'corvet__prods__bsi__sw'),
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('MOTEUR', 'corvet__donnee_moteur'),
-    ('CAL MOTEUR', 'corvet__prods__cmm__name'), ('14B_BSI_HARD', 'corvet__electronique_14b'),
-    ('94B_BSI_SOFT', 'corvet__electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'corvet__electronique_44b'),
-    ('54B_BSI_FOURN.DATE.FAB', 'corvet__electronique_54b'), ('64B_BSI_FOURN.CODE', 'corvet__electronique_64b'),
-    ('84B_BSI_DOTE', 'corvet__electronique_84b')
-]
-
-HDC_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16P_HDC_HARD', 'corvet__electronique_16p'),
-    ('46P_HDC_FOURN.NO.SERIE', 'corvet__electronique_46p'), ('56P_HDC_FOURN.DATE.FAB', 'corvet__electronique_56p'),
-    ('66P_HDC_FOURN.CODE', 'corvet__electronique_66p')
-]
-
-BSM_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16B_BSM_HARD', 'corvet__electronique_16b'),
-    ('46B_BSM_FOURN.NO.SERIE', 'corvet__electronique_46b'), ('56B_BSM_FOURN.DATE.FAB', 'corvet__electronique_56b'),
-    ('66B_BSM_FOURN.CODE', 'corvet__electronique_66b'), ('86B_BSM_DOTE', 'corvet__electronique_86b'),
-    ('96B_BSM_SOFT', 'corvet__electronique_96b')
-]
-
-
-CVM_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('12Y_CVM2_2_HARD', 'corvet__electronique_12y'),
-    ('92Y_CVM2_2_SOFT', 'corvet__electronique_92y')
-]
-
-
-DAE_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('16L_DAE_HARD', 'corvet__electronique_16l'),
-    ('96L_DAE_SOFT', 'corvet__electronique_96l')
+    ('MOTEUR', 'corvet__donnee_moteur'),
 ]
 
 PRODS_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'),
     ('Modele NAV', 'corvet__prods__btel__name'), ('Marque NAV', 'corvet__prods__btel__supplier_oe'),
     ('Ref HW NAV', 'corvet__electronique_14x'),
     ('Modele RADIO', 'corvet__prods__radio__name'), ('Marque RADIO', 'corvet__prods__radio__supplier_oe'),
@@ -111,8 +101,7 @@ PRODS_LIST = [
 ]
 
 PRODS_XELON_LIST = [
-    ('DATE_DEBUT_GARANTIE', 'date_debut_garantie'), ('LIGNE_DE_PRODUIT', 'corvet__donnee_ligne_de_produit'),
-    ('SILHOUETTE', 'corvet__donnee_silhouette'), ('NAV (XELON)', 'corvet__prods__btel__xelon_name'),
+    ('NAV (XELON)', 'corvet__prods__btel__xelon_name'),
     ('Modele NAV', 'corvet__prods__btel__name'), ('Marque NAV', 'corvet__prods__btel__supplier_oe'),
     ('Ref HW NAV', 'corvet__electronique_14x'), ('RADIO (XELON)', 'corvet__prods__radio__xelon_name'),
     ('Modele RADIO', 'corvet__prods__radio__name'), ('Marque RADIO', 'corvet__prods__radio__supplier_oe'),
@@ -133,22 +122,10 @@ PRODS_XELON_LIST = [
 
 
 def get_header_fields(prod_list):
-    header = [value_tuple[0] for value_tuple in XELON_LIST] + [value_tuple[0] for value_tuple in prod_list]
-    fields = [value_tuple[1] for value_tuple in XELON_LIST] + [value_tuple[1] for value_tuple in prod_list]
+    header = [value_tuple[0] for value_tuple in prod_list]
+    fields = [value_tuple[1] for value_tuple in prod_list]
     return header, fields
 
-
-BTEL_HEADER, BTEL_FIELDS = get_header_fields(BTEL_LIST)
-EMF_HEADER, EMF_FIELDS = get_header_fields(EMF_LIST)
-CMB_HEADER, CMB_FIELDS = get_header_fields(CMB_LIST)
-CMM_HEADER, CMM_FIELDS = get_header_fields(CMM_LIST)
-BSI_HEADER, BSI_FIELDS = get_header_fields(BSI_LIST)
-HDC_HEADER, HDC_FIELDS = get_header_fields(HDC_LIST)
-BSM_HEADER, BSM_FIELDS = get_header_fields(BSM_LIST)
-CVM_HEADER, CVM_FIELDS = get_header_fields(CVM_LIST)
-DAE_HEADER, DAE_FIELDS = get_header_fields(DAE_LIST)
-PRODS_HEADER, PRODS_FIELDS = get_header_fields(PRODS_LIST)
-PRODS_XELON_HEADER, PRODS_XELON_FIELDS = get_header_fields(PRODS_XELON_LIST)
 
 """
 ##################################
@@ -176,77 +153,68 @@ def extract_ecu(vin_list=None):
     return header, fields, values_list
 
 
-def extract_corvet(product='corvet'):
-    values_list = ()
-    header = queryset = None
-    xelons = Xelon.objects.filter(
+def extract_corvet(*args, **kwargs):
+    product = kwargs.get('product', 'bsi')
+    data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
+    for col in kwargs.get('cols', None):
+        data_list += CORVET_DICT[col]
+    queryset = Xelon.objects.filter(
         date_retour__isnull=False, corvet__isnull=False).order_by('-numero_de_dossier').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
+    header, values_list = get_header_fields(data_list)
     if product == "ecu":
-        header, values_list = CMM_HEADER, CMM_FIELDS
-        queryset = xelons.exclude(corvet__electronique_14a__exact='')
+        queryset = queryset.exclude(corvet__electronique_14a__exact='')
     elif product == "bsi":
-        header, values_list = BSI_HEADER, BSI_FIELDS
-        queryset = xelons.exclude(corvet__electronique_14b__exact='')
+        queryset = queryset.exclude(corvet__electronique_14b__exact='')
     elif product == "com200x":
-        header, values_list = HDC_HEADER, HDC_FIELDS
-        queryset = xelons.exclude(corvet__electronique_16p__exact='')
+        queryset = queryset.exclude(corvet__electronique_16p__exact='')
     elif product == "bsm":
-        header, values_list = BSM_HEADER, BSM_FIELDS
-        queryset = xelons.exclude(corvet__electronique_16p__exact='')
+        queryset = queryset.exclude(corvet__electronique_16p__exact='')
     elif product == "cvm":
-        header, values_list = CVM_HEADER, CVM_FIELDS
-        queryset = xelons.exclude(corvet__electronique_12y__exact='')
+        queryset = queryset.exclude(corvet__electronique_12y__exact='')
     elif product == "dae":
-        header, values_list = DAE_HEADER, DAE_FIELDS
-        queryset = xelons.exclude(corvet__electronique_16l__exact='')
+        queryset = queryset.exclude(corvet__electronique_16l__exact='')
     elif product == "emf":
-        header, values_list = EMF_HEADER, EMF_FIELDS
-        queryset = xelons.exclude(corvet__electronique_14l__exact='')
+        queryset = queryset.exclude(corvet__electronique_14l__exact='')
     elif product == "cmb":
-        header, values_list = CMB_HEADER, CMB_FIELDS
-        queryset = xelons.exclude(corvet__electronique_14k__exact='')
+        queryset = queryset.exclude(corvet__electronique_14k__exact='')
     elif product == "nac":
-        header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(corvet__attribut_drc="NA")
+        queryset = queryset.filter(corvet__attribut_drc="NA")
     elif product == "rcc":
-        header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(corvet__attribut_drc="RC")
+        queryset = queryset.filter(corvet__attribut_drc="RC")
     elif product == "rtx":
-        header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(corvet__attribut_drc__in=["T3", "T4", "T6"])
+        queryset = queryset.filter(corvet__attribut_drc__in=["T3", "T4", "T6"])
+    elif product == "rdx":
+        queryset = queryset.exclude(corvet__electronique_14f='')
     elif product == "smeg":
-        header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(corvet__attribut_drc="SA")
+        queryset = queryset.filter(corvet__attribut_drc="SA")
     elif product == "rneg":
-        header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(corvet__attribut_drc="RN")
+        queryset = queryset.filter(corvet__attribut_drc="RN")
     elif product == "ng4":
-        header, values_list = BTEL_HEADER, BTEL_FIELDS
-        queryset = xelons.filter(corvet__attribut_drc="G4")
+        queryset = queryset.filter(corvet__attribut_drc="G4")
     elif product == "icare":
-        header, values_list = PRODS_HEADER, PRODS_FIELDS
-        queryset = xelons.filter(corvet__isnull=False, corvet__opts__tag="ICARE")
+        header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_LIST)
+        queryset = queryset.filter(corvet__isnull=False, corvet__opts__tag="ICARE")
     elif product == "all":
-        header, values_list = PRODS_HEADER, PRODS_FIELDS
-        queryset = xelons.filter(corvet__isnull=False)
+        header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_LIST)
+        queryset = queryset.filter(corvet__isnull=False)
     elif product == "xelon":
-        header, values_list = PRODS_XELON_HEADER, PRODS_XELON_FIELDS
-        queryset = xelons.filter(corvet__isnull=False)
-    elif product == 'corvet':
-        header = [
-            'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
-            'SILHOUETTE', 'GENRE_DE_PRODUIT', 'DDO', 'DGM', 'DHB', 'DHG', 'DJQ', 'DJY', 'DKX', 'DLX', 'DOI', 'DQM',
-            'DQS', 'DRC', 'DRT', 'DTI', 'DUN', 'DWL', 'DWT', 'DXJ', 'DYB', 'DYM', 'DYR', 'DZV', 'GG8', '14F', '14J',
-            '14K', '14L', '14R', '14X', '19Z', '44F', '44L', '44X', '54F', '54K', '54L', '84F', '84L', '84X', '94F',
-            '94L', '94X', 'DAT', 'DCX', '19H', '49H', '64F', '64X', '69H', '89H', '99H', '14A', '34A', '44A', '54A',
-            '64A', '84A', '94A', 'P4A', 'MOTEUR', 'TRANSMISSION', '10', '14B', '20', '44B', '54B', '64B', '84B', '94B',
-            '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
-        ]
-        queryset = Corvet.objects.all()
-        values_list = tuple([field.name for col_nb, field in enumerate(Corvet._meta.fields)
-                             if col_nb < len(header)])
+        header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
+        queryset = queryset.filter(corvet__isnull=False)
+    # elif product == 'corvet':
+    #     header = [
+    #         'V.I.N.', 'DATE_DEBUT_GARANTIE', 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE',
+    #         'SILHOUETTE', 'GENRE_DE_PRODUIT', 'DDO', 'DGM', 'DHB', 'DHG', 'DJQ', 'DJY', 'DKX', 'DLX', 'DOI', 'DQM',
+    #         'DQS', 'DRC', 'DRT', 'DTI', 'DUN', 'DWL', 'DWT', 'DXJ', 'DYB', 'DYM', 'DYR', 'DZV', 'GG8', '14F', '14J',
+    #         '14K', '14L', '14R', '14X', '19Z', '44F', '44L', '44X', '54F', '54K', '54L', '84F', '84L', '84X', '94F',
+    #         '94L', '94X', 'DAT', 'DCX', '19H', '49H', '64F', '64X', '69H', '89H', '99H', '14A', '34A', '44A', '54A',
+    #         '64A', '84A', '94A', 'P4A', 'MOTEUR', 'TRANSMISSION', '10', '14B', '20', '44B', '54B', '64B', '84B', '94B',
+    #         '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
+    #     ]
+    #     queryset = Corvet.objects.all()
+    #     values_list = tuple([field.name for col_nb, field in enumerate(Corvet._meta.fields)
+    #                          if col_nb < len(header)])
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()[:30000]
     return header, fields, values_list
@@ -266,7 +234,7 @@ def extract_reman(model):
     if model == "batch":
         header = [
             'Numero de lot', 'Quantite', 'Ref_REMAN', 'Réparés', 'Rebuts', 'Emballés', 'Total', 'Date_de_Debut',
-            'Date_de_fin', 'Type_ECU', 'HW_Reference', 'Fabriquant',  'Actif', 'Ajoute par', 'Ajoute le'
+            'Date_de_fin', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Actif', 'Ajoute par', 'Ajoute le'
         ]
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
