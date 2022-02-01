@@ -381,30 +381,31 @@ class CheckOutSelectBatchForm(SelectBatchForm, BSModalForm):
 
 
 class CheckOutRepairForm(forms.Form):
-    identify_number = forms.CharField(
-        label="N° d'identification", max_length=11,
+    barcode = forms.CharField(
+        label="Code barre / QR code", max_length=50,
         widget=forms.TextInput(attrs={'class': 'form-control mb-2 mr-sm-4', 'autofocus': ''})
     )
 
     def __init__(self, *args, **kwargs):
-        batch_number = kwargs.pop("batch_number", None)
-        super().__init__(*args, **kwargs)
-        if batch_number:
-            batch = Batch.objects.filter(batch_number=batch_number).first()
-        else:
+        try:
+            batch = Batch.objects.get(batch_number=kwargs.pop("batch_number", None))
+        except Batch.DoesNotExist:
             batch = None
         self.repairs = Repair.objects.filter(checkout=False, batch=batch)
+        super().__init__(*args, **kwargs)
 
-    def clean_identify_number(self):
-        data = self.cleaned_data["identify_number"]
-        if data[-1] != "R" or not self.repairs.filter(identify_number=data[:-1]):
-            self.add_error('identify_number', "N° d'identification invalide")
-        elif not self.repairs.filter(identify_number=data[:-1], quality_control=True):
-            self.add_error('identify_number', "Contrôle qualité non validé, voir avec Atelier.")
+    def clean_barcode(self):
+        data = self.cleaned_data["barcode"]
+        try:
+            self.repairs = self.repairs.get(Q(identify_number=data[:-1]) | Q(new_barcode=data))
+            if not self.repairs.quality_control:
+                self.add_error('barcode', "Contrôle qualité non validé, voir avec Atelier.")
+        except Repair.DoesNotExist:
+            self.add_error('barcode', "Code barre ou QR code invalide")
         return data
 
     def save(self, commit=True):
-        repair = self.repairs.get(identify_number=self.cleaned_data["identify_number"][:-1])
+        repair = self.repairs
         repair.closing_date = timezone.now()
         repair.checkout = True
         if commit:
