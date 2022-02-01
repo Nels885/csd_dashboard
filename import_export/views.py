@@ -79,11 +79,12 @@ def import_ecurefbase(request):
 def export_corvet_async(request):
     form = ExportCorvetForm(request.POST or None)
     if form.is_valid():
-        product = form.cleaned_data['product']
-        cols = form.cleaned_data['columns']
-        print(cols, product)
-        excel_type = form.cleaned_data['formats']
-        task = export_corvet_task.delay(excel_type=excel_type, product=product, cols=cols)
+        value_dict = {
+            'product': form.cleaned_data['product'], 'cols': form.cleaned_data['columns'],
+            'start_date': form.cleaned_data['start_date'], 'end_date': form.cleaned_data['end_date'],
+            'excel_type': form.cleaned_data['formats']
+        }
+        task = export_corvet_task.delay(**value_dict)
         return JsonResponse({"task_id": task.id})
     raise Http404
 

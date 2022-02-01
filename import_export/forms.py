@@ -5,12 +5,13 @@ FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
+        ('corvet', '---'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
         ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('nac', 'NAC'), ('rcc', 'RCC'), ('rtx', 'RTx'), ('rdx', 'RDx'),
         ('smeg', 'SMEG'), ('rneg', 'RNEG'), ('ng4', 'NG4'), ('icare', 'ICARE'), ('all', 'ALL'), ('xelon', 'ALL Xelon')
     ]
     COLS = [
-        ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
+        ('cmm', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
         ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('btel', 'NAV'), ('rad', 'RADIO')
     ]
 
@@ -19,6 +20,10 @@ class ExportCorvetForm(forms.Form):
         label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
     formats = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
     tag = forms.CharField(label="TAG Corvet", required=False)
+    start_date = forms.DateField(
+        label='Début date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
+    end_date = forms.DateField(
+        label='Fin date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
 
 
 class ExportRemanForm(forms.Form):

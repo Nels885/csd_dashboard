@@ -157,11 +157,15 @@ def extract_corvet(*args, **kwargs):
     product = kwargs.get('product', 'bsi')
     data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
     for col in kwargs.get('cols', None):
-        data_list += CORVET_DICT[col]
+        data_list += CORVET_DICT.get(col, [])
     queryset = Xelon.objects.filter(
         date_retour__isnull=False, corvet__isnull=False).order_by('-numero_de_dossier').annotate(
         date_debut_garantie=Cast(TruncSecond('corvet__donnee_date_debut_garantie', DateTimeField()), CharField())
     )
+    if kwargs.get('start_date', None):
+        queryset = queryset.filter(corvet__donnee_date_debut_garantie__gte=kwargs.get('start_date'))
+    if kwargs.get('end_date', None):
+        queryset = queryset.filter(corvet__donnee_date_debut_garantie__lte=kwargs.get('end_date'))
     header, values_list = get_header_fields(data_list)
     if product == "ecu":
         queryset = queryset.exclude(corvet__electronique_14a__exact='')
