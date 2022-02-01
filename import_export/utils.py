@@ -79,25 +79,47 @@ DATA_LIST = [
     ('MOTEUR', 'corvet__donnee_moteur'),
 ]
 
+# PRODS_LIST = [
+#     ('Modele NAV', 'corvet__prods__btel__name'), ('Marque NAV', 'corvet__prods__btel__supplier_oe'),
+#     ('Ref HW NAV', 'corvet__electronique_14x'),
+#     ('Modele RADIO', 'corvet__prods__radio__name'), ('Marque RADIO', 'corvet__prods__radio__supplier_oe'),
+#     ('Ref HW RADIO', 'corvet__electronique_14f'),
+#     ('Modele EMF', 'corvet__prods__emf__name'), ('Marque EMF', 'corvet__prods__emf__supplier_oe'),
+#     ('Ref HW EMF', 'corvet__electronique_14l'),
+#     ('Modele TDB', 'corvet__prods__cmb__name'), ('Marque TDB', 'corvet__prods__cmb__supplier_oe'),
+#     ('Ref HW TDB', 'corvet__electronique_14k'),
+#     ('Modele ECU MOTEUR', 'corvet__prods__cmm__name'), ('Marque ECU MOTEUR', 'corvet__prods__cmm__supplier_oe'),
+#     ('Ref HW ECU MOTEUR', 'corvet__electronique_14a'),
+#     ('Modele BSI', 'corvet__prods__bsi__name'), ('Marque BSI', 'corvet__prods__bsi__supplier_oe'),
+#     ('Ref HW BSI', 'corvet__electronique_14b'),
+#     ('Modele COM200x', 'corvet__prods__hdc__name'), ('Marque COM200x', 'corvet__prods__hdc__supplier_oe'),
+#     ('Ref HW COM200x', 'corvet__electronique_16p'),
+#     ('Modele BSM', 'corvet__prods__bsm__name'), ('Marque BSM', 'corvet__prods__bsm__supplier_oe'),
+#     ('Ref HW BSM', 'corvet__electronique_16b'),
+#     ('Modele CVM2', 'corvet__prods__cvm2__name'), ('Marque CVM2', 'corvet__prods__cvm2__supplier_oe'),
+#     ('12Y_CVM2_2_HARD', 'corvet__electronique_12y'), ('92Y_CVM2_2_SOFT', 'corvet__electronique_92y')
+# ]
+
 PRODS_LIST = [
-    ('Modele NAV', 'corvet__prods__btel__name'), ('Marque NAV', 'corvet__prods__btel__supplier_oe'),
-    ('Ref HW NAV', 'corvet__electronique_14x'),
-    ('Modele RADIO', 'corvet__prods__radio__name'), ('Marque RADIO', 'corvet__prods__radio__supplier_oe'),
-    ('Ref HW RADIO', 'corvet__electronique_14f'),
-    ('Modele EMF', 'corvet__prods__emf__name'), ('Marque EMF', 'corvet__prods__emf__supplier_oe'),
-    ('Ref HW EMF', 'corvet__electronique_14l'),
-    ('Modele TDB', 'corvet__prods__cmb__name'), ('Marque TDB', 'corvet__prods__cmb__supplier_oe'),
-    ('Ref HW TDB', 'corvet__electronique_14k'),
-    ('Modele ECU MOTEUR', 'corvet__prods__cmm__name'), ('Marque ECU MOTEUR', 'corvet__prods__cmm__supplier_oe'),
-    ('Ref HW ECU MOTEUR', 'corvet__electronique_14a'),
-    ('Modele BSI', 'corvet__prods__bsi__name'), ('Marque BSI', 'corvet__prods__bsi__supplier_oe'),
-    ('Ref HW BSI', 'corvet__electronique_14b'),
-    ('Modele COM200x', 'corvet__prods__hdc__name'), ('Marque COM200x', 'corvet__prods__hdc__supplier_oe'),
-    ('Ref HW COM200x', 'corvet__electronique_16p'),
-    ('Modele BSM', 'corvet__prods__bsm__name'), ('Marque BSM', 'corvet__prods__bsm__supplier_oe'),
-    ('Ref HW BSM', 'corvet__electronique_16b'),
-    ('Modele CVM2', 'corvet__prods__cvm2__name'), ('Marque CVM2', 'corvet__prods__cvm2__supplier_oe'),
-    ('12Y_CVM2_2_HARD', 'corvet__electronique_12y'), ('92Y_CVM2_2_SOFT', 'corvet__electronique_92y')
+    ('V.I.N.', 'vin'),
+    ('Modele NAV', 'prods__btel__name'), ('Marque NAV', 'prods__btel__supplier_oe'),
+    ('Ref HW NAV', 'electronique_14x'),
+    ('Modele RADIO', 'prods__radio__name'), ('Marque RADIO', 'prods__radio__supplier_oe'),
+    ('Ref HW RADIO', 'electronique_14f'),
+    ('Modele EMF', 'prods__emf__name'), ('Marque EMF', 'prods__emf__supplier_oe'),
+    ('Ref HW EMF', 'electronique_14l'),
+    ('Modele TDB', 'prods__cmb__name'), ('Marque TDB', 'prods__cmb__supplier_oe'),
+    ('Ref HW TDB', 'electronique_14k'),
+    ('Modele ECU MOTEUR', 'prods__cmm__name'), ('Marque ECU MOTEUR', 'prods__cmm__supplier_oe'),
+    ('Ref HW ECU MOTEUR', 'electronique_14a'),
+    ('Modele BSI', 'prods__bsi__name'), ('Marque BSI', 'prods__bsi__supplier_oe'),
+    ('Ref HW BSI', 'electronique_14b'),
+    ('Modele COM200x', 'prods__hdc__name'), ('Marque COM200x', 'prods__hdc__supplier_oe'),
+    ('Ref HW COM200x', 'electronique_16p'),
+    ('Modele BSM', 'prods__bsm__name'), ('Marque BSM', 'prods__bsm__supplier_oe'),
+    ('Ref HW BSM', 'electronique_16b'),
+    ('Modele CVM2', 'prods__cvm2__name'), ('Marque CVM2', 'prods__cvm2__supplier_oe'),
+    ('12Y_CVM2_2_HARD', 'electronique_12y'), ('92Y_CVM2_2_SOFT', 'electronique_92y')
 ]
 
 PRODS_XELON_LIST = [
@@ -198,8 +220,10 @@ def extract_corvet(*args, **kwargs):
     elif product == "ng4":
         queryset = queryset.filter(corvet__attribut_drc="G4")
     elif product == "icare":
-        header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_LIST)
-        queryset = queryset.filter(corvet__isnull=False, corvet__opts__tag="ICARE")
+        # header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_LIST)
+        # queryset = queryset.filter(corvet__isnull=False, corvet__opts__tag="ICARE")
+        header, values_list = get_header_fields(PRODS_LIST)
+        queryset = Corvet.objects.filter(opts__tag="ICARE")
     elif product == "all":
         header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_LIST)
         queryset = queryset.filter(corvet__isnull=False)
