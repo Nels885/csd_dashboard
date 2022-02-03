@@ -18,7 +18,7 @@
                 </div>
                 <div class="sidebar-brand-text mx-3">CSD Board</div>
             </a>
-            <div class="sidebar-heading text-center mb-2">{% trans  'release' %} {{ release }}</div>
+            <div class="sidebar-heading text-center mb-2">{% trans 'release' %} {{ release }}</div>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -63,7 +63,14 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid mt-4">
 
-                    {% block header %} {% include 'base/_header.html' %} {% endblock %}
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800 mr-auto">{% block header_title %}{{ title }}{% endblock %}</h1>
+                        <a href="http://{{ wiki_url }}" class="d-one d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-3" target="_blank">
+                            <i class="fas fa-question fa-sm text-white-50"></i> Wiki</a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger create-suptech shadow-sm">
+                            <i class="fas fa-radiation fa-sm text-white-50"></i> Support Tech</a>
+                    </div>
 
                     {% block content %} {% endblock %}
 

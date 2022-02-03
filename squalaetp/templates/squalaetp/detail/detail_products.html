@@ -40,11 +40,13 @@
 
         {% include 'psa/format/emf_table_format.html' with object=corvet.prods.emf %}
 
-        {% include 'psa/format/cmm_table_format.html' with object=cmm %}
+        {% include 'psa/format/cmm_table_format.html' with object=corvet.prods.cmm %}
 
         {% include 'psa/format/bsi_table_format.html' with object=corvet.prods.bsi %}
 
         {% include 'psa/format/hdc_table_format.html' with object=corvet.prods.hdc %}
+
+        {% include 'psa/format/cvm_table_format.html' with object=corvet.prods.cvm2 %}
 
     </section>
     <section class="col-sm-6">
@@ -54,3 +56,5 @@
 
     </section>
 </div>
+
+{% include 'squalaetp/detail/detail_sparepart.html' %}

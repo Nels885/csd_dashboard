@@ -65,7 +65,7 @@ class Command(BaseCommand):
                         "oe_reference": row.get("ref_mm", ""),
                     }
                     values.update(defaults_dict(Multimedia, row))
-                    Multimedia.objects.update_or_create(hw_reference=ref_boitier, defaults=values)
+                    Multimedia.objects.update_or_create(comp_ref=ref_boitier, defaults=values)
                 except IntegrityError as err:
                     logger.error(f"[RASPEEDI_CMD] IntegrityError: {ref_boitier} - {err}")
                 except DataError as err:

@@ -2,19 +2,12 @@
 
 {% load static i18n corvet_tags %}
 
-{% block header %}
+{% block header_title %}
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">
-            {{ sivin.immat_siv }} - {{ sivin.codif_vin }}
-            {% if sivin.corvet %}
-                - {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
-            {% endif %}
-        </h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger create-suptech shadow-sm">
-            <i class="fas fa-radiation fa-sm text-white-50"></i> Support Tech</a>
-    </div>
+    {{ sivin.immat_siv }} - {{ sivin.codif_vin }}
+    {% if sivin.corvet %}
+        - {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
+    {% endif %}
 
 {% endblock %}
 

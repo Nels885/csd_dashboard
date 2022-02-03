@@ -1,12 +1,11 @@
 from django.db import models
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from crum import get_current_user
 
-from psa.models import Corvet
+from psa.models import Corvet, Multimedia, Ecu
 
 
 class Xelon(models.Model):
@@ -30,6 +29,8 @@ class Xelon(models.Model):
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
     ilot = models.CharField('ilot', max_length=100, blank=True)
+    date_expedition_attendue = models.DateField('date expédition attendue', null=True, blank=True)
+    delai_expedition_attendue = models.IntegerField('délai expédition attendue', null=True, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
@@ -44,19 +45,6 @@ class Xelon(models.Model):
             ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
             ("active_xelon", "Can active xelon")
         ]
-
-    def save(self, *args, **kwargs):
-        from psa.models import Corvet
-        try:
-            self.corvet = Corvet.objects.get(pk=self.vin)
-            self.vin_error = False
-        except ObjectDoesNotExist:
-            self.corvet = None
-        if self.modele_produit:
-            if not ProductCategory.objects.filter(product_model=self.modele_produit):
-                ProductCategory.objects.create(product_model=self.modele_produit)
-            self.product = ProductCategory.objects.get(product_model=self.modele_produit)
-        super(Xelon, self).save(*args, **kwargs)
 
     @classmethod
     def search(cls, value):
@@ -82,6 +70,8 @@ class Xelon(models.Model):
 
 class ProductCode(models.Model):
     name = models.CharField('code Produit', max_length=100)
+    media = models.ForeignKey('psa.Multimedia', on_delete=models.SET_NULL, null=True, blank=True)
+    ecu = models.ForeignKey('psa.Ecu', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -150,9 +140,11 @@ class ProductCategory(models.Model):
         ('PSA', 'Produits PSA'), ('AUTRE', 'Autres produits'), ('CLARION', 'Clarion'), ('ETUDE', 'Etude'),
         ('CALCULATEUR', 'Calculateurs'), ('DEFAUT', 'Defaut')
     ]
+    TYPES = Multimedia.TYPE_CHOICES + Ecu.TYPE_CHOICES
 
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
     category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
+    corvet_type = models.CharField('Type Corvet', max_length=50, choices=TYPES, blank=True)
     niv_i_users = models.ManyToManyField(User, related_name='niv_i_prods', blank=True)
     niv_l_users = models.ManyToManyField(User, related_name='niv_l_prods', blank=True)
     niv_u_users = models.ManyToManyField(User, related_name='niv_u_prods', blank=True)

@@ -1,23 +1,24 @@
 import logging
 from django.core.management.base import BaseCommand
-from django.core.exceptions import FieldDoesNotExist, ValidationError
-from django.db.utils import IntegrityError, DataError
 from django.db.models import Q
 from django.utils import timezone
 
 from squalaetp.models import Xelon, ProductCategory, Indicator
-from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
+from psa.models import Multimedia, Ecu
+from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, XLS_TIME_LIMIT_FILE, string_to_list
 from utils.django.models import defaults_dict
+from utils.django.validators import comp_ref_isvalid
 from utils.data.analysis import ProductAnalysis
 
 from ._excel_squalaetp import ExcelSqualaetp
-from ._excel_delay_analysis import ExcelDelayAnalysis
+from ._excel_analysis import ExcelDelayAnalysis, ExcelTimeLimitAnalysis
 
 logger = logging.getLogger('command')
 
 
 class Command(BaseCommand):
     help = 'Interact with the Squalaetp tables in the database'
+    MAX_SIZE = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -50,6 +51,12 @@ class Command(BaseCommand):
             dest='prod_category',
             help='Add values in ProductCategory table',
         )
+        parser.add_argument(
+            '--xelon_name_update',
+            action='store_true',
+            dest='xelon_name',
+            help='Update Xelon name'
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[SQUALAETP] Waiting...")
@@ -65,8 +72,10 @@ class Command(BaseCommand):
             else:
                 delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
 
+            time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
             self._squalaetp_file(Xelon, squalaetp)
             self._delay_files(Xelon, squalaetp, delay)
+            self._time_limit_files(Xelon, squalaetp, time_limit)
             self._indicator()
 
         elif options['relations']:
@@ -74,6 +83,9 @@ class Command(BaseCommand):
 
         elif options['prod_category']:
             self._product_category()
+
+        elif options['xelon_name']:
+            self._xelon_name_update()
 
     def _foreignkey_relation(self):
         self.stdout.write("[SQUALAETP_RELATIONSHIPS] Waiting...")
@@ -109,10 +121,8 @@ class Command(BaseCommand):
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                     if not created:
                         nb_prod_update += 1
-                except IntegrityError as err:
-                    logger.error(f"[XELON_CMD] IntegrityError: {xelon_number} -{err}")
-                except DataError as err:
-                    logger.error(f"[XELON_CMD] DataError: {xelon_number} - {err}")
+                except Exception as err:
+                    logger.error(f"[XELON_CMD] {xelon_number} - {err}")
             model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
             nb_prod_after = model.objects.count()
             self.stdout.write(
@@ -146,18 +156,10 @@ class Command(BaseCommand):
                     if product_model and not obj.modele_produit:
                         obj.modele_produit = product_model
                         obj.save()
-                except IntegrityError as err:
-                    logger.error(f"[DELAY_CMD] IntegrityError row {xelon_number} : {err}")
-                except DataError as err:
-                    logger.error(f"[DELAY_CMD] DataError row {xelon_number} : {err}")
-                except FieldDoesNotExist as err:
-                    logger.error(f"[DELAY_CMD] FieldDoesNotExist row {xelon_number} : {err}")
-                except KeyError as err:
-                    logger.error(f"[DELAY_CMD] KeyError row {xelon_number} : {err}")
-                except ValidationError as err:
-                    logger.error(f"[DELAY_CMD] ValidationError {xelon_number} : {err}")
                 except ValueError:
                     value_error_list.append(xelon_number)
+                except Exception as err:
+                    logger.error(f"[DELAY_CMD] {xelon_number} - {err}")
             if value_error_list:
                 logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
 
@@ -175,6 +177,35 @@ class Command(BaseCommand):
             )
         else:
             self.stdout.write(self.style.WARNING("[DELAY] No delay files found"))
+
+    def _time_limit_files(self, model, squalaetp, excel):
+        self.stdout.write("[TIME_LIMIT] Waiting...")
+        nb_prod_before, nb_prod_update, value_error_list = model.objects.count(), 0, []
+        if not excel.ERROR:
+            for row in excel.read_all():
+                xelon_number = row.get("numero_de_dossier")
+                defaults = defaults_dict(model, row, "numero_de_dossier")
+                try:
+                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
+                    if not created:
+                        nb_prod_update += 1
+                except ValueError:
+                    value_error_list.append(xelon_number)
+                except Exception as err:
+                    logger.error(f"[TIME_LIMIT_CMD] {xelon_number} - {err}")
+            if value_error_list:
+                logger.error(f"[TIME_LIMIT_CMD] ValueError row: {', '.join(value_error_list)}")
+
+            nb_prod_after = model.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[TIME_LIMIT] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                    )
+                )
+            )
+        else:
+            self.stdout.write(self.style.WARNING("[TIME_LIMIT] No delay files found"))
 
     def _product_category(self):
         xelons = Xelon.objects.exclude(modele_produit="")
@@ -220,3 +251,40 @@ class Command(BaseCommand):
         for query in prod.pendingQueryset:
             obj.xelons.add(query)
         self.stdout.write(self.style.SUCCESS("[INDICATOR] data update completed"))
+
+    def _xelon_name_update(self):
+        self.stdout.write("[ECU & MEDIA] Waiting...")
+        xelons = Xelon.objects.filter(
+            corvet__isnull=False, product__isnull=False, date_retour__isnull=False).order_by('date_retour')
+        self.MAX_SIZE, number = xelons.count(), 0
+        for xelon in xelons:
+            corvet, product = xelon.corvet, xelon.product
+            if corvet and product:
+                ecu_dict = {
+                    "NAV": corvet.electronique_14x, "RAD": corvet.electronique_14f,
+                    "EMF": corvet.electronique_14l, "CMB": corvet.electronique_14k, "BSI": corvet.electronique_14b,
+                    "CMM": corvet.electronique_14a, "HDC": corvet.electronique_16p, "BSM": corvet.electronique_16b
+                }
+                for corvet_type, comp_ref in ecu_dict.items():
+                    if product.corvet_type == corvet_type and comp_ref_isvalid(comp_ref):
+                        if product.corvet_type in ["NAV", "RAD"]:
+                            obj, created = Multimedia.objects.update_or_create(
+                                hw_reference=comp_ref,
+                                defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type})
+                        else:
+                            obj, created = Ecu.objects.update_or_create(
+                                comp_ref=comp_ref,
+                                defaults={'xelon_name': xelon.modele_produit, 'type': product.corvet_type}
+                            )
+                        break
+            if number % 100 == 1:
+                self._progress_bar(number)
+            number += 1
+        self.stdout.write(self.style.SUCCESS(f"\r\n[ECU & MEDIA] data update completed: NB_UPDATE={self.MAX_SIZE}"))
+
+    def _progress_bar(self, current_size, bar_length=80):
+        if self.MAX_SIZE is not None:
+            percent = float(current_size) / self.MAX_SIZE
+            arrow = '-' * int(round(percent*bar_length) - 1) + '>'
+            spaces = ' ' * (bar_length - len(arrow))
+            print("\r[{0}]{1}% ".format(arrow + spaces, int(round(percent*100))), end="", flush=True)

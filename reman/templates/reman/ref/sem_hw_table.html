@@ -1,0 +1,99 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    {% include 'reman/format/ref_card_header.html' with active=4 %}
+
+{% endblock %}
+
+{% block table_content %}
+
+<button class="create-sem-hw btn btn-sm btn-primary mb-3" {% if not perms.reman.add_ecutype %}disabled{% endif %}>
+    <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. HW
+</button>
+<a class="btn btn-sm btn-success mb-3 ml-3" href="{% url 'reman:ecu_hw_generate' %}">Générer Scan IN/OUT</a>
+
+<table class="table table-bordered table-sm text-nowrap" id="ecuTypeTable" style="width: 100%;">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Réf. Hardware</th>
+        <th>Type Hardware</th>
+        <th>Modèle</th>
+        <th>Fournisseur</th>
+        <th>PF code OE</th>
+        <th>PI code OE</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for type in ecus %}
+        <tr>
+            <td class="bg-white text-nowrap" style="width: 60px;">
+                {% if perms.volvo.change_semtype %}
+                    <button title="Modification" class="bs-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_update' type.pk %}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                {% else %}
+                    <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                {% endif %}
+                {% if perms.volvo.add_semtype %}
+                    <button title="Copie" class="bs-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'volvo:sem_hw_create' %}?hw={{ type.hw_reference }}">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                {% else %}
+                    <i class="btn btn-dark btn-circle btn-sm fas fa-copy"></i>
+                {% endif %}
+            </td>
+            <td>{{ type.hw_reference }}</td>
+            <td>{{ type.hw_type }}</td>
+            <td>{{ type.technical_data }}</td>
+            <td>{{ type.supplier_oe }}</td>
+            <td>
+                {% with models=type.ecumodel_set.all %}
+
+                    {% if models|length > 1 %}
+                        <a data-toggle="collapse" href="#ref_{{ type.pk }}" role="button" aria-expanded="false">
+                            Afficher
+                        </a>
+                        <div class="collapse mt-2" id="ref_{{ type.pk }}">
+                            {% for model in models %}{{ model.barcode }}<br>{% endfor %}
+                        </div>
+                    {% else %}
+                        {% for model in models %}{{ model.barcode }}<br>{% endfor %}
+                    {% endif %}
+
+                {% endwith %}
+            </td>
+            <td>
+                {% with models=type.ecumodel_set.all %}
+
+                    {% if models|length > 1 %}
+                        <a data-toggle="collapse" href="#ref_{{ type.pk }}" role="button" aria-expanded="false">
+                            Afficher
+                        </a>
+                        <div class="collapse mt-2" id="ref_{{ type.pk }}">
+                            {% for model in models %}{{ model.oe_reference }}<br>{% endfor %}
+                        </div>
+                    {% else %}
+                        {% for model in models %}{{ model.oe_reference }}<br>{% endfor %}
+                    {% endif %}
+
+                {% endwith %}
+            </td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'reman/js/reman-tables.js' %}"></script>
+
+{% endblock %}

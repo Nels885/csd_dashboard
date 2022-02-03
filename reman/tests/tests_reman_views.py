@@ -2,25 +2,20 @@ from django.urls import reverse
 from django.contrib.messages import get_messages
 from django.utils.translation import ugettext as _
 
-from dashboard.tests.base import UnitTest
+from reman.tests import RemanTest
 
 from reman.models import Repair, SparePart, Batch, EcuModel, EcuRefBase, EcuType, Default
 
 
-class RemanTestCase(UnitTest):
+class RemanTestCase(RemanTest):
 
     def setUp(self):
-        super(RemanTestCase, self).setUp()
-        self.psaBarcode = '9612345678'
-        spare_part = SparePart.objects.create(code_produit='test HW_9876543210')
-        ecu_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test', spare_part=spare_part)
-        ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=ecu_type)
-        ecu = EcuModel.objects.create(oe_raw_reference='1699999999', ecu_type=ecu_type, psa_barcode=self.psaBarcode)
-        self.batch = Batch.objects.create(year="C", number=1, quantity=10, created_by=self.user, ecu_ref_base=ref_base)
-        self.repair = Repair.objects.create(
-            batch=self.batch, identify_number="C001010001", created_by=self.user, status="Réparé", quality_control=True)
-        self.authError = {"detail": "Informations d'authentification non fournies."}
-        Default.objects.create(code='TEST1', description='Ceci est le test 1')
+        super().setUp()
+        self.psaRepair = Repair.objects.create(batch=self.psaBatch, identify_number="C001010001",
+                                               created_by=self.user, status="Réparé", quality_control=True)
+        self.semRepair = Repair.objects.create(
+            batch=self.semBatch, identify_number="V001002001", created_by=self.user, status="Réparé",
+            quality_control=True, new_barcode='PF832706GK00000001')
 
     def test_repair_table_page(self):
         url = reverse('reman:repair_table')
@@ -46,9 +41,9 @@ class RemanTestCase(UnitTest):
     def test_repair_pages(self):
         urls_perms = [
             (reverse('reman:create_repair'), 'add_repair'),
-            (reverse('reman:edit_repair', kwargs={'pk': self.repair.pk}), 'change_repair'),
-            (reverse('reman:close_repair', kwargs={'pk': self.repair.pk}), 'change_repair'),
-            (reverse('reman:detail_repair', kwargs={'pk': self.repair.pk}), 'view_repair'),
+            (reverse('reman:edit_repair', kwargs={'pk': self.psaRepair.pk}), 'change_repair'),
+            (reverse('reman:close_repair', kwargs={'pk': self.psaRepair.pk}), 'change_repair'),
+            (reverse('reman:detail_repair', kwargs={'pk': self.psaRepair.pk}), 'view_repair'),
         ]
         for url, perm in urls_perms:
             response = self.client.get(url)
@@ -70,8 +65,8 @@ class RemanTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_out_table(self):
-        url = reverse('reman:out_table') + '?filter=' + self.batch.batch_number
+    def test_psa_out_table(self):
+        url = reverse('reman:out_table') + '?filter=' + self.psaBatch.batch_number
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -81,14 +76,52 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
         # Invalid form
-        response = self.client.post(url, {'identify_number': ''})
-        self.assertFormError(response, 'form', 'identify_number', _('This field is required.'))
-        for identify_number in ['C001010001', 'C001010002R']:
-            response = self.client.post(url, {'identify_number': identify_number})
-            self.assertFormError(response, 'form', 'identify_number', "N° d'identification invalide")
-        Repair.objects.create(batch=self.batch, identify_number="C001010002", created_by=self.user, status="Réparé")
-        response = self.client.post(url, {'identify_number': 'C001010002R'})
-        self.assertFormError(response, 'form', 'identify_number', "Contrôle qualité non validé, voir avec Atelier.")
+        response = self.client.post(url, {'barcode': ''})
+        self.assertFormError(response, 'form', 'barcode', _('This field is required.'))
+        for barcode in ['C001010001', 'C001010002R', 'PF832706GK00000002']:
+            response = self.client.post(url, {'barcode': barcode})
+            self.assertFormError(response, 'form', 'barcode', "Code barre ou QR code invalide")
+        Repair.objects.create(
+            batch=self.psaBatch, identify_number="C001010002", created_by=self.user, status="Réparé")
+        response = self.client.post(url, {'barcode': 'C001010002R'})
+        self.assertFormError(response, 'form', 'barcode', "Contrôle qualité non validé, voir avec Atelier.")
+
+        # valid form
+        response = self.client.post(url, {'barcode': f'{self.psaRepair.identify_number}R'})
+        self.assertEqual(response.status_code, 200)
+        repair = Repair.objects.get(identify_number=self.psaRepair.identify_number)
+        self.assertNotEqual(repair.closing_date, None)
+        self.assertEqual(repair.checkout, True)
+
+    def test_sem_out_table(self):
+        url = reverse('reman:out_table') + '?filter=' + self.semBatch.batch_number
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(Repair, 'close_repair')
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        # Invalid form
+        response = self.client.post(url, {'barcode': ''})
+        self.assertFormError(response, 'form', 'barcode', _('This field is required.'))
+        for barcode in ['C001010001', 'C001010002R', 'PF832706GK00000002']:
+            response = self.client.post(url, {'barcode': barcode})
+            self.assertFormError(response, 'form', 'barcode', "Code barre ou QR code invalide")
+        Repair.objects.create(
+            batch=self.semBatch, identify_number="V001002002", created_by=self.user, status="Réparé",
+            new_barcode="PF832706GK00000002"
+        )
+        response = self.client.post(url, {'barcode': 'PF832706GK00000002'})
+        self.assertFormError(response, 'form', 'barcode', "Contrôle qualité non validé, voir avec Atelier.")
+
+        # valid form
+        response = self.client.post(url, {'barcode': self.semRepair.new_barcode})
+        self.assertEqual(response.status_code, 200)
+        repair = Repair.objects.get(identify_number=self.semRepair.identify_number)
+        self.assertNotEqual(repair.closing_date, None)
+        self.assertEqual(repair.checkout, True)
 
     def test_check_part(self):
         url = reverse('reman:part_check')
@@ -101,11 +134,11 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
         # Invalid form
-        response = self.client.post(url, {'psa_barcode': ''})
-        self.assertFormError(response, 'form', 'psa_barcode', _('This field is required.'))
+        response = self.client.post(url, {'barcode': ''})
+        self.assertFormError(response, 'form', 'barcode', _('This field is required.'))
         for barcode in ['123456789', '96123']:
-            response = self.client.post(url, {'psa_barcode': barcode})
-            self.assertFormError(response, 'form', 'psa_barcode', _('The barcode is invalid'))
+            response = self.client.post(url, {'barcode': barcode})
+            self.assertFormError(response, 'form', 'barcode', _('The barcode is invalid'))
 
         # Valid form
         barcode_list = [
@@ -113,15 +146,15 @@ class RemanTestCase(UnitTest):
             ('9887654321', '9887654321'), ('96876543210000000000', '9687654321'), ('89661-0H390', '89661-0H390')
         ]
         for barcode in barcode_list:
-            response = self.client.post(url, {'psa_barcode': barcode[0]})
+            response = self.client.post(url, {'barcode': barcode[0]})
             self.assertRedirects(
-                response, reverse('reman:part_create', kwargs={'psa_barcode': barcode[1]}), status_code=302)
-        response = self.client.post(url, {'psa_barcode': self.psaBarcode})
-        ecu = EcuModel.objects.get(psa_barcode=self.psaBarcode)
+                response, reverse('reman:part_create', kwargs={'barcode': barcode[1]}), status_code=302)
+        response = self.client.post(url, {'barcode': self.barcode})
+        ecu = EcuModel.objects.get(barcode=self.barcode)
         self.assertEquals(response.context['ecu'], ecu)
 
     def test_new_part_email(self):
-        url = reverse('reman:part_email', kwargs={'psa_barcode': self.psaBarcode})
+        url = reverse('reman:part_email', kwargs={'barcode': self.barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -185,8 +218,8 @@ class RemanTestCase(UnitTest):
         self.assertEqual(response.data, self.authError)
 
     def test_part_create_view(self):
-        psa_barcode = '9676543210'
-        url = reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode})
+        barcode = '9676543210'
+        url = reverse('reman:part_create', kwargs={'barcode': barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -200,7 +233,7 @@ class RemanTestCase(UnitTest):
                 self.assertEqual(response.status_code, 200)
 
     def test_ref_base_edit_view(self):
-        url = reverse('reman:edit_ref_base', kwargs={'psa_barcode': self.psaBarcode})
+        url = reverse('reman:edit_ref_base', kwargs={'barcode': self.barcode})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -211,7 +244,7 @@ class RemanTestCase(UnitTest):
             self.assertEqual(response.status_code, 200)
 
     def test_batch_pdf_generate(self):
-        url = reverse('reman:batch_pdf', kwargs={'pk': self.batch.pk})
+        url = reverse('reman:batch_pdf', kwargs={'pk': self.psaBatch.pk})
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 

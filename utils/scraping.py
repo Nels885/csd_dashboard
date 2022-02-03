@@ -5,7 +5,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import WebDriverException
 from constance import config
 
 logger = logging.getLogger('command')
@@ -20,15 +19,18 @@ class ScrapingCorvet(webdriver.Chrome):
         """ Initialization """
         self.username = username
         self.password = password
-        options = Options()
-        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-            options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-        options.add_argument('-headless')
         try:
-            super(ScrapingCorvet, self).__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
+            options = Options()
+            if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+                options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+            options.add_argument('-headless')
+            options.add_argument("--no-sandbox")  # bypass OS security model
+            options.add_argument("--disable-dev-shm-usage")  # overcome limited resource problems
+            super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
             self.implicitly_wait(10)
+            self.set_page_load_timeout(30)
             self.get(self.START_URLS)
-        except WebDriverException as err:
+        except Exception as err:
             self._logger_error('__init__()', err)
             self.close(error=True)
 
@@ -40,9 +42,9 @@ class ScrapingCorvet(webdriver.Chrome):
         """
         if not self.ERROR and self.login():
             try:
+                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
                 vin = self.find_element_by_name('form:input_vin')
                 submit = self.find_element_by_id('form:suite')
-                vin.clear()
                 if vin_value:
                     vin.send_keys(vin_value)
                 submit.click()
@@ -66,6 +68,7 @@ class ScrapingCorvet(webdriver.Chrome):
         Login on the web site
         """
         try:
+            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:identifiant2')))
             username = self.find_element_by_name('form:identifiant2')
             password = self.find_element_by_name('form:password2')
             login = self.find_element_by_id('form:login2')
@@ -73,7 +76,6 @@ class ScrapingCorvet(webdriver.Chrome):
                 element.clear()
                 element.send_keys(value)
             login.click()
-            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin')))
         except Exception as err:
             self._logger_error('login()', err)
             self.close(error=True)
@@ -86,8 +88,7 @@ class ScrapingCorvet(webdriver.Chrome):
         :return:
         """
         try:
-            logout = self.find_element_by_id('form:deconnect2')
-            logout.click()
+            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'form:deconnect2'))).click()
         except Exception as err:
             self._logger_error('logout()', err)
             self.quit()
@@ -99,7 +100,7 @@ class ScrapingCorvet(webdriver.Chrome):
         try:
             if not self.ERROR:
                 self.quit()
-        except AttributeError as err:
+        except Exception as err:
             self._logger_error('close()', err)
 
     @staticmethod
@@ -121,11 +122,11 @@ class ScrapingSivin(ScrapingCorvet):
         if not self.ERROR and self.login():
             try:
                 self.get(self.SIVIN_URLS)
-                vin = self.find_element_by_name('form:input_immat')
+                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_immat'))).clear()
+                immat = self.find_element_by_name('form:input_immat')
                 submit = self.find_element_by_id('form:suite')
-                vin.clear()
                 if immat_value:
-                    vin.send_keys(immat_value)
+                    immat.send_keys(immat_value)
                 submit.click()
                 time.sleep(1)
                 data = WebDriverWait(self, 10).until(

@@ -1,0 +1,75 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block card_header %}
+
+    {% include 'reman/format/ref_card_header.html' %}
+
+{% endblock %}
+
+{% block table_content %}
+
+    <button class="create-volvo-reman btn btn-sm btn-primary mb-3" {% if not perms.volvo.add_semrefbase %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. REMAN
+    </button>
+    <button class="create-sem-hw btn btn-sm btn-primary mb-3 ml-3" {% if not perms.reman.add_ecutype %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Réf. HW
+    </button>
+    <a class="btn btn-sm btn-success mb-3 ml-3" href="{% url 'reman:ecu_hw_generate' %}">Générer Scan IN/OUT</a>
+
+    <table class="table table-bordered table-sm text-nowrap" id="remanRefTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Référence REMAN</th>
+            <th>Marque</th>
+            <th>MAP DATA</th>
+            <th>PRODUCT PART</th>
+            <th>PF code</th>
+            <th>ASM</th>
+            <th>HW</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for ref in refs %}
+
+            <tr>
+                <td class="bg-white text-nowrap" style="width: 60px;">
+                    {% if perms.volvo.change_semrefbase %}
+                        <button title="Modification" class="bs-large-modal btn btn-success btn-circle btn-sm" data-form-url="{% url 'volvo:reman_ref_update' ref.pk %}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                    {% endif %}
+                    {% if perms.volvo.add_semrefbase %}
+                        <button title="Copie" class="bs-large-modal btn btn-primary btn-circle btn-sm" data-form-url="{% url 'volvo:reman_ref_create' %}?ref={{ ref.reman_reference }}">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    {% else %}
+                        <i class="btn btn-dark btn-circle btn-sm fas fa-copy"></i>
+                    {% endif %}
+                </td>
+                <td>{{ ref.reman_reference }}</td>
+                <td>{{ ref.brand }}</td>
+                <td>{{ ref.map_data }}</td>
+                <td>{{ ref.product_part }}</td>
+                <td>{{ ref.pf_code }}</td>
+                <td>{{ ref.ecu_type.asm_reference }}</td>
+                <td>{{ ref.ecu_type.hw_reference }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript" src="{% static 'volvo/js/tables.js' %}"></script>
+
+{% endblock %}

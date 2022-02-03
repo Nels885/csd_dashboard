@@ -4,7 +4,7 @@ from io import StringIO, BytesIO
 from django.utils import timezone
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -27,13 +27,14 @@ from utils.django.urls import reverse, reverse_lazy, http_referer
 from utils.conf import string_to_list, DICT_YEAR
 from utils.django.datatables import QueryTableByArgs
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase
+from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase, RepairPart
 from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    EcuDumpModelForm, AddEcuTypeForm, UpdateEcuTypeForm, AddRefRemanForm, UpdateRefRemanForm
+    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm, RepairPartForm
 )
+from .utils import batch_pdf_data
 
 context = {
     'title': 'Reman'
@@ -52,12 +53,20 @@ def repair_edit(request, pk):
     card_title = _('Modification customer file')
     prod = get_object_or_404(Repair, pk=pk)
     form = EditRepairForm(request.POST or None, instance=prod)
-    if request.POST and form.is_valid():
-        form.save()
-        messages.success(request, _('Modification done successfully!'))
-        if "btn_repair_close" in request.POST:
-            return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
-        return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
+    form2 = RepairPartForm(request.GET or None)
+    if request.POST:
+        form2 = RepairPartForm(request.POST)
+        if "repair_part" in request.POST and form2.is_valid():
+            product_code = form2.cleaned_data['product_code']
+            part_number = form2.cleaned_data['part_number']
+            RepairPart.objects.create(product_code=product_code, part_number=part_number, content_object=prod)
+            form2 = RepairPartForm()
+        elif "repair_part" not in request.POST and form.is_valid():
+            form.save()
+            messages.success(request, _('Modification done successfully!'))
+            if "btn_repair_close" in request.POST:
+                return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
+            return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
     return render(request, 'reman/repair/repair_edit.html', context)
 
@@ -93,6 +102,20 @@ class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
     success_message = _('Success: Repair was created.')
 
 
+class RepairPartDeleteView(LoginRequiredMixin, BSModalDeleteView):
+    model = RepairPart
+    template_name = 'format/modal_delete.html'
+    success_message = _('Success: Repair part was deleted.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Repair part delete')
+        return context
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
 """
 ~~~~~~~~~~~~~~
 MANAGER VIEWS
@@ -101,20 +124,20 @@ MANAGER VIEWS
 
 
 @permission_required('reman.change_ecumodel')
-def ref_base_edit(request, psa_barcode):
+def ref_base_edit(request, barcode):
     next_form = int(request.GET.get('next', 0))
     if next_form == 1:
         card_title = "Edit Type ECU"
         try:
-            ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
+            ecu_type = EcuType.objects.get(ecumodel__barcode=barcode)
             form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
         except EcuType.DoesNotExist:
             form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
     elif next_form == 2:
         card_title = "Edit Pièce détachée"
-        ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
+        ecu_type = get_object_or_404(EcuType, ecumodel__barcode=barcode)
         try:
-            part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
+            part = SparePart.objects.get(ecutype__ecumodel__barcode=barcode)
             form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
         except SparePart.DoesNotExist:
             form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
@@ -123,18 +146,18 @@ def ref_base_edit(request, psa_barcode):
             part_obj = form.save()
             ecu_type.spare_part = part_obj
             ecu_type.save()
-            ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+            ecu = get_object_or_404(EcuModel, barcode=barcode)
             context.update(locals())
             return render(request, 'reman/part/part_full_detail.html', context)
     else:
         card_title = "Edit Modèle ECU"
-        model = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+        model = get_object_or_404(EcuModel, barcode=barcode)
         form = EcuModelForm(request.POST or None, error_class=ParaErrorList, instance=model)
         form.initial['hw_reference'] = model.ecu_type.hw_reference
     if request.POST and form.is_valid():
         form.save()
         next_form += 1
-        return redirect(reverse('reman:edit_ref_base', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
+        return redirect(reverse('reman:edit_ref_base', kwargs={'barcode': barcode}) + '?next=' + str(next_form))
     context.update(locals())
     return render(request, 'reman/ecu_ref_base_update.html', context)
 
@@ -152,9 +175,9 @@ class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
 
     def form_valid(self, form):
         batch_type = form.cleaned_data['type']
-        if batch_type == "ETUDE":
+        if "ETUDE" in batch_type:
             filter = 'etude'
-        elif batch_type == "REPAIR":
+        elif "REPAIR" in batch_type:
             filter = 'workshop'
         else:
             filter = 'pending'
@@ -167,16 +190,19 @@ def batch_type_ajax(request):
     data = {"number": 1}
     batch_type = request.GET.get('type', None)
     try:
-        batchs = Batch.objects.filter(year=DICT_YEAR.get(date.year)).exclude(number__gte=900)
-        if batch_type == "ETUDE":
-            data['number'] = 901
-            batchs = Batch.objects.filter(year=DICT_YEAR[date.year]).exclude(number__lt=900)
-        elif batch_type == "REPAIR":
-            batchs = Batch.objects.filter(year="X")
+        if "ETUDE" in batch_type:
+            data = {"number": 901}
+            batchs = Batch.objects.all().exclude(number__lt=900)
+        else:
+            batchs = Batch.objects.all().exclude(number__gte=900)
+        if "VOLVO" in batch_type:
+            batchs = batchs.filter(year="V")
+        elif "REPAIR" in batch_type:
+            batchs = batchs.filter(year="X")
+        else:
+            batchs = batchs.filter(year=DICT_YEAR.get(date.year))
         data["number"] = batchs.aggregate(Max('number'))['number__max'] + 1
     except TypeError:
-        pass
-    except Batch.DoesNotExist:
         pass
     return JsonResponse(data)
 
@@ -211,7 +237,7 @@ class RefRemanCreateView(PermissionRequiredMixin, BSModalCreateView):
     """ View of modal default create """
     permission_required = 'reman.add_ecurefbase'
     template_name = 'reman/modal/ref_reman_create.html'
-    form_class = AddRefRemanForm
+    form_class = RefRemanForm
     success_message = _('Success: Reman reference was created.')
     success_url = reverse_lazy('reman:base_ref_table')
 
@@ -232,7 +258,7 @@ class RefRemanUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = EcuRefBase
     permission_required = 'reman.change_ecurefbase'
     template_name = 'reman/modal/ref_reman_update.html'
-    form_class = UpdateRefRemanForm
+    form_class = RefRemanForm
     success_message = _('Success: Reman reference was updated.')
     success_url = reverse_lazy('reman:base_ref_table')
 
@@ -280,39 +306,39 @@ def check_parts(request):
     card_title = "Vérification pièce détachée"
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if request.POST and form.is_valid():
-        psa_barcode = form.cleaned_data['psa_barcode']
-        if re.match(r'^89661-\w{5}$', psa_barcode):
-            psa_barcode = psa_barcode[:11]
+        barcode = form.cleaned_data['barcode']
+        if re.match(r'^89661-\w{5}$', barcode):
+            barcode = barcode[:11]
         else:
-            psa_barcode = psa_barcode[:10]
+            barcode = barcode[:10]
         try:
-            ecu = EcuModel.objects.get(psa_barcode=psa_barcode)
+            ecu = EcuModel.objects.get(barcode=barcode)
             context.update(locals())
             if ecu.ecu_type and ecu.ecu_type.spare_part:
                 return render(request, 'reman/part/part_detail.html', context)
         except EcuModel.DoesNotExist:
             pass
-        return redirect(reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode}))
+        return redirect(reverse('reman:part_create', kwargs={'barcode': barcode}))
     errors = form.errors.items()
     context.update(locals())
     return render(request, 'reman/part/part_check.html', context)
 
 
 @permission_required('reman.check_ecumodel')
-def create_part(request, psa_barcode):
+def create_part(request, barcode):
     next_form = int(request.GET.get('next', 0))
     if next_form == 1:
         card_title = "Ajout Type ECU"
         try:
-            ecu_type = EcuType.objects.get(ecumodel__psa_barcode=psa_barcode)
+            ecu_type = EcuType.objects.get(ecumodel__barcode=barcode)
             form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
         except EcuType.DoesNotExist:
             form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
     elif next_form == 2:
         card_title = "Ajout Pièce détachée"
-        ecu_type = get_object_or_404(EcuType, ecumodel__psa_barcode=psa_barcode)
+        ecu_type = get_object_or_404(EcuType, ecumodel__barcode=barcode)
         try:
-            part = SparePart.objects.get(ecutype__ecumodel__psa_barcode=psa_barcode)
+            part = SparePart.objects.get(ecutype__ecumodel__barcode=barcode)
             form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
         except SparePart.DoesNotExist:
             form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
@@ -321,35 +347,35 @@ def create_part(request, psa_barcode):
             part_obj = form.save()
             ecu_type.spare_part = part_obj
             ecu_type.save()
-            ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+            ecu = get_object_or_404(EcuModel, barcode=barcode)
             context.update(locals())
             return render(request, 'reman/part/part_send_email.html', context)
     else:
         card_title = "Ajout Modèle ECU"
         try:
-            instance = EcuModel.objects.get(psa_barcode=psa_barcode)
+            instance = EcuModel.objects.get(barcode=barcode)
             form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList, instance=instance)
             if instance.ecu_type:
                 form.initial['hw_reference'] = instance.ecu_type.hw_reference
         except EcuModel.DoesNotExist:
             form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
-            form.initial['psa_barcode'] = psa_barcode
+            form.initial['barcode'] = barcode
     if request.POST and form.is_valid():
         form.save()
         next_form += 1
         return redirect(
-            reverse('reman:part_create', kwargs={'psa_barcode': psa_barcode}) + '?next=' + str(next_form))
+            reverse('reman:part_create', kwargs={'barcode': barcode}) + '?next=' + str(next_form))
     context.update(locals())
     return render(request, 'reman/part/part_create_form.html', context)
 
 
 @permission_required('reman.check_ecumodel')
-def new_part_email(request, psa_barcode):
+def new_part_email(request, barcode):
     mail_subject = '[REMAN] Nouveau code barre PSA'
-    ecu = get_object_or_404(EcuModel, psa_barcode=psa_barcode)
+    ecu = get_object_or_404(EcuModel, barcode=barcode)
     ecu.to_dump = True
     ecu.save()
-    message = render_to_string('reman/new_psa_barcode_email.html', {
+    message = render_to_string('reman/new_barcode_email.html', {
         'ecu': ecu,
     })
     email = EmailMessage(
@@ -369,9 +395,17 @@ IN / OUT VIEWS
 
 
 class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
-    permission_required = 'reman.close_repair'
     template_name = 'reman/modal/batch_select.html'
-    form_class = CheckOutSelectBatchForm
+
+    def get_form_class(self):
+        select = self.request.GET.get('select', None)
+        if select == "stock":
+            return StockSelectBatchForm
+        return CheckOutSelectBatchForm
+
+    def has_permission(self):
+        user = self.request.user
+        return user.has_perm('reman.stock_repair') or user.has_perm('reman.close_repair')
 
     def form_valid(self, form):
         self.filter = '?filter=' + str(form.cleaned_data['batch'])
@@ -381,7 +415,8 @@ class CheckOutFilterView(PermissionRequiredMixin, BSModalFormView):
         return reverse_lazy('reman:out_table') + self.filter
 
 
-@permission_required('reman.close_repair')
+# @permission_required('reman.close_repair')
+@login_required()
 def out_table(request):
     """ View of Reman Out Repair table page """
     batch_number = request.GET.get('filter')
@@ -439,6 +474,7 @@ def batch_table(request):
 @permission_required('reman.pdfgen_batch')
 def batch_pdf_generate(request, pk):
     batch = get_object_or_404(Batch, pk=pk)
+    reman_reference, part_name = batch_pdf_data(batch)
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
     p.setTitle(f"batch_{batch.batch_number}")
@@ -451,10 +487,10 @@ def batch_pdf_generate(request, pk):
     p.drawString(60, -430, "Quantité carton :")
 
     p.setFont('Courier-Bold', 36)
-    p.drawString(380, -130, str(batch.ecu_ref_base.reman_reference))
-    barcode = code128.Code128(str(batch.ecu_ref_base.reman_reference), barWidth=0.5 * mm, barHeight=10 * mm)
+    p.drawString(380, -130, str(reman_reference))
+    barcode = code128.Code128(str(reman_reference), barWidth=0.5 * mm, barHeight=10 * mm)
     barcode.drawOn(p, 610, -130)
-    p.drawString(380, -230, str(batch.ecu_ref_base.ecu_type.technical_data[:20]))
+    p.drawString(380, -230, str(part_name))
     p.drawString(380, -330, str(batch.batch_number))
     p.line(470, -340, 530, -340)
     barcode = code128.Code128(str(batch.batch_number), barWidth=0.5 * mm, barHeight=10 * mm)
@@ -524,19 +560,26 @@ def part_table(request):
 @permission_required('reman.view_ecurefbase')
 def base_ref_table(request):
     """ View of EcuRefBase table page """
-    table_title = 'REMAN Référence'
-    refs = EcuRefBase.objects.all()
-    context.update(locals())
-    return render(request, 'reman/base_ref_table.html', context)
+    if request.GET.get('customer', None) == "volvo":
+        title = "Reman VOLVO"
+        refs = EcuRefBase.objects.filter(brand__in=['VOLVO', 'RENAULT'])
+        return render(request, 'reman/ref/sem_ref_table.html', locals())
+    title = "Reman PSA"
+    refs = EcuRefBase.objects.exclude(brand__in=['VOLVO', 'RENAULT'])
+    return render(request, 'reman/ref/base_ref_table.html', locals())
 
 
 @login_required()
 def ecu_hw_table(request):
     """ View of EcuType table page """
+    if request.GET.get('customer', None) == "volvo":
+        title = "Reman VOLVO"
+        ecus = EcuType.objects.filter(technical_data="SEM")
+        return render(request, 'reman/ref/sem_hw_table.html', locals())
+    title = "Reman PSA"
     table_title = 'Référence Hardware'
-    ecus = EcuType.objects.all()
-    context.update(locals())
-    return render(request, 'reman/ecu_hw_table.html', context)
+    ecus = EcuType.objects.exclude(technical_data="SEM")
+    return render(request, 'reman/ref/ecu_hw_table.html', locals())
 
 
 @login_required
@@ -557,7 +600,7 @@ class EcuHwCreateView(PermissionRequiredMixin, BSModalCreateView):
     """ View of modal ECU Hardware update """
     permission_required = 'reman.add_ecutype'
     template_name = 'reman/modal/ecu_hw_create.html'
-    form_class = AddEcuTypeForm
+    form_class = EcuTypeForm
     success_message = _('Success: Reman ECU HW Reference was created.')
 
     def get_initial(self):
@@ -578,7 +621,7 @@ class EcuHwUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     model = EcuType
     permission_required = 'reman.change_ecutype'
     template_name = 'reman/modal/ecu_hw_update.html'
-    form_class = UpdateEcuTypeForm
+    form_class = EcuTypeForm
     success_message = _('Success: Reman ECU HW Reference was updated.')
     success_url = reverse_lazy('reman:ecu_hw_table')
 

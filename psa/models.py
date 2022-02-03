@@ -240,10 +240,23 @@ class CorvetProduct(models.Model):
     cmb = models.ForeignKey('psa.Ecu', related_name='corvet_cmb', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMB'}, null=True, blank=True)
     fmux = models.ForeignKey('psa.Ecu', related_name='corvet_fmux', on_delete=models.SET_NULL, limit_choices_to={'type': 'FMUX'}, null=True, blank=True)
     mds = models.ForeignKey('psa.Ecu', related_name='corvet_mds', on_delete=models.SET_NULL, limit_choices_to={'type': 'MDS'}, null=True, blank=True)
-    update = models.BooleanField(default=False)
+    cvm2 = models.ForeignKey('psa.Ecu', related_name='corvet_cvm2', on_delete=models.SET_NULL, limit_choices_to={'type': 'CVM2'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"
+        ordering = ['corvet']
+
+    def __str__(self):
+        return self.corvet.vin
+
+
+class CorvetOption(models.Model):
+    corvet = models.OneToOneField('psa.Corvet', related_name='opts', on_delete=models.CASCADE, primary_key=True)
+    tag = models.CharField('tag', max_length=100, blank=True)
+    update = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Options CORVET"
         ordering = ['corvet']
 
     def __str__(self):
@@ -268,16 +281,20 @@ class Multimedia(models.Model):
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
     ANT_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
 
-    hw_reference = models.BigIntegerField('référence HW', primary_key=True)
-    hw_type = models.CharField('type HW', max_length=10, blank=True)
+    comp_ref = models.BigIntegerField('réf. comp. matériel', primary_key=True)
+    mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
-    name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES)
+    name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES, blank=True)
+    xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     pr_reference = models.CharField("référence PR", max_length=10, blank=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
-    level = models.CharField('niveau', max_length=2, blank=True)
+    level = models.CharField('niveau', max_length=100, blank=True)
     extra = models.CharField('supplément', max_length=100, blank=True)
+    flash_nor = models.CharField('flashNOR', max_length=100, blank=True)
+    flash_nand = models.CharField('flashNAND', max_length=100, blank=True)
+    emmc = models.CharField('eMMC', max_length=100, blank=True)
     dab = models.BooleanField('DAB', default=False)
     cam = models.BooleanField('caméra de recul', default=False)
     cd_player = models.BooleanField('lecteur CD', default=False)
@@ -294,19 +311,14 @@ class Multimedia(models.Model):
 
     class Meta:
         verbose_name = "Données Multimédia"
-        ordering = ['hw_reference']
-
-    def save(self, *args, **kwargs):
-        super(Multimedia, self).save(*args, **kwargs)
-        CorvetProduct.objects.filter(corvet__electronique_14x__exact=self.hw_reference).update(btel=self.pk)
-        CorvetProduct.objects.filter(corvet__electronique_14f__exact=self.hw_reference).update(radio=self.pk)
+        ordering = ['comp_ref']
 
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return f"{self.hw_reference}_{self.name}_{self.level}_{self.type}"
+        return f"{self.comp_ref}_{self.name}_{self.level}_{self.type}"
 
 
 class Firmware(models.Model):
@@ -358,12 +370,14 @@ class Ecu(models.Model):
         ('BSI', 'Boitier Servitude Intelligent'), ('BSM', 'Boitier Servitude Moteur'),
         ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
         ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
-        ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique')
+        ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
+        ('CVM2', 'Camera Video Multifonction V2')
     ]
 
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)
     mat_ref = models.CharField("réf. matériel", max_length=10, blank=True)
-    name = models.CharField("nom du modèle", max_length=50)
+    name = models.CharField("nom du modèle", max_length=50, blank=True)
+    xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     type = models.CharField('type', max_length=7, choices=TYPE_CHOICES)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)
@@ -376,25 +390,6 @@ class Ecu(models.Model):
     class Meta:
         verbose_name = "Données ECU"
         ordering = ['comp_ref']
-
-    def save(self, *args, **kwargs):
-        super(Ecu, self).save(*args, **kwargs)
-        if self.type == "BSI":
-            CorvetProduct.objects.filter(corvet__electronique_14b__startswith=self.comp_ref).update(bsi=self.pk)
-        if self.type == "BSM":
-            CorvetProduct.objects.filter(corvet__electronique_16b__startswith=self.comp_ref).update(bsm=self.pk)
-        if self.type == "CMB":
-            CorvetProduct.objects.filter(corvet__electronique_14k__startswith=self.comp_ref).update(cmb=self.pk)
-        if self.type == "CMM":
-            CorvetProduct.objects.filter(corvet__electronique_14a__startswith=self.comp_ref).update(cmm=self.pk)
-        if self.type == "EMF":
-            CorvetProduct.objects.filter(corvet__electronique_14l__startswith=self.comp_ref).update(emf=self.pk)
-        if self.type == "FMUX":
-            CorvetProduct.objects.filter(corvet__electronique_19z__startswith=self.comp_ref).update(fmux=self.pk)
-        if self.type == "HDC":
-            CorvetProduct.objects.filter(corvet__electronique_16p__startswith=self.comp_ref).update(hdc=self.pk)
-        if self.type == "MDS":
-            CorvetProduct.objects.filter(corvet__electronique_19h__startswith=self.comp_ref).update(mds=self.pk)
 
     def __iter__(self):
         for field in self._meta.fields:

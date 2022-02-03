@@ -9,6 +9,22 @@ from datetime import datetime
 from squalaetp.models import Xelon
 from psa.models import Corvet
 
+VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137]))\w{14}$'
+# VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
+COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
+
+
+def comp_ref_isvalid(value):
+    if re.match(COMP_REF_REGEX, str(value)):
+        return True
+    return False
+
+
+def vin_psa_isvalid(value):
+    if re.match(VIN_PSA_REGEX, str(value)):
+        return True
+    return False
+
 
 def validate_vin(value):
     """
@@ -18,8 +34,7 @@ def validate_vin(value):
     :return:
         Error message if not valid
     """
-    # if not re.match(r'^VF[37]\w{14}$', str(value)):
-    if not re.match(r'^[VWZ][FLR0]\w{15}$', str(value)):
+    if not vin_psa_isvalid(value):
         return _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles')
     return None
 
@@ -32,7 +47,7 @@ def validate_nac(value):
     :return:
         UIN and Error message if not valid
     """
-    if re.match(r'^[VW][FR0]\w{15}$', str(value)):
+    if vin_psa_isvalid(value):
         try:
             uin = Corvet.objects.get(vin=value).electronique_44x
             if not uin:
@@ -81,6 +96,27 @@ def validate_psa_barcode(value):
     elif re.match(r'^\[\)>\w{55}$', str(value)):
         return value[21:29], None
     return value, _('PSA barcode is invalid')
+
+
+def validate_barcode(value):
+    """
+    Function for the PSA barcode validation
+    :param value:
+        Xelon value
+    :return:
+        Error message if not valid
+    """
+    if re.match(r'^9[68]\d{8}\w*$', str(value)):
+        return value[:10], "PSA"
+    elif re.match(r'^89661-\w{5}$', str(value)):
+        return value, "PSA"
+    elif re.match(r'55\d{6}$', str(value)):
+        return value, "PSA"
+    elif re.match(r'^\[\)>\w{55}$', str(value)):
+        return value[21:29], "PSA"
+    elif re.match(r'^PF\w{16}$', str(value)):
+        return value[:10], "VOLVO"
+    return value, None
 
 
 def validate_identify_number(queryset, value):

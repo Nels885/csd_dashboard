@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-02 12:36+0100\n"
+"POT-Creation-Date: 2022-02-03 18:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: squalaetp/admin.py:24 squalaetp/admin.py:80
+#: squalaetp/admin.py:24 squalaetp/admin.py:82
 #, python-brace-format
 msgid "{0} product{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: squalaetp/admin.py:27 squalaetp/admin.py:83
+#: squalaetp/admin.py:27 squalaetp/admin.py:85
 msgid "was,were"
 msgstr "était, étaient"
 
@@ -31,29 +31,61 @@ msgstr "était, étaient"
 msgid "Vin error disabled"
 msgstr "Erreur Vin désactivée"
 
-#: squalaetp/admin.py:91
+#: squalaetp/admin.py:93
 msgid "Change category for PSA products"
 msgstr "Changer de catégorie pour les produits PSA"
 
-#: squalaetp/admin.py:96
+#: squalaetp/admin.py:98
 msgid "Change category for Others products"
 msgstr "Changer de catégorie pour les autres produits"
 
-#: squalaetp/admin.py:101
+#: squalaetp/admin.py:103
 msgid "Change category for Clarion"
 msgstr "Changer de catégorie pour Clarion"
 
-#: squalaetp/admin.py:106
+#: squalaetp/admin.py:108
 msgid "Change category for Etude"
 msgstr "Changer de catégorie pour Etude"
 
-#: squalaetp/admin.py:111
+#: squalaetp/admin.py:113
 msgid "Change category for Calculators"
 msgstr "Changer de catégorie pour les calculateurs"
 
-#: squalaetp/admin.py:116
+#: squalaetp/admin.py:118
 msgid "Change category for Default"
 msgstr "Changer de catégorie pour Par défaut"
+
+#: squalaetp/admin.py:123
+msgid "Change Corvet type for Radio"
+msgstr "Changer le type de Corvet pour la radio"
+
+#: squalaetp/admin.py:128
+msgid "Change Corvet type for Navigation"
+msgstr "Changer le type de Corvet pour la navigation"
+
+#: squalaetp/admin.py:133
+msgid "Change Corvet type for EMF"
+msgstr "Changer le type de Corvet pour EMF"
+
+#: squalaetp/admin.py:138
+msgid "Change Corvet type for CMB"
+msgstr "Changer le type de Corvet pour CMB"
+
+#: squalaetp/admin.py:143
+msgid "Change Corvet type for BSI"
+msgstr "Changer le type de Corvet pour BSI"
+
+#: squalaetp/admin.py:148
+msgid "Change Corvet type for BSM"
+msgstr "Changer le type de Corvet pour BSM"
+
+#: squalaetp/admin.py:153
+msgid "Change Corvet type for COM200x"
+msgstr "Changer le type de Corvet pour COM200x"
+
+#: squalaetp/admin.py:158
+msgid "Change Corvet type for CMM"
+msgstr "Changer le type de Corvet pour CMM"
 
 #: squalaetp/forms.py:63
 msgid ""
@@ -87,26 +119,27 @@ msgstr "Entrez le numéro d'IMMAT"
 msgid ""
 "Data in XML format available on the RepairNAV site during SIVIN extraction..."
 msgstr ""
-"Données au format XML disponibles sur le site RepairNAV lors de l'extraction SIVIN..."
+"Données au format XML disponibles sur le site RepairNAV lors de l'extraction "
+"SIVIN..."
 
 #: squalaetp/forms.py:179
 msgid "XML data does not match IMMAT"
 msgstr "Les données XML ne correspondent pas à IMMAT"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:30
 msgid "Raw Corvet data"
 msgstr "Données Corvet brute"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:43
+#: squalaetp/templates/squalaetp/detail/detail.html:36
 msgid "Log Files"
 msgstr "Fichiers Log"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:50
+#: squalaetp/templates/squalaetp/detail/detail.html:43
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:61
-#: squalaetp/templates/squalaetp/sivin_detail/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:54
+#: squalaetp/templates/squalaetp/sivin_detail/detail.html:30
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 

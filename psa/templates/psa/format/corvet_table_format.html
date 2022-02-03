@@ -1,11 +1,14 @@
 <table class="table table-bordered table-striped table-sm">
 
-    {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display thead_title="AFFICHAGE :" %}
+    {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display upper_title="affichage" %}
 
     <tbody class="collapse {% if collapse.display %}show{% endif %}" id="collapseDisplay">
     <tr>
         <td class="text-dark td-ihm">Réf HW TDB</td>
-        <td>{{ object.electronique_14k }}</td>
+        <td>
+            {{ object.electronique_14k }}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmb id="cmb" %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">SOFT TDB</td>
@@ -13,7 +16,10 @@
     </tr>
     <tr>
         <td class="text-dark td-ihm">Réf HW EMF</td>
-        <td>{{ object.electronique_14l }}</td>
+        <td>
+            {{ object.electronique_14l }}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.emf id="emf" %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">SOFT EMF</td>
@@ -28,13 +34,16 @@
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio thead_title="AUDIO :" %}
+    {% include 'format/collapse_thead.html' with id="collapseAudio" expanded=collapse.audio upper_title="audio" %}
 
     <tbody class="collapse {% if collapse.audio %}show{% endif %}" id="collapseAudio">
     {% if object.electronique_14f %}
         <tr>
             <td class="text-dark td-ihm">Réf HW RAD</td>
-            <td>{{ object.electronique_14f }}</td>
+            <td>
+                {{ object.electronique_14f }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.radio id="radio" %}
+            </td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">CAL RAD</td>
@@ -48,7 +57,10 @@
     {% if object.electronique_14x %}
         <tr>
             <td class="text-dark td-ihm">Réf HW NAV</td>
-            <td>{{ object.electronique_14x }}</td>
+            <td>
+                {{ object.electronique_14x }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.btel id="btel" %}
+            </td>
         </tr>
         <tr>
             <td class="text-dark td-ihm">CAL NAV</td>
@@ -64,13 +76,16 @@
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseEcu" expanded=collapse.ecu thead_title="CALCULATEUR :" %}
+    {% include 'format/collapse_thead.html' with id="collapseEcu" expanded=collapse.ecu upper_title="calculateur" %}
 
     <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseEcu">
     <!-- ECU MOTOR -->
     <tr>
         <td class="text-dark td-ihm">Réf HW ECU moteur</td>
-        <td>{{ object.electronique_14a }}</td>
+        <td>
+            {{ object.electronique_14a }}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmm id="cmm" %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">CAL LIVRE ECU moteur</td>
@@ -87,7 +102,10 @@
     <!-- BSI -->
     <tr>
         <td class="text-dark td-ihm">Réf HW BSI</td>
-        <td>{{ object.electronique_14b }}</td>
+        <td>
+            {{ object.electronique_14b }}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bsi id="bsi" %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">CAL BSI</td>
@@ -100,7 +118,10 @@
     <!-- COM200x -->
     <tr>
         <td class="text-dark td-ihm">Réf HW COM200x</td>
-        <td>{{ object.electronique_16p }}</td>
+        <td>
+            {{ object.electronique_16p }}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.hdc id="hdc" %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">N° série COM200x</td>
@@ -124,7 +145,7 @@
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.ecu thead_title="SECURITE :" %}
+    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.ecu upper_title="sécurité" %}
 
     <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseSecu">
     <!-- ASS -->

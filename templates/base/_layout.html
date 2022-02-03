@@ -65,7 +65,7 @@
 
 <script type="text/javascript">
 
-    $(function () {
+    $(document).ready(function() {
         // Log in buttons
         $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
         $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
@@ -86,7 +86,11 @@
 
         $(".create-ref-reman").modalForm({formURL: "{% url 'reman:ref_reman_create' %}", modalID: "#create-large-modal"});
 
+        $(".create-volvo-reman").modalForm({formURL: "{% url 'volvo:reman_ref_create' %}", modalID: "#create-modal"});
+
         $(".create-ecu-hw").modalForm({formURL: "{% url 'reman:ecu_hw_create' %}"});
+
+        $(".create-sem-hw").modalForm({formURL: "{% url 'volvo:sem_hw_create' %}"});
 
         $(".create-tag-xelon").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
 
@@ -96,13 +100,13 @@
     getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
         var progressUrl = `{% url 'progress' %}?task_id=${taskId}`;
 
-        function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
+        function onCustomProgress(progressBarElement, progressBarMessageElement, progress) {
             progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
             progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
             progressBarElement.setAttribute("aria-valuenow", progress.percent)
         }
 
-        function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
+        function onCustomSuccess(progressBarElement, progressBarMessageElement, result) {
             // display message
             if ("msg" in result) {
                 addMessage(result["msg"], "success");
@@ -118,8 +122,8 @@
         CeleryProgressBar.initProgressBar(progressUrl, {
             progressBarId: progressBarId,
             progressBarMessageId: progressBarMessageId,
-            onProgress: onExportUserProgress,
-            onSuccess: onExportUserSuccess,
+            onProgress: onCustomProgress,
+            onSuccess: onCustomSuccess,
         });
     }
 

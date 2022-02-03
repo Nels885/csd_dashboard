@@ -3,7 +3,7 @@ from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
 
-from .models import Xelon, SparePart, Indicator, Action, ProductCategory, Sivin
+from .models import Xelon, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -55,12 +55,14 @@ class ActionAdmin(admin.ModelAdmin):
 
 
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('product_model', 'category')
-    list_filter = ('category', )
+    list_display = ('product_model', 'category', 'corvet_type')
+    list_filter = ('category', 'corvet_type')
     search_fields = ('product_model', 'category')
     actions = (
         'psa_category_update', 'other_category_update', 'clarion_category_update', 'etude_category_update',
-        'ecu_category_update', 'default_category_update'
+        'ecu_category_update', 'default_category_update', 'radio_corvet_type_update', 'btel_corvet_type_update',
+        'emf_corvet_type_update', 'cmb_corvet_type_update', 'bsi_corvet_type_update', 'bsm_corvet_type_update',
+        'hdc_corvet_type_update', 'cmm_corvet_type_update'
     )
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
@@ -115,6 +117,46 @@ class ProductCategoryAdmin(admin.ModelAdmin):
         self._message_user_about_update(request, rows_updated, 'Default')
     default_category_update.short_description = _('Change category for Default')
 
+    def radio_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="RAD")
+        self._message_user_about_update(request, rows_updated, 'Radio')
+    radio_corvet_type_update.short_description = _('Change Corvet type for Radio')
+
+    def btel_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="NAV")
+        self._message_user_about_update(request, rows_updated, 'Navigation')
+    btel_corvet_type_update.short_description = _('Change Corvet type for Navigation')
+
+    def emf_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="EMF")
+        self._message_user_about_update(request, rows_updated, 'EMF')
+    emf_corvet_type_update.short_description = _('Change Corvet type for EMF')
+
+    def cmb_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="CMB")
+        self._message_user_about_update(request, rows_updated, 'CMB')
+    cmb_corvet_type_update.short_description = _('Change Corvet type for CMB')
+
+    def bsi_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="BSI")
+        self._message_user_about_update(request, rows_updated, 'BSI')
+    bsi_corvet_type_update.short_description = _('Change Corvet type for BSI')
+
+    def bsm_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="BSM")
+        self._message_user_about_update(request, rows_updated, 'BSM')
+    bsm_corvet_type_update.short_description = _('Change Corvet type for BSM')
+
+    def hdc_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="HDC")
+        self._message_user_about_update(request, rows_updated, 'COM200x')
+    hdc_corvet_type_update.short_description = _('Change Corvet type for COM200x')
+
+    def cmm_corvet_type_update(self, request, queryset):
+        rows_updated = queryset.update(corvet_type="CMM")
+        self._message_user_about_update(request, rows_updated, 'CMM')
+    cmm_corvet_type_update.short_description = _('Change Corvet type for CMM')
+
 
 class SivinAdmin(admin.ModelAdmin):
     list_display = (
@@ -124,8 +166,10 @@ class SivinAdmin(admin.ModelAdmin):
     list_filter = ('marque', 'nb_portes', 'nb_pl_ass', 'version')
     search_fields = ('immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v')
 
+
 admin.site.register(Xelon, XelonAdmin)
 admin.site.register(SparePart, SparePartAdmin)
+admin.site.register(ProductCode)
 admin.site.register(Indicator, IndicatorAdmin)
 admin.site.register(Action, ActionAdmin)
 admin.site.register(ProductCategory, ProductCategoryAdmin)

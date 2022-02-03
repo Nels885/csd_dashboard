@@ -1,11 +1,11 @@
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseMedia" expanded=collapse.media thead_title="MULTIMEDIA :" %}
+    {% include 'format/collapse_thead.html' with id="collapseMedia" expanded=collapse.media upper_title="multimédia" %}
 
     <tbody class="collapse {% if collapse.media %}show{% endif %}" id="collapseMedia">
     <tr>
         <td class="text-dark td-ihm">Référence Comp. Mat.</td>
-        <td>{{ object.hw_reference|default:"???" }}</td>
+        <td>{{ object.comp_ref|default:"???" }}</td>
     </tr>
     {% if object.label_ref %}
         <tr>
@@ -17,6 +17,10 @@
         <td class="text-dark td-ihm">Modèle</td>
         <td>{{ object.get_name_display|default:"???" }}</td>
     </tr>
+    <tr>
+        <td class="text-dark td-ihm">Modèle Xelon</td>
+        <td>{{ object.xelon_name|default:"???" }}</td>
+    </tr>
     {% if object.level %}
         <tr>
             <td class="text-dark td-ihm">Niveau</td>
@@ -27,6 +31,12 @@
         <tr>
             <td class="text-dark td-ihm">Supplément</td>
             <td>{{ object.extra }}</td>
+        </tr>
+    {% endif %}
+    {% if object.emmc %}
+        <tr>
+            <td class="text-dark td-ihm">Réf. eMMC</td>
+            <td>{{ object.emmc }}</td>
         </tr>
     {% endif %}
     {% if object.supplier_oe %}
@@ -85,6 +95,12 @@
         <tr>
             <td class="text-dark td-ihm">Connecteur USB</td>
             <td>{{ object.usb_con }}</td>
+        </tr>
+    {% endif %}
+    {% if object.productcode_set.all %}
+        <tr>
+            <td class="text-dark td-ihm">Pièces Xelon</td>
+            <td>{% for part in object.productcode_set.all %}{{ part.name }}<br>{% endfor %}</td>
         </tr>
     {% endif %}
     </tbody>

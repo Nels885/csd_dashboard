@@ -2,10 +2,12 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from crum import get_current_user
 
+from utils.django.decorators import disable_for_loaddata
 from .models import Repair, Batch
 
 
 @receiver(post_save, sender=Repair)
+@disable_for_loaddata
 def post_save_repair(sender, instance, **kwargs):
     prod_ok = Repair.objects.exclude(status="Rebut").filter(batch=instance.batch).count()
     if prod_ok >= instance.batch.quantity:
@@ -16,6 +18,7 @@ def post_save_repair(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=Repair)
+@disable_for_loaddata
 def pre_save_repair(sender, instance, **kwargs):
     user = get_current_user()
     if user and user.pk:
@@ -29,6 +32,7 @@ def pre_save_repair(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=Batch)
+@disable_for_loaddata
 def pre_save_batch(sender, instance, **kwargs):
     user = get_current_user()
     year, number, quantity = instance.year, str(instance.number), str(instance.quantity)

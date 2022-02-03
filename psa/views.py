@@ -210,7 +210,7 @@ def product_table(request):
         Product table page
     """
     table_title = _('Products PSA table')
-    products = Multimedia.objects.all().order_by('hw_reference')
+    products = Multimedia.objects.all()
     context.update(locals())
     return render(request, 'psa/product_table.html', context)
 

@@ -3,8 +3,8 @@ from rest_framework import serializers
 from reman.models import Batch, EcuModel, Repair, EcuRefBase
 
 REPAIR_COLUMN_LIST = [
-    'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__ecu_type__technical_data',
-    'batch__ecu_ref_base__ecu_type__supplier_oe', 'batch__ecu_ref_base__ecu_type__hw_reference', 'psa_barcode',
+    'identify_number', 'batch__batch_number', 'batch__customer', 'batch__ecu_ref_base__ecu_type__technical_data',
+    'batch__ecu_ref_base__ecu_type__supplier_oe', 'batch__ecu_ref_base__ecu_type__hw_reference', 'barcode',
     'status', 'quality_control', 'closing_date', 'modified_by__username', 'modified_at', 'created_by__username',
     'created_at'
 ]
@@ -54,6 +54,7 @@ class RemanCheckOutSerializer(serializers.ModelSerializer):
 
 class RemanRepairSerializer(serializers.ModelSerializer):
     batch = serializers.CharField(source='batch.batch_number', read_only=True)
+    customer = serializers.CharField(source='batch.customer', read_only=True)
     technical_data = serializers.CharField(source='batch.ecu_ref_base.ecu_type.technical_data', read_only=True)
     supplier_oe = serializers.CharField(source='batch.ecu_ref_base.ecu_type.supplier_oe', read_only=True)
     hw_reference = serializers.CharField(source='batch.ecu_ref_base.ecu_type.hw_reference', read_only=True)
@@ -63,8 +64,9 @@ class RemanRepairSerializer(serializers.ModelSerializer):
     class Meta:
         model = Repair
         fields = (
-            'id', 'identify_number', 'batch', 'technical_data', 'supplier_oe', 'hw_reference', 'psa_barcode', 'status',
-            'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at', 'created_by', 'created_at'
+            'id', 'identify_number', 'batch', 'customer', 'technical_data', 'supplier_oe', 'hw_reference', 'barcode',
+            'status', 'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at', 'created_by',
+            'created_at'
         )
 
 

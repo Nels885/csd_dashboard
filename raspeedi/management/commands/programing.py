@@ -57,7 +57,7 @@ class Command(BaseCommand):
             logger.info(row)
             psa_barcode = row.pop("psa_barcode")
             try:
-                multimedia = Multimedia.objects.filter(hw_reference=psa_barcode).first()
+                multimedia = Multimedia.objects.filter(comp_ref=psa_barcode).first()
                 values = {'multimedia': multimedia}
                 values.update(defaults_dict(Programing, row))
                 obj, created = Programing.objects.update_or_create(psa_barcode=psa_barcode, defaults=values)

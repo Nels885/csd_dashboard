@@ -19,7 +19,11 @@
     </tr>
     <tr>
         <td class="text-dark">Date Retour</td>
-        <td>{{ xelon.date_retour }}</td>
+        <td>{{ xelon.date_retour|default_if_none:"" }}</td>
+    </tr>
+    <tr>
+        <td class="text-dark">Date d'expédition attentue</td>
+        <td>{{ xelon.date_expedition_attendue|default_if_none:"" }}</td>
     </tr>
     <tr>
         <td class="text-dark">Type de clôture</td>
@@ -27,7 +31,7 @@
     </tr>
     <tr>
         <td class="text-dark">Date de clôture</td>
-        <td>{{ xelon.date_de_cloture }}</td>
+        <td>{{ xelon.date_de_cloture|default_if_none:"" }}</td>
     </tr>
     <tr>
         <td class="text-dark">Nom technicien</td>

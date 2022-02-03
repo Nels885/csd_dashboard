@@ -26,9 +26,9 @@
         {% csrf_token %}
 
         <div class="form-group">
-            <label for="{{ form.identify_number.id_for_label }}" class="mb-2 mr-sm-4">{{ form.identify_number.label }}</label>
+            <label for="{{ form.barcode.id_for_label }}" class="mb-2 mr-sm-4">{{ form.barcode.label }}</label>
 
-            {{ form.identify_number }}
+            {{ form.barcode }}
 
         </div>
 
@@ -55,11 +55,10 @@
             <thead>
             <tr>
                 <th>Numéro d'identification</th>
-                <th>Numéro de lot</th>
                 <th>Modèle produit</th>
                 <th>Fabriquant</th>
                 <th>Réf. Hardware</th>
-                <th>Code barre PSA</th>
+                <th>Code barre</th>
                 <th>Status</th>
                 <th>Contrôle qualité</th>
                 <th>Date de cloture</th>
@@ -75,11 +74,10 @@
 
                 <tr>
                     <td>{{ file.identify_number }}</td>
-                    <td>{{ file.batch }}</td>
                     <td>{{ file.batch.ecu_ref_base.ecu_type.technical_data }}</td>
                     <td>{{ file.batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
                     <td>{{ file.batch.ecu_ref_base.ecu_type.hw_reference }}</td>
-                    <td>{{ file.psa_barcode }}</td>
+                    <td>{{ file.barcode }}</td>
                     <td>{{ file.status }}</td>
                     <td>{% if file.quality_control %}OK{% endif %}</td>
                     <td>{{ file.closing_date|default:"--" }}</td>

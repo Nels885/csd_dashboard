@@ -30,7 +30,9 @@
             <th>Dossier</th>
             <th>Modèle</th>
             <th>Date In</th>
-            <th>Délai</th>
+            <th>Date Exp. Attendue</th>
+            <th>Délai attendue</th>
+            <th>Délai en jours</th>
             <th>Tech</th>
             <th>Famille Produit</th>
         </tr>
@@ -50,7 +52,9 @@
                 <td>{{ prod.numero_de_dossier }}</td>
                 <td>{{ prod.modele_produit }}</td>
                 <td>{{ prod.date_retour }}</td>
-                <td>{{ prod.delai_au_en_jours_ouvres }}</td>
+                <td>{{ prod.date_expedition_attendue|default:"" }}</td>
+                <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
+                <td>{{ prod.delai_au_en_jours_ouvres|default_if_none:"" }}</td>
                 <td>{{ prod.nom_technicien }}</td>
                 <td>{{ prod.famille_produit }}</td>
             </tr>

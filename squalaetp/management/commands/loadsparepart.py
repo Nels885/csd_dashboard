@@ -5,6 +5,7 @@ from django.db import connection
 from django.db.utils import IntegrityError, DataError
 
 from squalaetp.models import ProductCode, SparePart
+from psa.models import Ecu
 from utils.conf import CSV_EXTRACTION_FILE
 
 from ._csv_extraction import CsvSparePart
@@ -67,9 +68,12 @@ class Command(BaseCommand):
                 except IntegrityError as err:
                     logger.error(f"[SPAREPART_CMD] IntegrityError: {code_produit} - {err}")
                 except ProductCode.MultipleObjectsReturned as err:
+                    logger.error(f"[PRODUCTCODE_CMD] MultipleObjectsReturned: {code_produit} - {err}")
+                except SparePart.MultipleObjectsReturned as err:
                     logger.error(f"[SPAREPART_CMD] MultipleObjectsReturned: {code_produit} - {err}")
                 except DataError as err:
                     logger.error(f"[SPAREPART_CMD] DataError: {code_produit} - {err}")
+            self._relation_update()
             nb_part_after = ProductCode.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
@@ -78,3 +82,12 @@ class Command(BaseCommand):
                     )
                 )
             )
+
+    def _relation_update(self):
+        self.stdout.write("[PRODUCTCODE] Waiting...")
+        for ecu in Ecu.objects.all():
+            if str(ecu.comp_ref)[-2:] == "77":
+                ProductCode.objects.filter(name__contains=str(ecu.comp_ref[:-2])).update(ecu=ecu)
+            else:
+                ProductCode.objects.filter(name__contains=ecu.comp_ref).update(ecu=ecu)
+        self.stdout.write(self.style.SUCCESS("[PRODUCTCODE] Data update completed!"))

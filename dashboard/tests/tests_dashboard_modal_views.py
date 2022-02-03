@@ -9,8 +9,7 @@ class MixinsTest(UnitTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        self.author = UserProfile.objects.get(user=self.user)
-        Post.objects.create(title='test', overview='texte', author=self.author)
+        Post.objects.create(title='test', overview='texte', author=self.user)
         WebLink.objects.create(title='test', url='http://test.com/', type='AUTRES', description='test')
 
     def test_Login_ajax_mixin(self):
@@ -63,7 +62,7 @@ class MixinsTest(UnitTest):
             data={
                 'title': 'test1',
                 'overview': 'texte',
-                'author': self.author.id,
+                'author': self.user.pk,
             },
         )
         # Redirection
@@ -86,7 +85,7 @@ class MixinsTest(UnitTest):
             data={
                 'title': 'test2',
                 'overview': 'texte',
-                'author': self.author.id,
+                'author': self.user.pk,
             }
         )
         # redirection

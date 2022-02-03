@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.core.management.base import BaseCommand
 
 from reman.models import Batch, Repair, EcuRefBase
@@ -46,24 +47,25 @@ class Command(BaseCommand):
         path = CSD_ROOT
         if options['batch']:
             self.stdout.write("[BATCH] Waiting...")
-
+            year = datetime.now().year
             filename = conf.BATCH_EXPORT_FILE
 
             header = [
-                'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Date_de_Debut',
-                'Date_de_fin', 'Actif', 'Ajoute par', 'Ajoute le'
+                'Numero de lot', 'Quantite', 'Ref_REMAN', 'Type_ECU', 'HW_Reference', 'PF_Code', 'Fabriquant',
+                'Date_de_Debut', 'Date_de_fin', 'Actif', 'Client', 'Ajoute par', 'Ajoute le'
             ]
-            batch = Batch.objects.all().order_by('batch_number')
-            values_list = batch.values_list(
+            # Batch for PSA
+            psa_batch = Batch.objects.filter(end_date__year=year).order_by('batch_number')
+            values_list = list(psa_batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
-                'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'start_date', 'end_date',
-                'active', 'created_by__username', 'created_at'
-            ).distinct()
+                'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__pf_code', 'ecu_ref_base__ecu_type__supplier_oe',
+                'start_date', 'end_date', 'active', 'customer', 'created_by__username', 'created_at'
+            ).distinct())
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
             self.stdout.write(
                 self.style.SUCCESS(
                     "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
-                        batch.count(), os.path.join(path, filename)
+                        psa_batch.count(), os.path.join(path, filename)
                     )
                 )
             )
@@ -71,9 +73,9 @@ class Command(BaseCommand):
             self.stdout.write("[REPAIR] Waiting...")
 
             filename = conf.REPAIR_EXPORT_FILE
-            header = ['Numero_Identification', 'Code_Barre_PSA', 'Status', 'Controle_Qualite']
+            header = ['Numero_Identification', 'Code_Barre', 'Status', 'Controle_Qualite']
             repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
-            values_list = repairs.values_list('identify_number', 'psa_barcode', 'status', 'quality_control').distinct()
+            values_list = repairs.values_list('identify_number', 'barcode', 'status', 'quality_control').distinct()
             # values_list = self._repair_list_generate(values_list)
             ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
             self.stdout.write(
@@ -103,7 +105,7 @@ class Command(BaseCommand):
             queryset = EcuRefBase.objects.exclude(ref_cal_out__exact='').order_by('reman_reference')
             values_list = queryset.values_list(
                 'reman_reference', 'ecu_type__hw_reference', 'ecu_type__technical_data', 'ecu_type__supplier_oe',
-                'ecu_type__ecumodel__psa_barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
+                'ecu_type__ecumodel__barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
                 'cal_ktag', 'status'
             ).distinct()
             ExportExcel(
@@ -127,7 +129,7 @@ class Command(BaseCommand):
             queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
             values_list = (
                 'ecu_type__ecumodel__oe_raw_reference', 'reman_reference', 'ecu_type__technical_data',
-                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__psa_barcode',
+                'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__barcode',
                 'ecu_type__ecumodel__former_oe_reference', 'ref_cal_out', 'ecu_type__spare_part__code_produit',
                 'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag',
                 'req_status', 'status', 'test_clear_memory', 'cle_appli'

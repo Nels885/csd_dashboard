@@ -2,30 +2,10 @@
 
     <table class="table table-bordered table-striped table-sm mt-4">
 
-        {% include 'format/collapse_thead.html' with id="collapseBsi" expanded=collapse.bsi thead_title="BSI :" %}
+        {% include 'format/collapse_thead.html' with id="collapseBsi" expanded=collapse.bsi upper_title="bsi" %}
 
-        <tbody class="collapse {% if collapse.bsi %}show{% endif %}" id="collapseBsi">
-        <tr>
-            <td class="text-dark td-ihm">Référence Comp. Mat.</td>
-            <td>{{ object.comp_ref }}</td>
-        </tr>
-        <tr>
-            <td class="text-dark td-ihm">Modèle</td>
-            <td>{{ object.name }}</td>
-        </tr>
-        <tr>
-            <td class="text-dark td-ihm">HW</td>
-            <td>{{ object.hw }}</td>
-        </tr>
-        <tr>
-            <td class="text-dark td-ihm">SW</td>
-            <td>{{ object.sw }}</td>
-        </tr>
-        <tr>
-            <td class="text-dark td-ihm">Fabriquant</td>
-            <td>{{ object.supplier_oe }}</td>
-        </tr>
-        </tbody>
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseBsi" %}
+
     </table>
 
 {% endif %}

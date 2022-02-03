@@ -58,11 +58,13 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
     def run(self, *args, **kwargs):
         path = self.copy_and_get_copied_path()
         excel_type = kwargs.pop('excel_type', 'xlsx')
-        product = kwargs.pop('product', 'bsi')
         vin_list = kwargs.pop('vin_list', None)
         if vin_list is None:
-            filename = f"{product}_{self.date.strftime('%y-%m-%d_%H-%M')}"
-            self.header, self.fields, values_list = extract_corvet(product)
+            if kwargs.get('xelon_model', None):
+                filename = f"{kwargs.get('xelon_model')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+            else:
+                filename = f"{kwargs.get('product', 'corvet')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+            self.header, self.fields, values_list = extract_corvet(*args, **kwargs)
         else:
             filename = f"ecu_{self.date.strftime('%y-%m-%d_%H-%M')}"
             self.header, self.fields, values_list = extract_ecu(vin_list)

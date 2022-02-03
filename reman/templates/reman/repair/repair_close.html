@@ -9,42 +9,8 @@
 
             {% csrf_token %}
 
-            <h5 class="text-gray-800 mt-3">Information Produit :</h5>
-            <hr>
+            {% include 'reman/format/info_repair_form.html' %}
 
-            <div class="form-group row">
-                <label for="{{ form.identify_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.identify_number.label }} :</label>
-
-                <div class="col-sm-2">{{ form.identify_number }}</div>
-
-                <label for="product_model" class="col-sm-2 col-form-label">Modèle :</label>
-                <div class="col-sm-4">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.technical_data }}">
-                </div>
-            </div>
-
-            <div class="form-group row">
-
-                <label for="product_model" class="col-sm-2 col-form-label">HW référence :</label>
-                <div class="col-sm-2">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.hw_reference }}">
-                </div>
-
-                <label for="product_model" class="col-sm-2 col-form-label">Fabriquant :</label>
-                <div class="col-sm-2">
-                    <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.supplier_oe }}">
-                </div>
-
-                <label for="{{ form.product_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.product_number.label }} :</label>
-                <div class="col-sm-2">{{ form.product_number }}</div>
-
-            </div>
-            <div class="form-group row">
-                <label for="{{ form.remark.id_for_label }}" class="col-sm-2 col-form-label">{{ form.remark.label }} :</label>
-                <div class="col-sm-6">{{ form.remark }}</div>
-            </div>
-
-            <hr>
             <h5 class="text-gray-800 mt-5">Réparation :</h5>
             <hr>
 
@@ -61,16 +27,19 @@
 
             <div class="form-group row">
                 <label for="description" class="col-sm-2 col-form-label">Commentaires action :</label>
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     <div class="form-control" style="height: auto;" readonly>
-                        {% if prod.comment %}
-                            {{ prod.comment|safe }}
-                        {% else %}
-                            ---
-                        {% endif %}
+                        {{ prod.comment|safe|default:"---" }}
                     </div>
                 </div>
             </div>
+
+            {% if form.new_barcode.field.required %}
+                <div class="form-group row">
+                    <label for="{{ form.new_barcode.id_for_label }}" class="col-sm-2 col-form-label">{{ form.new_barcode.label }} :</label>
+                    <div class="col-sm-4">{{ form.new_barcode }}</div>
+                </div>
+            {% endif %}
 
             <hr>
             <h5 class="text-gray-800 mt-5">Contrôles :</h5>

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
+from functools import wraps
 
 
 def group_required(*group_names):
@@ -25,3 +26,16 @@ def class_view_decorator(function_decorator):
         return view
 
     return simple_decorator
+
+
+def disable_for_loaddata(signal_handler):
+    """
+    Decorator that turns off signal handlers when loading fixture data.
+    """
+
+    @wraps(signal_handler)
+    def wrapper(*args, **kwargs):
+        if kwargs.get('raw'):
+            return
+        signal_handler(*args, **kwargs)
+    return wrapper

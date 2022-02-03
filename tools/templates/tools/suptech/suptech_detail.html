@@ -1,6 +1,6 @@
 {% extends 'format/forms_format.html' %}
 
-{% load i18n widget_tweaks %}
+{% load i18n widget_tweaks static %}
 
 {% block form_content %}
 
@@ -105,6 +105,7 @@
 
                     <tr>
                         <td style="width: 14rem;">
+                            <img alt="" class="rounded-circle" width="32" src="{{ message.added_by.userprofile.image.url }}" onerror="this.src='{% static 'img/avatar.png' %}';">
                             <span class="font-weight-bold">{{ message.added_by.first_name }} {{ message.added_by.last_name }}</span><br>
                             <span>{{ message.added_at }}</span>
                         </td>

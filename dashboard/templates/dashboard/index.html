@@ -31,7 +31,7 @@
 
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     <img alt="avatar" class="rounded-circle" width="32"
-                                         src="{{ post.author.image.url }}">
+                                         src="{{ post.author.userprofile.image.url }}" onerror="this.src='{% static 'img/avatar.png' %}';">
                                     <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ post.author }}</span>{{ post.title }}
                                     <span class="small text-gray-500">{{ post.timestamp }}</span>
                                 </h6>

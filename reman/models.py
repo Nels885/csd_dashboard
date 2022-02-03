@@ -4,16 +4,20 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from ckeditor.fields import RichTextField
 
 from utils.django.urls import reverse_lazy
 from utils.conf import DICT_YEAR
 
 STATUS_CHOICES = [('En cours', 'En cours'), ('Réparé', 'Réparé'), ('Rebut', 'Rebut')]
+HW_TYPE_CHOICES = [('ECU', 'ECU'), ('NAV', 'NAV')]
 
 
 class EcuType(models.Model):
-    hw_reference = models.CharField("hardware", max_length=20, unique=True)
+    hw_reference = models.CharField("hardware", max_length=50, unique=True)
+    hw_type = models.CharField("type HW", max_length=50, choices=HW_TYPE_CHOICES, default="ECU")
     technical_data = models.CharField("modèle produit", max_length=50)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     spare_part = models.ForeignKey("SparePart", on_delete=models.SET_NULL, null=True, blank=True)
@@ -26,12 +30,13 @@ class EcuType(models.Model):
 
 
 class EcuModel(models.Model):
-    psa_barcode = models.CharField("code barre PSA", max_length=20, unique=True)
-    oe_raw_reference = models.CharField("réference OEM brute", max_length=10, blank=True)
-    oe_reference = models.CharField("référence OEM", max_length=10, blank=True)
-    sw_reference = models.CharField("software", max_length=10, blank=True)
+    barcode = models.CharField("code barre PSA", max_length=50, unique=True)
+    oe_raw_reference = models.CharField("référence OEM brute", max_length=50, blank=True)
+    oe_reference = models.CharField("référence OEM", max_length=50, blank=True)
     former_oe_reference = models.CharField("ancienne référence OEM", max_length=50, blank=True)
-    supplier_es = models.CharField("service après vente", max_length=50, blank=True)
+    vehicle = models.CharField("vehicule", max_length=50, blank=True)
+    fan = models.CharField('FAN', max_length=100, blank=True)
+    rear_bolt = models.CharField('REAR BOLT', max_length=100, blank=True)
     ecu_type = models.ForeignKey("EcuType", on_delete=models.SET_NULL, null=True, blank=True)
     to_dump = models.BooleanField("à dumper", default=False)
 
@@ -39,8 +44,8 @@ class EcuModel(models.Model):
         permissions = [("check_ecumodel", "Can check ecu model")]
 
     @staticmethod
-    def part_list(psa_barcode):
-        ecu_models = EcuModel.objects.filter(psa_barcode__exact=psa_barcode)
+    def part_list(barcode):
+        ecu_models = EcuModel.objects.filter(barcode__exact=barcode)
         msg_list = []
         if ecu_models:
             for ecu_model in ecu_models:
@@ -61,11 +66,12 @@ class EcuModel(models.Model):
             yield field.verbose_name.capitalize(), field.value_to_string(self)
 
     def __str__(self):
-        return "PSA_barcode_{}".format(self.psa_barcode)
+        return "barcode_{}".format(self.barcode)
 
 
 class EcuRefBase(models.Model):
     reman_reference = models.CharField("référence REMAN", max_length=10, unique=True)
+    brand = models.CharField("Marque", max_length=50, blank=True)
     ref_cal_out = models.CharField("REF_CAL_OUT", max_length=10, blank=True)
     ref_psa_out = models.CharField("REF_PSA_OUT", max_length=10, blank=True)
     req_diag = models.CharField("REQ_DIAG", max_length=50, blank=True)
@@ -79,6 +85,9 @@ class EcuRefBase(models.Model):
     status = models.CharField("STATUT", max_length=50, blank=True)
     test_clear_memory = models.CharField("TEST_CLEAR_MEMORY", max_length=10, blank=True)
     cle_appli = models.CharField("CLE_APPLI", max_length=50, blank=True)
+    map_data = models.CharField("map data", max_length=100, blank=True)
+    product_part = models.CharField("product part", max_length=8, blank=True)
+    pf_code = models.CharField("PF code REMAN", max_length=10, blank=True)
     ecu_type = models.ForeignKey("EcuType", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
@@ -92,12 +101,15 @@ class Batch(models.Model):
     box_quantity = models.IntegerField('quantité du carton', default=6,
                                        validators=[MaxValueValidator(6), MinValueValidator(1)])
     batch_number = models.CharField("numéro de lot", max_length=10, blank=True, unique=True)
+    customer = models.CharField("client", max_length=50, default="PSA")
     active = models.BooleanField(default=True)
+    is_barcode = models.BooleanField(default=False)
     start_date = models.DateField("date de début", null=True)
     end_date = models.DateField("date de fin", null=True)
+    closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
     created_at = models.DateTimeField(editable=False, auto_now_add=True)
     created_by = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
-    ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.CASCADE)
+    ecu_ref_base = models.ForeignKey(EcuRefBase, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         permissions = [("pdfgen_batch", "Can pdfgen batch")]
@@ -126,10 +138,16 @@ class Default(models.Model):
 class Repair(models.Model):
 
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
-    psa_barcode = models.CharField("code barre PSA", max_length=20, blank=True)
+    barcode = models.CharField("code barre", max_length=100, blank=True)
+    new_barcode = models.CharField("nouveau code barre", max_length=100, blank=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=200, blank=True)
     comment = RichTextField("Commentaires action", max_length=500, config_name="comment", blank=True)
+    face_plate = models.BooleanField("façade", default=False)
+    metal_case = models.BooleanField("boitier", default=False)
+    fan = models.BooleanField("ventilateur", default=False)
+    locating_pin = models.BooleanField("goupille d'emplacement", default=False)
+    spring_locking = models.BooleanField("verrouillage à ressort", default=False)
     status = models.CharField("status", max_length=50, default='En cours', choices=STATUS_CHOICES)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
@@ -142,10 +160,13 @@ class Repair(models.Model):
                                     blank=True)
     batch = models.ForeignKey(Batch, related_name="repairs", on_delete=models.CASCADE)
     default = models.ForeignKey("Default", related_name="repairs", on_delete=models.SET_NULL, null=True, blank=True)
+    parts = GenericRelation('RepairPart')
 
     class Meta:
+        ordering = ['-modified_at']
         permissions = [
-            ("close_repair", "Can close repair")
+            ("close_repair", "Can close repair"),
+            ("stock_repair", "Can stock repair")
         ]
 
     def get_absolute_url(self):
@@ -167,3 +188,17 @@ class SparePart(models.Model):
 
     def __str__(self):
         return self.code_produit
+
+
+class RepairPart(models.Model):
+    product_code = models.CharField('code produit', max_length=100)
+    part_number = models.CharField('n° de pièce', max_length=100)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Pièce réparation"
+
+    def __str__(self):
+        return f"Pièces sur {self.content_object}"

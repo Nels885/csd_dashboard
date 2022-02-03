@@ -38,9 +38,17 @@ class XelonCommandTestCase(UnitTest):
         self.assertIn("[XELON] No squalaetp file found", out.getvalue())
         self.assertIn("[DELAY] No delay files found", out.getvalue())
 
+        # Test for Xelon name update option
+        call_command('loadsqualaetp', '--xelon_name_update', stdout=out)
+        self.assertIn("[ECU & MEDIA] Waiting...", out.getvalue())
+        self.assertIn("[ECU & MEDIA] data update completed:", out.getvalue())
+
     def test_importcorvet_cmd(self):
         out = StringIO()
         call_command('importcorvet', '--squalaetp', stdout=out)
+        self.assertIn("[IMPORT_CORVET] Import completed:", out.getvalue())
+
+        call_command('importcorvet', stdout=out)
         self.assertIn("[IMPORT_CORVET] Import completed:", out.getvalue())
 
     def test_clear_squalaetp_xelon_table(self):

@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'ford.apps.FordConfig',
     'renault.apps.RenaultConfig',
     'vag.apps.VagConfig',
+    'volvo.apps.VolvoConfig',
 ]
 
 MIDDLEWARE = [
@@ -94,7 +95,8 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'sbadmin.context_processors.get_release',
                 'sbadmin.context_processors.get_ip',
-                'sbadmin.context_processors.get_admin_emails'
+                'sbadmin.context_processors.get_admin_emails',
+                'sbadmin.context_processors.get_wiki_url',
             ],
         },
     },
@@ -233,6 +235,7 @@ CONSTANCE_CONFIG = {
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
+    'WIKI_URL': ('127.0.0.1:8001', 'URL of the wiki web application'),
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
@@ -240,11 +243,11 @@ CONSTANCE_CONFIG = {
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
     'XLS_ATTRIBUTS_FILE': ('EXTS/Attributs CORVET.xlsx', 'xls attributs file'),
     'CSV_EXTRACTION_FILE': ('EXTS/extraction.csv', 'csv extraction file'),
-    'XLS_ECU_REF_BASE': ('REMAN/PSA/Base ref REMAN.xlsx', 'xls ECU ref base'),
     'XLS_DELAY_PATH': ('RH/AnalyseRetards', 'Path of xls delay files'),
     'XLS_DELAY_FILES': (
         'PSA.xlsx, ILOTAUTRE.xlsx, LaboQual.xlsx, DEFAUT.xlsx, CLARION.xlsx', 'List of xls delay file'
     ),
+    'XLS_TIME_LIMIT_FILE': ('RH/Analyse_Delais/data/DELAIS_REP_A.xls', 'xls time limit file'),
     'XML_CORVET_PATH': ('LOGS/CORVET_XML_TEST', 'xml Corvet path'),
     'TAG_XELON_PATH': ('LOGS/CALIBRE', 'tag xelon path'),
     'TAG_XELON_LOG_PATH': ('LOGS/LOG_CONFIG_PROD', 'tag xelon log path'),
@@ -291,10 +294,10 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
+    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL'),
     '2. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
-        'XLS_ECU_REF_BASE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
+        'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
         'TAG_XELON_LOG_PATH'
     ),
     '3. CSD Repair Options': (

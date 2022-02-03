@@ -23,6 +23,7 @@ $(document).ready(function () {
             {data: "modele_vehicule"},
             {data: "date_retour"},
             {data: "type_de_cloture"},
+            {data: "date_expedition_attendue"},
             {data: "nom_technicien"},
         ],
         rowCallback: function (row, data, index) {

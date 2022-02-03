@@ -23,7 +23,7 @@
             {% with ecus=default.ecu_type.all %}
                 <tr>
                     <td class="bg-white" style="width: 30px;">
-                        {% if perms.change_default %}
+                        {% if perms.reman.change_default %}
                             <a href="{% url 'reman:update_default' default.pk %}" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                         {% else %}
                             <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>

@@ -8,10 +8,11 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 from django.http import JsonResponse, Http404
 
-from .forms import ExportCorvetForm, ExportRemanForm, ExportCorvetVinListForm, ExportToolsForm
+from .forms import ExportCorvetForm, ExportRemanForm, CorvetVinListForm, ExportToolsForm
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
 from .tasks import export_corvet_task, export_reman_task, export_tools_task
+from psa.tasks import import_corvet_list_task
 
 context = {
     'title': 'Extraction'
@@ -22,7 +23,7 @@ context = {
 def import_export(request):
     """ View of import/export files page """
     form_corvet = ExportCorvetForm()
-    form_corvet_vin = ExportCorvetVinListForm()
+    form_corvet_vin = CorvetVinListForm()
     form_reman = ExportRemanForm()
     form_tools = ExportToolsForm()
     context.update(locals())
@@ -78,18 +79,25 @@ def import_ecurefbase(request):
 def export_corvet_async(request):
     form = ExportCorvetForm(request.POST or None)
     if form.is_valid():
-        product = form.cleaned_data['products']
-        excel_type = form.cleaned_data['formats']
-        task = export_corvet_task.delay(excel_type=excel_type, product=product)
+        task = export_corvet_task.delay(**form.cleaned_data)
         return JsonResponse({"task_id": task.id})
     raise Http404
 
 
 def export_corvet_vin_async(request):
-    form = ExportCorvetVinListForm(request.POST or None)
+    form = CorvetVinListForm(request.POST or None)
     if form.is_valid():
         vin_list = form.cleaned_data['vin_list'].split('\r\n')
         task = export_corvet_task.delay(vin_list=vin_list)
+        return JsonResponse({"task_id": task.id})
+    raise Http404
+
+
+def import_corvet_vin_async(request):
+    form = CorvetVinListForm(request.POST or None)
+    if form.is_valid():
+        vin_list = form.cleaned_data['vin_list'].split('\r\n')
+        task = import_corvet_list_task.delay(*vin_list)
         return JsonResponse({"task_id": task.id})
     raise Http404
 

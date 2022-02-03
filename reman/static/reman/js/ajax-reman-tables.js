@@ -4,7 +4,7 @@ $(document).ready(function () {
         serverSide: true,
         lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
-        order: [[1, "asc"]],
+        order: [[12, "desc"]],
         ajax: URL_AJAX,
         columns: [
             {
@@ -23,10 +23,11 @@ $(document).ready(function () {
             },
             {data: "identify_number"},
             {data: "batch"},
+            {data: "customer"},
             {data: "technical_data"},
             {data: "supplier_oe"},
             {data: "hw_reference"},
-            {data: "psa_barcode"},
+            {data: "barcode"},
             {data: "status"},
             {data: "quality_control"},
             {data: "closing_date"},

@@ -35,9 +35,9 @@ class RemanSeleniumTestCase(FunctionalTest):
         driver.get(self.live_server_url + '/reman/part/check/')
 
         # Inserting values into the form
-        psa_barcode = driver.find_element_by_name('psa_barcode')
+        barcode = driver.find_element_by_name('barcode')
         submit = driver.find_elements_by_css_selector('button.btn.btn-success.btn-icon-split')
-        psa_barcode.send_keys('9887654321')
+        barcode.send_keys('9887654321')
         submit[0].click()
 
         self.assertEqual(driver.current_url, self.live_server_url + '/reman/part/9887654321/create/')
