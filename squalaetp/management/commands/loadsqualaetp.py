@@ -5,13 +5,13 @@ from django.utils import timezone
 
 from squalaetp.models import Xelon, ProductCategory, Indicator
 from psa.models import Multimedia, Ecu
-from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, string_to_list
+from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, XLS_TIME_LIMIT_FILE, string_to_list
 from utils.django.models import defaults_dict
 from utils.django.validators import comp_ref_isvalid
 from utils.data.analysis import ProductAnalysis
 
 from ._excel_squalaetp import ExcelSqualaetp
-from ._excel_delay_analysis import ExcelDelayAnalysis
+from ._excel_analysis import ExcelDelayAnalysis, ExcelTimeLimitAnalysis
 
 logger = logging.getLogger('command')
 
@@ -72,8 +72,10 @@ class Command(BaseCommand):
             else:
                 delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
 
+            time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
             self._squalaetp_file(Xelon, squalaetp)
             self._delay_files(Xelon, squalaetp, delay)
+            self._time_limit_files(Xelon, squalaetp, time_limit)
             self._indicator()
 
         elif options['relations']:
@@ -170,6 +172,45 @@ class Command(BaseCommand):
                 self.style.SUCCESS(
                     "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         delay.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
+                    )
+                )
+            )
+        else:
+            self.stdout.write(self.style.WARNING("[DELAY] No delay files found"))
+
+    def _time_limit_files(self, model, squalaetp, excel):
+        self.stdout.write("[TIME_LIMIT] Waiting...")
+        nb_prod_before, nb_prod_update, value_error_list = model.objects.count(), 0, []
+        cat_old = ProductCategory.objects.count()
+        xelon_list, delay_list = squalaetp.xelon_number_list(), excel.xelon_number_list()
+        if not excel.ERROR:
+            self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
+            model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
+                                  Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
+                                  Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
+            for row in excel.read_all():
+                xelon_number = row.get("numero_de_dossier")
+                defaults = defaults_dict(model, row, "numero_de_dossier")
+                try:
+                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
+                    if not created:
+                        nb_prod_update += 1
+                except ValueError:
+                    value_error_list.append(xelon_number)
+                except Exception as err:
+                    logger.error(f"[DELAY_CMD] {xelon_number} - {err}")
+            if value_error_list:
+                logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
+
+            nb_prod_after = model.objects.count()
+            cat_new = ProductCategory.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(f"[DElAY] ProductCategory update completed: ADD = {cat_new - cat_old}")
+            )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
                     )
                 )
             )
