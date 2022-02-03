@@ -95,7 +95,8 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'sbadmin.context_processors.get_release',
                 'sbadmin.context_processors.get_ip',
-                'sbadmin.context_processors.get_admin_emails'
+                'sbadmin.context_processors.get_admin_emails',
+                'sbadmin.context_processors.get_wiki_url',
             ],
         },
     },
@@ -234,6 +235,7 @@ CONSTANCE_CONFIG = {
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
+    'WIKI_URL': ('127.0.0.1:8001', 'URL of the wiki web application'),
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
@@ -291,7 +293,7 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN'),
+    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL'),
     '2. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XML_CORVET_PATH', 'TAG_XELON_PATH', 'TAG_XELON_LOG_PATH'
