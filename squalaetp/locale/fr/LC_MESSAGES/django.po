@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-18 09:28+0100\n"
+"POT-Creation-Date: 2022-02-03 18:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,46 +56,36 @@ msgid "Change category for Default"
 msgstr "Changer de catégorie pour Par défaut"
 
 #: squalaetp/admin.py:123
-#, fuzzy
-#| msgid "Change category for Clarion"
 msgid "Change Corvet type for Radio"
-msgstr "Changer de catégorie pour Clarion"
+msgstr "Changer le type de Corvet pour la radio"
 
 #: squalaetp/admin.py:128
-#, fuzzy
-#| msgid "Change category for Clarion"
 msgid "Change Corvet type for Navigation"
-msgstr "Changer de catégorie pour Clarion"
+msgstr "Changer le type de Corvet pour la navigation"
 
 #: squalaetp/admin.py:133
-#, fuzzy
-#| msgid "Change category for Etude"
 msgid "Change Corvet type for EMF"
-msgstr "Changer de catégorie pour Etude"
+msgstr "Changer le type de Corvet pour EMF"
 
 #: squalaetp/admin.py:138
-#, fuzzy
-#| msgid "Change category for Clarion"
 msgid "Change Corvet type for CMB"
-msgstr "Changer de catégorie pour Clarion"
+msgstr "Changer le type de Corvet pour CMB"
 
 #: squalaetp/admin.py:143
 msgid "Change Corvet type for BSI"
-msgstr ""
+msgstr "Changer le type de Corvet pour BSI"
 
 #: squalaetp/admin.py:148
 msgid "Change Corvet type for BSM"
-msgstr ""
+msgstr "Changer le type de Corvet pour BSM"
 
 #: squalaetp/admin.py:153
 msgid "Change Corvet type for COM200x"
-msgstr ""
+msgstr "Changer le type de Corvet pour COM200x"
 
 #: squalaetp/admin.py:158
-#, fuzzy
-#| msgid "Change category for Clarion"
 msgid "Change Corvet type for CMM"
-msgstr "Changer de catégorie pour Clarion"
+msgstr "Changer le type de Corvet pour CMM"
 
 #: squalaetp/forms.py:63
 msgid ""
@@ -136,20 +126,20 @@ msgstr ""
 msgid "XML data does not match IMMAT"
 msgstr "Les données XML ne correspondent pas à IMMAT"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:30
 msgid "Raw Corvet data"
 msgstr "Données Corvet brute"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:43
+#: squalaetp/templates/squalaetp/detail/detail.html:36
 msgid "Log Files"
 msgstr "Fichiers Log"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:50
+#: squalaetp/templates/squalaetp/detail/detail.html:43
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: squalaetp/templates/squalaetp/detail/detail.html:61
-#: squalaetp/templates/squalaetp/sivin_detail/detail.html:37
+#: squalaetp/templates/squalaetp/detail/detail.html:54
+#: squalaetp/templates/squalaetp/sivin_detail/detail.html:30
 msgid "VIN Barcode"
 msgstr "Code barre VIN"
 

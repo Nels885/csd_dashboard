@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-18 09:28+0100\n"
+"POT-Creation-Date: 2022-02-03 18:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,16 +17,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: volvo/templates/volvo/modal/ref_reman_create.html:7
 msgid "Create REMAN Reference"
-msgstr ""
+msgstr "Créer référence REMAN"
 
-#: volvo/templates/volvo/modal/ref_reman_create.html:39
-#: volvo/templates/volvo/modal/ref_reman_update.html:39
+#: volvo/templates/volvo/modal/ref_reman_create.html:16
+#: volvo/templates/volvo/modal/ref_reman_update.html:16
+#: volvo/templates/volvo/modal/sem_hw_create.html:16
+#: volvo/templates/volvo/modal/sem_hw_update.html:16
 msgid "Cancel"
 msgstr "Annuler"
 
-#: volvo/templates/volvo/modal/ref_reman_create.html:40
+#: volvo/templates/volvo/modal/ref_reman_create.html:17
+#: volvo/templates/volvo/modal/sem_hw_create.html:17
 msgid "Create"
 msgstr "Création"
 
@@ -34,14 +38,31 @@ msgstr "Création"
 msgid "Update REMAN Reference"
 msgstr "Mise à jour Réf. REMAN"
 
-#: volvo/templates/volvo/modal/ref_reman_update.html:40
+#: volvo/templates/volvo/modal/ref_reman_update.html:17
+#: volvo/templates/volvo/modal/sem_hw_update.html:17
 msgid "Update"
 msgstr "Mise à jour"
 
-#: volvo/views.py:31
+#: volvo/templates/volvo/modal/sem_hw_create.html:7
+msgid "Create HW Reference"
+msgstr "Créer référence HW"
+
+#: volvo/templates/volvo/modal/sem_hw_update.html:7
+msgid "Update HW Reference"
+msgstr "Mise à jour Réf. REMAN"
+
+#: volvo/views.py:16
 msgid "Success: Reman reference was created."
 msgstr "Succès: la référence Reman a été créée."
 
-#: volvo/views.py:41
+#: volvo/views.py:39
 msgid "Success: Reman reference was updated."
 msgstr "Succès: la référence Reman a été mise à jour."
+
+#: volvo/views.py:50
+msgid "Success: Reman SEM HW Reference was created."
+msgstr "Succès : La référence HW SEM Reman a été créée."
+
+#: volvo/views.py:71
+msgid "Success: Reman SEM HW Reference was updated."
+msgstr "Succès : la référence HW SEM Reman a été mise à jour."

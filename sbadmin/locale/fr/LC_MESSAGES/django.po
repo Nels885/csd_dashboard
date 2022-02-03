@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-18 09:28+0100\n"
+"POT-Creation-Date: 2022-02-03 18:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,34 +22,11 @@ msgstr ""
 msgid "Time between 2 requests too short"
 msgstr "Délai entre 2 requêtes trop court"
 
-#: import_export/templates/import_export/detail_csd.html:21
-#: import_export/templates/import_export/detail_csd.html:45
-#: import_export/templates/import_export/detail_reman.html:21
-#: import_export/templates/import_export/detail_tools.html:21
-msgid "Data Export"
-msgstr "Exportation de données"
-
-#: import_export/templates/import_export/detail_csd.html:69
-msgid "Data Import"
-msgstr "Importation de données"
-
-#: import_export/templates/import_export/detail_reman.html:50
-msgid "Csv Import"
-msgstr "Importation CSV"
-
-#: import_export/templates/import_export/detail_reman.html:74
-msgid "Excel Import"
-msgstr "Importation Excel"
-
-#: import_export/views.py:52 import_export/views.py:75
-msgid "You do not have the required permissions"
-msgstr "Vous ne disposez pas des autorisations requises"
-
-#: sbadmin/settings/__init__.py:168 templates/base/top_bar.html:98
+#: sbadmin/settings/__init__.py:169 templates/base/top_bar.html:98
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:169 templates/base/top_bar.html:89
+#: sbadmin/settings/__init__.py:170 templates/base/top_bar.html:89
 msgid "English"
 msgstr "Anglais"
 
@@ -127,14 +104,17 @@ msgstr "log d'activité"
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:159
+#: templates/base/top_bar.html:157
 msgid "Guest"
 msgstr "Invité"
 
-#: templates/base/top_bar.html:172 templates/nav/nav_interface.html:21
-#: templates/registration/login.html:62
-msgid "Login"
-msgstr "S'identifier"
+#: templates/format/modal_delete.html:14
+msgid "Are you sure you want to delete ?"
+msgstr ""
+
+#: templates/format/modal_delete.html:18
+msgid "Delete"
+msgstr ""
 
 #: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:31
 #: templates/nav/nav_csd_atelier.html:51 templates/nav/nav_csd_atelier.html:76
@@ -233,6 +213,10 @@ msgstr "Chambre thermique"
 #: templates/nav/nav_general.html:30
 msgid "Other links"
 msgstr "Autres liens"
+
+#: templates/nav/nav_interface.html:21 templates/registration/login.html:62
+msgid "Login"
+msgstr "S'identifier"
 
 #: templates/nav/nav_interface.html:29
 msgid "SignUp"
@@ -457,7 +441,7 @@ msgstr ""
 msgid "PSA barcode is invalid"
 msgstr "Le code bare PSA est invalide"
 
-#: utils/django/validators.py:115
+#: utils/django/validators.py:136
 msgid ""
 "The number is not correct, it must consist of an uppercase letter and 9 "
 "digits"
@@ -465,31 +449,14 @@ msgstr ""
 "Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et "
 "de 9 chiffres"
 
-#: utils/django/validators.py:117
+#: utils/django/validators.py:138
 msgid "This number is not authorized"
 msgstr "Ce numéro n'est pas autorisé"
 
-#: utils/django/validators.py:119
+#: utils/django/validators.py:140
 msgid "The batch does not exist"
 msgstr "Le lot n'existe pas"
 
-#: utils/django/validators.py:121
+#: utils/django/validators.py:142
 msgid "This number exists"
 msgstr "Ce numéro existe"
-
-#~ msgid "Create REMAN Reference"
-#~ msgstr "Ajout Réf. REMAN"
-
-#, fuzzy
-#~| msgid "Create file"
-#~ msgid "Create"
-#~ msgstr "Création dossier"
-
-#~ msgid "Update REMAN Reference"
-#~ msgstr "Mise à jour Réf. REMAN"
-
-#~ msgid "Success: Reman reference was created."
-#~ msgstr "Succès: la référence Reman a été créée."
-
-#~ msgid "Success: Reman reference was updated."
-#~ msgstr "Succès: la référence Reman a été mise à jour."
