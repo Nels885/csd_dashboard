@@ -4,7 +4,7 @@ from .models import Xelon, Sivin
 
 XELON_COLUMN_LIST = [
     'numero_de_dossier', 'vin', 'modele_produit', 'product__category', 'modele_vehicule', 'date_retour',
-    'type_de_cloture', 'nom_technicien'
+    'type_de_cloture', 'date_expedition_attendue', 'nom_technicien'
 ]
 
 SIVIN_COLUMN_LIST = [
@@ -19,7 +19,7 @@ class XelonSerializer(serializers.ModelSerializer):
         model = Xelon
         fields = (
             'id', 'numero_de_dossier', 'vin', 'modele_produit', 'activity', 'modele_vehicule', 'date_retour',
-            'type_de_cloture', 'nom_technicien', 'corvet'
+            'type_de_cloture', 'date_expedition_attendue', 'nom_technicien', 'corvet'
         )
 
 
