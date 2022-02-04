@@ -22,7 +22,7 @@ class ProductAnalysis:
         self.pendingQueryset = self.QUERYSET.filter(type_de_cloture__in=['', 'Sauvée'])
         self.lateQueryset = self.QUERYSET.filter(Q(delai_au_en_jours_ouvres__gt=3) |
                                                  Q(express=True)).exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
         self.vip = self.pendingQueryset.filter(dossier_vip=True).count()
@@ -31,7 +31,7 @@ class ProductAnalysis:
         self.ecu = self.pendingQueryset.filter(product__category='CALCULATEUR').count()
         self.media = self.pendingQueryset.exclude(product__category='CALCULATEUR').count()
         self.late = self.lateQueryset.count()
-        self.tronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A']).count()
+        self.tronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).count()
         self.percent = self._percent_of_late_products()
 
     def _percent_of_late_products(self):
@@ -69,7 +69,7 @@ class ProductAnalysis:
 
     def autotronik(self):
         autotronik = self.QUERYSET_AUTOTRONIK.exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
         return locals()
 
     @staticmethod
