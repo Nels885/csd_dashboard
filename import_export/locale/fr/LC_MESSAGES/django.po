@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-03 18:57+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: import_export/templates/import_export/detail_csd.html:62
+#: import_export/templates/import_export/detail_csd.html:85
+#: import_export/templates/import_export/detail_reman.html:21
+#: import_export/templates/import_export/detail_tools.html:21
+msgid "Data Export"
+msgstr "Exportation de données"
+
+#: import_export/templates/import_export/detail_csd.html:109
+msgid "Data Import"
+msgstr "Importation de données"
+
+#: import_export/templates/import_export/detail_reman.html:50
+msgid "Csv Import"
+msgstr "Importation CSV"
+
+#: import_export/templates/import_export/detail_reman.html:74
+msgid "Excel Import"
+msgstr "Importation Excel"
+
+#: import_export/views.py:52 import_export/views.py:75
+msgid "You do not have the required permissions"
+msgstr "Vous ne disposez pas des autorisations requises"
