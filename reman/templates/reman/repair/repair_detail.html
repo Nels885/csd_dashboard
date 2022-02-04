@@ -41,29 +41,35 @@
                 </div>
             </div>
 
-            {% if prod.parts.all %}
-                <hr>
-                <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
-                <hr>
+            <hr>
+            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
+            <hr>
 
-                {% for part in prod.parts.all %}
-                    <div class="form-group row">
-                        <label for="form-product_code" class="col-sm-2 col-form-label">Code produit :</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}" readonly>
-                        </div>
-
-                        <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}" readonly>
-                        </div>
-
-                        <div class="col-sm-1">
-                            <button class="btn btn-danger" disabled><i class="fas fa-trash-alt"></i></button>
-                        </div>
+            {% for part in prod.parts.all %}
+                <div class="form-group row">
+                    <label for="form-product_code" class="col-sm-2 col-form-label">Code produit :</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}" readonly>
                     </div>
-                {% endfor %}
-            {% endif %}
+
+                    <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}" readonly>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="form-group row">
+                    <label for="form-product_code" class="col-sm-2 col-form-label">Code produit :</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="form-product_code" value="" readonly>
+                    </div>
+
+                    <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="form-part_number" value="" readonly>
+                    </div>
+                </div>
+            {% endfor %}
 
             {% if prod.batch.ecu_ref_base.ecu_type.hw_type == "NAV" %}
                 <hr>
