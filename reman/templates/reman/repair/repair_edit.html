@@ -1,6 +1,6 @@
 {% extends 'format/forms_format.html' %}
 
-{% load i18n %}
+{% load i18n widget_tweaks %}
 
 {% block form_content %}
 
@@ -16,7 +16,7 @@
 
             <div class="form-group row">
                 {% include 'format/label_form_group.html' with field=form.default %}
-                <div class="col-sm-6">{{ form.default }}</div>
+                <div class="col-sm-6">{% render_field form.default class="form-control custom-select" %}</div>
             </div>
 
             <div class="form-group row">
@@ -29,13 +29,6 @@
                     {% endfor %}
                 </div>
             </div>
-
-            {% if prod.checkout %}
-                <div class="form-group row">
-                    <label for="{{ form.recovery.id_for_label }}" class="col-sm-2 col-form-label">{{ form.recovery.label }} :</label>
-                    <div class="col-sm-6">{{ form.recovery }}</div>
-                </div>
-            {% endif %}
 
             <hr>
             <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
@@ -86,16 +79,25 @@
 
                 <div class="form-group row">
                     {% include 'format/label_form_group.html' with field=form.face_plate %}
-                    <div class="col-sm-2">{{ form.face_plate }}</div>
+                    <div class="col-sm-2">{% render_field form.face_plate class="form-control" %}</div>
                     {% include 'format/label_form_group.html' with field=form.fan %}
-                    <div class="col-sm-2">{{ form.fan }}</div>
+                    <div class="col-sm-2">{% render_field form.fan class="form-control" %}</div>
                 </div>
 
                 <div class="form-group row">
                     {% include 'format/label_form_group.html' with field=form.locating_pin %}
-                    <div class="col-sm-2">{{ form.locating_pin }}</div>
+                    <div class="col-sm-2">{% render_field form.locating_pin class="form-control" %}</div>
                     {% include 'format/label_form_group.html' with field=form.metal_case %}
-                    <div class="col-sm-2">{{ form.metal_case }}</div>
+                    <div class="col-sm-2">{% render_field form.metal_case class="form-control" %}</div>
+                </div>
+            {% endif %}
+
+            <hr>
+
+            {% if prod.checkout %}
+                <div class="form-group row">
+                    {% include 'format/label_form_group.html' with field=form.recovery %}
+                    <div class="col-sm-2">{% render_field form.recovery class="form-control" %}</div>
                 </div>
             {% endif %}
 

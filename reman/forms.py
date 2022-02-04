@@ -233,8 +233,7 @@ class AddRepairForm(BSModalModelForm):
 
 
 class EditRepairForm(forms.ModelForm):
-    default = forms.ModelChoiceField(queryset=Default.objects.all(), required=True, label="Panne",
-                                     widget=forms.Select(attrs={'class': 'form-control'}))
+    default = forms.ModelChoiceField(queryset=None, required=True, label="Panne", widget=forms.Select())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -253,18 +252,11 @@ class EditRepairForm(forms.ModelForm):
     class Meta:
         model = Repair
         fields = [
-            'identify_number', 'product_number', 'remark', 'comment', 'default', 'recovery', 'face_plate', 'fan',
-            'locating_pin', 'metal_case'
+            'identify_number', 'remark', 'comment', 'default', 'recovery', 'face_plate', 'fan', 'locating_pin',
+            'metal_case'
         ]
         widgets = {
-            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
-            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
-            'recovery':  forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'face_plate': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'fan': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'locating_pin': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'metal_case': forms.CheckboxInput(attrs={'class': 'form-control'})
         }
 
     def save(self, commit=True):
@@ -302,8 +294,7 @@ class RepairPartForm(forms.ModelForm):
 
 
 class CloseRepairForm(forms.ModelForm):
-    new_barcode = forms.CharField(label='Nouveau code barre', max_length=100, required=True,
-                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
+    new_barcode = forms.CharField(label='Nouveau code barre', max_length=100, required=True, widget=forms.TextInput())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -318,13 +309,9 @@ class CloseRepairForm(forms.ModelForm):
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'new_barcode', 'status', 'quality_control']
+        fields = ['identify_number', 'remark', 'new_barcode', 'status', 'quality_control']
         widgets = {
-            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
-            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
-            'status': forms.Select(attrs={'class': 'form-control custom-select '}),
-            'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
 
     def clean_new_barcode(self):
