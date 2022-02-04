@@ -46,16 +46,18 @@
                     <div class="form-group row">
                         <label for="form-product_code" class="col-sm-2 col-form-label">Code produit :</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}">
+                            <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}" readonly>
                         </div>
 
                         <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
                         <div class="col-sm-2">
-                            <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}">
+                            <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}" readonly>
                         </div>
 
                         <div class="col-sm-1">
-                            <a href="#" data-form-url="{% url 'reman:delete_repair_part' part.pk %}" class="bs-modal btn btn-danger add-form-row">-</a>
+                            <a href="#" data-form-url="{% url 'reman:delete_repair_part' part.pk %}" class="bs-modal btn btn-danger add-form-row" title="Suppression pièce détachée">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </div>
                     </div>
                 {% endfor %}
@@ -67,7 +69,7 @@
                 <label class="col-sm-2 col-form-label">{{ form2.part_number.label }} :</label>
                 <div class="col-sm-2">{{ form2.part_number }}</div>
                 <div class="col-sm-1">
-                    <button name="repair_part" class="btn btn-success">+</button>
+                    <button name="repair_part" class="btn btn-success" title="Ajout pièce détachée"><i class="fas fa-save"></i></button>
                 </div>
             </div>
             <div class="{% if form2.non_field_errors %}invalid{% endif %} text-danger mb-2">
