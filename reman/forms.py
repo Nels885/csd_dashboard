@@ -327,6 +327,12 @@ class CloseRepairForm(forms.ModelForm):
             'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
 
+    def clean_new_barcode(self):
+        data = self.cleaned_data["new_barcode"]
+        if "#" in data or data == self.instance.barcode:
+            self.add_error('new_barcode', _('barcode is invalid'))
+        return data
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit:
