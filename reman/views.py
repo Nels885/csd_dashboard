@@ -32,7 +32,7 @@ from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
 from .forms import (
     BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm, RepairPartForm
+    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm, RepairPartForm, RepairForm
 )
 from .utils import batch_pdf_data
 
@@ -90,7 +90,7 @@ def repair_detail(request, pk):
     """ View of detail repair page """
     card_title = _('Detail customer file')
     prod = get_object_or_404(Repair, pk=pk)
-    form = CloseRepairForm(request.POST or None, instance=prod)
+    form = RepairForm(request.POST or None, instance=prod)
     context.update(locals())
     return render(request, 'reman/repair/repair_detail.html', context)
 

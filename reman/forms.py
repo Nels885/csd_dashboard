@@ -181,6 +181,25 @@ TECHNICIAN FORMS
 """
 
 
+class RepairForm(forms.ModelForm):
+
+    class Meta:
+        model = Repair
+        fields = "__all__"
+        widgets = {
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(RepairForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            for field in self.fields:
+                self.fields[field].widget.attrs['class'] = "form-control"
+                self.fields[field].widget.attrs['readonly'] = True
+                self.fields[field].widget.attrs['disabled'] = 'disabled'
+
+
 class AddRepairForm(BSModalModelForm):
     barcode = forms.CharField(label='Code barre', max_length=50,
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
