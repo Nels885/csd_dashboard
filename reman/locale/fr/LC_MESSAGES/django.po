@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-03 18:57+0100\n"
+"POT-Creation-Date: 2022-02-07 09:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,11 +43,11 @@ msgstr "Le lot existe déjà !"
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:214
+#: reman/forms.py:233 reman/forms.py:339
 msgid "barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/forms.py:465 reman/tests/tests_reman_views.py:141
+#: reman/forms.py:477 reman/tests/tests_reman_views.py:141
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
@@ -66,8 +66,8 @@ msgstr "Formatage impossible de l'année !"
 #: reman/templates/reman/modal/ref_reman_update.html:41
 #: reman/templates/reman/modal/repair_create.html:16
 #: reman/templates/reman/part/part_create_form.html:47
-#: reman/templates/reman/repair/repair_close.html:62
-#: reman/templates/reman/repair/repair_edit.html:104
+#: reman/templates/reman/repair/repair_close.html:69
+#: reman/templates/reman/repair/repair_edit.html:108
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -115,6 +115,7 @@ msgstr "Mettre à jour le lot"
 #: reman/templates/reman/modal/ecu_dump_update.html:17
 #: reman/templates/reman/modal/ecu_hw_update.html:17
 #: reman/templates/reman/modal/ref_reman_update.html:42
+#: reman/templates/reman/repair/repair_detail.html:113
 msgid "Update"
 msgstr "Mise à jour"
 
@@ -153,13 +154,16 @@ msgid "New search"
 msgstr "Nouvelle recherche"
 
 #: reman/templates/reman/part/part_full_detail.html:60
-#: reman/templates/reman/repair/repair_detail.html:55
 msgid "Close"
 msgstr "Clôture"
 
 #: reman/templates/reman/part/part_send_email.html:68
 msgid "Send email"
 msgstr "Envoi email"
+
+#: reman/templates/reman/repair/repair_detail.html:110
+msgid "Quit"
+msgstr "Quitter"
 
 #: reman/templates/reman/tab_select.html:5
 msgid "Current batches"
