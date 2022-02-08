@@ -36,7 +36,5 @@ django-celery-beat = "*"
 django-celery-results = "*"
 django-searchable-encrypted-fields = "*"
 reportlab = "*"
-
-[packages.django-constance]
-extras = [ "redis",]
-version = "*"
+django-constance = {extras = [ "redis",], version = "*"}
+wiki = "*"

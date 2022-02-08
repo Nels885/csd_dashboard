@@ -8,5 +8,7 @@ sbadmin/settings/production.py
 sbadmin/staticfiles/
 geckodriver.log
 media/profile_pics/
+media/cache/
+media/wiki/
 utils/conf/current.py
 Pipfile.lock

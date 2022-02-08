@@ -1,0 +1,20 @@
+{% extends "wiki/base_site.html" %}
+
+{% load i18n %}
+
+{% block wiki_site_title %} - CSD Wiki{% endblock %}
+
+{% block wiki_header_branding %}
+    <a class="navbar-brand" href="/wiki/"><i class="fas fa-cogs mr-3"></i>CSD Wiki</a>
+{% endblock %}
+
+{% block wiki_header_navlinks %}
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="/wiki/">{% trans "Home" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">{% trans "About" %}</a>
+        </li>
+    </ul>
+{% endblock %}
