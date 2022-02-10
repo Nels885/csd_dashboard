@@ -12,7 +12,7 @@ class ExportCorvetForm(forms.Form):
     PRODUCTS = [
         ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
-        ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('icare', 'ICARE'), ('xelon', 'ALL Xelon')
+        ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('xelon', 'ALL Xelon')
     ]
     # COLS = [(key, key.upper()) for key in CORVET_DICT.keys()]
     COLS = [
@@ -40,9 +40,11 @@ class ExportCorvetForm(forms.Form):
         _model_list = list(xelons.values_list('modele_produit', flat=True).distinct())
         xelons = Xelon.objects.exclude(modele_vehicule="").order_by('modele_vehicule')
         _vehicle_list = list(xelons.values_list('modele_vehicule', flat=True).distinct())
+        _tag_list = list(CorvetOption.objects.exclude(tag="").order_by('tag').values_list('tag').distinct())
         super().__init__(*args, **kwargs)
         self.fields['xelon_model'].widget = ListTextWidget(data_list=_model_list, name='model-list')
         self.fields['xelon_vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle-list')
+        self.fields['tag'].widget = ListTextWidget(data_list=_tag_list, name='tag-list')
 
 
 class ExportRemanForm(forms.Form):
@@ -60,7 +62,7 @@ class CorvetVinListForm(forms.Form):
         options = CorvetOption.objects.exclude(tag="").order_by('tag')
         _tag_list = list(options.values_list('tag', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        self.fields['corvet_tag'].widget = ListTextWidget(data_list=_tag_list, name='tag-list')
+        self.fields['corvet_tag'].widget = ListTextWidget(data_list=_tag_list, name='corvet-tag-list')
 
 
 class ExportToolsForm(forms.Form):

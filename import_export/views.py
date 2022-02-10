@@ -88,7 +88,7 @@ def import_corvet_vin_async(request):
     form = CorvetVinListForm(request.POST or None)
     if form.is_valid():
         vin_list = form.cleaned_data['vin_list'].split('\r\n')
-        task = import_corvet_list_task.delay(*vin_list)
+        task = import_corvet_list_task.delay(*vin_list, **form.cleaned_data)
         return JsonResponse({"task_id": task.id})
     raise Http404
 

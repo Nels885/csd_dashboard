@@ -178,6 +178,8 @@ def extract_corvet(*args, **kwargs):
         data_list += CORVET_DICT.get(col, [])
     queryset = Corvet.objects.all().annotate(
         date_debut_garantie=Cast(TruncSecond('donnee_date_debut_garantie', DateTimeField()), CharField()))
+    if kwargs.get('tag', None):
+        queryset = queryset.filter(opts__tag=kwargs.get('tag'))
     if kwargs.get('vins', None):
         vin_list = kwargs.get('vins').split('\r\n')
         queryset = queryset.filter(vin__in=vin_list)
@@ -192,9 +194,6 @@ def extract_corvet(*args, **kwargs):
     header, values_list = get_header_fields(data_list)
     if prod_dict.get(product):
         queryset = queryset.exclude(**prod_dict.get(product))
-    elif product == "icare":
-        test = {"opts__tag": "ICARE"}
-        queryset = queryset.filter(**test)
     elif product == "xelon":
         header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
     fields = values_list

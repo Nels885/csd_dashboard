@@ -56,13 +56,13 @@ def import_corvet_task(self, vin):
 
 
 @celery_app.task(bind=True)
-def import_corvet_list_task(self, *args):
+def import_corvet_list_task(self, *args, **kwargs):
     progress_recorder = ProgressRecorder(self)
     list_args, msg = args, ""
-    CorvetOption.objects.update(tag="")
     for count, vin in enumerate(list_args):
         corvets = Corvet.objects.filter(vin=vin, opts__update=False)
-        CorvetOption.objects.filter(corvet=vin).update(tag="ICARE")
+        if kwargs.get('corvet_tag'):
+            CorvetOption.objects.filter(corvet=vin).update(tag=kwargs.get('corvet_tag'))
         progress_recorder.set_progress(count, len(list_args))
         if not corvets:
             if re.match(r'^[VWZ][FLR0]\w{15}$', str(vin)):
