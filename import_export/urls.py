@@ -10,7 +10,6 @@ urlpatterns = [
     path('import/ecu-base/', views.import_ecurefbase, name='import_ecu_base'),
     path('import/corvet-vin/async/', views.import_corvet_vin_async, name="import_corvet_vin"),
     path('export/corvet/async/', views.export_corvet_async, name='export_corvet'),
-    path('export/corvet-vin/async/', views.export_corvet_vin_async, name="export_corvet_vin"),
     path('export/reman/async/', views.export_reman_async, name="export_reman"),
     path('export/tools/async/', views.export_tools_async, name="export_tools")
 ]

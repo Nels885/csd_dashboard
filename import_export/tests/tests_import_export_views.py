@@ -54,11 +54,6 @@ class ImportExportTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
-    def test_esport_corvet_vin_task(self):
-        url = reverse('import_export:export_corvet_vin')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
-
     def test_esport_reman_task(self):
         url = reverse('import_export:export_reman')
         response = self.client.get(url)
