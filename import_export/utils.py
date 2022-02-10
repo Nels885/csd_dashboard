@@ -5,7 +5,6 @@ from psa.models import Corvet
 from reman.models import Batch, Repair, EcuRefBase
 from tools.models import Suptech, BgaTime
 
-
 CORVET_DICT = {
     'xelon': [
         ('Dossier (XELON)', 'xelon__numero_de_dossier'), ('Produit (XELON)', 'xelon__modele_produit'),
@@ -166,6 +165,13 @@ def extract_ecu(vin_list=None):
 
 
 def extract_corvet(*args, **kwargs):
+    prod_dict = {
+        'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
+        'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
+        'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
+        'cvm': {'electronique_12y__exact': ''}, 'dae': {'electronique_16l__exact': ''},
+        'emf': {'electronique_16l__exact': ''}, 'cmb': {'electronique_14k__exact': ''}
+    }
     product = kwargs.get('product', 'bsi')
     data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
     for col in kwargs.get('columns', []):
@@ -184,22 +190,8 @@ def extract_corvet(*args, **kwargs):
     if kwargs.get('end_date', None):
         queryset = queryset.filter(donnee_date_debut_garantie__lte=kwargs.get('end_date'))
     header, values_list = get_header_fields(data_list)
-    if product == "ecu":
-        queryset = queryset.exclude(electronique_14a__exact='')
-    elif product == "bsi":
-        queryset = queryset.exclude(electronique_14b__exact='')
-    elif product == "com200x":
-        queryset = queryset.exclude(electronique_16p__exact='')
-    elif product == "bsm":
-        queryset = queryset.exclude(electronique_16p__exact='')
-    elif product == "cvm":
-        queryset = queryset.exclude(electronique_12y__exact='')
-    elif product == "dae":
-        queryset = queryset.exclude(electronique_16l__exact='')
-    elif product == "emf":
-        queryset = queryset.exclude(electronique_14l__exact='')
-    elif product == "cmb":
-        queryset = queryset.exclude(electronique_14k__exact='')
+    if prod_dict.get(product):
+        queryset = queryset.exclude(**prod_dict.get(product))
     elif product == "icare":
         test = {"opts__tag": "ICARE"}
         queryset = queryset.filter(**test)
