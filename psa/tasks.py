@@ -94,4 +94,7 @@ def import_corvet_list_task(self, *args):
         else:
             msg += f"{vin} data OK"
         msg += "\r\n"
-    return msg
+    return {
+        "detail": "Successfully import VIN PSA",
+        "message": msg
+    }

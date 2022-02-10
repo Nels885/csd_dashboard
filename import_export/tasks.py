@@ -16,10 +16,10 @@ from psa.templatetags.corvet_tags import get_corvet
 
 class ExportCorvetIntoExcelTask(ExportExcelTask):
     COL_CORVET = {
-        'corvet__donnee_ligne_de_produit': 'DON_LIN_PROD', 'corvet__donnee_silhouette': 'DON_SIL',
-        'corvet__donnee_genre_de_produit': 'DON_GEN_PROD', 'corvet__attribut_dhb': 'ATT_DHB',
-        'corvet__attribut_dlx': 'ATT_DLX', 'corvet__attribut_drc': 'ATT_DRC', 'corvet__attribut_dun': 'ATT_DUN',
-        'corvet__attribut_dym': 'ATT_DYM', 'corvet__attribut_dyr': 'ATT_DYR', 'corvet__donnee_moteur': 'DON_MOT'
+        'donnee_ligne_de_produit': 'DON_LIN_PROD', 'donnee_silhouette': 'DON_SIL',
+        'donnee_genre_de_produit': 'DON_GEN_PROD', 'attribut_dhb': 'ATT_DHB',
+        'attribut_dlx': 'ATT_DLX', 'attribut_drc': 'ATT_DRC', 'attribut_dun': 'ATT_DUN',
+        'attribut_dym': 'ATT_DYM', 'attribut_dyr': 'ATT_DYR', 'donnee_moteur': 'DON_MOT'
     }
 
     def __init__(self, *args, **kwargs) -> None:
@@ -34,8 +34,8 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         return query
 
     def get_multimedia_display(self, data_list):
-        if 'corvet__prods__btel__name' in self.fields:
-            position = self.fields.index('corvet__prods__btel__name')
+        if 'prods__btel__name' in self.fields:
+            position = self.fields.index('prods__btel__name')
             for prod in Multimedia.PRODUCT_CHOICES:
                 if prod[0] == data_list[position]:
                     data_list[position] = prod[1]
