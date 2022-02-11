@@ -18,8 +18,8 @@ class ExportCorvetForm(forms.Form):
     COLS = [
         ('data_extra', 'Info Véhicule'), ('audio_cfg', 'Config Audio'),
         ('cmm', 'ECU'), ('cmm_extra', 'ECU Extra'), ('bsi', 'BSI'), ('bsi_extra', 'BSI Extra'), ('com200x', 'COM200x'),
-        ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('btel', 'NAV'),
-        ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
+        ('bsm', 'BSM'), ('cvm', 'CVM'), ('cvm_extra', 'CVM Extra'), ('dae', 'DAE'), ('emf', 'DISPLAY'),
+        ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
     ]
 
     product = forms.ChoiceField(label='Type produit', required=False, choices=PRODUCTS, widget=forms.Select())

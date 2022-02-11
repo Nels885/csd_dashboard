@@ -75,8 +75,12 @@ CORVET_DICT = {
         ('Ref HW BSM', 'electronique_16b'),
     ],
     'cvm': [
-        ('Modèle CVM_2', 'prods__cvm2__name'),
+        ('Modèle CVM2', 'prods__cvm2__name'),
         ('12Y_CVM2_2_HARD', 'electronique_12y'), ('92Y_CVM2_2_SOFT', 'electronique_92y')
+    ],
+    'cvm_extra': [
+        ('T2Y_CVM2_2_CODE', 'electronique_t2y'), ('Réf. Setplate CVM2', 'prods__cvm2__label_ref'),
+        ('Complément CVM2', 'prods__cvm2__extra')
     ],
     'dae': [
         ('16L_DAE_HARD', 'electronique_16l'),
