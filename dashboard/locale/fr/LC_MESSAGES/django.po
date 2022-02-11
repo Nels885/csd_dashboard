@@ -178,7 +178,7 @@ msgstr "Ce champ est requis."
 
 #: dashboard/views.py:39
 msgid "Home"
-msgstr "Acceuil"
+msgstr "Accueil"
 
 #: dashboard/views.py:46 dashboard/views.py:145
 msgid "Dashboard"

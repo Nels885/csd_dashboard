@@ -56,7 +56,7 @@ class ExportRemanForm(forms.Form):
 
 class CorvetVinListForm(forms.Form):
     vin_list = forms.CharField(label='Liste de V.I.N.', required=True, widget=forms.Textarea())
-    corvet_tag = forms.CharField(label='TAG Corvet', required=True, widget=forms.TextInput())
+    corvet_tag = forms.CharField(label='TAG Corvet', required=False, widget=forms.TextInput())
 
     def __init__(self, *args, **kwargs):
         options = CorvetOption.objects.exclude(tag="").order_by('tag')
