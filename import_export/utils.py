@@ -17,6 +17,10 @@ CORVET_DICT = {
         ('LIGNE_DE_PRODUIT', 'donnee_ligne_de_produit'), ('SILHOUETTE', 'donnee_silhouette'),
         ('GENRE_DE_PRODUIT', 'donnee_genre_de_produit'), ('MOTEUR', 'donnee_moteur'),
     ],
+    'audio_cfg': [
+        ('DHB_HAUT_PARLEUR', 'attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'attribut_drc'),
+        ('DUN_AMPLI_EQUALISEUR', 'attribut_dun'), ('DYR_BTA', 'attribut_dyr')
+    ],
     'btel': [
         ('Modele NAV', 'prods__btel__name'), ('14X_BTEL_HARD', 'electronique_14x'),
         ('94X_BTEL_SOFT', 'electronique_94x')
@@ -24,8 +28,7 @@ CORVET_DICT = {
     'btel_extra': [
         ('44X_BTEL_FOURN.NO.SERIE', 'electronique_44x'), ('64X_BTEL_FOURN.CODE', 'electronique_64x'),
         ('84X_BTEL_DOTE', 'electronique_84x'), ('Réf. Setplate', 'prods__btel__label_ref'),
-        ('Niv.', 'prods__btel__level'), ('HW variant', 'prods__btel__extra'), ('DHB_HAUT_PARLEUR', 'attribut_dhb'),
-        ('DRC_RECEPTEUR_RADIO', 'attribut_drc'), ('DUN_AMPLI_EQUALISEUR', 'attribut_dun'), ('DYR_BTA', 'attribut_dyr')
+        ('Niv.', 'prods__btel__level'), ('HW variant', 'prods__btel__extra')
     ],
     'rad': [
         ('Modele RADIO', 'prods__radio__name'), ('14F_RADIO_HARD', 'electronique_14f'),
@@ -34,8 +37,7 @@ CORVET_DICT = {
     'rad_extra': [
         ('44F_RADIO_FOURN.NO.SERIE', 'electronique_44f'), ('64F_RADIO_FOURN.CODE', 'electronique_64f'),
         ('84F_RADIO_DOTE', 'electronique_84f'), ('Réf. Setplate', 'prods__radio__label_ref'),
-        ('Niv.', 'prods__radio__level'), ('HW variant', 'prods__radio__extra'), ('DHB_HAUT_PARLEUR', 'attribut_dhb'),
-        ('DRC_RECEPTEUR_RADIO', 'attribut_drc'), ('DUN_AMPLI_EQUALISEUR', 'attribut_dun'), ('DYR_BTA', 'attribut_dyr')
+        ('Niv.', 'prods__radio__level'), ('HW variant', 'prods__radio__extra')
     ],
     'emf': [
         ('Modèle Ecran Multi', 'prods__emf__name'), ('14L_EMF_HARD', 'electronique_14l'),
@@ -53,17 +55,20 @@ CORVET_DICT = {
     'cmm': [
         ('Modèle ECU', 'prods__cmm__name'),
         ('14A_CMM_HARD', 'electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'electronique_34a'),
-        ('94A_CMM_SOFT', 'electronique_94a'), ('44A_CMM_FOURN.NO.SERIE', 'electronique_44b'),
+        ('94A_CMM_SOFT', 'electronique_94a')
+    ],
+    'cmm_extra': [
+        ('44A_CMM_FOURN.NO.SERIE', 'electronique_44b'),
         ('54A_CMM_FOURN.DATE.FAB', 'electronique_54b'), ('64A_CMM_FOURN.CODE', 'electronique_64b'),
         ('84A_CMM_DOTE', 'electronique_84a'), ('P4A_CMM_EOBD', 'electronique_p4a')
     ],
     'bsi': [
-        ('Modèle B.S.I.', 'prods__bsi__name'), ('HW', 'prods__bsi__hw'),
+        ('Modèle B.S.I.', 'prods__bsi__name'), ('14B_BSI_HARD', 'electronique_14b'), ('94B_BSI_SOFT', 'electronique_94b')
+    ],
+    'bsi_extra': [
+        ('44B_BSI_FOURN.NO.SERIE', 'electronique_44b'), ('54B_BSI_FOURN.DATE.FAB', 'electronique_54b'),
+        ('64B_BSI_FOURN.CODE', 'electronique_64b'), ('84B_BSI_DOTE', 'electronique_84b'), ('HW', 'prods__bsi__hw'),
         ('SW', 'prods__bsi__sw'),
-        ('14B_BSI_HARD', 'electronique_14b'),
-        ('94B_BSI_SOFT', 'electronique_94b'), ('44B_BSI_FOURN.NO.SERIE', 'electronique_44b'),
-        ('54B_BSI_FOURN.DATE.FAB', 'electronique_54b'), ('64B_BSI_FOURN.CODE', 'electronique_64b'),
-        ('84B_BSI_DOTE', 'electronique_84b')
     ],
     'bsm': [
         ('Modele BSM', 'prods__bsm__name'), ('Marque BSM', 'prods__bsm__supplier_oe'),
