@@ -1,40 +1,29 @@
 import re
-from io import StringIO, BytesIO
+from io import StringIO
 
-from django.utils import timezone
-from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.management import call_command
 from django.core.mail import EmailMessage
-from django.db.models import Q, Count, Max
+from django.db.models import Q, Count
 from django.views.generic.edit import CreateView, UpdateView
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import mm
-from reportlab.lib.pagesizes import A4
-from reportlab.graphics.barcode import code128
 
 from constance import config
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView
 from utils.django.urls import reverse, reverse_lazy, http_referer
 
-from utils.conf import string_to_list, DICT_YEAR
-from utils.django.datatables import QueryTableByArgs
+from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
-from reman.models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase, RepairPart
-from reman.serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
+from reman.models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase
 from reman.forms import (
-    BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
+    CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm, RepairPartForm, RepairForm
+    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm
 )
-from reman.utils import batch_pdf_data
 
 context = {
     'title': 'Reman'
