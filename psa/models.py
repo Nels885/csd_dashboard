@@ -376,6 +376,7 @@ class Ecu(models.Model):
 
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)
     mat_ref = models.CharField("réf. matériel", max_length=10, blank=True)
+    label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     type = models.CharField('type', max_length=7, choices=TYPE_CHOICES)
