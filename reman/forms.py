@@ -6,6 +6,8 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
+from constance import config
+
 from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
@@ -378,14 +380,15 @@ class CheckOutSelectBatchForm(SelectBatchForm, BSModalForm):
         if data:
             try:
                 batch = self.batch.get(batch_number__startswith=data)
-                if batch.number >= 900:
-                    raise forms.ValidationError("Erreur, il s'agit d'un lot d'Etude")
-                elif batch.year == "X":
-                    raise forms.ValidationError("Erreur, il s'agit d'un lot pour le stock")
-                # elif batch.repaired != batch.quantity:
-                #     raise forms.ValidationError(
-                #         "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
-                #     )
+                if not config.CHECKOUT_BATCH_FILTER_DISABLE:
+                    if batch.number >= 900:
+                        raise forms.ValidationError("Erreur, il s'agit d'un lot d'Etude")
+                    elif batch.year == "X":
+                        raise forms.ValidationError("Erreur, il s'agit d'un lot pour le stock")
+                    # elif batch.repaired != batch.quantity:
+                    #     raise forms.ValidationError(
+                    #         "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
+                    #     )
             except Batch.DoesNotExist:
                 raise forms.ValidationError("Pas de lot associé")
             except Batch.MultipleObjectsReturned:
