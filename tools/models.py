@@ -8,7 +8,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
 
-from constance import config
+from constance import config as conf
 
 from squalaetp.models import Xelon
 from utils.file.export import calibre
@@ -163,7 +163,8 @@ class SuptechItem(models.Model):
     name = models.CharField('Nom', max_length=100, unique=True)
     extra = models.BooleanField(default=False)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
-    mailing_list = models.TextField("Liste d'email", max_length=5000, default=config.SUPTECH_TO_EMAIL_LIST)
+    mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
+    cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
 
     class Meta:
         verbose_name = "SupTech Item"

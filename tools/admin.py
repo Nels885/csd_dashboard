@@ -29,10 +29,10 @@ class SuptechAdmin(admin.ModelAdmin):
 
 
 class SuptechItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'extra', 'category', 'mailing_list')
+    list_display = ('name', 'extra', 'category', 'mailing_list', 'cc_mailing_list')
     ordering = ('name',)
     list_filter = ('category',)
-    search_fields = ('name', 'mailing_list')
+    search_fields = ('name', 'mailing_list', 'cc_mailing_list')
 
 
 class SuptechCategoryAdmin(admin.ModelAdmin):

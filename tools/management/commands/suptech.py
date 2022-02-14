@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
             supject = "Autres Moyens en cours {}".format(date_joined)
             suptechs = Suptech.objects.filter(category=3).exclude(status="Cloturée").order_by('-date')
-            self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_MANAGER_TO_EMAIL_LIST)
+            self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_CC_EMAIL_LIST)
         else:
             try:
                 path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
