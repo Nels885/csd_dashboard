@@ -59,6 +59,7 @@
                 <th>Fabriquant</th>
                 <th>Réf. Hardware</th>
                 <th>Code barre</th>
+                <th>Nouveau Code barre</th>
                 <th>Status</th>
                 <th>Contrôle qualité</th>
                 <th>Date de cloture</th>
@@ -78,6 +79,7 @@
                     <td>{{ file.batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
                     <td>{{ file.batch.ecu_ref_base.ecu_type.hw_reference }}</td>
                     <td>{{ file.barcode }}</td>
+                    <td>{{ file.new_barcode }}</td>
                     <td>{{ file.status }}</td>
                     <td>{% if file.quality_control %}OK{% endif %}</td>
                     <td>{{ file.closing_date|default:"--" }}</td>
