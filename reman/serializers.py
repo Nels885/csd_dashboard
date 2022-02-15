@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from reman.models import Batch, EcuModel, Repair, EcuRefBase
+from reman.models import Batch, EcuModel, Repair, RepairPart, EcuRefBase
 
 REPAIR_COLUMN_LIST = [
     'identify_number', 'batch__batch_number', 'batch__customer', 'batch__ecu_ref_base__ecu_type__technical_data',
@@ -68,6 +68,12 @@ class RemanRepairSerializer(serializers.ModelSerializer):
             'status', 'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at', 'created_by',
             'created_at'
         )
+
+
+class RemanRepairPartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RepairPart
+        fields = ('id', 'product_code', 'part_number')
 
 
 class EcuRefBaseSerializer(serializers.ModelSerializer):

@@ -1,11 +1,11 @@
 {% extends 'format/forms_format.html' %}
 
-{% load i18n widget_tweaks %}
+{% load i18n widget_tweaks static %}
 
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="">
+        <form id="repair-form" method="post" action="">
 
             {% csrf_token %}
 
@@ -34,27 +34,7 @@
             <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
             <hr>
 
-            {% if prod.parts.all %}
-                {% for part in prod.parts.all %}
-                    <div class="form-group row">
-                        <label for="form-product_code" class="col-sm-2 col-form-label">Code produit :</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}" readonly>
-                        </div>
-
-                        <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}" readonly>
-                        </div>
-
-                        <div class="col-sm-1">
-                            <a href="#" data-form-url="{% url 'reman:delete_repair_part' part.pk %}" class="bs-modal btn btn-danger add-form-row" title="Suppression pièce détachée">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
+            <div id="part-list"></div>
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">{{ form2.product_code.label }} :</label>
@@ -62,15 +42,11 @@
                 <label class="col-sm-2 col-form-label">{{ form2.part_number.label }} :</label>
                 <div class="col-sm-2">{{ form2.part_number }}</div>
                 <div class="col-sm-1">
-                    <button name="repair_part" class="btn btn-success" title="Ajout pièce détachée"><i class="fas fa-save"></i></button>
+                    <button type="button" id="add-btn-part" class="btn btn-success" title="Ajout pièce détachée">
+                        <i class="fas fa-save"></i></button>
                 </div>
             </div>
-            <div class="{% if form2.non_field_errors %}invalid{% endif %} text-danger mb-2">
-                {% for error in form2.non_field_errors %}
-                    {{ error }}
-                {% endfor %}
-            </div>
-
+            <div id="form2-errors" class="text-danger mb-2"></div>
 
             {% if prod.batch.ecu_ref_base.ecu_type.hw_type == "NAV" %}
                 <hr>
@@ -120,5 +96,58 @@
         </form>
 
     </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="application/javascript"src="{% static 'reman/js/reman-custom.js' %}"></script>
+
+    <script type="application/javascript">
+        let PART_LIST_URL = '{% url "reman:part_list_ajax" pk=prod.pk %}';
+        partList();
+
+        document.querySelector('#add-btn-part').addEventListener("click", e => {
+            e.preventDefault();
+            let formData = new FormData($("#repair-form")[0]);
+            let productCode = document.querySelector('#id_product_code');
+            let partNumber = document.querySelector('#id_part_number');
+            let errorElement = document.getElementById('form2-errors');
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "reman:create_part_ajax" pk=prod.pk %}',
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (res) {
+                    errorElement.innerHTML = "";
+                    errorElement.classList.remove("invalid");
+                    if (res.hasOwnProperty('errors')) {
+                        errorElement.classList.add("invalid");
+                        for (const error of res.errors["__all__"]) {
+                            console.log(error);
+                            errorElement.innerHTML += "<p>* " + error + "</p>";
+                        }
+                        setTimeout(function () {
+                            errorElement.innerHTML = "";
+                            errorElement.classList.remove("invalid");
+                        }, 2000);
+                    } else {
+
+                        partList();
+
+                        productCode.value = "";
+                        partNumber.value = "";
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+                ,
+            })
+        })
+    </script>
 
 {% endblock %}
