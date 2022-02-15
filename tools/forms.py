@@ -107,7 +107,7 @@ class SuptechModalForm(BSModalModelForm):
         current_site = get_current_site(self.request)
         from_email = self.cleaned_data["username"].email
         files = self.request.FILES.getlist('attach')
-        subject = f"!!! Info Support Tech n°{self.instance.id} : {self.instance.item} !!!"
+        subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
         email = EmailMessage(
@@ -157,7 +157,7 @@ class SuptechResponseForm(forms.ModelForm):
 
     def send_email(self, request):
         try:
-            subject = f"!!! Info Support Tech n°{self.instance.id} : {self.instance.item} !!!"
+            subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
             context = {"user": request.user, "suptech": self.instance}
             message = render_to_string('tools/email_format/suptech_response_email.html', context)
             send_email_task.delay(
@@ -189,7 +189,7 @@ class SuptechMessageForm(forms.ModelForm):
     def send_email(request, instance):
         try:
             current_site = get_current_site(request)
-            subject = f"!!! Info Support Tech n°{instance.id} : {instance.item} !!!"
+            subject = f"[SUPTECH_{instance.id}] {instance.item}"
             to_list = config.SUPTECH_TO_EMAIL_LIST + "; " + instance.created_by.email
             context = {'suptech': instance, 'domain': current_site.domain}
             message = render_to_string('tools/email_format/suptech_message_email.html', context)
