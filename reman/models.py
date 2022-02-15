@@ -198,6 +198,7 @@ class RepairPart(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
+        ordering = ['id']
         verbose_name = "Pièce réparation"
 
     def __str__(self):
