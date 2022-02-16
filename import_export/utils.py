@@ -219,12 +219,13 @@ Export REMAN data to excel format
 """
 
 
-def extract_reman(model):
+def extract_reman(*args, **kwargs):
     header = queryset = values_list = None
+    model = kwargs.get("table", "batch")
     if model == "batch":
         header = [
-            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Réparés', 'Rebuts', 'Emballés', 'Total', 'Date_de_Debut',
-            'Date_de_fin', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Actif', 'Ajoute par', 'Ajoute le'
+            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Client', 'Réparés', 'Rebuts', 'Emballés', 'Total',
+            'Date_de_Debut', 'Date_de_fin', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Actif', 'Ajoute par', 'Ajoute le'
         ]
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
@@ -232,23 +233,28 @@ def extract_reman(model):
         queryset = Batch.objects.all().order_by('batch_number')
         queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
         values_list = (
-            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'repaired', 'rebutted', 'packed', 'total',
-            'start_date', 'end_date', 'ecu_ref_base__ecu_type__technical_data', 'ecu_ref_base__ecu_type__hw_reference',
-            'ecu_ref_base__ecu_type__supplier_oe', 'active', 'created_by__username', 'created_at'
+            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'customer', 'repaired', 'rebutted', 'packed',
+            'total', 'start_date', 'end_date', 'ecu_ref_base__ecu_type__technical_data',
+            'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'active',
+            'created_by__username', 'created_at'
         )
     elif model == "repair_reman":
+        queryset = Repair.objects.all().order_by('identify_number')
+        if kwargs.get('customer', None):
+            queryset = queryset.filter(batch__customer=kwargs.get('customer'))
+        if kwargs.get('batch_number', None):
+            queryset = queryset.filter(batch__batch_number=kwargs.get('batch_number'))
         header = [
             'Numero_identification', 'Numero_lot', 'Ref_REMAN', 'Type_ECU', 'Fabriquant', 'HW_Reference',
-            'Code_barre', 'Code_defaut', 'Libelle_defaut', 'Commentaires_action', 'status', 'Controle_qualite',
-            'Date_de_cloture', 'Modifie_par', 'Modifie_le', 'Cree par', 'Cree_le'
+            'Code_barre', 'Nouveau_code_barre' 'Code_defaut', 'Libelle_defaut', 'Commentaires_action', 'status',
+            'Controle_qualite', 'Date_de_cloture', 'Modifie_par', 'Modifie_le', 'Cree par', 'Cree_le'
         ]
-        queryset = Repair.objects.all().order_by('identify_number')
         values_list = (
             'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__reman_reference',
             'batch__ecu_ref_base__ecu_type__technical_data', 'batch__ecu_ref_base__ecu_type__supplier_oe',
-            'batch__ecu_ref_base__ecu_type__hw_reference', 'barcode', 'default__code', 'default__description',
-            'comment', 'status', 'quality_control', 'closing_date', 'modified_by__username', 'modified_at',
-            'created_at', 'created_by__username',
+            'batch__ecu_ref_base__ecu_type__hw_reference', 'barcode', 'new_barcode', 'default__code',
+            'default__description', 'comment', 'status', 'quality_control', 'closing_date', 'modified_by__username',
+            'modified_at', 'created_at', 'created_by__username',
         )
     elif model == "base_ref_reman":
         header = [

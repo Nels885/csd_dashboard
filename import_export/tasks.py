@@ -88,9 +88,9 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
     def run(self, *args, **kwargs):
         path = self.copy_and_get_copied_path()
         excel_type = kwargs.pop('excel_type', 'xlsx')
-        model = kwargs.pop('table', 'bsi')
+        model = kwargs.get('table', 'reman')
         filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
-        self.header, self.fields, values_list = extract_reman(model)
+        self.header, self.fields, values_list = extract_reman(*args, **kwargs)
         destination_path = os.path.join(path, f"{filename}.{excel_type}")
         workbook = Workbook()
         workbook = self.create_workbook(workbook, self.header, values_list)
