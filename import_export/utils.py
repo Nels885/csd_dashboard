@@ -85,6 +85,13 @@ CORVET_DICT = {
     'dae': [
         ('16L_DAE_HARD', 'electronique_16l'),
         ('96L_DAE_SOFT', 'electronique_96l')
+    ],
+    'abs_esp': [
+        ('14P_FREIN_HARD', 'electronique_14p'), ('94P_FREIN_SOFT', 'electronique_94p'),
+        ('34P_FREIN_SOFT_LIVRE', 'electronique_34p')
+    ],
+    'airbag': [
+        ('14M_RBG_HARD_(AIRBAG)', 'electronique_14m'), ('14M_RBG_SOFT_(AIRBAG)', 'electronique_94m')
     ]
 }
 
@@ -179,6 +186,7 @@ def extract_corvet(*args, **kwargs):
         'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
         'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
         'cvm': {'electronique_12y__exact': ''}, 'dae': {'electronique_16l__exact': ''},
+        'abs_esp': {'electronique_14p__exact': ''}, 'airbag': {'electronique_14m__exact': ''},
         'emf': {'electronique_16l__exact': ''}, 'cmb': {'electronique_14k__exact': ''}
     }
     product = kwargs.get('product', 'bsi')

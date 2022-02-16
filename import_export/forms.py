@@ -11,15 +11,17 @@ FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
-        ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'),
+        ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('dae', 'DAE'),
-        ('emf', 'DISPLAY'), ('cmb', 'COMBINE'), ('xelon', 'ALL Xelon')
+        ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'),
+        ('xelon', 'ALL Xelon')
     ]
     # COLS = [(key, key.upper()) for key in CORVET_DICT.keys()]
     COLS = [
         ('data_extra', 'Info Véhicule'), ('audio_cfg', 'Config Audio'),
         ('cmm', 'ECU'), ('cmm_extra', 'ECU Extra'), ('bsi', 'BSI'), ('bsi_extra', 'BSI Extra'), ('com200x', 'COM200x'),
-        ('bsm', 'BSM'), ('cvm', 'CVM'), ('cvm_extra', 'CVM Extra'), ('dae', 'DAE'), ('emf', 'DISPLAY'),
+        ('bsm', 'BSM'), ('cvm', 'CVM'), ('cvm_extra', 'CVM Extra'), ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'),
+        ('airbag', 'AIRBAG'), ('emf', 'DISPLAY'),
         ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
     ]
 
@@ -29,7 +31,7 @@ class ExportCorvetForm(forms.Form):
     vins = forms.CharField(label='Liste de V.I.N.', required=False, widget=forms.Textarea())
     columns = forms.MultipleChoiceField(
         label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
-    formats = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
     tag = forms.CharField(label="TAG Corvet", required=False, widget=forms.TextInput())
     start_date = forms.DateField(
         label='Début date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
@@ -53,7 +55,7 @@ class ExportRemanForm(forms.Form):
 
     customer = forms.CharField(label="Client", required=False, widget=forms.TextInput())
     batch_number = forms.CharField(label="N° de lot", required=False, widget=forms.TextInput())
-    excel_type = forms.ChoiceField(label='Formats', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
 
     def __init__(self, *args, **kwargs):

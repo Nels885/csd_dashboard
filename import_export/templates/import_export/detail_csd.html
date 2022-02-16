@@ -53,9 +53,9 @@
     </div>
 
     <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet.formats %}
+        {% include 'format/label_form_group.html' with field=form_corvet.excel_type %}
         <div class="col-sm-2">
-            {% render_field form_corvet.formats class="custom-select form-control" %}
+            {% render_field form_corvet.excel_type class="custom-select form-control" %}
         </div>
         {% include 'format/label_form_group.html' with field=form_corvet.tag %}
         <div class="col-sm-3">
