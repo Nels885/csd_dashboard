@@ -5,7 +5,9 @@ import datetime
 from sbadmin import celery_app
 from openpyxl import Workbook
 
-from .utils import extract_corvet, extract_ecu, extract_reman, extract_tools
+from .data.extract_reman import extract_reman
+from .data.extract_psa import extract_corvet, extract_ecu
+from .data.extract_tools import extract_tools
 from utils.file.export_task import ExportExcelTask
 from psa.models import Multimedia
 from psa.templatetags.corvet_tags import get_corvet

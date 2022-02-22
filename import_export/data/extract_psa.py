@@ -1,9 +1,10 @@
-from django.db.models.functions import Cast, TruncSecond, Concat, ExtractDay
-from django.db.models import DateTimeField, CharField, Q, Count, Value, F
+from django.db.models.functions import Cast, TruncSecond
+from django.db.models import DateTimeField, CharField
+
+from . import get_header_fields
 
 from psa.models import Corvet
-from reman.models import Batch, Repair, EcuRefBase
-from tools.models import Suptech, BgaTime
+
 
 CORVET_DICT = {
     'xelon': [
@@ -148,22 +149,10 @@ PRODS_XELON_LIST = [
 ]
 
 
-def get_header_fields(prod_list):
-    header = [value_tuple[0] for value_tuple in prod_list]
-    fields = [value_tuple[1] for value_tuple in prod_list]
-    return header, fields
-
-
-"""
-##################################
-
-Export CORVET data to excel format
-
-##################################
-"""
-
-
 def extract_ecu(vin_list=None):
+    """
+    Export ECU data to excel format
+    """
     header = [
         'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD',
         '34A_CMM_SOFT_LIVRE', '94A_CMM_SOFT', '44A_CMM_FOURN.NO.SERIE', '54A_CMM_FOURN.DATE.FAB', '64A_CMM_FOURN.CODE',
@@ -181,6 +170,9 @@ def extract_ecu(vin_list=None):
 
 
 def extract_corvet(*args, **kwargs):
+    """
+    Export CORVET data to excel format
+    """
     prod_dict = {
         'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
         'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
@@ -215,101 +207,4 @@ def extract_corvet(*args, **kwargs):
         header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()[:30000]
-    return header, fields, values_list
-
-
-"""
-##################################
-
-Export REMAN data to excel format
-
-##################################
-"""
-
-
-def extract_reman(*args, **kwargs):
-    header = queryset = values_list = None
-    model = kwargs.get("table", "batch")
-    if model == "batch":
-        header = [
-            'Numero de lot', 'Quantite', 'Ref_REMAN', 'Client', 'Réparés', 'Rebuts', 'Emballés', 'Total',
-            'Date_de_Debut', 'Date_de_fin', 'Type_ECU', 'HW_Reference', 'Fabriquant', 'Actif', 'Ajoute par', 'Ajoute le'
-        ]
-        repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
-        rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
-        packed = Count('repairs', filter=Q(repairs__checkout=True))
-        queryset = Batch.objects.all().order_by('batch_number')
-        queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
-        values_list = (
-            'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'customer', 'repaired', 'rebutted', 'packed',
-            'total', 'start_date', 'end_date', 'ecu_ref_base__ecu_type__technical_data',
-            'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__ecu_type__supplier_oe', 'active',
-            'created_by__username', 'created_at'
-        )
-    elif model == "repair_reman":
-        queryset = Repair.objects.all().order_by('identify_number')
-        if kwargs.get('customer', None):
-            queryset = queryset.filter(batch__customer=kwargs.get('customer'))
-        if kwargs.get('batch_number', None):
-            queryset = queryset.filter(batch__batch_number=kwargs.get('batch_number'))
-        header = [
-            'Numero_identification', 'Numero_lot', 'Ref_REMAN', 'Type_ECU', 'Fabriquant', 'HW_Reference',
-            'Code_barre', 'Nouveau_code_barre' 'Code_defaut', 'Libelle_defaut', 'Commentaires_action', 'status',
-            'Controle_qualite', 'Date_de_cloture', 'Modifie_par', 'Modifie_le', 'Cree par', 'Cree_le'
-        ]
-        values_list = (
-            'identify_number', 'batch__batch_number', 'batch__ecu_ref_base__reman_reference',
-            'batch__ecu_ref_base__ecu_type__technical_data', 'batch__ecu_ref_base__ecu_type__supplier_oe',
-            'batch__ecu_ref_base__ecu_type__hw_reference', 'barcode', 'new_barcode', 'default__code',
-            'default__description', 'comment', 'status', 'quality_control', 'closing_date', 'modified_by__username',
-            'modified_at', 'created_at', 'created_by__username',
-        )
-    elif model == "base_ref_reman":
-        header = [
-            'Reference OE', 'REFERENCE REMAN', 'Module Moteur', 'Réf HW', 'FNR', 'CODE BARRE PSA', 'REF FNR',
-            'REF CAL OUT', 'REF à créer ', 'REF_PSA_OUT', 'REQ_DIAG', 'OPENDIAG', 'REQ_REF', 'REF_MAT', 'REF_COMP',
-            'REQ_CAL', 'CAL_KTAG', 'REQ_STATUS', 'STATUS', 'TEST_CLEAR_MEMORY', 'CLE_APPLI'
-        ]
-        queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
-        values_list = (
-            'ecu_type__ecumodel__oe_raw_reference', 'reman_reference', 'ecu_type__technical_data',
-            'ecu_type__hw_reference', 'ecu_type__supplier_oe', 'ecu_type__ecumodel__psa_barcode',
-            'ecu_type__ecumodel__former_oe_reference', 'ref_cal_out', 'ecu_type__spare_part__code_produit',
-            'ref_psa_out', 'req_diag', 'open_diag', 'req_ref', 'ref_mat', 'ref_comp', 'req_cal', 'cal_ktag',
-            'req_status', 'status', 'test_clear_memory', 'cle_appli'
-        )
-    fields = values_list
-    values_list = queryset.values_list(*values_list).distinct()
-    return header, fields, values_list
-
-
-"""
-##################################
-
-Export Tools data to excel format
-
-##################################
-"""
-
-
-def extract_tools(model):
-    header = queryset = values_list = None
-    if model == "suptech":
-        header = [
-            'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR', 'STATUS', 'DATE_LIMIT',
-            'ACTION_LE', 'ACTION_PAR', 'DELAIS_EN_JOURS'
-        ]
-        fullname = Concat('modified_by__first_name', Value(' '), 'modified_by__last_name')
-        day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
-        queryset = Suptech.objects.annotate(fullname=fullname, day_number=day_number).order_by('date')
-        values_list = (
-            'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline', 'modified_at',
-            'fullname', 'day_number'
-        )
-    if model == "bga_time":
-        header = ['MACHINE', 'DATE', 'HEURE DEBUT', 'DUREE']
-        queryset = BgaTime.objects.all()
-        values_list = ('name', 'date', 'start_time', 'duration')
-    fields = values_list
-    values_list = queryset.values_list(*values_list).distinct()
     return header, fields, values_list

@@ -52,11 +52,16 @@ class ExportCorvetForm(forms.Form):
 
 class ExportRemanForm(forms.Form):
     TABLES = [('batch', 'BATCH'), ('repair_reman', 'REPAIR'), ('base_ref_reman', 'BASE REF REMAN')]
+    COLS = [
+        ('remanufacturing', 'Remise en neuf'), ('spare_parts', 'Pièces détachées')
+    ]
 
     customer = forms.CharField(label="Client", required=False, widget=forms.TextInput())
     batch_number = forms.CharField(label="N° de lot", required=False, widget=forms.TextInput())
-    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
+    columns = forms.MultipleChoiceField(
+        label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
 
     def __init__(self, *args, **kwargs):
         batchs = Batch.objects.exclude(customer="").order_by('customer')
