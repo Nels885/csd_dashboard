@@ -146,7 +146,7 @@ class Repair(models.Model):
     face_plate = models.BooleanField("façade", default=False)
     metal_case = models.BooleanField("boitier", default=False)
     fan = models.BooleanField("ventilateur", default=False)
-    locating_pin = models.BooleanField("goupille d'emplacement", default=False)
+    locating_pin = models.BooleanField("Boulon arrière", default=False)
     spring_locking = models.BooleanField("verrouillage à ressort", default=False)
     status = models.CharField("status", max_length=50, default='En cours', choices=STATUS_CHOICES)
     quality_control = models.BooleanField("contrôle qualité", default=False)
@@ -192,7 +192,7 @@ class SparePart(models.Model):
 
 class RepairPart(models.Model):
     product_code = models.CharField('code produit', max_length=100)
-    part_number = models.CharField('n° de pièce', max_length=100)
+    quantity = models.CharField('n° de pièce', max_length=100)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')

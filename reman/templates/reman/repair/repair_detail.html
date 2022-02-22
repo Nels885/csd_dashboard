@@ -50,9 +50,9 @@
                         <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}" readonly>
                     </div>
 
-                    <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}" readonly>
+                    <label for="form-quantity" class="col-sm-2 col-form-label">Quantité</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control" id="form-quantity" value="{{ part.quantity }}" readonly>
                     </div>
                 </div>
             {% empty %}
@@ -62,16 +62,16 @@
                         <input type="text" class="form-control" id="form-product_code" value="" readonly>
                     </div>
 
-                    <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" id="form-part_number" value="" readonly>
+                    <label for="form-quantity" class="col-sm-2 col-form-label">Quantité</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control" id="form-quantity" value="" readonly>
                     </div>
                 </div>
             {% endfor %}
 
             {% if prod.batch.ecu_ref_base.ecu_type.hw_type == "NAV" %}
                 <hr>
-                <h5 class="text-gray-800 mt-5">Esthétiques :</h5>
+                <h5 class="text-gray-800 mt-5">Remise à neuf :</h5>
                 <hr>
 
                 <div class="form-group row">

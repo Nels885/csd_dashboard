@@ -256,6 +256,16 @@ class AddRepairForm(BSModalModelForm):
 class EditRepairForm(forms.ModelForm):
     default = forms.ModelChoiceField(queryset=None, required=True, label="Panne", widget=forms.Select())
 
+    class Meta:
+        model = Repair
+        fields = [
+            'identify_number', 'remark', 'comment', 'default', 'recovery', 'face_plate', 'fan', 'locating_pin',
+            'metal_case'
+        ]
+        widgets = {
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.batch.ecu_ref_base:
@@ -269,16 +279,6 @@ class EditRepairForm(forms.ModelForm):
                 self.fields['locating_pin'].required = True
         except EcuModel.DoesNotExist:
             pass
-
-    class Meta:
-        model = Repair
-        fields = [
-            'identify_number', 'remark', 'comment', 'default', 'recovery', 'face_plate', 'fan', 'locating_pin',
-            'metal_case'
-        ]
-        widgets = {
-            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
-        }
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -296,21 +296,22 @@ class RepairPartForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product_code'].required = False
-        self.fields['part_number'].required = False
+        self.fields['quantity'].required = False
 
     class Meta:
         model = RepairPart
-        fields = ['product_code', 'part_number']
+        fields = ['product_code', 'quantity']
         widgets = {
             'product_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'part_number': forms.TextInput(attrs={'class': 'form-control'})
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'})
         }
+        labels = {'quantity': "Quantité"}
 
     def clean(self):
         cleaned_data = super().clean()
         product_code = cleaned_data.get("product_code")
-        part_number = cleaned_data.get("part_number")
-        if not product_code or not part_number:
+        quantity = cleaned_data.get("quantity")
+        if not product_code or not quantity:
             raise forms.ValidationError("Veuillez remplir les 2 champs")
 
 

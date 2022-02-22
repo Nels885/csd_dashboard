@@ -13,9 +13,9 @@
                                     <input type="text" class="form-control" id="form-product_code" value="${row.product_code}" readonly>
                                 </div>
 
-                                <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
-                                <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="form-part_number" value="${row.part_number}" readonly>
+                                <label for="form-quantity" class="col-sm-2 col-form-label">Quantité :</label>
+                                <div class="col-sm-1">
+                                    <input type="text" class="form-control" id="form-quantity" value="${row.quantity}" readonly>
                                 </div>
 
                                 <div class="col-sm-1">

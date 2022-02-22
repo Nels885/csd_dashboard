@@ -73,7 +73,7 @@ class RemanRepairSerializer(serializers.ModelSerializer):
 class RemanRepairPartSerializer(serializers.ModelSerializer):
     class Meta:
         model = RepairPart
-        fields = ('id', 'product_code', 'part_number')
+        fields = ('id', 'product_code', 'quantity')
 
 
 class EcuRefBaseSerializer(serializers.ModelSerializer):

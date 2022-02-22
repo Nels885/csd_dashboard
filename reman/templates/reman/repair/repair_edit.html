@@ -39,8 +39,8 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">{{ form2.product_code.label }} :</label>
                 <div class="col-sm-3">{{ form2.product_code }}</div>
-                <label class="col-sm-2 col-form-label">{{ form2.part_number.label }} :</label>
-                <div class="col-sm-2">{{ form2.part_number }}</div>
+                <label class="col-sm-2 col-form-label">{{ form2.quantity.label }} :</label>
+                <div class="col-sm-1">{{ form2.quantity }}</div>
                 <div class="col-sm-1">
                     <button type="button" id="add-btn-part" class="btn btn-success" title="Ajout pièce détachée">
                         <i class="fas fa-save"></i></button>
@@ -50,7 +50,7 @@
 
             {% if prod.batch.ecu_ref_base.ecu_type.hw_type == "NAV" %}
                 <hr>
-                <h5 class="text-gray-800 mt-5">Esthétiques :</h5>
+                <h5 class="text-gray-800 mt-5">Remise à neuf :</h5>
                 <hr>
 
                 <div class="form-group row">
@@ -111,7 +111,7 @@
             e.preventDefault();
             let formData = new FormData($("#repair-form")[0]);
             let productCode = document.querySelector('#id_product_code');
-            let partNumber = document.querySelector('#id_part_number');
+            let quantity = document.querySelector('#id_quantity');
             let errorElement = document.getElementById('form2-errors');
 
             $.ajax({
@@ -139,7 +139,7 @@
                         partList();
 
                         productCode.value = "";
-                        partNumber.value = "";
+                        quantity.value = "";
                     }
                 },
                 error: function (err) {

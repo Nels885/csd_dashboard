@@ -57,12 +57,12 @@ def ajax_repair_part_create(request, pk):
     form = RepairPartForm(request.POST or None)
     if request.POST and form.is_valid():
         product_code = form.cleaned_data["product_code"]
-        part_number = form.cleaned_data["part_number"]
-        part = RepairPart.objects.create(product_code=product_code, part_number=part_number, content_object=prod)
+        quantity = form.cleaned_data["quantity"]
+        part = RepairPart.objects.create(product_code=product_code, quantity=quantity, content_object=prod)
         parts = RepairPart.objects.filter(object_id=prod.pk)
         serializer = RemanRepairPartSerializer(parts, many=True)
         return JsonResponse({
-            "prod_id": prod.pk, "part_id": part.pk, "product_code": product_code, "part_number": part_number,
+            "prod_id": prod.pk, "part_id": part.pk, "product_code": product_code, "quantity": quantity,
             "data": serializer.data
         })
     return JsonResponse({"errors": form.errors})
