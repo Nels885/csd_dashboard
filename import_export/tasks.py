@@ -86,6 +86,7 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.textCols = [23, 24]
 
     def run(self, *args, **kwargs):
         path = self.copy_and_get_copied_path()
@@ -114,9 +115,9 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
     def run(self, *args, **kwargs):
         path = self.copy_and_get_copied_path()
         excel_type = kwargs.pop('excel_type', 'xlsx')
-        model = kwargs.pop('table', 'suptech')
+        model = kwargs.get('table', 'suptech')
         filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
-        self.header, self.fields, values_list = extract_tools(model)
+        self.header, self.fields, values_list = extract_tools(*args, **kwargs)
         destination_path = os.path.join(path, f"{filename}.{excel_type}")
         workbook = Workbook()
         workbook = self.create_workbook(workbook, self.header, values_list)

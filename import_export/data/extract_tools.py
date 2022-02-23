@@ -12,7 +12,8 @@ Export Tools data to excel format
 """
 
 
-def extract_tools(model):
+def extract_tools(*args, **kwargs):
+    model = kwargs.get("table", "batch")
     header = queryset = values_list = None
     if model == "suptech":
         header = [

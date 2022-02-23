@@ -96,7 +96,7 @@ def import_corvet_vin_async(request):
 def export_reman_async(request):
     form = ExportRemanForm(request.POST or None)
     if form.is_valid():
-        task = export_reman_task.delay(text_cols=[23, 24], **form.cleaned_data)
+        task = export_reman_task.delay(**form.cleaned_data)
         return JsonResponse({"task_id": task.id})
     raise Http404
 
@@ -104,8 +104,6 @@ def export_reman_async(request):
 def export_tools_async(request):
     form = ExportToolsForm(request.POST or None)
     if form.is_valid():
-        table = form.cleaned_data['tables']
-        excel_type = form.cleaned_data['formats']
-        task = export_tools_task.delay(table=table, excel_type=excel_type)
+        task = export_tools_task.delay(**form.cleaned_data)
         return JsonResponse({"task_id": task.id})
     raise Http404

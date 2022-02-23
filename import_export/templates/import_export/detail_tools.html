@@ -7,14 +7,14 @@
     {% csrf_token %}
 
     <div class="form-group row">
-        <label for="{{ form_tools.formats.id_for_label }}" class="col-form-label col-sm-2">Format :</label>
+        {% include 'format/label_form_group.html' with field=form_tools.excel_type %}
         <div class="col-sm-2">
-            {% render_field form_tools.formats class="custom-select form-control" %}
+            {% render_field form_tools.excel_type class="custom-select form-control" %}
         </div>
-        <label for="{{ form_tools.tables.id_for_label }}" class="col-form-label col-sm-1">Tableau :</label>
 
+        {% include 'format/label_form_group.html' with field=form_corvet.table %}
         <div class="col-sm-2">
-            {% render_field form_tools.tables class="custom-select form-control" %}
+            {% render_field form_tools.table class="custom-select form-control" %}
         </div>
         <div class="col-sm-auto">
             <button type="submit" class="btn btn-success btn-icon-split mb-2">
