@@ -44,6 +44,25 @@ REMAN_DICT = {
 }
 
 
+def add_parts(header, values_list):
+    header = list(header)
+    header.extend(["Code_produit (PART)", "Quantité (PART)"])
+    new_values_list = []
+    for values in values_list:
+        values = list(values)
+        try:
+            product_code, quantity = "", ""
+            for part in Repair.objects.get(identify_number=values[0]).parts.all():
+                product_code += f"{part.product_code}\n"
+                quantity += f"{part.quantity}\n"
+            values.extend([product_code.strip(), quantity.strip()])
+        except Repair.DoesNotExist:
+            pass
+        finally:
+            new_values_list.append(values)
+    return header, new_values_list
+
+
 def extract_reman(*args, **kwargs):
     """
     Export REMAN data to excel format
@@ -73,4 +92,6 @@ def extract_reman(*args, **kwargs):
     header, values_list = get_header_fields(data_list)
     fields = values_list
     values_list = queryset.values_list(*values_list).distinct()
+    if model == "repair_reman" and "repair_parts" in kwargs.get('columns'):
+        header, values_list = add_parts(header, values_list)
     return header, fields, values_list

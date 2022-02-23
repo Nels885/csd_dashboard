@@ -53,7 +53,7 @@ class ExportCorvetForm(forms.Form):
 class ExportRemanForm(forms.Form):
     TABLES = [('batch', 'BATCH'), ('repair_reman', 'REPAIR'), ('base_ref_reman', 'BASE REF REMAN')]
     COLS = [
-        ('remanufacturing', 'Remise en neuf'), ('spare_parts', 'Pièces détachées')
+        ('remanufacturing', 'Remise en neuf'), ('repair_parts', 'Pièces détachées')
     ]
 
     customer = forms.CharField(label="Client", required=False, widget=forms.TextInput())
