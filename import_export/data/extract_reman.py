@@ -53,8 +53,8 @@ def add_parts(header, values_list):
         try:
             product_code, quantity = "", ""
             for part in Repair.objects.get(identify_number=values[0]).parts.all():
-                product_code += f"{part.product_code}\n"
-                quantity += f"{part.quantity}\n"
+                product_code += f"{part.product_code} \r\n"
+                quantity += f"{part.quantity} \r\n"
             values.extend([product_code.strip(), quantity.strip()])
         except Repair.DoesNotExist:
             pass
