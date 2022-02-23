@@ -20,9 +20,10 @@ class ExportExcelTask(BaseTask):
         self.sheetName = kwargs.get('sheet_name', 'Feuil1')
         self.noValue = kwargs.get('novalue', "#")
         self.header = self.fields = []
-        self.wrapText = kwargs.get('wrap_text', True)
+        self.textCols = kwargs.get('text_cols', [])
 
-    def copy_and_get_copied_path(self):
+    @staticmethod
+    def copy_and_get_copied_path():
         destination_path = "%s" % (tempfile.gettempdir())
         return destination_path
 
@@ -52,7 +53,7 @@ class ExportExcelTask(BaseTask):
             # Assign the data  for each cell of the row
             for col_num, cell_value in enumerate(query, 1):
                 cell = ws.cell(row=row_num, column=col_num)
-                if self.wrapText:
+                if col_num in self.textCols:
                     cell.alignment = Alignment(wrapText=True)
                 cell.value = cell_value
             progress_recorder.set_progress(row_num + 1, total=total_record, description="Inserting record into row")
