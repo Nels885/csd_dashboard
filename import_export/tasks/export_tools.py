@@ -28,7 +28,7 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
         excel_type = kwargs.pop('excel_type', 'xlsx')
         model = kwargs.get('table', 'suptech')
         filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
-        self.header, self.fields, values_list = self.extract_tools(*args, **kwargs)
+        values_list = self.extract_tools(*args, **kwargs)
         destination_path = os.path.join(path, f"{filename}.{excel_type}")
         workbook = Workbook()
         workbook = self.create_workbook(workbook, self.header, values_list)
@@ -40,25 +40,24 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
             }
         }
 
-    @staticmethod
-    def extract_tools(*args, **kwargs):
+    def extract_tools(self, *args, **kwargs):
         model = kwargs.get("table", "batch")
-        header = queryset = fields = None
+        queryset = None
         if model == "suptech":
-            header = [
+            self.header = [
                 'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR', 'STATUS', 'DATE_LIMIT',
                 'ACTION_LE', 'ACTION_PAR', 'DELAIS_EN_JOURS'
             ]
             fullname = Concat('modified_by__first_name', Value(' '), 'modified_by__last_name')
             day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
             queryset = Suptech.objects.annotate(fullname=fullname, day_number=day_number).order_by('date')
-            fields = (
+            self.fields = (
                 'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline', 'modified_at',
                 'fullname', 'day_number'
             )
         if model == "bga_time":
-            header = ['MACHINE', 'DATE', 'HEURE DEBUT', 'DUREE']
+            self.header = ['MACHINE', 'DATE', 'HEURE DEBUT', 'DUREE']
             queryset = BgaTime.objects.all()
-            fields = ('name', 'date', 'start_time', 'duration')
-        values_list = queryset.values_list(*fields).distinct()
-        return header, fields, values_list
+            self.fields = ('name', 'date', 'start_time', 'duration')
+        values_list = queryset.values_list(*self.fields).distinct()
+        return values_list

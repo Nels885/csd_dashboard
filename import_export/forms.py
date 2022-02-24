@@ -53,13 +53,16 @@ class ExportCorvetForm(forms.Form):
 class ExportRemanForm(forms.Form):
     TABLES = [('batch', 'BATCH'), ('repair_reman', 'REPAIR'), ('base_ref_reman', 'BASE REF REMAN')]
     COLS = [
-        ('remanufacturing', 'Remise en neuf'), ('repair_parts', 'Pièces détachées'), ('created', 'Créé par'),
-        ('updated', 'Modifié par')
+        # ('remanufacturing', 'Remise en neuf'),
+        ('repair_parts', 'Pièces détachées'),
+        # ('created', 'Créé par'),('updated', 'Modifié par')
     ]
+    TYPES = [('', '---'), ('etude', 'ETUDE'), ('repair', 'REPAIR')]
 
     customer = forms.CharField(label="Client", required=False, widget=forms.TextInput())
     batch_number = forms.CharField(label="N° de lot", required=False, widget=forms.TextInput())
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
+    batch_type = forms.ChoiceField(label='Type de lot', required=False, choices=TYPES, widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
     columns = forms.MultipleChoiceField(
         label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())

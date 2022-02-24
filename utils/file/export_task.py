@@ -15,7 +15,6 @@ class ExportExcelTask(BaseTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        print(kwargs)
         self.date = timezone.now()
         self.sheetName = kwargs.get('sheet_name', 'Feuil1')
         self.noValue = kwargs.get('novalue', "#")

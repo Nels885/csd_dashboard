@@ -216,10 +216,10 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
                 filename = f"{kwargs.get('xelon_model')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
             else:
                 filename = f"{kwargs.get('product', 'corvet')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
-            self.header, self.fields, values_list = self.extract_corvet(*args, **kwargs)
+            values_list = self.extract_corvet(*args, **kwargs)
         else:
             filename = f"ecu_{self.date.strftime('%y-%m-%d_%H-%M')}"
-            self.header, self.fields, values_list = self.extract_ecu(vin_list)
+            values_list = self.extract_ecu(vin_list)
         destination_path = os.path.join(path, f"{filename}.{excel_type}")
         workbook = Workbook()
         workbook = self.create_workbook(workbook, self.header, values_list)
@@ -236,9 +236,9 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         Export ECU data to excel format
         """
         corvets = Corvet.objects.filter(vin__in=vin_list)
-        header, fields = self.get_header_fields(CORVET_DICT.get("extract_ecu", []))
-        values_list = corvets.values_list(*fields).distinct()
-        return header, fields, values_list
+        self.header, self.fields = self.get_header_fields(CORVET_DICT.get("extract_ecu", []))
+        values_list = corvets.values_list(*self.fields).distinct()
+        return values_list
 
     def extract_corvet(self, *args, **kwargs):
         """
@@ -255,7 +255,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         product = kwargs.get('product', 'bsi')
         data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
         for col in kwargs.get('columns', []):
-            data_list += CORVET_DICT.get(col, [])
+            data_list.extend(CORVET_DICT.get(col, []))
         queryset = Corvet.objects.all().annotate(
             date_debut_garantie=Cast(TruncSecond('donnee_date_debut_garantie', DateTimeField()), CharField()))
         if kwargs.get('tag', None):
@@ -271,10 +271,10 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
             queryset = queryset.filter(donnee_date_debut_garantie__gte=kwargs.get('start_date'))
         if kwargs.get('end_date', None):
             queryset = queryset.filter(donnee_date_debut_garantie__lte=kwargs.get('end_date'))
-        header, fields = self.get_header_fields(data_list)
+        self.header, self.fields = self.get_header_fields(data_list)
         if prod_dict.get(product):
             queryset = queryset.exclude(**prod_dict.get(product))
         elif product == "xelon":
-            header, fields = self.get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
-        values_list = queryset.values_list(*fields).distinct()[:30000]
-        return header, fields, values_list
+            self.header, self.fields = self.get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
+        values_list = queryset.values_list(*self.fields).distinct()[:30000]
+        return values_list
