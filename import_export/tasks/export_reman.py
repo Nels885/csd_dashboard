@@ -56,9 +56,14 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
     def run(self, *args, **kwargs):
         path = self.copy_and_get_copied_path()
         excel_type = kwargs.pop('excel_type', 'xlsx')
-        model = kwargs.get('table', 'reman')
+        model = kwargs.pop('table', 'batch')
         filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
-        values_list = self.extract_reman(*args, **kwargs)
+        if model == "base_ref_reman":
+            values_list = self.extract_ecurefbase(*args, **kwargs)
+        elif model == "repair_reman":
+            values_list = self.extract_repair(*args, **kwargs)
+        else:
+            values_list = self.extract_batch(*args, **kwargs)
         destination_path = os.path.join(path, f"{filename}.{excel_type}")
         workbook = Workbook()
         workbook = self.create_workbook(workbook, self.header, values_list)
@@ -70,33 +75,42 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
             }
         }
 
-    def extract_reman(self, *args, **kwargs):
+    def extract_batch(self, *args, **kwargs):
         """
-        Export REMAN data to excel format
+        Export Batch data to excel format
         """
-        queryset, data_list = None, []
-        model, columns = kwargs.get("table", "batch"), kwargs.get('columns', [])
-        if model == "batch":
-            data_list = REMAN_DICT['batch'] + REMAN_DICT['created']
-            repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
-            rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
-            packed = Count('repairs', filter=Q(repairs__checkout=True))
-            queryset = Batch.objects.all().order_by('batch_number')
-            queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
-        elif model == "repair_reman":
-            data_list = REMAN_DICT['repair'] + REMAN_DICT['remanufacturing'] + REMAN_DICT['created']
-            data_list += REMAN_DICT['updated']
-            queryset = Repair.objects.all().order_by('identify_number')
-            if kwargs.get('customer', None):
-                queryset = queryset.filter(batch__customer=kwargs.get('customer'))
-            if kwargs.get('batch_number', None):
-                queryset = queryset.filter(batch__batch_number=kwargs.get('batch_number'))
-        elif model == "base_ref_reman":
-            data_list = REMAN_DICT['base_ref']
-            queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
+        data_list = REMAN_DICT['batch'] + REMAN_DICT['created']
+        repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
+        rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
+        packed = Count('repairs', filter=Q(repairs__checkout=True))
+        queryset = Batch.objects.all().order_by('batch_number')
+        queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
+        self.header, self.fields = self.get_header_fields(data_list)
+        return queryset.values_list(*self.fields).distinct()
+
+    def extract_ecurefbase(self, *args, **kwargs):
+        """
+        Export EcuRefBase data to excel format
+        """
+        data_list = REMAN_DICT['base_ref']
+        queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
+        self.header, self.fields = self.get_header_fields(data_list)
+        return queryset.values_list(*self.fields).distinct()
+
+    def extract_repair(self, *args, **kwargs):
+        """
+        Export Repair data to excel format
+        """
+        data_list = REMAN_DICT['repair'] + REMAN_DICT['remanufacturing'] + REMAN_DICT['created']
+        data_list += REMAN_DICT['updated']
+        queryset = Repair.objects.all().order_by('identify_number')
+        if kwargs.get('customer', None):
+            queryset = queryset.filter(batch__customer=kwargs.get('customer'))
+        if kwargs.get('batch_number', None):
+            queryset = queryset.filter(batch__batch_number=kwargs.get('batch_number'))
         self.header, self.fields = self.get_header_fields(data_list)
         values_list = queryset.values_list(*self.fields).distinct()
-        if model == "repair_reman" and "repair_parts" in columns:
+        if "repair_parts" in kwargs.get('columns', []):
             self.textCols = [len(data_list) + 1, len(data_list) + 2]
             values_list = self._add_parts(values_list)
         return values_list

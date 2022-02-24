@@ -55,7 +55,7 @@ class ExportRemanForm(forms.Form):
     COLS = [
         # ('remanufacturing', 'Remise en neuf'),
         ('repair_parts', 'Pièces détachées'),
-        # ('created', 'Créé par'),('updated', 'Modifié par')
+        # ('created', 'Créé par'), ('updated', 'Modifié par')
     ]
     TYPES = [('', '---'), ('etude', 'ETUDE'), ('repair', 'REPAIR')]
 
