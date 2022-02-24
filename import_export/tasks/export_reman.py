@@ -1,7 +1,3 @@
-import os.path
-
-from openpyxl import Workbook
-
 from django.db.models import Q, Count
 
 from utils.file.export_task import ExportExcelTask
@@ -54,7 +50,6 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
         super().__init__(*args, **kwargs)
 
     def run(self, *args, **kwargs):
-        path = self.copy_and_get_copied_path()
         excel_type = kwargs.pop('excel_type', 'xlsx')
         model = kwargs.pop('table', 'batch')
         filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
@@ -64,10 +59,7 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
             values_list = self.extract_repair(*args, **kwargs)
         else:
             values_list = self.extract_batch(*args, **kwargs)
-        destination_path = os.path.join(path, f"{filename}.{excel_type}")
-        workbook = Workbook()
-        workbook = self.create_workbook(workbook, self.header, values_list)
-        workbook.save(filename=destination_path)
+        destination_path = self.file(filename, excel_type, values_list)
         return {
             "detail": "Successfully export REMAN",
             "data": {

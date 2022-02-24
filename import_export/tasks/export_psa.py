@@ -1,8 +1,5 @@
 import re
-import os.path
 import datetime
-
-from openpyxl import Workbook
 
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
@@ -208,7 +205,6 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         return data_list
 
     def run(self, *args, **kwargs):
-        path = self.copy_and_get_copied_path()
         excel_type = kwargs.pop('excel_type', 'xlsx')
         vin_list = kwargs.pop('vin_list', None)
         if vin_list is None:
@@ -220,10 +216,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         else:
             filename = f"ecu_{self.date.strftime('%y-%m-%d_%H-%M')}"
             values_list = self.extract_ecu(vin_list)
-        destination_path = os.path.join(path, f"{filename}.{excel_type}")
-        workbook = Workbook()
-        workbook = self.create_workbook(workbook, self.header, values_list)
-        workbook.save(filename=destination_path)
+        destination_path = self.file(filename, excel_type, values_list)
         return {
             "detail": "Successfully export CORVET",
             "data": {

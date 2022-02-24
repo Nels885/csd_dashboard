@@ -1,5 +1,7 @@
 import tempfile
 import datetime
+import csv
+import os.path
 
 from django.utils import timezone
 from celery_progress.backend import ProgressRecorder
@@ -32,7 +34,25 @@ class ExportExcelTask(BaseTask):
         fields = [value_tuple[1] for value_tuple in prod_list]
         return header, fields
 
-    def create_workbook(self, workbook: Workbook, header, values_list):
+    def file(self, filename, excel_type, values_list):
+        """
+        Creation file
+        :param filename: file name
+        :param excel_type: type of Excel file (xls, xlsx, csv)
+        :param values_list: List of values to include in the file
+        :return Destination path to file
+        """
+        path = self.copy_and_get_copied_path()
+        destination_path = os.path.join(path, f"{filename}.{excel_type}")
+        if excel_type == "csv":
+            self._create_csv(destination_path, self.header, values_list)
+        else:
+            workbook = Workbook()
+            workbook = self._create_workbook(workbook, self.header, values_list)
+            workbook.save(filename=destination_path)
+        return destination_path
+
+    def _create_workbook(self, workbook: Workbook, header, values_list):
         """ Formatting data in Excel 2010 format """
         progress_recorder = ProgressRecorder(self)
         # Get active worksheet/tab
@@ -64,15 +84,19 @@ class ExportExcelTask(BaseTask):
             progress_recorder.set_progress(row_num + 1, total=total_record, description="Inserting record into row")
         return workbook
 
-    # def _csv_writer(self, response):
-    #     """ Formatting data in CSV format """
-    #     writer = csv.writer(response, delimiter=';', lineterminator=';\r\n')
-    #     writer.writerow(self.header)
-    #
-    #     for i, query in enumerate(self.valueSet):
-    #         query = tuple([self._html_to_string(_, r'[;,]') if isinstance(_, str) else _ for _ in query])
-    #         query = self._query_format(query)
-    #         writer.writerow(query)
+    def _create_csv(self, filename, header, values_list):
+        """ Formatting data in CSV format """
+        progress_recorder = ProgressRecorder(self)
+        total_record = len(values_list)
+        with open(filename, 'w+', newline='', encoding='utf-8-sig') as f:
+            writer = csv.writer(f, delimiter=';', lineterminator=';\r\n')
+            writer.writerow(header)
+
+            for row_num, query in enumerate(values_list):
+                query = tuple([self._html_to_string(_, r'[;,]') if isinstance(_, str) else _ for _ in query])
+                query = self._query_format(query)
+                writer.writerow(query)
+                progress_recorder.set_progress(row_num + 1, total=total_record, description="Inserting record into row")
 
     def _query_format(self, query):
         format_date = "%d/%m/%Y %H:%M:%S"

@@ -1,20 +1,8 @@
-import os.path
-
-from openpyxl import Workbook
-
 from django.db.models.functions import Concat, ExtractDay
 from django.db.models import Value, F
 
 from utils.file.export_task import ExportExcelTask
 from tools.models import Suptech, BgaTime
-
-"""
-##################################
-
-Export Tools data to excel format
-
-##################################
-"""
 
 
 class ExportToolsIntoExcelTask(ExportExcelTask):
@@ -24,15 +12,11 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
         self.noValue = ""
 
     def run(self, *args, **kwargs):
-        path = self.copy_and_get_copied_path()
         excel_type = kwargs.pop('excel_type', 'xlsx')
         model = kwargs.get('table', 'suptech')
         filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
         values_list = self.extract_tools(*args, **kwargs)
-        destination_path = os.path.join(path, f"{filename}.{excel_type}")
-        workbook = Workbook()
-        workbook = self.create_workbook(workbook, self.header, values_list)
-        workbook.save(filename=destination_path)
+        destination_path = self.file(filename, excel_type, values_list)
         return {
             "detail": "Successfully export TOOLS",
             "data": {

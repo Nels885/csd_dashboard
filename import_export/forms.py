@@ -31,7 +31,7 @@ class ExportCorvetForm(forms.Form):
     vins = forms.CharField(label='Liste de V.I.N.', required=False, widget=forms.Textarea())
     columns = forms.MultipleChoiceField(
         label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
-    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     tag = forms.CharField(label="TAG Corvet", required=False, widget=forms.TextInput())
     start_date = forms.DateField(
         label='Début date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
@@ -61,7 +61,7 @@ class ExportRemanForm(forms.Form):
 
     customer = forms.CharField(label="Client", required=False, widget=forms.TextInput())
     batch_number = forms.CharField(label="N° de lot", required=False, widget=forms.TextInput())
-    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[:-1], widget=forms.Select())
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     batch_type = forms.ChoiceField(label='Type de lot', required=False, choices=TYPES, widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
     columns = forms.MultipleChoiceField(
@@ -91,5 +91,5 @@ class CorvetVinListForm(forms.Form):
 class ExportToolsForm(forms.Form):
     TABLES = [('suptech', 'SUPTECH'), ('bga_time', 'UTILISATION BGA')]
 
-    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES[1:], widget=forms.Select())
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
