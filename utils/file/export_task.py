@@ -27,6 +27,12 @@ class ExportExcelTask(BaseTask):
         destination_path = "%s" % (tempfile.gettempdir())
         return destination_path
 
+    @staticmethod
+    def get_header_fields(prod_list):
+        header = [value_tuple[0] for value_tuple in prod_list]
+        fields = [value_tuple[1] for value_tuple in prod_list]
+        return header, fields
+
     def create_workbook(self, workbook: Workbook, header, values_list):
         """ Formatting data in Excel 2010 format """
         progress_recorder = ProgressRecorder(self)

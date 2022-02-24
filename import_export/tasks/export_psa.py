@@ -1,7 +1,15 @@
+import re
+import os.path
+import datetime
+
+from openpyxl import Workbook
+
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 
-from . import get_header_fields
+from utils.file.export_task import ExportExcelTask
+from psa.models import Multimedia
+from psa.templatetags.corvet_tags import get_corvet
 
 from psa.models import Corvet
 
@@ -93,6 +101,15 @@ CORVET_DICT = {
     ],
     'airbag': [
         ('14M_RBG_HARD_(AIRBAG)', 'electronique_14m'), ('14M_RBG_SOFT_(AIRBAG)', 'electronique_94m')
+    ],
+    'extra_ecu': [
+        ('Numero de dossier', 'xelon__numero_de_dossier'), ('V.I.N.', 'vin'),
+        ('Modele produit', 'xelon__modele_produit'), ('Modele vehicule', 'xelon__modele_vehicule'),
+        ('DATE_DEBUT_GARANTIE', 'donnee_date_debut_garantie'), ('14A_CMM_HARD', 'electronique_14a'),
+        ('34A_CMM_SOFT_LIVRE', 'electronique_34a'), ('94A_CMM_SOFT', 'electronique_94a'),
+        ('44A_CMM_FOURN.NO.SERIE', 'electronique_44a'), ('54A_CMM_FOURN.DATE.FAB', 'electronique_54a'),
+        ('64A_CMM_FOURN.CODE', 'electronique_64a'), ('84A_CMM_DOTE', 'electronique_84a'),
+        ('P4A_CMM_EOBD', 'electronique_p4a')
     ]
 }
 
@@ -149,62 +166,115 @@ PRODS_XELON_LIST = [
 ]
 
 
-def extract_ecu(vin_list=None):
-    """
-    Export ECU data to excel format
-    """
-    header = [
-        'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE', '14A_CMM_HARD',
-        '34A_CMM_SOFT_LIVRE', '94A_CMM_SOFT', '44A_CMM_FOURN.NO.SERIE', '54A_CMM_FOURN.DATE.FAB', '64A_CMM_FOURN.CODE',
-        '84A_CMM_DOTE', 'P4A_CMM_EOBD'
-    ]
-    corvets = Corvet.objects.filter(vin__in=vin_list)
-
-    fields = [
-        'xelon__numero_de_dossier', 'vin', 'xelon__modele_produit', 'xelon__modele_vehicule',
-        'donnee_date_debut_garantie', 'electronique_14a', 'electronique_34a', 'electronique_94a', 'electronique_44a',
-        'electronique_54a', 'electronique_64a', 'electronique_84a', 'electronique_p4a'
-    ]
-    values_list = corvets.values_list(*fields).distinct()
-    return header, fields, values_list
-
-
-def extract_corvet(*args, **kwargs):
-    """
-    Export CORVET data to excel format
-    """
-    prod_dict = {
-        'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
-        'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
-        'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
-        'cvm': {'electronique_12y__exact': ''}, 'dae': {'electronique_16l__exact': ''},
-        'abs_esp': {'electronique_14p__exact': ''}, 'airbag': {'electronique_14m__exact': ''},
-        'emf': {'electronique_16l__exact': ''}, 'cmb': {'electronique_14k__exact': ''}
+class ExportCorvetIntoExcelTask(ExportExcelTask):
+    COL_CORVET = {
+        'donnee_ligne_de_produit': 'DON_LIN_PROD', 'donnee_silhouette': 'DON_SIL',
+        'donnee_genre_de_produit': 'DON_GEN_PROD', 'attribut_dhb': 'ATT_DHB',
+        'attribut_dlx': 'ATT_DLX', 'attribut_drc': 'ATT_DRC', 'attribut_dun': 'ATT_DUN',
+        'attribut_dym': 'ATT_DYM', 'attribut_dyr': 'ATT_DYR', 'donnee_moteur': 'DON_MOT'
     }
-    product = kwargs.get('product', 'bsi')
-    data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
-    for col in kwargs.get('columns', []):
-        data_list += CORVET_DICT.get(col, [])
-    queryset = Corvet.objects.all().annotate(
-        date_debut_garantie=Cast(TruncSecond('donnee_date_debut_garantie', DateTimeField()), CharField()))
-    if kwargs.get('tag', None):
-        queryset = queryset.filter(opts__tag=kwargs.get('tag'))
-    if kwargs.get('vins', None):
-        vin_list = kwargs.get('vins').split('\r\n')
-        queryset = queryset.filter(vin__in=vin_list)
-    if kwargs.get('xelon_model', None):
-        queryset = queryset.select_related().filter(xelon__modele_produit__startswith=kwargs.get('xelon_model'))
-    if kwargs.get('xelon_vehicle', None):
-        queryset = queryset.select_related().filter(xelon__modele_vehicule__startswith=kwargs.get('xelon_vehicle'))
-    if kwargs.get('start_date', None):
-        queryset = queryset.filter(donnee_date_debut_garantie__gte=kwargs.get('start_date'))
-    if kwargs.get('end_date', None):
-        queryset = queryset.filter(donnee_date_debut_garantie__lte=kwargs.get('end_date'))
-    header, values_list = get_header_fields(data_list)
-    if prod_dict.get(product):
-        queryset = queryset.exclude(**prod_dict.get(product))
-    elif product == "xelon":
-        header, values_list = get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
-    fields = values_list
-    values_list = queryset.values_list(*values_list).distinct()[:30000]
-    return header, fields, values_list
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def _query_format(self, query):
+        data_list = [value for value in query]
+        data_list = self.get_multimedia_display(data_list)
+        query = self.get_corvet_display(data_list)
+        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+        query = tuple([self.noValue if not value else value for value in query])
+        return query
+
+    def get_multimedia_display(self, data_list):
+        if 'prods__btel__name' in self.fields:
+            position = self.fields.index('prods__btel__name')
+            for prod in Multimedia.PRODUCT_CHOICES:
+                if prod[0] == data_list[position]:
+                    data_list[position] = prod[1]
+                    break
+        return data_list
+
+    def get_corvet_display(self, data_list):
+        for field, arg in self.COL_CORVET.items():
+            if field in self.fields:
+                position = self.fields.index(field)
+                if data_list[position]:
+                    if 'vin' in self.fields and arg == 'DON_LIN_PROD':
+                        if re.match(r'^[V][FR]7\w{14}$', str(data_list[self.fields.index('vin')])):
+                            arg = 'DON_LIN_PROD 1'
+                        else:
+                            arg = 'DON_LIN_PROD 0'
+                    data_list[position] = f"{get_corvet(data_list[position], arg)} | {data_list[position]}"
+        return data_list
+
+    def run(self, *args, **kwargs):
+        path = self.copy_and_get_copied_path()
+        excel_type = kwargs.pop('excel_type', 'xlsx')
+        vin_list = kwargs.pop('vin_list', None)
+        if vin_list is None:
+            if kwargs.get('xelon_model', None):
+                filename = f"{kwargs.get('xelon_model')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+            else:
+                filename = f"{kwargs.get('product', 'corvet')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+            self.header, self.fields, values_list = self.extract_corvet(*args, **kwargs)
+        else:
+            filename = f"ecu_{self.date.strftime('%y-%m-%d_%H-%M')}"
+            self.header, self.fields, values_list = self.extract_ecu(vin_list)
+        destination_path = os.path.join(path, f"{filename}.{excel_type}")
+        workbook = Workbook()
+        workbook = self.create_workbook(workbook, self.header, values_list)
+        workbook.save(filename=destination_path)
+        return {
+            "detail": "Successfully export CORVET",
+            "data": {
+                "outfile": destination_path
+            }
+        }
+
+    def extract_ecu(self, vin_list=None):
+        """
+        Export ECU data to excel format
+        """
+        corvets = Corvet.objects.filter(vin__in=vin_list)
+        header, fields = self.get_header_fields(CORVET_DICT.get("extract_ecu", []))
+        values_list = corvets.values_list(*fields).distinct()
+        return header, fields, values_list
+
+    def extract_corvet(self, *args, **kwargs):
+        """
+        Export CORVET data to excel format
+        """
+        prod_dict = {
+            'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
+            'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
+            'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
+            'cvm': {'electronique_12y__exact': ''}, 'dae': {'electronique_16l__exact': ''},
+            'abs_esp': {'electronique_14p__exact': ''}, 'airbag': {'electronique_14m__exact': ''},
+            'emf': {'electronique_16l__exact': ''}, 'cmb': {'electronique_14k__exact': ''}
+        }
+        product = kwargs.get('product', 'bsi')
+        data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
+        for col in kwargs.get('columns', []):
+            data_list += CORVET_DICT.get(col, [])
+        queryset = Corvet.objects.all().annotate(
+            date_debut_garantie=Cast(TruncSecond('donnee_date_debut_garantie', DateTimeField()), CharField()))
+        if kwargs.get('tag', None):
+            queryset = queryset.filter(opts__tag=kwargs.get('tag'))
+        if kwargs.get('vins', None):
+            vin_list = kwargs.get('vins').split('\r\n')
+            queryset = queryset.filter(vin__in=vin_list)
+        if kwargs.get('xelon_model', None):
+            queryset = queryset.select_related().filter(xelon__modele_produit__startswith=kwargs.get('xelon_model'))
+        if kwargs.get('xelon_vehicle', None):
+            queryset = queryset.select_related().filter(xelon__modele_vehicule__startswith=kwargs.get('xelon_vehicle'))
+        if kwargs.get('start_date', None):
+            queryset = queryset.filter(donnee_date_debut_garantie__gte=kwargs.get('start_date'))
+        if kwargs.get('end_date', None):
+            queryset = queryset.filter(donnee_date_debut_garantie__lte=kwargs.get('end_date'))
+        header, fields = self.get_header_fields(data_list)
+        if prod_dict.get(product):
+            queryset = queryset.exclude(**prod_dict.get(product))
+        elif product == "xelon":
+            header, fields = self.get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
+        values_list = queryset.values_list(*fields).distinct()[:30000]
+        return header, fields, values_list
