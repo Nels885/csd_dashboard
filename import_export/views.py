@@ -19,15 +19,35 @@ context = {
 }
 
 
-@login_required()
-def import_export(request):
-    """ View of import/export files page """
-    form_corvet = ExportCorvetForm()
-    form_corvet_vin = CorvetVinListForm()
-    form_reman = ExportRemanForm()
-    form_tools = ExportToolsForm()
+@login_required
+def export_csd_async(request):
+    form_vin = CorvetVinListForm()
+    form = ExportCorvetForm(request.POST or None)
+    if request.POST and form.is_valid():
+        task = export_corvet_task.delay(**form.cleaned_data)
+        return JsonResponse({"task_id": task.id})
     context.update(locals())
-    return render(request, 'import_export/import_export.html', context)
+    return render(request, 'import_export/detail_csd.html', context)
+
+
+@login_required
+def export_reman_async(request):
+    form = ExportRemanForm(request.POST or None)
+    if request.POST and form.is_valid():
+        task = export_reman_task.delay(**form.cleaned_data)
+        return JsonResponse({"task_id": task.id})
+    context.update(locals())
+    return render(request, 'import_export/detail_reman.html', context)
+
+
+@login_required
+def export_tools_async(request):
+    form = ExportToolsForm(request.POST or None)
+    if request.POST and form.is_valid():
+        task = export_tools_task.delay(**form.cleaned_data)
+        return JsonResponse({"task_id": task.id})
+    context.update(locals())
+    return render(request, 'import_export/detail_tools.html', context)
 
 
 def import_sparepart(request):
@@ -50,7 +70,7 @@ def import_sparepart(request):
             messages.warning(request, "Le fichier n'est pas correctement formaté")
     else:
         messages.warning(request, _('You do not have the required permissions'))
-    return redirect('import_export:detail')
+    return redirect('import_export:reman_async')
 
 
 def import_ecurefbase(request):
@@ -73,37 +93,14 @@ def import_ecurefbase(request):
             messages.warning(request, "Le fichier n'est pas correctement formaté")
     else:
         messages.warning(request, _('You do not have the required permissions'))
-    return redirect('import_export:detail')
+    return redirect('import_export:reman_async')
 
 
-def export_corvet_async(request):
-    form = ExportCorvetForm(request.POST or None)
-    if form.is_valid():
-        task = export_corvet_task.delay(**form.cleaned_data)
-        return JsonResponse({"task_id": task.id})
-    raise Http404
-
-
+@login_required
 def import_corvet_vin_async(request):
     form = CorvetVinListForm(request.POST or None)
     if form.is_valid():
         vin_list = form.cleaned_data['vin_list'].split('\r\n')
         task = import_corvet_list_task.delay(*vin_list, **form.cleaned_data)
-        return JsonResponse({"task_id": task.id})
-    raise Http404
-
-
-def export_reman_async(request):
-    form = ExportRemanForm(request.POST or None)
-    if form.is_valid():
-        task = export_reman_task.delay(**form.cleaned_data)
-        return JsonResponse({"task_id": task.id})
-    raise Http404
-
-
-def export_tools_async(request):
-    form = ExportToolsForm(request.POST or None)
-    if form.is_valid():
-        task = export_tools_task.delay(**form.cleaned_data)
         return JsonResponse({"task_id": task.id})
     raise Http404

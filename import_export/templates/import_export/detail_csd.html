@@ -1,111 +1,138 @@
-{% load i18n widget_tweaks %}
+{% extends 'format/detail_format.html' %}
 
-<h3 class="mb-4 mt-3 text-gray-800">Exportation des données CORVET :</h3>
+{% load static i18n widget_tweaks %}
 
-<form id="export-corvet" method="post" action="">
+{% block card_header %}
 
-    {% csrf_token %}
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
 
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet.product %}
-        <div class="col-sm-2">
-            {% render_field form_corvet.product class="custom-select form-control" %}
-        </div>
+            {% include 'import_export/tab_select.html' with select='csd' %}
+
+        </ul>
     </div>
 
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet.xelon_vehicle %}
-        <div class="col-sm-2">
-            {% render_field form_corvet.xelon_vehicle class="form-control" %}
-        </div>
-        {% include 'format/label_form_group.html' with field=form_corvet.xelon_model %}
-        <div class="col-sm-3">
-            {% render_field form_corvet.xelon_model class="form-control" %}
-        </div>
-    </div>
+{% endblock %}
 
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet.vins %}
-        <div class="col-sm-5">
-            {% render_field form_corvet.vins class="form-control" rows=8 %}
-        </div>
-    </div>
+{% block detail_content %}
 
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet.start_date %}
-        <div class="col-sm-2">
-            {% render_field form_corvet.start_date class="form-control" %}
+    <h3 class="mb-4 mt-3 text-gray-800">Exportation des données CORVET :</h3>
+
+    <form id="export-corvet" method="post" action="">
+
+        {% csrf_token %}
+
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.product %}
+            <div class="col-sm-2">
+                {% render_field form.product class="custom-select form-control" %}
+            </div>
         </div>
 
-        {% include 'format/label_form_group.html' with field=form_corvet.end_date %}
-        <div class="col-sm-2">
-            {% render_field form_corvet.end_date class="form-control" %}
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.xelon_vehicle %}
+            <div class="col-sm-2">
+                {% render_field form.xelon_vehicle class="form-control" %}
+            </div>
+            {% include 'format/label_form_group.html' with field=form.xelon_model %}
+            <div class="col-sm-3">
+                {% render_field form.xelon_model class="form-control" %}
+            </div>
         </div>
-    </div>
 
-    <div class="form-group mt-4 mb-4 row">
-        {% include 'format/label_form_group.html' with field=form_corvet.columns %}
-        <div class="col-sm-10">
-            {% for col in form_corvet.columns %}
-                <div class="form-check-inline col-sm-2">{{ col }}</div>
-            {% endfor %}
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.vins %}
+            <div class="col-sm-5">
+                {% render_field form.vins class="form-control" rows=8 %}
+            </div>
         </div>
-    </div>
 
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet.excel_type %}
-        <div class="col-sm-2">
-            {% render_field form_corvet.excel_type class="custom-select form-control" %}
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.start_date %}
+            <div class="col-sm-2">
+                {% render_field form.start_date class="form-control" %}
+            </div>
+
+            {% include 'format/label_form_group.html' with field=form.end_date %}
+            <div class="col-sm-2">
+                {% render_field form.end_date class="form-control" %}
+            </div>
         </div>
-        {% include 'format/label_form_group.html' with field=form_corvet.tag %}
-        <div class="col-sm-3">
-            {% render_field form_corvet.tag class="form-control" %}
+
+        <div class="form-group mt-4 mb-4 row">
+            {% include 'format/label_form_group.html' with field=form.columns %}
+            <div class="col-sm-10">
+                {% for col in form.columns %}
+                    <div class="form-check-inline col-sm-2">{{ col }}</div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
 
-    <div class="form-group row">
-        <div class="col text-center mt-4">
-            <button type="submit" class="btn btn-success btn-icon-split">
-                <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
-            </button>
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.excel_type %}
+            <div class="col-sm-2">
+                {% render_field form.excel_type class="custom-select form-control" %}
+            </div>
+            {% include 'format/label_form_group.html' with field=form.tag %}
+            <div class="col-sm-3">
+                {% render_field form.tag class="form-control" %}
+            </div>
         </div>
-    </div>
-</form>
 
-{% include 'format/progress_bar.html' with name='export-corvet' %}
-
-<hr>
-
-<h3 class="mb-4 mt-5 text-gray-800">Importation des données CORVET par liste de V.I.N. :</h3>
-
-<form id="import-corvet-vin" method="post" action="">
-
-    {% csrf_token %}
-
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet_vin.corvet_tag %}
-        <div class="col-sm-3">
-            {% render_field form_corvet_vin.corvet_tag class="form-control" %}
+        <div class="form-group row">
+            <div class="col text-center mt-4">
+                <button type="submit" class="btn btn-success btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
+                </button>
+            </div>
         </div>
-    </div>
+    </form>
 
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_corvet_vin.vin_list %}
-        <div class="col-sm-5">
-            {% render_field form_corvet_vin.vin_list class="form-control" rows=8 %}
+    {% include 'format/progress_bar.html' with name='export-corvet' %}
+
+    <hr>
+
+    <h3 class="mb-4 mt-5 text-gray-800">Importation des données CORVET par liste de V.I.N. :</h3>
+
+    <form id="import-corvet-vin" method="post" action="">
+
+        {% csrf_token %}
+
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form_vin.corvet_tag %}
+            <div class="col-sm-3">
+                {% render_field form_vin.corvet_tag class="form-control" %}
+            </div>
         </div>
-    </div>
 
-
-
-    <div class="form-group row">
-        <div class="col text-center mt-4">
-            <button type="submit" class="btn btn-success btn-icon-split">
-                <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Import" %}</span>
-            </button>
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form_vin.vin_list %}
+            <div class="col-sm-5">
+                {% render_field form_vin.vin_list class="form-control" rows=8 %}
+            </div>
         </div>
-    </div>
 
-</form>
 
-{% include 'format/progress_bar.html' with name='import-corvet-vin' %}
+        <div class="form-group row">
+            <div class="col text-center mt-4">
+                <button type="submit" class="btn btn-success btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Import" %}</span>
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+    {% include 'format/progress_bar.html' with name='import-corvet-vin' %}
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="application/javascript">
+        CORVET_URL = "{% url 'import_export:csd_async' %}";
+        IMPORT_CORVET_URL = "{% url 'import_export:import_corvet_vin' %}";
+    </script>
+    <script src="{% static 'import_export/js/tasks.js' %}" type="application/javascript"></script>
+
+{% endblock %}

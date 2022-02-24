@@ -1,30 +1,57 @@
-{% load i18n widget_tweaks %}
+{% extends 'format/detail_format.html' %}
 
-<h3 class="mb-4 mt-3 text-gray-800">Exportation des données :</h3>
+{% load static i18n widget_tweaks %}
 
-<form id="export-tools" method="post" action="">
+{% block card_header %}
 
-    {% csrf_token %}
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
 
-    <div class="form-group row">
-        {% include 'format/label_form_group.html' with field=form_tools.excel_type %}
-        <div class="col-sm-2">
-            {% render_field form_tools.excel_type class="custom-select form-control" %}
-        </div>
+            {% include 'import_export/tab_select.html' with select='tools' %}
 
-        {% include 'format/label_form_group.html' with field=form_corvet.table %}
-        <div class="col-sm-2">
-            {% render_field form_tools.table class="custom-select form-control" %}
-        </div>
-        <div class="col-sm-auto">
-            <button type="submit" class="btn btn-success btn-icon-split mb-2">
-                <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
-            </button>
-        </div>
-
+        </ul>
     </div>
-</form>
 
-{% include 'format/progress_bar.html' with name='export-tools' %}
+{% endblock %}
 
-<hr>
+{% block detail_content %}
+
+    <h3 class="mb-4 mt-3 text-gray-800">Exportation des données :</h3>
+
+    <form id="export-tools" method="post" action="">
+
+        {% csrf_token %}
+
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.excel_type %}
+            <div class="col-sm-2">
+                {% render_field form.excel_type class="custom-select form-control" %}
+            </div>
+
+            {% include 'format/label_form_group.html' with field=form_corvet.table %}
+            <div class="col-sm-2">
+                {% render_field form.table class="custom-select form-control" %}
+            </div>
+            <div class="col-sm-auto">
+                <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                    <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+    {% include 'format/progress_bar.html' with name='export-tools' %}
+
+    <hr>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="application/javascript">
+        TOOLS_URL = "{% url 'import_export:tools_async' %}";
+    </script>
+    <script src="{% static 'import_export/js/tasks.js' %}" type="application/javascript"></script>
+
+{% endblock %}

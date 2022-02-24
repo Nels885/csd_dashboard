@@ -27,9 +27,11 @@ REMAN_DICT = {
         ('Libelle_defaut', 'default__description'), ('Commentaires_action', 'comment'), ('status', 'status'),
         ('Controle_qualite', 'quality_control'), ('Date_de_cloture', 'closing_date'),
     ],
-    'repair_end': [
-        ('Cree par', 'created_by__username'), ('Cree_le', 'created_at'), ('Modifie_par', 'modified_by__username'),
-        ('Modifie_le', 'modified_at')
+    'created': [
+        ('Cree par', 'created_by__username'), ('Cree_le', 'created_at'),
+    ],
+    'updated': [
+        ('Modifie_par', 'modified_by__username'), ('Modifie_le', 'modified_at')
     ],
     'base_ref': [
         ('Reference OE', 'ecu_type__ecumodel__oe_raw_reference'), ('REFERENCE REMAN', 'reman_reference'),
@@ -51,7 +53,6 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.textCols = [23, 24]
 
     def run(self, *args, **kwargs):
         path = self.copy_and_get_copied_path()
@@ -93,27 +94,29 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
         """
         Export REMAN data to excel format
         """
-        queryset = data_list = None
+        queryset, data_list = None, []
         model = kwargs.get("table", "batch")
         if model == "batch":
-            data_list = REMAN_DICT.get('batch')
+            data_list = REMAN_DICT['batch']
             repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
             rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
             packed = Count('repairs', filter=Q(repairs__checkout=True))
             queryset = Batch.objects.all().order_by('batch_number')
             queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
         elif model == "repair_reman":
-            data_list = REMAN_DICT.get('repair')
+            data_list = REMAN_DICT['repair']
+            print(kwargs.get('columns'))
             for col in kwargs.get('columns', []):
                 data_list += REMAN_DICT.get(col, [])
-            data_list += REMAN_DICT.get('repair_end')
+            self.textCols = [len(data_list) + 1, len(data_list) + 2]
+            print(self.textCols)
             queryset = Repair.objects.all().order_by('identify_number')
             if kwargs.get('customer', None):
                 queryset = queryset.filter(batch__customer=kwargs.get('customer'))
             if kwargs.get('batch_number', None):
                 queryset = queryset.filter(batch__batch_number=kwargs.get('batch_number'))
         elif model == "base_ref_reman":
-            data_list = REMAN_DICT.get('base_ref')
+            data_list = REMAN_DICT['base_ref']
             queryset = EcuRefBase.objects.exclude(test_clear_memory__exact='').order_by('reman_reference')
         header, fields = self.get_header_fields(data_list)
         values_list = queryset.values_list(*fields).distinct()
