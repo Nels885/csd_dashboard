@@ -5,7 +5,7 @@ from django.db import connection
 from django.db.utils import IntegrityError, DataError
 
 from squalaetp.models import ProductCode, SparePart
-from psa.models import Ecu
+from psa.models import Ecu, Multimedia
 from utils.conf import CSV_EXTRACTION_FILE
 
 from ._csv_extraction import CsvSparePart
@@ -87,7 +87,12 @@ class Command(BaseCommand):
         self.stdout.write("[PRODUCTCODE] Waiting...")
         for ecu in Ecu.objects.all():
             if str(ecu.comp_ref)[-2:] == "77":
-                ProductCode.objects.filter(name__contains=str(ecu.comp_ref[:-2])).update(ecu=ecu)
+                ProductCode.objects.filter(name__contains=str(ecu.comp_ref)[:-2]).update(ecu=ecu)
             else:
                 ProductCode.objects.filter(name__contains=ecu.comp_ref).update(ecu=ecu)
+        for media in Multimedia.objects.all():
+            if str(media.comp_ref)[-2:] == "77":
+                ProductCode.objects.filter(name__contains=str(media.comp_ref)[:-2]).update(media=media)
+            else:
+                ProductCode.objects.filter(name__contains=media.comp_ref).update(media=media)
         self.stdout.write(self.style.SUCCESS("[PRODUCTCODE] Data update completed!"))
