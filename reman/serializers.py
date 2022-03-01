@@ -65,9 +65,15 @@ class RemanRepairSerializer(serializers.ModelSerializer):
         model = Repair
         fields = (
             'id', 'identify_number', 'batch', 'customer', 'technical_data', 'supplier_oe', 'hw_reference', 'barcode',
-            'status', 'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at', 'created_by',
-            'created_at'
+            'new_barcode', 'status', 'quality_control', 'checkout', 'closing_date', 'modified_by', 'modified_at',
+            'created_by', 'created_at'
         )
+
+
+class RemanRepairCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Repair
+        fields = ('identify_number', 'barcode', 'vin')
 
 
 class RemanRepairPartSerializer(serializers.ModelSerializer):

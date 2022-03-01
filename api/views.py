@@ -13,7 +13,10 @@ from .serializers import (
     ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer, UnlockUpdateSerializer,
     ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer, BgaTimeSerializer, BgaTimeCreateSerializer
 )
-from reman.serializers import RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, EcuRefBaseSerializer
+from reman.serializers import (
+    RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, RemanRepairCreateSerializer,
+    EcuRefBaseSerializer
+)
 from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair, EcuRefBase
@@ -118,7 +121,28 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
     search_fields = [
         'identify_number', 'batch__batch_number', 'barcode', 'batch__ecu_ref_base__ecu_type__hw_reference'
     ]
-    http_method_names = ['get']
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RemanRepairCreateSerializer
+        else:
+            return RemanRepairSerializer
+
+    def create(self, *args, **kwargs):
+        data = self.request.data
+        batch_number = data.get("identify_number", "")[:-3] + "000"
+        barcode = data.get("barcode")
+        serializer = RemanRepairCreateSerializer(data=data)
+        if serializer.is_valid():
+            try:
+                Batch.objects.get(
+                    batch_number__startswith=batch_number, ecu_ref_base__ecu_type__ecumodel__barcode__exact=barcode)
+                serializer.save()
+                return Response({"response": "OK", "data": data})
+            except Batch.DoesNotExist:
+                return Response({"response": "barcode is invalid"})
+        return Response({"response": "ERROR"})
 
 
 class RemanEcuRefBaseViewSet(viewsets.ModelViewSet):
