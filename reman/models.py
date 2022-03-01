@@ -139,6 +139,7 @@ class Repair(models.Model):
 
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
     barcode = models.CharField("code barre", max_length=100, blank=True)
+    vin = models.CharField("V.I.N.", max_length=20, blank=True)
     new_barcode = models.CharField("nouveau code barre", max_length=100, blank=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=200, blank=True)
