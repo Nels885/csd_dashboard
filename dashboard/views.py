@@ -45,7 +45,7 @@ def charts(request):
     """ View of charts page """
     title = _("Dashboard")
     prods = ProductAnalysis()
-    projects = EtudeProject.objects.all()
+    # projects = EtudeProject.objects.all()
     return render(request, 'dashboard/charts.html', locals())
 
 
