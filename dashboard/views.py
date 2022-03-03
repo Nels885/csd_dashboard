@@ -25,7 +25,7 @@ from utils.django.tokens import account_activation_token
 from utils.django.urls import reverse, reverse_lazy, http_referer
 from squalaetp.models import Xelon, Indicator, Sivin
 from squalaetp.tasks import save_sivin_to_models
-from tools.models import EtudeProject
+# from tools.models import EtudeProject
 from psa.models import Corvet
 from psa.tasks import save_corvet_to_models
 from .models import Post, UserProfile, WebLink
@@ -45,7 +45,7 @@ def charts(request):
     """ View of charts page """
     title = _("Dashboard")
     prods = ProductAnalysis()
-    projects = EtudeProject.objects.all()
+    # projects = EtudeProject.objects.all()
     return render(request, 'dashboard/charts.html', locals())
 
 
