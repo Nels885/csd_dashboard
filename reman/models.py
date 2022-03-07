@@ -127,7 +127,7 @@ class Batch(models.Model):
 
 
 class Default(models.Model):
-    code = models.CharField("code defaut", max_length=10, unique=True)
+    code = models.CharField("code defaut", max_length=30, unique=True)
     description = models.CharField("libellé", max_length=200)
     ecu_type = models.ManyToManyField("EcuType", related_name="defaults", blank=True)
 
