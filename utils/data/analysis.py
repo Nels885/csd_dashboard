@@ -145,14 +145,25 @@ class ToolsAnalysis:
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
 
+    # def suptech_co(self):
+    #     suptechs = Suptech.objects.filter(category=3)
+    #     total = suptechs.count()
+    #     data = {"suptechCoLabels": self.SUPTECH_CO_LABELS, 'suptechCoValue': []}
+    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Attente").count(), total))
+    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Cours").count(), total))
+    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="Cloturée").count(), total))
+    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="Annulée").count(), total))
+    #     return data
+
     def suptech_co(self):
-        suptechs = Suptech.objects.filter(category=3)
-        total = suptechs.count()
-        data = {"suptechCoLabels": self.SUPTECH_CO_LABELS, 'suptechCoValue': []}
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Attente").count(), total))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Cours").count(), total))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Cloturée").count(), total))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Annulée").count(), total))
+        suptechs = self.suptechs.filter(category=3)
+        data = {"suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": []}
+        queryset = self._suptech_annotate(suptechs)
+        for query in queryset:
+            data["suptechCoLabels"].append(query['month'].strftime("%m/%Y"))
+            data["coTwoDays"].append(self._percent(query['two_days'], query['total']))
+            data["coTwoToSixDays"].append(self._percent(query['two_to_six_days'], query['total']))
+            data["coSixDays"].append(self._percent(query['six_days'], query['total']))
         return data
 
     def suptech_ce(self):

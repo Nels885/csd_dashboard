@@ -251,7 +251,7 @@
     <!-- Content Row -->
     <div class="row">
 
-        <!-- Suptech Area Chart -->
+        <!-- Suptech CE Area Chart -->
         <div class="col-xl-6 col-lg-6">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -261,13 +261,13 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="suptechAreaChart"></canvas>
+                        <canvas id="suptechCeChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- bar Chart -->
+        <!-- Suptech CO Area Chart -->
         <div class="col-xl-6 col-lg-6">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -276,8 +276,8 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-bar">
-                        <canvas id="supTechCoChart"></canvas>
+                    <div class="chart-area">
+                        <canvas id="suptechCoChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -346,6 +346,5 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'dashboard/js/chart-pie.js' %}"></script>
     <script src="{% static 'dashboard/js/chart-area.js' %}"></script>
-    <script src="{% static 'dashboard/js/chart-bar.js' %}"></script>
 
 {% endblock %}
