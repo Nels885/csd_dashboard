@@ -1,6 +1,7 @@
 import re
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 from .models import Sivin, Xelon, ProductCategory
 from psa.models import Corvet, Ecu, Multimedia
@@ -56,3 +57,13 @@ def pre_save_xelon(sender, instance, **kwargs):
         if instance.modele_produit:
             instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
             product_update(instance)
+
+
+@receiver(post_save, sender=Xelon)
+@disable_for_loaddata
+def post_save_xelon(sender, instance, **kwargs):
+    if instance.date_expedition_attendue and isinstance(instance.date_expedition_attendue, timezone.datetime):
+        try:
+            instance.delai_expedition_attendue = (timezone.now().date() - instance.date_expedition_attendue).days
+        except TypeError:
+            instance.delai_expedition_attendue = (timezone.now() - instance.date_expedition_attendue).days
