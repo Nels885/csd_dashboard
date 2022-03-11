@@ -21,6 +21,7 @@ from raspeedi.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair, EcuRefBase
 from tools.models import ThermalChamberMeasure, BgaTime
+from utils.django.validators import validate_barcode
 
 from .utils import TokenAuthSupportQueryString
 
@@ -133,14 +134,15 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
         data = self.request.data
         batch_number = data.get("identify_number", "")[:-3] + "000"
         barcode = data.get("barcode")
+        code, batch_type = validate_barcode(barcode)
         serializer = RemanRepairCreateSerializer(data=data)
         if serializer.is_valid():
             try:
                 Batch.objects.get(
-                    batch_number__startswith=batch_number, ecu_ref_base__ecu_type__ecumodel__barcode__exact=barcode)
+                    batch_number__startswith=batch_number, ecu_ref_base__ecu_type__ecumodel__barcode__exact=code)
                 serializer.save()
                 return Response({"response": "OK", "data": data})
-            except Batch.DoesNotExist:
+            except (Batch.DoesNotExist, Batch.MultipleObjectsReturned):
                 return Response({"response": "barcode is invalid"})
         return Response({"response": "ERROR"})
 
