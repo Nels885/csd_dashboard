@@ -3,6 +3,7 @@ import requests
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.db.utils import IntegrityError
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -132,17 +133,16 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
 
     def create(self, *args, **kwargs):
         data = self.request.data
-        batch_number = data.get("identify_number", "")[:-3] + "000"
-        barcode = data.get("barcode")
-        code, batch_type = validate_barcode(barcode)
-        serializer = RemanRepairCreateSerializer(data=data)
-        if serializer.is_valid():
+        identify_number, barcode, vin = data.get("identify_number"), data.get("barcode"), data.get("vin")
+        if identify_number and barcode and vin:
+            batch_number = identify_number[:-3] + "000"
+            code, batch_type = validate_barcode(barcode)
             try:
                 Batch.objects.get(
                     batch_number__startswith=batch_number, ecu_ref_base__ecu_type__ecumodel__barcode__exact=code)
-                serializer.save()
+                Repair.objects.update_or_create(identify_number=identify_number, barcode=barcode, defaults={'vin': vin})
                 return Response({"response": "OK", "data": data})
-            except (Batch.DoesNotExist, Batch.MultipleObjectsReturned):
+            except (Batch.DoesNotExist, Batch.MultipleObjectsReturned, IntegrityError):
                 return Response({"response": "barcode is invalid"})
         return Response({"response": "ERROR"})
 
