@@ -79,7 +79,6 @@ class ExportExcelTask(BaseTask):
         # Iterate though all values
         for query in values_list:
             row_num += 1
-            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
             query = self._query_format(query)
 
             # Assign the data  for each cell of the row
@@ -109,10 +108,10 @@ class ExportExcelTask(BaseTask):
         # Sheet body, remaining rows
         font_style = xlwt.XFStyle()
 
-        for i, query in enumerate(values_list):
-            query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
-            query = self._query_format(query)
+        for query in values_list:
             row_num += 1
+            query = self._query_format(query)
+
             for col_num in range(len(query)):
                 sheet.write(row_num, col_num, query[col_num], font_style)
             progress_recorder.set_progress(row_num + 1, total=total_record, description="Inserting record into row")
@@ -133,10 +132,8 @@ class ExportExcelTask(BaseTask):
                 progress_recorder.set_progress(row_num + 1, total=total_record, description="Inserting record into row")
 
     def _query_format(self, query):
-        format_date = "%d/%m/%Y %H:%M:%S"
-        query = tuple(
-            [_.strftime(format_date).replace(" 00:00:00", "") if isinstance(_, datetime.date) else _ for _ in query]
-        )
+        query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+        query = tuple([self._timestamp_to_string(_) for _ in query])
         query = tuple([self.noValue if not value else value for value in query])
         return query
 
@@ -147,6 +144,16 @@ class ExportExcelTask(BaseTask):
             file_date = datetime.datetime.fromtimestamp(os.path.getmtime(file)).date()
             if file_date >= yesterday:
                 shutil.copyfile(file, os.path.join(path, "{}J-1.{}".format(self.filename, self.excelType)))
+
+    @staticmethod
+    def _timestamp_to_string(value):
+        if isinstance(value, datetime.datetime):
+            value = value.strftime("%d/%m/%Y %H:%M:%S").replace(" 00:00:00", "")
+        elif isinstance(value, datetime.date):
+            value = value.strftime("%d/%m/%Y")
+        elif isinstance(value, datetime.time):
+            value = value.strftime("%H:%M:%S")
+        return value
 
     @staticmethod
     def _html_to_string(value, re_sub=None):

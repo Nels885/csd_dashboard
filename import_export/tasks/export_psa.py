@@ -1,5 +1,4 @@
 import re
-import datetime
 
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
@@ -173,12 +172,13 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.fields = []
 
     def _query_format(self, query):
         data_list = [value for value in query]
         data_list = self.get_multimedia_display(data_list)
         query = self.get_corvet_display(data_list)
-        query = tuple([_.strftime("%d/%m/%Y %H:%M:%S") if isinstance(_, datetime.date) else _ for _ in query])
+        query = tuple([self._timestamp_to_string(_) for _ in query])
         query = tuple([self.noValue if not value else value for value in query])
         return query
 

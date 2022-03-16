@@ -48,6 +48,7 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.fields = []
 
     def run(self, *args, **kwargs):
         excel_type = kwargs.pop('excel_type', 'xlsx')

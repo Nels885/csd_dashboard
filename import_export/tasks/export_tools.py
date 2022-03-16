@@ -9,6 +9,7 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.fields = []
         self.noValue = ""
 
     def run(self, *args, **kwargs):
