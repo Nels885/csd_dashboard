@@ -33,10 +33,10 @@ class FirmwareAdmin(admin.ModelAdmin):
 
 
 class CalibrationAdmin(admin.ModelAdmin):
-    list_display = ('factory', 'type', 'current')
+    list_display = ('factory', 'type', 'current', 'pr_reference')
     list_filter = ('type',)
     ordering = ('-factory',)
-    search_fields = ('factory', 'type', 'current')
+    search_fields = ('factory', 'type', 'current', 'pr_reference')
 
 
 class CorvetChoicesAdmin(admin.ModelAdmin):

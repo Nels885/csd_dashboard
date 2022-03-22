@@ -348,14 +348,18 @@ class Firmware(models.Model):
 class Calibration(models.Model):
     TYPE_CHOICES = [
         ('94B', 'BSI SOFT - Boitier Servitude Intelligent'), ('94A', 'CMM SOFT - Calculateur Moteur Multifonction'),
-        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94L', 'EMF SOFT - Ecran Multifonctions'),
-        ('94X', 'BTEL SOFT - Boitier Telematique'), ('96B', 'BSM SOFT - Boitier Servitude Moteur'),
-        ('99H', 'MDS SOFT - Module de service telematique')
+        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94K', 'CMB SOFT - Combine Planche de Bord'),
+        ('94L', 'EMF SOFT - Ecran Multifonctions'), ('94X', 'BTEL SOFT - Boitier Telematique'),
+        ('96B', 'BSM SOFT - Boitier Servitude Moteur'), ('99H', 'MDS SOFT - Module de service telematique'),
+        ('92Y', 'CVM2_2_ SOFT - CAMERA VIDEO MULTIFONCTION V2'),
+        ('99K', 'ARTIV SOFT - Boitier Aide au Respect du Temps Inter Vehicule'),
+        ('92E', 'AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE'), ('96L', 'DAE SOFT - Direction Assistee Electrique')
     ]
 
     factory = models.CharField('version usine', max_length=10, unique=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
     current = models.CharField('version actuelle', max_length=10, blank=True)
+    pr_reference = models.CharField('référence PR', max_length=10, blank=True)
 
     class Meta:
         verbose_name = "Calibration"
