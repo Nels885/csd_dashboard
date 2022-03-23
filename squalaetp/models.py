@@ -61,7 +61,8 @@ class Xelon(models.Model):
                                       Q(corvet__electronique_14b__exact=query) |
                                       Q(corvet__electronique_44b__exact=query) |
                                       Q(corvet__electronique_16p__exact=query) |
-                                      Q(corvet__electronique_46p__exact=query))
+                                      Q(corvet__electronique_46p__exact=query) |
+                                      Q(corvet__opts__tag__startswith=query))
         return None
 
     def __str__(self):

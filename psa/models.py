@@ -221,7 +221,8 @@ class Corvet(models.Model):
                                       Q(electronique_14b__exact=query) |
                                       Q(electronique_44b__exact=query) |
                                       Q(electronique_16p__exact=query) |
-                                      Q(electronique_46p__exact=query))
+                                      Q(electronique_46p__exact=query) |
+                                      Q(opts__tag__startswith=query))
         return None
 
     def __str__(self):
