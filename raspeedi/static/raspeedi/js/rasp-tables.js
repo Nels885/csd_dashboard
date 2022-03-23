@@ -2,6 +2,7 @@
 $(document).ready(function () {
     $('#raspTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[2, "asc"]],
         // Disable sorting for the Tags and Actions columns.
