@@ -28,7 +28,12 @@
             {% if xelon.date_expedition_attendue %}
                 <tr>
                     <td class="text-dark td-ihm">Date d'expédition attendue</td>
-                    <td class="font-weight-bold">{{ xelon.date_expedition_attendue }}<span class="ml-4">J {{ xelon.delai_expedition_attendue }}</span></td>
+                    <td class="font-weight-bold">
+                            <div class="{% if xelon.delai_expedition_attendue > 0 %}bg-danger text-white{% endif %}">
+                                {{ xelon.date_expedition_attendue }}
+                                <span class="ml-4">J {{ xelon.delai_expedition_attendue }}</span>
+                            </div>
+                        </td>
                 </tr>
             {% endif %}
             </tbody>
