@@ -19,7 +19,9 @@ from reportlab.graphics.barcode import code128
 from constance import config
 
 from utils.django.datatables import QueryTableByArgs
-from .serializers import XelonSerializer, XELON_COLUMN_LIST, SivinSerializer, SIVIN_COLUMN_LIST
+from .serializers import (
+    XelonSerializer, XELON_COLUMN_LIST, SivinSerializer, SIVIN_COLUMN_LIST, SparePartSerializer, SPAREPART_COLUMN_LIST
+)
 from .models import Xelon, SparePart, Action, Sivin
 from .utils import collapse_select
 from psa.models import Corvet
@@ -83,8 +85,28 @@ def stock_table(request):
     """ View of SparePart table page """
     title = 'Xelon'
     table_title = 'Pièces détachées'
-    stocks = SparePart.objects.all()
+    # stocks = SparePart.objects.all()
     return render(request, 'squalaetp/stock_table.html', locals())
+
+
+class StockViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = SparePart.objects.all()
+    serializer_class = SparePartSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            query = QueryTableByArgs(self.queryset, SPAREPART_COLUMN_LIST, 0, **request.query_params).values()
+            serializer = self.serializer_class(query["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": query["draw"],
+                "recordsTotal": query["total"],
+                "recordsFiltered": query["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required

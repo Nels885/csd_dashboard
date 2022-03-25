@@ -5,6 +5,7 @@ from . import views
 router = DefaultRouter()
 router.register(r'api/xelon', views.XelonViewSet, basename='api_xelon')
 router.register(r'api/sivin', views.SivinViewSet, basename='api_sivin')
+router.register(r'api/sparepart', views.StockViewSet, basename='api_stock')
 
 app_name = 'squalaetp'
 
