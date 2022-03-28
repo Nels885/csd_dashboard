@@ -133,14 +133,19 @@ class RemanRepairViewSet(viewsets.ModelViewSet):
 
     def create(self, *args, **kwargs):
         data = self.request.data
-        identify_number, barcode, vin = data.get("identify_number"), data.get("barcode"), data.get("vin")
-        if identify_number and barcode and vin:
+        identify_number, barcode = data.get("identify_number"), data.get("barcode")
+        vin, diagnostic_data = data.get("vin", ""), data.get("diagnostic_data", "")
+        if identify_number and barcode:
             batch_number = identify_number[:-3] + "000"
             code, batch_type = validate_barcode(barcode)
             try:
                 Batch.objects.get(
                     batch_number__startswith=batch_number, ecu_ref_base__ecu_type__ecumodel__barcode__exact=code)
-                Repair.objects.update_or_create(identify_number=identify_number, barcode=barcode, defaults={'vin': vin})
+                Repair.objects.update_or_create(
+                    identify_number=identify_number, barcode=barcode, defaults={
+                        'vin': vin, 'diagnostic_data': diagnostic_data
+                    }
+                )
                 return Response({"response": "OK", "data": data})
             except (Batch.DoesNotExist, Batch.MultipleObjectsReturned, IntegrityError):
                 return Response({"response": "barcode is invalid"})

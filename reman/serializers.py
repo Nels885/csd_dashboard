@@ -73,7 +73,7 @@ class RemanRepairSerializer(serializers.ModelSerializer):
 class RemanRepairCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Repair
-        fields = ('identify_number', 'barcode', 'vin')
+        fields = ('identify_number', 'barcode', 'vin', 'diagnostic_data')
 
 
 class RemanRepairPartSerializer(serializers.ModelSerializer):
