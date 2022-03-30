@@ -253,6 +253,27 @@ class AddRepairForm(BSModalModelForm):
         return instance
 
 
+class SelectRepairForm(BSModalForm):
+    repair = forms.CharField(
+        label="N° d'identification", max_length=10, required=True,
+        widget=forms.TextInput(attrs={'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''})
+    )
+
+    class Meta:
+        fields = ["repair"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data = cleaned_data.get("repair")
+        if data:
+            try:
+                Repair.objects.get(identify_number__exact=data)
+            except Repair.DoesNotExist:
+                raise forms.ValidationError("Pas de dossier associé")
+            except Repair.MultipleObjectsReturned:
+                raise forms.ValidationError("Il y a plusieurs dossiers associés")
+
+
 class EditRepairForm(forms.ModelForm):
     default = forms.ModelChoiceField(queryset=None, required=True, label="Panne", widget=forms.Select())
 

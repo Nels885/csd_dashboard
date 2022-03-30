@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('repair/table/', repair.repair_table, name='repair_table'),
     path('repair/create/', repair.RepairCreateView.as_view(), name='create_repair'),
+    path('repair/select/', repair.RepairSelectView.as_view(), name='select_repair'),
     path('repair/<int:pk>/edit/', repair.repair_edit, name='edit_repair'),
     path('repair/<int:pk>/close/', repair.repair_close, name='close_repair'),
     path('repair/<int:pk>/detail/', repair.repair_detail, name='detail_repair'),

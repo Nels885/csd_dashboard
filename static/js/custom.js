@@ -82,7 +82,7 @@ function excelImport(url) {
 
 $(function () {
     // Filter Batch buttons
-    $(".out-filter-btn").each(function () {
+    $(".filter-btn").each(function () {
         $(this).modalForm({formURL: $(this).data('form-url')});
     });
 

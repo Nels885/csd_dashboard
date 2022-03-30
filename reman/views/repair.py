@@ -9,13 +9,13 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
-from bootstrap_modal_forms.generic import BSModalCreateView
-from utils.django.urls import reverse
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalFormView
+from utils.django.urls import reverse, reverse_lazy
 
 from utils.django.datatables import QueryTableByArgs
 from reman.models import Repair, RepairPart
 from reman.serializers import RemanRepairSerializer, RemanRepairPartSerializer, REPAIR_COLUMN_LIST
-from reman.forms import AddRepairForm, EditRepairForm, CloseRepairForm, RepairPartForm, RepairForm
+from reman.forms import AddRepairForm, EditRepairForm, CloseRepairForm, RepairPartForm, RepairForm, SelectRepairForm
 
 
 """
@@ -105,6 +105,19 @@ class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
     template_name = 'reman/modal/repair_create.html'
     form_class = AddRepairForm
     success_message = _('Success: Repair was created.')
+
+
+class RepairSelectView(PermissionRequiredMixin, BSModalFormView):
+    permission_required = 'reman.add_repair'
+    template_name = 'reman/modal/batch_select.html'
+    form_class = SelectRepairForm
+
+    def form_valid(self, form):
+        self.query = Repair.objects.get(identify_number=form.cleaned_data['repair'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('reman:edit_repair', kwargs={'pk': self.query.pk})
 
 
 @login_required()
