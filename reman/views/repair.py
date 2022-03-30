@@ -109,8 +109,14 @@ class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
 
 class RepairSelectView(PermissionRequiredMixin, BSModalFormView):
     permission_required = 'reman.add_repair'
-    template_name = 'reman/modal/batch_select.html'
+    template_name = 'format/modal_custom_form.html'
     form_class = SelectRepairForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Repair REMAN')
+        context['button_name'] = _('Open')
+        return context
 
     def form_valid(self, form):
         self.query = Repair.objects.get(identify_number=form.cleaned_data['repair'])

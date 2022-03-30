@@ -190,9 +190,10 @@ LANGUAGES = (
     ('en', gettext('English')),
 )
 
-LOCALE_PATHS = [x / 'locale' for x in BASE_DIR.iterdir() if x.is_dir()]
-#     os.path.join(BASE_DIR, 'locale'),
-# ]
+# LOCALE_PATHS = [x / 'locale' for x in BASE_DIR.iterdir() if x.is_dir()]
+LOCALE_PATHS = [
+    os.path.join(Path(__file__).resolve().parent.parent, 'locale'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

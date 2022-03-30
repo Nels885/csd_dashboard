@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 09:22+0100\n"
+"POT-Creation-Date: 2022-03-30 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,23 +31,23 @@ msgstr "était, étaient"
 msgid "Checkout enabled"
 msgstr "Vérification activée"
 
-#: reman/forms.py:87
+#: reman/forms.py:89
 msgid "Unauthorized batch number!"
 msgstr "Numéro de lot non autorisé !"
 
-#: reman/forms.py:89
+#: reman/forms.py:91
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:96
+#: reman/forms.py:98
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:233 reman/forms.py:339
+#: reman/forms.py:235 reman/forms.py:363
 msgid "barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/forms.py:477 reman/tests/tests_reman_views.py:141
+#: reman/forms.py:502 reman/tests/tests_reman_views.py:141
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
@@ -67,7 +67,7 @@ msgstr "Formatage impossible de l'année !"
 #: reman/templates/reman/modal/repair_create.html:16
 #: reman/templates/reman/part/part_create_form.html:47
 #: reman/templates/reman/repair/repair_close.html:69
-#: reman/templates/reman/repair/repair_edit.html:108
+#: reman/templates/reman/repair/repair_edit.html:84
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -75,7 +75,7 @@ msgstr "Annuler"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: reman/templates/reman/default_table.html:8 reman/views.py:277
+#: reman/templates/reman/default_table.html:8 reman/views/__init__.py:119
 msgid "Create Default"
 msgstr "Ajout panne"
 
@@ -202,83 +202,83 @@ msgstr "Pièces détachées"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: reman/tests/tests_reman_views.py:166 reman/views.py:386
+#: reman/tests/tests_reman_views.py:166 reman/views/__init__.py:228
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: reman/views.py:53 reman/views.py:77
-msgid "Modification customer file"
-msgstr "Modification dossier client"
-
-#: reman/views.py:66 reman/views.py:82
-msgid "Modification done successfully!"
-msgstr "Modification réalisée avec succès !"
-
-#: reman/views.py:91
-msgid "Detail customer file"
-msgstr "Dossier client détaillé"
-
-#: reman/views.py:102
-msgid "Success: Repair was created."
-msgstr "Succès: le dossier a été créé."
-
-#: reman/views.py:108
-msgid "Success: Repair part was deleted."
-msgstr "Succès : la pièce de réparation a été supprimée."
-
-#: reman/views.py:112
-msgid "Repair part delete"
-msgstr "Supprimer la pièce de réparation"
-
-#: reman/views.py:169
-msgid "Success: Batch was created."
-msgstr "Succès: le lot a été créé."
-
-#: reman/views.py:173
-msgid "Create Batch"
-msgstr "Création d'un lot"
-
-#: reman/views.py:215
-msgid "Success: Batch was updated."
-msgstr "Succès: le lot a été mis à jour."
-
-#: reman/views.py:232
-msgid "Success: Batch was deleted."
-msgstr "Succès: le lot a été supprimé."
-
-#: reman/views.py:241
+#: reman/views/__init__.py:83
 msgid "Success: Reman reference was created."
 msgstr "Succès: La Référence REMAN a été créé."
 
-#: reman/views.py:262
+#: reman/views/__init__.py:104
 msgid "Success: Reman reference was updated."
 msgstr "Succès: La Référence REMAN a été mise à jour."
 
-#: reman/views.py:271
+#: reman/views/__init__.py:113
 msgid "Success: Reman Default was created."
 msgstr "Succès: La panne REMAN a été créé."
 
-#: reman/views.py:287
+#: reman/views/__init__.py:129
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
 
-#: reman/views.py:293
+#: reman/views/__init__.py:135
 msgid "Update Default"
 msgstr "Mise à jour panne"
 
-#: reman/views.py:433
+#: reman/views/__init__.py:275
 #, python-format
 msgid "Repair n°%(repair)s to batch n°%(batch)s ready for shipment"
 msgstr "Réparation n°%(repair)s du lot n°%(batch)s prêt pour expédition."
 
-#: reman/views.py:604
+#: reman/views/__init__.py:344
 msgid "Success: Reman ECU HW Reference was created."
 msgstr "Succès: la référence Hardware a été créé."
 
-#: reman/views.py:625
+#: reman/views/__init__.py:365
 msgid "Success: Reman ECU HW Reference was updated."
 msgstr "Succès: la référence Hardware a été mise à jour."
 
-#: reman/views.py:643
+#: reman/views/__init__.py:383
 msgid "Success: Reman ECU dump was updated."
 msgstr "Succès: La dump ECU Reman a été mise à jour."
+
+#: reman/views/batch.py:30
+msgid "Success: Batch was created."
+msgstr "Succès: le lot a été créé."
+
+#: reman/views/batch.py:34
+msgid "Create Batch"
+msgstr "Création d'un lot"
+
+#: reman/views/batch.py:76
+msgid "Success: Batch was updated."
+msgstr "Succès: le lot a été mis à jour."
+
+#: reman/views/batch.py:93
+msgid "Success: Batch was deleted."
+msgstr "Succès: le lot a été supprimé."
+
+#: reman/views/repair.py:31 reman/views/repair.py:82
+msgid "Modification customer file"
+msgstr "Modification dossier client"
+
+#: reman/views/repair.py:38 reman/views/repair.py:87
+msgid "Modification done successfully!"
+msgstr "Modification réalisée avec succès !"
+
+#: reman/views/repair.py:96
+msgid "Detail customer file"
+msgstr "Dossier client détaillé"
+
+#: reman/views/repair.py:107
+msgid "Success: Repair was created."
+msgstr "Succès: le dossier a été créé."
+
+#: reman/views/repair.py:117
+msgid "Repair REMAN"
+msgstr "Réparation REMAN"
+
+#: reman/views/repair.py:118
+msgid "Open"
+msgstr "Ouvrir"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 09:22+0100\n"
+"POT-Creation-Date: 2022-03-30 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,21 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/templates/dashboard/charts.html:345
+#: dashboard/templates/dashboard/done.html:21
+msgid "Back to Dashboard"
+msgstr "Retour au Tableau de bord"
+
+#: dashboard/templates/dashboard/format/project_card.html:17
 #: dashboard/templates/dashboard/index.html:49
 msgid "Edit"
 msgstr "Editer"
 
-#: dashboard/templates/dashboard/charts.html:348
+#: dashboard/templates/dashboard/format/project_card.html:20
 #: dashboard/templates/dashboard/index.html:53
 #: dashboard/templates/dashboard/modal/post_delete.html:19
 #: dashboard/templates/dashboard/modal/weblink_delete.html:19
 msgid "Delete"
 msgstr "Supprimer"
-
-#: dashboard/templates/dashboard/done.html:21
-msgid "Back to Dashboard"
-msgstr "Retour au Tableau de bord"
 
 #: dashboard/templates/dashboard/index.html:19
 #: dashboard/templates/dashboard/modal/post_create.html:7

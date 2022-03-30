@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-07 09:22+0100\n"
+"POT-Creation-Date: 2022-03-30 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "Le fichier CALIBRE existe !"
 #: tools/templates/tools/modal/suptech_create.html:125
 #: tools/templates/tools/modal/tag_xelon.html:37
 #: tools/templates/tools/modal/thermal_delete.html:20
-#: tools/templates/tools/suptech/suptech_update.html:99
+#: tools/templates/tools/suptech/suptech_update.html:110
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -82,7 +82,7 @@ msgstr "Répondre à la demande"
 msgid "Send"
 msgstr "Envoyer"
 
-#: tools/templates/tools/suptech/suptech_update.html:100
+#: tools/templates/tools/suptech/suptech_update.html:111
 msgid "Update"
 msgstr "Mettre à jour"
 
