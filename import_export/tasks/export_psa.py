@@ -87,6 +87,13 @@ CORVET_DICT = {
         ('T2Y_CVM2_2_CODE', 'electronique_t2y'), ('Réf. Setplate CVM2', 'prods__cvm2__label_ref'),
         ('Complément CVM2', 'prods__cvm2__extra')
     ],
+    'artiv': [
+        ('19K_ARTIV_HARD', 'electronique_19k'), ('99K_ARTIV_SOFT', 'electronique_99k')
+    ],
+    'artiv_extra': [
+        ('69K_ARTIV_FOURN.CODE', 'electronique_69k'), ('49K_ARTIV_FOURN.NO.SERIE', 'electronique_49k'),
+        ('59K_ARTIV_FOURN.DATE.FAB', 'electronique_59k')
+    ],
     'dae': [
         ('16L_DAE_HARD', 'electronique_16l'),
         ('96L_DAE_SOFT', 'electronique_96l')
@@ -241,9 +248,10 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
             'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
             'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
             'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
-            'cvm': {'electronique_12y__exact': ''}, 'dae': {'electronique_16l__exact': ''},
-            'abs_esp': {'electronique_14p__exact': ''}, 'airbag': {'electronique_14m__exact': ''},
-            'emf': {'electronique_16l__exact': ''}, 'cmb': {'electronique_14k__exact': ''}
+            'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
+            'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
+            'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
+            'cmb': {'electronique_14k__exact': ''}
         }
         product = kwargs.get('product', 'bsi')
         data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
