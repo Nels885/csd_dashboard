@@ -89,8 +89,8 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, self.authError)
 
         # Identification with Token
-        response = self.client.get('/api/nac-license/?auth_token={}'.format(self.token), format='json')
-        self.assertEqual(response.status_code, 500)
+        response = self.client.get(f'/api/nac-license/?auth_token={self.token}', format='json')
+        self.assertEqual(response.status_code, 404)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data, {"error": "Request failed"})
 

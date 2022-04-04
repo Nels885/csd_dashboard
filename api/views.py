@@ -166,15 +166,16 @@ class NacLicenseView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
-        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
-        payload = {
-            "mediaVersion": request.GET.get('update'),
-            "uin": request.GET.get('uin')
-        }
-        response = requests.get(url, params=payload, allow_redirects=True)
-        if response.status_code == 200:
-            return redirect(response.url)
-        return Response({"error": "Request failed"}, status=response.status_code)
+        if request.GET.get('update') and request.GET.get('uin'):
+            url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
+            payload = {
+                "mediaVersion": request.GET.get('update'),
+                "uin": request.GET.get('uin')
+            }
+            response = requests.get(url, params=payload, allow_redirects=True)
+            if response.status_code == 200:
+                return redirect(response.url)
+        return Response({"error": "Request failed"}, status=404)
 
 
 class ThermalChamberMeasureViewSet(viewsets.ModelViewSet):
