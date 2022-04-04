@@ -86,13 +86,13 @@ class Command(BaseCommand):
     def _relation_update(self):
         self.stdout.write("[PRODUCTCODE] Waiting...")
         for ecu in Ecu.objects.all():
-            if str(ecu.comp_ref)[-2:] == "77":
+            if ecu.label_ref:
+                ProductCode.objects.filter(name__contains=str(ecu.label_ref)[:-2]).update(ecu=ecu)
+            elif ecu.comp_ref:
                 ProductCode.objects.filter(name__contains=str(ecu.comp_ref)[:-2]).update(ecu=ecu)
-            else:
-                ProductCode.objects.filter(name__contains=ecu.comp_ref).update(ecu=ecu)
         for media in Multimedia.objects.all():
-            if str(media.comp_ref)[-2:] == "77":
+            if media.label_ref:
+                ProductCode.objects.filter(name__contains=str(media.label_ref)[:-2]).update(media=media)
+            elif media.comp_ref:
                 ProductCode.objects.filter(name__contains=str(media.comp_ref)[:-2]).update(media=media)
-            else:
-                ProductCode.objects.filter(name__contains=media.comp_ref).update(media=media)
         self.stdout.write(self.style.SUCCESS("[PRODUCTCODE] Data update completed!"))
