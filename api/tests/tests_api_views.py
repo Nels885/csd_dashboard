@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 
 from reman.models import EcuType, EcuModel, EcuRefBase, Batch, Repair
+from squalaetp.models import Xelon
+from raspeedi.models import UnlockProduct
 
 
 class ApiTestCase(APITestCase):
@@ -37,7 +39,13 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_unlock_list(self):
-        self.api_view_list(reverse('api:unlock-list'))
+        url = reverse('api:unlock-list')
+        self.api_view_list(url)
+        xelon = Xelon.objects.create(numero_de_dossier="A123456789", vin='VF3ABCDEF12345678')
+        UnlockProduct.objects.create(unlock=xelon, user=self.user)
+        response = self.client.put(f"{url}{xelon.id}/?auth_token={self.token}", data={'active': False})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'id': 1, 'xelon': 'A123456789', 'vin': 'VF3ABCDEF12345678', 'active': False})
 
     def test_prog_list(self):
         self.api_view_list(reverse('api:prog-list'))
