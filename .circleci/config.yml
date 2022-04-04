@@ -1,5 +1,6 @@
 version: 2.1
 orbs:
+  python: circleci/python@2.0.3
   browser-tools: circleci/browser-tools@1.0.1
 jobs: # A basic unit of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
@@ -25,19 +26,9 @@ jobs: # A basic unit of work in a run
       - image: cimg/redis:5.0.14
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.8/site-packages
-      - restore_cache:
-      # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-      - run:
-          command: |
-            sudo pip install pipenv
-            pipenv install
-      - save_cache: # cache Python dependencies using checksum of Pipfile as the cache-key
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-          paths:
-            - "venv"
+      - python/install-packages:
+          args: "--dev"
+          pkg-manager: pipenv
       - browser-tools/install-firefox
       - browser-tools/install-geckodriver
       - run:
