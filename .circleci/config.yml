@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.0.1
+  browser-tools: circleci/browser-tools@1.2.5
 jobs: # A basic unit of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
     # directory where steps are run
@@ -40,6 +40,7 @@ jobs: # A basic unit of work in a run
             - "venv"
       - browser-tools/install-firefox
       - browser-tools/install-geckodriver
+      - browser-tools/install-chromedriver
       - run:
           command: |
             pipenv run python manage.py test
