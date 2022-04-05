@@ -170,7 +170,10 @@ def suptech_item_ajax(request):
     try:
         if request.GET.get('pk', None):
             suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
-            data = {"extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list}
+            data = {
+                "extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list,
+                "cc_mailing_list": suptech_item.cc_mailing_list
+            }
     except SuptechItem.DoesNotExist:
         pass
     return JsonResponse(data)
