@@ -18,7 +18,7 @@ proper functioning of the application.
 
 ```bash
 $ sudo apt update
-$ sudo apt install python3-pip python3-dev libpq-dev postgresql postgresql-contrib git
+$ sudo apt install python3-pip python3-dev libpq-dev postgresql postgresql-contrib git redis-server
 $ sudo pip3 install pipenv
 ```
 
@@ -73,3 +73,11 @@ $ ./manage.py runserver
 ```
 
 You can now access your application from your browser at "localhost: 8000"
+
+### Import data
+
+```bash
+$ pipenv shell
+$ ./manage.py sqlflush | ./manage.py dbshell
+$ ./manage.py loaddata <DATA_FILE>
+```
