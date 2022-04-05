@@ -27,8 +27,10 @@ let table = $('#corvetNewTable').DataTable({
         {data: "btel_name"},
         {data: "cmm_ref"},
         {data: "cmm_cal"},
+        {data: "cmm_name"},
         {data: "bsi_ref"},
         {data: "bsi_cal"},
+        {data: "bsi_name"},
     ],
     columnDefs: [{
         targets: 0,
