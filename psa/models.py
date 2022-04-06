@@ -215,10 +215,12 @@ class Corvet(models.Model):
                                       Q(electronique_44l__contains=query) |
                                       Q(electronique_44x__contains=query) |
                                       Q(electronique_44a__contains=query) |
+                                      Q(electronique_12y__exact=query) |
                                       Q(electronique_14l__exact=query) |
                                       Q(electronique_14x__exact=query) |
                                       Q(electronique_14a__exact=query) |
                                       Q(electronique_14b__exact=query) |
+                                      Q(electronique_14k__exact=query) |
                                       Q(electronique_44b__exact=query) |
                                       Q(electronique_16p__exact=query) |
                                       Q(electronique_46p__exact=query) |

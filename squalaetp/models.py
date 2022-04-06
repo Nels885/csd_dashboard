@@ -55,10 +55,12 @@ class Xelon(models.Model):
                                       Q(corvet__electronique_44l__contains=query) |
                                       Q(corvet__electronique_44x__contains=query) |
                                       Q(corvet__electronique_44a__contains=query) |
+                                      Q(corvet__electronique_12y__exact=query) |
                                       Q(corvet__electronique_14l__exact=query) |
                                       Q(corvet__electronique_14x__exact=query) |
                                       Q(corvet__electronique_14a__exact=query) |
                                       Q(corvet__electronique_14b__exact=query) |
+                                      Q(corvet__electronique_14k__exact=query) |
                                       Q(corvet__electronique_44b__exact=query) |
                                       Q(corvet__electronique_16p__exact=query) |
                                       Q(corvet__electronique_46p__exact=query) |
