@@ -30,7 +30,8 @@ from psa.models import Corvet
 from psa.tasks import save_corvet_to_models
 from .models import Post, UserProfile, WebLink
 from .forms import (
-    UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm
+    UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm,
+    SearchForm
 )
 
 
@@ -98,32 +99,34 @@ def autotronik(request):
 @login_required
 def search(request):
     """ View of search page """
-    query = request.GET.get('query', '')
-    select = request.GET.get('select')
-    immat = re.sub(r'[ -]', '', query.upper())
-    sivins = Sivin.objects.filter(immat_siv=immat)
-    if sivins:
-        query = sivins.first().codif_vin
-    elif not re.match(r'^[a-zA-Z]\d{9}$', str(immat)) and len(immat) < 11:
-        save_sivin_to_models.delay(query)
-    if query and select == 'atelier':
-        files = Xelon.search(query)
-        if files:
-            messages.success(request, _(f'Success: The reseach for {query} was successful.'))
-            if len(files) > 1:
-                return redirect(reverse('squalaetp:xelon', get={'filter': query}))
-            return redirect('squalaetp:detail', pk=files.first().pk)
-    elif query and select == 'sivin':
+    form = SearchForm(request.POST or None)
+    if request.POST and form.is_valid():
+        query = form.cleaned_data['query']
+        select = form.cleaned_data['select']
+        immat = re.sub(r'[ -]', '', query)
+        sivins = Sivin.objects.filter(immat_siv__iexact=immat)
         if sivins:
-            return redirect('squalaetp:sivin_detail', immat=sivins.first().immat_siv)
-    corvets = Corvet.search(query)
-    if corvets:
-        messages.success(request, _(f'Success: The reseach for {query} was successful.'))
-        if len(corvets) > 1:
-            return redirect(reverse('psa:corvet', get={'filter': query}))
-        return redirect('psa:corvet_detail', vin=corvets.first().vin)
-    elif re.match(r'^[VWZ][FLR0]\w{15}$', str(query)):
-        save_corvet_to_models.delay(query)
+            query = sivins.first().codif_vin
+        elif not re.match(r'^[a-zA-Z]\d{9}$', str(immat)) and len(immat) < 11:
+            save_sivin_to_models.delay(query)
+        if query and select == 'atelier':
+            files = Xelon.search(query)
+            if files:
+                messages.success(request, _(f'Success: The reseach for {query} was successful.'))
+                if len(files) > 1:
+                    return redirect(reverse('squalaetp:xelon', get={'filter': query}))
+                return redirect('squalaetp:detail', pk=files.first().pk)
+        elif query and select == 'sivin':
+            if sivins:
+                return redirect('squalaetp:sivin_detail', immat=sivins.first().immat_siv)
+        corvets = Corvet.search(query)
+        if corvets:
+            messages.success(request, _(f'Success: The reseach for {query} was successful.'))
+            if len(corvets) > 1:
+                return redirect(reverse('psa:corvet', get={'filter': query}))
+            return redirect('psa:corvet_detail', vin=corvets.first().vin)
+        elif re.match(r'^[VWZ][FLR0]\w{15}$', str(query.upper())):
+            save_corvet_to_models.delay(query)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))
 

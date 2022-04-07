@@ -117,6 +117,7 @@ TEMPLATES = [
                 'sbadmin.context_processors.get_ip',
                 'sbadmin.context_processors.get_admin_emails',
                 'sbadmin.context_processors.get_wiki_url',
+                'sbadmin.context_processors.search_form',
             ],
         },
     },
