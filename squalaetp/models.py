@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -217,6 +219,13 @@ class Sivin(models.Model):
     class Meta:
         verbose_name = "Données SIVIN"
         ordering = ['immat_siv']
+
+    @classmethod
+    def search(cls, value):
+        if value is not None:
+            query = re.sub(r'[ -]', '', value.strip())
+            return cls.objects.filter(immat_siv__iexact=query)
+        return None
 
     def __str__(self):
         return f"{self.immat_siv} - {self.codif_vin}"

@@ -135,3 +135,25 @@ $(".unmask a").on('click', function (event) {
         $('.unmask i').addClass("fa-eye");
     }
 });
+
+
+$("#searchForm").submit(function (e) {
+    e.preventDefault();
+    let formData = new FormData($("#searchForm")[0]);
+    $(".bd-loading-modal-lg").modal("show");
+    $.ajax({
+        method: "POST",
+        url: $("#searchForm").attr("data-url"),
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log(data);
+            window.location = data.url;
+        },
+        error: function (error_data) {
+            $(".bd-loading-modal-lg").modal("hide");
+            addMessage("(500) Internal Server Error", "danger");
+        }
+    });
+});

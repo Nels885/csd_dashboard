@@ -119,5 +119,5 @@ class SearchForm(forms.Form):
         ('atelier', 'Atelier'), ('reman', 'Reman'), ('sivin', 'SIVIN')
     ]
 
-    select = forms.ChoiceField(required=True, choices=SELECTS, widget=forms.Select())
+    select = forms.ChoiceField(choices=SELECTS, widget=forms.Select())
     query = forms.CharField(widget=forms.TextInput(attrs={"placeholder": _("Search Xelon, VIN or SN...")}))

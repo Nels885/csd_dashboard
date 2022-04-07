@@ -9,8 +9,8 @@
     </button>
 
     <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
-          action="{% url 'dashboard:search' %}" method="POST">
+    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" id="searchForm"
+          data-url="{% url 'dashboard:search_ajax' %}" method="post" action="">
         {% csrf_token %}
         <div class="input-group">
             <div class="input-group-prepend">
@@ -18,9 +18,7 @@
             </div>
             {% render_field search_form.query class="form-control bg-light border-0" %}
             <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search fa-sm"></i>
-                </button>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i></button>
             </div>
         </div>
     </form>

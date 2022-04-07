@@ -104,27 +104,27 @@ class DashboardTestCase(UnitTest):
         # Search is not found
         self.login()
         for value in ['null', 'A1234567890', 'azertyuiop123456789', 'AZERTIOP']:
-            response = self.client.post(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
+            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'xelon'})
             self.assertRedirects(response, self.redirectUrl, status_code=302)
 
         # Search is not value
-        response = self.client.post(reverse('dashboard:search'), HTTP_REFERER=self.redirectUrl)
+        response = self.client.get(reverse('dashboard:search'), HTTP_REFERER=self.redirectUrl)
         self.assertRedirects(response, self.redirectUrl, status_code=302)
 
         # Search by VIN is valid
         for value in [self.vin, self.vin.lower()]:
-            response = self.client.post(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
+            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
         Xelon.objects.create(numero_de_dossier='A123456780', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
-        response = self.client.post(reverse('dashboard:search'), {'query': self.vin, 'select': 'atelier'})
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'atelier'})
         self.assertRedirects(response, '/squalaetp/xelon/?filter=' + self.vin, status_code=302)
-        response = self.client.post(reverse('dashboard:search'), {'query': self.vin, 'select': 'reman'})
+        response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'reman'})
         self.assertRedirects(response, self.redirectUrl, status_code=302)
 
         # Search by Xelon is valid
         for value in ['A123456789', 'a123456789']:
-            response = self.client.post(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
+            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
 
     def test_supplier_links_page(self):
