@@ -149,7 +149,20 @@ $("#searchForm").submit(function (e) {
         processData: false,
         success: function (data) {
             console.log(data);
-            window.location = data.url;
+            if (data.task_id) {
+                var progressUrl = "/celery-progress/?task_id=" + data.task_id;
+                console.log(progressUrl);
+
+                function customResult(resultElement, result) {
+                    window.location = data.url;
+                }
+
+                CeleryProgressBar.initProgressBar(progressUrl, {
+                    progressBarId: "search-progress-bar",
+                    progressBarMessageId: "search-progress-bar-message",
+                    onResult: customResult,
+                })
+            } else window.location = data.url;
         },
         error: function (error_data) {
             $(".bd-loading-modal-lg").modal("hide");
