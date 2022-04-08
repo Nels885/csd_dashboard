@@ -218,7 +218,7 @@ class ToolsAnalysis:
 
     @staticmethod
     def _suptech_annotate(queryset):
-        queryset = queryset.annotate(month=TruncMonth("date")).values("month").order_by("month")
+        queryset = queryset.annotate(month=TruncMonth("modified_at")).values("month").order_by("month")
         queryset = queryset.annotate(total=Count("month"))
         queryset = queryset.annotate(two_days=Count("day_number", filter=Q(day_number__lte=2)))
         queryset = queryset.annotate(two_to_six_days=Count("day_number", filter=Q(day_number__gt=2, day_number__lte=6)))
