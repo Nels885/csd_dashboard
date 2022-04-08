@@ -23,6 +23,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
 from utils.django.urls import reverse, reverse_lazy, http_referer
+from utils.django.validators import vin_psa_isvalid
 from squalaetp.models import Xelon, Indicator, Sivin
 from squalaetp.tasks import save_sivin_to_models
 # from tools.models import EtudeProject
@@ -132,11 +133,11 @@ def search_ajax(request):
         query = form.cleaned_data['query']
         select = form.cleaned_data['select']
         if query and select:
-            if re.match(r'^[VWZ][FLR0]\w{15}$', str(query.upper())):
+            if vin_psa_isvalid(query.upper()):
                 if not Corvet.search(query):
                     task = save_corvet_to_models.delay(query)
                     data['task_id'] = task.id
-            elif not re.match(r'^[9a-zA-Z]\d{9}$', str(query)) and len(query) < 11:
+            elif not re.match(r'^[9a-zA-Z]\d{9}$', str(query)) and (6 < len(query) < 11):
                 if not Sivin.search(query):
                     task = save_sivin_to_models.delay(query)
                     data['task_id'] = task.id
