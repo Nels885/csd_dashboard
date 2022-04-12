@@ -140,6 +140,8 @@ class Suptech(models.Model):
     deadline = models.DateField('DATE LIMITE', null=True, blank=True)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
     is_48h = models.BooleanField("Traitement 48h", default=True)
+    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
+    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
     created_at = models.DateTimeField('ajouté le', editable=False, null=True)
     created_by = models.ForeignKey(User, related_name="suptechs_created", editable=False, on_delete=models.SET_NULL,
                                    null=True, blank=True)
@@ -149,7 +151,7 @@ class Suptech(models.Model):
     messages = GenericRelation('SuptechMessage')
 
     class Meta:
-        verbose_name = "SupTech Log"
+        verbose_name = "SupTech"
         ordering = ['pk']
 
     def get_absolute_url(self):
