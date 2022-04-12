@@ -15,22 +15,6 @@
             <th>Code site</th>
         </tr>
         </thead>
-        <tbody>
-
-        {% for stock in stocks %}
-
-            <tr>
-                <td>{{ stock.code_produit.name }}</td>
-                <td>{{ stock.code_zone }}</td>
-                <td>{{ stock.code_emplacement }}</td>
-                <td>{{ stock.cumul_dispo }}</td>
-                <td>{{ stock.code_magasin }}</td>
-                <td>{{ stock.code_site|default:"" }}</td>
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
     </table>
 
 {% endblock %}
@@ -38,6 +22,9 @@
 {% block tablejs %}
 
     <!-- Page level custom scripts -->
+    <script type="text/javascript">
+        const URL_AJAX = "{% url 'squalaetp:api_stock-list' %}";
+    </script>
     <script type="text/javascript" src="{% static 'squalaetp/js/stock-tables.js' %}"></script>
 
 {% endblock %}

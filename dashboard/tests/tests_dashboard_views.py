@@ -29,7 +29,7 @@ class DashboardTestCase(UnitTest):
         response = self.client.get(reverse('dashboard:charts_ajax'), format='json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertEqual(len(data), 19)
+        self.assertEqual(len(data), 21)
 
     def test_late_products(self):
         response = self.client.get(reverse('dashboard:late_prod'))

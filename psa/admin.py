@@ -33,10 +33,10 @@ class FirmwareAdmin(admin.ModelAdmin):
 
 
 class CalibrationAdmin(admin.ModelAdmin):
-    list_display = ('factory', 'type', 'current')
+    list_display = ('factory', 'type', 'current', 'pr_reference')
     list_filter = ('type',)
     ordering = ('-factory',)
-    search_fields = ('factory', 'type', 'current')
+    search_fields = ('factory', 'type', 'current', 'pr_reference')
 
 
 class CorvetChoicesAdmin(admin.ModelAdmin):
@@ -47,10 +47,11 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 
 
 class EcuAdmin(admin.ModelAdmin):
-    list_display = ('comp_ref', 'mat_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe')
+    list_display = (
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe')
     list_filter = ('type', 'supplier_oe')
     ordering = ('comp_ref',)
-    search_fields = ('comp_ref', 'mat_ref', 'pr_reference', 'name', 'xelon_name', 'type')
+    search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type')
 
 
 class CorvetProductAdmin(admin.ModelAdmin):

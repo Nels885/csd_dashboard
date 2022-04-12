@@ -1,120 +1,33 @@
 import re
-from io import StringIO, BytesIO
+from io import StringIO
 
-from django.utils import timezone
-from django.http import FileResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.management import call_command
 from django.core.mail import EmailMessage
-from django.db.models import Q, Count, Max
+from django.db.models import Q, Count
 from django.views.generic.edit import CreateView, UpdateView
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import mm
-from reportlab.lib.pagesizes import A4
-from reportlab.graphics.barcode import code128
 
 from constance import config
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView, BSModalDeleteView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView, BSModalFormView
 from utils.django.urls import reverse, reverse_lazy, http_referer
 
-from utils.conf import string_to_list, DICT_YEAR
-from utils.django.datatables import QueryTableByArgs
+from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
-from .models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase, RepairPart
-from .serializers import RemanRepairSerializer, REPAIR_COLUMN_LIST
-from .forms import (
-    BatchForm, AddBatchForm, AddRepairForm, EditRepairForm, CloseRepairForm, CheckOutRepairForm, CheckPartForm,
+from reman.models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase
+from reman.forms import (
+    CheckOutRepairForm, CheckPartForm,
     DefaultForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm, RepairPartForm
+    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm
 )
-from .utils import batch_pdf_data
 
 context = {
     'title': 'Reman'
 }
-
-"""
-~~~~~~~~~~~~~~~~~
-TECHNICIAN VIEWS
-~~~~~~~~~~~~~~~~~
-"""
-
-
-@permission_required('reman.change_repair')
-def repair_edit(request, pk):
-    """ View of edit repair page """
-    card_title = _('Modification customer file')
-    prod = get_object_or_404(Repair, pk=pk)
-    form = EditRepairForm(request.POST or None, instance=prod)
-    form2 = RepairPartForm(request.GET or None)
-    if request.POST:
-        form2 = RepairPartForm(request.POST)
-        if "repair_part" in request.POST and form2.is_valid():
-            product_code = form2.cleaned_data['product_code']
-            part_number = form2.cleaned_data['part_number']
-            RepairPart.objects.create(product_code=product_code, part_number=part_number, content_object=prod)
-            form2 = RepairPartForm()
-        elif "repair_part" not in request.POST and form.is_valid():
-            form.save()
-            messages.success(request, _('Modification done successfully!'))
-            if "btn_repair_close" in request.POST:
-                return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
-            return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
-    context.update(locals())
-    return render(request, 'reman/repair/repair_edit.html', context)
-
-
-@permission_required('reman.change_repair')
-def repair_close(request, pk):
-    """ View of close repair page """
-    card_title = _('Modification customer file')
-    prod = get_object_or_404(Repair, pk=pk)
-    form = CloseRepairForm(request.POST or None, instance=prod)
-    if request.POST and form.is_valid():
-        form.save()
-        messages.success(request, _('Modification done successfully!'))
-        return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
-    context.update(locals())
-    return render(request, 'reman/repair/repair_close.html', context)
-
-
-@permission_required('reman.view_repair')
-def repair_detail(request, pk):
-    """ View of detail repair page """
-    card_title = _('Detail customer file')
-    prod = get_object_or_404(Repair, pk=pk)
-    form = CloseRepairForm(request.POST or None, instance=prod)
-    context.update(locals())
-    return render(request, 'reman/repair/repair_detail.html', context)
-
-
-class RepairCreateView(PermissionRequiredMixin, BSModalCreateView):
-    permission_required = 'reman.add_repair'
-    template_name = 'reman/modal/repair_create.html'
-    form_class = AddRepairForm
-    success_message = _('Success: Repair was created.')
-
-
-class RepairPartDeleteView(LoginRequiredMixin, BSModalDeleteView):
-    model = RepairPart
-    template_name = 'format/modal_delete.html'
-    success_message = _('Success: Repair part was deleted.')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['modal_title'] = _('Repair part delete')
-        return context
-
-    def get_success_url(self):
-        return http_referer(self.request)
-
 
 """
 ~~~~~~~~~~~~~~
@@ -160,77 +73,6 @@ def ref_base_edit(request, barcode):
         return redirect(reverse('reman:edit_ref_base', kwargs={'barcode': barcode}) + '?next=' + str(next_form))
     context.update(locals())
     return render(request, 'reman/ecu_ref_base_update.html', context)
-
-
-class BatchCreateView(PermissionRequiredMixin, BSModalCreateView):
-    permission_required = 'reman.add_batch'
-    template_name = 'reman/modal/batch_create.html'
-    form_class = AddBatchForm
-    success_message = _('Success: Batch was created.')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['modal_title'] = _('Create Batch')
-        return context
-
-    def form_valid(self, form):
-        batch_type = form.cleaned_data['type']
-        if "ETUDE" in batch_type:
-            filter = 'etude'
-        elif "REPAIR" in batch_type:
-            filter = 'workshop'
-        else:
-            filter = 'pending'
-        self.success_url = reverse_lazy('reman:batch_table', get={'filter': filter})
-        return super().form_valid(form)
-
-
-def batch_type_ajax(request):
-    date = timezone.now()
-    data = {"number": 1}
-    batch_type = request.GET.get('type', None)
-    try:
-        if "ETUDE" in batch_type:
-            data = {"number": 901}
-            batchs = Batch.objects.all().exclude(number__lt=900)
-        else:
-            batchs = Batch.objects.all().exclude(number__gte=900)
-        if "VOLVO" in batch_type:
-            batchs = batchs.filter(year="V")
-        elif "REPAIR" in batch_type:
-            batchs = batchs.filter(year="X")
-        else:
-            batchs = batchs.filter(year=DICT_YEAR.get(date.year))
-        data["number"] = batchs.aggregate(Max('number'))['number__max'] + 1
-    except TypeError:
-        pass
-    return JsonResponse(data)
-
-
-class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
-    model = Batch
-    permission_required = 'reman.change_batch'
-    template_name = 'reman/modal/batch_update.html'
-    form_class = BatchForm
-    success_message = _('Success: Batch was updated.')
-
-    def form_valid(self, form):
-        if form.cleaned_data['number'] > 900:
-            filter = 'etude'
-        elif form.cleaned_data['year'] == "X":
-            filter = 'workshop'
-        else:
-            filter = 'pending'
-        self.success_url = reverse_lazy('reman:batch_table', get={'filter': filter})
-        return super().form_valid(form)
-
-
-class BatchDeleteView(PermissionRequiredMixin, BSModalDeleteView):
-    model = Batch
-    permission_required = 'reman.delete_batch'
-    template_name = 'reman/modal/batch_delete.html'
-    success_message = _('Success: Batch was deleted.')
-    success_url = reverse_lazy('reman:batch_table')
 
 
 class RefRemanCreateView(PermissionRequiredMixin, BSModalCreateView):
@@ -444,108 +286,6 @@ def out_table(request):
 CONSULTING VIEWS
 ~~~~~~~~~~~~~~~~~
 """
-
-
-@login_required()
-def batch_table(request):
-    """ View of batch table page """
-    table_title = 'Liste des lots REMAN ajoutés'
-    repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
-    rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
-    packed = Count('repairs', filter=Q(repairs__checkout=True))
-    query_param = request.GET.get('filter', None)
-    select_tab = 'batch'
-    if query_param and query_param == "pending":
-        batchs = Batch.objects.filter(active=True, number__lt=900).exclude(year="X").order_by('end_date')
-        select_tab = 'batch_pending'
-    elif query_param and query_param == "etude":
-        select_tab = 'batch_etude'
-        batchs = Batch.objects.filter(number__gte=900).order_by('-end_date')
-    elif query_param and query_param == "workshop":
-        select_tab = 'batch_workshop'
-        batchs = Batch.objects.filter(year="X").order_by('-end_date')
-    else:
-        batchs = Batch.objects.filter(number__lt=900).order_by('-created_at')
-    batchs = batchs.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
-    context.update(locals())
-    return render(request, 'reman/batch_table.html', context)
-
-
-@permission_required('reman.pdfgen_batch')
-def batch_pdf_generate(request, pk):
-    batch = get_object_or_404(Batch, pk=pk)
-    reman_reference, part_name = batch_pdf_data(batch)
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer, pagesize=A4)
-    p.setTitle(f"batch_{batch.batch_number}")
-    p.rotate(90)
-    p.setFont('Courier', 24)
-    p.setLineWidth(4)
-    p.drawString(60, -130, "REFERENCE REMAN :")
-    p.drawString(60, -230, "Type boitier : ")
-    p.drawString(60, -330, "N° LOT :")
-    p.drawString(60, -430, "Quantité carton :")
-
-    p.setFont('Courier-Bold', 36)
-    p.drawString(380, -130, str(reman_reference))
-    barcode = code128.Code128(str(reman_reference), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 610, -130)
-    p.drawString(380, -230, str(part_name))
-    p.drawString(380, -330, str(batch.batch_number))
-    p.line(470, -340, 530, -340)
-    barcode = code128.Code128(str(batch.batch_number), barWidth=0.5 * mm, barHeight=10 * mm)
-    barcode.drawOn(p, 610, -330)
-    p.drawString(380, -430, str(batch.box_quantity))
-    # p.line(380, -440,  400, -440)
-    p.showPage()
-    p.save()
-
-    buffer.seek(0)
-    return FileResponse(buffer, filename=f"batch_{batch.batch_number}.pdf")
-
-
-@login_required()
-def repair_table(request):
-    """ View of Reman Repair table page """
-    query_param = request.GET.get('filter')
-    select_tab = 'repair'
-    if query_param and query_param == 'pending':
-        table_title = 'Dossiers en cours de réparation'
-        select_tab = 'repair_pending'
-    elif query_param and query_param == 'checkout':
-        table_title = "Dossiers en attente d'expédition"
-    else:
-        table_title = 'Dossiers de réparation'
-    context.update(locals())
-    return render(request, 'reman/repair/ajax_repair_table.html', context)
-
-
-class RepairViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Repair.objects.all()
-    serializer_class = RemanRepairSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            self._filter(request)
-            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(repair["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": repair["draw"],
-                "recordsTotal": repair["total"],
-                "recordsFiltered": repair["count"]
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
-
-    def _filter(self, request):
-        query = request.query_params.get('filter', None)
-        if query and query == 'pending':
-            self.queryset = self.queryset.exclude(status="Rebut").filter(checkout=False)
-        elif query and query == 'checkout':
-            self.queryset = self.queryset.filter(status="Réparé", quality_control=True, checkout=False)
 
 
 @login_required()

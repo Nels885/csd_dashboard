@@ -210,18 +210,21 @@ class Corvet(models.Model):
     @classmethod
     def search(cls, value):
         if value is not None:
-            query = value.upper().strip()
-            return cls.objects.filter(Q(vin__exact=query) | Q(vin__endswith=query) |
-                                      Q(electronique_44l__contains=query) |
-                                      Q(electronique_44x__contains=query) |
-                                      Q(electronique_44a__contains=query) |
-                                      Q(electronique_14l__exact=query) |
-                                      Q(electronique_14x__exact=query) |
-                                      Q(electronique_14a__exact=query) |
-                                      Q(electronique_14b__exact=query) |
-                                      Q(electronique_44b__exact=query) |
-                                      Q(electronique_16p__exact=query) |
-                                      Q(electronique_46p__exact=query))
+            query = value.strip()
+            return cls.objects.filter(Q(vin__iexact=query) | Q(vin__iendswith=query) |
+                                      Q(electronique_44l__icontains=query) |
+                                      Q(electronique_44x__icontains=query) |
+                                      Q(electronique_44a__icontains=query) |
+                                      Q(electronique_12y__iexact=query) |
+                                      Q(electronique_14l__iexact=query) |
+                                      Q(electronique_14x__iexact=query) |
+                                      Q(electronique_14a__iexact=query) |
+                                      Q(electronique_14b__iexact=query) |
+                                      Q(electronique_14k__iexact=query) |
+                                      Q(electronique_44b__iexact=query) |
+                                      Q(electronique_16p__iexact=query) |
+                                      Q(electronique_46p__iexact=query) |
+                                      Q(opts__tag__istartswith=query))
         return None
 
     def __str__(self):
@@ -348,14 +351,18 @@ class Firmware(models.Model):
 class Calibration(models.Model):
     TYPE_CHOICES = [
         ('94B', 'BSI SOFT - Boitier Servitude Intelligent'), ('94A', 'CMM SOFT - Calculateur Moteur Multifonction'),
-        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94L', 'EMF SOFT - Ecran Multifonctions'),
-        ('94X', 'BTEL SOFT - Boitier Telematique'), ('96B', 'BSM SOFT - Boitier Servitude Moteur'),
-        ('99H', 'MDS SOFT - Module de service telematique')
+        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94K', 'CMB SOFT - Combine Planche de Bord'),
+        ('94L', 'EMF SOFT - Ecran Multifonctions'), ('94X', 'BTEL SOFT - Boitier Telematique'),
+        ('96B', 'BSM SOFT - Boitier Servitude Moteur'), ('99H', 'MDS SOFT - Module de service telematique'),
+        ('92Y', 'CVM2_2_ SOFT - CAMERA VIDEO MULTIFONCTION V2'),
+        ('99K', 'ARTIV SOFT - Boitier Aide au Respect du Temps Inter Vehicule'),
+        ('92E', 'AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE'), ('96L', 'DAE SOFT - Direction Assistee Electrique')
     ]
 
     factory = models.CharField('version usine', max_length=10, unique=True)
     type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
     current = models.CharField('version actuelle', max_length=10, blank=True)
+    pr_reference = models.CharField('référence PR', max_length=10, blank=True)
 
     class Meta:
         verbose_name = "Calibration"
@@ -376,6 +383,7 @@ class Ecu(models.Model):
 
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)
     mat_ref = models.CharField("réf. matériel", max_length=10, blank=True)
+    label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     type = models.CharField('type', max_length=7, choices=TYPE_CHOICES)

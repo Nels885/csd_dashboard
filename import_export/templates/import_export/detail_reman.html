@@ -1,81 +1,142 @@
-{% load i18n widget_tweaks %}
+{% extends 'format/detail_format.html' %}
 
-<h3 class="mb-4 mt-3 text-gray-800">Exportation des données :</h3>
+{% load static i18n widget_tweaks %}
 
-<form id="export-reman" method="post" action="">
+{% block card_header %}
 
-    {% csrf_token %}
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
 
-    <div class="form-group row">
-        <label for="{{ form_reman.formats.id_for_label }}" class="col-form-label col-sm-2">Format :</label>
+            {% include 'import_export/tab_select.html' with select='reman' %}
 
-        <div class="col-sm-2">
-            {% render_field form_reman.formats class="custom-select form-control" %}
-        </div>
-        <label for="{{ form_reman.tables.id_for_label }}" class="col-form-label col-sm-1">Tableau :</label>
-        <div class="col-sm-2">
-            {% render_field form_reman.tables class="custom-select form-control" %}
-        </div>
-        <div class="col-sm-auto">
-            <button type="submit" class="btn btn-success btn-icon-split mb-2">
-                <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
-            </button>
-        </div>
+        </ul>
     </div>
 
-</form>
+{% endblock %}
 
-{% include 'format/progress_bar.html' with name='export-reman' %}
+{% block detail_content %}
 
-<hr>
+    <h3 class="mb-4 mt-3 text-gray-800">Exportation des données :</h3>
 
-<h3 class="text-gray-800 mb-4 mt-5">Importation des données :</h3>
+    <form id="export-reman" method="post" action="">
 
-<form method="post" enctype="multipart/form-data"
-      action="{% url 'import_export:import_part' %}">
+        {% csrf_token %}
 
-    {% csrf_token %}
-    <div class="form-group row">
-        <div class="input-group col-sm-7">
-            <div class="input-group-prepend mb-2">
-                <span class="input-group-text">Pièces Détachées</span>
-            </div>
-            <div class="custom-file mb-2">
-                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
-                <label class="custom-file-label" for="inputMyFile">Choose file</label>
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.table %}
+            <div class="col-sm-2">
+                {% render_field form.table class="custom-select form-control" %}
             </div>
         </div>
-        <div class="col-sm-auto">
-            <button type="submit" class="btn btn-success btn-icon-split mb-2">
-                <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Csv Import" %}</span>
-            </button>
-        </div>
-    </div>
 
-</form>
-
-<form method="post" enctype="multipart/form-data"
-      action="{% url 'import_export:import_ecu_base' %}">
-
-    {% csrf_token %}
-
-    <div class="form-group row">
-        <div class="input-group col-sm-7">
-            <div class="input-group-prepend mb-2">
-                <span class="input-group-text">Base Réf ECU</span>
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.customer %}
+            <div class="col-sm-2">
+                {% render_field form.customer class="form-control" %}
             </div>
-            <div class="custom-file mb-2">
-                <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
-                <label class="custom-file-label" for="inputMyFile">Choose file</label>
+            {% include 'format/label_form_group.html' with field=form.batch_number %}
+            <div class="col-sm-2">
+                {% render_field form.batch_number class="form-control" %}
             </div>
         </div>
-        <div class="col-sm-auto">
-            <button type="submit" class="btn btn-success btn-icon-split mb-2">
-                <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span class="text">{% trans "Excel Import" %}</span>
-            </button>
+
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.batch_type %}
+            <div class="col-sm-2">
+                {% render_field form.batch_type class="custom-select form-control" %}
+            </div>
         </div>
-    </div>
 
-</form>
+        <div class="form-group mt-4 mb-4 row">
+            {% include 'format/label_form_group.html' with field=form.columns %}
+            <div class="col-sm-10">
+                {% for col in form.columns %}
+                    <div class="form-check-inline col-sm-2">{{ col }}</div>
+                {% endfor %}
+            </div>
+        </div>
 
-<hr>
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.excel_type %}
+            <div class="col-sm-2">
+                {% render_field form.excel_type class="custom-select form-control" %}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col text-center mt-4">
+                <button type="submit" class="btn btn-success btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-file-download"></i></span><span class="text">{% trans "Data Export" %}</span>
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+    {% include 'format/progress_bar.html' with name='export-reman' %}
+
+    <hr>
+
+    <h3 class="text-gray-800 mb-4 mt-5">Importation des données :</h3>
+
+    <form method="post" enctype="multipart/form-data"
+          action="{% url 'import_export:import_part' %}">
+
+        {% csrf_token %}
+        <div class="form-group row">
+            <div class="input-group col-sm-7">
+                <div class="input-group-prepend mb-2">
+                    <span class="input-group-text">Pièces Détachées</span>
+                </div>
+                <div class="custom-file mb-2">
+                    <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
+                    <label class="custom-file-label" for="inputMyFile">Choose file</label>
+                </div>
+            </div>
+            <div class="col-sm-auto">
+                <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                    <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span
+                        class="text">{% trans "Csv Import" %}</span>
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+    <form method="post" enctype="multipart/form-data"
+          action="{% url 'import_export:import_ecu_base' %}">
+
+        {% csrf_token %}
+
+        <div class="form-group row">
+            <div class="input-group col-sm-7">
+                <div class="input-group-prepend mb-2">
+                    <span class="input-group-text">Base Réf ECU</span>
+                </div>
+                <div class="custom-file mb-2">
+                    <input type="file" class="custom-file-input" id="inputMyFile" name="myfile">
+                    <label class="custom-file-label" for="inputMyFile">Choose file</label>
+                </div>
+            </div>
+            <div class="col-sm-auto">
+                <button type="submit" class="btn btn-success btn-icon-split mb-2">
+                    <span class="icon text-white-50"><i class="fas fa-file-upload"></i></span><span
+                        class="text">{% trans "Excel Import" %}</span>
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+    <hr>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="application/javascript">
+        REMAN_URL = "{% url 'import_export:reman_async' %}";
+    </script>
+    <script src="{% static 'import_export/js/tasks.js' %}" type="application/javascript"></script>
+
+{% endblock %}

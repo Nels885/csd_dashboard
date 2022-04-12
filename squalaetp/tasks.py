@@ -6,7 +6,7 @@ from django.core.mail import EmailMessage
 
 from utils.scraping import ScrapingSivin, ScrapingCorvet
 from utils.django.models import defaults_dict
-from utils.django.validators import xml_sivin_parser, xml_parser
+from utils.django.validators import xml_sivin_parser, xml_parser, vin_psa_isvalid
 from .models import Sivin
 from psa.models import Corvet
 
@@ -48,7 +48,7 @@ def send_email_task(self, subject, body, from_email, to, cc, files=None):
 @celery_app.task
 def save_sivin_to_models(immat):
     msg = "SIVIN not Found"
-    if 6 < len(immat) < 11:
+    if not immat.isnumeric() and (6 < len(immat) < 11):
         start_time = time.time()
         sivin = ScrapingSivin()
         data = xml_sivin_parser(sivin.result(immat))
@@ -59,7 +59,8 @@ def save_sivin_to_models(immat):
         elif data and data.get('immat_siv'):
             delay_time = time.time() - start_time
             msg = f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"
-            if not Corvet.objects.filter(vin=data.get('codif_vin')):
+            vin = data.get('codif_vin')
+            if vin_psa_isvalid(vin) and not Corvet.objects.filter(vin=vin):
                 corvet = ScrapingCorvet()
                 row = xml_parser(corvet.result(data.get('codif_vin')))
                 corvet.close()

@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
 
-from reman.models import SparePart, Repair, Batch, EcuModel, Default, EcuRefBase, EcuType
+from reman.models import SparePart, Repair, RepairPart, Batch, EcuModel, Default, EcuRefBase, EcuType
 
 
 class Command(BaseCommand):
@@ -102,12 +102,13 @@ class Command(BaseCommand):
             EcuModel.objects.all().delete()
             EcuRefBase.objects.all().delete()
             Repair.objects.all().delete()
+            RepairPart.objects.all().delete()
             Batch.objects.all().delete()
             Default.objects.all().delete()
             Default.ecu_type.through.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(no_style(), [
-                SparePart, EcuType, EcuModel, EcuRefBase, Repair, Batch, Default, Default.ecu_type.through
+                SparePart, EcuType, EcuModel, EcuRefBase, Repair, RepairPart, Batch, Default, Default.ecu_type.through
             ])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:

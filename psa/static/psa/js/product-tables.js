@@ -2,6 +2,7 @@
 $(document).ready(function () {
     $('#prodTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [[1, "asc"]],
         // Disable sorting for the Tags and Actions columns.

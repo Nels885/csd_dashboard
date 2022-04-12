@@ -1,5 +1,6 @@
 from django.forms.utils import ErrorList
 from django import forms
+from django.utils.translation import ugettext as _
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -111,3 +112,12 @@ class WebLinkForm(BSModalModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 5})
         }
+
+
+class SearchForm(forms.Form):
+    SELECTS = [
+        ('atelier', 'Atelier'), ('reman', 'Reman'), ('sivin', 'SIVIN')
+    ]
+
+    select = forms.ChoiceField(choices=SELECTS, widget=forms.Select())
+    query = forms.CharField(widget=forms.TextInput(attrs={"placeholder": _("Search Xelon, VIN or SN...")}))

@@ -7,31 +7,16 @@ $.ajax({
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
         // console.log(data);
-        const {prodsAreaLabels} = data;
-        const {prodsRepValue} = data;
-        const {prodsInValue} = data;
-        const {prodsExpValue} = data;
-        const {prodsLateValue} = data;
-        const {suptechCeLabels} = data;
-        const {twoDays} = data;
-        const {twoToSixDays} = data;
-        const {sixDays} = data;
-        const {bgaAreaLabels} = data;
-        const {bgaTotalValue} = data;
-        const {bgaOneValue} = data;
-        const {bgaTwoValue} = data;
-        const {tcAreaLabels} = data;
-        const {tcTempValue} = data;
 
         // Deal Area Chart
         var ctx1 = document.getElementById("dealAreaChart");
         var dealLineChart = new Chart(ctx1, {
             type: 'line',
             data: {
-                labels: prodsAreaLabels,
+                labels: data['prodsAreaLabels'],
                 datasets: [
                     {
-                        data: prodsRepValue,
+                        data: data['prodsRepValue'],
                         label: "Pdts en cours",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -41,7 +26,7 @@ $.ajax({
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
-                        data: prodsInValue,
+                        data: data['prodsInValue'],
                         label: "Pdts en IN",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -51,7 +36,7 @@ $.ajax({
                         pointBorderColor: "rgba(78, 115, 223, 1)",
                     },
                     {
-                        data: prodsExpValue,
+                        data: data['prodsExpValue'],
                         label: "Pdts en Exp",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -61,7 +46,7 @@ $.ajax({
                         pointBorderColor: "rgba(240, 132, 40, 1)",
                     },
                     {
-                        data: prodsLateValue,
+                        data: data['prodsLateValue'],
                         label: "Pdts en Retard",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -114,15 +99,15 @@ $.ajax({
             },
         });
 
-        // Suptech Area Chart
-        var ctx2 = document.getElementById("suptechAreaChart");
-        var suptechChart = new Chart(ctx2, {
+        // Suptech CE Area Chart
+        var ctx2 = document.getElementById("suptechCeChart");
+        var suptechCeChart = new Chart(ctx2, {
             type: 'line',
             data: {
-                labels: suptechCeLabels,
+                labels: data['suptechCeLabels'],
                 datasets: [
                     {
-                        data: twoDays,
+                        data: data['twoDays'],
                         label: "1 à 2 jours",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -132,7 +117,7 @@ $.ajax({
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
-                        data: twoToSixDays,
+                        data: data['twoToSixDays'],
                         label: "3 à 6 jours",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -142,7 +127,7 @@ $.ajax({
                         pointBorderColor: "rgba(240, 132, 40, 1)",
                     },
                     {
-                        data: sixDays,
+                        data: data['sixDays'],
                         label: "7 jours et plus",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -205,10 +190,10 @@ $.ajax({
         var bgaLineChart = new Chart(ctx3, {
             type: 'line',
             data: {
-                labels: bgaAreaLabels,
+                labels: data['bgaAreaLabels'],
                 datasets: [
                     {
-                        data: bgaTotalValue,
+                        data: data['bgaTotalValue'],
                         label: "Total utilisation BGA",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -218,7 +203,7 @@ $.ajax({
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
-                        data: bgaOneValue,
+                        data: data['bgaOneValue'],
                         label: "Utilisation DES-48",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -228,7 +213,7 @@ $.ajax({
                         pointBorderColor: "rgba(78, 115, 223, 1)",
                     },
                     {
-                        data: bgaTwoValue,
+                        data: data['bgaTwoValue'],
                         label: "Utilisation DES-51",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -291,10 +276,10 @@ $.ajax({
         var tcLineChart = new Chart(ctx4, {
             type: 'line',
             data: {
-                labels: tcAreaLabels,
+                labels: data['tcAreaLabels'],
                 datasets: [
                     {
-                        data: tcTempValue,
+                        data: data['tcTempValue'],
                         label: "Température Chambre Thermique",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -334,6 +319,92 @@ $.ajax({
                         },
                         ticks: {
                             maxTicksLimit: 10,
+                        },
+                        grid: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            },
+        });
+
+        // Suptech Area Chart
+        var ctx5 = document.getElementById("suptechCoChart");
+        var suptechCoChart = new Chart(ctx5, {
+            type: 'line',
+            data: {
+                labels: data['suptechCoLabels'],
+                datasets: [
+                    {
+                        data: data['coTwoDays'],
+                        label: "1 à 2 jours",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(0, 143, 136, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(0, 143, 136, 1)",
+                        pointBorderColor: "rgba(0, 143, 136, 1)",
+                    },
+                    {
+                        data: data['coTwoToSixDays'],
+                        label: "3 à 6 jours",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(240, 132, 40, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(240, 132, 40, 1)",
+                        pointBorderColor: "rgba(240, 132, 40, 1)",
+                    },
+                    {
+                        data: data['coSixDays'],
+                        label: "7 jours et plus",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(214, 54, 33, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(214, 54, 33, 1)",
+                        pointBorderColor: "rgba(214, 54, 33, 1)",
+                    },
+                ],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 10
+                        }
+                    },
+                    y: {
+                        max: 100,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Valeur en %',
+                        },
+                        ticks: {
+                            maxTicksLimit: 6,
                         },
                         grid: {
                             color: "rgb(234, 236, 244)",

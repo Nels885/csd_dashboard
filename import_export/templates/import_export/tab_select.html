@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<li class="nav-item {% if select == 'csd' %}active{% endif %}">
+    <a class="nav-link {% if select == 'csd' %}active{% endif %}" href="{% url 'import_export:csd_async' %}">
+        CSD Atelier
+    </a>
+</li>
+
+<li class="nav-item {% if select == 'reman' %}active{% endif %}">
+    <a class="nav-link {% if select == 'reman' %}active{% endif %}" href="{% url 'import_export:reman_async' %}">
+        REMAN
+    </a>
+</li>
+
+<li class="nav-item {% if select == 'tools' %}active{% endif %}">
+    <a class="nav-link {% if select == 'tools' %}active{% endif %}" href="{% url 'import_export:tools_async' %}">
+        Outils
+    </a>
+</li>

@@ -52,8 +52,7 @@ class UnlockForm(Form):
     def save(self, commit=True):
         user = get_current_user()
         unlock = self.cleaned_data['unlock']
-        instance = UnlockProduct.objects.create(user=user.userprofile,
-                                                unlock=Xelon.objects.get(numero_de_dossier=unlock))
+        instance = UnlockProduct.objects.create(user=user, unlock=Xelon.objects.get(numero_de_dossier=unlock))
         if commit:
             instance.save()
         return instance

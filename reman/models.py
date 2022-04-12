@@ -127,7 +127,7 @@ class Batch(models.Model):
 
 
 class Default(models.Model):
-    code = models.CharField("code defaut", max_length=10, unique=True)
+    code = models.CharField("code defaut", max_length=30, unique=True)
     description = models.CharField("libellé", max_length=200)
     ecu_type = models.ManyToManyField("EcuType", related_name="defaults", blank=True)
 
@@ -139,6 +139,8 @@ class Repair(models.Model):
 
     identify_number = models.CharField("n° d'identification", max_length=10, unique=True)
     barcode = models.CharField("code barre", max_length=100, blank=True)
+    vin = models.CharField("V.I.N.", max_length=20, blank=True)
+    diagnostic_data = models.TextField("Données Diagnostique", max_length=50000, blank=True)
     new_barcode = models.CharField("nouveau code barre", max_length=100, blank=True)
     product_number = models.CharField("référence", max_length=50, blank=True)
     remark = models.CharField("remarques", max_length=200, blank=True)
@@ -146,7 +148,7 @@ class Repair(models.Model):
     face_plate = models.BooleanField("façade", default=False)
     metal_case = models.BooleanField("boitier", default=False)
     fan = models.BooleanField("ventilateur", default=False)
-    locating_pin = models.BooleanField("goupille d'emplacement", default=False)
+    locating_pin = models.BooleanField("Boulon arrière", default=False)
     spring_locking = models.BooleanField("verrouillage à ressort", default=False)
     status = models.CharField("status", max_length=50, default='En cours', choices=STATUS_CHOICES)
     quality_control = models.BooleanField("contrôle qualité", default=False)
@@ -192,12 +194,13 @@ class SparePart(models.Model):
 
 class RepairPart(models.Model):
     product_code = models.CharField('code produit', max_length=100)
-    part_number = models.CharField('n° de pièce', max_length=100)
+    quantity = models.CharField('n° de pièce', max_length=100)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
+        ordering = ['id']
         verbose_name = "Pièce réparation"
 
     def __str__(self):

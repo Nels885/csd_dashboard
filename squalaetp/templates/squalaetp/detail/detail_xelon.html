@@ -3,11 +3,14 @@
 
     <tr>
         <td class="text-dark">Numéro de dossier</td>
-        <td>{{ xelon.numero_de_dossier }}<a href="#" title="copie" onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i class="fas fa-copy ml-2"></i></a></td>
+        <td>{{ xelon.numero_de_dossier }}<a href="#" title="copie"
+                                            onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i
+                class="fas fa-copy ml-2"></i></a></td>
     </tr>
     <tr>
         <td class="text-dark">V.I.N.</td>
-        <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i class="fas fa-copy ml-2"></i></a></td>
+        <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i
+                class="fas fa-copy ml-2"></i></a></td>
     </tr>
     <tr>
         <td class="text-dark">Modèle produit</td>
@@ -22,8 +25,13 @@
         <td>{{ xelon.date_retour|default_if_none:"" }}</td>
     </tr>
     <tr>
-        <td class="text-dark">Date d'expédition attentue</td>
-        <td>{{ xelon.date_expedition_attendue|default_if_none:"" }}</td>
+        <td class="text-dark td-ihm">Date d'expédition attendue</td>
+        <td class="font-weight-bold {% if xelon.delai_expedition_attendue > 0 %}bg-danger text-white{% endif %}">
+            {{ xelon.date_expedition_attendue|default_if_none:"" }}
+            {% if xelon.delai_expedition_attendue %}
+                <span class="ml-4">J {{ xelon.delai_expedition_attendue }}</span>
+            {% endif %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark">Type de clôture</td>

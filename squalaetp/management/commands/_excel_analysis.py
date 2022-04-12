@@ -9,7 +9,7 @@ class ExcelDelayAnalysis(ExcelFormat):
     """## Read data in Excel file for Delay Analysis ##"""
     ERROR = False
     DROP_COLS = ['ref_produit_clarion', 'code_pdv', 'nom_pdv', 'date_daccord_de_la_demande', 'delai_prevu_sp',
-                 'nom_equipe', 'n_commande_de_travaux']
+                 'nom_equipe', 'n_commande_de_travaux', 'delai_expedition_attendue']
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S",
                  'date_expedition_attendue': "'%d/%m/%Y"}
 

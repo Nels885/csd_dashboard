@@ -2,7 +2,7 @@ import time
 import logging
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import ChromeOptions as Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from constance import config
@@ -22,12 +22,11 @@ class ScrapingCorvet(webdriver.Chrome):
         try:
             options = Options()
             if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-                options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-            options.add_argument('-headless')
-            options.add_argument("--no-sandbox")  # bypass OS security model
-            options.add_argument("--disable-dev-shm-usage")  # overcome limited resource problems
+                options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+            options.add_argument('headless')
+            options.add_argument("no-sandbox")  # bypass OS security model
+            options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
             super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
-            self.implicitly_wait(10)
             self.set_page_load_timeout(30)
             self.get(self.START_URLS)
         except Exception as err:

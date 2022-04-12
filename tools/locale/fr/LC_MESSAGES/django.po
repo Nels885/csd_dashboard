@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-03 18:57+0100\n"
+"POT-Creation-Date: 2022-04-12 14:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: tools/admin.py:40
+#, python-brace-format
+msgid "{0} product{1} {2} successfully {3}"
+msgstr "{0} produit{1} {2} avec succès {3}"
+
+#: tools/admin.py:43
+msgid "was,were"
+msgstr "était, étaient"
+
+#: tools/admin.py:51
+msgid "48h processing disabled"
+msgstr "Traitement 48h désactivé"
+
+#: tools/admin.py:56
+msgid "48h processing enabled"
+msgstr "Traitement 48h activé"
+
 #: tools/forms.py:103
 msgid "Username not found."
 msgstr "Utilisateur non trouvé."
@@ -26,14 +43,14 @@ msgstr "Utilisateur non trouvé."
 msgid "CALIBRE file exists !"
 msgstr "Le fichier CALIBRE existe !"
 
-#: tools/templates/tools/modal/suptech_create.html:125
+#: tools/templates/tools/modal/suptech_create.html:137
 #: tools/templates/tools/modal/tag_xelon.html:37
 #: tools/templates/tools/modal/thermal_delete.html:20
-#: tools/templates/tools/suptech/suptech_update.html:99
+#: tools/templates/tools/suptech/suptech_update.html:110
 msgid "Cancel"
 msgstr "Annuler"
 
-#: tools/templates/tools/modal/suptech_create.html:126
+#: tools/templates/tools/modal/suptech_create.html:138
 msgid "Create"
 msgstr "créé le"
 
@@ -82,7 +99,7 @@ msgstr "Répondre à la demande"
 msgid "Send"
 msgstr "Envoyer"
 
-#: tools/templates/tools/suptech/suptech_update.html:100
+#: tools/templates/tools/suptech/suptech_update.html:111
 msgid "Update"
 msgstr "Mettre à jour"
 
@@ -147,28 +164,28 @@ msgstr "liste Chambre thermique"
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:161 tools/views.py:225 tools/views.py:245
+#: tools/views.py:161 tools/views.py:228 tools/views.py:248
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: tools/views.py:182
+#: tools/views.py:185
 msgid "Support Tech list"
 msgstr "Liste Support Tech"
 
-#: tools/views.py:210
+#: tools/views.py:213
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Detail"
 msgstr "SUPTECH N°{self.object.pk} - Détail"
 
-#: tools/views.py:223
+#: tools/views.py:226
 msgid "Success: The message has been added."
 msgstr "Succès: Le message a été ajouté."
 
-#: tools/views.py:227 tools/views.py:247
+#: tools/views.py:230 tools/views.py:250
 msgid "Warning: Data update but without sending the email"
 msgstr "Attention : mise à jour des données mais sans envoi de l'email"
 
-#: tools/views.py:240
+#: tools/views.py:243
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Response"
 msgstr "SUPTECH N°{self.object.pk} - Réponse"

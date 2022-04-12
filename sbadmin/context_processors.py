@@ -3,6 +3,8 @@ from _version import __version__
 
 from constance import config
 
+from dashboard.forms import SearchForm
+
 
 def get_release(request):
     return {'release': __version__}
@@ -19,3 +21,9 @@ def get_wiki_url(request):
 def get_admin_emails(request):
     email_list = ",".join([values[0] for values in User.objects.filter(is_superuser=True).values_list('email')])
     return {'admin_emails': email_list}
+
+
+def search_form(request):
+    return {
+        'search_form': SearchForm()
+    }

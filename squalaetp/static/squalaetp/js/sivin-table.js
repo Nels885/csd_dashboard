@@ -1,4 +1,6 @@
 let table = $('#sivinTable').DataTable({
+    pagingType: "full_numbers",
+    lengthMenu: [[25, 50, 100], [25, 50, 100]],
     processing: true,
     serverSide: true,
     scrollX: true,

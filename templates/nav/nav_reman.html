@@ -20,7 +20,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">{% trans "Treatments" %} :</h6>
                         <a class="create-repair collapse-item" href="#">{% trans "Create file" %}</a>
-
+                        <a class="filter-btn collapse-item" href="#" data-form-url="{% url 'reman:select_repair' %}">{% trans 'Open file' %}</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Consultation :</h6>
                         <a class="collapse-item" href="{% url 'reman:repair_table' %}?filter=pending">{% trans "Current files" %}</a>
@@ -109,7 +109,7 @@
 
     {% if perms.reman.close_repair %}
         <li class="nav-item">
-            <a class="out-filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}">
+            <a class="filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}">
                 <i class="fas fa-fw fa-boxes"></i><span>{% trans "Cartoning" %}</span>
             </a>
         </li>
@@ -117,7 +117,7 @@
 
     {% if perms.reman.stock_repair %}
         <li class="nav-item">
-            <a class="out-filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}?select=stock">
+            <a class="filter-btn nav-link" href="#" data-form-url="{% url 'reman:out_filter' %}?select=stock">
                 <i class="fas fa-fw fa-warehouse"></i><span>{% trans 'Storage' %}</span>
             </a>
         </li>

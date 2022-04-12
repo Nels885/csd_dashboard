@@ -108,8 +108,8 @@
 
         function onCustomSuccess(progressBarElement, progressBarMessageElement, result) {
             // display message
-            if ("msg" in result) {
-                addMessage(result["msg"], "success");
+            if ("detail" in result) {
+                addMessage(result["detail"], "success");
             } else {
                 addMessage("Complete Progress 100%", "success");
             }

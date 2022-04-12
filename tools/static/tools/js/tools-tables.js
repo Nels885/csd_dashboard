@@ -17,6 +17,7 @@ $(document).ready(function () {
 
     $('#thermalActiveTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         columnDefs: [{
             targets: 0,
@@ -28,18 +29,21 @@ $(document).ready(function () {
 
     $('#thermalTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: []
     });
 
     $('#tagXelonTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: []
     });
 
     $('#suptechTable').DataTable({
         pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
         scrollX: true,
         order: [],
         columnDefs: [{

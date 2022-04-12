@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-03 18:57+0100\n"
+"POT-Creation-Date: 2022-04-12 14:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,36 +180,36 @@ msgstr "Dossiers clients"
 msgid "Search:"
 msgstr "Recherche:"
 
-#: squalaetp/views.py:175
+#: squalaetp/views.py:197
 msgid "Success: Squalaetp data was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:182
+#: squalaetp/views.py:204
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
 
-#: squalaetp/views.py:211
+#: squalaetp/views.py:233
 msgid "Success: Xelon was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
-#: squalaetp/views.py:216
+#: squalaetp/views.py:238
 #, python-format
 msgid "Product update for %(file)s"
 msgstr "MAJ du produit pour %(file)s"
 
-#: squalaetp/views.py:255 squalaetp/views.py:282
+#: squalaetp/views.py:277 squalaetp/views.py:304
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: squalaetp/views.py:386
+#: squalaetp/views.py:408
 msgid "Detail SIVIN data for the Immat: "
 msgstr "Détail des données SIVIN pour l'Immat :"
 
-#: squalaetp/views.py:400
+#: squalaetp/views.py:422
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: squalaetp/views.py:404
+#: squalaetp/views.py:426
 msgid "SIVIN integration"
 msgstr "Intégration SIVIN"

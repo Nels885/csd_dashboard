@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Xelon, Sivin
+from .models import Xelon, Sivin, SparePart
 
 XELON_COLUMN_LIST = [
     'numero_de_dossier', 'vin', 'modele_produit', 'product__category', 'modele_vehicule', 'date_retour',
@@ -9,6 +9,11 @@ XELON_COLUMN_LIST = [
 
 SIVIN_COLUMN_LIST = [
     'immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v', 'nb_portes', 'nb_pl_ass', 'version', 'energie'
+]
+
+
+SPAREPART_COLUMN_LIST = [
+    'code_produit__name', 'code_zone', 'code_emplacement', 'cumul_dispo', 'code_magasin', 'code_site'
 ]
 
 
@@ -28,4 +33,14 @@ class SivinSerializer(serializers.ModelSerializer):
         model = Sivin
         fields = (
             'immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v', 'nb_portes', 'nb_pl_ass', 'version', 'energie'
+        )
+
+
+class SparePartSerializer(serializers.ModelSerializer):
+    product_code = serializers.CharField(source='code_produit.name', read_only=True, default='')
+
+    class Meta:
+        model = SparePart
+        fields = (
+            'product_code', 'code_zone', 'code_emplacement', 'cumul_dispo', 'code_magasin', 'code_site'
         )

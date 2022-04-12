@@ -71,13 +71,13 @@ class Programing(models.Model):
 
 
 class AddReference(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     add_product = models.ForeignKey(Raspeedi, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class UnlockProduct(models.Model):
-    user = models.ForeignKey(UserProfile, editable=False, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, editable=False, on_delete=models.CASCADE)
     unlock = models.ForeignKey(Xelon, editable=False, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)

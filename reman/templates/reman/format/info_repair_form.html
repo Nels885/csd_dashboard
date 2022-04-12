@@ -1,13 +1,15 @@
+{% load widget_tweaks %}
+
 <h5 class="text-gray-800 mt-3">Information Produit :</h5>
 <hr>
 
 <div class="form-group row">
-    <label for="{{ form.identify_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.identify_number.label }} :</label>
-    <div class="col-sm-3">{{ form.identify_number }}</div>
+    <label for="{{ form.identify_number.id_for_label }}" class="col-sm-2 col-form-label">{{ form.identify_number.label }}</label>
+    <div class="col-sm-3">{% render_field form.identify_number class="form-control" readonly="" %}</div>
 </div>
 
 <div class="form-group row">
-    <label for="product_model" class="col-sm-2 col-form-label">Modèle :</label>
+    <label for="product_model" class="col-sm-2 col-form-label">Modèle</label>
     <div class="col-sm-3">
         {% if prod.batch.ecu_ref_base %}
             <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.technical_data }}">
@@ -15,7 +17,7 @@
             <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.sem_ref_base.ecu_type.technical_data }}">
         {% endif %}
     </div>
-    <label for="product_model" class="col-sm-2 col-form-label">Fabriquant :</label>
+    <label for="product_model" class="col-sm-2 col-form-label">Fabriquant</label>
     <div class="col-sm-3">
         {% if prod.batch.ecu_ref_base %}
             <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.supplier_oe }}">
@@ -26,11 +28,11 @@
 </div>
 
 <div class="form-group row">
-    <label for="product_barcode" class="col-sm-2 col-form-label">Code barre :</label>
+    <label for="product_barcode" class="col-sm-2 col-form-label">Code barre</label>
     <div class="col-sm-3">
         <input type="text" id="product_model" class="form-control" readonly value="{{ prod.barcode }}">
     </div>
-    <label for="product_model" class="col-sm-2 col-form-label">HW référence :</label>
+    <label for="product_model" class="col-sm-2 col-form-label">HW référence</label>
     <div class="col-sm-3">
         {% if prod.batch.ecu_ref_base %}
             <input type="text" id="product_model" class="form-control" readonly value="{{ prod.batch.ecu_ref_base.ecu_type.hw_reference }}">

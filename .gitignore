@@ -5,8 +5,10 @@ htmlcov/
 __pycache__
 *.sqlite3
 sbadmin/settings/production.py
-sbadmin/staticfiles/
+staticfiles/
 geckodriver.log
 media/profile_pics/
+media/cache/
+media/wiki/
 utils/conf/current.py
 Pipfile.lock

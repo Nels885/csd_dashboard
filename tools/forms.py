@@ -1,7 +1,6 @@
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
@@ -81,11 +80,12 @@ class SuptechModalForm(BSModalModelForm):
     item = forms.ModelChoiceField(queryset=SuptechItem.objects.all())
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
     to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
+    cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
     attach = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
     class Meta:
         model = Suptech
-        fields = ['username', 'xelon', 'item', 'custom_item', 'time', 'to', 'info', 'rmq', 'attach']
+        fields = ['username', 'xelon', 'item', 'custom_item', 'time', 'to', 'cc', 'info', 'rmq', 'attach']
 
     def __init__(self, *args, **kwargs):
         users = User.objects.all()
@@ -107,17 +107,13 @@ class SuptechModalForm(BSModalModelForm):
         current_site = get_current_site(self.request)
         from_email = self.cleaned_data["username"].email
         files = self.request.FILES.getlist('attach')
-        subject = f"!!! Info Support Tech n°{self.instance.id} : {self.instance.item} !!!"
+        subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        email = EmailMessage(
-            subject=subject, body=message, from_email=from_email,
-            to=string_to_list(self.cleaned_data['to']), cc=[from_email]
+        send_email_task.delay(
+            subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
+            cc=([from_email] + string_to_list(self.instance.cc)), files=files
         )
-        if files:
-            for f in files:
-                email.attach(f.name, f.read(), f.content_type)
-        email.send()
 
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
@@ -125,13 +121,15 @@ class SuptechModalForm(BSModalModelForm):
         suptech.date = timezone.now()
         suptech.user = f"{user.first_name} {user.last_name}"
         try:
-            suptech.category = SuptechItem.objects.get(name=suptech.item).category
+            item = SuptechItem.objects.get(name=suptech.item)
+            suptech.category = item.category
+            suptech.is_48h = item.is_48h
         except SuptechItem.DoesNotExist:
             pass
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
-            for field in ['username', 'custom_item', 'to', 'attach']:
+            for field in ['username', 'custom_item', 'attach']:
                 del self.fields[field]
             if self.cleaned_data['custom_item']:
                 suptech.item = f"{self.cleaned_data['item']} - {self.cleaned_data['custom_item']}"
@@ -157,7 +155,7 @@ class SuptechResponseForm(forms.ModelForm):
 
     def send_email(self, request):
         try:
-            subject = f"!!! Info Support Tech n°{self.instance.id} : {self.instance.item} !!!"
+            subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
             context = {"user": request.user, "suptech": self.instance}
             message = render_to_string('tools/email_format/suptech_response_email.html', context)
             send_email_task.delay(
@@ -189,7 +187,7 @@ class SuptechMessageForm(forms.ModelForm):
     def send_email(request, instance):
         try:
             current_site = get_current_site(request)
-            subject = f"!!! Info Support Tech n°{instance.id} : {instance.item} !!!"
+            subject = f"[SUPTECH_{instance.id}] {instance.item}"
             to_list = config.SUPTECH_TO_EMAIL_LIST + "; " + instance.created_by.email
             context = {'suptech': instance, 'domain': current_site.domain}
             message = render_to_string('tools/email_format/suptech_message_email.html', context)

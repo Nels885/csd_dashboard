@@ -13,8 +13,7 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         self.add_perms_user(UnlockProduct, 'delete_unlockproduct')
         xelon = Xelon.objects.create(numero_de_dossier='A123456789')
-        userprofile = UserProfile.objects.get(user=self.user)
-        UnlockProduct.objects.create(unlock=xelon, user=userprofile)
+        UnlockProduct.objects.create(unlock=xelon, user=self.user)
 
     def test_Delete_unlockproduct_ajax_mixin(self):
         """

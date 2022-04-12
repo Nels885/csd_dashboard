@@ -82,7 +82,7 @@ function excelImport(url) {
 
 $(function () {
     // Filter Batch buttons
-    $(".out-filter-btn").each(function () {
+    $(".filter-btn").each(function () {
         $(this).modalForm({formURL: $(this).data('form-url')});
     });
 
@@ -134,4 +134,39 @@ $(".unmask a").on('click', function (event) {
         $('.unmask i').removeClass("fa-eye-slash");
         $('.unmask i').addClass("fa-eye");
     }
+});
+
+
+$("#searchForm").submit(function (e) {
+    e.preventDefault();
+    let formData = new FormData($("#searchForm")[0]);
+    $(".bd-loading-modal-lg").modal("show");
+    $.ajax({
+        method: "POST",
+        url: $("#searchForm").attr("data-url"),
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log(data);
+            if (data.task_id) {
+                var progressUrl = "/celery-progress/?task_id=" + data.task_id;
+                console.log(progressUrl);
+
+                function customResult(resultElement, result) {
+                    window.location = data.url;
+                }
+
+                CeleryProgressBar.initProgressBar(progressUrl, {
+                    progressBarId: "search-progress-bar",
+                    progressBarMessageId: "search-progress-bar-message",
+                    onResult: customResult,
+                })
+            } else window.location = data.url;
+        },
+        error: function (error_data) {
+            $(".bd-loading-modal-lg").modal("hide");
+            addMessage("(500) Internal Server Error", "danger");
+        }
+    });
 });

@@ -6,6 +6,8 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from tempus_dominus.widgets import DatePicker
 
+from constance import config
+
 from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
@@ -181,6 +183,25 @@ TECHNICIAN FORMS
 """
 
 
+class RepairForm(forms.ModelForm):
+
+    class Meta:
+        model = Repair
+        fields = "__all__"
+        widgets = {
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(RepairForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            for field in self.fields:
+                self.fields[field].widget.attrs['class'] = "form-control"
+                self.fields[field].widget.attrs['readonly'] = True
+                self.fields[field].widget.attrs['disabled'] = 'disabled'
+
+
 class AddRepairForm(BSModalModelForm):
     barcode = forms.CharField(label='Code barre', max_length=50,
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -232,9 +253,39 @@ class AddRepairForm(BSModalModelForm):
         return instance
 
 
+class SelectRepairForm(BSModalForm):
+    repair = forms.CharField(
+        label="N° d'identification", max_length=10, required=True,
+        widget=forms.TextInput(attrs={'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''})
+    )
+
+    class Meta:
+        fields = ["repair"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data = cleaned_data.get("repair")
+        if data:
+            try:
+                Repair.objects.get(identify_number__exact=data)
+            except Repair.DoesNotExist:
+                raise forms.ValidationError("Pas de dossier associé")
+            except Repair.MultipleObjectsReturned:
+                raise forms.ValidationError("Il y a plusieurs dossiers associés")
+
+
 class EditRepairForm(forms.ModelForm):
-    default = forms.ModelChoiceField(queryset=Default.objects.all(), required=True, label="Panne",
-                                     widget=forms.Select(attrs={'class': 'form-control'}))
+    default = forms.ModelChoiceField(queryset=None, required=True, label="Panne", widget=forms.Select())
+
+    class Meta:
+        model = Repair
+        fields = [
+            'identify_number', 'remark', 'comment', 'default', 'recovery', 'face_plate', 'fan', 'locating_pin',
+            'metal_case'
+        ]
+        widgets = {
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -249,23 +300,6 @@ class EditRepairForm(forms.ModelForm):
                 self.fields['locating_pin'].required = True
         except EcuModel.DoesNotExist:
             pass
-
-    class Meta:
-        model = Repair
-        fields = [
-            'identify_number', 'product_number', 'remark', 'comment', 'default', 'recovery', 'face_plate', 'fan',
-            'locating_pin', 'metal_case'
-        ]
-        widgets = {
-            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
-            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
-            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
-            'recovery':  forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'face_plate': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'fan': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'locating_pin': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'metal_case': forms.CheckboxInput(attrs={'class': 'form-control'})
-        }
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -283,27 +317,27 @@ class RepairPartForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product_code'].required = False
-        self.fields['part_number'].required = False
+        self.fields['quantity'].required = False
 
     class Meta:
         model = RepairPart
-        fields = ['product_code', 'part_number']
+        fields = ['product_code', 'quantity']
         widgets = {
             'product_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'part_number': forms.TextInput(attrs={'class': 'form-control'})
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'})
         }
+        labels = {'quantity': "Quantité"}
 
     def clean(self):
         cleaned_data = super().clean()
         product_code = cleaned_data.get("product_code")
-        part_number = cleaned_data.get("part_number")
-        if not product_code or not part_number:
+        quantity = cleaned_data.get("quantity")
+        if not product_code or not quantity:
             raise forms.ValidationError("Veuillez remplir les 2 champs")
 
 
 class CloseRepairForm(forms.ModelForm):
-    new_barcode = forms.CharField(label='Nouveau code barre', max_length=100, required=True,
-                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
+    new_barcode = forms.CharField(label='Nouveau code barre', max_length=100, required=True, widget=forms.TextInput())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -318,14 +352,16 @@ class CloseRepairForm(forms.ModelForm):
 
     class Meta:
         model = Repair
-        fields = ['identify_number', 'product_number', 'remark', 'new_barcode', 'status', 'quality_control']
+        fields = ['identify_number', 'remark', 'new_barcode', 'status', 'quality_control']
         widgets = {
-            'identify_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
-            'product_number': forms.TextInput(attrs={'class': 'form-control', 'readonly': None}),
             'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'readonly': None}),
-            'status': forms.Select(attrs={'class': 'form-control custom-select '}),
-            'quality_control': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }
+
+    def clean_new_barcode(self):
+        data = self.cleaned_data["new_barcode"]
+        if "#" in data or data == self.instance.barcode:
+            self.add_error('new_barcode', _('barcode is invalid'))
+        return data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -366,14 +402,15 @@ class CheckOutSelectBatchForm(SelectBatchForm, BSModalForm):
         if data:
             try:
                 batch = self.batch.get(batch_number__startswith=data)
-                if batch.number >= 900:
-                    raise forms.ValidationError("Erreur, il s'agit d'un lot d'Etude")
-                elif batch.year == "X":
-                    raise forms.ValidationError("Erreur, il s'agit d'un lot pour le stock")
-                # elif batch.repaired != batch.quantity:
-                #     raise forms.ValidationError(
-                #         "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
-                #     )
+                if not config.CHECKOUT_BATCH_FILTER_DISABLE:
+                    if batch.number >= 900:
+                        raise forms.ValidationError("Erreur, il s'agit d'un lot d'Etude")
+                    elif batch.year == "X":
+                        raise forms.ValidationError("Erreur, il s'agit d'un lot pour le stock")
+                    # elif batch.repaired != batch.quantity:
+                    #     raise forms.ValidationError(
+                    #         "Le lot n'est pas finalisé, {} produit sur {} !".format(batch.repaired, batch.quantity)
+                    #     )
             except Batch.DoesNotExist:
                 raise forms.ValidationError("Pas de lot associé")
             except Batch.MultipleObjectsReturned:

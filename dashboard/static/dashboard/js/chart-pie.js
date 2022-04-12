@@ -7,16 +7,15 @@ $.ajax({
     url: $("#dataCharts").attr("data-url"),
     success: function (data) {
         // console.log(data);
-        let labels = data.prodLabels;
-        let defaultData = data.prodDefault;
+
         // Pie Chart Product
         var ctx = document.getElementById("prodPieChart");
         var prodPieChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: labels,
+                labels: data['prodLabels'],
                 datasets: [{
-                    data: defaultData,
+                    data: data['prodDefault'],
                     backgroundColor: ['#079992', '#0a3d62', '#0c2461', '#b71540',
                         '#e58e26', '#eb2f06', '#1e3799', '#3c6382',
                         '#38ada9', '#78e08f', '#60a3bc', '#4a69bd', '#0C40FF'],

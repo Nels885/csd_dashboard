@@ -1,6 +1,6 @@
 {% extends 'format/forms_format.html' %}
 
-{% load i18n %}
+{% load i18n  widget_tweaks %}
 
 {% block form_content %}
 
@@ -15,18 +15,18 @@
             <hr>
 
             <div class="form-group row">
-                <label for="code" class="col-sm-2 col-form-label">Code défaut :</label>
+                <label for="code" class="col-sm-2 col-form-label">Code défaut</label>
                 <div class="col-sm-2">
                     <input type="text" id="code" class="form-control" readonly value="{{ prod.default.code }}">
                 </div>
-                <label for="description" class="col-sm-2 col-form-label">Libellé :</label>
+                <label for="description" class="col-sm-2 col-form-label">Libellé</label>
                 <div class="col-sm-4">
                     <input type="text" id="description" class="form-control" readonly value="{{ prod.default.description }}">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="description" class="col-sm-2 col-form-label">Commentaires action :</label>
+                <label for="description" class="col-sm-2 col-form-label">Commentaires action</label>
                 <div class="col-sm-8">
                     <div class="form-control" style="height: auto;" readonly>
                         {{ prod.comment|safe|default:"---" }}
@@ -34,25 +34,83 @@
                 </div>
             </div>
 
+            <div class="form-group row">
+                <label for="{{ form.new_barcode.id_for_label }}" class="col-sm-2 col-form-label">{{ form.new_barcode.label }}</label>
+                <div class="col-sm-4">{{ form.new_barcode }}</div>
+            </div>
+
+            <hr>
+            <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
+            <hr>
+
+            {% for part in prod.parts.all %}
+                <div class="form-group row">
+                    <label for="form-product_code" class="col-sm-2 col-form-label">Code produit</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}" readonly>
+                    </div>
+
+                    <label for="form-quantity" class="col-sm-2 col-form-label">Quantité</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control" id="form-quantity" value="{{ part.quantity }}" readonly>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="form-group row">
+                    <label for="form-product_code" class="col-sm-2 col-form-label">Code produit</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="form-product_code" value="" readonly>
+                    </div>
+
+                    <label for="form-quantity" class="col-sm-2 col-form-label">Quantité</label>
+                    <div class="col-sm-1">
+                        <input type="text" class="form-control" id="form-quantity" value="" readonly>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% if prod.batch.ecu_ref_base.ecu_type.hw_type == "NAV" %}
+                <hr>
+                <h5 class="text-gray-800 mt-5">Remise à neuf :</h5>
+                <hr>
+
+                <div class="form-group row">
+                    {% include 'format/label_form_group.html' with field=form.face_plate %}
+                    <div class="col-sm-2">{{ form.face_plate }}</div>
+                    {% include 'format/label_form_group.html' with field=form.fan %}
+                    <div class="col-sm-2">{{ form.fan }}</div>
+                </div>
+
+                <div class="form-group row">
+                    {% include 'format/label_form_group.html' with field=form.locating_pin %}
+                    <div class="col-sm-2">{{ form.locating_pin }}</div>
+                    {% include 'format/label_form_group.html' with field=form.metal_case %}
+                    <div class="col-sm-2">{{ form.metal_case }}</div>
+                </div>
+            {% endif %}
+
             <hr>
             <h5 class="text-gray-800 mt-5">Contrôles :</h5>
             <hr>
 
             <div class="form-group row">
-                <label for="{{ form.status.id_for_label }}" class="col-sm-2 col-form-label">{{ form.status.label }} :</label>
-                <div class="col-sm-2">{{ form.status }}</div>
+                <label for="{{ form.status.id_for_label }}" class="col-sm-2 col-form-label">{{ form.status.label }}</label>
+                <div class="col-sm-2">{% render_field form.status class="form-control custom-select" %}</div>
             </div>
 
             <div class="form-group row">
-                <label for="{{ form.quality_control.id_for_label }}" class="col-sm-2 col-form-label">{{ form.quality_control.label }} :</label>
+                <label for="{{ form.quality_control.id_for_label }}" class="col-sm-2 col-form-label">{{ form.quality_control.label }}</label>
                 <div class="col-sm-2">{{ form.quality_control }}</div>
             </div>
 
             <hr>
 
-            <div class="offset-sm-6 align-self-center">
+            <div class="offset-sm-5 align-self-center">
                 <a href="{% url 'reman:repair_table' %}?filter=pending" role="button" class="btn btn-secondary">
-                    {% trans "Close" %}
+                    {% trans "Quit" %}
+                </a>
+                <a href="{% url 'reman:edit_repair' pk=prod.pk %}" role="button" class="ml-2 btn btn-primary">
+                    {% trans "Update" %}
                 </a>
             </div>
 

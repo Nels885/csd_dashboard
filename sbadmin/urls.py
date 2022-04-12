@@ -35,7 +35,11 @@ urlpatterns = [
     path('sentry-debug/', trigger_error),
     path('celery-progress/', get_progress_view, name='progress'),
     path('download-file/', download_file_view, name="download"),
-    path('favicon.ico', favicon_view),
+    path('admin/', admin.site.urls),
+    path('notifications/', include('django_nyt.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('wiki/', include('wiki.urls')),
     path('api/', include('api.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('raspeedi/', include('raspeedi.urls')),
@@ -48,9 +52,7 @@ urlpatterns = [
     path('renault/', include('renault.urls')),
     path('vag/', include('vag.urls')),
     path('volvo/', include('volvo.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('i18n/', include('django.conf.urls.i18n')),
-    path('admin/', admin.site.urls),
+    path('favicon.ico', favicon_view),
     path('', index, name="index"),
 ]
 

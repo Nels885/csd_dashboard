@@ -25,32 +25,6 @@ $(function () {
         })
     });
 
-    $("#export-corvet-vin").on("submit", (e) => {
-        e.preventDefault();
-        let formData = new FormData($("#export-corvet-vin")[0]);
-        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}");
-        $.ajax({
-            type: "POST",
-            url: CORVET_VIN_URL,
-            data: formData,
-            contentType: false,
-            processData: false,
-            cache: false,
-            async: true,
-            success: function (res) {
-                getProgress(
-                    res.task_id,
-                    progressBarId = "export-corvet-vin-progress-bar",
-                    progressBarMessageId = "export-corvet-vin-progress-message",
-                    isDownloadFile = true
-                )
-            },
-            error: function (err) {
-                console.log(err);
-            },
-        });
-    });
-
     $("#import-corvet-vin").on("submit", (e) => {
         e.preventDefault();
         let formData = new FormData($("#import-corvet-vin")[0]);

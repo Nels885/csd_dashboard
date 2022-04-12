@@ -40,8 +40,8 @@ class ImportExportTestCase(UnitTest):
         self.assertEqual(len(body), 1)
         self.assertEqual(len(headers), 1)
 
-    def test_import_export_page(self):
-        url = reverse('import_export:detail')
+    def test_export_csd_async(self):
+        url = reverse('import_export:csd_async')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
@@ -49,25 +49,23 @@ class ImportExportTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_export_corvet_task(self):
-        url = reverse('import_export:export_corvet')
+    def test_esport_reman_async(self):
+        url = reverse('import_export:reman_async')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
-    def test_esport_corvet_vin_task(self):
-        url = reverse('import_export:export_corvet_vin')
+        self.login()
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
-    def test_esport_reman_task(self):
-        url = reverse('import_export:export_reman')
+    def test_esport_tools_async(self):
+        url = reverse('import_export:tools_async')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
-    def test_esport_tools_task(self):
-        url = reverse('import_export:export_tools')
+        self.login()
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
     # def test_export_tools_page(self):
     #     url = reverse('import_export:tools')
@@ -86,4 +84,4 @@ class ImportExportTestCase(UnitTest):
         self.add_perms_user(SparePart, 'add_sparepart', 'change_sparepart')
         self.login()
         response = self.client.get(reverse('import_export:import_part'))
-        self.assertRedirects(response, '/import-export/detail/', status_code=302)
+        self.assertRedirects(response, reverse('import_export:reman_async'), status_code=302)

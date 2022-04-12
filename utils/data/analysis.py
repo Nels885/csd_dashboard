@@ -20,9 +20,9 @@ class ProductAnalysis:
         Initialization of the ProductAnalysis class
         """
         self.pendingQueryset = self.QUERYSET.filter(type_de_cloture__in=['', 'Sauvée'])
-        self.lateQueryset = self.QUERYSET.filter(Q(delai_au_en_jours_ouvres__gt=3) |
+        self.lateQueryset = self.QUERYSET.filter(Q(delai_expedition_attendue__gt=0) |
                                                  Q(express=True)).exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
         self.vip = self.pendingQueryset.filter(dossier_vip=True).count()
@@ -31,7 +31,7 @@ class ProductAnalysis:
         self.ecu = self.pendingQueryset.filter(product__category='CALCULATEUR').count()
         self.media = self.pendingQueryset.exclude(product__category='CALCULATEUR').count()
         self.late = self.lateQueryset.count()
-        self.tronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A']).count()
+        self.tronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).count()
         self.percent = self._percent_of_late_products()
 
     def _percent_of_late_products(self):
@@ -69,7 +69,7 @@ class ProductAnalysis:
 
     def autotronik(self):
         autotronik = self.QUERYSET_AUTOTRONIK.exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A']).order_by('-delai_au_en_jours_ouvres')
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
         return locals()
 
     @staticmethod
@@ -140,19 +140,20 @@ class ToolsAnalysis:
 
     def __init__(self):
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
-        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
+        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False, is_48h=True)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
 
     def suptech_co(self):
-        suptechs = Suptech.objects.filter(category=3)
-        total = suptechs.count()
-        data = {"suptechCoLabels": self.SUPTECH_CO_LABELS, 'suptechCoValue': []}
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Attente").count(), total))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Cours").count(), total))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Cloturée").count(), total))
-        data['suptechCoValue'].append(self._percent(suptechs.filter(status="Annulée").count(), total))
+        suptechs = self.suptechs.filter(category=3)
+        data = {"suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": []}
+        queryset = self._suptech_annotate(suptechs)
+        for query in queryset:
+            data["suptechCoLabels"].append(query['month'].strftime("%m/%Y"))
+            data["coTwoDays"].append(self._percent(query['two_days'], query['total']))
+            data["coTwoToSixDays"].append(self._percent(query['two_to_six_days'], query['total']))
+            data["coSixDays"].append(self._percent(query['six_days'], query['total']))
         return data
 
     def suptech_ce(self):
@@ -207,7 +208,7 @@ class ToolsAnalysis:
 
     @staticmethod
     def _suptech_annotate(queryset):
-        queryset = queryset.annotate(month=TruncMonth("date")).values("month").order_by("month")
+        queryset = queryset.annotate(month=TruncMonth("modified_at")).values("month").order_by("month")
         queryset = queryset.annotate(total=Count("month"))
         queryset = queryset.annotate(two_days=Count("day_number", filter=Q(day_number__lte=2)))
         queryset = queryset.annotate(two_to_six_days=Count("day_number", filter=Q(day_number__gt=2, day_number__lte=6)))

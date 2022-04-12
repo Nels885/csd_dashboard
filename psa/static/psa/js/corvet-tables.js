@@ -1,4 +1,6 @@
 let table = $('#corvetNewTable').DataTable({
+    pagingType: "full_numbers",
+    lengthMenu: [[25, 50, 100], [25, 50, 100]],
     processing: true,
     serverSide: true,
     scrollX: true,
@@ -25,8 +27,10 @@ let table = $('#corvetNewTable').DataTable({
         {data: "btel_name"},
         {data: "cmm_ref"},
         {data: "cmm_cal"},
+        {data: "cmm_name"},
         {data: "bsi_ref"},
         {data: "bsi_cal"},
+        {data: "bsi_name"},
     ],
     columnDefs: [{
         targets: 0,

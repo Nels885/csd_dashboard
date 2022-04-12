@@ -11,7 +11,7 @@ from .models import UserProfile, ShowCollapse
 
 @receiver(post_save, sender=User)
 @disable_for_loaddata
-def create_user_profile(sender, created, instance, **kwargs):
+def create_user_profile(sender, instance=None, created=None, **kwargs):
     if created:
         UserProfile.objects.get_or_create(user=instance)
         ShowCollapse.objects.get_or_create(user=instance)

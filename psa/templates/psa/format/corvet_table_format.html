@@ -150,11 +150,11 @@
     <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseSecu">
     <!-- ASS -->
     <tr>
-        <td class="text-dark td-ihm">Réf HW boitier ASS</td>
+        <td class="text-dark td-ihm">Réf HW boitier AAS</td>
         <td>{{ object.electronique_14r }}</td>
     </tr>
     <tr>
-        <td class="text-dark td-ihm">CAL boitier ASS</td>
+        <td class="text-dark td-ihm">CAL boitier AAS</td>
         <td>{{ object.electronique_94r }}</td>
     </tr>
     <!-- AIR BAG -->
@@ -197,5 +197,20 @@
         <td class="text-dark td-ihm">N° série ARTIV</td>
         <td>{{ object.electronique_49k }}</td>
     </tr>
+    <!-- ABS/EPS -->
+    {% with label="boitier ABS/ESP" %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW {{ label }}</td>
+            <td>{{ object.electronique_14p }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL LIVRE {{ label }}</td>
+            <td>{{ object.electronique_34p }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL {{ label }}</td>
+            <td>{{ object.electronique_94p }}</td>
+        </tr>
+    {% endwith %}
     </tbody>
 </table>

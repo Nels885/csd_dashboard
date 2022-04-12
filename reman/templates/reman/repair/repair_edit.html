@@ -1,11 +1,11 @@
 {% extends 'format/forms_format.html' %}
 
-{% load i18n %}
+{% load i18n widget_tweaks static %}
 
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="">
+        <form id="repair-form" method="post" action="">
 
             {% csrf_token %}
 
@@ -16,7 +16,7 @@
 
             <div class="form-group row">
                 {% include 'format/label_form_group.html' with field=form.default %}
-                <div class="col-sm-6">{{ form.default }}</div>
+                <div class="col-sm-6">{% render_field form.default class="form-control custom-select" %}</div>
             </div>
 
             <div class="form-group row">
@@ -30,70 +30,50 @@
                 </div>
             </div>
 
-            {% if prod.checkout %}
-                <div class="form-group row">
-                    <label for="{{ form.recovery.id_for_label }}" class="col-sm-2 col-form-label">{{ form.recovery.label }} :</label>
-                    <div class="col-sm-6">{{ form.recovery }}</div>
-                </div>
-            {% endif %}
-
             <hr>
             <h5 class="text-gray-800 mt-5">Pièces détachées :</h5>
             <hr>
 
-            {% if prod.parts.all %}
-                {% for part in prod.parts.all %}
-                    <div class="form-group row">
-                        <label for="form-product_code" class="col-sm-2 col-form-label">Code produit :</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" id="form-product_code" value="{{ part.product_code }}">
-                        </div>
-
-                        <label for="form-part_number" class="col-sm-2 col-form-label">N° de pièce :</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="form-part_number" value="{{ part.part_number }}">
-                        </div>
-
-                        <div class="col-sm-1">
-                            <a href="#" data-form-url="{% url 'reman:delete_repair_part' part.pk %}" class="bs-modal btn btn-danger add-form-row">-</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
+            <div id="part-list"></div>
 
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">{{ form2.product_code.label }} :</label>
+                <label class="col-sm-2 col-form-label">{{ form2.product_code.label }}</label>
                 <div class="col-sm-3">{{ form2.product_code }}</div>
-                <label class="col-sm-2 col-form-label">{{ form2.part_number.label }} :</label>
-                <div class="col-sm-2">{{ form2.part_number }}</div>
+                <label class="col-sm-2 col-form-label">{{ form2.quantity.label }}</label>
+                <div class="col-sm-1">{{ form2.quantity }}</div>
                 <div class="col-sm-1">
-                    <button name="repair_part" class="btn btn-success">+</button>
+                    <button type="button" id="add-btn-part" class="btn btn-success" title="Ajout pièce détachée">
+                        <i class="fas fa-save"></i></button>
                 </div>
             </div>
-            <div class="{% if form2.non_field_errors %}invalid{% endif %} text-danger mb-2">
-                {% for error in form2.non_field_errors %}
-                    {{ error }}
-                {% endfor %}
-            </div>
-
+            <div id="form2-errors" class="text-danger mb-2"></div>
 
             {% if prod.batch.ecu_ref_base.ecu_type.hw_type == "NAV" %}
                 <hr>
-                <h5 class="text-gray-800 mt-5">Esthétiques :</h5>
+                <h5 class="text-gray-800 mt-5">Remise à neuf :</h5>
                 <hr>
 
                 <div class="form-group row">
                     {% include 'format/label_form_group.html' with field=form.face_plate %}
-                    <div class="col-sm-2">{{ form.face_plate }}</div>
+                    <div class="col-sm-2">{% render_field form.face_plate class="form-control" %}</div>
                     {% include 'format/label_form_group.html' with field=form.fan %}
-                    <div class="col-sm-2">{{ form.fan }}</div>
+                    <div class="col-sm-2">{% render_field form.fan class="form-control" %}</div>
                 </div>
 
                 <div class="form-group row">
                     {% include 'format/label_form_group.html' with field=form.locating_pin %}
-                    <div class="col-sm-2">{{ form.locating_pin }}</div>
+                    <div class="col-sm-2">{% render_field form.locating_pin class="form-control" %}</div>
                     {% include 'format/label_form_group.html' with field=form.metal_case %}
-                    <div class="col-sm-2">{{ form.metal_case }}</div>
+                    <div class="col-sm-2">{% render_field form.metal_case class="form-control" %}</div>
+                </div>
+            {% endif %}
+
+            <hr>
+
+            {% if prod.checkout %}
+                <div class="form-group row">
+                    {% include 'format/label_form_group.html' with field=form.recovery %}
+                    <div class="col-sm-2">{% render_field form.recovery class="form-control" %}</div>
                 </div>
             {% endif %}
 
@@ -116,5 +96,58 @@
         </form>
 
     </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="application/javascript"src="{% static 'reman/js/reman-custom.js' %}"></script>
+
+    <script type="application/javascript">
+        let PART_LIST_URL = '{% url "reman:part_list_ajax" pk=prod.pk %}';
+        partList();
+
+        document.querySelector('#add-btn-part').addEventListener("click", e => {
+            e.preventDefault();
+            let formData = new FormData($("#repair-form")[0]);
+            let productCode = document.querySelector('#id_product_code');
+            let quantity = document.querySelector('#id_quantity');
+            let errorElement = document.getElementById('form2-errors');
+
+            $.ajax({
+                type: "POST",
+                url: '{% url "reman:create_part_ajax" pk=prod.pk %}',
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (res) {
+                    errorElement.innerHTML = "";
+                    errorElement.classList.remove("invalid");
+                    if (res.hasOwnProperty('errors')) {
+                        errorElement.classList.add("invalid");
+                        for (const error of res.errors["__all__"]) {
+                            console.log(error);
+                            errorElement.innerHTML += "<p>* " + error + "</p>";
+                        }
+                        setTimeout(function () {
+                            errorElement.innerHTML = "";
+                            errorElement.classList.remove("invalid");
+                        }, 2000);
+                    } else {
+
+                        partList();
+
+                        productCode.value = "";
+                        quantity.value = "";
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+                ,
+            })
+        })
+    </script>
 
 {% endblock %}

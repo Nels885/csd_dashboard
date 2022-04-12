@@ -8,7 +8,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
 
-from constance import config
+from constance import config as conf
 
 from squalaetp.models import Xelon
 from utils.file.export import calibre
@@ -139,6 +139,9 @@ class Suptech(models.Model):
     status = models.TextField('STATUT', max_length=50, default='En Attente', choices=STATUS_CHOICES)
     deadline = models.DateField('DATE LIMITE', null=True, blank=True)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
+    is_48h = models.BooleanField("Traitement 48h", default=True)
+    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
+    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
     created_at = models.DateTimeField('ajouté le', editable=False, null=True)
     created_by = models.ForeignKey(User, related_name="suptechs_created", editable=False, on_delete=models.SET_NULL,
                                    null=True, blank=True)
@@ -148,7 +151,7 @@ class Suptech(models.Model):
     messages = GenericRelation('SuptechMessage')
 
     class Meta:
-        verbose_name = "SupTech Log"
+        verbose_name = "SupTech"
         ordering = ['pk']
 
     def get_absolute_url(self):
@@ -163,7 +166,9 @@ class SuptechItem(models.Model):
     name = models.CharField('Nom', max_length=100, unique=True)
     extra = models.BooleanField(default=False)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
-    mailing_list = models.TextField("Liste d'email", max_length=5000, default=config.SUPTECH_TO_EMAIL_LIST)
+    is_48h = models.BooleanField("Traitement 48h", default=True)
+    mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
+    cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
 
     class Meta:
         verbose_name = "SupTech Item"

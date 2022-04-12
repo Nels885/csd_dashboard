@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -49,19 +51,22 @@ class Xelon(models.Model):
     @classmethod
     def search(cls, value):
         if value is not None:
-            query = value.upper().strip()
-            return cls.objects.filter(Q(numero_de_dossier__exact=query) |
-                                      Q(vin__exact=query) | Q(vin__endswith=query) |
-                                      Q(corvet__electronique_44l__contains=query) |
-                                      Q(corvet__electronique_44x__contains=query) |
-                                      Q(corvet__electronique_44a__contains=query) |
-                                      Q(corvet__electronique_14l__exact=query) |
-                                      Q(corvet__electronique_14x__exact=query) |
-                                      Q(corvet__electronique_14a__exact=query) |
-                                      Q(corvet__electronique_14b__exact=query) |
-                                      Q(corvet__electronique_44b__exact=query) |
-                                      Q(corvet__electronique_16p__exact=query) |
-                                      Q(corvet__electronique_46p__exact=query))
+            query = value.strip()
+            return cls.objects.filter(Q(numero_de_dossier__iexact=query) |
+                                      Q(vin__iexact=query) | Q(vin__iendswith=query) |
+                                      Q(corvet__electronique_44l__icontains=query) |
+                                      Q(corvet__electronique_44x__icontains=query) |
+                                      Q(corvet__electronique_44a__icontains=query) |
+                                      Q(corvet__electronique_12y__iexact=query) |
+                                      Q(corvet__electronique_14l__iexact=query) |
+                                      Q(corvet__electronique_14x__iexact=query) |
+                                      Q(corvet__electronique_14a__iexact=query) |
+                                      Q(corvet__electronique_14b__iexact=query) |
+                                      Q(corvet__electronique_14k__iexact=query) |
+                                      Q(corvet__electronique_44b__iexact=query) |
+                                      Q(corvet__electronique_16p__iexact=query) |
+                                      Q(corvet__electronique_46p__iexact=query) |
+                                      Q(corvet__opts__tag__istartswith=query))
         return None
 
     def __str__(self):
@@ -214,6 +219,13 @@ class Sivin(models.Model):
     class Meta:
         verbose_name = "Données SIVIN"
         ordering = ['immat_siv']
+
+    @classmethod
+    def search(cls, value):
+        if value is not None:
+            query = re.sub(r'[ -]', '', value.strip())
+            return cls.objects.filter(immat_siv__iexact=query)
+        return None
 
     def __str__(self):
         return f"{self.immat_siv} - {self.codif_vin}"

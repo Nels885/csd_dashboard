@@ -1,4 +1,3 @@
-import re
 import time
 from sbadmin import celery_app
 from celery_progress.backend import ProgressRecorder
@@ -8,11 +7,13 @@ from utils.django.models import defaults_dict
 from utils.django.validators import xml_parser
 from .models import Corvet, CorvetOption
 
+from utils.django.validators import vin_psa_isvalid
+
 
 @celery_app.task
 def save_corvet_to_models(vin):
     msg = f"{vin} Not VIN PSA"
-    if re.match(r'^[VWZ][FLR0]\w{15}$', str(vin)):
+    if vin_psa_isvalid(vin):
         scrap = ScrapingCorvet()
         start_time = time.time()
         for attempt in range(2):
@@ -43,7 +44,7 @@ def import_corvet_task(self, vin):
     progress_recorder = ProgressRecorder(self)
     progress_recorder.set_progress(1, 4)
     msg = f"{vin} Not VIN PSA"
-    if re.match(r'^[VWZ][FLR0]\w{15}$', str(vin)):
+    if vin_psa_isvalid(vin):
         scrap = ScrapingCorvet()
         progress_recorder.set_progress(2, 4)
         if scrap.ERROR:
@@ -56,16 +57,16 @@ def import_corvet_task(self, vin):
 
 
 @celery_app.task(bind=True)
-def import_corvet_list_task(self, *args):
+def import_corvet_list_task(self, *args, **kwargs):
     progress_recorder = ProgressRecorder(self)
     list_args, msg = args, ""
-    CorvetOption.objects.update(tag="")
     for count, vin in enumerate(list_args):
         corvets = Corvet.objects.filter(vin=vin, opts__update=False)
-        CorvetOption.objects.filter(corvet=vin).update(tag="ICARE")
+        if kwargs.get('corvet_tag'):
+            CorvetOption.objects.filter(corvet=vin).update(tag=kwargs.get('corvet_tag'))
         progress_recorder.set_progress(count, len(list_args))
         if not corvets:
-            if re.match(r'^[VWZ][FLR0]\w{15}$', str(vin)):
+            if vin_psa_isvalid(vin):
                 scrap = ScrapingCorvet()
                 start_time = time.time()
                 for attempt in range(2):
@@ -94,4 +95,7 @@ def import_corvet_list_task(self, *args):
         else:
             msg += f"{vin} data OK"
         msg += "\r\n"
-    return msg
+    return {
+        "detail": "Successfully import VIN PSA",
+        "message": msg
+    }
