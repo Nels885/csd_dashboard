@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-30 11:54+0200\n"
+"POT-Creation-Date: 2022-04-12 14:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: api/views.py:203
+#: api/views.py:204
 msgid "Time between 2 requests too short"
 msgstr "Délai entre 2 requêtes trop court"
 
-#: sbadmin/settings/__init__.py:189 templates/base/top_bar.html:96
+#: sbadmin/settings/__init__.py:190 templates/base/top_bar.html:89
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:190 templates/base/top_bar.html:87
+#: sbadmin/settings/__init__.py:191 templates/base/top_bar.html:80
 msgid "English"
 msgstr "Anglais"
 
@@ -68,43 +68,39 @@ msgstr "Erreur Interne du Serveur"
 msgid "release"
 msgstr "version"
 
-#: templates/base/top_bar.html:23
-msgid "Search Xelon, VIN or SN..."
-msgstr "Recherche Xelon, VIN ou SN..."
-
-#: templates/base/top_bar.html:119
+#: templates/base/top_bar.html:112
 msgid "Profile"
 msgstr "Profil"
 
-#: templates/base/top_bar.html:123
+#: templates/base/top_bar.html:116
 msgid "Change password"
 msgstr ""
 
-#: templates/base/top_bar.html:128
+#: templates/base/top_bar.html:121
 msgid "Administration"
 msgstr ""
 
-#: templates/base/top_bar.html:132
+#: templates/base/top_bar.html:125
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: templates/base/top_bar.html:136
+#: templates/base/top_bar.html:129
 msgid "Import Squalaetp"
 msgstr "Import Squalaetp"
 
-#: templates/base/top_bar.html:141
+#: templates/base/top_bar.html:134
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:145
+#: templates/base/top_bar.html:138
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:150 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:143 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:155
+#: templates/base/top_bar.html:148
 msgid "Guest"
 msgstr "Invité"
 
@@ -476,3 +472,6 @@ msgstr "Le lot n'existe pas"
 #: utils/django/validators.py:142
 msgid "This number exists"
 msgstr "Ce numéro existe"
+
+#~ msgid "Search Xelon, VIN or SN..."
+#~ msgstr "Recherche Xelon, VIN ou SN..."
