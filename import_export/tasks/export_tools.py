@@ -30,15 +30,15 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
         queryset = None
         if model == "suptech":
             self.header = [
-                'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR', 'STATUS', 'DATE_LIMIT',
-                'ACTION_LE', 'ACTION_PAR', 'DELAIS_EN_JOURS'
+                'N° SUPTECH', 'DATE', 'QUI', 'XELON', 'ITEM', 'TIME', 'INFO', 'RMQ', 'ACTION/RETOUR', 'STATUS',
+                'DATE_LIMIT', 'ACTION_LE', 'ACTION_PAR', 'DELAIS_EN_JOURS'
             ]
             fullname = Concat('modified_by__first_name', Value(' '), 'modified_by__last_name')
             day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
             queryset = Suptech.objects.annotate(fullname=fullname, day_number=day_number).order_by('date')
             self.fields = (
-                'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline', 'modified_at',
-                'fullname', 'day_number'
+                'id', 'date', 'user', 'xelon', 'item', 'time', 'info', 'rmq', 'action', 'status', 'deadline',
+                'modified_at', 'fullname', 'day_number'
             )
         if model == "bga_time":
             self.header = ['MACHINE', 'DATE', 'HEURE DEBUT', 'DUREE']
