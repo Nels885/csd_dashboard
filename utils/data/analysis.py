@@ -140,20 +140,10 @@ class ToolsAnalysis:
 
     def __init__(self):
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
-        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
+        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False, is_48h=True)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
-
-    # def suptech_co(self):
-    #     suptechs = Suptech.objects.filter(category=3)
-    #     total = suptechs.count()
-    #     data = {"suptechCoLabels": self.SUPTECH_CO_LABELS, 'suptechCoValue': []}
-    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Attente").count(), total))
-    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="En Cours").count(), total))
-    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="Cloturée").count(), total))
-    #     data['suptechCoValue'].append(self._percent(suptechs.filter(status="Annulée").count(), total))
-    #     return data
 
     def suptech_co(self):
         suptechs = self.suptechs.filter(category=3)
