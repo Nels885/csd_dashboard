@@ -129,7 +129,9 @@ class SuptechModalForm(BSModalModelForm):
         suptech.date = timezone.now()
         suptech.user = f"{user.first_name} {user.last_name}"
         try:
-            suptech.category = SuptechItem.objects.get(name=suptech.item).category
+            item = SuptechItem.objects.get(name=suptech.item)
+            suptech.category = item.category
+            suptech.is_48h = item.is_48h
         except SuptechItem.DoesNotExist:
             pass
         suptech.created_by = user
