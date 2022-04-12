@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 from django.utils.html import strip_tags
 from django.utils import timezone
 from django.db.models import Q
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 
 from constance import config
@@ -30,6 +30,12 @@ class Command(BaseCommand):
             dest='email',
             help='Send email for Suptech in progress',
         )
+        parser.add_argument(
+            '--email_48h',
+            action='store_true',
+            dest='email_48h',
+            help='Send email processing 48h for Suptech'
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
@@ -42,7 +48,13 @@ class Command(BaseCommand):
             supject = "Autres Moyens en cours {}".format(date_joined)
             suptechs = Suptech.objects.filter(category=3).exclude(status="Cloturée").order_by('-date')
             self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_CC_EMAIL_LIST)
-        else:
+        if options['email_48h']:
+            date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
+            supject = "Suptech en cours {}".format(date_joined)
+            suptechs = Suptech.objects.filter(status="En Attente", is_48h=True).order_by('-date')
+            for suptech in suptechs:
+                self._send_single_email(suptech)
+        if not options:
             try:
                 path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
                 filename = "LOG_SUPTECH"
@@ -166,3 +178,17 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des Suptech en cours terminée !"))
         else:
             self.stdout.write(self.style.SUCCESS("Pas de Suptech en cours à envoyer !"))
+
+    def _send_single_email(self, query):
+        domain = config.WEBSITE_DOMAIN
+        subject = f"[SUPTECH_{query.id} !!RAPPEL!!] {query.item}"
+        try:
+            email = query.created_by.email
+        except AttributeError:
+            email = "No Found"
+        context = {'email': email, 'suptech': query, 'domain': domain}
+        message = render_to_string('tools/email_format/suptech_request_email.html', context)
+        EmailMessage(
+            subject=subject, body=message, from_email=None, to=string_to_list(query.to), cc=string_to_list(query.cc)
+        ).send()
+        self.stdout.write(self.style.SUCCESS(f"Envoi de l'email Suptech n°{query.id} en attente terminée !"))
