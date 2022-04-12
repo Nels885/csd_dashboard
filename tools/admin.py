@@ -22,16 +22,17 @@ class ThermalChamberMeasureAdmin(admin.ModelAdmin):
 
 
 class SuptechAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date', 'user', 'xelon', 'item', 'category', 'time', 'info', 'rmq', 'action', 'status')
+    list_display = (
+        'id', 'date', 'user', 'xelon', 'item', 'category', 'is_48h', 'time', 'info', 'rmq', 'action', 'status')
     ordering = ('-date',)
-    list_filter = ('status', 'category')
+    list_filter = ('status', 'category', 'is_48h')
     search_fields = ('id', 'user', 'xelon', 'item')
 
 
 class SuptechItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'extra', 'category', 'mailing_list', 'cc_mailing_list')
+    list_display = ('name', 'extra', 'category', 'is_48h', 'mailing_list', 'cc_mailing_list')
     ordering = ('name',)
-    list_filter = ('category',)
+    list_filter = ('category', 'is_48h')
     search_fields = ('name', 'mailing_list', 'cc_mailing_list')
 
 
