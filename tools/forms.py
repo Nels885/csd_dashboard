@@ -111,17 +111,9 @@ class SuptechModalForm(BSModalModelForm):
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
         send_email_task.delay(
-            subject=subject, body=message, from_email=from_email, to=string_to_list(self.cleaned_data['to']),
-            cc=([from_email] + string_to_list(self.cleaned_data['cc'])), files=files
+            subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
+            cc=([from_email] + string_to_list(self.instance.cc)), files=files
         )
-        # email = EmailMessage(
-        #     subject=subject, body=message, from_email=from_email,
-        #     to=string_to_list(self.cleaned_data['to']), cc=([from_email] + string_to_list(self.cleaned_data['cc']))
-        # )
-        # if files:
-        #     for f in files:
-        #         email.attach(f.name, f.read(), f.content_type)
-        # email.send()
 
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
@@ -137,7 +129,7 @@ class SuptechModalForm(BSModalModelForm):
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
-            for field in ['username', 'custom_item', 'to', 'cc', 'attach']:
+            for field in ['username', 'custom_item', 'attach']:
                 del self.fields[field]
             if self.cleaned_data['custom_item']:
                 suptech.item = f"{self.cleaned_data['item']} - {self.cleaned_data['custom_item']}"
