@@ -35,6 +35,8 @@ class Xelon(models.Model):
     delai_expedition_attendue = models.IntegerField('délai expédition attendue', null=True, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
+    telecodage = models.CharField('TELECODAGE', max_length=50, blank=True)
+    appairage = models.CharField('APPAIRAGE', max_length=50, blank=True)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey('squalaetp.ProductCategory', on_delete=models.SET_NULL, null=True, blank=True)
     actions = GenericRelation('Action')
