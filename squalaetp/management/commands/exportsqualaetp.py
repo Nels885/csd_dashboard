@@ -53,16 +53,23 @@ class Command(BaseCommand):
                 '14X', '19Z', '44F', '44L', '44X', '54F', '54K', '54L', '84F', '84L', '84X', '94F', '94L', '94X',
                 'DAT', 'DCX', '19H', '49H', '64F', '64X', '69H', '89H', '99H', '14A', '34A', '44A', '54A', '64A',
                 '84A', '94A', 'P4A', 'MOTEUR', 'TRANSMISSION', '10', '14B', '20', '44B', '54B', '64B', '84B', '94B',
-                '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B'
+                '16P', '46P', '56P', '66P', '16B', '46B', '56B', '66B', '86B', '96B',
+                'DAO', 'DCD', 'DE2', 'DE3', 'DE4', 'DPR', 'DQK', 'DQP', 'DUB', 'DUE', 'DUF', 'DYC', 'DYQ', 'DZE', '94R',
+                '16Q', '96Q', '16V', '19F', '19U', '14D', '94D', '16G', '96G', '94J', '94K', '19V', '12Y', '92Y', '16L',
+                '96L', '14Y', '14Z', '14P', '94P', '34P', '19W', '16T', '19T', '14M', '94M', '18Z', '11M', '19K', '49K',
+                '59K', '69K', '99K', '12E', '42E', '52E', '62E', '92E', 'K9H', 'M9H', 'R9H', 'T2Y', 'D5J', 'DAZ', 'DCP',
+                'DDC', 'DE7', 'DE8', 'DES', 'DI2', 'DJZ', 'DN1', 'DSB', 'DUO', 'DUZ',
+                'TELECODAGE', 'APPAIRAGE'
             ]
             try:
                 queryset = Xelon.objects.filter(is_active=True).distinct()
 
                 corvet_list = tuple([f"corvet__{field.name}" for col_nb, field in enumerate(Corvet._meta.fields) if
-                                     col_nb < (len(header) - 3) and field.name not in ['vin']])
+                                     col_nb < (len(header) - 5) and field.name not in ['vin']])
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
+                extra_list = ('telecodage', 'appairage')
 
-                values_list = queryset.values_list(*(xelon_list + corvet_list)).distinct()
+                values_list = queryset.values_list(*(xelon_list + corvet_list + extra_list)).distinct()
                 for filename in string_to_list(config.SQUALAETP_FILE_LIST):
                     error = ExportExcel(
                         values_list=values_list, filename=filename, header=header).file(path, False)

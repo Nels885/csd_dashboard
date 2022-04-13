@@ -8,7 +8,7 @@ logger = logging.getLogger('command')
 class ExcelSqualaetp(ExcelFormat):
     """## Read data in Excel file for Squalaetp ##"""
     ERROR = False
-    CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule']
+    CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule', 'telecodage', 'appairage']
     XELON_COLS = CORVET_DROP_COLS + ['vin']
     COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
