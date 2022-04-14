@@ -176,10 +176,20 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'attribut_dlx': 'ATT_DLX', 'attribut_drc': 'ATT_DRC', 'attribut_dun': 'ATT_DUN',
         'attribut_dym': 'ATT_DYM', 'attribut_dyr': 'ATT_DYR', 'donnee_moteur': 'DON_MOT'
     }
+    PROD_DICT = {
+        'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
+        'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
+        'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
+        'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
+        'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
+        'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
+        'cmb': {'electronique_14k__exact': ''}
+    }
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.fields = []
+        self.queryset = None
 
     def _query_format(self, query):
         data_list = [value for value in query]
@@ -244,20 +254,9 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         """
         Export CORVET data to excel format
         """
-        prod_dict = {
-            'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
-            'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
-            'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
-            'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
-            'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
-            'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
-            'cmb': {'electronique_14k__exact': ''}
-        }
-        product = kwargs.get('product', 'bsi')
-        data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
-        for col in kwargs.get('columns', []):
-            data_list.extend(CORVET_DICT.get(col, []))
-        queryset = Corvet.objects.all().annotate(
+        self._product_filter(**kwargs)
+        self._select_columns(**kwargs)
+        queryset = self.queryset.annotate(
             date_debut_garantie=Cast(TruncSecond('donnee_date_debut_garantie', DateTimeField()), CharField()))
         if kwargs.get('tag', None):
             queryset = queryset.filter(opts__tag=kwargs.get('tag'))
@@ -272,10 +271,21 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
             queryset = queryset.filter(donnee_date_debut_garantie__gte=kwargs.get('start_date'))
         if kwargs.get('end_date', None):
             queryset = queryset.filter(donnee_date_debut_garantie__lte=kwargs.get('end_date'))
-        self.header, self.fields = self.get_header_fields(data_list)
-        if prod_dict.get(product):
-            queryset = queryset.exclude(**prod_dict.get(product))
-        elif product == "xelon":
-            self.header, self.fields = self.get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
+
         values_list = queryset.values_list(*self.fields).distinct()[:30000]
         return values_list
+
+    def _product_filter(self, **kwargs):
+        corvet = Corvet.hw_search(kwargs.get('hw_reference'))
+        if self.PROD_DICT.get(kwargs.get('product')):
+            self.queryset = corvet.exclude(**self.PROD_DICT.get(kwargs.get('product')))
+        self.queryset = corvet.all()
+
+    def _select_columns(self, **kwargs):
+        if kwargs.get('product') == "xelon":
+            self.header, self.fields = self.get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
+        else:
+            data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
+            for col in kwargs.get('columns', []):
+                data_list.extend(CORVET_DICT.get(col, []))
+            self.header, self.fields = self.get_header_fields(data_list)
