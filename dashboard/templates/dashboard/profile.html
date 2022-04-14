@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load i18n widget_tweaks %}
+{% load i18n widget_tweaks static %}
 
 {% block content %}
 
@@ -21,8 +21,9 @@
                                 <tbody>
                                 <tr>
                                     <td class="align-middle text-dark">{% trans "Profile picture" %} :</td>
-                                    <td><img width="200" src="{{ user.userprofile.image.url }}"
-                                             alt=""></td>
+                                    <td>
+                                        <img  class="rounded-circle" width="200" src="{{ user.userprofile.image.url }}" alt="" onerror="this.src='{% static 'img/avatar.png' %}';">
+                                    </td>
                                     <td class="align-middle">
 
                                         <form class="user" method="post" action="{% url 'dashboard:user_profile' %}"
