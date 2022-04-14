@@ -208,23 +208,43 @@ class Corvet(models.Model):
         ordering = ['vin']
 
     @classmethod
+    def hw_search(cls, value, all_data=True):
+        if value is not None:
+            query = value.strip()
+            return cls.objects.filter(
+                Q(electronique_14f__iexact=query) | Q(electronique_14j__iexact=query) |
+                Q(electronique_14k__iexact=query) | Q(electronique_14l__iexact=query) |
+                Q(electronique_14r__iexact=query) | Q(electronique_14x__iexact=query) |
+                Q(electronique_19z__iexact=query) | Q(electronique_19h__iexact=query) |
+                Q(electronique_14a__iexact=query) | Q(electronique_14b__iexact=query) |
+                Q(electronique_16p__iexact=query) | Q(electronique_16b__iexact=query) |
+                Q(electronique_16q__iexact=query) | Q(electronique_16v__iexact=query) |
+                Q(electronique_19f__iexact=query) | Q(electronique_19u__iexact=query) |
+                Q(electronique_14d__iexact=query) | Q(electronique_16g__iexact=query) |
+                Q(electronique_19v__iexact=query) | Q(electronique_12y__iexact=query) |
+                Q(electronique_16l__iexact=query) | Q(electronique_14y__iexact=query) |
+                Q(electronique_14z__iexact=query) | Q(electronique_14p__iexact=query) |
+                Q(electronique_19w__iexact=query) | Q(electronique_16t__iexact=query) |
+                Q(electronique_19t__iexact=query) | Q(electronique_14m__iexact=query) |
+                Q(electronique_18z__iexact=query) | Q(electronique_11m__iexact=query) |
+                Q(electronique_19k__iexact=query) | Q(electronique_12e__iexact=query))
+        if all_data:
+            return cls
+        return None
+
+    @classmethod
     def search(cls, value):
         if value is not None:
             query = value.strip()
-            return cls.objects.filter(Q(vin__iexact=query) | Q(vin__iendswith=query) |
-                                      Q(electronique_44l__icontains=query) |
-                                      Q(electronique_44x__icontains=query) |
-                                      Q(electronique_44a__icontains=query) |
-                                      Q(electronique_12y__iexact=query) |
-                                      Q(electronique_14l__iexact=query) |
-                                      Q(electronique_14x__iexact=query) |
-                                      Q(electronique_14a__iexact=query) |
-                                      Q(electronique_14b__iexact=query) |
-                                      Q(electronique_14k__iexact=query) |
-                                      Q(electronique_44b__iexact=query) |
-                                      Q(electronique_16p__iexact=query) |
-                                      Q(electronique_46p__iexact=query) |
-                                      Q(opts__tag__istartswith=query))
+            corvets = cls.hw_search(value, all_data=False)
+            if corvets:
+                return corvets
+            return cls.objects.filter(
+                Q(vin__iexact=query) | Q(vin__iendswith=query) | Q(electronique_44l__icontains=query) |
+                Q(electronique_44x__icontains=query) | Q(electronique_44a__icontains=query) |
+                Q(electronique_44b__iexact=query) | Q(electronique_46p__iexact=query) |
+                Q(opts__tag__istartswith=query)
+            )
         return None
 
     def __str__(self):

@@ -54,21 +54,29 @@ class Xelon(models.Model):
     def search(cls, value):
         if value is not None:
             query = value.strip()
-            return cls.objects.filter(Q(numero_de_dossier__iexact=query) |
-                                      Q(vin__iexact=query) | Q(vin__iendswith=query) |
-                                      Q(corvet__electronique_44l__icontains=query) |
-                                      Q(corvet__electronique_44x__icontains=query) |
-                                      Q(corvet__electronique_44a__icontains=query) |
-                                      Q(corvet__electronique_12y__iexact=query) |
-                                      Q(corvet__electronique_14l__iexact=query) |
-                                      Q(corvet__electronique_14x__iexact=query) |
-                                      Q(corvet__electronique_14a__iexact=query) |
-                                      Q(corvet__electronique_14b__iexact=query) |
-                                      Q(corvet__electronique_14k__iexact=query) |
-                                      Q(corvet__electronique_44b__iexact=query) |
-                                      Q(corvet__electronique_16p__iexact=query) |
-                                      Q(corvet__electronique_46p__iexact=query) |
-                                      Q(corvet__opts__tag__istartswith=query))
+            return cls.objects.filter(
+                Q(numero_de_dossier__iexact=query) | Q(vin__iexact=query) | Q(vin__iendswith=query) |
+                Q(corvet__electronique_44l__icontains=query) | Q(corvet__electronique_44x__icontains=query) |
+                Q(corvet__electronique_44a__icontains=query) | Q(corvet__electronique_44b__iexact=query) |
+                Q(corvet__electronique_46p__iexact=query) | Q(corvet__opts__tag__istartswith=query)|
+
+                Q(corvet__electronique_14f__iexact=query) | Q(corvet__electronique_14j__iexact=query) |
+                Q(corvet__electronique_14k__iexact=query) | Q(corvet__electronique_14l__iexact=query) |
+                Q(corvet__electronique_14r__iexact=query) | Q(corvet__electronique_14x__iexact=query) |
+                Q(corvet__electronique_19z__iexact=query) | Q(corvet__electronique_19h__iexact=query) |
+                Q(corvet__electronique_14a__iexact=query) | Q(corvet__electronique_14b__iexact=query) |
+                Q(corvet__electronique_16p__iexact=query) | Q(corvet__electronique_16b__iexact=query) |
+                Q(corvet__electronique_16q__iexact=query) | Q(corvet__electronique_16v__iexact=query) |
+                Q(corvet__electronique_19f__iexact=query) | Q(corvet__electronique_19u__iexact=query) |
+                Q(corvet__electronique_14d__iexact=query) | Q(corvet__electronique_16g__iexact=query) |
+                Q(corvet__electronique_19v__iexact=query) | Q(corvet__electronique_12y__iexact=query) |
+                Q(corvet__electronique_16l__iexact=query) | Q(corvet__electronique_14y__iexact=query) |
+                Q(corvet__electronique_14z__iexact=query) | Q(corvet__electronique_14p__iexact=query) |
+                Q(corvet__electronique_19w__iexact=query) | Q(corvet__electronique_16t__iexact=query) |
+                Q(corvet__electronique_19t__iexact=query) | Q(corvet__electronique_14m__iexact=query) |
+                Q(corvet__electronique_18z__iexact=query) | Q(corvet__electronique_11m__iexact=query) |
+                Q(corvet__electronique_19k__iexact=query) | Q(corvet__electronique_12e__iexact=query)
+            )
         return None
 
     def __str__(self):
