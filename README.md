@@ -81,3 +81,11 @@ $ pipenv shell
 $ ./manage.py sqlflush | ./manage.py dbshell
 $ ./manage.py loaddata <DATA_FILE>
 ```
+
+### Celery server
+
+```bash
+$ pipenv run celery -A sbadmin purge
+$ pipenv run celery -A sbadmin worker --beat --scheduler django --loglevel=info
+```
+
