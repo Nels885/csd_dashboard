@@ -55,6 +55,9 @@ class BaseFormat:
         self.sheet.rename(columns=new_columns, inplace=True)
         self.columns = list(self.sheet.columns)
 
+    def _columns_check(self, col_dict):
+        return [column for column in col_dict if column in self.columns]
+
 
 class ExcelFormat(BaseFormat):
     """## Base class for formatting Excel files ##"""
