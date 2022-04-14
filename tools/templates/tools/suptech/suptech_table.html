@@ -27,8 +27,9 @@
                 <th class="text-nowrap">N° XELON</th>
                 <th>Objet</th>
                 <th>Catégorie</th>
-                <th>Traitement 48h</th>
-                <th>Durée</th>
+                <th>48h</th>
+                <th>Status</th>
+                <th class="text-nowrap">Action par</th>
                 <th>Infos</th>
                 <th>Rmqs</th>
                 <th>Action</th>
@@ -54,7 +55,8 @@
                     <td style="min-width: 15rem;">{{ obj.item }}</td>
                     <td class="text-nowrap">{{ obj.category|default:"---" }}</td>
                     <td>{% if obj.is_48h %}OUI{% else %}NON{% endif %}</td>
-                    <td class="text-nowrap">{{ obj.time }}</td>
+                    <td class="text-nowrap">{{ obj.status }}</td>
+                    <td class="text-nowrap">{{ obj.modified_by.first_name }} {{ obj.modified_by.last_name }}</td>
                     <td style="min-width: 30rem; max-width: 30rem;">{{ obj.info }}</td>
                     <td style="min-width: 30rem; max-width: 30rem;">{{ obj.rmq }}</td>
                     <td style="min-width: 20rem;">{{ obj.action }}</td>
