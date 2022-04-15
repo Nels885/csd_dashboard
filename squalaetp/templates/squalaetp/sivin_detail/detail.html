@@ -53,13 +53,15 @@
 
         </div>
 
-        <!-- Detail Info produits -->
-        <div class="tab-pane" id="prods" role="tabpanel"
-             aria-labelledby="prods-tab">
+        {% if corvet %}
+            <!-- Detail Info produits -->
+            <div class="tab-pane" id="prods" role="tabpanel"
+                 aria-labelledby="prods-tab">
 
-            {% include 'psa/detail/detail_corvet.html' %}
+                {% include 'psa/detail/detail_corvet.html' %}
 
-        </div>
+            </div>
+        {% endif %}
 
         <!-- Detail Info véhicule -->
         <div class="tab-pane" id="vehicle" role="tabpanel"
