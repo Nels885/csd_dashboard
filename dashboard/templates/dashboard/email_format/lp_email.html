@@ -33,25 +33,26 @@
             <th>Modèle</th>
             <th>Date In</th>
             <th>Date Exp. Attendue</th>
-            <th>Délai attendue</th>
-            <th>Délai en jours</th>
+            <th>Nb jours de retard</th>
+            <th>Commentaire Admin</th>
+            <th>Commentaire Action</th>
             <th>Tech</th>
 
         </tr>
         </thead>
         <tbody>
 
-        {% include 'dashboard/format/lp_tr_format.html' with prods=psa activity='Produits PSA' %}
+        {% include 'dashboard/format/lp_tr_email.html' with prods=psa activity='Produits PSA' %}
 
-        {% include 'dashboard/format/lp_tr_format.html' with prods=autre activity='Autres produits' %}
+        {% include 'dashboard/format/lp_tr_email.html' with prods=autre activity='Autres produits' %}
 
-        {% include 'dashboard/format/lp_tr_format.html' with prods=clarion activity='Clarion' %}
+        {% include 'dashboard/format/lp_tr_email.html' with prods=clarion activity='Clarion' %}
 
-        {% include 'dashboard/format/lp_tr_format.html' with prods=calc_mot activity='Calculateurs' %}
+        {% include 'dashboard/format/lp_tr_email.html' with prods=calc_mot activity='Calculateurs' %}
 
-        {% include 'dashboard/format/lp_tr_format.html' with prods=etude activity='Etude' %}
+        {% include 'dashboard/format/lp_tr_email.html' with prods=etude activity='Etude' %}
 
-        {% include 'dashboard/format/lp_tr_format.html' with prods=defaut activity='Defaut' %}
+        {% include 'dashboard/format/lp_tr_email.html' with prods=defaut activity='Defaut' %}
 
         </tbody>
     </table>

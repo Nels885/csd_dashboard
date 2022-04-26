@@ -49,6 +49,7 @@ class Command(BaseCommand):
             subject = 'Stocks et Retards {}'.format(date_joined)
             prods = ProductAnalysis()
             data = prods.late_products()
+            data['domain'] = config.WEBSITE_DOMAIN
             indicator = Indicator.objects.filter(date=timezone.now()).first()
             if indicator:
                 data.update({
@@ -57,7 +58,6 @@ class Command(BaseCommand):
                     'express_products': indicator.express_products,
                     'vip_products': prods.vip
                 })
-
             html_message = render_to_string('dashboard/email_format/lp_email.html', data)
             plain_message = strip_tags(html_message)
             send_mail(
