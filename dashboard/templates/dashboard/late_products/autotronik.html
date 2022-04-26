@@ -32,14 +32,13 @@
             <th>Modèle</th>
             <th>Date In</th>
             <th>Date Exp. Attendue</th>
-            <th>Délai attendue</th>
-            <th>Délai en jours</th>
+            <th>Nb jours de retard</th>
             <th>Tech</th>
         </tr>
         </thead>
         <tbody>
 
-        {% include 'dashboard/format/lp_tr_link_format.html' with prods=autotronik activity='Autotronik' last=True %}
+        {% include 'dashboard/format/lp_tr_link.html' with prods=autotronik activity='Autotronik' last=True %}
 
         </tbody>
     </table>
