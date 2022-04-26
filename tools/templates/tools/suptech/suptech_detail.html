@@ -94,6 +94,17 @@
             </div>
         </div>
 
+        <div class="row mt-5">
+            <label class="col-sm-2">Pièces-jointes</label>
+            <div class="col-sm-10">
+                {% for file in object.suptechfile_set.all %}
+                    <a href="{% get_media_prefix %}{{ file.file}}" target="_blank">{{ file.file.name }}</a>
+                {% empty %}
+                    <p>Pas de fichiers</p>
+                {% endfor %}
+            </div>
+        </div>
+
         {% if perms.tools.change_suptech %}
 
             <div class="mt-5 row">
