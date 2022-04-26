@@ -25,7 +25,7 @@
 >>> import Requests
 
 >>> payload = {<span id="str">'search'</span>: <span id="str">'&lt;XELON_OR_VIN&gt;'</span>, <span id="str">'auth_token'</span>: <span id="str">'&lt;TOKEN&gt;'</span>}
->>> response = requests.get(<span id="str">'http://{{ domain }}/api/prog/'</span>, params=payload)
+>>> response = requests.get(<span id="str">'http://{{ website_domain }}/api/prog/'</span>, params=payload)
         </pre>
     </div>
     <br>
@@ -52,7 +52,7 @@
 >>> import Requests
 
 >>> payload = {<span id="str">'auth_token'</span>: <span id="str">'&lt;TOKEN&gt;'</span>}
->>> response = requests.get(<span id="str">'http://{{ domain }}/api/unlock/'</span>, params=payload)
+>>> response = requests.get(<span id="str">'http://{{ website_domain }}/api/unlock/'</span>, params=payload)
         </pre>
     </div>
     <br>
