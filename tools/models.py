@@ -89,9 +89,9 @@ class ThermalChamber(models.Model):
     def __str__(self):
         first_name, last_name = self.created_by.first_name, self.created_by.last_name
         if first_name and last_name:
-            return "{} {} - {}".format(self.created_by.last_name, self.created_by.first_name, self.xelon_number)
+            return f"{self.created_by.last_name} {self.created_by.first_name} - {self.xelon_number}"
         else:
-            return "{} - {}".format(self.created_by.username, self.xelon_number)
+            return f"{self.created_by.username} - {self.xelon_number}"
 
 
 class ThermalChamberMeasure(models.Model):
@@ -110,14 +110,6 @@ class ThermalChamberMeasure(models.Model):
 class EtudeProject(models.Model):
     name = models.CharField('projet', max_length=200)
     progress = models.PositiveIntegerField('avancée en %', validators=[MaxValueValidator(100), MinValueValidator(0)])
-
-    def __str__(self):
-        return self.name
-
-
-class SuptechCategory(models.Model):
-    name = models.CharField('nom', max_length=200)
-    manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -159,7 +151,15 @@ class Suptech(models.Model):
         return reverse('tools:suptech_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return self.item
+        return f"{self.pk} - {self.item}"
+
+
+class SuptechCategory(models.Model):
+    name = models.CharField('nom', max_length=200)
+    manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class SuptechItem(models.Model):
@@ -191,13 +191,24 @@ class SuptechMessage(models.Model):
         ordering = ['-added_at']
 
     def __str__(self):
-        return "Message de {} sur {}".format(self.added_by, self.content_object)
+        return f"Message de {self.added_by} sur {self.content_object}"
 
     def save(self, *args, **kwargs):
         user = get_current_user()
         if user and user.pk:
             self.added_by = user
         super().save(*args, **kwargs)
+
+
+class SuptechFile(models.Model):
+    file = models.FileField(upload_to="suptech/%Y/%m")
+    suptech = models.ForeignKey("Suptech", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Suptech File"
+
+    def __str__(self):
+        return f"[SUPTECH_{self.suptech.pk}] {self.file.name}"
 
 
 class BgaTime(models.Model):
