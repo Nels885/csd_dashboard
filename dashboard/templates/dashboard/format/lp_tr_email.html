@@ -12,8 +12,7 @@
             <td>{{ prod.date_retour }}</td>
             <td>{{ prod.date_expedition_attendue|default:"" }}</td>
             <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
-            <td>{{ prod.commentaire_sav_admin  }}</td>
-            <td>{{ prod.commentaire_action }}</td>
+            <td>{{ prod.type_de_cloture }}</td>
             <td>{{ prod.nom_technicien }}</td>
         </tr>
     {% endwith %}
@@ -22,12 +21,12 @@
 <tr class="bg-success text-light">
     <td>Total {{ activity }}</td>
     <td>{{ prods.count }}</td>
-    {% for _ in 0|range:7 %}
+    {% for _ in 0|range:6 %}
         <td></td>
     {% endfor %}
 </tr>
 <tr>
-    {% for _ in 0|range:9 %}
+    {% for _ in 0|range:8 %}
         <td></td>
     {% endfor %}
 </tr>

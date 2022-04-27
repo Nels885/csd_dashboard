@@ -15,6 +15,7 @@
         <td>{{ prod.date_retour }}</td>
         <td>{{ prod.date_expedition_attendue|default:"" }}</td>
         <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
+        <td>{{ prod.type_de_cloture }}</td>
         <td>{{ prod.nom_technicien }}</td>
     </tr>
 
@@ -24,14 +25,14 @@
     <td class="bg-white" style="width: 20px;"></td>
     <td>Total {{ activity }}</td>
     <td>{{ prods.count }}</td>
-    {% for _ in 0|range:5 %}
+    {% for _ in 0|range:6 %}
         <td></td>
     {% endfor %}
 </tr>
 
 {% if last == None or last == False %}
     <tr>
-        {% for _ in 0|range:8 %}
+        {% for _ in 0|range:9 %}
             <td></td>
         {% endfor %}
     </tr>
