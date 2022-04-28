@@ -24,9 +24,9 @@
         <td class="text-dark">Date Retour</td>
         <td>{{ xelon.date_retour|default_if_none:"" }}</td>
     </tr>
-    <tr>
+    <tr class="font-weight-bold">
         <td class="text-dark td-ihm">Date d'expédition attendue</td>
-        <td class="font-weight-bold {% if xelon.delai_expedition_attendue > 0 %}bg-danger text-white{% endif %}">
+        <td class="{% if xelon.delai_expedition_attendue > 0 %}bg-danger text-white{% endif %}">
             {{ xelon.date_expedition_attendue|default_if_none:"" }}
             {% if xelon.delai_expedition_attendue %}
                 <span class="ml-4">J {{ xelon.delai_expedition_attendue }}</span>
@@ -45,7 +45,7 @@
         <td class="text-dark">Nom technicien</td>
         <td>{{ xelon.nom_technicien }}</td>
     </tr>
-    <tr>
+    <tr class="font-weight-bold">
         <td class="text-dark">Commentaire action</td>
         <td>{{ xelon.commentaire_action }}</td>
     </tr>
@@ -53,7 +53,7 @@
         <td class="text-dark">Commentaire FR</td>
         <td>{{ xelon.commentaire_de_la_fr }}</td>
     </tr>
-    <tr>
+    <tr class="font-weight-bold">
         <td class="text-dark">Commentaire SAV Admin</td>
         <td>{{ xelon.commentaire_sav_admin }}</td>
     </tr>

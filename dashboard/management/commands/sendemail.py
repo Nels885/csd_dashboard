@@ -24,6 +24,12 @@ class Command(BaseCommand):
             help='Send email for late products',
         )
         parser.add_argument(
+            '--pending_products',
+            action='store_true',
+            dest='pending_products',
+            help='Send email for pending products',
+        )
+        parser.add_argument(
             '--vin_error',
             action='store_true',
             dest='vin_error',
@@ -65,6 +71,26 @@ class Command(BaseCommand):
                 html_message=html_message
             )
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en retard terminée!"))
+        if options['pending_products']:
+            subject = 'Produits en cours {}'.format(date_joined)
+            prods = ProductAnalysis()
+            data = prods.pending_products()
+            data['domain'] = config.WEBSITE_DOMAIN
+            indicator = Indicator.objects.filter(date=timezone.now()).first()
+            if indicator:
+                data.update({
+                    'products_to_repair': indicator.products_to_repair,
+                    'late_products': indicator.late_products,
+                    'express_products': indicator.express_products,
+                    'vip_products': prods.vip
+                })
+            html_message = render_to_string('dashboard/email_format/lp_email.html', data)
+            plain_message = strip_tags(html_message)
+            send_mail(
+                subject, plain_message, None, string_to_list(config.PENDING_PRODUCTS_TO_EMAIL_LIST),
+                html_message=html_message
+            )
+            self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en cours terminée!"))
         if options['vin_error']:
             subject = "Erreur VIN Xelon {}".format(date_joined)
             xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')[:10]

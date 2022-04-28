@@ -338,6 +338,7 @@ CONSTANCE_CONFIG = {
     # CSD Repair Options
     'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error TO email list'),
     'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products TO email list'),
+    'PENDING_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Pending products TO email list'),
     'REMAN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN TO email list'),
     'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN TO email list'),
     'CHANGE_PROD_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon produit TO email list'),
@@ -385,8 +386,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'TAG_XELON_LOG_PATH'
     ),
     '3. CSD Repair Options': (
-        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
-        'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST', 'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
+        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',
+        'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
+        'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
     ),
     '4. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
