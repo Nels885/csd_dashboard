@@ -14,7 +14,7 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" role="tablist">
 
-            {% include 'dashboard/late_products/tab_select.html' with select=select_tab %}
+            {% include 'dashboard/products/tab_select.html' with select=select_tab %}
 
         </ul>
     </div>
@@ -23,10 +23,11 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered table-sm text-nowrap display" id="adminTable" style="width:100%">
+    <table class="table table-bordered table-sm text-nowrap display" id="tronikTable" style="width:100%">
         <thead>
         <tr>
             <th></th>
+            <th>Activité</th>
             <th>Dossier</th>
             <th>Modèle</th>
             <th>Date In</th>
@@ -34,32 +35,11 @@
             <th>Nb jours de retard</th>
             <th>Type de cloture</th>
             <th>Tech</th>
-            <th>Famille Produit</th>
         </tr>
         </thead>
         <tbody>
 
-        {% for prod in queryset %}
-
-            <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"
-                {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"
-                {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"
-                {% else %}class="bg-success text-gray-700"{% endif %}>
-                <td class="bg-white" style="width: 20px;">
-                    <a href="{% url 'squalaetp:detail' pk=prod.pk %}" title="Détail"
-                       class="btn btn-info btn-circle btn-sm" target="_blank"><i class="fas fa-info-circle"></i></a>
-                </td>
-                <td>{{ prod.numero_de_dossier }}</td>
-                <td>{{ prod.modele_produit }}</td>
-                <td>{{ prod.date_retour }}</td>
-                <td>{{ prod.date_expedition_attendue|default:"" }}</td>
-                <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
-                <td>{{ prod.type_de_cloture }}</td>
-                <td>{{ prod.nom_technicien }}</td>
-                <td>{{ prod.famille_produit }}</td>
-            </tr>
-
-        {% endfor %}
+        {% include 'dashboard/format/lp_tr_link.html' with prods=autotronik activity='Autotronik' last=True %}
 
         </tbody>
     </table>

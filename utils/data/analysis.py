@@ -51,13 +51,15 @@ class ProductAnalysis:
         :return:
             Dictionary of different activities
         """
-        psa = self.lateQueryset.filter(product__category='PSA')
-        clarion = self.lateQueryset.filter(product__category='CLARION')
-        etude = self.lateQueryset.filter(product__category='ETUDE')
-        autre = self.lateQueryset.filter(product__category='AUTRE')
-        calc_mot = self.lateQueryset.filter(product__category='CALCULATEUR')
-        defaut = self.lateQueryset.filter(product__category='DEFAUT')
-        return locals()
+        return self._activity_dict(self.lateQueryset)
+
+    def pending_products(self):
+        """
+        Organization of pending products by activity
+        :return:
+            Dictionary of different activities
+        """
+        return self._activity_dict(self.pendingQueryset)
 
     def admin_products(self):
         queryset = self.QUERYSET.filter(type_de_cloture='Admin').order_by('-delai_au_en_jours_ouvres')
@@ -89,6 +91,16 @@ class ProductAnalysis:
             number of Xelon data
         """
         return Xelon.objects.all().count()
+
+    @staticmethod
+    def _activity_dict(queryset):
+        psa = queryset.filter(product__category='PSA')
+        clarion = queryset.filter(product__category='CLARION')
+        etude = queryset.filter(product__category='ETUDE')
+        autre = queryset.filter(product__category='AUTRE')
+        calc_mot = queryset.filter(product__category='CALCULATEUR')
+        defaut = queryset.filter(product__category='DEFAUT')
+        return locals()
 
 
 class IndicatorAnalysis:

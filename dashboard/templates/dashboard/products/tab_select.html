@@ -1,7 +1,13 @@
 {% load i18n %}
 
+<li class="nav-item {% if select == 'pending' %}active{% endif %}">
+    <a class="nav-link {% if select == 'pending' %}active{% endif %}" href="{% url 'dashboard:products' %}?filter=pending">
+        {% trans "Pending Products" %}
+    </a>
+</li>
+
 <li class="nav-item {% if select == 'late' %}active{% endif %}">
-    <a class="nav-link {% if select == 'late' %}active{% endif %}" href="{% url 'dashboard:late_prod' %}?filter=pending">
+    <a class="nav-link {% if select == 'late' %}active{% endif %}" href="{% url 'dashboard:products' %}?filter=late">
         {% trans "Late Products" %}
     </a>
 </li>

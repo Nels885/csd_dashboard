@@ -62,12 +62,18 @@ def charts_ajax(request):
 
 
 @login_required
-def late_products(request):
-    """ View of Late products page """
-    context = {'title': _("Late Products"), 'select_tab': 'late'}
+def products(request):
+    """ View of products page """
+    select_tab = request.GET.get('filter', 'late')
+    template = 'dashboard/products/activity.html'
     prods = ProductAnalysis()
-    context.update(prods.late_products())
-    return render(request, 'dashboard/late_products/late_products.html', context)
+    context = {'title': _("Late Products"), 'select_tab': select_tab}
+    if select_tab == 'late':
+        context.update(prods.late_products())
+    elif select_tab == 'pending':
+        context = {'title': _("Pending Products"), 'select_tab': select_tab}
+        context.update(prods.pending_products())
+    return render(request, template, context)
 
 
 @login_required
@@ -76,7 +82,7 @@ def admin_products(request):
     context = {'title': _("Admin Products"), 'select_tab': 'admin'}
     prods = ProductAnalysis()
     context.update(prods.admin_products())
-    return render(request, 'dashboard/late_products/list_products.html', context)
+    return render(request, 'dashboard/products/list.html', context)
 
 
 @login_required
@@ -85,7 +91,7 @@ def vip_products(request):
     context = {'title': _("VIP Products"), 'select_tab': 'vip'}
     prods = ProductAnalysis()
     context.update(prods.vip_products())
-    return render(request, 'dashboard/late_products/list_products.html', context)
+    return render(request, 'dashboard/products/list.html', context)
 
 
 @login_required
@@ -94,7 +100,7 @@ def autotronik(request):
     context = {'title': _("Late Products"), 'select_tab': 'tronik'}
     prods = ProductAnalysis()
     context.update(prods.autotronik())
-    return render(request, 'dashboard/late_products/autotronik.html', context)
+    return render(request, 'dashboard/products/autotronik.html', context)
 
 
 @login_required
