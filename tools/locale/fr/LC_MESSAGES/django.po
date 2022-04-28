@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-12 14:32+0200\n"
+"POT-Creation-Date: 2022-04-28 15:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: tools/admin.py:40
+#: tools/admin.py:45
 #, python-brace-format
 msgid "{0} product{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: tools/admin.py:43
+#: tools/admin.py:48
 msgid "was,were"
 msgstr "était, étaient"
 
-#: tools/admin.py:51
+#: tools/admin.py:56
 msgid "48h processing disabled"
 msgstr "Traitement 48h désactivé"
 
-#: tools/admin.py:56
+#: tools/admin.py:61
 msgid "48h processing enabled"
 msgstr "Traitement 48h activé"
 
@@ -46,7 +46,7 @@ msgstr "Le fichier CALIBRE existe !"
 #: tools/templates/tools/modal/suptech_create.html:137
 #: tools/templates/tools/modal/tag_xelon.html:37
 #: tools/templates/tools/modal/thermal_delete.html:20
-#: tools/templates/tools/suptech/suptech_update.html:110
+#: tools/templates/tools/suptech/suptech_update.html:132
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -91,15 +91,15 @@ msgstr "Lien de téléchargement"
 msgid "Validation date"
 msgstr "Date de validation"
 
-#: tools/templates/tools/suptech/suptech_detail.html:90
+#: tools/templates/tools/suptech/suptech_detail.html:112
 msgid "Respond to request"
 msgstr "Répondre à la demande"
 
-#: tools/templates/tools/suptech/suptech_detail.html:146
+#: tools/templates/tools/suptech/suptech_detail.html:168
 msgid "Send"
 msgstr "Envoyer"
 
-#: tools/templates/tools/suptech/suptech_update.html:111
+#: tools/templates/tools/suptech/suptech_update.html:133
 msgid "Update"
 msgstr "Mettre à jour"
 

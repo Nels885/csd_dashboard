@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-12 14:32+0200\n"
+"POT-Creation-Date: 2022-04-28 15:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: dashboard/forms.py:123
 msgid "Search Xelon, VIN or SN..."
-msgstr ""
+msgstr "Recherche Xelon, VIN ou SN..."
 
 #: dashboard/templates/dashboard/done.html:21
 msgid "Back to Dashboard"
@@ -42,21 +42,6 @@ msgstr "Supprimer"
 #: dashboard/templates/dashboard/modal/post_create.html:7
 msgid "Create Post"
 msgstr "Ajout d'un Post"
-
-#: dashboard/templates/dashboard/late_products/tab_select.html:5
-#: dashboard/views.py:67 dashboard/views.py:94
-msgid "Late Products"
-msgstr "Produits en retard"
-
-#: dashboard/templates/dashboard/late_products/tab_select.html:11
-#: dashboard/views.py:85
-msgid "VIP Products"
-msgstr "Produits VIP"
-
-#: dashboard/templates/dashboard/late_products/tab_select.html:17
-#: dashboard/views.py:76
-msgid "Admin Products"
-msgstr "Produits en Admin"
 
 #: dashboard/templates/dashboard/modal/login.html:10
 msgid "Welcome Back!"
@@ -92,7 +77,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal/logout.html:14
-#: dashboard/templates/dashboard/profile.html:113
+#: dashboard/templates/dashboard/profile.html:114
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -115,7 +100,7 @@ msgstr "Mettre à jour le Post"
 
 #: dashboard/templates/dashboard/modal/post_update.html:54
 #: dashboard/templates/dashboard/modal/weblink_update.html:38
-#: dashboard/templates/dashboard/profile.html:104
+#: dashboard/templates/dashboard/profile.html:105
 msgid "Update"
 msgstr "Mise à jour"
 
@@ -144,31 +129,51 @@ msgstr "Voulez-vous vraiment supprimer le lien Web avec le titre"
 msgid "Update web link"
 msgstr "Mettre à jour le lien Web"
 
+#: dashboard/templates/dashboard/products/tab_select.html:5
+#: dashboard/tests/tests_dashboard_views.py:51 dashboard/views.py:72
+msgid "Pending Products"
+msgstr "Produits en cours"
+
+#: dashboard/templates/dashboard/products/tab_select.html:11
+#: dashboard/tests/tests_dashboard_views.py:42 dashboard/views.py:70
+msgid "Late Products"
+msgstr "Produits en retard"
+
+#: dashboard/templates/dashboard/products/tab_select.html:17
+#: dashboard/tests/tests_dashboard_views.py:69 dashboard/views.py:94
+msgid "VIP Products"
+msgstr "Produits VIP"
+
+#: dashboard/templates/dashboard/products/tab_select.html:23
+#: dashboard/tests/tests_dashboard_views.py:78 dashboard/views.py:85
+msgid "Admin Products"
+msgstr "Produits en Admin"
+
 #: dashboard/templates/dashboard/profile.html:23
 msgid "Profile picture"
 msgstr "Image de profile"
 
-#: dashboard/templates/dashboard/profile.html:50
+#: dashboard/templates/dashboard/profile.html:51
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: dashboard/templates/dashboard/profile.html:54
+#: dashboard/templates/dashboard/profile.html:55
 msgid "Last name"
 msgstr "Nom de famille"
 
-#: dashboard/templates/dashboard/profile.html:58
+#: dashboard/templates/dashboard/profile.html:59
 msgid "First name"
 msgstr "Prénom"
 
-#: dashboard/templates/dashboard/profile.html:62
+#: dashboard/templates/dashboard/profile.html:63
 msgid "Password"
 msgstr "Mot de passe"
 
-#: dashboard/templates/dashboard/profile.html:65
+#: dashboard/templates/dashboard/profile.html:66
 msgid "Change password"
 msgstr "Changer le mot de passe"
 
-#: dashboard/templates/dashboard/profile.html:69
+#: dashboard/templates/dashboard/profile.html:70
 msgid "E-mail address"
 msgstr "Adresse E-mail"
 
@@ -176,7 +181,7 @@ msgstr "Adresse E-mail"
 msgid "Add web link"
 msgstr "Ajouter un lien Web"
 
-#: dashboard/tests/tests_dashboard_views.py:82
+#: dashboard/tests/tests_dashboard_views.py:123
 msgid "This field is required."
 msgstr "Ce champ est requis."
 

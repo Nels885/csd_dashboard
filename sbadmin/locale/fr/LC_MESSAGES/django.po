@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-12 14:32+0200\n"
+"POT-Creation-Date: 2022-04-28 15:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: api/views.py:204
+#: api/views.py:202
 msgid "Time between 2 requests too short"
 msgstr "Délai entre 2 requêtes trop court"
 
-#: sbadmin/settings/__init__.py:190 templates/base/top_bar.html:89
+#: sbadmin/settings/__init__.py:188 templates/base/top_bar.html:89
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:191 templates/base/top_bar.html:80
+#: sbadmin/settings/__init__.py:189 templates/base/top_bar.html:80
 msgid "English"
 msgstr "Anglais"
 
