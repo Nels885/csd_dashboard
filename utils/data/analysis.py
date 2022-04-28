@@ -11,7 +11,7 @@ from tools.models import Suptech, BgaTime, ThermalChamberMeasure
 
 
 class ProductAnalysis:
-    QUERYSET_RETURN = Xelon.objects.exclude(date_retour__isnull=True)
+    QUERYSET_RETURN = Xelon.objects.exclude(date_retour__isnull=True).order_by('date_expedition_attendue')
     QUERYSET = QUERYSET_RETURN.exclude(lieu_de_stockage='ATELIER/AUTOTRONIK')
     QUERYSET_AUTOTRONIK = QUERYSET_RETURN.filter(lieu_de_stockage='ATELIER/AUTOTRONIK')
 
@@ -20,9 +20,8 @@ class ProductAnalysis:
         Initialization of the ProductAnalysis class
         """
         self.pendingQueryset = self.QUERYSET.filter(type_de_cloture__in=['', 'Sauvée'])
-        self.lateQueryset = self.QUERYSET.filter(Q(delai_expedition_attendue__gt=0) |
-                                                 Q(express=True)).exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
+        self.lateQueryset = self.QUERYSET.filter(Q(delai_expedition_attendue__gt=0) | Q(express=True)).exclude(
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut'])
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
         self.vip = self.pendingQueryset.filter(dossier_vip=True).count()
@@ -62,16 +61,15 @@ class ProductAnalysis:
         return self._activity_dict(self.pendingQueryset)
 
     def admin_products(self):
-        queryset = self.QUERYSET.filter(type_de_cloture='Admin').order_by('-delai_au_en_jours_ouvres')
+        queryset = self.QUERYSET.filter(type_de_cloture='Admin')
         return locals()
 
     def vip_products(self):
-        queryset = self.pendingQueryset.filter(dossier_vip=True).order_by('-delai_au_en_jours_ouvres')
+        queryset = self.pendingQueryset.filter(dossier_vip=True)
         return locals()
 
     def autotronik(self):
-        autotronik = self.QUERYSET_AUTOTRONIK.exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
+        autotronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut'])
         return locals()
 
     @staticmethod
@@ -132,7 +130,8 @@ class IndicatorAnalysis:
 
     def new_result(self):
         last_60_days = timezone.datetime.today() - timezone.timedelta(60)
-        data = {"prodsAreaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
+        data = {"prodsAreaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [],
+                "prodsLateValue": []}
         prods = Indicator.objects.filter(date__gte=last_60_days).order_by('date')
         for prod in prods:
             data["prodsAreaLabels"].append(prod.date.strftime("%d/%m/%Y"))
