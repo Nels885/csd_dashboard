@@ -11,8 +11,8 @@
                 <td><a href="http://{{ domain }}{% url 'squalaetp:detail' pk=prod.pk %}?select=xelon">{{ prod.numero_de_dossier }}</a>
                 </td>
                 <td>{{ prod.modele_produit }} {{ prod.dossier_vip|yesno:"(VIP)," }} {{ prod.express|yesno:"(EXP)," }}</td>
-                <td>{{ prod.date_retour }}</td>
-                <td>{{ prod.date_expedition_attendue|default:"" }}</td>
+                <td>{{ prod.date_retour|date:"d/m/Y" }}</td>
+                <td>{{ prod.date_expedition_attendue|date:"d/m/Y"|default_if_none:"" }}</td>
                 <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
                 <td>{{ prod.type_de_cloture }}</td>
                 <td>{{ prod.nom_technicien }}</td>
