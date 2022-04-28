@@ -11,7 +11,6 @@ urlpatterns = [
     path('products/', views.products, name='products'),
     path('admin-prod/', views.admin_products, name='admin_prod'),
     path('vip-prod/', views.vip_products, name='vip_prod'),
-    path('autotronik/', views.autotronik, name='autotronik'),
     path('set_language/<str:user_language>/', views.set_language, name="set_lang"),
     path('profile/', views.user_profile, name="user_profile"),
     path('activity_log/', views.activity_log, name="activity_log"),

@@ -1,32 +1,35 @@
 {% load custom_tags %}
 
-{% for prod in prods %}
-    {% with delai=prod.delai_au_en_jours_ouvres %}
-        <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"
-            {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"
-            {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"
-            {% else %}class="bg-success text-gray-700"{% endif %}>
-            <td>{{ activity }}</td>
-            <td><a href="http://{{ domain }}{% url 'squalaetp:detail' pk=prod.pk %}?select=xelon">{{ prod.numero_de_dossier }}</a></td>
-            <td>{{ prod.modele_produit }} {{ prod.dossier_vip|yesno:"(VIP)," }} {{ prod.express|yesno:"(EXP)," }}</td>
-            <td>{{ prod.date_retour }}</td>
-            <td>{{ prod.date_expedition_attendue|default:"" }}</td>
-            <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
-            <td>{{ prod.type_de_cloture }}</td>
-            <td>{{ prod.nom_technicien }}</td>
-        </tr>
-    {% endwith %}
-{% endfor %}
+{% if prods %}
+    {% for prod in prods %}
+        {% with delai=prod.delai_au_en_jours_ouvres %}
+            <tr {% if prod.delai_au_en_jours_ouvres >= 6 %}class="bg-danger text-light"
+                {% elif prod.delai_au_en_jours_ouvres >= 4 %}class="bg-warning text-gray-800"
+                {% elif prod.delai_au_en_jours_ouvres >= 1 %}class="bg-info text-light"
+                {% else %}class="bg-success text-gray-700"{% endif %}>
+                <td>{{ activity }}</td>
+                <td><a href="http://{{ domain }}{% url 'squalaetp:detail' pk=prod.pk %}?select=xelon">{{ prod.numero_de_dossier }}</a>
+                </td>
+                <td>{{ prod.modele_produit }} {{ prod.dossier_vip|yesno:"(VIP)," }} {{ prod.express|yesno:"(EXP)," }}</td>
+                <td>{{ prod.date_retour }}</td>
+                <td>{{ prod.date_expedition_attendue|default:"" }}</td>
+                <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
+                <td>{{ prod.type_de_cloture }}</td>
+                <td>{{ prod.nom_technicien }}</td>
+            </tr>
+        {% endwith %}
+    {% endfor %}
 
-<tr class="bg-success text-light">
-    <td>Total {{ activity }}</td>
-    <td>{{ prods.count }}</td>
-    {% for _ in 0|range:6 %}
-        <td></td>
-    {% endfor %}
-</tr>
-<tr>
-    {% for _ in 0|range:8 %}
-        <td></td>
-    {% endfor %}
-</tr>
+    <tr class="bg-success text-light">
+        <td>Total {{ activity }}</td>
+        <td>{{ prods.count }}</td>
+        {% for _ in 0|range:6 %}
+            <td></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for _ in 0|range:8 %}
+            <td></td>
+        {% endfor %}
+    </tr>
+{% endif %}

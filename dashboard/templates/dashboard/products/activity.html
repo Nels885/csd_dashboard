@@ -39,17 +39,25 @@
         </thead>
         <tbody>
 
-        {% include 'dashboard/format/lp_tr_link.html' with prods=psa activity='Produits PSA' %}
+        {% if not autotronik %}
 
-        {% include 'dashboard/format/lp_tr_link.html' with prods=autre activity='Autres produits' %}
+            {% include 'dashboard/format/lp_tr_link.html' with prods=psa activity='Produits PSA' %}
 
-        {% include 'dashboard/format/lp_tr_link.html' with prods=clarion activity='Clarion' %}
+            {% include 'dashboard/format/lp_tr_link.html' with prods=autre activity='Autres produits' %}
 
-        {% include 'dashboard/format/lp_tr_link.html' with prods=calc_mot activity='Calculateurs' %}
+            {% include 'dashboard/format/lp_tr_link.html' with prods=clarion activity='Clarion' %}
 
-        {% include 'dashboard/format/lp_tr_link.html' with prods=etude activity='Etude' %}
+            {% include 'dashboard/format/lp_tr_link.html' with prods=calc_mot activity='Calculateurs' %}
 
-        {% include 'dashboard/format/lp_tr_link.html' with prods=defaut activity='Defaut' last=True %}
+            {% include 'dashboard/format/lp_tr_link.html' with prods=etude activity='Etude' %}
+
+            {% include 'dashboard/format/lp_tr_link.html' with prods=defaut activity='Defaut' last=True %}
+
+        {% else %}
+
+            {% include 'dashboard/format/lp_tr_link.html' with prods=autotronik activity='Autotronik' last=True %}
+
+        {% endif %}
 
         </tbody>
     </table>

@@ -68,11 +68,14 @@ def products(request):
     template = 'dashboard/products/activity.html'
     prods = ProductAnalysis()
     context = {'title': _("Late Products"), 'select_tab': select_tab}
-    if select_tab == 'late':
-        context.update(prods.late_products())
-    elif select_tab == 'pending':
+    if select_tab == 'pending':
         context = {'title': _("Pending Products"), 'select_tab': select_tab}
         context.update(prods.pending_products())
+    elif select_tab == 'tronik':
+        context = {'title': "Autotronik", 'select_tab': select_tab}
+        context.update(prods.autotronik())
+    else:
+        context.update(prods.late_products())
     return render(request, template, context)
 
 
@@ -92,15 +95,6 @@ def vip_products(request):
     prods = ProductAnalysis()
     context.update(prods.vip_products())
     return render(request, 'dashboard/products/list.html', context)
-
-
-@login_required
-def autotronik(request):
-    """ View of Autotronik page """
-    context = {'title': _("Late Products"), 'select_tab': 'tronik'}
-    prods = ProductAnalysis()
-    context.update(prods.autotronik())
-    return render(request, 'dashboard/products/autotronik.html', context)
 
 
 @login_required
