@@ -146,11 +146,10 @@ def validate_identify_number(queryset, value):
 def xml_parser(value):
     data = {"vin": ""}
     try:
-        tree = ET.XML(value)
-        root = tree.getchildren()
-        for list in root[1]:
-            if list.tag == "DONNEES_VEHICULE":
-                for child in list:
+        root = ET.XML(value)
+        for data_list in root[1]:
+            if data_list.tag == "DONNEES_VEHICULE":
+                for child in data_list:
                     if child.tag in ["WMI", "VDS", "VIS"]:
                         data['vin'] += child.text
                     elif child.tag in ["DATE_DEBUT_GARANTIE", "DATE_ENTREE_MONTAGE"]:
@@ -161,13 +160,13 @@ def xml_parser(value):
                         key, value = "DONNEE_{}".format(child.tag), child.text
                         # print("{} : {}".format(key, value))
                         data[key.lower()] = value
-            elif list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
-                for child in list:
+            elif data_list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
+                for child in data_list:
                     key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
-            elif list.tag == "LISTE_ORGANES":
-                for child in list:
+            elif data_list.tag == "LISTE_ORGANES":
+                for child in data_list:
                     key, value = "{}s_{}".format(child.tag, child.text[:2]), child.text[2:]
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
