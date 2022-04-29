@@ -555,6 +555,15 @@ class PartEcuModelForm(forms.ModelForm):
             'barcode': 'Code barre PSA *'
         }
 
+    def __init__(self, *args, **kwargs):
+        ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
+        _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance', None)
+        if instance and instance.pk:
+            self.fields['hw_reference'].initial = instance.ecu_type.hw_reference
+        self.fields['hw_reference'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         type_obj, type_created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"])
