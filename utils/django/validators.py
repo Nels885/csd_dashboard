@@ -95,6 +95,8 @@ def validate_psa_barcode(value):
         return value, None
     elif re.match(r'^\[\)>\w{55}$', str(value)):
         return value[21:29], None
+    elif re.match(r'^\d{9}R$', str(value)):
+        return value, None
     return value, _('PSA barcode is invalid')
 
 
@@ -116,6 +118,8 @@ def validate_barcode(value):
         return value[21:29], "PSA"
     elif re.match(r'^PF\w{16}$', str(value)):
         return value[:10], "VOLVO"
+    elif re.match(r'^\d{9}R$', str(value)):
+        return value, "PSA"
     return value, None
 
 
