@@ -19,7 +19,7 @@ class ProductAnalysis:
         """
         Initialization of the ProductAnalysis class
         """
-        self.pendingQueryset = self.QUERYSET.filter(type_de_cloture__in=['', 'Sauvée'])
+        self.pendingQueryset = self.QUERYSET.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut'])
         self.lateQueryset = self.QUERYSET.filter(Q(delai_expedition_attendue__gt=0) | Q(express=True)).exclude(
             type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut'])
         self.pending = self.pendingQueryset.count()
