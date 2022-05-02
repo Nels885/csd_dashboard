@@ -8,6 +8,21 @@ def cmd_sendemail_all_task():
 
 
 @celery_app.task
+def cmd_sendemail_task(*args):
+    """
+    task for sendemail command
+    :param args: --late_products, --pending_products, --vin_error, --vin_corvet, --reman
+    :return:
+        --late_products: Send email for the late products
+        --pending_products: Send email for the pending products
+        --vin_error: Send email for the V.I.N. error
+        --vin_corvet: Send email for the access problem of Corvet data
+        --reman: Send email for the REMAN batches in progress
+    """
+    call_command('sendemail', *args)
+
+
+@celery_app.task
 def cmd_import_excel_task():
     call_command('importexcel')
     call_command('loadsparepart')
