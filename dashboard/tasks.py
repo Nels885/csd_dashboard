@@ -4,7 +4,7 @@ from django.core.management import call_command
 
 @celery_app.task
 def cmd_sendemail_all_task():
-    call_command('sendemail', '--late_products', '--vin_error', '--vin_corvet', '--reman')
+    call_command('sendemail', '--late_products', '--pending_products', '--vin_error', '--vin_corvet', '--reman')
 
 
 @celery_app.task
