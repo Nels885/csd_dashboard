@@ -61,18 +61,23 @@ class Command(BaseCommand):
                     cursor.execute(sql)
             self.stdout.write(self.style.SUCCESS("Suppression des données de la table ProductCategory terminée!"))
         if options['user_skills']:
+            ProductCategory.niv_t_users.through.objects.all().delete()
             ProductCategory.niv_i_users.through.objects.all().delete()
             ProductCategory.niv_l_users.through.objects.all().delete()
             ProductCategory.niv_u_users.through.objects.all().delete()
             ProductCategory.niv_o_users.through.objects.all().delete()
+            ProductCategory.fa_users.through.objects.all().delete()
+            ProductCategory.fe_users.through.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(
                 no_style(), [
-                    ProductCategory.niv_i_users.through, ProductCategory.niv_l_users.through,
-                    ProductCategory.niv_u_users.through, ProductCategory.niv_o_users.through
+                    ProductCategory.niv_t_users.through, ProductCategory.niv_i_users.through,
+                    ProductCategory.niv_l_users.through, ProductCategory.niv_u_users.through,
+                    ProductCategory.niv_o_users.through, ProductCategory.fa_users.through,
+                    ProductCategory.fe_users.through
                 ]
             )
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table ProductCategory terminée!"))
+            self.stdout.write(self.style.SUCCESS("Suppression des données polyvavence produits terminée!"))

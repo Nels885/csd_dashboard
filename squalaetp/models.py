@@ -160,10 +160,14 @@ class ProductCategory(models.Model):
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
     category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
     corvet_type = models.CharField('Type Corvet', max_length=50, choices=TYPES, blank=True)
+    animator = models.ForeignKey(User, related_name="animator_prods", on_delete=models.SET_NULL, null=True)
+    niv_t_users = models.ManyToManyField(User, related_name='niv_t_prods', blank=True)
     niv_i_users = models.ManyToManyField(User, related_name='niv_i_prods', blank=True)
     niv_l_users = models.ManyToManyField(User, related_name='niv_l_prods', blank=True)
     niv_u_users = models.ManyToManyField(User, related_name='niv_u_prods', blank=True)
     niv_o_users = models.ManyToManyField(User, related_name='niv_o_prods', blank=True)
+    fa_users = models.ManyToManyField(User, related_name='fa_prods', blank=True)
+    fe_users = models.ManyToManyField(User, related_name='fe_prods', blank=True)
 
     class Meta:
         verbose_name = "Catégorie Produit"
