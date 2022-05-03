@@ -36,7 +36,7 @@ class Command(BaseCommand):
             for row in skill.read():
                 logger.info(row)
                 try:
-                    user = User.objects.get(last_name=row.pop("Nom"), first_name=row.pop("Prénom"))
+                    user = User.objects.get(last_name=row.pop("Nom"))
                     for key, value in row.items():
                         for query in ProductCategory.objects.filter(product_model__contains=key):
                             if value == "I":
@@ -47,8 +47,14 @@ class Command(BaseCommand):
                                 query.niv_u_users.add(user)
                             elif value == "O":
                                 query.niv_o_users.add(user)
+                            elif value == "FA":
+                                query.fa_users.add(user)
+                            elif value == "FE":
+                                query.fe_users.add(user)
+                            if user.username in ['NZP01', 'SCA01', 'TSA01'] and value == "FA":
+                                query.animator = user
                             query.save()
                     nb_update += 1
-                except User.DoesNotExist:
+                except (User.DoesNotExist, User.MultipleObjectsReturned):
                     pass
             self.stdout.write(self.style.SUCCESS(f"[SKILL] Data update completed:  UPDATE = {nb_update}"))

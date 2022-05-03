@@ -55,7 +55,7 @@ class ActionAdmin(admin.ModelAdmin):
 
 
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('product_model', 'category', 'corvet_type')
+    list_display = ('product_model', 'category', 'corvet_type', 'animator')
     list_filter = ('category', 'corvet_type')
     search_fields = ('product_model', 'category')
     actions = (
