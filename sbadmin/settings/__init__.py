@@ -334,6 +334,7 @@ CONSTANCE_CONFIG = {
     'XML_CORVET_PATH': ('LOGS/CORVET_XML_TEST', 'xml Corvet path'),
     'TAG_XELON_PATH': ('LOGS/CALIBRE', 'tag xelon path'),
     'TAG_XELON_LOG_PATH': ('LOGS/LOG_CONFIG_PROD', 'tag xelon log path'),
+    'TAG_XELON_TEL_PATH': ('LOGS/TELECODAGE', 'tag xelon télécodage path'),
 
     # CSD Repair Options
     'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error TO email list'),
@@ -383,7 +384,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     '2. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
-        'TAG_XELON_LOG_PATH'
+        'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'
     ),
     '3. CSD Repair Options': (
         'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',

@@ -32,5 +32,6 @@ XML_CORVET_PATH = os.path.join(CSD_ROOT, conf.XML_CORVET_PATH)
 
 TAG_XELON_PATH = os.path.join(CSD_ROOT, conf.TAG_XELON_PATH)
 TAG_XELON_LOG_PATH = os.path.join(CSD_ROOT, conf.TAG_XELON_LOG_PATH)
+TAG_XELON_TEL_PATH = os.path.join(CSD_ROOT, conf.TAG_XELON_TEL_PATH)
 
 DICT_YEAR = string_to_dict(conf.DICT_YEAR)
