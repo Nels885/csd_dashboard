@@ -59,10 +59,11 @@ class Calibre:
         file_exist = False
         try:
             query = Xelon.objects.get(numero_de_dossier=xelon)
-            for path in self.paths:
-                file_exist = self._create_file(path, xelon, user, comments)
-            if query.telecodage:
-                self._create_file(self.telPath, xelon, user, comments)
+            if xelon != 'A123456789':
+                for path in self.paths:
+                    file_exist = self._create_file(path, xelon, user, comments)
+                if query.telecodage:
+                    self._create_file(self.telPath, xelon, user, comments)
         except Xelon.DoesNotExist:
             pass
         return file_exist
