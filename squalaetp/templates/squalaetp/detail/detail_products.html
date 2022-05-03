@@ -34,6 +34,16 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if xelon.product.animator %}
+                {% with user=xelon.product.animator %}
+                    <tr>
+                        <td class="text-dark td-ihm">Animateur d'ilot</td>
+                        <td class="font-weight-bold">
+                            <a href="mailto:{{ user.email }}?subject={{ xelon.numero_de_dossier }} - {{ xelon.modele_produit }}" target="_blank">{{ user.email }}</a>
+                        </td>
+                    </tr>
+                {% endwith %}
+            {% endif %}
             </tbody>
         </table>
 
