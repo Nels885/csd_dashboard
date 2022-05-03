@@ -34,6 +34,7 @@
             <th>Nb jours de retard</th>
             <th>Type de cloture</th>
             <th>Tech</th>
+            <th>Animateur</th>
             <th>Famille Produit</th>
         </tr>
         </thead>
@@ -57,6 +58,9 @@
                     <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
                     <td>{{ prod.type_de_cloture }}</td>
                     <td>{{ prod.nom_technicien }}</td>
+                    {% with animator=prod.product.animator %}
+                        <td>{{ animator.first_name|default_if_none:"" }} {{ animator.last_name|default_if_none:"" }}</td>
+                    {% endwith %}
                     <td>{{ prod.famille_produit }}</td>
                 </tr>
             {% endwith %}
