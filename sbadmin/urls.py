@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.i18n import JavaScriptCatalog
 
 from dashboard.views import index
 from .views import get_progress_view, download_file_view
@@ -38,6 +39,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('notifications/', include('django_nyt.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('wiki/', include('wiki.urls')),
     path('api/', include('api.urls')),

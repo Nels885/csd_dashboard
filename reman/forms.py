@@ -169,7 +169,7 @@ class DefaultForm(forms.ModelForm):
         css = {
             'all': ('/static/admin/css/widgets.css', '/static/admin/css/overrides.css'),
         }
-        js = ('/admin/jsi18n',)
+        js = ('/jsi18n/',)
 
     class Meta:
         model = Default

@@ -1,7 +1,6 @@
 import re
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import ugettext as _
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
@@ -187,7 +186,7 @@ def user_profile(request):
     return render(request, 'dashboard/profile.html', locals())
 
 
-@staff_member_required(login_url='login')
+@permission_required('auth.add_user', login_url='login')
 def signup(request):
     """ View of Sign Up page """
     title = _("SignUp")
