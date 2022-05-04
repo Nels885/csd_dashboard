@@ -111,7 +111,7 @@ class DashboardTestCase(UnitTest):
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
 
         # Signup is staff
-        self.login('admin')
+        self.add_perms_user(User, 'add_user')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
