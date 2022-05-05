@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-28 15:10+0200\n"
+"POT-Creation-Date: 2022-05-05 15:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,27 +80,27 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: templates/base/top_bar.html:125
+#: templates/base/top_bar.html:127
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: templates/base/top_bar.html:129
+#: templates/base/top_bar.html:131
 msgid "Import Squalaetp"
 msgstr "Import Squalaetp"
 
-#: templates/base/top_bar.html:134
+#: templates/base/top_bar.html:136
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:138
+#: templates/base/top_bar.html:140
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:143 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:145 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:148
+#: templates/base/top_bar.html:150
 msgid "Guest"
 msgstr "Invité"
 
@@ -449,11 +449,11 @@ msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
 
-#: utils/django/validators.py:98
+#: utils/django/validators.py:100
 msgid "PSA barcode is invalid"
 msgstr "Le code bare PSA est invalide"
 
-#: utils/django/validators.py:136
+#: utils/django/validators.py:140
 msgid ""
 "The number is not correct, it must consist of an uppercase letter and 9 "
 "digits"
@@ -461,15 +461,15 @@ msgstr ""
 "Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et "
 "de 9 chiffres"
 
-#: utils/django/validators.py:138
+#: utils/django/validators.py:142
 msgid "This number is not authorized"
 msgstr "Ce numéro n'est pas autorisé"
 
-#: utils/django/validators.py:140
+#: utils/django/validators.py:144
 msgid "The batch does not exist"
 msgstr "Le lot n'existe pas"
 
-#: utils/django/validators.py:142
+#: utils/django/validators.py:146
 msgid "This number exists"
 msgstr "Ce numéro existe"
 
