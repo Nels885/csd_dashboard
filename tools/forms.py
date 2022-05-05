@@ -23,12 +23,10 @@ class TagXelonForm(BSModalModelForm):
         model = TagXelon
         fields = ['xelon', 'calibre', 'telecode', 'comments']
         widgets = {
-            'xelon': forms.TextInput(
-                attrs={'class': 'form-control col-sm-6', 'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''}
-            ),
-            'calibre': forms.Select(attrs={'class': 'form-control'}),
-            'telecode': forms.Select(attrs={'class': 'form-control'}),
-            'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
+            'xelon': forms.TextInput(attrs={'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''}),
+            'calibre': forms.Select(attrs={'class': 'custom-select'}),
+            'telecode': forms.Select(attrs={'class': 'custom-select'}),
+            'comments': forms.Textarea()
         }
 
     def __init__(self, *args, **kwargs):
