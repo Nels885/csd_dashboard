@@ -11,18 +11,37 @@ from crum import get_current_user
 from constance import config as conf
 
 from squalaetp.models import Xelon
-from utils.file.export import calibre
+from utils.file.export import calibre, telecode
 
 
 class TagXelon(models.Model):
+    CAL_CHOICES = ((False, _('CAL software')), (True, _("With Diagbox")))
+    TEL_CHOICES = ((False, _('No')), (True, _("Yes")))
+
     xelon = models.CharField(max_length=10)
     comments = models.CharField('commentaires', max_length=400, blank=True)
+    calibre = models.BooleanField('calibration', default=False, choices=CAL_CHOICES)
+    telecode = models.BooleanField('télécodage', default=False, choices=TEL_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "Tag Xelon Multi"
+        ordering = ['-created_at']
+
     def clean(self):
-        if calibre.check(self.xelon):
+        try:
+            telecode_tag = Xelon.objects.get(numero_de_dossier=self.xelon).telecodage
+        except Xelon.DoesNotExist:
+            telecode_tag = None
+        if self.calibre and calibre.check(self.xelon):
             raise ValidationError(_('CALIBRE file exists !'))
+        elif self.telecode and telecode.check(self.xelon):
+            raise ValidationError(_('TELECODE file exists !'))
+        elif not self.telecode and telecode_tag:
+            raise ValidationError(_('TELECODE is required !'))
+        elif not self.calibre and not self.telecode:
+            raise ValidationError(_('CALIBRE or TELECODE ?'))
 
     def save(self, *args, **kwargs):
         user = get_current_user()
@@ -30,7 +49,10 @@ class TagXelon(models.Model):
             user = None
         if not self.pk:
             self.created_by = user
-        calibre.file(self.xelon, self.comments, user)
+        if self.calibre:
+            calibre.file(self.xelon, self.comments, user)
+        if self.telecode:
+            telecode.file(self.xelon, self.comments, user)
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -9,13 +9,15 @@ from .models import (
 
 
 class TagXelonAdmin(admin.ModelAdmin):
-    list_display = ('xelon', 'comments', 'created_by', 'created_at')
+    list_display = ('xelon', 'calibre', 'telecode', 'comments', 'created_by', 'created_at')
+    search_fields = ('xelon', 'created_by__username')
+    list_filter = ('calibre', 'telecode')
 
 
 class ThermalChamberAdmin(admin.ModelAdmin):
     list_display = ('created_at', 'created_by', 'xelon_number', 'start_time', 'stop_time', 'operating_mode', 'active')
     ordering = ('-created_at',)
-    search_fields = ('xelon_number', 'created_by')
+    search_fields = ('xelon_number', 'created_by__username')
 
 
 class ThermalChamberMeasureAdmin(admin.ModelAdmin):
