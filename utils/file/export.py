@@ -41,14 +41,13 @@ def xml_corvet_file(instance, data, vin):
         logger.warning("Xelon number not found")
 
 
-class Calibre:
+class TagFile:
     """
     Class allowing the processing of calibration files for Xelon unlocking
     """
 
     def __init__(self, *args, **kwargs):
         self.paths = list(args)
-        self.telPath = kwargs.get("tel_path")
 
     def file(self, xelon, comments, user):
         """
@@ -58,12 +57,9 @@ class Calibre:
         """
         file_exist = False
         try:
-            query = Xelon.objects.get(numero_de_dossier=xelon)
             if xelon != 'A123456789':
                 for path in self.paths:
                     file_exist = self._create_file(path, xelon, user, comments)
-                if query.telecodage:
-                    self._create_file(self.telPath, xelon, user, comments)
         except Xelon.DoesNotExist:
             pass
         return file_exist
@@ -89,7 +85,8 @@ class Calibre:
         return False
 
 
-calibre = Calibre(TAG_XELON_PATH, TAG_XELON_LOG_PATH, tel_path=TAG_XELON_TEL_PATH)
+calibre = TagFile(TAG_XELON_PATH, TAG_XELON_LOG_PATH)
+telecode = TagFile(TAG_XELON_TEL_PATH)
 
 
 class ExportExcel:

@@ -21,11 +21,13 @@ from .tasks import send_email_task
 class TagXelonForm(BSModalModelForm):
     class Meta:
         model = TagXelon
-        fields = ['xelon', 'comments']
+        fields = ['xelon', 'calibre', 'telecode', 'comments']
         widgets = {
             'xelon': forms.TextInput(
                 attrs={'class': 'form-control col-sm-6', 'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''}
             ),
+            'calibre': forms.Select(attrs={'class': 'form-control'}),
+            'telecode': forms.Select(attrs={'class': 'form-control'}),
             'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
         }
 
