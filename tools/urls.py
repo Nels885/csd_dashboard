@@ -1,10 +1,15 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from . import views
+
+router = DefaultRouter()
+router.register(r'api/tagxelon', views.TagXelonViewSet, basename='api_tagxelon')
 
 app_name = 'tools'
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('soft/', views.soft_list, name="soft_list"),
     path('soft/add/', views.soft_add, name="soft_add"),
     path('soft/<int:soft_id>/edit/', views.soft_edit, name="soft_edit"),
