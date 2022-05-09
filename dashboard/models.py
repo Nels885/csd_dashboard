@@ -5,7 +5,11 @@ from crum import get_current_user
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    SERVICE_CHOICES = [('CO', 'CO'), ('CE', 'CE'), ('ADM', 'ADM')]
+
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, primary_key=True)
+    job_title = models.CharField('intitulé de poste', max_length=500, blank=True)
+    service = models.CharField('service', max_length=100, blank=True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
 
     def __str__(self):

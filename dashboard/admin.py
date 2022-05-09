@@ -1,7 +1,13 @@
 from django.contrib import admin
-from django.contrib.auth.models import Permission
+from django.template.defaultfilters import pluralize
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import Permission, User
 
 from .models import UserProfile, Post, WebLink, ShowCollapse
+
+
+class UserProfileAdmin(admin.StackedInline):
+    model = UserProfile
 
 
 class ShowCollapseAdmin(admin.ModelAdmin):
@@ -9,6 +15,61 @@ class ShowCollapseAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'user__first_name', 'user__last_name')
 
 
+class UserAdmin(admin.ModelAdmin):
+    inlines = (UserProfileAdmin,)
+    list_display = (
+        'username', 'email', 'first_name', 'last_name', 'get_job_title', 'get_service', 'is_staff', 'is_active'
+    )
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'profile__job_title', 'profile__service')
+    search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__job_title', 'profile__service')
+    actions = ('ce_service_update', 'co_service_update', 'adm_service_update')
+
+    @admin.display(description='Job Title', ordering='profile__job_title')
+    def get_job_title(self, obj):
+        return obj.profile.job_title
+
+    @admin.display(description='Service', ordering='profile__service')
+    def get_service(self, obj):
+        return obj.profile.service
+
+    def _message_user_about_update(self, request, rows_updated, verb):
+        """Send message about action to user.
+        `verb` should shortly describe what have changed (e.g. 'enabled').
+        """
+        self.message_user(
+            request,
+            _('{0} product{1} {2} successfully {3}').format(
+                rows_updated,
+                pluralize(rows_updated),
+                pluralize(rows_updated, _('was,were')),
+                verb,
+            ),
+        )
+
+    @admin.action(description=_('Change service for CE'))
+    def ce_service_update(self, request, queryset):
+        for query in queryset:
+            query.profile.service = "CE"
+            query.profile.save()
+        self._message_user_about_update(request, queryset.count(), 'CE')
+
+    @admin.action(description=_('Change service for CO'))
+    def co_service_update(self, request, queryset):
+        for query in queryset:
+            query.profile.service = "CO"
+            query.profile.save()
+        self._message_user_about_update(request, queryset.count(), 'CO')
+
+    @admin.action(description=_('Change service for ADM'))
+    def adm_service_update(self, request, queryset):
+        for query in queryset:
+            query.profile.service = "ADM"
+            query.profile.save()
+        self._message_user_about_update(request, queryset.count(), 'ADM')
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 admin.site.register(Permission)
 admin.site.register(UserProfile)
 admin.site.register(Post)
