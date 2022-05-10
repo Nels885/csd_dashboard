@@ -10,6 +10,12 @@ from django.conf import settings
 from bootstrap_modal_forms.forms import BSModalModelForm
 from .models import UserProfile, Post, WebLink, ShowCollapse
 
+SERVICE_CHOICES = [('', '---'), ('CO', 'CO'), ('CE', 'CE'), ('ADM', 'ADM')]
+JOB_TITLE_CHOICES = [
+    ('', '---'), ('technician', 'technician'), ('operator', 'operator'), ('animator', 'animator'),
+    ('engineer', 'engineer'), ('manager', 'manager')
+]
+
 
 class ParaErrorList(ErrorList):
 
@@ -22,10 +28,14 @@ class ParaErrorList(ErrorList):
         return '<div>%s</div>' % ''.join(['<p class="text-danger">* %s</p>' % e for e in self])
 
 
-class UserProfileForm(forms.ModelForm):
+class UserProfileAdminForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['image']
+        fields = ['job_title', 'service', 'image']
+        widgets = {
+            'job_title': forms.Select(choices=JOB_TITLE_CHOICES),
+            'service': forms.Select(choices=SERVICE_CHOICES)
+        }
 
     def clean_image(self):
         avatar = self.cleaned_data['image']
@@ -57,6 +67,11 @@ class UserProfileForm(forms.ModelForm):
             pass
 
         return avatar
+
+
+class UserProfileForm(UserProfileAdminForm):
+    class Meta(UserProfileAdminForm.Meta):
+        fields = ['image']
 
 
 class ShowCollapseForm(forms.ModelForm):

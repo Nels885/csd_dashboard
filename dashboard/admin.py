@@ -4,10 +4,12 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Permission, User
 
 from .models import UserProfile, Post, WebLink, ShowCollapse
+from .forms import UserProfileAdminForm
 
 
 class UserProfileAdmin(admin.StackedInline):
     model = UserProfile
+    form = UserProfileAdminForm
 
 
 class ShowCollapseAdmin(admin.ModelAdmin):
@@ -22,7 +24,10 @@ class UserAdmin(admin.ModelAdmin):
     )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'profile__job_title', 'profile__service')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__job_title', 'profile__service')
-    actions = ('ce_service_update', 'co_service_update', 'adm_service_update')
+    actions = (
+        'ce_service_update', 'co_service_update', 'adm_service_update', 'technician_job_title_update',
+        'operator_job_title_update', 'animator_job_title_update', 'manager_job_title_update'
+    )
 
     @admin.display(description='Job Title', ordering='profile__job_title')
     def get_job_title(self, obj):
@@ -38,7 +43,7 @@ class UserAdmin(admin.ModelAdmin):
         """
         self.message_user(
             request,
-            _('{0} product{1} {2} successfully {3}').format(
+            _('{0} user{1} {2} successfully {3}').format(
                 rows_updated,
                 pluralize(rows_updated),
                 pluralize(rows_updated, _('was,were')),
@@ -67,11 +72,38 @@ class UserAdmin(admin.ModelAdmin):
             query.profile.save()
         self._message_user_about_update(request, queryset.count(), 'ADM')
 
+    @admin.action(description=_('Change job title for technician'))
+    def technician_job_title_update(self, request, queryset):
+        for query in queryset:
+            query.profile.job_title = "technician"
+            query.profile.save()
+        self._message_user_about_update(request, queryset.count(), 'Technician')
+
+    @admin.action(description=_('Change job title for operator'))
+    def operator_job_title_update(self, request, queryset):
+        for query in queryset:
+            query.profile.job_title = "operator"
+            query.profile.save()
+        self._message_user_about_update(request, queryset.count(), 'Operator')
+
+    @admin.action(description=_('Change job title for animator'))
+    def animator_job_title_update(self, request, queryset):
+        for query in queryset:
+            query.profile.job_title = "animator"
+            query.profile.save()
+        self._message_user_about_update(request, queryset.count(), 'Animator')
+
+    @admin.action(description=_('Change job title for manager'))
+    def manager_job_title_update(self, request, queryset):
+        for query in queryset:
+            query.profile.job_title = "manager"
+            query.profile.save()
+        self._message_user_about_update(request, queryset.count(), 'Manager')
+
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Permission)
-admin.site.register(UserProfile)
 admin.site.register(Post)
 admin.site.register(WebLink)
 admin.site.register(ShowCollapse, ShowCollapseAdmin)
