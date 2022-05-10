@@ -58,6 +58,15 @@ class BaseFormat:
     def _columns_check(self, col_dict):
         return [column for column in col_dict if column in self.columns]
 
+    def _boolean_convert(self, col_dict):
+        """
+        Converting string values 'O' or 'N' in boolean
+        :return:
+            Data line converts
+        """
+        for col, to_replace in col_dict.items():
+            self.sheet[col].replace(to_replace=to_replace, inplace=True)
+
 
 class ExcelFormat(BaseFormat):
     """## Base class for formatting Excel files ##"""
