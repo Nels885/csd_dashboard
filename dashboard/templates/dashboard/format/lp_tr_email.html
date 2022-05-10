@@ -16,6 +16,15 @@
                 <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
                 <td>{{ prod.type_de_cloture }}</td>
                 <td>{{ prod.nom_technicien }}</td>
+                {% with animator=prod.product.animator %}
+                    <td>
+                        {% if animator %}
+                            <a href="mailto:{{ animator.email }}?subject={{ prod.subject|urlencode }}" target="_blank">
+                                {{ animator.first_name|default_if_none:"" }} {{ animator.last_name|default_if_none:"" }}
+                            </a>
+                        {% endif %}
+                    </td>
+                {% endwith %}
             </tr>
         {% endwith %}
     {% endfor %}

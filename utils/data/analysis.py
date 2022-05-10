@@ -1,9 +1,9 @@
 from django.utils import timezone
 # import itertools
 
-from django.db.models.functions import ExtractDay, TruncDay, TruncMonth
+from django.db.models.functions import ExtractDay, TruncDay, TruncMonth, Concat
 from django.db.models.aggregates import Count, Sum
-from django.db.models import Q, F, Case, When, IntegerField
+from django.db.models import Q, F, Case, When, IntegerField, CharField, Value as V
 
 from squalaetp.models import Xelon, Indicator
 from psa.models import Corvet
@@ -61,11 +61,11 @@ class ProductAnalysis:
         return self._activity_dict(self.pendingQueryset)
 
     def admin_products(self):
-        queryset = self.QUERYSET.filter(type_de_cloture='Admin')
+        queryset = self._mailto_annotate(self.QUERYSET.filter(type_de_cloture='Admin'))
         return locals()
 
     def vip_products(self):
-        queryset = self.pendingQueryset.filter(dossier_vip=True)
+        queryset = self._mailto_annotate(self.pendingQueryset.filter(dossier_vip=True))
         return locals()
 
     def autotronik(self):
@@ -90,8 +90,8 @@ class ProductAnalysis:
         """
         return Xelon.objects.all().count()
 
-    @staticmethod
-    def _activity_dict(queryset):
+    def _activity_dict(self, queryset):
+        queryset = self._mailto_annotate(queryset)
         psa = queryset.filter(product__category='PSA')
         clarion = queryset.filter(product__category='CLARION')
         etude = queryset.filter(product__category='ETUDE')
@@ -99,6 +99,12 @@ class ProductAnalysis:
         calc_mot = queryset.filter(product__category='CALCULATEUR')
         defaut = queryset.filter(product__category='DEFAUT')
         return locals()
+
+    @staticmethod
+    def _mailto_annotate(queryset):
+        return queryset.annotate(
+            subject=Concat('numero_de_dossier', V(' - '), 'modele_produit', output_field=CharField())
+        )
 
 
 class IndicatorAnalysis:
