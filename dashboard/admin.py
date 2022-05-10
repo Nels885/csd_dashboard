@@ -3,7 +3,7 @@ from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Permission, User
 
-from .models import UserProfile, Post, WebLink, ShowCollapse
+from .models import UserProfile, Post, WebLink, ShowCollapse, Contract
 from .forms import UserProfileAdminForm
 
 
@@ -101,9 +101,17 @@ class UserAdmin(admin.ModelAdmin):
         self._message_user_about_update(request, queryset.count(), 'Manager')
 
 
+class ContractAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'code', 'service', 'nature', 'object', 'supplier', 'site', 'end_date', 'is_active', 'renew_date')
+    search_fields = ('code', 'service', 'nature', 'object', 'supplier', 'site', 'end_date', 'renew_date')
+    list_filter = ('is_active',)
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Permission)
 admin.site.register(Post)
 admin.site.register(WebLink)
 admin.site.register(ShowCollapse, ShowCollapseAdmin)
+admin.site.register(Contract, ContractAdmin)
