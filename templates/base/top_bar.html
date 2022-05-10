@@ -101,7 +101,7 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                         {{ user.username }}
                 </span>
-                    <img class="img-profile rounded-circle" src="{{ user.userprofile.image.url }}" alt="" onerror="this.src='{% static 'img/avatar.png' %}';">
+                    <img class="img-profile rounded-circle" src="{{ user.profile.image.url }}" alt="" onerror="this.src='{% static 'img/avatar.png' %}';">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
