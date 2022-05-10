@@ -40,7 +40,7 @@ class ExcelContract(ExcelFormat):
         if not self.ERROR:
             for line in range(self.nrows):
                 try:
-                    row = {'id': line}
+                    row = {'id': (line + 1)}
                     row.update(dict(self.sheet.loc[line].dropna(how='all')))  # get the data in the ith row
                     data.append(row)
                 except KeyError:

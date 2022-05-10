@@ -1,7 +1,7 @@
 from django.core.management import call_command
 
 from .base import UnitTest, User, Group, Permission
-from dashboard.models import Post, UserProfile, ShowCollapse, WebLink
+from dashboard.models import Post, UserProfile, ShowCollapse, WebLink, Contract
 
 from io import StringIO
 
@@ -13,6 +13,7 @@ class DashboardCommandTestCase(UnitTest):
         Group.objects.create(name='Test')
         Post.objects.create(title='Test', overview='test', author=self.user)
         WebLink.objects.create(title='Test', url='https://test.com', type='PSA', description='test')
+        Contract.objects.create(id=1, code='test')
         self.out = StringIO()
 
     def test_clear_auth_Group_table(self):
@@ -86,6 +87,16 @@ class DashboardCommandTestCase(UnitTest):
             self.out.getvalue()
         )
 
+    def test_clear_dashboard_contract_table(self):
+        contracts_old = Contract.objects.count()
+        call_command('cleardashboard', '--contract', stdout=self.out)
+        contracts_new = Contract.objects.count()
+        self.assertEqual(contracts_old, contracts_new + 1)
+        self.assertIn(
+            "Suppression des données de la table Contract terminée!",
+            self.out.getvalue()
+        )
+
     def test_clear_dashboard_all_table(self):
         call_command('cleardashboard', '--all', stdout=self.out)
         for obj_nb in [Post.objects.count(), ShowCollapse.objects.count(), UserProfile.objects.count(),
@@ -97,7 +108,9 @@ class DashboardCommandTestCase(UnitTest):
         )
 
     def test_send_email(self):
-        call_command("sendemail", "--late_products", "--vin_error", "--vin_corvet",  stdout=self.out)
+        call_command(
+            "sendemail", "--late_products", "--pending_products", "--vin_error", "--vin_corvet",  stdout=self.out)
         self.assertIn("Envoi de l'email des produits en retard terminée!", self.out.getvalue())
+        self.assertIn("Envoi de l'email des produits en cours terminée!", self.out.getvalue())
         self.assertIn("Pas d'erreurs de VIN a envoyer !", self.out.getvalue())
         self.assertIn("Pas de VIN sans données CORVET à envoyer !", self.out.getvalue())
