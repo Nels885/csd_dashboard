@@ -73,6 +73,14 @@
         <td class="text-dark">Express</td>
         <td>{{ xelon.express|yesno:'OUI,NON' }}</td>
     </tr>
+    <tr>
+        <td class="text-dark">Appairage</td>
+        <td>{% if xelon.appairage == '1' %}OUI{% else %}NON{% endif %}</td>
+    </tr>
+    <tr>
+        <td class="text-dark">Télécodage</td>
+        <td>{% if xelon.telecodage == '1' %}OUI{% else %}NON{% endif %}</td>
+    </tr>
 
     </tbody>
 </table>

@@ -38,7 +38,7 @@ class TagXelon(models.Model):
             raise ValidationError(_('CALIBRE file exists !'))
         elif self.telecode and telecode.check(self.xelon):
             raise ValidationError(_('TELECODE file exists !'))
-        elif not self.telecode and telecode_tag:
+        elif not self.telecode and telecode_tag == '1':
             raise ValidationError(_('TELECODE is required !'))
         elif not self.calibre and not self.telecode:
             raise ValidationError(_('CALIBRE or TELECODE ?'))

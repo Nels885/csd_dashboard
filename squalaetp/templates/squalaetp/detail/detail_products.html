@@ -34,6 +34,12 @@
                     </td>
                 </tr>
             {% endif %}
+            <tr>
+                <td class="text-dark td-ihm">Option Télécodage ?</td>
+                <td class="font-weight-bold {% if xelon.telecodage == '1' %}bg-danger text-white{% endif %}">
+                    {% if xelon.telecodage == '1' %}OUI{% else %}NON{% endif %}
+                </td>
+            </tr>
             {% if xelon.product.animator %}
                 {% with user=xelon.product.animator %}
                     <tr>
