@@ -15,7 +15,7 @@ from utils.file.export import calibre, telecode
 
 
 class TagXelon(models.Model):
-    CAL_CHOICES = ((False, _('CAL software')), (True, _("With Diagbox")))
+    CAL_CHOICES = ((False, _('CAL software')), (True, "Diagbox"))
     TEL_CHOICES = ((False, _('No')), (True, _("Yes")))
 
     xelon = models.CharField(max_length=10)

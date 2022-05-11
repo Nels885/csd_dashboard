@@ -28,6 +28,7 @@ class TagXelonForm(BSModalModelForm):
             'telecode': forms.Select(attrs={'class': 'custom-select'}),
             'comments': forms.Textarea()
         }
+        labels = {'calibre': _('Calibration done with')}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
