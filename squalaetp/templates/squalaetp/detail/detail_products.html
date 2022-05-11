@@ -11,11 +11,14 @@
             <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm">Numéro de dossier</td>
-                <td id="xelon">{{ xelon.numero_de_dossier }}<a href="#" title="copie" onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i class="fas fa-copy ml-2"></i></a></td>
+                <td id="xelon">{{ xelon.numero_de_dossier }}<a href="#" title="copie"
+                                                               onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i
+                        class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">V.I.N.</td>
-                <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i class="fas fa-copy ml-2"></i></a></td>
+                <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i
+                        class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Modèle produit</td>
@@ -25,17 +28,19 @@
                 <td class="text-dark td-ihm">Modèle véhicule</td>
                 <td>{{ xelon.modele_vehicule }}</td>
             </tr>
-            {% if xelon.date_expedition_attendue %}
-                <tr>
-                    <td class="text-dark td-ihm">Date d'expédition attendue</td>
+            <tr>
+                <td class="text-dark td-ihm">Date d'expédition attendue</td>
+                {% if xelon.date_expedition_attendue %}
                     <td class="font-weight-bold {% if xelon.delai_expedition_attendue > 0 %}bg-danger text-white{% endif %}">
                         {{ xelon.date_expedition_attendue }}
                         <span class="ml-4">J {{ xelon.delai_expedition_attendue }}</span>
                     </td>
-                </tr>
-            {% endif %}
+                {% else %}
+                    <td>???</td>
+                {% endif %}
+            </tr>
             <tr>
-                <td class="text-dark td-ihm">Option Télécodage ?</td>
+                <td class="text-dark td-ihm">Option télécodage</td>
                 <td class="font-weight-bold {% if xelon.telecodage == '1' %}bg-danger text-white{% endif %}">
                     {% if xelon.telecodage == '1' %}OUI{% else %}NON{% endif %}
                 </td>
@@ -45,7 +50,8 @@
                     <tr>
                         <td class="text-dark td-ihm">Animateur d'ilot</td>
                         <td class="font-weight-bold">
-                            <a href="mailto:{{ user.email }}?subject={{ xelon.numero_de_dossier }} - {{ xelon.modele_produit }}" target="_blank">{{ user.email }}</a>
+                            <a href="mailto:{{ user.email }}?subject={{ xelon.numero_de_dossier }} - {{ xelon.modele_produit }}"
+                               target="_blank">{{ user.email }}</a>
                         </td>
                     </tr>
                 {% endwith %}
