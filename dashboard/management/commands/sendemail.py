@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 
 from constance import config
 
+from dashboard.models import Contract
 from squalaetp.models import Xelon, Indicator
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
@@ -46,6 +47,12 @@ class Command(BaseCommand):
             action='store_true',
             dest='reman',
             help='Send email for REMAN in progress',
+        )
+        parser.add_argument(
+            '--contract',
+            action='store_true',
+            dest='contract',
+            help='Send email for Contract',
         )
 
     def handle(self, *args, **options):
@@ -125,5 +132,22 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Envoi de l'email des VINs sans données CORVET terminée !"))
             else:
                 self.stdout.write(self.style.SUCCESS("Pas de VIN sans données CORVET à envoyer !"))
+        if options['contract']:
+            subject = "Contracts à renouveler {}".format(date_joined)
+            contracts = Contract.objects.filter(is_active=True, end_date__lte=timezone.now())
+
+            if contracts:
+                html_message = render_to_string(
+                    'dashboard/email_format/contract_email.html',
+                    {'obj': contracts, 'domain': config.WEBSITE_DOMAIN}
+                )
+                plain_message = strip_tags(html_message)
+                send_mail(
+                    subject, plain_message, None, string_to_list(config.CONTRACT_TO_EMAIL_LIST),
+                    html_message=html_message
+                )
+                self.stdout.write(self.style.SUCCESS("Envoi de l'email des contrats terminée !"))
+            else:
+                self.stdout.write(self.style.SUCCESS("Pas de contracts a envoyer !"))
         if options['reman']:
             call_command("emailreman", "--batch")
