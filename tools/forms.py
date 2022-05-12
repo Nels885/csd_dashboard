@@ -104,10 +104,9 @@ class SuptechModalForm(BSModalModelForm):
             self.add_error('username', _("Username not found."))
         return data
 
-    def send_email(self):
+    def send_email(self, files):
         current_site = get_current_site(self.request)
         from_email = self.cleaned_data["username"].email
-        files = self.request.FILES.getlist('attach')
         subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
@@ -138,8 +137,7 @@ class SuptechModalForm(BSModalModelForm):
             suptech.save()
             if files:
                 [SuptechFile.objects.create(file=f, suptech=suptech) for f in files]
-            # cmd_suptech_task.delay()
-            self.send_email()
+            self.send_email(files)
         return suptech
 
 
