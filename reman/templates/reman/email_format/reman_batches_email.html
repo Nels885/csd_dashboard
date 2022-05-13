@@ -26,17 +26,8 @@
 
         {% for batch in current_batchs %}
 
-            <tr {% if batch.end_date < current_date %}class="bg-danger text-light"{% endif %}>
-                <td>{{ batch }}</td>
-                <td>{{ batch.ecu_ref_base.reman_reference }}</td>
-                <td>{{ batch.repaired }}</td>
-                <td>{{ batch.packed }}</td>
-                <td>{{ batch.remaining }}</td>
-                <td>{{ batch.start_date|date:"d/m/Y"|default_if_none:"" }}</td>
-                <td>{{ batch.end_date|date:"d/m/Y"|default_if_none:"" }}</td>
-                <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
-                <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
-            </tr>
+            {% include 'reman/email_format/tr_batch_format.html' %}
+
         {% endfor %}
 
         </tbody>
@@ -64,17 +55,8 @@
 
             {% for batch in next_batchs %}
 
-                <tr>
-                    <td>{{ batch }}</td>
-                    <td>{{ batch.ecu_ref_base.reman_reference }}</td>
-                    <td>{{ batch.repaired }}</td>
-                    <td>{{ batch.packed }}</td>
-                    <td>{{ batch.remaining }}</td>
-                    <td>{{ batch.start_date }}</td>
-                    <td>{{ batch.end_date }}</td>
-                    <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
-                    <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
-                </tr>
+                {% include 'reman/email_format/tr_batch_format.html' %}
+
             {% endfor %}
 
             </tbody>
