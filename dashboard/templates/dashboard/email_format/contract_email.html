@@ -15,6 +15,7 @@
             <th>N° ligne Excel</th>
             <th>Code document</th>
             <th>Service</th>
+            <td>Nature du document</td>
             <th>Fournisseur</th>
             <th>Site</th>
             <th>Date fin</th>
@@ -32,8 +33,8 @@
                 <td>{{ row.nature }}</td>
                 <td>{{ row.supplier }}</td>
                 <td>{{ row.site }}</td>
-                <td>{{ row.end_date }}</td>
-                <td>{{ row.renew_date }}</td>
+                <td>{{ row.end_date|date:"d/m/Y"|default_if_none:"" }}</td>
+                <td>{{ row.renew_date|date:"d/m/Y"|default_if_none:"" }}</td>
             </tr>
         {% endfor %}
 

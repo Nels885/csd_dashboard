@@ -32,8 +32,8 @@
                 <td>{{ batch.repaired }}</td>
                 <td>{{ batch.packed }}</td>
                 <td>{{ batch.remaining }}</td>
-                <td>{{ batch.start_date }}</td>
-                <td>{{ batch.end_date }}</td>
+                <td>{{ batch.start_date|date:"d/m/Y"|default_if_none:"" }}</td>
+                <td>{{ batch.end_date|date:"d/m/Y"|default_if_none:"" }}</td>
                 <td>{{ batch.ecu_ref_base.ecu_type.technical_data }}</td>
                 <td>{{ batch.ecu_ref_base.ecu_type.supplier_oe }}</td>
             </tr>
