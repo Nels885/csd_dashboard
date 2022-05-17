@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.http import JsonResponse
 
 from constance import config
 from utils.django.urls import reverse
@@ -13,7 +14,7 @@ from utils.django.urls import reverse
 from utils.conf import string_to_list
 from dashboard.forms import ParaErrorList
 from reman.models import SparePart, EcuModel, EcuType
-from reman.forms import CheckPartForm, PartEcuModelForm, PartEcuTypeForm, PartSparePartForm
+from reman.forms import CheckPartForm, PartEcuModelForm, PartSparePartForm
 
 
 @login_required()
@@ -48,13 +49,6 @@ def check_parts(request):
 def create_part(request, barcode):
     next_form = int(request.GET.get('next', 0))
     if next_form == 1:
-        card_title = "Ajout Type ECU"
-        try:
-            ecu_type = EcuType.objects.get(ecumodel__barcode=barcode)
-            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList, instance=ecu_type)
-        except EcuType.DoesNotExist:
-            form = PartEcuTypeForm(request.POST or None, error_class=ParaErrorList)
-    elif next_form == 2:
         card_title = "Ajout Pièce détachée"
         ecu_type = get_object_or_404(EcuType, ecumodel__barcode=barcode)
         try:
@@ -62,8 +56,8 @@ def create_part(request, barcode):
             form = PartSparePartForm(request.POST or None, error_class=ParaErrorList, instance=part)
         except SparePart.DoesNotExist:
             form = PartSparePartForm(request.POST or None, error_class=ParaErrorList)
-            form.initial['code_produit'] = ecu_type.technical_data + " HW" + ecu_type.hw_reference
-        if form.is_valid():
+            form.initial['code_produit'] = f"{ecu_type.technical_data} HW {ecu_type.hw_reference}"
+        if request.POST and form.is_valid():
             part_obj = form.save()
             ecu_type.spare_part = part_obj
             ecu_type.save()
@@ -80,13 +74,22 @@ def create_part(request, barcode):
         except EcuModel.DoesNotExist:
             form = PartEcuModelForm(request.POST or None, error_class=ParaErrorList)
             form.initial['barcode'] = barcode
-    if request.POST and form.is_valid():
-        form.save()
-        next_form += 1
-        return redirect(
-            reverse('reman:part_create', kwargs={'barcode': barcode}) + '?next=' + str(next_form))
+        if request.POST and form.is_valid():
+            form.save()
+            return redirect(reverse('reman:part_create', kwargs={'barcode': barcode}) + '?next=1')
     context.update(locals())
     return render(request, 'reman/part/part_create_form.html', context)
+
+
+def ecu_type_ajax(request):
+    data = {"technical_data": "", "supplier_oe": ""}
+    try:
+        if request.GET.get('hw', None):
+            ecu = EcuType.objects.get(hw_reference=request.GET.get('hw', None))
+            data = {"technical_data": ecu.technical_data, "supplier_oe": ecu.supplier_oe}
+    except EcuType.DoesNotExist:
+        pass
+    return JsonResponse(data)
 
 
 @permission_required('reman.check_ecumodel')

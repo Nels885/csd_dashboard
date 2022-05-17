@@ -544,10 +544,12 @@ class EcuDumpModelForm(BSModalModelForm):
 
 class PartEcuModelForm(forms.ModelForm):
     hw_reference = forms.CharField(label="HW référence *", max_length=20, required=True)
+    technical_data = forms.CharField(label="Modèle produit *", max_length=50, required=True)
+    supplier_oe = forms.CharField(label="Fabriquant *", max_length=50, required=True)
 
     class Meta:
         model = EcuModel
-        fields = ['barcode', 'hw_reference']
+        fields = ['barcode', 'hw_reference', 'technical_data', 'supplier_oe']
         widgets = {
             'barcode': forms.TextInput(attrs={'readonly': None})
         }
@@ -566,8 +568,11 @@ class PartEcuModelForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        type_obj, type_created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"])
-        instance.ecu_type = type_obj
+        defaults = {
+            "technical_data": self.cleaned_data["technical_data"], "supplier_oe": self.cleaned_data["supplier_oe"]
+        }
+        obj, created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"], defaults=defaults)
+        instance.ecu_type = obj
         if commit:
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')

@@ -25,6 +25,7 @@ urlpatterns = [
     path('part/check/', part.check_parts, name='part_check'),
     path('part/<str:barcode>/create/', part.create_part, name='part_create'),
     path('part/<str:barcode>/email/', part.new_part_email, name='part_email'),
+    path('part/ecu-type/ajax/', part.ecu_type_ajax, name='ecu_type_ajax'),
     path('batch/table/', batch.batch_table, name='batch_table'),
     path('batch/create/', batch.BatchCreateView.as_view(), name='create_batch'),
     path('batch/<int:pk>/pdf/', batch.batch_pdf_generate, name='batch_pdf'),

@@ -53,3 +53,25 @@
     </div>
 
 {% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+    $('#id_hw_reference').change(function () {
+        $.ajax({
+            method: "GET",
+            url: "{% url 'reman:ecu_type_ajax' %}" + "?hw=" + $(this).val(),
+            success: function (data) {
+                console.log(data);
+                $('#id_technical_data').val(data.technical_data);
+                $('#id_supplier_oe').val(data.supplier_oe);
+            },
+            error: function (error_data) {
+                console.log("error");
+                console.log(error_data);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

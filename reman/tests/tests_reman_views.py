@@ -225,12 +225,9 @@ class RemanTestCase(RemanTest):
 
         self.add_perms_user(EcuModel, 'check_ecumodel')
         self.login()
-        for nb in range(2):
+        for nb in range(1):
             response = self.client.get(url + f"?next={nb}")
-            if nb == 2:
-                self.assertEqual(response.status_code, 404)
-            else:
-                self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
 
     def test_ref_base_edit_view(self):
         url = reverse('reman:edit_ref_base', kwargs={'barcode': self.barcode})
