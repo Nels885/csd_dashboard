@@ -79,34 +79,13 @@ def validate_xelon(value):
         return 'Xelon number is invalid'
 
 
-def validate_psa_barcode(value):
-    """
-    Function for the PSA barcode validation
-    :param value:
-        Xelon value
-    :return:
-        Error message if not valid
-    """
-    if re.match(r'^9[68]\d{8}\w*$', str(value)):
-        return value[:10], None
-    elif re.match(r'^89661-\w{5}$', str(value)):
-        return value, None
-    elif re.match(r'55\d{6}$', str(value)):
-        return value, None
-    elif re.match(r'^\[\)>\w{55}$', str(value)):
-        return value[21:29], None
-    elif re.match(r'^\d{9}R$', str(value)):
-        return value, None
-    return value, _('PSA barcode is invalid')
-
-
 def validate_barcode(value):
     """
-    Function for the PSA barcode validation
+    Function for the REMAN barcode validation
     :param value:
-        Xelon value
+        barcode value
     :return:
-        Error message if not valid
+        new value and product customer
     """
     if re.match(r'^9[68]\d{8}\w*$', str(value)):
         return value[:10], "PSA"

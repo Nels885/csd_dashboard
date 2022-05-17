@@ -12,7 +12,7 @@ from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, E
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
-from utils.django.validators import validate_psa_barcode, validate_identify_number, validate_barcode
+from utils.django.validators import validate_identify_number, validate_barcode
 
 
 """
@@ -496,8 +496,8 @@ class CheckPartForm(forms.Form):
 
     def clean_barcode(self):
         data = self.cleaned_data['barcode']
-        data, message = validate_psa_barcode(data)
-        if message:
+        data, message = validate_barcode(data)
+        if not message:
             raise forms.ValidationError(
                 _("The barcode is invalid"),
                 code='invalid',

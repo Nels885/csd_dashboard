@@ -1,7 +1,5 @@
 from . import context
 
-import re
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import ugettext as _
@@ -33,10 +31,6 @@ def check_parts(request):
     form = CheckPartForm(request.POST or None, error_class=ParaErrorList)
     if request.POST and form.is_valid():
         barcode = form.cleaned_data['barcode']
-        if re.match(r'^89661-\w{5}$', barcode):
-            barcode = barcode[:11]
-        else:
-            barcode = barcode[:10]
         try:
             ecu = EcuModel.objects.get(barcode=barcode)
             context.update(locals())
