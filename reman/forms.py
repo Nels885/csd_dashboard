@@ -547,12 +547,12 @@ class PartEcuModelForm(forms.ModelForm):
 
     class Meta:
         model = EcuModel
-        fields = ['barcode', 'hw_reference', 'oe_raw_reference', 'former_oe_reference']
+        fields = ['barcode', 'hw_reference']
         widgets = {
             'barcode': forms.TextInput(attrs={'readonly': None})
         }
         labels = {
-            'barcode': 'Code barre PSA *'
+            'barcode': 'Code barre *'
         }
 
     def __init__(self, *args, **kwargs):
@@ -581,11 +581,6 @@ class PartEcuTypeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # instance = getattr(self, 'instance', None)
-        # if instance and instance.technical_data:
-        #     self.fields['technical_data'].widget.attrs['readonly'] = True
-        # if instance and instance.supplier_oe:
-        #     self.fields['supplier_oe'].widget.attrs['readonly'] = True
         self.fields['hw_reference'].widget.attrs['readonly'] = True
 
 
@@ -593,13 +588,3 @@ class PartSparePartForm(forms.ModelForm):
     class Meta:
         model = SparePart
         fields = ['code_produit', 'code_emplacement']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # instance = getattr(self, 'instance', None)
-        # if instance and instance.code_emplacement:
-        #     for field in self.fields:
-        #         self.fields[field].widget.attrs['readonly'] = True
-        # else:
-        # self.fields['code_produit'].widget.attrs['readonly'] = True
-        # self.fields['code_emplacement'].required = True
