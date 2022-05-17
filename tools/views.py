@@ -190,7 +190,7 @@ class SupTechCreateView(BSModalCreateView):
 
 
 def suptech_item_ajax(request):
-    data = {"extra": False, "mailing_list": ""}
+    data = {"extra": False, "mailing_list": "", "cc_mailing_list": ""}
     try:
         if request.GET.get('pk', None):
             suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
