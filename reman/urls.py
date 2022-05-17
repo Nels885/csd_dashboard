@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import repair, batch
+from .views import repair, batch, part
 
 router = DefaultRouter()
 router.register(r'api/repair', repair.RepairViewSet, basename='api_repair')
@@ -21,10 +21,10 @@ urlpatterns = [
     path('repair-part/<int:pk>/list/ajax/', repair.ajax_repair_part_list, name='part_list_ajax'),
     path('out/filter/', views.CheckOutFilterView.as_view(), name='out_filter'),
     path('out/table/', views.out_table, name='out_table'),
-    path('part/table/', views.part_table, name='part_table'),
-    path('part/check/', views.check_parts, name='part_check'),
-    path('part/<str:barcode>/create/', views.create_part, name='part_create'),
-    path('part/<str:barcode>/email/', views.new_part_email, name='part_email'),
+    path('part/table/', part.part_table, name='part_table'),
+    path('part/check/', part.check_parts, name='part_check'),
+    path('part/<str:barcode>/create/', part.create_part, name='part_create'),
+    path('part/<str:barcode>/email/', part.new_part_email, name='part_email'),
     path('batch/table/', batch.batch_table, name='batch_table'),
     path('batch/create/', batch.BatchCreateView.as_view(), name='create_batch'),
     path('batch/<int:pk>/pdf/', batch.batch_pdf_generate, name='batch_pdf'),
