@@ -30,8 +30,8 @@ def cmd_import_excel_task():
     call_command('importexcel', stdout=out)
     data['importexcel'] = out.getvalue()
     call_command('loadsparepart', stdout=out)
-    data['loadsparepart'], out.getvalue()
-    call_command('importcorvet', stdout=out)
+    data['loadsparepart'] = out.getvalue()
+    call_command('importcorvet', '--all', stdout=out)
     data['importcorvet'] = out.getvalue()
     return data
 
