@@ -25,9 +25,15 @@ def cmd_sendemail_task(*args):
 
 @celery_app.task
 def cmd_import_excel_task():
-    call_command('importexcel')
-    call_command('loadsparepart')
-    call_command('importcorvet')
+    data = {}
+    out = StringIO()
+    call_command('importexcel', stdout=out)
+    data['importexcel'] = out.getvalue()
+    call_command('loadsparepart', stdout=out)
+    data['loadsparepart'], out.getvalue()
+    call_command('importcorvet', stdout=out)
+    data['importcorvet'] = out.getvalue()
+    return data
 
 
 @celery_app.task()
