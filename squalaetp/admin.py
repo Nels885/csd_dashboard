@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
+from django.contrib.auth.models import User
 
 from .models import Xelon, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
 
@@ -59,6 +60,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     list_filter = ('category', 'corvet_type')
     search_fields = ('product_model', 'category')
     actions = (
+        'sc_animator', 'ts_animator', 'nz_animator',
         'psa_category_update', 'other_category_update', 'clarion_category_update', 'etude_category_update',
         'ecu_category_update', 'default_category_update', 'radio_corvet_type_update', 'btel_corvet_type_update',
         'emf_corvet_type_update', 'cmb_corvet_type_update', 'bsi_corvet_type_update', 'bsm_corvet_type_update',
@@ -86,6 +88,33 @@ class ProductCategoryAdmin(admin.ModelAdmin):
                 verb,
             ),
         )
+
+    @admin.action(description=_('Change animator for SCA01'))
+    def sc_animator(self, request, queryset):
+        try:
+            user = User.objects.get(username='SCA01')
+            rows_updated = queryset.update(animator=user)
+            self._message_user_about_update(request, rows_updated, 'SCA01')
+        except User.DoesNotExist:
+            pass
+
+    @admin.action(description=_('Change animator for TSA01'))
+    def ts_animator(self, request, queryset):
+        try:
+            user = User.objects.get(username='TSA01')
+            rows_updated = queryset.update(animator=user)
+            self._message_user_about_update(request, rows_updated, 'TSA01')
+        except User.DoesNotExist:
+            pass
+
+    @admin.action(description=_('Change animator for NZP01'))
+    def nz_animator(self, request, queryset):
+        try:
+            user = User.objects.get(username='NZP01')
+            rows_updated = queryset.update(animator=user)
+            self._message_user_about_update(request, rows_updated, 'NZP01')
+        except User.DoesNotExist:
+            pass
 
     def psa_category_update(self, request, queryset):
         rows_updated = queryset.update(category="PSA")
