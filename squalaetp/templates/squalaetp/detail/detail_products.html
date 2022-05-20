@@ -45,6 +45,12 @@
                     {% if xelon.telecodage == '1' %}OUI{% else %}NON{% endif %}
                 </td>
             </tr>
+            <tr>
+                <td class="text-dark td-ihm">Option appairage</td>
+                <td class="font-weight-bold {% if xelon.appairage == '1' %}bg-danger text-white{% endif %}">
+                    {% if xelon.appairage == '1' %}OUI{% else %}NON{% endif %}
+                </td>
+            </tr>
             {% if xelon.product.animator %}
                 {% with user=xelon.product.animator %}
                     <tr>
