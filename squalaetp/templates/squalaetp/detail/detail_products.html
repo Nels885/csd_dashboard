@@ -73,17 +73,17 @@
 
         {% include 'raspeedi/format/prog_table_format.html' with object=prog %}
 
-        {% include 'psa/format/cmb_table_format.html' with object=corvet.prods.cmb %}
+        {% include 'psa/format/cmb_table_format.html' with object=corvet.prods.cmb show=collapse.cmb %}
 
-        {% include 'psa/format/emf_table_format.html' with object=corvet.prods.emf %}
+        {% include 'psa/format/emf_table_format.html' with object=corvet.prods.emf show=collapse.emf %}
 
-        {% include 'psa/format/cmm_table_format.html' with object=corvet.prods.cmm %}
+        {% include 'psa/format/cmm_table_format.html' with object=corvet.prods.cmm show=collapse.cmm %}
 
-        {% include 'psa/format/bsi_table_format.html' with object=corvet.prods.bsi %}
+        {% include 'psa/format/bsi_table_format.html' with object=corvet.prods.bsi show=collapse.bsi %}
 
-        {% include 'psa/format/hdc_table_format.html' with object=corvet.prods.hdc %}
+        {% include 'psa/format/hdc_table_format.html' with object=corvet.prods.hdc show=collapse.hdc %}
 
-        {% include 'psa/format/cvm_table_format.html' with object=corvet.prods.cvm2 %}
+        {% include 'psa/format/cvm_table_format.html' with object=corvet.prods.cvm2 show=collapse.cvm %}
 
     </section>
     <section class="col-sm-6">
