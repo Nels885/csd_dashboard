@@ -10,6 +10,10 @@ Pouvez-vous demander au client de vérifier s'il n'y aurait pas une erreur ?
 
     - VIN actuel   : {{ model.vin }}
 {% endif %}
+
+Répondre :
+http://{{ domain }}{% url 'squalaetp:detail' pk=model.pk %}?select=ihm
+
 Cordialement
 
 {{ request.user.first_name }} {{ request.user.last_name }}

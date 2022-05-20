@@ -8,6 +8,10 @@ Vous trouverez ci-dessous, le nouveau modèle produit à modifier dans le dossie
     - Ancien Modèle   : {{ model.modele_produit }}
     - Nouveau Modèle  :
 {% endif %}
+
+Répondre :
+http://{{ domain }}{% url 'squalaetp:detail' pk=model.pk %}?select=ihm
+
 Cordialement
 
 {{ request.user.first_name }} {{ request.user.last_name }}

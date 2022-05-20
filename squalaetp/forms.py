@@ -34,6 +34,7 @@ class IhmEmailModalForm(BSModalForm):
 
     @staticmethod
     def vin_message(model, request):
+        domain = config.WEBSITE_DOMAIN
         queryset = model.actions.filter(content__contains="OLD_VIN")
         if queryset:
             data = queryset.first().content.split('\n')
@@ -45,6 +46,7 @@ class IhmEmailModalForm(BSModalForm):
 
     @staticmethod
     def prod_message(model, request):
+        domain = config.WEBSITE_DOMAIN
         queryset = model.actions.filter(content__contains="OLD_PROD")
         if queryset:
             data = queryset.first().content.split('\n')
