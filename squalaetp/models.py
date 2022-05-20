@@ -33,10 +33,12 @@ class Xelon(models.Model):
     ilot = models.CharField('ilot', max_length=100, blank=True)
     date_expedition_attendue = models.DateField('date expédition attendue', null=True, blank=True)
     delai_expedition_attendue = models.IntegerField('délai expédition attendue', null=True, blank=True)
-    vin_error = models.BooleanField('Erreur VIN', default=False)
-    is_active = models.BooleanField('Actif', default=False)
+    rm = models.CharField('RM', max_length=50, blank=True)
+    pays = models.CharField('Pays', max_length=100, blank=True)
     telecodage = models.CharField('TELECODAGE', max_length=50, blank=True)
     appairage = models.CharField('APPAIRAGE', max_length=50, blank=True)
+    vin_error = models.BooleanField('Erreur VIN', default=False)
+    is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey('squalaetp.ProductCategory', on_delete=models.SET_NULL, null=True, blank=True)
     actions = GenericRelation('Action')
@@ -47,7 +49,7 @@ class Xelon(models.Model):
         permissions = [
             ("change_product", "Can change product"), ("email_product", "Can send email product"),
             ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
-            ("active_xelon", "Can active xelon")
+            ("email_admin", "Can send email admin"), ("active_xelon", "Can active xelon")
         ]
 
     @classmethod
