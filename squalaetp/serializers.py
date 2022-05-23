@@ -24,7 +24,7 @@ class XelonSerializer(serializers.ModelSerializer):
         model = Xelon
         fields = (
             'id', 'numero_de_dossier', 'vin', 'modele_produit', 'activity', 'modele_vehicule', 'date_retour',
-            'type_de_cloture', 'date_expedition_attendue', 'nom_technicien', 'corvet'
+            'type_de_cloture', 'date_expedition_attendue', 'nom_technicien', 'vin_error'
         )
 
 

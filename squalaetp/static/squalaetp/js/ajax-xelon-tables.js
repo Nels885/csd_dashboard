@@ -29,7 +29,7 @@ $(document).ready(function () {
             {data: "nom_technicien"},
         ],
         rowCallback: function (row, data, index) {
-            if (!data['corvet'] && (data['vin'].includes('VF3') || data['vin'].includes('VF7'))) {
+            if (data["vin_error"] === true) {
                 $('td', row).addClass('bg-danger text-light');
             }
         },
