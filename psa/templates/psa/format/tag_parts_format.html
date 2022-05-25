@@ -1,6 +1,6 @@
 {% load squalaetp_extras %}
 
-{% with prods=obj.productcode_set %}
+{% with prods=obj.parts %}
     {% if prods|part_count != 0 %}
         <a href="#{{ id }}" class="ml-2">
             {% if prods|part_count < 5 %}

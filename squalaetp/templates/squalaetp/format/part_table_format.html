@@ -1,5 +1,5 @@
 <div class="row">
-    {% if obj.productcode_set.all %}
+    {% if obj.parts.all %}
 
         <section id="{{ id }}" class="col-sm-12">
             <table class="table table-bordered table-striped table-sm mt-4">
@@ -20,7 +20,7 @@
                 </thead>
 
                 <tbody>
-                {% for part in obj.productcode_set.all %}
+                {% for part in obj.parts.all %}
                     {% for spare in part.sparepart_set.all %}
                         <tr>
                             <td>{{ part.name }}</td>
