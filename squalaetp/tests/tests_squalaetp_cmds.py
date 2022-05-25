@@ -23,7 +23,7 @@ class XelonCommandTestCase(UnitTest):
         self.assertEqual(ProductCode.objects.count(), 2)
 
         out = StringIO()
-        call_command('loadsparepart', '--delete', stdout=out)
+        call_command('clearsqualaetp', '--parts', stdout=out)
         self.assertIn(
             "Suppression des données de la table SparePart terminée!",
             out.getvalue(),
@@ -72,10 +72,17 @@ class XelonCommandTestCase(UnitTest):
             self.out.getvalue()
         )
 
-    def test_clear_sparepart_table(self):
-        call_command('loadsparepart', '--delete', stdout=self.out)
+    def test_clear_squalaetp_sparepart_table(self):
+        call_command('clearsqualaetp', '--parts', stdout=self.out)
         self.assertIn(
             "Suppression des données de la table SparePart terminée!",
+            self.out.getvalue()
+        )
+
+    def test_clear_squalaetp_part_relations_table(self):
+        call_command('clearsqualaetp', '--part_relations', stdout=self.out)
+        self.assertIn(
+            "Suppression des relations entre les tables ProductCode, Ecu et Media terminée!",
             self.out.getvalue()
         )
 
