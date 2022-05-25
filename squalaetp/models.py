@@ -87,8 +87,8 @@ class Xelon(models.Model):
 
 class ProductCode(models.Model):
     name = models.CharField('code Produit', max_length=100)
-    media = models.ForeignKey('psa.Multimedia', on_delete=models.SET_NULL, null=True, blank=True)
-    ecu = models.ForeignKey('psa.Ecu', on_delete=models.SET_NULL, null=True, blank=True)
+    medias = models.ManyToManyField('psa.Multimedia', related_name='parts', blank=True)
+    ecus = models.ManyToManyField('psa.Ecu', related_name='parts', blank=True)
 
     def __str__(self):
         return self.name
