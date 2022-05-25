@@ -330,6 +330,7 @@ class Multimedia(models.Model):
     front_pic = models.ImageField(upload_to='psa', blank=True)
     setplate_pic = models.ImageField(upload_to='psa', blank=True)
     rear_pic = models.ImageField(upload_to='psa', blank=True)
+    relation_by_name = models.BooleanField('relation par nom', default=False)
     firmware = models.ForeignKey('Firmware', on_delete=models.SET_NULL, limit_choices_to={'is_active': True}, null=True, blank=True)
 
     class Meta:
@@ -414,6 +415,7 @@ class Ecu(models.Model):
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     pr_reference = models.CharField("référence PR", max_length=10, blank=True)
     extra = models.CharField('supplément', max_length=100, blank=True)
+    relation_by_name = models.BooleanField('relation par nom', default=False)
 
     class Meta:
         verbose_name = "Données ECU"
