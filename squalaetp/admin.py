@@ -5,6 +5,7 @@ from django.contrib.admin import widgets
 from django.contrib.auth.models import User
 
 from .models import Xelon, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
+from .forms import ProductCodeAdminForm
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -196,9 +197,15 @@ class SivinAdmin(admin.ModelAdmin):
     search_fields = ('immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v')
 
 
+class ProductCodeAdmin(admin.ModelAdmin):
+    form = ProductCodeAdminForm
+    list_display = ('name', )
+    search_fields = ('name', )
+
+
 admin.site.register(Xelon, XelonAdmin)
 admin.site.register(SparePart, SparePartAdmin)
-admin.site.register(ProductCode)
+admin.site.register(ProductCode, ProductCodeAdmin)
 admin.site.register(Indicator, IndicatorAdmin)
 admin.site.register(Action, ActionAdmin)
 admin.site.register(ProductCategory, ProductCategoryAdmin)

@@ -1,14 +1,15 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 
 from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
-from psa.models import Corvet
-from .models import Xelon, Action, Sivin
+from psa.models import Corvet, Multimedia, Ecu
+from .models import Xelon, Action, Sivin, ProductCode
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
 
@@ -123,7 +124,6 @@ class VinCorvetModalForm(BSModalModelForm):
 
 
 class ProductModalForm(BSModalModelForm):
-
     class Meta:
         model = Xelon
         fields = ['modele_produit', 'modele_vehicule']
@@ -188,3 +188,15 @@ class SivinModalForm(BSModalModelForm):
         if commit and not self.request.is_ajax():
             instance.save()
         return instance
+
+
+class ProductCodeAdminForm(forms.ModelForm):
+    medias = forms.ModelMultipleChoiceField(
+        queryset=Multimedia.objects.all(), widget=FilteredSelectMultiple("Multimedia", is_stacked=False),
+        required=False)
+    ecus = forms.ModelMultipleChoiceField(
+        queryset=Ecu.objects.all(), widget=FilteredSelectMultiple("Ecu", is_stacked=False), required=False)
+
+    class Meta:
+        model = ProductCode
+        fields = ['name', 'medias', 'ecus']

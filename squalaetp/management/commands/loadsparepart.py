@@ -68,10 +68,12 @@ class Command(BaseCommand):
     def _relation_update(self):
         self.stdout.write("[PRODUCTCODE] Waiting...")
         for ecu in Ecu.objects.all():
-            if ecu.type == "EMF":
+            if ecu.relation_by_name and len(ecu.xelon_name) > 0:
                 for prod in ProductCode.objects.filter(name__icontains=str(ecu.xelon_name)):
                     prod.ecus.add(ecu)
-            elif ecu.label_ref:
+                ecu.relation_by_name = False
+                ecu.save()
+            if ecu.label_ref:
                 for prod in ProductCode.objects.filter(name__contains=str(ecu.label_ref)[:-2]):
                     prod.ecus.add(ecu)
             elif ecu.comp_ref:
