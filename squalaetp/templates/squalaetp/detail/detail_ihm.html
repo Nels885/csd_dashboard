@@ -15,7 +15,7 @@
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_email' xelon.pk %}" {% if not perms.squalaetp.email_vin %}disabled{% endif %}>
             <i class="fas fa-envelope pr-2"></i>Atelier<i class="fas fa-long-arrow-alt-right px-2"></i>Admin
         </button>
-        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="#" {% if not perms.squalaetp.email_admin %}disabled{% endif %}>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:adm_email' xelon.pk %}" {% if not perms.squalaetp.email_admin %}disabled{% endif %}>
             <i class="fas fa-envelope pr-2"></i>Admin<i class="fas fa-long-arrow-alt-right px-2"></i>Atelier
         </button>
         <hr>
@@ -27,7 +27,7 @@
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}" {% if not perms.squalaetp.email_product %}disabled{% endif %}>
             <i class="fas fa-envelope pr-2"></i>Atelier<i class="fas fa-long-arrow-alt-right px-2"></i>Admin
         </button>
-        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="#" {% if not perms.squalaetp.email_admin %}disabled{% endif %}>
+        <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:adm_email' xelon.pk %}?select=prod" {% if not perms.squalaetp.email_admin %}disabled{% endif %}>
             <i class="fas fa-envelope pr-2"></i>Admin<i class="fas fa-long-arrow-alt-right px-2"></i>Atelier
         </button>
         <hr class="mb-5">

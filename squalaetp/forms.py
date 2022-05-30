@@ -57,6 +57,16 @@ class IhmEmailModalForm(BSModalForm):
         message = render_to_string('squalaetp/email_format/prod_error_email.html', locals())
         return message
 
+    @staticmethod
+    def adm_message(model, request):
+        domain = config.WEBSITE_DOMAIN
+        if request.GET.get("select") == "prod":
+            select = "modèle produit"
+        else:
+            select = "V.I.N."
+        message = render_to_string('squalaetp/email_format/adm_email.html', locals())
+        return message
+
 
 class VinCorvetModalForm(BSModalModelForm):
     xml_data = forms.CharField(

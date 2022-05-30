@@ -18,6 +18,7 @@ urlpatterns = [
     path('<int:pk>/prod/edit/', views.ProductUpdateView.as_view(), name='prod_edit'),
     path('<int:pk>/prod/email/', views.ProdEmailFormView.as_view(), name='prod_email'),
     path('<int:pk>/prog/active/', views.prog_activate, name='prog_activate'),
+    path('<int:pk>/adm/email/', views.AdmEmailFormView.as_view(), name='adm_email'),
     path('generate/', views.generate, name='generate'),
     path('excel/import/async/', views.excel_import_async, name='excel_import_async'),
     path('xelon/', views.xelon_table, name='xelon'),

@@ -308,6 +308,39 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return reverse_lazy('squalaetp:detail', args=[self.kwargs['pk']], get={'select': 'ihm'})
 
 
+class AdmEmailFormView(PermissionRequiredMixin, BSModalFormView):
+    """ Modal view for  sending email for Product errors """
+    permission_required = ['squalaetp.email_admin']
+    template_name = 'squalaetp/modal/ihm_email_form.html'
+    form_class = IhmEmailModalForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+        initial['to'] = config.CHANGE_PROD_TO_EMAIL_LIST
+        if self.request.GET.get('select') == "prod":
+            initial['subject'] = f"RE: [{xelon.numero_de_dossier}] Erreur modèle produit Xelon"
+        else:
+            initial['subject'] = f"RE: [{xelon.numero_de_dossier}] {xelon.modele_produit} Erreur VIN Xelon"
+        initial['message'] = self.form_class.adm_message(xelon, self.request)
+        return initial
+
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            form.send_email()
+            xelon = Xelon.objects.get(pk=self.kwargs['pk'])
+            if self.request.GET.get('select') == "prod":
+                content = "Le modèle Produit a été modifié dans Xelon."
+            else:
+                content = "Le VIN a été modifié dans Xelon."
+            Action.objects.create(content=content, content_object=xelon)
+            messages.success(self.request, _('Success: The email has been sent.'))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('squalaetp:detail', args=[self.kwargs['pk']], get={'select': 'ihm'})
+
+
 class LogFileView(LoginRequiredMixin, TemplateView):
     """ Modal view for displaying product log files """
     template_name = 'squalaetp/modal/log_file.html'
