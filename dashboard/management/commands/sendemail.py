@@ -58,6 +58,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
         last_7_days = timezone.datetime.today() - timezone.timedelta(7)
+        first_90_days = timezone.datetime.today() + timezone.timedelta(90)
         if options['late_products']:
             subject = 'Stocks et Retards {}'.format(date_joined)
             prods = ProductAnalysis()
@@ -134,7 +135,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Pas de VIN sans données CORVET à envoyer !"))
         if options['contract']:
             subject = "Contracts à renouveler {}".format(date_joined)
-            contracts = Contract.objects.filter(is_active=True, end_date__lte=timezone.now())
+            contracts = Contract.objects.filter(is_active=True, renew_date__lte=first_90_days)
 
             if contracts:
                 html_message = render_to_string(

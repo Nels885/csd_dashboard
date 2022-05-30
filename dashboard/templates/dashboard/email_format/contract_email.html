@@ -13,12 +13,13 @@
         <thead>
         <tr>
             <th>N° ligne Excel</th>
-            <th>Code document</th>
             <th>Service</th>
             <td>Nature du document</td>
+            <th>Objet du document</th>
             <th>Fournisseur</th>
             <th>Site</th>
             <th>Date fin</th>
+            <th>Contract actif</th>
             <th>Date prévenance</th>
         </tr>
         </thead>
@@ -28,12 +29,13 @@
 
             <tr>
                 <td>{{ row.id }}</td>
-                <td>{{ row.code }}</td>
                 <td>{{ row.service }}</td>
                 <td>{{ row.nature }}</td>
+                <td>{{ row.object }}</td>
                 <td>{{ row.supplier }}</td>
                 <td>{{ row.site }}</td>
                 <td>{{ row.end_date|date:"d/m/Y"|default_if_none:"" }}</td>
+                <th>{{ row.is_active|yesno:"oui,non" }}</th>
                 <td>{{ row.renew_date|date:"d/m/Y"|default_if_none:"" }}</td>
             </tr>
         {% endfor %}
