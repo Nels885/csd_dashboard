@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.mail import EmailMessage
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 from constance import config
@@ -110,10 +111,18 @@ class SuptechModalForm(BSModalModelForm):
         subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        send_email_task(
+        # send_email_task(
+        #     subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
+        #     cc=([from_email] + string_to_list(self.instance.cc)), files=files
+        # )
+        email = EmailMessage(
             subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
-            cc=([from_email] + string_to_list(self.instance.cc)), files=files
+            cc=([from_email] + string_to_list(self.instance.cc))
         )
+        files = self.instance.suptechfile_set.all()
+        if files:
+            [email.attach_file(f.file.path) for f in files]
+        email.send()
 
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
