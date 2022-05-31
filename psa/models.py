@@ -294,7 +294,7 @@ class Multimedia(models.Model):
         ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
     ]
     PRODUCT_CHOICES = [
-        ('RD3', 'RD3'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
+        ('RD3', 'RD3'), ('RD4', 'RD4'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
         ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
         ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
         ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
