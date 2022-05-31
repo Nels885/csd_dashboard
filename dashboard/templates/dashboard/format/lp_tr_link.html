@@ -16,6 +16,7 @@
                 <td>{{ prod.date_retour }}</td>
                 <td>{{ prod.date_expedition_attendue|default:"" }}</td>
                 <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
+                <td>{% if prod.telecodage == "1" %}oui{% else %}non{% endif %}</td>
                 <td>{{ prod.type_de_cloture }}</td>
                 <td>{{ prod.nom_technicien }}</td>
                 {% with animator=prod.product.animator %}
@@ -36,14 +37,14 @@
         <td class="bg-white" style="width: 20px;"></td>
         <td>Total {{ activity }}</td>
         <td>{{ prods.count }}</td>
-        {% for _ in 0|range:7 %}
+        {% for _ in 0|range:8 %}
             <td></td>
         {% endfor %}
     </tr>
 
     {% if last == None or last == False %}
         <tr>
-            {% for _ in 0|range:10 %}
+            {% for _ in 0|range:11 %}
                 <td></td>
             {% endfor %}
         </tr>

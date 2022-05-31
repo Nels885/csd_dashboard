@@ -15,7 +15,7 @@ $(document).ready(function () {
             {
                 extend: 'searchPanes',
                 config: {
-                    columns: [3, 7, 8]
+                    columns: [3, 7, 8, 9]
                 }
             }
         ],
