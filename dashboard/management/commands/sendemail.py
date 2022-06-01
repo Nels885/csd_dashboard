@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.utils import timezone
 from django.utils.html import strip_tags
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 
 from constance import config
@@ -12,6 +12,7 @@ from squalaetp.models import Xelon, Indicator
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
 from utils.django.validators import VIN_PSA_REGEX
+from utils.file.export_task import ExportExcel
 
 
 class Command(BaseCommand):
@@ -119,23 +120,25 @@ class Command(BaseCommand):
         if options['contract']:
             subject = "Contracts à renouveler {}".format(date_joined)
             contracts = Contract.objects.filter(is_active=True, renew_date__lte=first_90_days)
-
             if contracts:
+                attachment = self._generate_excel(contracts)
                 html_message = render_to_string(
                     'dashboard/email_format/contract_email.html', data.update({'obj': contracts})
                 )
                 plain_message = strip_tags(html_message)
-                send_mail(
+                email = EmailMessage(
                     subject, plain_message, None, string_to_list(config.CONTRACT_TO_EMAIL_LIST),
-                    html_message=html_message
                 )
+                email.attach_file(path=attachment, mimetype='application/octet-stream')
+                email.send()
                 self.stdout.write(self.style.SUCCESS("Envoi de l'email des contrats terminée !"))
             else:
                 self.stdout.write(self.style.SUCCESS("Pas de contracts a envoyer !"))
         if options['reman']:
             call_command("emailreman", "--batch")
 
-    def _product_header(self, data):
+    @staticmethod
+    def _product_header(data):
         prods = ProductAnalysis()
         indicator = Indicator.objects.filter(date=timezone.now()).first()
         if indicator:
@@ -146,3 +149,18 @@ class Command(BaseCommand):
                 'vip_products': prods.vip
             })
         return prods, data
+
+    @staticmethod
+    def _generate_excel(queryset):
+        excel = ExportExcel()
+        filename = f"Contrats_a_renouveler_au_{excel.date.strftime('%y-%m-%d_%H-%M')}"
+        excel.header = [
+            'N° ligne Excel', 'Service', 'Nature du document', 'Objet du document', 'Fournisseur', 'Site', 'Date fin',
+            'Contract actif', 'Date prévenance'
+        ]
+        fields = [
+            'id', 'service', 'nature', 'object', 'supplier', 'site', 'end_date', 'is_active', 'renew_date'
+        ]
+        values_list = queryset.values_list(*fields)
+        print(values_list)
+        return excel.file(filename, "xlsx", values_list)
