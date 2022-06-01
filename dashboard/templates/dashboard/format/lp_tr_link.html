@@ -13,10 +13,10 @@
                 <td>{{ activity }}</td>
                 <td>{{ prod.numero_de_dossier }}</td>
                 <td>{{ prod.modele_produit }} {{ prod.dossier_vip|yesno:"(VIP)," }} {{ prod.express|yesno:"(EXP)," }}</td>
-                <td>{{ prod.date_retour }}</td>
-                <td>{{ prod.date_expedition_attendue|default:"" }}</td>
+                <td>{{ prod.date_retour|date:"d/m/Y" }}</td>
+                <td>{{ prod.date_expedition_attendue|date:"d/m/Y"|default_if_none:"" }}</td>
                 <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
-                <td>{% if prod.telecodage == "1" %}oui{% else %}non{% endif %}</td>
+                <td>{% if prod.telecodage == "1" %}TELE{% elif prod.appairage == "1" %}APPAIR{% endif %}</td>
                 <td>{{ prod.type_de_cloture }}</td>
                 <td>{{ prod.nom_technicien }}</td>
                 {% with animator=prod.product.animator %}
