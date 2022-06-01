@@ -59,19 +59,12 @@ class Command(BaseCommand):
         date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
         last_7_days = timezone.datetime.today() - timezone.timedelta(7)
         first_90_days = timezone.datetime.today() + timezone.timedelta(90)
+        data = {'domain': config.WEBSITE_DOMAIN}
         if options['late_products']:
             subject = 'Stocks et Retards {}'.format(date_joined)
-            prods = ProductAnalysis()
-            data = prods.late_products()
-            data['domain'] = config.WEBSITE_DOMAIN
-            indicator = Indicator.objects.filter(date=timezone.now()).first()
-            if indicator:
-                data.update({
-                    'products_to_repair': indicator.products_to_repair,
-                    'late_products': indicator.late_products,
-                    'express_products': indicator.express_products,
-                    'vip_products': prods.vip
-                })
+            prods, data = self._product_header(data)
+            data.update(prods.late_products())
+            data.update({'filter': 'late', 'link_name': 'Lien vers la liste des produits en retard'})
             html_message = render_to_string('dashboard/email_format/lp_email.html', data)
             plain_message = strip_tags(html_message)
             send_mail(
@@ -81,17 +74,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en retard terminée!"))
         if options['pending_products']:
             subject = 'Produits en cours {}'.format(date_joined)
-            prods = ProductAnalysis()
-            data = prods.pending_products()
-            data['domain'] = config.WEBSITE_DOMAIN
-            indicator = Indicator.objects.filter(date=timezone.now()).first()
-            if indicator:
-                data.update({
-                    'products_to_repair': indicator.products_to_repair,
-                    'late_products': indicator.late_products,
-                    'express_products': indicator.express_products,
-                    'vip_products': prods.vip
-                })
+            prods, data = self._product_header(data)
+            data.update(prods.pending_products())
+            data.update({'filter': 'pending', 'link_name': 'Lien vers la liste des produits en cours'})
             html_message = render_to_string('dashboard/email_format/lp_email.html', data)
             plain_message = strip_tags(html_message)
             send_mail(
@@ -105,8 +90,7 @@ class Command(BaseCommand):
 
             if xelons:
                 html_message = render_to_string(
-                    'dashboard/email_format/vin_error_email.html',
-                    {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
+                    'dashboard/email_format/vin_error_email.html', {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
                 )
                 plain_message = strip_tags(html_message)
                 send_mail(
@@ -122,8 +106,7 @@ class Command(BaseCommand):
                                           vin_error=False, corvet__isnull=True).order_by('-date_retour')[:10]
             if xelons:
                 html_message = render_to_string(
-                    'dashboard/email_format/vin_corvet_email.html',
-                    {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
+                    'dashboard/email_format/vin_corvet_email.html', {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
                 )
                 plain_message = strip_tags(html_message)
                 send_mail(
@@ -139,8 +122,7 @@ class Command(BaseCommand):
 
             if contracts:
                 html_message = render_to_string(
-                    'dashboard/email_format/contract_email.html',
-                    {'obj': contracts, 'domain': config.WEBSITE_DOMAIN}
+                    'dashboard/email_format/contract_email.html', data.update({'obj': contracts})
                 )
                 plain_message = strip_tags(html_message)
                 send_mail(
@@ -152,3 +134,15 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Pas de contracts a envoyer !"))
         if options['reman']:
             call_command("emailreman", "--batch")
+
+    def _product_header(self, data):
+        prods = ProductAnalysis()
+        indicator = Indicator.objects.filter(date=timezone.now()).first()
+        if indicator:
+            data.update({
+                'products_to_repair': indicator.products_to_repair,
+                'late_products': indicator.late_products,
+                'express_products': indicator.express_products,
+                'vip_products': prods.vip
+            })
+        return prods, data
