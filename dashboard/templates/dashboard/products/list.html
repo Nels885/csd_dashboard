@@ -23,6 +23,19 @@
 
 {% block table_content %}
 
+    <table class="table table-bordered table-sm text-nowrap col-6 mb-4">
+        <tbody>
+        <tr>
+
+            <td class="font-weight-bold" style="width: 20%;">Légende :</td>
+            <th class="bg-success text-gray-700 text-center" style="width: 20%;">< 0 jours</th>
+            <th class="bg-info text-light text-center" style="width: 20%;">0 jours</th>
+            <th class="bg-warning text-gray-800 text-center" style="width: 20%;"> > 0 < 3 jours</th>
+            <td class="bg-danger text-light text-center" style="width: 20%;">>= 3 jours</td>
+        </tr>
+        </tbody>
+    </table>
+
     <table class="table table-bordered table-sm text-nowrap display" id="adminTable" style="width:100%">
         <thead>
         <tr>
@@ -61,7 +74,8 @@
                     {% with animator=prod.product.animator %}
                         <td>
                             {% if animator %}
-                                <a href="mailto:{{ animator.email }}?subject={{ prod.subject|urlencode }}" target="_blank">
+                                <a href="mailto:{{ animator.email }}?subject={{ prod.subject|urlencode }}"
+                                   target="_blank">
                                     {{ animator.first_name|default_if_none:"" }} {{ animator.last_name|default_if_none:"" }}
                                 </a>
                             {% endif %}
