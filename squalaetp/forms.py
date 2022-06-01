@@ -12,6 +12,8 @@ from psa.models import Corvet, Multimedia, Ecu
 from .models import Xelon, Action, Sivin, ProductCode
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
+from utils.file import LogFile
+from utils.conf import CSD_ROOT
 
 
 class IhmEmailModalForm(BSModalForm):
@@ -37,6 +39,7 @@ class IhmEmailModalForm(BSModalForm):
     def vin_message(model, request):
         domain = config.WEBSITE_DOMAIN
         queryset = model.actions.filter(content__contains="OLD_VIN")
+        rasp_log = LogFile(CSD_ROOT).vin_err_filter(model.modele_produit, model.numero_de_dossier)
         if queryset:
             data = queryset.first().content.split('\n')
             vins = {"old_vin": data[0][-17:], "new_vin": data[1][-17:]}

@@ -350,7 +350,7 @@ class LogFileView(LoginRequiredMixin, TemplateView):
         file = LogFile(CSD_ROOT)
         xelon = get_object_or_404(Xelon, pk=context['pk'])
         text = file.vin_err_filter(xelon.modele_produit, xelon.numero_de_dossier)
-        print(f"Info LOG : {xelon.modele_produit} - {xelon.numero_de_dossier}")
+        # print(f"Info LOG : {xelon.modele_produit} - {xelon.numero_de_dossier}")
         context['text'] = text
         return context
 
