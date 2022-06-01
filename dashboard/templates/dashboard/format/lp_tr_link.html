@@ -16,7 +16,7 @@
                 <td>{{ prod.date_retour|date:"d/m/Y" }}</td>
                 <td>{{ prod.date_expedition_attendue|date:"d/m/Y"|default_if_none:"" }}</td>
                 <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
-                <td>{% if prod.telecodage == "1" %}TELE{% elif prod.appairage == "1" %}APPAIR{% endif %}</td>
+                <td>{{ prod.option }}</td>
                 <td>{{ prod.type_de_cloture }}</td>
                 <td>{{ prod.nom_technicien }}</td>
                 {% with animator=prod.product.animator %}

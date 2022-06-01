@@ -81,6 +81,14 @@ class Xelon(models.Model):
             )
         return None
 
+    @property
+    def option(self):
+        if self.telecodage == "1":
+            return "TELE"
+        elif self.appairage == "1":
+            return "APPAIR"
+        return ""
+
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
 
