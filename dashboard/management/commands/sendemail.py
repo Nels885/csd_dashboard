@@ -118,16 +118,14 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(self.style.SUCCESS("Pas de VIN sans données CORVET à envoyer !"))
         if options['contract']:
-            subject = "Contracts à renouveler {}".format(date_joined)
+            subject = f"Contracts à renouveler {date_joined}"
             contracts = Contract.objects.filter(is_active=True, renew_date__lte=first_90_days)
             if contracts:
                 attachment = self._generate_excel(contracts)
-                html_message = render_to_string(
-                    'dashboard/email_format/contract_email.html', data.update({'obj': contracts})
-                )
-                plain_message = strip_tags(html_message)
+                data.update({'obj': contracts})
+                message = render_to_string('dashboard/email_format/contract_email.html', data)
                 email = EmailMessage(
-                    subject, plain_message, None, string_to_list(config.CONTRACT_TO_EMAIL_LIST),
+                    subject=subject, body=message, from_email=None, to=string_to_list(config.CONTRACT_TO_EMAIL_LIST),
                 )
                 email.attach_file(path=attachment, mimetype='application/octet-stream')
                 email.send()
