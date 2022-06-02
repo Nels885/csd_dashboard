@@ -162,5 +162,4 @@ class Command(BaseCommand):
             'id', 'service', 'nature', 'object', 'supplier', 'site', 'end_date', 'is_active', 'renew_date'
         ]
         values_list = queryset.values_list(*fields)
-        print(values_list)
         return excel.file(filename, "xlsx", values_list)
