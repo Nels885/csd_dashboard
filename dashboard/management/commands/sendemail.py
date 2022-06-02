@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
+from django.db.models import F
 
 from constance import config
 
@@ -121,6 +122,7 @@ class Command(BaseCommand):
             subject = f"Contracts à renouveler {date_joined}"
             contracts = Contract.objects.filter(is_active=True, renew_date__lte=first_90_days)
             if contracts:
+                contracts = contracts.annotate(excel_nb=F('id') + 1)
                 attachment = self._generate_excel(contracts)
                 data.update({'obj': contracts})
                 message = render_to_string('dashboard/email_format/contract_email.html', data)
@@ -157,7 +159,7 @@ class Command(BaseCommand):
             'Contract actif', 'Date prévenance'
         ]
         fields = [
-            'id', 'service', 'nature', 'object', 'supplier', 'site', 'end_date', 'is_active', 'renew_date'
+            'excel_nb', 'service', 'nature', 'object', 'supplier', 'site', 'end_date', 'is_active', 'renew_date'
         ]
         values_list = queryset.values_list(*fields)
         return excel.file(filename, "xlsx", values_list)

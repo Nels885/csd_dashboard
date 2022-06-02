@@ -24,7 +24,6 @@ class ExportExcelTask(BaseTask):
         self.textCols = kwargs.get('text_cols', [])
         self.header = kwargs.get('header', [])
         self.date = timezone.now()
-        self.task = kwargs.get('is_task', False)
 
     @staticmethod
     def copy_and_get_copied_path():
@@ -171,12 +170,6 @@ class ExportExcel(ExportExcelTask):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.sheetName = kwargs.get('sheet_name', 'Feuil1')
-        self.noValue = kwargs.get('novalue', "#")
-        self.textCols = kwargs.get('text_cols', [])
-        self.header = kwargs.get('header', [])
-        self.date = timezone.now()
-        self.task = kwargs.get('is_task', False)
 
     def _create_xlsx(self, workbook: Workbook, values_list):
         """ Formatting data in Excel 2010 format """
