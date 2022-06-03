@@ -25,7 +25,7 @@
         </tbody>
     </table>
 
-    <a class="my-2" href="http://{{ domain }}{% url 'dashboard:products' %}?filter={{ filter }}">{{ link_name }}</a>
+    <p><a href="http://{{ domain }}{% url 'dashboard:products' %}?filter={{ filter }}">{{ link_name }}</a></p>
 
     {% if filter == "late" %}
         <table class="table table-bordered text-nowrap">

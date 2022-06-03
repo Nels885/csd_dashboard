@@ -123,7 +123,7 @@ class Command(BaseCommand):
             contracts = Contract.objects.filter(is_active=True, renew_date__lte=first_90_days)
             if contracts:
                 contracts = contracts.annotate(excel_nb=F('id') + 1)
-                attachment = self._generate_excel(contracts)
+                attachment = self._excel_contract_generate(contracts)
                 data.update({'obj': contracts})
                 message = render_to_string('dashboard/email_format/contract_email.html', data)
                 email = EmailMessage(
@@ -151,7 +151,7 @@ class Command(BaseCommand):
         return prods, data
 
     @staticmethod
-    def _generate_excel(queryset):
+    def _excel_contract_generate(queryset):
         excel = ExportExcel()
         filename = f"Contrats_a_renouveler_au_{excel.date.strftime('%y-%m-%d_%H-%M')}"
         excel.header = [
