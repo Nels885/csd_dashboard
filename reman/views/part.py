@@ -2,7 +2,7 @@ from . import context
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required, login_required
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage

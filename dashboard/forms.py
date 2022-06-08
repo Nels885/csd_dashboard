@@ -1,6 +1,6 @@
 from django.forms.utils import ErrorList
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm

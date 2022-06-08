@@ -1,7 +1,7 @@
 import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User

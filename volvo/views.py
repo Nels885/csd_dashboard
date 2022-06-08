@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from utils.django.urls import http_referer

@@ -1,7 +1,7 @@
 import re
 import xml.etree.ElementTree as ET
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import make_aware
 
 from datetime import datetime

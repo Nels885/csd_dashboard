@@ -1,7 +1,7 @@
 import requests
 
 from django.shortcuts import render, redirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db.utils import IntegrityError
 from rest_framework.response import Response
