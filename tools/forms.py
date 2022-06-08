@@ -87,7 +87,7 @@ class SuptechModalForm(BSModalModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['username', 'xelon', 'item', 'custom_item', 'time', 'to', 'cc', 'info', 'rmq', 'attach']
+        fields = ['username', 'xelon', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach']
 
     def __init__(self, *args, **kwargs):
         users = User.objects.all()
@@ -132,7 +132,6 @@ class SuptechModalForm(BSModalModelForm):
         try:
             item = SuptechItem.objects.get(name=suptech.item)
             suptech.category = item.category
-            suptech.is_48h = item.is_48h
         except SuptechItem.DoesNotExist:
             pass
         suptech.created_by = user

@@ -196,7 +196,8 @@ def suptech_item_ajax(request):
             suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
             data = {
                 "extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list,
-                "cc_mailing_list": suptech_item.cc_mailing_list
+                "cc_mailing_list": suptech_item.cc_mailing_list,
+                "is_48h": suptech_item.is_48h
             }
     except SuptechItem.DoesNotExist:
         pass
