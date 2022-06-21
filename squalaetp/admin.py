@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
 from django.contrib.auth.models import User
 
-from .models import Xelon, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
+from .models import Xelon, XelonTemporary, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
 from .forms import ProductCodeAdminForm
 
 
@@ -35,6 +35,14 @@ class XelonAdmin(admin.ModelAdmin):
         rows_updated = queryset.update(vin_error=False)
         self._message_user_about_update(request, rows_updated, 'disabled')
     vin_error_disabled.short_description = _('Vin error disabled')
+
+
+class XelonTemporaryAdmin(admin.ModelAdmin):
+    list_display = (
+        'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'is_active'
+    )
+    list_filter = ('is_active',)
+    search_fields = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
 
 
 class SparePartAdmin(admin.ModelAdmin):
@@ -204,6 +212,7 @@ class ProductCodeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Xelon, XelonAdmin)
+admin.site.register(XelonTemporary, XelonTemporaryAdmin)
 admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(ProductCode, ProductCodeAdmin)
 admin.site.register(Indicator, IndicatorAdmin)

@@ -2,6 +2,9 @@ import re
 
 from django.db import models
 from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -88,6 +91,42 @@ class Xelon(models.Model):
         elif self.appairage == "1":
             return "APPAIR"
         return ""
+
+    def __str__(self):
+        return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
+
+
+def get_deadline():
+    return timezone.now() + timezone.timedelta(days=7)
+
+
+class XelonTemporary(models.Model):
+    numero_de_dossier = models.CharField('numéro de dossier', max_length=10)
+    vin = models.CharField('V.I.N.', max_length=17)
+    modele_produit = models.CharField('modèle produit', max_length=50, blank=True)
+    modele_vehicule = models.CharField('modèle véhicule', max_length=50, blank=True)
+    is_active = models.BooleanField('Actif', default=False)
+    end_date = models.DateField('date de fin', default=get_deadline(), null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def clean(self):
+        try:
+            Xelon.objects.get(numero_de_dossier=self.numero_de_dossier)
+            raise ValidationError(_('Xelon number exists !'))
+        except Xelon.DoesNotExist:
+            for query in XelonTemporary.objects.filter(numero_de_dossier=self.numero_de_dossier):
+                if self.is_active and query.is_active:
+                    raise ValidationError(_('A temporary Xelon is already active with this number !'))
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and not user.pk:
+            user = None
+        if not self.pk:
+            self.created_by = user
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
