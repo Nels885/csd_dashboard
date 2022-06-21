@@ -7,7 +7,7 @@
     <div class="card-header">
         <ul class="nav nav-tabs card-header-tabs" role="tablist">
 
-            {% include 'squalaetp/tab_select.html' with select=query_param %}
+            {% include 'squalaetp/tab_select.html' with select='temp' %}
 
         </ul>
     </div>
@@ -16,19 +16,18 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered table-sm text-nowrap display" id="xelonTable" style="width: 100%;">
+    <table class="table table-bordered table-sm text-nowrap display" id="temporaryTable" style="width: 100%;">
         <thead>
         <tr>
             <th></th>
             <th class="all">Numéro de dossier</th>
             <th>V.I.N.</th>
             <th class="all">Modèle produit</th>
-            <th class="all">Activité</th>
             <th>Modèle véhicule</th>
-            <th>Date Retour</th>
-            <th class="all">Type de clôture</th>
-            <th>Date exp. attendue</th>
-            <th>Nom Technicien</th>
+            <th>Actif</th>
+            <th>Date de fin</th>
+            <th>Créé le</th>
+            <th>Par</th>
         </tr>
         </thead>
     </table>
@@ -39,8 +38,8 @@
 
     <!-- Page level custom scripts -->
     <script type="text/javascript">
-        const URL_AJAX = "{% url 'squalaetp:api_xelon-list' %}?filter={{ query_param }}";
+        const URL_AJAX = "{% url 'squalaetp:api_temporary-list' %}";
     </script>
-    <script type="text/javascript" src="{% static 'squalaetp/js/ajax-xelon-tables.js' %}"></script>
+    <script type="text/javascript" src="{% static 'squalaetp/js/squalaetp-tables.js' %}"></script>
 
 {% endblock %}
