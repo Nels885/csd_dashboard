@@ -209,9 +209,10 @@ class ToolsAnalysis:
     @staticmethod
     def _percent(value, total=None, total_multiplier=1):
         if isinstance(total, int) and total != 0 and isinstance(value, int) and value != 0:
-            return round(100 * value / (total * total_multiplier), 1)
-        else:
-            return 0
+            result = round(100 * value / (total * total_multiplier), 1)
+            if result <= 100:
+                return result
+        return 0
 
     @staticmethod
     def _bga_annotate(queryset):
