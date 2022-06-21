@@ -115,6 +115,7 @@ class XelonViewSet(viewsets.ModelViewSet):
             self.queryset = Xelon.search(query)
 
 
+@login_required
 def temporary_table(request):
     """ View of Xelon temporary table page """
     title = 'Xelon'

@@ -23,6 +23,14 @@ class XelonTestCase(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_xelon_temporary_table_page(self):
+        url = reverse('squalaetp:temporary')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
     def test_squalaetp_detail_page(self):
         url = reverse('squalaetp:detail', kwargs={'pk': self.xelonId})
         response = self.client.get(url)
