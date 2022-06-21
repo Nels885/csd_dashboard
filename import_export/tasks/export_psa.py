@@ -279,7 +279,8 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         corvet = Corvet.hw_search(kwargs.get('hw_reference'))
         if self.PROD_DICT.get(kwargs.get('product')):
             self.queryset = corvet.exclude(**self.PROD_DICT.get(kwargs.get('product')))
-        self.queryset = corvet.all()
+        else:
+            self.queryset = corvet.all()
 
     def _select_columns(self, **kwargs):
         if kwargs.get('product') == "xelon":
