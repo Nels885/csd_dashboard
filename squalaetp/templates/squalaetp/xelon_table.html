@@ -1,49 +1,36 @@
 {% extends 'format/datatables_format.html' %}
 
-{% load static %}
+{% load static i18n %}
 
-{% load i18n %}
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'squalaetp/tab_select.html' with select=query_param %}
+
+        </ul>
+    </div>
+
+{% endblock %}
 
 {% block table_content %}
 
-    <table class="table table-bordered table-sm text-nowrap" id="xelonTable" style="width: 100%;">
+    <table class="table table-bordered table-sm text-nowrap display" id="xelonTable" style="width: 100%;">
         <thead>
         <tr>
             <th></th>
-            <th>Numéro de dossier</th>
+            <th class="all">Numéro de dossier</th>
             <th>V.I.N.</th>
             <th class="all">Modèle produit</th>
+            <th class="all">Activité</th>
             <th>Modèle véhicule</th>
             <th>Date Retour</th>
             <th class="all">Type de clôture</th>
+            <th>Date exp. attendue</th>
             <th>Nom Technicien</th>
-            <th>Dossier VIP</th>
-            <th>Express</th>
         </tr>
         </thead>
-        <tbody>
-
-        {% for file in files %}
-
-            <tr {% if file.vin|slice:":3" == "VF3" or file.vin|slice:":3" == "VF7" %}{% if not file.corvet %}class="bg-danger text-light"{% endif %}{% endif %}>
-                <td class="bg-white text-nowrap" style="width: 60px;">
-                    <a href="{% url 'squalaetp:detail' pk=file.pk %}?select=ihm" title="Modification VIN et Corvet" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                    <a href="{% url 'squalaetp:detail' pk=file.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
-                </td>
-                <td>{{ file.numero_de_dossier }}</td>
-                <td>{{ file.vin }}</td>
-                <td>{{ file.modele_produit }}</td>
-                <td>{{ file.modele_vehicule }}</td>
-                <td>{{ file.date_retour|default:"--" }}</td>
-                <td>{{ file.type_de_cloture }}</td>
-                <td>{{ file.nom_technicien }}</td>
-                <td>{% if file.dossier_vip %}OUI{% endif %}</td>
-                <td>{% if file.express %}OUI{% endif %}</td>
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
     </table>
 
 {% endblock %}
@@ -51,6 +38,9 @@
 {% block tablejs %}
 
     <!-- Page level custom scripts -->
+    <script type="text/javascript">
+        const URL_AJAX = "{% url 'squalaetp:api_xelon-list' %}?filter={{ query_param }}";
+    </script>
     <script type="text/javascript" src="{% static 'squalaetp/js/xelon-tables.js' %}"></script>
 
 {% endblock %}

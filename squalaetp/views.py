@@ -77,7 +77,7 @@ def xelon_table(request):
     title = 'Xelon'
     form = CorvetForm()
     query_param = request.GET.get('filter', '')
-    return render(request, 'squalaetp/ajax_xelon_table.html', locals())
+    return render(request, 'squalaetp/xelon_table.html', locals())
 
 
 @login_required
