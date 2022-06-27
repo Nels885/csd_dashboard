@@ -1,6 +1,7 @@
 import logging
 
 from utils.microsoft_format import ExcelFormat
+from utils.file.export_task import ExportExcel, datetime
 
 logger = logging.getLogger('command')
 
@@ -46,3 +47,32 @@ class ExcelContract(ExcelFormat):
                 except KeyError:
                     pass
         return data
+
+
+class ExportExcelContract(ExportExcel):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def _query_format(self, query):
+        query = tuple([self._html_to_string(_) if isinstance(_, str) else _ for _ in query])
+        query = tuple([self._timestamp_to_string(_) for _ in query])
+        query = tuple([self._boolean_to_string(_) for _ in query])
+        return query
+
+    @staticmethod
+    def _boolean_to_string(value):
+        if isinstance(value, bool) and value is True:
+            return "OUI"
+        else:
+            return ""
+
+    @staticmethod
+    def _timestamp_to_string(value):
+        if isinstance(value, datetime.datetime):
+            value = value.strftime("%Y/%m/%d %H:%M:%S").replace(" 00:00:00", "")
+        elif isinstance(value, datetime.date):
+            value = value.strftime("%Y/%m/%d")
+        elif isinstance(value, datetime.time):
+            value = value.strftime("%H:%M:%S")
+        return value

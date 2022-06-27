@@ -13,7 +13,7 @@ from squalaetp.models import Xelon, Indicator
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
 from utils.django.validators import VIN_PSA_REGEX
-from utils.file.export_task import ExportExcel
+from ._excel_contract import ExportExcelContract
 
 
 class Command(BaseCommand):
@@ -152,7 +152,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def _excel_contract_generate(queryset):
-        excel = ExportExcel()
+        excel = ExportExcelContract()
         filename = f"Contrats_a_renouveler_au_{excel.date.strftime('%y-%m-%d_%H-%M')}"
         excel.header = [
             'N° ligne Excel', 'Service', 'Nature du document', 'Objet du document', 'Fournisseur', 'Site', 'Date fin',
