@@ -64,8 +64,9 @@ class ExportExcelContract(ExportExcel):
     def _boolean_to_string(value):
         if isinstance(value, bool) and value is True:
             return "OUI"
-        else:
+        elif isinstance(value, bool) and value is False:
             return ""
+        return value
 
     @staticmethod
     def _timestamp_to_string(value):
