@@ -23,3 +23,15 @@ class PsaCommandTestCase(UnitTest):
             "Suppression des données de la table Ecu terminée!",
             self.out.getvalue()
         )
+
+    def test_clear_corvet_ecu_table(self):
+        call_command('clearpsa', '--corvet', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table Corvet terminée!",
+            self.out.getvalue()
+        )
+
+    def test_message_of_corvet_commmand(self):
+        # Test for files not found
+        call_command('loadcorvet', '-f' 'test.xls', stdout=self.out)
+        self.assertIn("[CORVET] No squalaetp file found", self.out.getvalue())

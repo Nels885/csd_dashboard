@@ -38,12 +38,6 @@ class Command(BaseCommand):
             dest='relations',
             help='add the relationship between the corvet and multimedia tables',
         )
-        parser.add_argument(
-            '--delete',
-            action='store_true',
-            dest='delete',
-            help='Delete all data in Corvet table',
-        )
 
     def handle(self, *args, **options):
         self.stdout.write("[CORVET] Waiting...")
@@ -57,16 +51,6 @@ class Command(BaseCommand):
 
         elif options['relations']:
             self._foreignkey_relation()
-
-        elif options['delete']:
-            Corvet.objects.all().delete()
-
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Corvet, ])
-            with connection.cursor() as cursor:
-                for sql in sequence_sql:
-                    cursor.execute(sql)
-            for table in ["Corvet"]:
-                self.stdout.write(self.style.WARNING("Suppression des données de la table {} terminée!".format(table)))
 
         else:
             if options['filename'] is not None:
