@@ -106,7 +106,7 @@ class XelonTemporary(models.Model):
     modele_produit = models.CharField('modèle produit', max_length=50, blank=True)
     modele_vehicule = models.CharField('modèle véhicule', max_length=50, blank=True)
     is_active = models.BooleanField('Actif', default=False)
-    end_date = models.DateField('date de fin', default=get_deadline(), null=True, blank=True)
+    end_date = models.DateField('date de fin', default=get_deadline, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
