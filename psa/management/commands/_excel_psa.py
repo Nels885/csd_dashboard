@@ -57,3 +57,44 @@ class ExcelCorvet(ExcelFormat):
                 vin = row['vin']
                 data.append({'vin': vin, 'data': row})
         return data
+
+
+class ExcelCorvetAttribute(ExcelFormat):
+    """## Read data in Excel file for Attributs CORVET.xlsx ##"""
+    ERROR = False
+    COLS = {"clé1": "key_1", "clé2": "key_2", "libelle": "label", "colext": "col_ext"}
+
+    def __init__(self, file, sheet_name=1, columns=None):
+        """
+        Initialize ExcelSqualaetp class
+        :param file:
+            excel file to process
+        :param sheet_name:
+            Sheet index to be processed from excel file
+        :param columns:
+            Number of the last column to be processed
+        """
+        try:
+            super(ExcelCorvetAttribute, self).__init__(file, sheet_name, columns)
+            self._columns_rename(self.COLS)
+            self.sheet.replace({"": None, "#": None}, inplace=True)
+        except FileNotFoundError as err:
+            logger.error(f'FileNotFoundError: {err}')
+            self.ERROR = True
+
+    def read(self):
+        """
+        Extracting data for the Suptech table form the Database
+        :return:
+            list of dictionnaries that represents the data for Suptech table
+        """
+        data = []
+        if not self.ERROR:
+            for line in range(self.nrows):
+                try:
+                    row = {'id': (line + 1)}
+                    row.update(dict(self.sheet.loc[line].dropna(how='all')))  # get the data in the ith row
+                    data.append(row)
+                except KeyError:
+                    pass
+        return data

@@ -1,15 +1,15 @@
 import logging
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, DataError
 from django.db.models import Q
 
-from psa.models import Corvet
+from psa.models import Corvet, CorvetAttribute
 from utils.conf import XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE
 from utils.django.models import defaults_dict
 
 from ._csv_squalaetp_corvet import CsvCorvet
-from ._excel_squalaetp import ExcelCorvet
+from ._excel_psa import ExcelCorvet, ExcelCorvetAttribute
 
 logger = logging.getLogger('command')
 
@@ -31,6 +31,12 @@ class Command(BaseCommand):
             help='import Corvet CSV file',
         )
         parser.add_argument(
+            '--attribute',
+            action='store_true',
+            dest='attribute',
+            help='import Corvet attribute file',
+        )
+        parser.add_argument(
             '--relations',
             action='store_true',
             dest='relations',
@@ -38,18 +44,21 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        self.stdout.write("[CORVET] Waiting...")
+        self.stdout.write("[CORVET_CMD] Waiting...")
 
         if options['import_csv']:
             if options['filename'] is not None:
                 excel = CsvCorvet(options['filename'])
                 self._update_or_create(Corvet, excel)
             else:
-                self.stdout.write("Fichier CSV manquant")
+                self.stdout.write(self.style.WARNING("Fichier CSV manquant"))
 
         elif options['relations']:
             self._foreignkey_relation()
 
+        elif options['attribute']:
+            excel = ExcelCorvetAttribute(XLS_ATTRIBUTS_FILE)
+            self._corvet_attribute(CorvetAttribute, excel)
         else:
             if options['filename'] is not None:
                 excel = ExcelCorvet(options['filename'], XLS_ATTRIBUTS_FILE)
@@ -69,7 +78,7 @@ class Command(BaseCommand):
             corvet.save()
         self.stdout.write(
             self.style.SUCCESS(
-                "[CORVET] Relationships update completed: CORVET/MULTIMEDIA = {}".format(corvets.count())
+                "[CORVET_CMD] Relationships update completed: CORVET/MULTIMEDIA = {}".format(corvets.count())
             )
         )
 
@@ -96,10 +105,37 @@ class Command(BaseCommand):
             nb_prod_after = model.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[CORVET] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[CORVET_CMD] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
                     )
                 )
             )
         else:
-            self.stdout.write(self.style.WARNING("[CORVET] No squalaetp file found"))
+            self.stdout.write(self.style.WARNING("[CORVET_CMD] No squalaetp file found"))
+
+    def _corvet_attribute(self, model, excel):
+        nb_before = model.objects.count()
+        nb_update = 0
+        for row in excel.read():
+            logger.info(row)
+            pk = row.pop("id")
+            try:
+                defaults = defaults_dict(model, row, "id")
+                obj, created = model.objects.update_or_create(pk=pk, defaults=defaults)
+                if not created:
+                    nb_update += 1
+            except IntegrityError as err:
+                logger.error(f"[CORVET_ATTRIBUTE_CMD] IntegrityError: {pk} - {err}")
+            except model.MultipleObjectsReturned as err:
+                logger.error(f"[CORVET_ATTRIBUTE_CMD] MultipleObjectsReturned: {pk} - {err}")
+            except DataError as err:
+                logger.error(f"[CORVET_ATTRIBUTE_CMD] DataError: {pk} - {err}")
+            except ValidationError as err:
+                logger.error(f"[CORVET_ATTRIBUTE_CMD] ValidationError: {pk} - {err}")
+        nb_after = model.objects.count()
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"[CORVET_ATTRIBUTE_CMD] Data update completed: EXCEL_LINES = {excel.nrows} | " +
+                f"ADD = {nb_after - nb_before} | UPDATE = {nb_update} | TOTAL = {nb_after}"
+            )
+        )
