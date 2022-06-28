@@ -1,10 +1,8 @@
 import logging
 from django.core.management.base import BaseCommand
-from django.core.management.color import no_style
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.db.models import Q
-from django.db import connection
 
 from psa.models import Corvet
 from utils.conf import XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE
