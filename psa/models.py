@@ -286,6 +286,20 @@ class CorvetOption(models.Model):
         return self.corvet.vin
 
 
+class CorvetAttribute(models.Model):
+    key_1 = models.CharField('cle1', max_length=100)
+    key_2 = models.CharField('cle2', max_length=100)
+    label = models.CharField('libellé', max_length=500)
+    col_ext = models.CharField('colext', max_length=10)
+
+    class Meta:
+        verbose_name = "Attributs CORVET"
+        ordering = ['id']
+
+    def __str__(self):
+        return f"{self.key_1}_{self.key_2} - {self.label}"
+
+
 class Multimedia(models.Model):
     TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
