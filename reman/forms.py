@@ -491,7 +491,7 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    barcode = forms.CharField(label="Code Barre", max_length=50,
+    barcode = forms.CharField(label="Code Barre", max_length=100,
                               widget=forms.TextInput(attrs={'class': 'form-control', 'autofocus': ''}))
 
     def clean_barcode(self):
