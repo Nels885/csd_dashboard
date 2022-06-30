@@ -2,7 +2,7 @@ from django.contrib.messages import get_messages
 
 from .base import UnitTest, reverse
 
-from dashboard.models import Post, WebLink, UserProfile
+from dashboard.models import Post, WebLink
 
 
 class MixinsTest(UnitTest):
@@ -98,6 +98,7 @@ class MixinsTest(UnitTest):
         """
         Delete object through BSModalDeleteView.
         """
+        old_post_nb = Post.objects.count()
         self.add_perms_user(Post, 'delete_post')
         self.login()
 
@@ -106,6 +107,7 @@ class MixinsTest(UnitTest):
         response = self.client.post(reverse('dashboard:delete_post', kwargs={'pk': post.pk}))
         messages = get_messages(response.wsgi_request)
         self.assertEqual(len(messages), 1)
+        self.assertEqual(Post.objects.count(), old_post_nb - 1)
 
     def test_create_weblink_ajax_mixin(self):
         """
@@ -153,3 +155,18 @@ class MixinsTest(UnitTest):
         # Object is updated
         link = WebLink.objects.first()
         self.assertEqual(link.title, 'test2')
+
+    def test_Delete_weblink_ajax_mixin(self):
+        """
+        Delete web link through BSModalDeleteView.
+        """
+        old_link_nb = WebLink.objects.count()
+        self.add_perms_user(WebLink, 'delete_weblink')
+        self.login()
+
+        # Request to delete view passes message to the response
+        link = WebLink.objects.first()
+        response = self.client.post(reverse('dashboard:delete_weblink', kwargs={'pk': link.pk}))
+        messages = get_messages(response.wsgi_request)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(WebLink.objects.count(), old_link_nb - 1)
