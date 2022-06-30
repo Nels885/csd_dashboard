@@ -1,3 +1,5 @@
+from django.utils.translation import gettext as _
+
 from dashboard.tests.base import FunctionalTest
 
 
@@ -43,7 +45,6 @@ class DashboardSeleniumTestCase(FunctionalTest):
         driver.get(self.live_server_url)
         driver.add_cookie({'name': 'sessionid', 'value': cookie.value, 'secure': False, 'path': '/'})
         driver.refresh()
-        self.assertIn('CSD : Accueil', driver.title)
 
         # User clicks logout button
         driver.find_element_by_id('logout-nav-btn').click()
