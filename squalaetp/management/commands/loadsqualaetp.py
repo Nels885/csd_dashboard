@@ -34,6 +34,12 @@ class Command(BaseCommand):
             help='Specify import Excel Delay files',
         )
         parser.add_argument(
+            '-T',
+            '--time_limit_file',
+            dest='time_limit_file',
+            help='Specify import Excel Time Limit file',
+        )
+        parser.add_argument(
             '--xelon_update',
             action='store_true',
             dest='xelon_update',
@@ -72,7 +78,10 @@ class Command(BaseCommand):
             else:
                 delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
 
-            time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
+            if options['time_limit_file']:
+                time_limit = ExcelTimeLimitAnalysis(options['time_limit_file'])
+            else:
+                time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
             self._squalaetp_file(Xelon, squalaetp)
             self._delay_files(Xelon, squalaetp, delay)
             self._time_limit_files(Xelon, squalaetp, time_limit)

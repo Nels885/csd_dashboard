@@ -110,11 +110,15 @@ class ExcelTimeLimitAnalysis(ExcelFormat):
             excel file to process
         """
         cols = ",".join(self.COLS.keys())
-        super().__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
-        self._columns_rename(self.COLS)
-        self.sheet.replace({"#": None}, inplace=True)
-        self.sheet.fillna('', inplace=True)
-        self._date_converter(self.COLS_DATE)
+        try:
+            super().__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
+            self._columns_rename(self.COLS)
+            self.sheet.replace({"#": None}, inplace=True)
+            self.sheet.fillna('', inplace=True)
+            self._date_converter(self.COLS_DATE)
+        except FileNotFoundError as err:
+            logger.error(f'FileNotFoundError: {err}')
+            self.ERROR = True
 
     def read_all(self):
         """
