@@ -33,7 +33,8 @@ jobs: # A basic unit of work in a run
             PWD_CORVET: test
             DJANGO_SETTINGS_MODULE: sbadmin.settings.circleci
           command: |
-            pipenv run  ./manage.py test -v 2
+            pipenv run ./manage.py collectstatic --noinput
+            pipenv run ./manage.py test -v 2
       - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: test-results
       - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
