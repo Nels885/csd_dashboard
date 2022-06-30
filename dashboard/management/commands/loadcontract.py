@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError, DataError
 
 from dashboard.models import Contract
-from utils.conf import CSV_EXTRACTION_FILE
 from utils.django.models import defaults_dict
 
 from ._excel_contract import ExcelContract
@@ -28,31 +27,33 @@ class Command(BaseCommand):
 
         if options['filename'] is not None:
             excel = ExcelContract(options['filename'])
+            nb_before = Contract.objects.count()
+            nb_update = 0
+            if not excel.ERROR:
+                for row in excel.read():
+                    logger.info(row)
+                    pk = row.pop("id")
+                    try:
+                        defaults = defaults_dict(Contract, row, "id")
+                        obj, created = Contract.objects.update_or_create(pk=pk, defaults=defaults)
+                        if not created:
+                            nb_update += 1
+                    except IntegrityError as err:
+                        logger.error(f"[CONTRACT_CMD] IntegrityError: {pk} - {err}")
+                    except Contract.MultipleObjectsReturned as err:
+                        logger.error(f"[CONTRACT_CMD] MultipleObjectsReturned: {pk} - {err}")
+                    except DataError as err:
+                        logger.error(f"[CONTRACT_CMD] DataError: {pk} - {err}")
+                    except ValidationError as err:
+                        logger.error(f"[CONTRACT_CMD] ValidationError: {pk} - {err}")
+                nb_after = Contract.objects.count()
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"[CONTRACT] Data update completed: EXCEL_LINES = {excel.nrows} | ADD = " +
+                        f"{nb_after - nb_before} | UPDATE = {nb_update} | TOTAL = {nb_after}"
+                    )
+                )
+            else:
+                self.stdout.write(self.style.WARNING("[CONTRACT] No excel file found"))
         else:
-            excel = ExcelContract(CSV_EXTRACTION_FILE)
-
-        nb_before = Contract.objects.count()
-        nb_update = 0
-        for row in excel.read():
-            logger.info(row)
-            pk = row.pop("id")
-            try:
-                defaults = defaults_dict(Contract, row, "id")
-                obj, created = Contract.objects.update_or_create(pk=pk, defaults=defaults)
-                if not created:
-                    nb_update += 1
-            except IntegrityError as err:
-                logger.error(f"[CONTRACT_CMD] IntegrityError: {pk} - {err}")
-            except Contract.MultipleObjectsReturned as err:
-                logger.error(f"[CONTRACT_CMD] MultipleObjectsReturned: {pk} - {err}")
-            except DataError as err:
-                logger.error(f"[CONTRACT_CMD] DataError: {pk} - {err}")
-            except ValidationError as err:
-                logger.error(f"[CONTRACT_CMD] ValidationError: {pk} - {err}")
-        nb_after = Contract.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"[CONTRACT] Data update completed: EXCEL_LINES = {excel.nrows} | ADD = {nb_after - nb_before} | " +
-                f"UPDATE = {nb_update} | TOTAL = {nb_after}"
-            )
-        )
+            self.stdout.write(self.style.WARNING("[CONTRACT] Path to excel file missing !"))

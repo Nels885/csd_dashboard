@@ -135,10 +135,11 @@ class ExcelFormat(BaseFormat):
             xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
             df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
                                dtype=dtype, usecols=usecols)
-            dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
-            dataframe.reset_index(drop=True, inplace=True)
+            if df.get('N° de dossier'):
+                df = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
+            df.reset_index(drop=True, inplace=True)
             # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
-            return dataframe
+            return df
         except UnicodeDecodeError as err:
             print(f"UnicodeDecodeError: {err} - file : {file}")
             return pd.DataFrame()
