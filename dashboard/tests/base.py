@@ -7,6 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 MAX_WAIT = 10
 
@@ -81,6 +84,15 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
             self.client.login(username='admin', password='adminpassword')
         else:
             self.client.login(username='toto', password='totopassword')
+
+    def wait_for(self, class_name=None, element_id=None, tag=None, xpath=None):
+        return WebDriverWait(self.driver, 20).until(
+            expected_conditions.element_to_be_clickable
+            ((By.ID, element_id) if element_id else
+             (By.CLASS_NAME, class_name) if class_name else
+             (By.TAG_NAME, tag) if tag else
+             (By.XPATH, xpath))
+        )
 
     def wait_for_text_in_body(self, *args, not_in=None):
         start_time = time.time()
