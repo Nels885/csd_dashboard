@@ -32,6 +32,8 @@ class ExcelDelayAnalysis(ExcelFormat):
                 dfs.append(self.sheet)
             except FileNotFoundError as err:
                 logger.error(f'FileNotFoundError: {err}')
+            except KeyError as err:
+                logger.error(f'KeyError: {err}')
         self._concat_files(dfs)
 
     def xelon_table(self, file_number):
