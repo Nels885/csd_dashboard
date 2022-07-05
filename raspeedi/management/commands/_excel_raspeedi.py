@@ -3,8 +3,6 @@ from utils.microsoft_format import ExcelFormat
 
 class ExcelRaspeedi(ExcelFormat):
     """## Read data in Excel file for Raspeedi ##"""
-    RASPEEDI_COLS = ['ref_boitier', 'produit', 'facade', 'type', 'dab', 'cam', 'dump_peedi', 'cd_version', 'media',
-                     'carto', 'dump_renesas', 'ref_mm']
     COLS = {'A': 'ref_boitier', 'B': 'produit', 'C': 'facade', 'D': 'type', 'E': 'dab', 'F': 'cam', 'G': 'dump_peedi',
             'H': 'cd_version', 'I': 'media', 'J': 'carto', 'K': 'dump_renesas', 'L': 'ref_mm', 'N': 'jukebox'}
 
@@ -18,6 +16,7 @@ class ExcelRaspeedi(ExcelFormat):
         super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
         self._convert_boolean()
         self._columns_rename(self.COLS)
+        self._drop_lines()
         self.sheet.fillna('', inplace=True)
 
     def read(self):
@@ -45,6 +44,12 @@ class ExcelRaspeedi(ExcelFormat):
                 "O": True, "N": False, "?": False, None: False, "NON": False, "OUI": True
             })
 
+    def _drop_lines(self):
+        df = self.sheet
+        self.sheet = df.drop(df[(df[self.COLS['A']].isnull()) | (df[self.COLS['A']] == 'ref_boitier')].index)
+        self.sheet.reset_index(drop=True, inplace=True)
+        self.nrows = self.sheet.shape[0]
+
 
 class ExcelPrograming(ExcelFormat):
     """## Read data in Excel file for Raspeedi ##"""
@@ -59,6 +64,7 @@ class ExcelPrograming(ExcelFormat):
         cols = ",".join(self.COLS.keys())
         super(ExcelPrograming, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
         self._columns_rename(self.COLS)
+        self._drop_lines()
         self.sheet.fillna('', inplace=True)
 
     def read(self):
@@ -75,3 +81,9 @@ class ExcelPrograming(ExcelFormat):
                 print("KeyError: {}".format(line))
         #         return [dict(self.sheet.loc[line]) for line in range(self.nrows)]
         return data
+
+    def _drop_lines(self):
+        df = self.sheet
+        self.sheet = df.drop(df[(df[self.COLS['A']].isnull()) | (df[self.COLS['A']] == 'psa_barcode')].index)
+        self.sheet.reset_index(drop=True, inplace=True)
+        self.nrows = self.sheet.shape[0]
