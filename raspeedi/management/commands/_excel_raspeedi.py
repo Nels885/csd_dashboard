@@ -13,11 +13,14 @@ class ExcelRaspeedi(ExcelFormat):
             excel file to process
         """
         cols = ",".join(self.COLS.keys())
-        super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
-        self._convert_boolean()
-        self._columns_rename(self.COLS)
-        self._drop_lines()
-        self.sheet.fillna('', inplace=True)
+        try:
+            super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
+            self._convert_boolean()
+            self._columns_rename(self.COLS)
+            self._drop_lines()
+            self.sheet.fillna('', inplace=True)
+        except FileNotFoundError as err:
+            self.ERROR = f'FileNotFoundError: {err}'
 
     def read(self):
         """
@@ -26,11 +29,12 @@ class ExcelRaspeedi(ExcelFormat):
             list of dictionnaries that represents the data in the sheet
         """
         data = []
-        for line in range(self.nrows):
-            try:
-                data.append(dict(self.sheet.loc[line]))
-            except KeyError as err:
-                print("KeyError pour la ligne : {}".format(err))
+        if not self.ERROR:
+            for line in range(self.nrows):
+                try:
+                    data.append(dict(self.sheet.loc[line]))
+                except KeyError as err:
+                    print("KeyError pour la ligne : {}".format(err))
         return data
 
     def _convert_boolean(self):
@@ -62,10 +66,13 @@ class ExcelPrograming(ExcelFormat):
             excel file to process
         """
         cols = ",".join(self.COLS.keys())
-        super(ExcelPrograming, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
-        self._columns_rename(self.COLS)
-        self._drop_lines()
-        self.sheet.fillna('', inplace=True)
+        try:
+            super(ExcelPrograming, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
+            self._columns_rename(self.COLS)
+            self._drop_lines()
+            self.sheet.fillna('', inplace=True)
+        except FileNotFoundError as err:
+            self.ERROR = f'FileNotFoundError: {err}'
 
     def read(self):
         """
@@ -74,12 +81,13 @@ class ExcelPrograming(ExcelFormat):
             list of dictionnaries that represents the data in the sheet
         """
         data = []
-        for line in range(self.nrows):
-            try:
-                data.append(dict(self.sheet.loc[line]))
-            except KeyError:
-                print("KeyError: {}".format(line))
-        #         return [dict(self.sheet.loc[line]) for line in range(self.nrows)]
+        if not self.ERROR:
+            for line in range(self.nrows):
+                try:
+                    data.append(dict(self.sheet.loc[line]))
+                except KeyError:
+                    print("KeyError: {}".format(line))
+            #         return [dict(self.sheet.loc[line]) for line in range(self.nrows)]
         return data
 
     def _drop_lines(self):

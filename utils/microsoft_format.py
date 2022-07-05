@@ -9,6 +9,7 @@ import os
 
 
 class BaseFormat:
+    ERROR = None
 
     def __init__(self, data_frame, columns):
         self.sheet = data_frame.dropna(how='all')

@@ -52,29 +52,35 @@ class Command(BaseCommand):
                 excel = ExcelRaspeedi(XLS_RASPEEDI_FILE)
             nb_before = Raspeedi.objects.count()
             nb_update = 0
-            for row in excel.read():
-                logger.info(row)
-                ref_boitier = row.pop("ref_boitier")
-                try:
-                    rasp_values = defaults_dict(Raspeedi, row)
-                    obj, created = Raspeedi.objects.update_or_create(ref_boitier=ref_boitier, defaults=rasp_values)
-                    if not created:
-                        nb_update += 1
-                    values = {
-                        "name": row.get("produit", ""), "level": row.get("facade", ""),
-                        "oe_reference": row.get("ref_mm", ""),
-                    }
-                    values.update(defaults_dict(Multimedia, row))
-                    Multimedia.objects.update_or_create(comp_ref=ref_boitier, defaults=values)
-                except IntegrityError as err:
-                    logger.error(f"[RASPEEDI_CMD] IntegrityError: {ref_boitier} - {err}")
-                except DataError as err:
-                    logger.error(f"[RASPEEDI_CMD] DataError: {ref_boitier} - {err}")
-            nb_after = Raspeedi.objects.count()
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "[RASPEEDI] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                        excel.nrows, nb_after - nb_before, nb_update, nb_after
+            if not excel.ERROR:
+                for row in excel.read():
+                    logger.info(row)
+                    ref_boitier = row.pop("ref_boitier")
+                    try:
+                        rasp_values = defaults_dict(Raspeedi, row)
+                        obj, created = Raspeedi.objects.update_or_create(ref_boitier=ref_boitier, defaults=rasp_values)
+                        if not created:
+                            nb_update += 1
+                        values = {
+                            "name": row.get("produit", ""), "level": row.get("facade", ""),
+                            "oe_reference": row.get("ref_mm", ""),
+                        }
+                        values.update(defaults_dict(Multimedia, row))
+                        Multimedia.objects.update_or_create(comp_ref=ref_boitier, defaults=values)
+                    except IntegrityError as err:
+                        logger.error(
+                            f"[RASPEEDI_CMD] IntegrityError: {ref_boitier} - {err} of file : '{XLS_RASPEEDI_FILE}'"
+                        )
+                    except DataError as err:
+                        logger.error(
+                            f"[RASPEEDI_CMD] DataError: {ref_boitier} - {err} of file : '{XLS_RASPEEDI_FILE}'")
+                nb_after = Raspeedi.objects.count()
+                self.stdout.write(self.style.SUCCESS(f"[RASPEEDI_CMD] File: '{XLS_RASPEEDI_FILE}' => OK"))
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"[RASPEEDI_CMD] data update completed: EXCEL_LINES = {excel.nrows} | " +
+                        f"ADD = {nb_after - nb_before} | UPDATE = {nb_update} | TOTAL = {nb_after}"
                     )
                 )
-            )
+            else:
+                self.stdout.write(self.style.ERROR(f"[RASPEEDI_CMD] {excel.ERROR}"))
