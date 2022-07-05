@@ -75,7 +75,7 @@ class Command(BaseCommand):
                         logger.error(
                             f"[RASPEEDI_CMD] DataError: {ref_boitier} - {err} of file : '{XLS_RASPEEDI_FILE}'")
                 nb_after = Raspeedi.objects.count()
-                self.stdout.write(self.style.SUCCESS(f"[RASPEEDI_CMD] File: '{XLS_RASPEEDI_FILE}' => OK"))
+                self.stdout.write(f"[RASPEEDI_FILE] '{XLS_RASPEEDI_FILE}' => OK")
                 self.stdout.write(
                     self.style.SUCCESS(
                         f"[RASPEEDI_CMD] data update completed: EXCEL_LINES = {excel.nrows} | " +
@@ -83,4 +83,4 @@ class Command(BaseCommand):
                     )
                 )
             else:
-                self.stdout.write(self.style.ERROR(f"[RASPEEDI_CMD] {excel.ERROR}"))
+                self.stdout.write(f"[RASPEEDI_FILE] {excel.ERROR}")
