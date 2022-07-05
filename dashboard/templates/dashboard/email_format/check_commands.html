@@ -1,12 +1,40 @@
-Bonjour,
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="fr">
+<html>
+<body>
+<p>
+    <strong>1/ Contrôle du fonctionnement des lecteurs réseau</strong>
+    <lu>
+        {% for key, path, value in network %}<li>{{ key }} => {{ value }}</li>{% empty %}<li>N/A</li>{% endfor %}
+    </lu>
+</p>
 
-Contrôle du fonctionnement de CSD Dashboard :
+<p>
+    <strong>2/ Import données Excel pour les RASPEEDI</strong>
+    <ul>{% for line in raspeedi %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
+</p>
 
-Import Excel pour RASPEEDI:
-{{ raspeedi }}
+<p>
+    <strong>3/ Import données du fichier Excel Squalaetp</strong>
+    <ul>{% for line in squalaetp %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
+</p>
 
-Import Excel pour
+<p>
+    <strong>4/ Import données des fichiers Retard</strong>
+    <ul>{% for line in delay %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
+</p>
 
-Cordialement
+<p>
+    <strong>5/ Import données du fichier Delais</strong>
+    <ul>{% for line in limit %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
+</p>
 
-CSD Dashboard
+<p>Cordialement</p>
+
+<p>CSD Dashboard</p>
+
+</body>
+</html>
+
+{% endautoescape %}

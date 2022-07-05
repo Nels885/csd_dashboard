@@ -319,6 +319,7 @@ CONSTANCE_CONFIG = {
     'SITE_DESCRIPTION': ('', 'Website description'),
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
     'WIKI_URL': ('127.0.0.1:8001', 'URL of the wiki web application'),
+    'SYS_REPORT_TO_MAIL_LIST': ('system1@test.com; system2@test.com', 'System report TO email list'),
     'CONTRACT_TO_EMAIL_LIST': ('contract1@test.com; contract2@test.com', 'Contracts TO email list'),
 
     # Network Options
@@ -381,7 +382,10 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'CONTRACT_TO_EMAIL_LIST'),
+    '1. General Options': (
+        'SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'SYS_REPORT_TO_MAIL_LIST',
+        'CONTRACT_TO_EMAIL_LIST'
+    ),
     '2. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
