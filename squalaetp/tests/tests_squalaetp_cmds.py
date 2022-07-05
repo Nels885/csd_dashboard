@@ -38,9 +38,12 @@ class XelonCommandTestCase(UnitTest):
             'loadsqualaetp', '--xelon_update', '-S' 'test.xls', '-D' 'test.xls, test.xls', '-T', 'test.xls',
             stdout=out
         )
-        self.assertIn("[XELON] No squalaetp file found", out.getvalue())
-        self.assertIn("[DELAY] No delay files found", out.getvalue())
-        self.assertIn("[TIME_LIMIT] No delay files found", out.getvalue())
+        self.assertIn(
+            "[SQUALAETP_FILE] FileNotFoundError: [Errno 2] No such file or directory: 'test.xls", out.getvalue())
+        self.assertIn(
+            "[DELAY_FILE] FileNotFoundError: [Errno 2] No such file or directory: 'test.xls'", out.getvalue())
+        self.assertIn(
+            "[DELAY_FILE] FileNotFoundError: [Errno 2] No such file or directory: 'test.xls'", out.getvalue())
 
         # Test for Xelon name update option
         call_command('loadsqualaetp', '--xelon_name_update', stdout=out)

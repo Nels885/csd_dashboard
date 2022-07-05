@@ -7,7 +7,6 @@ logger = logging.getLogger('command')
 
 class ExcelSqualaetp(ExcelFormat):
     """## Read data in Excel file for Squalaetp ##"""
-    ERROR = False
     CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule', 'telecodage', 'appairage']
     XELON_COLS = CORVET_DROP_COLS + ['vin']
     COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
@@ -28,8 +27,8 @@ class ExcelSqualaetp(ExcelFormat):
             self.sheet.replace({"#": None}, inplace=True)
             self._date_converter(self.COLS_DATE)
         except FileNotFoundError as err:
-            logger.error(f'FileNotFoundError: {err}')
-            self.ERROR = True
+            self.ERROR = f'FileNotFoundError: {err}'
+            logger.error(self.ERROR)
 
     def xelon_table(self):
         """

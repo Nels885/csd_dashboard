@@ -134,6 +134,7 @@ class Command(BaseCommand):
                     logger.error(f"[XELON_CMD] {xelon_number} - {err}")
             model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
             nb_prod_after = model.objects.count()
+            self.stdout.write(f"[SQUALAETP_FILE] '{XLS_SQUALAETP_FILE}' => OK")
             self.stdout.write(
                 self.style.SUCCESS(
                     "[XELON] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
@@ -142,7 +143,7 @@ class Command(BaseCommand):
                 )
             )
         else:
-            self.stdout.write(self.style.WARNING("[XELON] No squalaetp file found"))
+            self.stdout.write(f"[SQUALAETP_FILE] {excel.ERROR}")
 
     def _delay_files(self, model, squalaetp, delay):
         self.stdout.write("[DELAY] Waiting...")
@@ -174,18 +175,19 @@ class Command(BaseCommand):
 
             nb_prod_after = model.objects.count()
             cat_new = ProductCategory.objects.count()
+            for file in string_to_list(XLS_DELAY_FILES):
+                self.stdout.write(f"[DELAY_FILE] '{file}' => OK")
             self.stdout.write(
-                self.style.SUCCESS(f"[DElAY] ProductCategory update completed: ADD = {cat_new - cat_old}")
+                self.style.SUCCESS(f"[DElAY_CMD] ProductCategory update completed: ADD = {cat_new - cat_old}")
             )
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                        delay.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
-                    )
+                    f"[DELAY_CMD] data update completed: EXCEL_LINES = {delay.nrows} | " +
+                    f"ADD = {nb_prod_after - nb_prod_before} | UPDATE = {nb_prod_update} | TOTAL = {nb_prod_after}"
                 )
             )
-        else:
-            self.stdout.write(self.style.WARNING("[DELAY] No delay files found"))
+        for err in delay.MSG_ERRORS:
+            self.stdout.write(f"[DELAY_FILE] {err}")
 
     def _time_limit_files(self, model, squalaetp, excel):
         self.stdout.write("[TIME_LIMIT] Waiting...")
@@ -206,6 +208,7 @@ class Command(BaseCommand):
                 logger.error(f"[TIME_LIMIT_CMD] ValueError row: {', '.join(value_error_list)}")
 
             nb_prod_after = model.objects.count()
+            self.stdout.write(f"[TIME_LIMIT_FILE] '{XLS_TIME_LIMIT_FILE}' => OK")
             self.stdout.write(
                 self.style.SUCCESS(
                     "[TIME_LIMIT] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
@@ -214,7 +217,7 @@ class Command(BaseCommand):
                 )
             )
         else:
-            self.stdout.write(self.style.WARNING("[TIME_LIMIT] No delay files found"))
+            self.stdout.write(f"[TIME_LIMIT_FILE] {excel.ERROR}")
 
     def _product_category(self):
         xelons = Xelon.objects.exclude(modele_produit="")

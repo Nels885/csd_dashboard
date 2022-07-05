@@ -34,8 +34,8 @@ class Command(BaseCommand):
         call_command("programing", stdout=out)
         call_command("loadsqualaetp", "--xelon_update", stdout=out)
         call_command("importcorvet", "--squalaetp", stdout=out)
-        # call_command("exportsqualaetp")
-        # call_command("loadsqualaetp", "--relations")
+        call_command("exportsqualaetp")
+        call_command("loadsqualaetp", "--relations")
         if "Error" in out.getvalue() or options['tests']:
             cleaned = re.sub(r"\[[\d;]+[a-z]", "", out.getvalue())
             self._send_email(cleaned)

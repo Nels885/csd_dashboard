@@ -8,6 +8,7 @@ logger = logging.getLogger('command')
 class ExcelDelayAnalysis(ExcelFormat):
     """## Read data in Excel file for Delay Analysis ##"""
     ERROR = False
+    MSG_ERRORS = []
     DROP_COLS = ['ref_produit_clarion', 'code_pdv', 'nom_pdv', 'date_daccord_de_la_demande', 'delai_prevu_sp',
                  'nom_equipe', 'n_commande_de_travaux', 'delai_expedition_attendue']
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S",
@@ -31,8 +32,10 @@ class ExcelDelayAnalysis(ExcelFormat):
                 self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
                 dfs.append(self.sheet)
             except FileNotFoundError as err:
+                self.MSG_ERRORS.append(f'FileNotFoundError: {err}')
                 logger.error(f'FileNotFoundError: {err}')
             except KeyError as err:
+                self.MSG_ERRORS.append(f'KeyError: {err} in the file : {file}')
                 logger.error(f'KeyError: {err}')
         self._concat_files(dfs)
 
@@ -100,7 +103,6 @@ class ExcelDelayAnalysis(ExcelFormat):
 
 
 class ExcelTimeLimitAnalysis(ExcelFormat):
-    ERROR = False
     COLS = {'A': 'numero_de_dossier', 'B': 'date_retour', 'D': 'date_de_cloture', 'E': 'type_de_cloture',
             'F': 'nom_technicien', 'M': 'famille_produit'}
     COLS_DATE = {'date_retour': "%d/%m/%Y", 'date_de_cloture': "%d/%m/%Y %H:%M:%S"}
@@ -119,8 +121,8 @@ class ExcelTimeLimitAnalysis(ExcelFormat):
             self.sheet.fillna('', inplace=True)
             self._date_converter(self.COLS_DATE)
         except FileNotFoundError as err:
-            logger.error(f'FileNotFoundError: {err}')
-            self.ERROR = True
+            self.ERROR = f"FileNotFoundError: {err}"
+            logger.error(self.ERROR)
 
     def read_all(self):
         """
