@@ -43,7 +43,9 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("[IMPORT_EXCEL] Update completed."))
 
     def _send_email(self, data):
-        context = {"network": self._dir_check(), "raspeedi": [], "squalaetp": [], "delay": [], "limit": []}
+        context = {
+            "network": self._dir_check(), "raspeedi": [], "squalaetp": [], "delay": [], "limit": [], "corvet": []
+        }
         for line in data.split("\n"):
             if "RASPEEDI_FILE" in line:
                 context["raspeedi"].append(line)
