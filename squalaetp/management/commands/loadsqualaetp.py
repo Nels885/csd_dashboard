@@ -73,17 +73,16 @@ class Command(BaseCommand):
             else:
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             if options['delay_files']:
-                delay_list = string_to_list(options['delay_files'])
-                delay = ExcelDelayAnalysis(delay_list)
+                delay_files = string_to_list(options['delay_files'])
             else:
-                delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
+                delay_files = XLS_DELAY_FILES
 
             if options['time_limit_file']:
                 time_limit = ExcelTimeLimitAnalysis(options['time_limit_file'])
             else:
                 time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
             self._squalaetp_file(Xelon, squalaetp)
-            self._delay_files(Xelon, squalaetp, delay)
+            self._delay_files(Xelon, squalaetp, delay_files)
             self._time_limit_files(Xelon, squalaetp, time_limit)
             self._indicator()
 
@@ -145,49 +144,52 @@ class Command(BaseCommand):
         else:
             self.stdout.write(f"[SQUALAETP_FILE] {excel.ERROR}")
 
-    def _delay_files(self, model, squalaetp, delay):
+    def _delay_files(self, model, squalaetp, delay_files):
         self.stdout.write("[DELAY] Waiting...")
-        nb_prod_before, nb_prod_update, value_error_list = model.objects.count(), 0, []
         cat_old = ProductCategory.objects.count()
-        xelon_list, delay_list = squalaetp.xelon_number_list(), delay.xelon_number_list()
-        if not delay.ERROR:
-            self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
-            model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
-                                  Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
-                                  Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
-            for row in delay.table():
-                xelon_number = row.get("numero_de_dossier")
-                product_model = row.get("modele_produit")
-                defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
-                try:
-                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
-                    if not created:
-                        nb_prod_update += 1
-                    if product_model and not obj.modele_produit:
-                        obj.modele_produit = product_model
-                        obj.save()
-                except ValueError:
-                    value_error_list.append(xelon_number)
-                except Exception as err:
-                    logger.error(f"[DELAY_CMD] {xelon_number} - {err}")
-            if value_error_list:
-                logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
+        nb_prod_before, nb_prod_update, nrows, value_error_list = model.objects.count(), 0, 0, []
+        xelon_list, delay_list = squalaetp.xelon_number_list(), []
+        for file in delay_files:
+            delay = ExcelDelayAnalysis(file)
+            if not delay.ERROR:
+                delay_list.append(delay.xelon_number_list())
+                model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
+                                      Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
+                                      Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
+                for row in delay.table():
+                    xelon_number = row.get("numero_de_dossier")
+                    product_model = row.get("modele_produit")
+                    defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
+                    try:
+                        obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
+                        if not created:
+                            nb_prod_update += 1
+                        if product_model and not obj.modele_produit:
+                            obj.modele_produit = product_model
+                            obj.save()
+                    except ValueError:
+                        value_error_list.append(xelon_number)
+                    except Exception as err:
+                        logger.error(f"[DELAY_CMD] {xelon_number} - {err}")
+                if value_error_list:
+                    logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
 
-            nb_prod_after = model.objects.count()
-            cat_new = ProductCategory.objects.count()
-            for file in string_to_list(XLS_DELAY_FILES):
                 self.stdout.write(f"[DELAY_FILE] '{file}' => OK")
-            self.stdout.write(
-                self.style.SUCCESS(f"[DElAY_CMD] ProductCategory update completed: ADD = {cat_new - cat_old}")
+                nrows += delay.nrows
+            else:
+                self.stdout.write(f"[DELAY_FILE] {delay.ERROR}")
+        nb_prod_after = model.objects.count()
+        cat_new = ProductCategory.objects.count()
+        self.stdout.write(
+            self.style.SUCCESS(f"[DElAY_CMD] ProductCategory update completed: ADD = {cat_new - cat_old}")
+        )
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"[DELAY_CMD] data update completed: EXCEL_LINES = {nrows} | " +
+                f"ADD = {nb_prod_after - nb_prod_before} | UPDATE = {nb_prod_update} | TOTAL = {nb_prod_after}"
             )
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"[DELAY_CMD] data update completed: EXCEL_LINES = {delay.nrows} | " +
-                    f"ADD = {nb_prod_after - nb_prod_before} | UPDATE = {nb_prod_update} | TOTAL = {nb_prod_after}"
-                )
-            )
-        for err in delay.MSG_ERRORS:
-            self.stdout.write(f"[DELAY_FILE] {err}")
+        )
+        self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
 
     def _time_limit_files(self, model, squalaetp, excel):
         self.stdout.write("[TIME_LIMIT] Waiting...")

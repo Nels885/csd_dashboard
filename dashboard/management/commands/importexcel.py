@@ -38,11 +38,14 @@ class Command(BaseCommand):
         call_command("loadsqualaetp", "--relations")
         if "Error" in out.getvalue() or options['tests']:
             cleaned = re.sub(r"\[[\d;]+[a-z]", "", out.getvalue())
-            self._send_email(cleaned)
+            subject = "[CSD_DASHBOARD] Rapport d'erreurs système"
+            if options['tests']:
+                subject = "[CSD_DASHBOARD] Rapport de tests système"
+            self._send_email(subject, cleaned)
 
         self.stdout.write(self.style.SUCCESS("[IMPORT_EXCEL] Update completed."))
 
-    def _send_email(self, data):
+    def _send_email(self, subject, data):
         context = {
             "network": self._dir_check(), "raspeedi": [], "squalaetp": [], "delay": [], "limit": [], "corvet": []
         }
@@ -58,7 +61,6 @@ class Command(BaseCommand):
             if "error CORVET in" in line:
                 context["corvet"].append(line)
 
-        subject = "[CSD_DASHBOARD] Rapport système"
         html_message = render_to_string('dashboard/email_format/check_commands.html', context)
         plain_message = strip_tags(html_message)
         send_mail(
