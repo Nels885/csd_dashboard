@@ -1,40 +1,73 @@
-{% autoescape off %}
-<!DOCTYPE html>
-<html lang="fr">
-<html>
-<body>
-<p>
-    <strong>1/ Contrôle du fonctionnement des lecteurs réseau</strong>
-    <lu>
-        {% for key, path, value in network %}<li>{{ key }} => {{ value }}</li>{% empty %}<li>N/A</li>{% endfor %}
-    </lu>
-</p>
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
 
-<p>
-    <strong>2/ Import données Excel pour les RASPEEDI</strong>
-    <ul>{% for line in raspeedi %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
-</p>
+    {% autoescape off %}
+        <!DOCTYPE html>
+        <html lang="fr">
+        <html>
+        <body>
+        <p>
+            <strong>1/ Contrôle du fonctionnement des lecteurs réseau</strong>
+            <lu>
+                {% for key, path, value in network %}
+                    <li class="{% if value != "OK" %}font-weight-bold text-danger{% endif %}">{{ key }} => {{ value }}</li>
+                {% empty %}
+                    <li>N/A</li>
+                {% endfor %}
+            </lu>
+        </p>
 
-<p>
-    <strong>3/ Import données du fichier Excel Squalaetp</strong>
-    <ul>{% for line in squalaetp %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
-</p>
+        <p>
+            <strong>2/ Import données Excel pour les RASPEEDI</strong>
+        <ul>
+            {% for line in raspeedi %}
+                <li class="{% if "Error" in line %}font-weight-bold text-danger{% endif %}">{{ line }}</li>
+            {% empty %}
+                <li>N/A</li>
+            {% endfor %}
+        </ul>
+        </p>
 
-<p>
-    <strong>4/ Import données des fichiers Retard</strong>
-    <ul>{% for line in delay %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
-</p>
+        <p>
+            <strong>3/ Import données du fichier Excel Squalaetp</strong>
+        <ul>
+            {% for line in squalaetp %}
+                <li class="{% if "Error" in line %}font-weight-bold text-danger{% endif %}">{{ line }}</li>
+            {% empty %}
+                <li>N/A</li>
+            {% endfor %}
+        </ul>
+        </p>
 
-<p>
-    <strong>5/ Import données du fichier Delais</strong>
-    <ul>{% for line in limit %}<li>{{ line }}</li>{% empty %}<li>N/A</li>{% endfor %}</ul>
-</p>
+        <p>
+            <strong>4/ Import données des fichiers Retard</strong>
+        <ul>
+            {% for line in delay %}
+                <li class="{% if "Error" in line %}font-weight-bold text-danger{% endif %}">{{ line }}</li>
+            {% empty %}
+                <li>N/A</li>
+            {% endfor %}
+        </ul>
+        </p>
 
-<p>Cordialement</p>
+        <p>
+            <strong>5/ Import données du fichier Delais</strong>
+        <ul>
+            {% for line in limit %}
+                <li class="{% if "Error" in line %}font-weight-bold text-danger{% endif %}">{{ line }}</li>
+            {% empty %}
+                <li>N/A</li>
+            {% endfor %}
+        </ul>
+        </p>
 
-<p>CSD Dashboard</p>
+        <p>Cordialement</p>
 
-</body>
-</html>
+        <p>CSD Dashboard</p>
 
-{% endautoescape %}
+        </body>
+        </html>
+
+    {% endautoescape %}
+
+{% endinlinecss %}
