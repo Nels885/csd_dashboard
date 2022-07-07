@@ -6,6 +6,7 @@ from django.core.management import call_command
 @celery_app.task
 def cmd_sendemail_all_task():
     call_command('sendemail', '--late_products', '--pending_products', '--vin_error', '--vin_corvet', '--reman')
+    return {"msg": "Envoi des Emails du matin terminés !"}
 
 
 @celery_app.task
@@ -21,6 +22,7 @@ def cmd_sendemail_task(*args):
         --reman: Send email for the REMAN batches in progress
     """
     call_command('sendemail', *args)
+    return {"msg": "Envoi des Emails produits en cours terminés !"}
 
 
 @celery_app.task

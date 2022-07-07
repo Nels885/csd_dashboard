@@ -16,6 +16,7 @@ urlpatterns = [
     path('activity_log/', views.activity_log, name="activity_log"),
     path('search/', views.search, name="search"),
     path('search/ajax/', views.search_ajax, name="search_ajax"),
+    path('email/send/', views.send_email_async, name="email_ajax"),
     path('signup/', views.signup, name='signup'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),

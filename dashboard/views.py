@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth import login
 from django.contrib import messages
 from django.views.generic import TemplateView
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -33,6 +33,7 @@ from .forms import (
     UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm,
     SearchForm
 )
+from .tasks import cmd_sendemail_task
 
 
 def index(request):
@@ -58,6 +59,13 @@ def charts_ajax(request):
     data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
     data.update(**IndicatorAnalysis().new_result(), **ToolsAnalysis().all())
     return JsonResponse(data)
+
+
+def send_email_async(request):
+    if request.user.is_staff:
+        task = cmd_sendemail_task.delay("--late_products", "--pending_products", "--vin_error", "--vin_corvet")
+        return JsonResponse({"task_id": task.id})
+    return Http404
 
 
 @login_required

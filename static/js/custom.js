@@ -56,7 +56,7 @@ function textCopy(text) {
     // alert("Copied the text: " + elem.value);
 }
 
-function excelImport(url) {
+function celeryTask(url) {
     $(".bd-loading-modal-lg").modal("show");
     $.ajax({
         type: "GET",
