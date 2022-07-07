@@ -6,6 +6,7 @@ import pandas as pd
 import unicodedata
 import re
 import os
+from datetime import datetime, timedelta
 
 
 class BaseFormat:
@@ -72,7 +73,7 @@ class BaseFormat:
 class ExcelFormat(BaseFormat):
     """## Base class for formatting Excel files ##"""
 
-    def __init__(self, file, sheet_name, columns, skiprows=None, dtype=None, usecols=None):
+    def __init__(self, file, sheet_name, columns, skiprows=None, dtype=None, usecols=None, datedelta=-1):
         """
         Initialize ExcelFormat class
         :param file:
@@ -84,6 +85,7 @@ class ExcelFormat(BaseFormat):
         :param skip_rows:
             Rows to skip at the beginning (0-indexed)
         """
+        self._check_file_date(file, datedelta)
         self.basename = os.path.basename(file[:file.find('.')])
         try:
             df = pd.read_excel(file, sheet_name=sheet_name, skiprows=skiprows, dtype=dtype, usecols=usecols)
@@ -161,6 +163,11 @@ class ExcelFormat(BaseFormat):
             df_corvet.rename(columns=new_columns, inplace=True)
             df_corvet.rename(str.lower, axis='columns', inplace=True)
         return df_corvet, nrows
+
+    def _check_file_date(self, file, datedelta):
+        date_file = datetime.fromtimestamp(os.path.getmtime(file)).date()
+        if datedelta != -1 and date_file != (datetime.now() - timedelta(days=datedelta)).date():
+            self.ERROR = f"FileDateError for the file: '{file}'"
 
 
 class CsvFormat(BaseFormat):

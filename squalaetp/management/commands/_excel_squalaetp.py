@@ -22,7 +22,7 @@ class ExcelSqualaetp(ExcelFormat):
             Number of the last column to be processed
         """
         try:
-            super(ExcelSqualaetp, self).__init__(file, sheet_name, columns)
+            super(ExcelSqualaetp, self).__init__(file, sheet_name, columns, datedelta=0)
             self._columns_convert()
             self.sheet.replace({"#": None}, inplace=True)
             self._date_converter(self.COLS_DATE)
