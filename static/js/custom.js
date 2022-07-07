@@ -57,6 +57,7 @@ function textCopy(text) {
 }
 
 function excelImport(url) {
+    $(".bd-loading-modal-lg").modal("show");
     $.ajax({
         type: "GET",
         url: url,
@@ -64,16 +65,28 @@ function excelImport(url) {
         processData: false,
         cache: false,
         async: true,
-        success: function (res) {
-            addMessage("Importation Squalaetp en cours...", "warning");
-            getProgress(
-                res.task_id,
-                progressBarId = "export-corvet-progress-bar",
-                progressBarMessageId = "export-corvet-progress-message",
-            );
+        success: function (data) {
+            // console.log(data);
+            if (data.task_id) {
+                var progressUrl = "/celery-progress/?task_id=" + data.task_id;
+                // console.log(progressUrl);
+
+                function customResult(resultElement, result) {
+                    // console.log(result)
+                    $(".bd-loading-modal-lg").modal("hide");
+                    addMessage(result.msg, "success");
+                }
+
+                CeleryProgressBar.initProgressBar(progressUrl, {
+                    progressBarId: "search-progress-bar",
+                    progressBarMessageId: "search-progress-bar-message",
+                    onResult: customResult,
+                })
+            } else $(".bd-loading-modal-lg").modal("hide");
         },
         error: function (err) {
-            console.log(err);
+            // console.log(err);
+            $(".bd-loading-modal-lg").modal("hide");
             addMessage("Vous n'avez pas la permissions !", "warning");
         },
     })
@@ -148,10 +161,10 @@ $("#searchForm").submit(function (e) {
         contentType: false,
         processData: false,
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             if (data.task_id) {
                 var progressUrl = "/celery-progress/?task_id=" + data.task_id;
-                console.log(progressUrl);
+                // console.log(progressUrl);
 
                 function customResult(resultElement, result) {
                     window.location = data.url;

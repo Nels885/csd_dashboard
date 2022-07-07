@@ -68,7 +68,6 @@ def prog_activate(request, pk):
 def excel_import_async(request):
     if request.user.is_staff:
         task = cmd_loadsqualaetp_task.delay()
-        # messages.success(request, "Importation Squalaetp en cours...")
         return JsonResponse({"task_id": task.id})
     return Http404
 

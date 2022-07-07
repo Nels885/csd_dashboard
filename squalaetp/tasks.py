@@ -14,7 +14,6 @@ from psa.models import Corvet
 @celery_app.task
 def cmd_loadsqualaetp_task():
     call_command("importexcel", "--tests")
-    call_command('sendemail', '--late_products', '--pending_products', '--vin_error', '--vin_corvet', '--reman')
     return {"msg": "Importation Squalaetp terminée."}
 
 
