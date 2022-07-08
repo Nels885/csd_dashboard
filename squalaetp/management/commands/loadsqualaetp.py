@@ -152,10 +152,7 @@ class Command(BaseCommand):
         for file in delay_files:
             delay = ExcelDelayAnalysis(file)
             if not delay.ERROR:
-                delay_list.append(delay.xelon_number_list())
-                model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
-                                      Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
-                                      Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
+                delay_list += delay.xelon_number_list()
                 for row in delay.table():
                     xelon_number = row.get("numero_de_dossier")
                     product_model = row.get("modele_produit")
@@ -178,6 +175,9 @@ class Command(BaseCommand):
                 nrows += delay.nrows
             else:
                 self.stdout.write(f"[DELAY_FILE] {delay.ERROR}")
+        model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
+                              Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
+                              Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
         nb_prod_after = model.objects.count()
         cat_new = ProductCategory.objects.count()
         self.stdout.write(
