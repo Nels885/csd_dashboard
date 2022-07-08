@@ -125,6 +125,8 @@
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "New user" %}</strong>
                         </a>
+                    {% endif %}
+                    {% if perms.squalaetp.add_xelon %}
                         <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'squalaetp:excel_import_async' %}`)">
                             <i class="fas fa-file-import fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>

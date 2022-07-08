@@ -65,7 +65,7 @@ def send_email_async(request):
     if request.user.is_staff:
         task = cmd_sendemail_task.delay("--late_products", "--pending_products", "--vin_error", "--vin_corvet")
         return JsonResponse({"task_id": task.id})
-    return Http404
+    raise Http404
 
 
 @login_required
