@@ -10,7 +10,7 @@ jobs: # A basic unit of work in a run
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
       - image: cimg/python:3.8.13
       # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
-      - image: cimg/postgres:9.6.2
+      - image: cimg/postgres:9.6.24
         environment: # environment variables for the Postgres container.
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
