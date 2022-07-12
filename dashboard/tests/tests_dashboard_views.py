@@ -32,6 +32,16 @@ class DashboardTestCase(UnitTest):
         data = json.loads(response.content)
         self.assertEqual(len(data), 21)
 
+    def test_send_email_async(self):
+        url = reverse('dashboard:email_ajax')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        self.login("admin")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 1)
+
     def test_late_products(self):
         url = reverse('dashboard:products', get={'filter': 'late'})
         response = self.client.get(url)
@@ -167,6 +177,31 @@ class DashboardTestCase(UnitTest):
         for value in ['A123456789', 'a123456789']:
             response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
+
+    def test_search_ajax(self):
+        url = reverse('dashboard:search_ajax')
+        # Search is not valid
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data, {"url": "/dashboard/search/", "task_id": None})
+        self.assertEqual(len(data), 2)
+
+        # Search is valid
+        params = {'query': 'test', 'select': 'atelier'}
+        response = self.client.post(url, params )
+        data = json.loads(response.content)
+        self.assertEqual(data['url'], reverse('dashboard:search', get=params))
+        self.assertEqual(len(data), 2)
+
+    def test_activity_log_page(self):
+        url = reverse('dashboard:activity_log')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
     def test_supplier_links_page(self):
         url = reverse('dashboard:supplier_links')
