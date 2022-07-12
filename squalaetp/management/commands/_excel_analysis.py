@@ -114,7 +114,7 @@ class ExcelTimeLimitAnalysis(ExcelFormat):
         """
         cols = ",".join(self.COLS.keys())
         try:
-            super().__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols, datedelta=1)
+            super().__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols, datedelta=1, offdays=[6, 0])
             self._columns_rename(self.COLS)
             self.sheet.replace({"#": None}, inplace=True)
             self.sheet.fillna('', inplace=True)

@@ -73,7 +73,7 @@ class BaseFormat:
 class ExcelFormat(BaseFormat):
     """## Base class for formatting Excel files ##"""
 
-    def __init__(self, file, sheet_name, columns, skiprows=None, dtype=None, usecols=None, datedelta=-1):
+    def __init__(self, file, sheet_name, columns, skiprows=None, dtype=None, usecols=None, datedelta=-1, **kwargs):
         """
         Initialize ExcelFormat class
         :param file:
@@ -85,7 +85,7 @@ class ExcelFormat(BaseFormat):
         :param skip_rows:
             Rows to skip at the beginning (0-indexed)
         """
-        self._check_file_date(file, datedelta)
+        self._check_file_date(file, datedelta, kwargs.get('offdays', []))
         self.basename = os.path.basename(file[:file.find('.')])
         try:
             df = pd.read_excel(file, sheet_name=sheet_name, skiprows=skiprows, dtype=dtype, usecols=usecols)
@@ -164,10 +164,12 @@ class ExcelFormat(BaseFormat):
             df_corvet.rename(str.lower, axis='columns', inplace=True)
         return df_corvet, nrows
 
-    def _check_file_date(self, file, datedelta):
-        date_file = datetime.fromtimestamp(os.path.getmtime(file)).date()
-        if datedelta != -1 and date_file != (datetime.now() - timedelta(days=datedelta)).date():
-            self.ERROR = f"FileDateError for the file: '{file}'"
+    def _check_file_date(self, file, datedelta, offdays):
+        now = datetime.now()
+        if not isinstance(offdays, list) or now.weekday() not in offdays:
+            date_file = datetime.fromtimestamp(os.path.getmtime(file)).date()
+            if datedelta != -1 and date_file != (now - timedelta(days=datedelta)).date():
+                self.ERROR = f"FileDateError for the file: '{file}'"
 
 
 class CsvFormat(BaseFormat):
