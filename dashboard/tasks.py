@@ -1,6 +1,11 @@
+import os
+from django.utils import timezone
+
 from io import StringIO
 from sbadmin import celery_app
 from django.core.management import call_command
+
+from utils.conf import CSD_ROOT
 
 
 @celery_app.task
@@ -43,3 +48,10 @@ def cmd_loadcontract_task(*args):
     out = StringIO()
     call_command("loadcontract", *args, stdout=out)
     return out.getvalue()
+
+
+@celery_app.task()
+def cmd_database_backup_task(*args):
+    now = timezone.datetime.strftime(timezone.localtime(), "%d-%m-%Y")
+    call_command("dumpdata", "-o", os.path.join(CSD_ROOT, f"TEMP/dump_csd-dashboard-all_{now}.json"))
+    return {"msg": "Backup database success!"}
