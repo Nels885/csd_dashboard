@@ -189,7 +189,7 @@ class DashboardTestCase(UnitTest):
 
         # Search is valid
         params = {'query': 'test', 'select': 'atelier'}
-        response = self.client.post(url, params )
+        response = self.client.post(url, params)
         data = json.loads(response.content)
         self.assertEqual(data['url'], reverse('dashboard:search', get=params))
         self.assertEqual(len(data), 2)

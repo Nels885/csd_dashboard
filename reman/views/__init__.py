@@ -14,10 +14,8 @@ from utils.django.urls import reverse, reverse_lazy, http_referer
 
 from dashboard.forms import ParaErrorList
 from reman.models import Repair, SparePart, Batch, EcuModel, Default, EcuType, EcuRefBase
-from reman.forms import (
-    CheckOutRepairForm, DefaultForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, CheckOutSelectBatchForm,
-    StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm
-)
+from reman.forms import CheckOutRepairForm, DefaultForm, PartEcuTypeForm, PartSparePartForm, EcuModelForm, \
+    CheckOutSelectBatchForm, StockSelectBatchForm, EcuDumpModelForm, EcuTypeForm, RefRemanForm
 
 context = {
     'title': 'Reman'
