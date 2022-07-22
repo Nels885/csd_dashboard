@@ -49,7 +49,12 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, {'id': 1, 'xelon': 'A123456789', 'vin': 'VF3ABCDEF12345678', 'active': False})
 
     def test_prog_list(self):
-        self.api_view_list(reverse('api:prog-list'))
+        url = reverse("api:prog-list")
+        self.api_view_list(url)
+
+        response = self.client.get(url, {"auth_token": self.token, "ref": 0})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
     def test_cal_list(self):
         self.api_view_list(reverse('api:cal-list'))
@@ -115,7 +120,7 @@ class ApiTestCase(APITestCase):
         self.api_view_list(url)
 
         # post a mesure
-        response = self.client.post(f"{url}?auth_token={self.token}", {"value": 1})
+        response = self.client.post(f"{url}?auth_token={self.token}&value=1")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {"value": 1})
 
