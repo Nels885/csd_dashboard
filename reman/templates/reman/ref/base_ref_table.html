@@ -20,6 +20,8 @@
     </button>
     <a class="btn btn-sm btn-success mb-3 ml-3" href="{% url 'reman:ecu_hw_generate' %}">Générer Scan IN/OUT</a>
 
+    <p class="bg-danger text-white"><strong>ATTENTION !</strong> les réf. REMAN n'ayant pas de valeur dans les champs <strong>REF_CAL_OUT</strong> / <strong>TEST_CLEAR_MEMORY</strong> ne seront pas générées par le bouton <strong>Générer Scan IN/OUT</strong></p>
+
     <table class="table table-bordered table-sm text-nowrap" id="baseRefTable" style="width: 100%;">
         <thead>
         <tr>
