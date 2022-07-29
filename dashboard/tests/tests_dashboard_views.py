@@ -1,9 +1,11 @@
 import json
 
+from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext as _
 from django.utils import translation
 
 from psa.models import Corvet
+from utils.django.tokens import account_activation_token
 from .base import UnitTest, User
 from utils.django.urls import reverse
 
@@ -32,6 +34,24 @@ class DashboardTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(len(data), 21)
+
+    def test_activate(self):
+        # non-existent user
+        user = urlsafe_base64_encode(bytes(str(0), encoding="ascii"))
+        response = self.client.post(reverse("dashboard:activate", kwargs={"uidb64": user, "token": "abc-def"}))
+        self.assertEqual(response.status_code, 200)
+
+        # Incorrect token
+        user_model = User.objects.create(username="dummy", password="password")
+        user = urlsafe_base64_encode(bytes(str(user_model.pk), encoding="ascii"))
+        response = self.client.post(reverse("dashboard:activate", kwargs={"uidb64": user, "token": "abc-def"}))
+        self.assertEqual(response.status_code, 200)
+
+        # existent user and correct token
+        token = account_activation_token.make_token(user_model)
+        response = self.client.post(reverse("dashboard:activate", kwargs={"uidb64": user, "token": token}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("password_change"))
 
     def test_send_email_async(self):
         url = reverse('dashboard:email_ajax')
