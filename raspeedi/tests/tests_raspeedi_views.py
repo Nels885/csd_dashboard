@@ -50,11 +50,16 @@ class RaspeediTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_raspeedi_edit_page(self):
+        url = reverse('raspeedi:edit', kwargs={'ref_case': 1234567890})
         Raspeedi.objects.create(**self.form_data)
-        response = self.client.get(reverse('raspeedi:edit', kwargs={'ref_case': 1234567890}))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
+
         self.login()
-        response = self.client.get(reverse('raspeedi:edit', kwargs={'ref_case': 1234567890}))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(url, data=self.form_data)
         self.assertEqual(response.status_code, 200)
 
     def test_raspeedi_detail_page(self):
