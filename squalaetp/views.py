@@ -24,14 +24,15 @@ from .serializers import (
     SivinSerializer, SIVIN_COLUMN_LIST, SparePartSerializer, SPAREPART_COLUMN_LIST
 )
 from .models import Xelon, XelonTemporary, SparePart, Action, Sivin
-from .utils import collapse_select
+from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm
+from .tasks import cmd_loadsqualaetp_task
 from psa.models import Corvet
 from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
 from raspeedi.models import Programing
 from reman.models import EcuType
-from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm
-from .tasks import cmd_loadsqualaetp_task
+from tools.models import Suptech
+from .utils import collapse_select
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
@@ -177,6 +178,7 @@ def detail(request, pk):
     xelon = get_object_or_404(Xelon, pk=pk)
     corvet = xelon.corvet
     title = xelon.numero_de_dossier
+    suptechs = Suptech.objects.filter(xelon=xelon.numero_de_dossier)
     select = "xelon"
     collapse = collapse_select(xelon)
     if corvet:
