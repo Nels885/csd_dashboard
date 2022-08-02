@@ -12,7 +12,7 @@ class ExcelDelayAnalysis(ExcelFormat):
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S",
                  'date_expedition_attendue': "'%d/%m/%Y"}
 
-    def __init__(self, file, sheet_name=0, columns=None):
+    def __init__(self, file, sheet_name=0, columns=None, datedelta=-1):
         """
         Initialize ExcelDelayAnalysis class
         :param file:
@@ -23,7 +23,7 @@ class ExcelDelayAnalysis(ExcelFormat):
             Number of the last column to be processed
         """
         try:
-            super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8, datedelta=0)
+            super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8, datedelta=datedelta)
             self._drop_lines()
             self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
             self._columns_convert(digit=False)
