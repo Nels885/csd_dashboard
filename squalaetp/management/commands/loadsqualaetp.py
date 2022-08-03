@@ -149,8 +149,11 @@ class Command(BaseCommand):
         cat_old = ProductCategory.objects.count()
         nb_prod_before, nb_prod_update, nrows, value_error_list = model.objects.count(), 0, 0, []
         xelon_list, delay_list = squalaetp.xelon_number_list(), []
-        for file in delay_files:
-            delay = ExcelDelayAnalysis(file)
+        for count, file in enumerate(delay_files):
+            if count == 0:
+                delay = ExcelDelayAnalysis(file, datedelta=0)
+            else:
+                delay = ExcelDelayAnalysis(file)
             if not delay.ERROR:
                 delay_list += delay.xelon_number_list()
                 for row in delay.table():

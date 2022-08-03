@@ -58,6 +58,9 @@ class XelonCommandTestCase(UnitTest):
         call_command('importcorvet', stdout=out)
         self.assertIn("[IMPORT_CORVET] Import completed:", out.getvalue())
 
+        call_command('importcorvet', self.vin, stdout=out)
+        self.assertIn("Exception or timeout error !", out.getvalue())
+
     def test_clear_squalaetp_xelon_table(self):
         call_command('clearsqualaetp', '--xelon', stdout=self.out)
         self.assertIn(
@@ -76,6 +79,13 @@ class XelonCommandTestCase(UnitTest):
         call_command('clearsqualaetp', '--prod_category', stdout=self.out)
         self.assertIn(
             "Suppression des données de la table ProductCategory terminée!",
+            self.out.getvalue()
+        )
+
+    def test_clear_squalaetp_user_skills_relation(self):
+        call_command('clearsqualaetp', '--user_skills', stdout=self.out)
+        self.assertIn(
+            "Suppression des données polyvavence produits terminée!",
             self.out.getvalue()
         )
 
