@@ -364,7 +364,9 @@ class Firmware(models.Model):
         ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
         ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
         ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
-        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4')
+        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4'),
+        ('RCC_EU_W2', 'RCC_EU_W2'),
+        ('RCC_EU_W3_ECO', 'RCC_EU_W3_ECO')
     ]
 
     update_id = models.CharField('SWL(UpdateID)', max_length=18, unique=True)
