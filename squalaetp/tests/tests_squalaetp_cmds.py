@@ -42,6 +42,15 @@ class XelonCommandTestCase(UnitTest):
         self.assertIn(
             "[DELAY_FILE] FileNotFoundError: [Errno 2] No such file or directory: 'test.xls'", self.out.getvalue())
 
+        # Test for relationships option
+        call_command('loadsqualaetp', '--relations', stdout=self.out)
+        self.assertIn("[SQUALAETP] Relationships update completed: CORVET/XELON", self.out.getvalue())
+        self.assertIn("[SQUALAETP] Relationships update completed: CATEGORY/XELON", self.out.getvalue())
+
+        # Test for product category option
+        call_command('loadsqualaetp', '--prod_category', stdout=self.out)
+        self.assertIn("[SQUALAETP] ProductCategory update completed:", self.out.getvalue())
+
         # Test for Xelon name update option
         call_command('loadsqualaetp', '--xelon_name_update', stdout=self.out)
         self.assertIn("[ECU & MEDIA] Waiting...", self.out.getvalue())
