@@ -15,23 +15,26 @@ class ScrapingCorvet(webdriver.Chrome):
     START_URLS = 'https://www.repairnav.com/clarionservice_v2/corvet.xhtml'
     ERROR = False
 
-    def __init__(self, username=config.CORVET_USER, password=config.CORVET_PWD):
+    def __init__(self, *args, **kwargs):
         """ Initialization """
-        self.username = username
-        self.password = password
-        try:
-            options = Options()
-            if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-                options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-            options.add_argument('headless')
-            options.add_argument("no-sandbox")  # bypass OS security model
-            options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-            super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
-            self.set_page_load_timeout(30)
-            self.get(self.START_URLS)
-        except Exception as err:
-            self._logger_error('__init__()', err)
-            self.close(error=True)
+        self.username = kwargs.get('username', config.CORVET_USER)
+        self.password = kwargs.get('password', config.CORVET_PWD)
+        if not kwargs.get('test', False) and self.username and self.password:
+            try:
+                options = Options()
+                if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+                    options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+                options.add_argument('headless')
+                options.add_argument("no-sandbox")  # bypass OS security model
+                options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
+                super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
+                self.set_page_load_timeout(30)
+                self.get(self.START_URLS)
+            except Exception as err:
+                self._logger_error('__init__()', err)
+                self.close(error=True)
+        else:
+            self.ERROR = True
 
     def result(self, vin_value=None):
         """
