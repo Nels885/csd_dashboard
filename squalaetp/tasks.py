@@ -31,25 +31,27 @@ def cmd_importcorvet_task(*args):
     print("cmd_importcorvet_tash in progress...")
     print(f"cmd : importcorvet {' '.join(args)}")
     out = StringIO()
-    call_command("importcorvet", f"{' '.join(args)}", stdout=out)
+    call_command("importcorvet", *args, stdout=out)
     return out.getvalue()
 
 
 @celery_app.task(bind=True)
-def send_email_task(self, subject, body, from_email, to, cc, files=None):
+def send_email_task(self, subject: str, body: str, from_email: str, to: list, cc: list, files=None):
     email = EmailMessage(subject=subject, body=body, from_email=from_email, to=to, cc=cc)
     if files:
         for f in files:
             email.attach(f.name, f.read(), f.content_type)
     email.send()
+    return {"msg": "Envoi email terminé.", "subject": subject, "from_email": from_email, "to": to}
 
 
 @celery_app.task
-def save_sivin_to_models(immat):
+def save_sivin_to_models(immat, **kwargs):
+    test = kwargs.get("test", False)
     msg = "SIVIN not Found"
     if not immat.isnumeric() and (6 < len(immat) < 11):
         start_time = time.time()
-        sivin = ScrapingSivin()
+        sivin = ScrapingSivin(test=test)
         data = xml_sivin_parser(sivin.result(immat))
         sivin.close()
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
