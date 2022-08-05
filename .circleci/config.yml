@@ -33,7 +33,8 @@ jobs: # A basic unit of work in a run
             PWD_CORVET: test
             DJANGO_SETTINGS_MODULE: sbadmin.settings.circleci
           command: |
-            sudo mkdir -m 0755 -p /home/circleci/Documents/CSD_DATABASE/EXTS/
+            mkdir -m 0755 -p ~/Documents/CSD_DATABASE/EXTS/
+            chown -R $USER:$USER ~/Documents/CSD_DATABASE/EXTS/
             pipenv run ./manage.py collectstatic --noinput
             pipenv run coverage run --source="." manage.py test -v 2
             pipenv run coverage report
