@@ -6,32 +6,36 @@
 
     <body>
 
-    <p> Vous trouvez ci-dessous la liste des lots REMAN en cours.</p>
+    {% if current_batchs %}
 
-    <table class="table table-bordered text-nowrap">
-        <thead>
-        <tr>
-            <th>Numéro de lot</th>
-            <th>Réf. REMAN</th>
-            <th>Réparés</th>
-            <th>Emballées</th>
-            <th>Restants</th>
-            <th>Date de Debut</th>
-            <th>Date de Fin</th>
-            <th>Modèle Produit</th>
-            <th>Fabriquant</th>
-        </tr>
-        </thead>
-        <tbody>
+        <p> Vous trouvez ci-dessous la liste des lots REMAN en cours.</p>
 
-        {% for batch in current_batchs %}
+        <table class="table table-bordered text-nowrap">
+            <thead>
+            <tr>
+                <th>Numéro de lot</th>
+                <th>Réf. REMAN</th>
+                <th>Réparés</th>
+                <th>Emballées</th>
+                <th>Restants</th>
+                <th>Date de Debut</th>
+                <th>Date de Fin</th>
+                <th>Modèle Produit</th>
+                <th>Fabriquant</th>
+            </tr>
+            </thead>
+            <tbody>
 
-            {% include 'reman/email_format/tr_batch_format.html' %}
+            {% for batch in current_batchs %}
 
-        {% endfor %}
+                {% include 'reman/email_format/tr_batch_format.html' %}
 
-        </tbody>
-    </table>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
 
     {% if next_batchs %}
 

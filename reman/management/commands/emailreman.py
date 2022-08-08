@@ -32,11 +32,11 @@ class Command(BaseCommand):
         subject = "Lots REMAN en cours {}".format(date_joined)
         repaired = Count('repairs', filter=Q(repairs__status="Réparé"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
-        batchs = Batch.objects.filter(active=True, number__lt=900)
-        if batchs:
-            batchs = batchs.annotate(repaired=repaired, packed=packed, remaining=F('quantity') - repaired)
-            current_batchs = batchs.filter(start_date__lte=timezone.now()).order_by('end_date')
-            next_batchs = batchs.filter(start_date__gt=timezone.now(), start_date__lte=next_7_days).order_by('end_date')
+        batchs = Batch.objects.filter(active=True, number__lt=900).order_by('end_date')
+        batchs = batchs.annotate(repaired=repaired, packed=packed, remaining=F('quantity') - repaired)
+        current_batchs = batchs.filter(start_date__lte=timezone.now())
+        next_batchs = batchs.filter(start_date__gt=timezone.now(), start_date__lte=next_7_days)
+        if current_batchs or next_batchs:
             html_message = render_to_string(
                 'reman/email_format/reman_batches_email.html',
                 {
