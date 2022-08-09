@@ -492,5 +492,5 @@ class SivinCreateView(PermissionRequiredMixin, BSModalCreateView):
 
     def get_success_url(self):
         if not self.request.is_ajax():
-            return reverse_lazy('squaletp:sivin_detail', args=[self.object.pk])
+            return reverse_lazy('squalaetp:sivin_detail', args=[self.object.pk])
         return http_referer(self.request)

@@ -30,6 +30,16 @@ class BaseTest:
             '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
             '</VEHICULE></MESSAGE>'
         )
+        self.immat = 'AB123CD'
+        self.xmlDataSivin = (
+            "<?xml version='1.0' encoding='UTF-8'?>"
+            '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body>'
+            '<ns4:WS_SiVin_Consulter_VehiculeResponse xmlns:ns4="http://aaa.asso.fr/sivin/schemas"><ns4:return>'
+            '<s822:codifVin xmlns:s822="http://aaa.asso.fr/sivin/xsd">VF3ABCDEF12345678</s822:codifVin>'
+            '<s824:immatSiv xmlns:s824="http://aaa.asso.fr/sivin/xsd">AB123CD</s824:immatSiv>'
+            '<ns2:marqueCarros xmlns:ns2="http://aaa.asso.fr/sivin/xsd"></ns2:marqueCarros>'
+            '</ns4:return ></ns4:WS_SiVin_Consulter_VehiculeResponse></soapenv:Body></soapenv:Envelope>'
+        )
         self.formUser = {'username': 'test', 'email': 'test@test.com'}
         admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
         admin.is_staff = True

@@ -182,21 +182,26 @@ class SivinModalForm(BSModalModelForm):
         model = Sivin
         exclude = ["corvet"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['codif_vin'].required = False
+
     def clean_xml_data(self):
         xml_data = self.cleaned_data['xml_data']
         immat_siv = self.cleaned_data.get('immat_siv', '').upper()
         data = xml_sivin_parser(xml_data)
-        if data and data['immat_siv'] == immat_siv:
-            for field, value in data.items():
-                self.cleaned_data[field] = value
-                print(field, self.cleaned_data[field])
-        elif data and data['immat_siv'] != immat_siv:
+        if isinstance(data, dict):
+            if data.get('immat_siv') == immat_siv:
+                for field, value in data.items():
+                    self.cleaned_data[field] = value
+                return xml_data
             self.add_error('xml_data', _('XML data does not match IMMAT'))
         else:
             self.add_error('xml_data', _('Invalid XML data'))
         return xml_data
 
     def save(self, commit=True):
+        del self.fields['xml_data']
         instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
             instance.save()

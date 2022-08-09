@@ -179,7 +179,8 @@ def xml_sivin_parser(value):
     try:
         root = ET.fromstring(value)
         for element in root[0][0][0]:
-            data[fields[element.tag.split('}')[-1]]] = element.text.strip()
+            if element.tag and element.text:
+                data[fields[element.tag.split('}')[-1]]] = element.text.strip()
     except (ET.ParseError, KeyError, TypeError):
         data = value
     return data
