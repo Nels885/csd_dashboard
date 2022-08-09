@@ -1,5 +1,6 @@
 import os
 from django.utils import timezone
+from django.core.management.base import CommandError
 
 from io import StringIO
 from sbadmin import celery_app
@@ -51,7 +52,12 @@ def cmd_loadcontract_task(*args):
 
 
 @celery_app.task()
-def cmd_database_backup_task(*args):
+def cmd_database_backup_task(**kwargs):
     now = timezone.datetime.strftime(timezone.localtime(), "%d-%m-%Y")
-    call_command("dumpdata", "-o", os.path.join(CSD_ROOT, f"TEMP/dump_csd-dashboard-all_{now}.json"))
+    base_dir = kwargs.get("base_dir", os.path.join(CSD_ROOT, "TEMP"))
+    try:
+        base_dir = os.path.abspath(os.path.expanduser(base_dir[0]) + base_dir[1:])
+        call_command("dumpdata", "-o", os.path.join(base_dir, f"dump_csd-dashboard-all_{now}.json"))
+    except CommandError as err:
+        return {"msg": f"CommandError: {err}"}
     return {"msg": "Backup database success!"}
