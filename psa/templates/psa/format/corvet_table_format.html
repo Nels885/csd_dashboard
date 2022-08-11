@@ -178,7 +178,10 @@
     <!-- MULTIFUNCTION CAM -->
     <tr>
         <td class="text-dark td-ihm">Réf HW CVM 2</td>
-        <td>{{ object.electronique_12y }}</td>
+        <td>
+            {{ object.electronique_12y }}
+            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cvm2 id="cvm2" %}
+        </td>
     </tr>
     <tr>
         <td class="text-dark td-ihm">CAL CVM 2</td>
