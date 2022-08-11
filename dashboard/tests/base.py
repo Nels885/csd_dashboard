@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.management import call_command
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
@@ -48,6 +49,8 @@ class BaseTest:
         self.user.save()
         self.redirectUrl = reverse('index')
         self.nextLoginUrl = '/accounts/login/?next='
+        call_command('constance', 'set', 'CORVET_USER', '')
+        call_command('constance', 'set', 'CORVET_PWD', '')
 
     def add_group_user(self, *args):
         for group in args:
