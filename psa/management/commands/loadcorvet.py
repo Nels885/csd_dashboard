@@ -49,23 +49,30 @@ class Command(BaseCommand):
         if options['import_csv']:
             if options['filename'] is not None:
                 excel = CsvCorvet(options['filename'])
-                self._update_or_create(Corvet, excel)
+                if self._update_or_create(Corvet, excel):
+                    self.stdout.write(self.style.WARNING("[CORVET_CMD] No CSV file found"))
             else:
-                self.stdout.write(self.style.WARNING("Fichier CSV manquant"))
+                self.stdout.write(self.style.WARNING("[CORVET_CMD] Missing CSV file"))
 
         elif options['relations']:
             self._foreignkey_relation()
 
         elif options['attribute']:
-            excel = ExcelCorvetAttribute(XLS_ATTRIBUTS_FILE)
-            self._corvet_attribute(CorvetAttribute, excel)
+            if options['filename'] is not None:
+                excel = ExcelCorvetAttribute(options['filename'])
+            else:
+                excel = ExcelCorvetAttribute(XLS_ATTRIBUTS_FILE)
+
+            if self._corvet_attribute(CorvetAttribute, excel):
+                self.stdout.write(self.style.WARNING("[CORVET_CMD] No Attribute file found"))
         else:
             if options['filename'] is not None:
                 excel = ExcelCorvet(options['filename'], XLS_ATTRIBUTS_FILE)
             else:
                 excel = ExcelCorvet(XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE)
 
-            self._update_or_create(Corvet, excel)
+            if self._update_or_create(Corvet, excel):
+                self.stdout.write(self.style.WARNING("[CORVET_CMD] No squalaetp file found"))
 
     def _foreignkey_relation(self):
         self.stdout.write("[CORVET_RELATIONSHIPS] Waiting...")
@@ -110,32 +117,33 @@ class Command(BaseCommand):
                     )
                 )
             )
-        else:
-            self.stdout.write(self.style.WARNING("[CORVET_CMD] No squalaetp file found"))
+        return excel.ERROR
 
     def _corvet_attribute(self, model, excel):
         nb_before = model.objects.count()
         nb_update = 0
-        for row in excel.read():
-            logger.info(row)
-            pk = row.pop("id")
-            try:
-                defaults = defaults_dict(model, row, "id")
-                obj, created = model.objects.update_or_create(pk=pk, defaults=defaults)
-                if not created:
-                    nb_update += 1
-            except IntegrityError as err:
-                logger.error(f"[CORVET_ATTRIBUTE_CMD] IntegrityError: {pk} - {err}")
-            except model.MultipleObjectsReturned as err:
-                logger.error(f"[CORVET_ATTRIBUTE_CMD] MultipleObjectsReturned: {pk} - {err}")
-            except DataError as err:
-                logger.error(f"[CORVET_ATTRIBUTE_CMD] DataError: {pk} - {err}")
-            except ValidationError as err:
-                logger.error(f"[CORVET_ATTRIBUTE_CMD] ValidationError: {pk} - {err}")
-        nb_after = model.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"[CORVET_ATTRIBUTE_CMD] Data update completed: EXCEL_LINES = {excel.nrows} | " +
-                f"ADD = {nb_after - nb_before} | UPDATE = {nb_update} | TOTAL = {nb_after}"
+        if not excel.ERROR:
+            for row in excel.read():
+                logger.info(row)
+                pk = row.pop("id")
+                try:
+                    defaults = defaults_dict(model, row, "id")
+                    obj, created = model.objects.update_or_create(pk=pk, defaults=defaults)
+                    if not created:
+                        nb_update += 1
+                except IntegrityError as err:
+                    logger.error(f"[CORVET_ATTRIBUTE_CMD] IntegrityError: {pk} - {err}")
+                except model.MultipleObjectsReturned as err:
+                    logger.error(f"[CORVET_ATTRIBUTE_CMD] MultipleObjectsReturned: {pk} - {err}")
+                except DataError as err:
+                    logger.error(f"[CORVET_ATTRIBUTE_CMD] DataError: {pk} - {err}")
+                except ValidationError as err:
+                    logger.error(f"[CORVET_ATTRIBUTE_CMD] ValidationError: {pk} - {err}")
+            nb_after = model.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"[CORVET_ATTRIBUTE_CMD] Data update completed: EXCEL_LINES = {excel.nrows} | " +
+                    f"ADD = {nb_after - nb_before} | UPDATE = {nb_update} | TOTAL = {nb_after}"
+                )
             )
-        )
+        return excel.ERROR
