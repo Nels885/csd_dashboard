@@ -27,13 +27,7 @@ from .views import get_progress_view, download_file_view
 favicon_view = RedirectView.as_view(url=staticfiles_storage.url('favicon.ico'))
 
 
-def trigger_error(request):
-    division_by_zero = 1 / 0
-    return division_by_zero
-
-
 urlpatterns = [
-    path('sentry-debug/', trigger_error),
     path('celery-progress/', get_progress_view, name='progress'),
     path('download-file/', download_file_view, name="download"),
     path('admin/', admin.site.urls),

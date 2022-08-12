@@ -414,7 +414,8 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
-CELERY_TIMEZONE = "Europe/Paris"
+# CELERY_TIME_ZONE = "Europe/Paris"
+CELERY_ENABLE_UTC = False
 
 # DJANGO-WIKI CONFIGURATION
 WIKI_ACCOUNT_HANDLING = True

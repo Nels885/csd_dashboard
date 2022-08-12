@@ -23,6 +23,10 @@ jobs: # A basic unit of work in a run
       - browser-tools/install-firefox
       - browser-tools/install-geckodriver
       - run:
+          name: Run pipenv graph
+          command: |
+            pipenv graph
+      - run:
           name: Run flake8
           command: |
             pipenv run flake8
