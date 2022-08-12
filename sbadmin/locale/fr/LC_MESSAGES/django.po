@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-05 15:51+0200\n"
+"POT-Creation-Date: 2022-08-12 07:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,23 +84,27 @@ msgstr ""
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: templates/base/top_bar.html:131
+#: templates/base/top_bar.html:133
 msgid "Import Squalaetp"
 msgstr "Import Squalaetp"
 
-#: templates/base/top_bar.html:136
+#: templates/base/top_bar.html:137
+msgid "send emails"
+msgstr "Envoi des emails"
+
+#: templates/base/top_bar.html:142
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:140
+#: templates/base/top_bar.html:146
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:145 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:151 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:150
+#: templates/base/top_bar.html:156
 msgid "Guest"
 msgstr "Invité"
 
@@ -434,14 +438,14 @@ msgstr "Accueil"
 msgid "About"
 msgstr "A propos"
 
-#: utils/django/validators.py:38
+#: utils/django/validators.py:39
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie "
 "des véhicules PSA"
 
-#: utils/django/validators.py:59
+#: utils/django/validators.py:60
 msgid ""
 "The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part "
 "of PSA vehicles"
@@ -449,11 +453,7 @@ msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
 
-#: utils/django/validators.py:100
-msgid "PSA barcode is invalid"
-msgstr "Le code bare PSA est invalide"
-
-#: utils/django/validators.py:140
+#: utils/django/validators.py:120
 msgid ""
 "The number is not correct, it must consist of an uppercase letter and 9 "
 "digits"
@@ -461,17 +461,14 @@ msgstr ""
 "Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et "
 "de 9 chiffres"
 
-#: utils/django/validators.py:142
+#: utils/django/validators.py:122
 msgid "This number is not authorized"
 msgstr "Ce numéro n'est pas autorisé"
 
-#: utils/django/validators.py:144
+#: utils/django/validators.py:124
 msgid "The batch does not exist"
 msgstr "Le lot n'existe pas"
 
-#: utils/django/validators.py:146
+#: utils/django/validators.py:126
 msgid "This number exists"
 msgstr "Ce numéro existe"
-
-#~ msgid "Search Xelon, VIN or SN..."
-#~ msgstr "Recherche Xelon, VIN ou SN..."

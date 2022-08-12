@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-05 15:51+0200\n"
+"POT-Creation-Date: 2022-08-12 07:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,17 +35,13 @@ msgstr "Traitement 48h désactivé"
 msgid "48h processing enabled"
 msgstr "Traitement 48h activé"
 
-#: tools/forms.py:103
+#: tools/forms.py:105
 msgid "Username not found."
 msgstr "Utilisateur non trouvé."
 
 #: tools/models.py:18
 msgid "CAL software"
 msgstr "Logiciel CAL"
-
-#: tools/models.py:18
-msgid "With Diagbox"
-msgstr "Avec Diagbox"
 
 #: tools/models.py:19
 msgid "No"
@@ -71,14 +67,14 @@ msgstr "TELECODE est requis !"
 msgid "CALIBRE or TELECODE ?"
 msgstr "CALIBRE ou TELECODE ?"
 
-#: tools/templates/tools/modal/suptech_create.html:137
+#: tools/templates/tools/modal/suptech_create.html:147
 #: tools/templates/tools/modal/tag_xelon.html:51
 #: tools/templates/tools/modal/thermal_delete.html:20
 #: tools/templates/tools/suptech/suptech_update.html:132
 msgid "Cancel"
 msgstr "Annuler"
 
-#: tools/templates/tools/modal/suptech_create.html:138
+#: tools/templates/tools/modal/suptech_create.html:148
 msgid "Create"
 msgstr "créé le"
 
@@ -192,28 +188,28 @@ msgstr "liste Chambre thermique"
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:185 tools/views.py:252 tools/views.py:272
+#: tools/views.py:185 tools/views.py:253 tools/views.py:273
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: tools/views.py:209
+#: tools/views.py:210
 msgid "Support Tech list"
 msgstr "Liste Support Tech"
 
-#: tools/views.py:237
+#: tools/views.py:238
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Detail"
 msgstr "SUPTECH N°{self.object.pk} - Détail"
 
-#: tools/views.py:250
+#: tools/views.py:251
 msgid "Success: The message has been added."
 msgstr "Succès: Le message a été ajouté."
 
-#: tools/views.py:254 tools/views.py:274
+#: tools/views.py:255 tools/views.py:275
 msgid "Warning: Data update but without sending the email"
 msgstr "Attention : mise à jour des données mais sans envoi de l'email"
 
-#: tools/views.py:267
+#: tools/views.py:268
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Response"
 msgstr "SUPTECH N°{self.object.pk} - Réponse"
