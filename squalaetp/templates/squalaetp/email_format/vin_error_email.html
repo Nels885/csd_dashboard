@@ -4,12 +4,20 @@ Vous trouverez ci-dessous, le nouveau VIN à modifier dans le dossier Xelon {{ m
 
     - Ancien VIN   : {{ vins.old_vin }}
     - Nouveau VIN  : {{ vins.new_vin }}
+{% elif rasp_log %}
+Nous constatons qu'il y a une erreur dans le VIN du dossier Xelon {{ model.numero_de_dossier }}.
+Pouvez-vous demander au client de vérifier s'il n'y aurait pas une erreur ?
+
+{{ rasp_log }}
 {% else %}
 Nous constatons qu'il y a une erreur dans le VIN du dossier Xelon {{ model.numero_de_dossier }}.
 Pouvez-vous demander au client de vérifier s'il n'y aurait pas une erreur ?
 
     - VIN actuel   : {{ model.vin }}
 {% endif %}
+Répondre :
+http://{{ domain }}{% url 'squalaetp:detail' pk=model.pk %}?select=ihm
+
 Cordialement
 
 {{ request.user.first_name }} {{ request.user.last_name }}

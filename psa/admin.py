@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.template.defaultfilters import pluralize
+from django.utils.translation import gettext_lazy as _
+from django.contrib.admin import widgets
 
 from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct
 
@@ -18,11 +21,44 @@ class CorvetAdmin(admin.ModelAdmin):
 class MultimediaAdmin(admin.ModelAdmin):
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
-        'media', 'firmware'
+        'media', 'firmware', 'relation_by_name'
     )
-    list_filter = ('name', 'level', 'type', 'media')
+    list_filter = ('name', 'type', 'media', 'xelon_name', 'relation_by_name')
     ordering = ('comp_ref',)
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference')
+    actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        vertical = False  # change to True if you prefer boxes to be stacked vertically
+        kwargs['widget'] = widgets.FilteredSelectMultiple(
+            db_field.verbose_name,
+            vertical,
+        )
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def _message_user_about_update(self, request, rows_updated, verb):
+        """Send message about action to user.
+        `verb` should shortly describe what have changed (e.g. 'enabled').
+        """
+        self.message_user(
+            request,
+            _('{0} product{1} {2} successfully {3}').format(
+                rows_updated,
+                pluralize(rows_updated),
+                pluralize(rows_updated, _('was,were')),
+                verb,
+            ),
+        )
+
+    @admin.action(description=_('Relation by name disabled'))
+    def relation_by_name_disabled(self, request, queryset):
+            rows_updated = queryset.update(relation_by_name=False)
+            self._message_user_about_update(request, rows_updated, 'disabled')
+
+    @admin.action(description=_('Relation by name enabled'))
+    def relation_by_name_enabled(self, request, queryset):
+            rows_updated = queryset.update(relation_by_name=True)
+            self._message_user_about_update(request, rows_updated, 'enabled')
 
 
 class FirmwareAdmin(admin.ModelAdmin):
@@ -48,10 +84,45 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 
 class EcuAdmin(admin.ModelAdmin):
     list_display = (
-        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe')
-    list_filter = ('type', 'supplier_oe')
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe',
+        'relation_by_name'
+    )
+    list_filter = ('type', 'supplier_oe', 'xelon_name', 'relation_by_name')
     ordering = ('comp_ref',)
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type')
+    actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        vertical = False  # change to True if you prefer boxes to be stacked vertically
+        kwargs['widget'] = widgets.FilteredSelectMultiple(
+            db_field.verbose_name,
+            vertical,
+        )
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def _message_user_about_update(self, request, rows_updated, verb):
+        """Send message about action to user.
+        `verb` should shortly describe what have changed (e.g. 'enabled').
+        """
+        self.message_user(
+            request,
+            _('{0} product{1} {2} successfully {3}').format(
+                rows_updated,
+                pluralize(rows_updated),
+                pluralize(rows_updated, _('was,were')),
+                verb,
+            ),
+        )
+
+    @admin.action(description=_('Relation by name disabled'))
+    def relation_by_name_disabled(self, request, queryset):
+            rows_updated = queryset.update(relation_by_name=False)
+            self._message_user_about_update(request, rows_updated, 'disabled')
+
+    @admin.action(description=_('Relation by name enabled'))
+    def relation_by_name_enabled(self, request, queryset):
+            rows_updated = queryset.update(relation_by_name=True)
+            self._message_user_about_update(request, rows_updated, 'enabled')
 
 
 class CorvetProductAdmin(admin.ModelAdmin):

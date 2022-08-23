@@ -1,6 +1,6 @@
 from django.urls import reverse
 from django.contrib.messages import get_messages
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from reman.tests import RemanTest
 
@@ -143,7 +143,8 @@ class RemanTestCase(RemanTest):
         # Valid form
         barcode_list = [
             ('9600000000', '9600000000'), ('9687654321', '9687654321'), ('9800000000', '9800000000'),
-            ('9887654321', '9887654321'), ('96876543210000000000', '9687654321'), ('89661-0H390', '89661-0H390')
+            ('9887654321', '9887654321'), ('96876543210000000000', '9687654321'), ('89661-0H390', '89661-0H390'),
+            ('[)>06Y1310101000000XP5550924312V395357783T11183258AZERTYUI', '55509243')
         ]
         for barcode in barcode_list:
             response = self.client.post(url, {'barcode': barcode[0]})
@@ -225,12 +226,9 @@ class RemanTestCase(RemanTest):
 
         self.add_perms_user(EcuModel, 'check_ecumodel')
         self.login()
-        for nb in range(2):
+        for nb in range(1):
             response = self.client.get(url + f"?next={nb}")
-            if nb == 2:
-                self.assertEqual(response.status_code, 404)
-            else:
-                self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
 
     def test_ref_base_edit_view(self):
         url = reverse('reman:edit_ref_base', kwargs={'barcode': self.barcode})

@@ -2,6 +2,9 @@ import re
 
 from django.db import models
 from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -33,6 +36,10 @@ class Xelon(models.Model):
     ilot = models.CharField('ilot', max_length=100, blank=True)
     date_expedition_attendue = models.DateField('date expédition attendue', null=True, blank=True)
     delai_expedition_attendue = models.IntegerField('délai expédition attendue', null=True, blank=True)
+    rm = models.CharField('RM', max_length=50, blank=True)
+    pays = models.CharField('Pays', max_length=100, blank=True)
+    telecodage = models.CharField('TELECODAGE', max_length=50, blank=True)
+    appairage = models.CharField('APPAIRAGE', max_length=50, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
@@ -45,29 +52,81 @@ class Xelon(models.Model):
         permissions = [
             ("change_product", "Can change product"), ("email_product", "Can send email product"),
             ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
-            ("active_xelon", "Can active xelon")
+            ("email_admin", "Can send email admin"), ("active_xelon", "Can active xelon")
         ]
 
     @classmethod
     def search(cls, value):
         if value is not None:
             query = value.strip()
-            return cls.objects.filter(Q(numero_de_dossier__iexact=query) |
-                                      Q(vin__iexact=query) | Q(vin__iendswith=query) |
-                                      Q(corvet__electronique_44l__icontains=query) |
-                                      Q(corvet__electronique_44x__icontains=query) |
-                                      Q(corvet__electronique_44a__icontains=query) |
-                                      Q(corvet__electronique_12y__iexact=query) |
-                                      Q(corvet__electronique_14l__iexact=query) |
-                                      Q(corvet__electronique_14x__iexact=query) |
-                                      Q(corvet__electronique_14a__iexact=query) |
-                                      Q(corvet__electronique_14b__iexact=query) |
-                                      Q(corvet__electronique_14k__iexact=query) |
-                                      Q(corvet__electronique_44b__iexact=query) |
-                                      Q(corvet__electronique_16p__iexact=query) |
-                                      Q(corvet__electronique_46p__iexact=query) |
-                                      Q(corvet__opts__tag__istartswith=query))
+            return cls.objects.filter(
+                Q(numero_de_dossier__iexact=query) | Q(vin__iexact=query) | Q(vin__iendswith=query) |
+                Q(corvet__electronique_44l__icontains=query) | Q(corvet__electronique_44x__icontains=query) |
+                Q(corvet__electronique_44a__icontains=query) | Q(corvet__electronique_44b__iexact=query) |
+                Q(corvet__electronique_46p__iexact=query) | Q(corvet__opts__tag__istartswith=query)|
+
+                Q(corvet__electronique_14f__iexact=query) | Q(corvet__electronique_14j__iexact=query) |
+                Q(corvet__electronique_14k__iexact=query) | Q(corvet__electronique_14l__iexact=query) |
+                Q(corvet__electronique_14r__iexact=query) | Q(corvet__electronique_14x__iexact=query) |
+                Q(corvet__electronique_19z__iexact=query) | Q(corvet__electronique_19h__iexact=query) |
+                Q(corvet__electronique_14a__iexact=query) | Q(corvet__electronique_14b__iexact=query) |
+                Q(corvet__electronique_16p__iexact=query) | Q(corvet__electronique_16b__iexact=query) |
+                Q(corvet__electronique_16q__iexact=query) | Q(corvet__electronique_16v__iexact=query) |
+                Q(corvet__electronique_19f__iexact=query) | Q(corvet__electronique_19u__iexact=query) |
+                Q(corvet__electronique_14d__iexact=query) | Q(corvet__electronique_16g__iexact=query) |
+                Q(corvet__electronique_19v__iexact=query) | Q(corvet__electronique_12y__iexact=query) |
+                Q(corvet__electronique_16l__iexact=query) | Q(corvet__electronique_14y__iexact=query) |
+                Q(corvet__electronique_14z__iexact=query) | Q(corvet__electronique_14p__iexact=query) |
+                Q(corvet__electronique_19w__iexact=query) | Q(corvet__electronique_16t__iexact=query) |
+                Q(corvet__electronique_19t__iexact=query) | Q(corvet__electronique_14m__iexact=query) |
+                Q(corvet__electronique_18z__iexact=query) | Q(corvet__electronique_11m__iexact=query) |
+                Q(corvet__electronique_19k__iexact=query) | Q(corvet__electronique_12e__iexact=query)
+            )
         return None
+
+    @property
+    def option(self):
+        if self.telecodage == "1":
+            return "TELE"
+        elif self.appairage == "1":
+            return "APPAIR"
+        return ""
+
+    def __str__(self):
+        return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
+
+
+def get_deadline():
+    return timezone.now() + timezone.timedelta(days=7)
+
+
+class XelonTemporary(models.Model):
+    numero_de_dossier = models.CharField('numéro de dossier', max_length=10)
+    vin = models.CharField('V.I.N.', max_length=17)
+    modele_produit = models.CharField('modèle produit', max_length=50, blank=True)
+    modele_vehicule = models.CharField('modèle véhicule', max_length=50, blank=True)
+    is_active = models.BooleanField('Actif', default=False)
+    end_date = models.DateField('date de fin', default=get_deadline, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def clean(self):
+        try:
+            Xelon.objects.get(numero_de_dossier=self.numero_de_dossier)
+            raise ValidationError(_('Xelon number exists !'))
+        except Xelon.DoesNotExist:
+            for query in XelonTemporary.objects.filter(numero_de_dossier=self.numero_de_dossier):
+                if self.is_active and query.is_active:
+                    raise ValidationError(_('A temporary Xelon is already active with this number !'))
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and not user.pk:
+            user = None
+        if not self.pk:
+            self.created_by = user
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return "{} - {} - {} - {}".format(self.numero_de_dossier, self.vin, self.modele_produit, self.modele_vehicule)
@@ -75,8 +134,8 @@ class Xelon(models.Model):
 
 class ProductCode(models.Model):
     name = models.CharField('code Produit', max_length=100)
-    media = models.ForeignKey('psa.Multimedia', on_delete=models.SET_NULL, null=True, blank=True)
-    ecu = models.ForeignKey('psa.Ecu', on_delete=models.SET_NULL, null=True, blank=True)
+    medias = models.ManyToManyField('psa.Multimedia', related_name='parts', blank=True)
+    ecus = models.ManyToManyField('psa.Ecu', related_name='parts', blank=True)
 
     def __str__(self):
         return self.name
@@ -150,10 +209,14 @@ class ProductCategory(models.Model):
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
     category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
     corvet_type = models.CharField('Type Corvet', max_length=50, choices=TYPES, blank=True)
+    animator = models.ForeignKey(User, related_name="animator_prods", on_delete=models.SET_NULL, null=True)
+    niv_t_users = models.ManyToManyField(User, related_name='niv_t_prods', blank=True)
     niv_i_users = models.ManyToManyField(User, related_name='niv_i_prods', blank=True)
     niv_l_users = models.ManyToManyField(User, related_name='niv_l_prods', blank=True)
     niv_u_users = models.ManyToManyField(User, related_name='niv_u_prods', blank=True)
     niv_o_users = models.ManyToManyField(User, related_name='niv_o_prods', blank=True)
+    fa_users = models.ManyToManyField(User, related_name='fa_prods', blank=True)
+    fe_users = models.ManyToManyField(User, related_name='fe_prods', blank=True)
 
     class Meta:
         verbose_name = "Catégorie Produit"

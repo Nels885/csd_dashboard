@@ -7,8 +7,7 @@ logger = logging.getLogger('command')
 
 class ExcelSqualaetp(ExcelFormat):
     """## Read data in Excel file for Squalaetp ##"""
-    ERROR = False
-    CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule']
+    CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule', 'telecodage', 'appairage']
     XELON_COLS = CORVET_DROP_COLS + ['vin']
     COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
@@ -23,13 +22,13 @@ class ExcelSqualaetp(ExcelFormat):
             Number of the last column to be processed
         """
         try:
-            super(ExcelSqualaetp, self).__init__(file, sheet_name, columns)
+            super(ExcelSqualaetp, self).__init__(file, sheet_name, columns, datedelta=0, offdays=[5, 6])
             self._columns_convert()
             self.sheet.replace({"#": None}, inplace=True)
             self._date_converter(self.COLS_DATE)
         except FileNotFoundError as err:
-            logger.error(f'FileNotFoundError: {err}')
-            self.ERROR = True
+            self.ERROR = f'FileNotFoundError: {err}'
+            logger.error(self.ERROR)
 
     def xelon_table(self):
         """
@@ -40,7 +39,7 @@ class ExcelSqualaetp(ExcelFormat):
         data = []
         if not self.ERROR:
             for line in range(self.nrows):
-                row = self.sheet.loc[line, self.XELON_COLS]
+                row = self.sheet.loc[line, self._columns_check(self.XELON_COLS)]
                 if row[0]:
                     data.append(dict(row.dropna()))
         return data
@@ -53,7 +52,7 @@ class ExcelSqualaetp(ExcelFormat):
         """
         data = []
         if not self.ERROR:
-            df_corvet = self.sheet.drop(self.CORVET_DROP_COLS, axis='columns')
+            df_corvet = self.sheet.drop(self._columns_check(self.CORVET_DROP_COLS), axis='columns')
             df_corvet, nrows = self._add_attributs(df_corvet, attribut_file)
             for line in range(nrows):
                 row = df_corvet.loc[line]  # get the data in the ith row

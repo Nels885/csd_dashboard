@@ -3,8 +3,6 @@ from utils.microsoft_format import ExcelFormat
 
 class ExcelRaspeedi(ExcelFormat):
     """## Read data in Excel file for Raspeedi ##"""
-    RASPEEDI_COLS = ['ref_boitier', 'produit', 'facade', 'type', 'dab', 'cam', 'dump_peedi', 'cd_version', 'media',
-                     'carto', 'dump_renesas', 'ref_mm']
     COLS = {'A': 'ref_boitier', 'B': 'produit', 'C': 'facade', 'D': 'type', 'E': 'dab', 'F': 'cam', 'G': 'dump_peedi',
             'H': 'cd_version', 'I': 'media', 'J': 'carto', 'K': 'dump_renesas', 'L': 'ref_mm', 'N': 'jukebox'}
 
@@ -15,10 +13,14 @@ class ExcelRaspeedi(ExcelFormat):
             excel file to process
         """
         cols = ",".join(self.COLS.keys())
-        super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
-        self._convert_boolean()
-        self._columns_rename(self.COLS)
-        self.sheet.fillna('', inplace=True)
+        try:
+            super(ExcelRaspeedi, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
+            self._convert_boolean()
+            self._columns_rename(self.COLS)
+            self._drop_lines()
+            self.sheet.fillna('', inplace=True)
+        except FileNotFoundError as err:
+            self.ERROR = f'FileNotFoundError: {err}'
 
     def read(self):
         """
@@ -27,11 +29,12 @@ class ExcelRaspeedi(ExcelFormat):
             list of dictionnaries that represents the data in the sheet
         """
         data = []
-        for line in range(self.nrows):
-            try:
-                data.append(dict(self.sheet.loc[line]))
-            except KeyError as err:
-                print("KeyError pour la ligne : {}".format(err))
+        if not self.ERROR:
+            for line in range(self.nrows):
+                try:
+                    data.append(dict(self.sheet.loc[line]))
+                except KeyError as err:
+                    print("KeyError pour la ligne : {}".format(err))
         return data
 
     def _convert_boolean(self):
@@ -45,6 +48,12 @@ class ExcelRaspeedi(ExcelFormat):
                 "O": True, "N": False, "?": False, None: False, "NON": False, "OUI": True
             })
 
+    def _drop_lines(self):
+        df = self.sheet
+        self.sheet = df.drop(df[(df[self.COLS['A']].isnull()) | (df[self.COLS['A']] == 'ref_boitier')].index)
+        self.sheet.reset_index(drop=True, inplace=True)
+        self.nrows = self.sheet.shape[0]
+
 
 class ExcelPrograming(ExcelFormat):
     """## Read data in Excel file for Raspeedi ##"""
@@ -57,9 +66,13 @@ class ExcelPrograming(ExcelFormat):
             excel file to process
         """
         cols = ",".join(self.COLS.keys())
-        super(ExcelPrograming, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
-        self._columns_rename(self.COLS)
-        self.sheet.fillna('', inplace=True)
+        try:
+            super(ExcelPrograming, self).__init__(file, sheet_name, columns, dtype=str, usecols=cols)
+            self._columns_rename(self.COLS)
+            self._drop_lines()
+            self.sheet.fillna('', inplace=True)
+        except FileNotFoundError as err:
+            self.ERROR = f'FileNotFoundError: {err}'
 
     def read(self):
         """
@@ -68,10 +81,17 @@ class ExcelPrograming(ExcelFormat):
             list of dictionnaries that represents the data in the sheet
         """
         data = []
-        for line in range(self.nrows):
-            try:
-                data.append(dict(self.sheet.loc[line]))
-            except KeyError:
-                print("KeyError: {}".format(line))
-        #         return [dict(self.sheet.loc[line]) for line in range(self.nrows)]
+        if not self.ERROR:
+            for line in range(self.nrows):
+                try:
+                    data.append(dict(self.sheet.loc[line]))
+                except KeyError:
+                    print("KeyError: {}".format(line))
+            #         return [dict(self.sheet.loc[line]) for line in range(self.nrows)]
         return data
+
+    def _drop_lines(self):
+        df = self.sheet
+        self.sheet = df.drop(df[(df[self.COLS['A']].isnull()) | (df[self.COLS['A']] == 'psa_barcode')].index)
+        self.sheet.reset_index(drop=True, inplace=True)
+        self.nrows = self.sheet.shape[0]

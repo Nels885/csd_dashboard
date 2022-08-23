@@ -51,7 +51,8 @@ class Command(BaseCommand):
         if options['email_48h']:
             date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
             supject = "Suptech en cours {}".format(date_joined)
-            suptechs = Suptech.objects.filter(status="En Attente", is_48h=True).order_by('-date')
+            suptechs = Suptech.objects.filter(
+                Q(status="En Attente", is_48h=True) | Q(deadline=timezone.now())).order_by('-date')
             for suptech in suptechs:
                 self._send_single_email(suptech)
         if not options:

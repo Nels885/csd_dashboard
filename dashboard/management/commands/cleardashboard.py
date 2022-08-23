@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
-from dashboard.models import Post, ShowCollapse, UserProfile, WebLink
+from dashboard.models import Post, ShowCollapse, UserProfile, WebLink, Contract
 
 
 class Command(BaseCommand):
@@ -12,25 +12,31 @@ class Command(BaseCommand):
             '--post',
             action='store_true',
             dest='post',
-            help='Clear Poq table',
+            help='Clear Post table',
         )
         parser.add_argument(
             '--showcollapse',
             action='store_true',
             dest='showcollapse',
-            help='Clear Poq table',
+            help='Clear ShowCollapse table',
         )
         parser.add_argument(
             '--userprofile',
             action='store_true',
             dest='userprofile',
-            help='Clear Poq table',
+            help='Clear UserProfile table',
         )
         parser.add_argument(
             '--weblink',
             action='store_true',
             dest='weblink',
-            help='Clear Poq table',
+            help='Clear WebLink table',
+        )
+        parser.add_argument(
+            '--contract',
+            action='store_true',
+            dest='contract',
+            help='Clear Contract table',
         )
         parser.add_argument(
             '--all',
@@ -77,13 +83,24 @@ class Command(BaseCommand):
                     cursor.execute(sql)
             self.stdout.write(self.style.SUCCESS("Suppression des données de la table WebLink terminée!"))
 
+        if options['contract']:
+            Contract.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Contract, ])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
+            self.stdout.write(self.style.SUCCESS("Suppression des données de la table Contract terminée!"))
+
         if options['all']:
             Post.objects.all().delete()
             ShowCollapse.objects.all().delete()
             UserProfile.objects.all().delete()
             WebLink.objects.all().delete()
+            Contract.objects.all().delete()
 
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Post, ShowCollapse, UserProfile, WebLink])
+            sequence_sql = connection.ops.sequence_reset_sql(
+                no_style(), [Post, ShowCollapse, UserProfile, WebLink, Contract])
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)

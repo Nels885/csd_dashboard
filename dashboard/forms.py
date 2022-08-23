@@ -1,13 +1,20 @@
 from django.forms.utils import ErrorList
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.files.images import get_image_dimensions
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
+from django.conf import settings
 
 from bootstrap_modal_forms.forms import BSModalModelForm
 from .models import UserProfile, Post, WebLink, ShowCollapse
+
+SERVICE_CHOICES = [('', '---'), ('CO', 'CO'), ('CE', 'CE'), ('ADM', 'ADM')]
+JOB_TITLE_CHOICES = [
+    ('', '---'), ('technician', 'technician'), ('operator', 'operator'), ('animator', 'animator'),
+    ('engineer', 'engineer'), ('manager', 'manager')
+]
 
 
 class ParaErrorList(ErrorList):
@@ -21,10 +28,14 @@ class ParaErrorList(ErrorList):
         return '<div>%s</div>' % ''.join(['<p class="text-danger">* %s</p>' % e for e in self])
 
 
-class UserProfileForm(forms.ModelForm):
+class UserProfileAdminForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['image']
+        fields = ['job_title', 'service', 'image']
+        widgets = {
+            'job_title': forms.Select(choices=JOB_TITLE_CHOICES),
+            'service': forms.Select(choices=SERVICE_CHOICES)
+        }
 
     def clean_image(self):
         avatar = self.cleaned_data['image']
@@ -58,6 +69,11 @@ class UserProfileForm(forms.ModelForm):
         return avatar
 
 
+class UserProfileForm(UserProfileAdminForm):
+    class Meta(UserProfileAdminForm.Meta):
+        fields = ['image']
+
+
 class ShowCollapseForm(forms.ModelForm):
 
     class Meta:
@@ -87,7 +103,8 @@ class SignUpForm(UserCreationForm):
         css = {
             'all': ('/static/admin/css/widgets.css', '/static/admin/css/overrides.css'),
         }
-        js = ('/admin/jsi18n',)
+        extra = '' if settings.DEBUG else '.min'
+        js = ('/jsi18n/',)
 
     class Meta:
         model = User

@@ -1,16 +1,19 @@
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.template.loader import render_to_string
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 
 from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
-from psa.models import Corvet
-from .models import Xelon, Action, Sivin
+from psa.models import Corvet, Multimedia, Ecu
+from .models import Xelon, Action, Sivin, ProductCode
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
+from utils.file import LogFile
+from utils.conf import CSD_ROOT
 
 
 class IhmEmailModalForm(BSModalForm):
@@ -34,7 +37,9 @@ class IhmEmailModalForm(BSModalForm):
 
     @staticmethod
     def vin_message(model, request):
+        domain = config.WEBSITE_DOMAIN
         queryset = model.actions.filter(content__contains="OLD_VIN")
+        rasp_log = LogFile(CSD_ROOT).vin_err_filter(model.modele_produit, model.numero_de_dossier)
         if queryset:
             data = queryset.first().content.split('\n')
             vins = {"old_vin": data[0][-17:], "new_vin": data[1][-17:]}
@@ -45,6 +50,7 @@ class IhmEmailModalForm(BSModalForm):
 
     @staticmethod
     def prod_message(model, request):
+        domain = config.WEBSITE_DOMAIN
         queryset = model.actions.filter(content__contains="OLD_PROD")
         if queryset:
             data = queryset.first().content.split('\n')
@@ -52,6 +58,16 @@ class IhmEmailModalForm(BSModalForm):
         else:
             prods = None
         message = render_to_string('squalaetp/email_format/prod_error_email.html', locals())
+        return message
+
+    @staticmethod
+    def adm_message(model, request):
+        domain = config.WEBSITE_DOMAIN
+        if request.GET.get("select") == "prod":
+            select = "modèle produit"
+        else:
+            select = "V.I.N."
+        message = render_to_string('squalaetp/email_format/adm_email.html', locals())
         return message
 
 
@@ -121,7 +137,6 @@ class VinCorvetModalForm(BSModalModelForm):
 
 
 class ProductModalForm(BSModalModelForm):
-
     class Meta:
         model = Xelon
         fields = ['modele_produit', 'modele_vehicule']
@@ -167,22 +182,39 @@ class SivinModalForm(BSModalModelForm):
         model = Sivin
         exclude = ["corvet"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['codif_vin'].required = False
+
     def clean_xml_data(self):
         xml_data = self.cleaned_data['xml_data']
         immat_siv = self.cleaned_data.get('immat_siv', '').upper()
         data = xml_sivin_parser(xml_data)
-        if data and data['immat_siv'] == immat_siv:
-            for field, value in data.items():
-                self.cleaned_data[field] = value
-                print(field, self.cleaned_data[field])
-        elif data and data['immat_siv'] != immat_siv:
+        if isinstance(data, dict):
+            if data.get('immat_siv') == immat_siv:
+                for field, value in data.items():
+                    self.cleaned_data[field] = value
+                return xml_data
             self.add_error('xml_data', _('XML data does not match IMMAT'))
         else:
             self.add_error('xml_data', _('Invalid XML data'))
         return xml_data
 
     def save(self, commit=True):
+        del self.fields['xml_data']
         instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
             instance.save()
         return instance
+
+
+class ProductCodeAdminForm(forms.ModelForm):
+    medias = forms.ModelMultipleChoiceField(
+        queryset=Multimedia.objects.all(), widget=FilteredSelectMultiple("Multimedia", is_stacked=False),
+        required=False)
+    ecus = forms.ModelMultipleChoiceField(
+        queryset=Ecu.objects.all(), widget=FilteredSelectMultiple("Ecu", is_stacked=False), required=False)
+
+    class Meta:
+        model = ProductCode
+        fields = ['name', 'medias', 'ecus']

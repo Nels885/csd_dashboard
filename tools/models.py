@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -11,18 +11,37 @@ from crum import get_current_user
 from constance import config as conf
 
 from squalaetp.models import Xelon
-from utils.file.export import calibre
+from utils.file.export import calibre, telecode
 
 
 class TagXelon(models.Model):
+    CAL_CHOICES = ((False, _('CAL software')), (True, "Diagbox"))
+    TEL_CHOICES = ((False, _('No')), (True, _("Yes")))
+
     xelon = models.CharField(max_length=10)
     comments = models.CharField('commentaires', max_length=400, blank=True)
+    calibre = models.BooleanField('calibration', default=False, choices=CAL_CHOICES)
+    telecode = models.BooleanField('télécodage', default=False, choices=TEL_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "Tag Xelon Multi"
+        ordering = ['-created_at']
+
     def clean(self):
-        if calibre.check(self.xelon):
+        try:
+            telecode_tag = Xelon.objects.get(numero_de_dossier=self.xelon).telecodage
+        except Xelon.DoesNotExist:
+            telecode_tag = None
+        if self.calibre and calibre.check(self.xelon):
             raise ValidationError(_('CALIBRE file exists !'))
+        elif self.telecode and telecode.check(self.xelon):
+            raise ValidationError(_('TELECODE file exists !'))
+        elif not self.telecode and telecode_tag == '1':
+            raise ValidationError(_('TELECODE is required !'))
+        elif not self.calibre and not self.telecode:
+            raise ValidationError(_('CALIBRE or TELECODE ?'))
 
     def save(self, *args, **kwargs):
         user = get_current_user()
@@ -30,7 +49,10 @@ class TagXelon(models.Model):
             user = None
         if not self.pk:
             self.created_by = user
-        calibre.file(self.xelon, self.comments, user)
+        if self.calibre:
+            calibre.file(self.xelon, self.comments, user)
+        if self.telecode:
+            telecode.file(self.xelon, self.comments, user)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -89,9 +111,9 @@ class ThermalChamber(models.Model):
     def __str__(self):
         first_name, last_name = self.created_by.first_name, self.created_by.last_name
         if first_name and last_name:
-            return "{} {} - {}".format(self.created_by.last_name, self.created_by.first_name, self.xelon_number)
+            return f"{self.created_by.last_name} {self.created_by.first_name} - {self.xelon_number}"
         else:
-            return "{} - {}".format(self.created_by.username, self.xelon_number)
+            return f"{self.created_by.username} - {self.xelon_number}"
 
 
 class ThermalChamberMeasure(models.Model):
@@ -110,14 +132,6 @@ class ThermalChamberMeasure(models.Model):
 class EtudeProject(models.Model):
     name = models.CharField('projet', max_length=200)
     progress = models.PositiveIntegerField('avancée en %', validators=[MaxValueValidator(100), MinValueValidator(0)])
-
-    def __str__(self):
-        return self.name
-
-
-class SuptechCategory(models.Model):
-    name = models.CharField('nom', max_length=200)
-    manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -159,7 +173,15 @@ class Suptech(models.Model):
         return reverse('tools:suptech_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
-        return self.item
+        return f"{self.pk} - {self.item}"
+
+
+class SuptechCategory(models.Model):
+    name = models.CharField('nom', max_length=200)
+    manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class SuptechItem(models.Model):
@@ -191,13 +213,24 @@ class SuptechMessage(models.Model):
         ordering = ['-added_at']
 
     def __str__(self):
-        return "Message de {} sur {}".format(self.added_by, self.content_object)
+        return f"Message de {self.added_by} sur {self.content_object}"
 
     def save(self, *args, **kwargs):
         user = get_current_user()
         if user and user.pk:
             self.added_by = user
         super().save(*args, **kwargs)
+
+
+class SuptechFile(models.Model):
+    file = models.FileField(upload_to="suptech/%Y/%m")
+    suptech = models.ForeignKey("Suptech", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Suptech File"
+
+    def __str__(self):
+        return f"[SUPTECH_{self.suptech.pk}] {self.file.name}"
 
 
 class BgaTime(models.Model):

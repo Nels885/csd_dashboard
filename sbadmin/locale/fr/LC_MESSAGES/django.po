@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-12 14:32+0200\n"
+"POT-Creation-Date: 2022-08-12 07:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: api/views.py:204
+#: api/views.py:202
 msgid "Time between 2 requests too short"
 msgstr "Délai entre 2 requêtes trop court"
 
-#: sbadmin/settings/__init__.py:190 templates/base/top_bar.html:89
+#: sbadmin/settings/__init__.py:188 templates/base/top_bar.html:89
 msgid "French"
 msgstr "Français"
 
-#: sbadmin/settings/__init__.py:191 templates/base/top_bar.html:80
+#: sbadmin/settings/__init__.py:189 templates/base/top_bar.html:80
 msgid "English"
 msgstr "Anglais"
 
@@ -80,27 +80,31 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: templates/base/top_bar.html:125
+#: templates/base/top_bar.html:127
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: templates/base/top_bar.html:129
+#: templates/base/top_bar.html:133
 msgid "Import Squalaetp"
 msgstr "Import Squalaetp"
 
-#: templates/base/top_bar.html:134
+#: templates/base/top_bar.html:137
+msgid "send emails"
+msgstr "Envoi des emails"
+
+#: templates/base/top_bar.html:142
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:138
+#: templates/base/top_bar.html:146
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:143 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:151 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:148
+#: templates/base/top_bar.html:156
 msgid "Guest"
 msgstr "Invité"
 
@@ -434,14 +438,14 @@ msgstr "Accueil"
 msgid "About"
 msgstr "A propos"
 
-#: utils/django/validators.py:38
+#: utils/django/validators.py:39
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie "
 "des véhicules PSA"
 
-#: utils/django/validators.py:59
+#: utils/django/validators.py:60
 msgid ""
 "The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part "
 "of PSA vehicles"
@@ -449,11 +453,7 @@ msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
 
-#: utils/django/validators.py:98
-msgid "PSA barcode is invalid"
-msgstr "Le code bare PSA est invalide"
-
-#: utils/django/validators.py:136
+#: utils/django/validators.py:120
 msgid ""
 "The number is not correct, it must consist of an uppercase letter and 9 "
 "digits"
@@ -461,17 +461,14 @@ msgstr ""
 "Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et "
 "de 9 chiffres"
 
-#: utils/django/validators.py:138
+#: utils/django/validators.py:122
 msgid "This number is not authorized"
 msgstr "Ce numéro n'est pas autorisé"
 
-#: utils/django/validators.py:140
+#: utils/django/validators.py:124
 msgid "The batch does not exist"
 msgstr "Le lot n'existe pas"
 
-#: utils/django/validators.py:142
+#: utils/django/validators.py:126
 msgid "This number exists"
 msgstr "Ce numéro existe"
-
-#~ msgid "Search Xelon, VIN or SN..."
-#~ msgstr "Recherche Xelon, VIN ou SN..."

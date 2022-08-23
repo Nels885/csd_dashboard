@@ -34,44 +34,49 @@ class Command(BaseCommand):
             dest='all',
             help='Import Corvet data for all',
         )
+        parser.add_argument(
+            '--test',
+            action='store_true',
+            dest='test',
+            help='Test Scraping'
+        )
 
     def handle(self, *args, **options):
         if options['vin']:
             vin = options['vin']
-            scrap = ScrapingCorvet()
+            scrap = ScrapingCorvet(test=options['test'])
             data = scrap.result(vin)
             data = str(xml_parser(data))
             self.stdout.write(data)
             scrap.close()
         elif options['immat']:
-            self._import_sivin(options['immat'])
+            self._import_sivin(options['immat'], options['test'])
             self.stdout.write(self.style.SUCCESS("[IMPORT_SIVIN] Import completed!"))
         elif options['squalaetp']:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             xelon_list = squalaetp.xelon_number_list()
             xelons = Xelon.objects.filter(
-                numero_de_dossier__in=xelon_list, vin__regex=VIN_PSA_REGEX,
-                vin_error=False, corvet__isnull=True)
+                numero_de_dossier__in=xelon_list, vin__regex=VIN_PSA_REGEX, corvet__isnull=True)
             self.stdout.write(f"[IMPORT_CORVET] Xelon number = {xelons.count()}")
-            nb_file = self._import_corvet(xelons)
+            nb_file = self._import_corvet(xelons, options['test'])
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
         elif options['all']:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             corvets = Corvet.objects.filter(opts__update=True)[:200]
-            nb_file = self._import_corvet(corvets, squalaetp=False, limit=True)
+            nb_file = self._import_corvet(corvets, options['test'], squalaetp=False, limit=True)
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
         else:
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             xelons = Xelon.objects.filter(vin__regex=VIN_PSA_REGEX, vin_error=False).order_by('-id')
             xelons = xelons.filter(Q(corvet__isnull=True) | Q(corvet__opts__update=True))[:200]
-            nb_file = self._import_corvet(xelons, limit=True)
+            nb_file = self._import_corvet(xelons, limit=True, test=options['test'])
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))
 
-    def _import_corvet(self, queryset, squalaetp=True, limit=False):
+    def _import_corvet(self, queryset, test, squalaetp=True, limit=False):
         nb_import = 0
         if queryset:
-            scrap = ScrapingCorvet()
+            scrap = ScrapingCorvet(test=test)
             for query in queryset:
                 start_msg = f"{query.vin}"
                 if squalaetp:
@@ -79,13 +84,13 @@ class Command(BaseCommand):
                 start_time = time.time()
                 for attempt in range(2):
                     row = xml_parser(scrap.result(query.vin))
-                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
+                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row or attempt == 0:
                         nb_import += 1
                         delay_time = time.time() - start_time
                         self.stdout.write(
                             self.style.ERROR(f"{start_msg} error CORVET in {delay_time}"))
                         break
-                    elif row and row.get('donnee_date_entree_montage'):
+                    elif row.get('vin') and row.get('donnee_date_entree_montage'):
                         defaults = defaults_dict(Corvet, row, "vin")
                         obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
                         obj.opts.update = False
@@ -95,7 +100,7 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS(f"{start_msg} updated in {delay_time}"))
                         break
-                    if attempt:
+                    elif row.get('vin'):
                         if squalaetp:
                             query.vin_error = True
                         Corvet.objects.filter(vin=query.vin).delete()
@@ -109,10 +114,10 @@ class Command(BaseCommand):
             scrap.close()
         return nb_import
 
-    def _import_sivin(self, immat):
+    def _import_sivin(self, immat, test):
         start_time = time.time()
         self.stdout.write("[IMPORT_SIVIN] Waiting...")
-        sivin = ScrapingSivin()
+        sivin = ScrapingSivin(test=test)
         data = xml_sivin_parser(sivin.result(immat))
         sivin.close()
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:

@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib import messages
 from bootstrap_modal_forms.generic import BSModalDeleteView
 from django.urls import reverse_lazy

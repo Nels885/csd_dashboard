@@ -4,9 +4,13 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.management import call_command
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 MAX_WAIT = 10
 
@@ -27,6 +31,16 @@ class BaseTest:
             '<ELECTRONIQUE>P4A9666220599</ELECTRONIQUE></LISTE_ELECTRONIQUES>'
             '</VEHICULE></MESSAGE>'
         )
+        self.immat = 'AB123CD'
+        self.xmlDataSivin = (
+            "<?xml version='1.0' encoding='UTF-8'?>"
+            '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Body>'
+            '<ns4:WS_SiVin_Consulter_VehiculeResponse xmlns:ns4="http://aaa.asso.fr/sivin/schemas"><ns4:return>'
+            '<s822:codifVin xmlns:s822="http://aaa.asso.fr/sivin/xsd">VF3ABCDEF12345678</s822:codifVin>'
+            '<s824:immatSiv xmlns:s824="http://aaa.asso.fr/sivin/xsd">AB123CD</s824:immatSiv>'
+            '<ns2:marqueCarros xmlns:ns2="http://aaa.asso.fr/sivin/xsd"></ns2:marqueCarros>'
+            '</ns4:return ></ns4:WS_SiVin_Consulter_VehiculeResponse></soapenv:Body></soapenv:Envelope>'
+        )
         self.formUser = {'username': 'test', 'email': 'test@test.com'}
         admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
         admin.is_staff = True
@@ -35,6 +49,8 @@ class BaseTest:
         self.user.save()
         self.redirectUrl = reverse('index')
         self.nextLoginUrl = '/accounts/login/?next='
+        call_command('constance', 'set', 'CORVET_USER', '')
+        call_command('constance', 'set', 'CORVET_PWD', '')
 
     def add_group_user(self, *args):
         for group in args:
@@ -81,6 +97,15 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
             self.client.login(username='admin', password='adminpassword')
         else:
             self.client.login(username='toto', password='totopassword')
+
+    def wait_for(self, class_name=None, element_id=None, tag=None, xpath=None):
+        return WebDriverWait(self.driver, 20).until(
+            expected_conditions.element_to_be_clickable
+            ((By.ID, element_id) if element_id else
+             (By.CLASS_NAME, class_name) if class_name else
+             (By.TAG_NAME, tag) if tag else
+             (By.XPATH, xpath))
+        )
 
     def wait_for_text_in_body(self, *args, not_in=None):
         start_time = time.time()

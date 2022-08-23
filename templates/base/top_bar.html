@@ -35,16 +35,16 @@
             <!-- Dropdown - Messages -->
             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                  aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search"
-                      action="{% url 'dashboard:search' %}" method="get">
+                <form class="form-inline mr-auto w-100 navbar-search" id="searchForm"
+                      data-url="{% url 'dashboard:search_ajax' %}" method="post" action="">
+                    {% csrf_token %}
                     <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small"
-                               placeholder="Search for..." aria-label="Search" name="query"
-                               aria-describedby="basic-addon2">
+                        <div class="input-group-prepend">
+                            {% render_field search_form.select class="custom-select bg-light border-0 small" %}
+                        </div>
+                        {% render_field search_form.query class="form-control bg-light border-0 small" %}
                         <div class="input-group-append">
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
+                            <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i></button>
                         </div>
                     </div>
                 </form>
@@ -101,7 +101,7 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                         {{ user.username }}
                 </span>
-                    <img class="img-profile rounded-circle" src="{{ user.userprofile.image.url }}" alt="">
+                    <img class="img-profile rounded-circle" src="{{ user.profile.image.url }}" alt="" onerror="this.src='{% static 'img/avatar.png' %}';">
                 </a>
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -119,13 +119,21 @@
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "Administration" %}</strong>
                         </a>
+                    {% endif %}
+                    {% if perms.auth.add_user %}
                         <a class="dropdown-item" href="{% url 'dashboard:signup' %}">
                             <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-primary">{% trans "New user" %}</strong>
                         </a>
-                        <a class="dropdown-item" href="#" onclick="excelImport(`{% url 'squalaetp:excel_import_async' %}`)">
-                            <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                    {% endif %}
+                    {% if perms.squalaetp.add_xelon %}
+                        <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'squalaetp:excel_import_async' %}`)">
+                            <i class="fas fa-file-import fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>
+                        </a>
+                        <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'dashboard:email_ajax' %}`)">
+                            <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
+                            <strong class="text-danger">{% trans "send emails" %}</strong>
                         </a>
                     {% endif %}
                     <a class="dropdown-item" href="{% url 'api:doc' %}">
@@ -137,7 +145,7 @@
                         {% trans "Activity Log" %}
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="logout-btn dropdown-item" href="#">
+                    <a id="logout-top-btn" class="logout-btn dropdown-item" href="#">
                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Logout" %}
                     </a>

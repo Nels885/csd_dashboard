@@ -1,8 +1,7 @@
 import re
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
-from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.translation import gettext as _
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
@@ -10,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth import login
 from django.contrib import messages
 from django.views.generic import TemplateView
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -34,6 +33,7 @@ from .forms import (
     UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm,
     SearchForm
 )
+from .tasks import cmd_sendemail_task
 
 
 def index(request):
@@ -61,13 +61,29 @@ def charts_ajax(request):
     return JsonResponse(data)
 
 
+def send_email_async(request):
+    if request.user.is_staff:
+        task = cmd_sendemail_task.delay("--late_products", "--pending_products", "--vin_error", "--vin_corvet")
+        return JsonResponse({"task_id": task.id})
+    raise Http404
+
+
 @login_required
-def late_products(request):
-    """ View of Late products page """
-    context = {'title': _("Late Products"), 'select_tab': 'late'}
+def products(request):
+    """ View of products page """
+    select_tab = request.GET.get('filter', 'late')
+    template = 'dashboard/products/activity.html'
     prods = ProductAnalysis()
-    context.update(prods.late_products())
-    return render(request, 'dashboard/late_products/late_products.html', context)
+    context = {'title': _("Late Products"), 'select_tab': select_tab}
+    if select_tab == 'pending':
+        context = {'title': _("Pending Products"), 'select_tab': select_tab}
+        context.update(prods.pending_products())
+    elif select_tab == 'tronik':
+        context = {'title': "Autotronik", 'select_tab': select_tab}
+        context.update(prods.autotronik())
+    else:
+        context.update(prods.late_products())
+    return render(request, template, context)
 
 
 @login_required
@@ -76,7 +92,7 @@ def admin_products(request):
     context = {'title': _("Admin Products"), 'select_tab': 'admin'}
     prods = ProductAnalysis()
     context.update(prods.admin_products())
-    return render(request, 'dashboard/late_products/list_products.html', context)
+    return render(request, 'dashboard/products/list.html', context)
 
 
 @login_required
@@ -85,16 +101,7 @@ def vip_products(request):
     context = {'title': _("VIP Products"), 'select_tab': 'vip'}
     prods = ProductAnalysis()
     context.update(prods.vip_products())
-    return render(request, 'dashboard/late_products/list_products.html', context)
-
-
-@login_required
-def autotronik(request):
-    """ View of Autotronik page """
-    context = {'title': _("Late Products"), 'select_tab': 'tronik'}
-    prods = ProductAnalysis()
-    context.update(prods.autotronik())
-    return render(request, 'dashboard/late_products/autotronik.html', context)
+    return render(request, 'dashboard/products/list.html', context)
 
 
 @login_required
@@ -187,7 +194,7 @@ def user_profile(request):
     return render(request, 'dashboard/profile.html', locals())
 
 
-@staff_member_required(login_url='login')
+@permission_required('auth.add_user', login_url='login')
 def signup(request):
     """ View of Sign Up page """
     title = _("SignUp")
@@ -226,7 +233,7 @@ def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True

@@ -1,7 +1,7 @@
 import re
 import xml.etree.ElementTree as ET
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.timezone import make_aware
 
 from datetime import datetime
@@ -10,6 +10,7 @@ from squalaetp.models import Xelon
 from psa.models import Corvet
 
 VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137]))\w{14}$'
+VIN_OLD_PSA_REGEX = r'^[VZ]((F[37])|(R[137]))\w{14}$'
 # VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
 COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
 
@@ -79,32 +80,13 @@ def validate_xelon(value):
         return 'Xelon number is invalid'
 
 
-def validate_psa_barcode(value):
-    """
-    Function for the PSA barcode validation
-    :param value:
-        Xelon value
-    :return:
-        Error message if not valid
-    """
-    if re.match(r'^9[68]\d{8}\w*$', str(value)):
-        return value[:10], None
-    elif re.match(r'^89661-\w{5}$', str(value)):
-        return value, None
-    elif re.match(r'55\d{6}$', str(value)):
-        return value, None
-    elif re.match(r'^\[\)>\w{55}$', str(value)):
-        return value[21:29], None
-    return value, _('PSA barcode is invalid')
-
-
 def validate_barcode(value):
     """
-    Function for the PSA barcode validation
+    Function for the REMAN barcode validation
     :param value:
-        Xelon value
+        barcode value
     :return:
-        Error message if not valid
+        new value and product customer
     """
     if re.match(r'^9[68]\d{8}\w*$', str(value)):
         return value[:10], "PSA"
@@ -116,6 +98,8 @@ def validate_barcode(value):
         return value[21:29], "PSA"
     elif re.match(r'^PF\w{16}$', str(value)):
         return value[:10], "VOLVO"
+    elif re.match(r'^\d{9}R$', str(value)):
+        return value, "PSA"
     return value, None
 
 
@@ -146,11 +130,10 @@ def validate_identify_number(queryset, value):
 def xml_parser(value):
     data = {"vin": ""}
     try:
-        tree = ET.XML(value)
-        root = tree.getchildren()
-        for list in root[1]:
-            if list.tag == "DONNEES_VEHICULE":
-                for child in list:
+        root = ET.XML(value)
+        for data_list in root[1]:
+            if data_list.tag == "DONNEES_VEHICULE":
+                for child in data_list:
                     if child.tag in ["WMI", "VDS", "VIS"]:
                         data['vin'] += child.text
                     elif child.tag in ["DATE_DEBUT_GARANTIE", "DATE_ENTREE_MONTAGE"]:
@@ -161,13 +144,13 @@ def xml_parser(value):
                         key, value = "DONNEE_{}".format(child.tag), child.text
                         # print("{} : {}".format(key, value))
                         data[key.lower()] = value
-            elif list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
-                for child in list:
+            elif data_list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
+                for child in data_list:
                     key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
-            elif list.tag == "LISTE_ORGANES":
-                for child in list:
+            elif data_list.tag == "LISTE_ORGANES":
+                for child in data_list:
                     key, value = "{}s_{}".format(child.tag, child.text[:2]), child.text[2:]
                     # print("{} : {}".format(key, value))
                     data[key.lower()] = value
@@ -196,7 +179,8 @@ def xml_sivin_parser(value):
     try:
         root = ET.fromstring(value)
         for element in root[0][0][0]:
-            data[fields[element.tag.split('}')[-1]]] = element.text.strip()
+            if element.tag and element.text:
+                data[fields[element.tag.split('}')[-1]]] = element.text.strip()
     except (ET.ParseError, KeyError, TypeError):
         data = value
     return data

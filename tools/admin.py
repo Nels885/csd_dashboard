@@ -4,23 +4,29 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
-    SuptechMessage, BgaTime
+    SuptechMessage, SuptechFile, BgaTime
 )
 
 
 class TagXelonAdmin(admin.ModelAdmin):
-    list_display = ('xelon', 'comments', 'created_by', 'created_at')
+    list_display = ('xelon', 'calibre', 'telecode', 'comments', 'created_by', 'created_at')
+    search_fields = ('xelon', 'created_by__username')
+    list_filter = ('calibre', 'telecode')
 
 
 class ThermalChamberAdmin(admin.ModelAdmin):
     list_display = ('created_at', 'created_by', 'xelon_number', 'start_time', 'stop_time', 'operating_mode', 'active')
     ordering = ('-created_at',)
-    search_fields = ('xelon_number', 'created_by')
+    search_fields = ('xelon_number', 'created_by__username')
 
 
 class ThermalChamberMeasureAdmin(admin.ModelAdmin):
     list_display = ('datetime', 'value', 'temp')
     search_fields = ('datetime',)
+
+
+class SuptechFileline(admin.TabularInline):
+    model = SuptechFile
 
 
 class SuptechAdmin(admin.ModelAdmin):
@@ -30,6 +36,7 @@ class SuptechAdmin(admin.ModelAdmin):
     list_filter = ('status', 'category', 'is_48h')
     search_fields = ('id', 'user', 'xelon', 'item')
     actions = ('is_48h_disabled', 'is_48h_enabled')
+    inlines = (SuptechFileline, )
 
     def _message_user_about_update(self, request, rows_updated, verb):
         """Send message about action to user.
@@ -71,6 +78,11 @@ class SuptechMessageAdmin(admin.ModelAdmin):
     list_display = ('content', 'added_at', 'added_by', 'content_object')
 
 
+class SuptechFileAdmin(admin.ModelAdmin):
+    list_display = ('suptech', 'file')
+    ordering = ('suptech',)
+
+
 admin.site.register(TagXelon, TagXelonAdmin)
 admin.site.register(CsdSoftware)
 admin.site.register(EtudeProject)
@@ -79,5 +91,6 @@ admin.site.register(Suptech, SuptechAdmin)
 admin.site.register(SuptechCategory, SuptechCategoryAdmin)
 admin.site.register(SuptechItem, SuptechItemAdmin)
 admin.site.register(SuptechMessage, SuptechMessageAdmin)
+admin.site.register(SuptechFile, SuptechFileAdmin)
 admin.site.register(BgaTime)
 admin.site.register(ThermalChamberMeasure, ThermalChamberMeasureAdmin)

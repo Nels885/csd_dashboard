@@ -8,23 +8,27 @@
         <thead>
         <tr>
             <th>Numéro Xelon</th>
+            <th>Calibration</th>
+            <th>Télécodage</th>
             <th>Commentaires</th>
-            <th>Créé par</th>
             <th>Créé le</th>
+            <th>Créé par</th>
         </tr>
         </thead>
         <tbody>
 
-        {% for tag in tags %}
-
-            <tr>
-                <td>{{ tag.xelon }}</td>
-                <td>{{ tag.comments }}</td>
-                <td>{{ tag.created_at }}</td>
-                <td>{{ tag.created_by }}</td>
-            </tr>
-
-        {% endfor %}
+{#        {% for tag in tags %}#}
+{##}
+{#            <tr>#}
+{#                <td>{{ tag.xelon }}</td>#}
+{#                <td>{{ tag.comments }}</td>#}
+{#                <td>{{ tag.get_calibre_display }}</td>#}
+{#                <td>{{ tag.get_telecode_display }}</td>#}
+{#                <td>{{ tag.created_at }}</td>#}
+{#                <td>{{ tag.created_by }}</td>#}
+{#            </tr>#}
+{##}
+{#        {% endfor %}#}
 
         </tbody>
     </table>
@@ -41,12 +45,9 @@
 {% block tablejs %}
 
     <!-- Page level custom scripts -->
-    <script src="{% static 'tools/js/tools-tables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/JSZip/jszip.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/pdfmake/pdfmake.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/pdfmake/vfs_fonts.js' %}"></script>
-    <script src="{% static 'vendor/datatables/Buttons/js/buttons.html5.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/Buttons/js/buttons.print.min.js' %}"></script>
+    <script type="text/javascript">
+        const URL_AJAX = "{% url 'tools:api_tagxelon-list' %}";
+    </script>
+    <script type="text/javascript" src="{% static 'tools/js/tag-xelon-table.js' %}"></script>
 
 {% endblock %}

@@ -3,7 +3,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-from .models import Sivin, Xelon, ProductCategory
+from .models import Sivin, Xelon, XelonTemporary, ProductCategory
 from psa.models import Corvet, Ecu, Multimedia
 from utils.django.validators import comp_ref_isvalid, VIN_PSA_REGEX
 from utils.django.decorators import disable_for_loaddata
@@ -62,3 +62,13 @@ def pre_save_xelon(sender, instance, **kwargs):
                 instance.delai_expedition_attendue = (timezone.now().date() - instance.date_expedition_attendue).days
             except TypeError:
                 instance.delai_expedition_attendue = (timezone.now() - instance.date_expedition_attendue).days
+
+
+@receiver(pre_save, sender=XelonTemporary)
+@disable_for_loaddata
+def pre_save_xelon_temporary(sender, instance, **kwargs):
+    try:
+        if re.match(VIN_PSA_REGEX, str(instance.vin)):
+            instance.corvet = Corvet.objects.get(vin=instance.vin)
+    except Corvet.DoesNotExist:
+        instance.corvet = None

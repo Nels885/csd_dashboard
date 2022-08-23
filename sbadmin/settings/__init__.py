@@ -113,11 +113,9 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 "sekizai.context_processors.sekizai",
-                'sbadmin.context_processors.get_release',
-                'sbadmin.context_processors.get_ip',
-                'sbadmin.context_processors.get_admin_emails',
-                'sbadmin.context_processors.get_wiki_url',
-                'sbadmin.context_processors.search_form',
+                'sbadmin.context_processors.global_infos',
+                'sbadmin.context_processors.global_emails',
+                'sbadmin.context_processors.global_forms',
             ],
         },
     },
@@ -321,6 +319,8 @@ CONSTANCE_CONFIG = {
     'SITE_DESCRIPTION': ('', 'Website description'),
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
     'WIKI_URL': ('127.0.0.1:8001', 'URL of the wiki web application'),
+    'SYS_REPORT_TO_MAIL_LIST': ('system1@test.com; system2@test.com', 'System report TO email list'),
+    'CONTRACT_TO_EMAIL_LIST': ('contract1@test.com; contract2@test.com', 'Contracts TO email list'),
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
@@ -336,10 +336,12 @@ CONSTANCE_CONFIG = {
     'XML_CORVET_PATH': ('LOGS/CORVET_XML_TEST', 'xml Corvet path'),
     'TAG_XELON_PATH': ('LOGS/CALIBRE', 'tag xelon path'),
     'TAG_XELON_LOG_PATH': ('LOGS/LOG_CONFIG_PROD', 'tag xelon log path'),
+    'TAG_XELON_TEL_PATH': ('LOGS/TELECODAGE', 'tag xelon télécodage path'),
 
     # CSD Repair Options
     'VIN_ERROR_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'VIN error TO email list'),
     'LATE_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Late products TO email list'),
+    'PENDING_PRODUCTS_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Pending products TO email list'),
     'REMAN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'REMAN TO email list'),
     'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN TO email list'),
     'CHANGE_PROD_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon produit TO email list'),
@@ -380,15 +382,19 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    '1. General Options': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL'),
+    '1. General Options': (
+        'SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'SYS_REPORT_TO_MAIL_LIST',
+        'CONTRACT_TO_EMAIL_LIST'
+    ),
     '2. Network Options': (
         'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
         'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
-        'TAG_XELON_LOG_PATH'
+        'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'
     ),
     '3. CSD Repair Options': (
-        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST',
-        'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST', 'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
+        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',
+        'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
+        'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
     ),
     '4. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
@@ -408,7 +414,8 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
-CELERY_TIMEZONE = "Europe/Paris"
+# CELERY_TIME_ZONE = "Europe/Paris"
+CELERY_ENABLE_UTC = False
 
 # DJANGO-WIKI CONFIGURATION
 WIKI_ACCOUNT_HANDLING = True

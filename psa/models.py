@@ -208,23 +208,43 @@ class Corvet(models.Model):
         ordering = ['vin']
 
     @classmethod
+    def hw_search(cls, value, all_data=True):
+        if value is not None:
+            query = value.strip()
+            return cls.objects.filter(
+                Q(electronique_14f__iexact=query) | Q(electronique_14j__iexact=query) |
+                Q(electronique_14k__iexact=query) | Q(electronique_14l__iexact=query) |
+                Q(electronique_14r__iexact=query) | Q(electronique_14x__iexact=query) |
+                Q(electronique_19z__iexact=query) | Q(electronique_19h__iexact=query) |
+                Q(electronique_14a__iexact=query) | Q(electronique_14b__iexact=query) |
+                Q(electronique_16p__iexact=query) | Q(electronique_16b__iexact=query) |
+                Q(electronique_16q__iexact=query) | Q(electronique_16v__iexact=query) |
+                Q(electronique_19f__iexact=query) | Q(electronique_19u__iexact=query) |
+                Q(electronique_14d__iexact=query) | Q(electronique_16g__iexact=query) |
+                Q(electronique_19v__iexact=query) | Q(electronique_12y__iexact=query) |
+                Q(electronique_16l__iexact=query) | Q(electronique_14y__iexact=query) |
+                Q(electronique_14z__iexact=query) | Q(electronique_14p__iexact=query) |
+                Q(electronique_19w__iexact=query) | Q(electronique_16t__iexact=query) |
+                Q(electronique_19t__iexact=query) | Q(electronique_14m__iexact=query) |
+                Q(electronique_18z__iexact=query) | Q(electronique_11m__iexact=query) |
+                Q(electronique_19k__iexact=query) | Q(electronique_12e__iexact=query))
+        if all_data:
+            return cls
+        return None
+
+    @classmethod
     def search(cls, value):
         if value is not None:
             query = value.strip()
-            return cls.objects.filter(Q(vin__iexact=query) | Q(vin__iendswith=query) |
-                                      Q(electronique_44l__icontains=query) |
-                                      Q(electronique_44x__icontains=query) |
-                                      Q(electronique_44a__icontains=query) |
-                                      Q(electronique_12y__iexact=query) |
-                                      Q(electronique_14l__iexact=query) |
-                                      Q(electronique_14x__iexact=query) |
-                                      Q(electronique_14a__iexact=query) |
-                                      Q(electronique_14b__iexact=query) |
-                                      Q(electronique_14k__iexact=query) |
-                                      Q(electronique_44b__iexact=query) |
-                                      Q(electronique_16p__iexact=query) |
-                                      Q(electronique_46p__iexact=query) |
-                                      Q(opts__tag__istartswith=query))
+            corvets = cls.hw_search(value, all_data=False)
+            if corvets:
+                return corvets
+            return cls.objects.filter(
+                Q(vin__iexact=query) | Q(vin__iendswith=query) | Q(electronique_44l__icontains=query) |
+                Q(electronique_44x__icontains=query) | Q(electronique_44a__icontains=query) |
+                Q(electronique_44b__iexact=query) | Q(electronique_46p__iexact=query) |
+                Q(opts__tag__istartswith=query)
+            )
         return None
 
     def __str__(self):
@@ -266,6 +286,20 @@ class CorvetOption(models.Model):
         return self.corvet.vin
 
 
+class CorvetAttribute(models.Model):
+    key_1 = models.CharField('cle1', max_length=100)
+    key_2 = models.CharField('cle2', max_length=100)
+    label = models.CharField('libellé', max_length=500)
+    col_ext = models.CharField('colext', max_length=10)
+
+    class Meta:
+        verbose_name = "Attributs CORVET"
+        ordering = ['id']
+
+    def __str__(self):
+        return f"{self.key_1}_{self.key_2} - {self.label}"
+
+
 class Multimedia(models.Model):
     TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
@@ -274,7 +308,7 @@ class Multimedia(models.Model):
         ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
     ]
     PRODUCT_CHOICES = [
-        ('RD3', 'RD3'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
+        ('RD3', 'RD3'), ('RD4', 'RD4'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
         ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
         ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
         ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
@@ -310,6 +344,7 @@ class Multimedia(models.Model):
     front_pic = models.ImageField(upload_to='psa', blank=True)
     setplate_pic = models.ImageField(upload_to='psa', blank=True)
     rear_pic = models.ImageField(upload_to='psa', blank=True)
+    relation_by_name = models.BooleanField('relation par nom', default=False)
     firmware = models.ForeignKey('Firmware', on_delete=models.SET_NULL, limit_choices_to={'is_active': True}, null=True, blank=True)
 
     class Meta:
@@ -329,7 +364,9 @@ class Firmware(models.Model):
         ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
         ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
         ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
-        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4')
+        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4'),
+        ('RCC_EU_W2', 'RCC_EU_W2'),
+        ('RCC_EU_W3_ECO', 'RCC_EU_W3_ECO')
     ]
 
     update_id = models.CharField('SWL(UpdateID)', max_length=18, unique=True)
@@ -394,6 +431,7 @@ class Ecu(models.Model):
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     pr_reference = models.CharField("référence PR", max_length=10, blank=True)
     extra = models.CharField('supplément', max_length=100, blank=True)
+    relation_by_name = models.BooleanField('relation par nom', default=False)
 
     class Meta:
         verbose_name = "Données ECU"

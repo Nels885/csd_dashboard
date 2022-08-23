@@ -6,9 +6,11 @@ import pandas as pd
 import unicodedata
 import re
 import os
+from datetime import datetime, timedelta
 
 
 class BaseFormat:
+    ERROR = None
 
     def __init__(self, data_frame, columns):
         self.sheet = data_frame.dropna(how='all')
@@ -55,11 +57,23 @@ class BaseFormat:
         self.sheet.rename(columns=new_columns, inplace=True)
         self.columns = list(self.sheet.columns)
 
+    def _columns_check(self, col_dict):
+        return [column for column in col_dict if column in self.columns]
+
+    def _boolean_convert(self, col_dict):
+        """
+        Converting string values 'O' or 'N' in boolean
+        :return:
+            Data line converts
+        """
+        for col, to_replace in col_dict.items():
+            self.sheet[col].replace(to_replace=to_replace, inplace=True)
+
 
 class ExcelFormat(BaseFormat):
     """## Base class for formatting Excel files ##"""
 
-    def __init__(self, file, sheet_name, columns, skiprows=None, dtype=None, usecols=None):
+    def __init__(self, file, sheet_name, columns, skiprows=None, dtype=None, usecols=None, datedelta=-1, **kwargs):
         """
         Initialize ExcelFormat class
         :param file:
@@ -71,6 +85,7 @@ class ExcelFormat(BaseFormat):
         :param skip_rows:
             Rows to skip at the beginning (0-indexed)
         """
+        self._check_file_date(file, datedelta, kwargs.get('offdays', []))
         self.basename = os.path.basename(file[:file.find('.')])
         try:
             df = pd.read_excel(file, sheet_name=sheet_name, skiprows=skiprows, dtype=dtype, usecols=usecols)
@@ -123,10 +138,11 @@ class ExcelFormat(BaseFormat):
             xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
             df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
                                dtype=dtype, usecols=usecols)
-            dataframe = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
-            dataframe.reset_index(drop=True, inplace=True)
+            if df.get('N° de dossier'):
+                df = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
+            df.reset_index(drop=True, inplace=True)
             # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
-            return dataframe
+            return df
         except UnicodeDecodeError as err:
             print(f"UnicodeDecodeError: {err} - file : {file}")
             return pd.DataFrame()
@@ -147,6 +163,13 @@ class ExcelFormat(BaseFormat):
             df_corvet.rename(columns=new_columns, inplace=True)
             df_corvet.rename(str.lower, axis='columns', inplace=True)
         return df_corvet, nrows
+
+    def _check_file_date(self, file, datedelta, offdays):
+        now = datetime.now()
+        if not isinstance(offdays, list) or now.weekday() not in offdays:
+            date_file = datetime.fromtimestamp(os.path.getmtime(file)).date()
+            if datedelta != -1 and date_file != (now - timedelta(days=datedelta)).date():
+                self.ERROR = f"FileDateError for the file: '{file}'"
 
 
 class CsvFormat(BaseFormat):

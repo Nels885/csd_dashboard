@@ -27,6 +27,10 @@
             <div class="col-sm-2">
                 {% render_field form.product class="custom-select form-control" %}
             </div>
+            {% include 'format/label_form_group.html' with field=form.hw_reference %}
+            <div class="col-sm-2">
+                {% render_field form.hw_reference class="form-control" %}
+            </div>
         </div>
 
         <div class="form-group row">

@@ -163,3 +163,74 @@ class ExportExcelTask(BaseTask):
             return re.sub(re_sub, ' ', f.text)
         else:
             return f.text
+
+
+class ExportExcel(ExportExcelTask):
+    name = "ExportExcel"
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def _create_xlsx(self, workbook: Workbook, values_list):
+        """ Formatting data in Excel 2010 format """
+        # Get active worksheet/tab
+        workbook.encoding = 'utf-8-sig'
+        ws = workbook.active
+        ws.title = self.sheetName
+
+        # Sheet header, first row
+        row_num = 1
+
+        # Assign the titles for each cell of the header
+        for col_num, column_title in enumerate(self.header, 1):
+            cell = ws.cell(row=row_num, column=col_num)
+            cell.font = Font(bold=True)
+            cell.value = column_title
+
+        # Iterate though all values
+        for query in values_list:
+            row_num += 1
+            query = self._query_format(query)
+
+            # Assign the data  for each cell of the row
+            for col_num, cell_value in enumerate(query, 1):
+                cell = ws.cell(row=row_num, column=col_num)
+                if col_num in self.textCols:
+                    cell.alignment = Alignment(wrapText=True)
+                cell.value = cell_value
+        return workbook
+
+    def _create_xls(self, xldoc: xlwt.Workbook, values_list):
+        """ Formatting data in Excel format """
+        sheet = xldoc.add_sheet(self.sheetName)
+
+        # Sheet header, first row
+        row_num = 0
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        for col_num in range(len(self.header)):
+            sheet.write(row_num, col_num, self.header[col_num], font_style)
+
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+
+        for query in values_list:
+            row_num += 1
+            query = self._query_format(query)
+
+            for col_num in range(len(query)):
+                sheet.write(row_num, col_num, query[col_num], font_style)
+        return xldoc
+
+    def _create_csv(self, filename, values_list):
+        """ Formatting data in CSV format """
+        with open(filename, 'w+', newline='', encoding='utf-8-sig') as f:
+            writer = csv.writer(f, delimiter=';', lineterminator=';\r\n')
+            writer.writerow(self.header)
+
+            for row_num, query in enumerate(values_list):
+                query = tuple([self._html_to_string(_, r'[;,]') if isinstance(_, str) else _ for _ in query])
+                query = self._query_format(query)
+                writer.writerow(query)

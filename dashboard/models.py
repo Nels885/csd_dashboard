@@ -5,7 +5,9 @@ from crum import get_current_user
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, primary_key=True)
+    job_title = models.CharField('intitulé de poste', max_length=500, blank=True)
+    service = models.CharField('service', max_length=100, blank=True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
 
     def __str__(self):
@@ -59,3 +61,22 @@ class WebLink(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Contract(models.Model):
+    code = models.CharField('code document', max_length=100, blank=True)
+    service = models.CharField('service', max_length=100, blank=True)
+    nature = models.CharField('nature du document', max_length=1000, blank=True)
+    object = models.TextField('object du documnet', blank=True)
+    supplier = models.CharField('fournisseur', max_length=500, blank=True)
+    site = models.CharField('site', max_length=100, blank=True)
+    end_date = models.DateField('date fin', null=True, blank=True)
+    is_active = models.BooleanField('contrat actif', default=False)
+    renew_date = models.DateField('date prévenance', null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Contrat"
+        ordering = ['id']
+
+    def __str__(self):
+        return self.code

@@ -9,7 +9,7 @@ coverage = "*"
 django-debug-toolbar = "*"
 
 [packages]
-django = ">=3.2.12"
+django = ">=3.2.12,<4.0.0"
 psycopg2 = "*"
 xlrd = "==1.2.0"
 pandas = "==1.1.5"
@@ -38,3 +38,4 @@ django-searchable-encrypted-fields = "*"
 reportlab = "*"
 django-constance = {extras = [ "redis",], version = "*"}
 wiki = "*"
+tzdata = "*"

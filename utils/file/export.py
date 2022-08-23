@@ -12,8 +12,9 @@ from html.parser import HTMLParser
 from django.shortcuts import HttpResponse
 # from django.utils.safestring import SafeString
 
+from squalaetp.models import Xelon
 from psa.models import Corvet
-from utils.conf import XML_CORVET_PATH, TAG_XELON_PATH, TAG_XELON_LOG_PATH
+from utils.conf import XML_CORVET_PATH, TAG_XELON_PATH, TAG_XELON_LOG_PATH, TAG_XELON_TEL_PATH
 
 # Get an instance of a logger
 logger = logging.getLogger('command')
@@ -40,12 +41,12 @@ def xml_corvet_file(instance, data, vin):
         logger.warning("Xelon number not found")
 
 
-class Calibre:
+class TagFile:
     """
     Class allowing the processing of calibration files for Xelon unlocking
     """
 
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         self.paths = list(args)
 
     def file(self, xelon, comments, user):
@@ -54,17 +55,24 @@ class Calibre:
         :param xelon: Xelon number
         :param comments: User comment
         """
-        if xelon != 'A123456789':
-            for path in self.paths:
-                file = os.path.join(path, xelon + ".txt")
-                os.makedirs(path, exist_ok=True)
-                if not os.path.isfile(file):
-                    with open(file, "w", encoding='utf-8-sig') as f:
-                        f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
-                else:
-                    logger.warning("%s File exists.", xelon)
-                    return False
-        return True
+        file_exist = False
+        try:
+            if xelon != 'A123456789':
+                for path in self.paths:
+                    file_exist = self._create_file(path, xelon, user, comments)
+        except Xelon.DoesNotExist:
+            pass
+        return file_exist
+
+    def _create_file(self, path, xelon, user, comments):
+        file = os.path.join(path, xelon + ".txt")
+        os.makedirs(path, exist_ok=True)
+        if not os.path.isfile(file):
+            with open(file, "w", encoding='utf-8-sig') as f:
+                f.write("Configuration produit effectuée par {}\r\n{}".format(user, comments))
+            return True
+        logger.warning("%s File exists.", xelon)
+        return False
 
     def check(self, xelon):
         """
@@ -77,7 +85,8 @@ class Calibre:
         return False
 
 
-calibre = Calibre(TAG_XELON_PATH, TAG_XELON_LOG_PATH)
+calibre = TagFile(TAG_XELON_PATH, TAG_XELON_LOG_PATH)
+telecode = TagFile(TAG_XELON_TEL_PATH)
 
 
 class ExportExcel:

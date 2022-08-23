@@ -3,6 +3,7 @@ from django.dispatch import receiver
 
 from utils.django.decorators import disable_for_loaddata
 from .models import CorvetProduct, Corvet, Multimedia, Ecu, CorvetOption
+from squalaetp.models import Xelon, Sivin
 
 
 @receiver(post_save, sender=Corvet)
@@ -32,6 +33,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
     if instance.electronique_12y.isdigit():
         default.update({"cvm2": Ecu.objects.filter(comp_ref__startswith=instance.electronique_12y, type='CVM2').first()})
     CorvetProduct.objects.update_or_create(corvet=instance, defaults=default)
+    Xelon.objects.filter(vin=instance.vin).update(corvet=instance)
+    Sivin.objects.filter(codif_vin=instance.vin).update(corvet=instance)
     if created:
         CorvetOption.objects.get_or_create(corvet=instance)
 

@@ -1,9 +1,9 @@
 from django.utils import timezone
 # import itertools
 
-from django.db.models.functions import ExtractDay, TruncDay, TruncMonth
+from django.db.models.functions import ExtractDay, TruncDay, TruncMonth, Concat
 from django.db.models.aggregates import Count, Sum
-from django.db.models import Q, F, Case, When, IntegerField
+from django.db.models import Q, F, Case, When, IntegerField, CharField, Value as V
 
 from squalaetp.models import Xelon, Indicator
 from psa.models import Corvet
@@ -11,7 +11,7 @@ from tools.models import Suptech, BgaTime, ThermalChamberMeasure
 
 
 class ProductAnalysis:
-    QUERYSET_RETURN = Xelon.objects.exclude(date_retour__isnull=True)
+    QUERYSET_RETURN = Xelon.objects.exclude(date_retour__isnull=True).order_by('date_expedition_attendue')
     QUERYSET = QUERYSET_RETURN.exclude(lieu_de_stockage='ATELIER/AUTOTRONIK')
     QUERYSET_AUTOTRONIK = QUERYSET_RETURN.filter(lieu_de_stockage='ATELIER/AUTOTRONIK')
 
@@ -19,10 +19,9 @@ class ProductAnalysis:
         """
         Initialization of the ProductAnalysis class
         """
-        self.pendingQueryset = self.QUERYSET.filter(type_de_cloture__in=['', 'Sauvée'])
-        self.lateQueryset = self.QUERYSET.filter(Q(delai_expedition_attendue__gt=0) |
-                                                 Q(express=True)).exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
+        self.pendingQueryset = self.QUERYSET.exclude(type_de_cloture__in=['Réparé', 'N/A', 'Rebut'])
+        self.lateQueryset = self.QUERYSET.filter(Q(delai_expedition_attendue__gt=0) | Q(express=True)).exclude(
+            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut'])
         self.pending = self.pendingQueryset.count()
         self.express = self.pendingQueryset.filter(express=True).count()
         self.vip = self.pendingQueryset.filter(dossier_vip=True).count()
@@ -51,25 +50,26 @@ class ProductAnalysis:
         :return:
             Dictionary of different activities
         """
-        psa = self.lateQueryset.filter(product__category='PSA')
-        clarion = self.lateQueryset.filter(product__category='CLARION')
-        etude = self.lateQueryset.filter(product__category='ETUDE')
-        autre = self.lateQueryset.filter(product__category='AUTRE')
-        calc_mot = self.lateQueryset.filter(product__category='CALCULATEUR')
-        defaut = self.lateQueryset.filter(product__category='DEFAUT')
-        return locals()
+        return self._activity_dict(self.lateQueryset)
+
+    def pending_products(self):
+        """
+        Organization of pending products by activity
+        :return:
+            Dictionary of different activities
+        """
+        return self._activity_dict(self.pendingQueryset)
 
     def admin_products(self):
-        queryset = self.QUERYSET.filter(type_de_cloture='Admin').order_by('-delai_au_en_jours_ouvres')
+        queryset = self._mailto_annotate(self.QUERYSET.filter(type_de_cloture='Admin'))
         return locals()
 
     def vip_products(self):
-        queryset = self.pendingQueryset.filter(dossier_vip=True).order_by('-delai_au_en_jours_ouvres')
+        queryset = self._mailto_annotate(self.pendingQueryset.filter(dossier_vip=True))
         return locals()
 
     def autotronik(self):
-        autotronik = self.QUERYSET_AUTOTRONIK.exclude(
-            type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut']).order_by('-delai_au_en_jours_ouvres')
+        autotronik = self.QUERYSET_AUTOTRONIK.exclude(type_de_cloture__in=['Réparé', 'Admin', 'N/A', 'Rebut'])
         return locals()
 
     @staticmethod
@@ -89,6 +89,22 @@ class ProductAnalysis:
             number of Xelon data
         """
         return Xelon.objects.all().count()
+
+    def _activity_dict(self, queryset):
+        queryset = self._mailto_annotate(queryset)
+        psa = queryset.filter(product__category='PSA')
+        clarion = queryset.filter(product__category='CLARION')
+        etude = queryset.filter(product__category='ETUDE')
+        autre = queryset.filter(product__category='AUTRE')
+        calc_mot = queryset.filter(product__category='CALCULATEUR')
+        defaut = queryset.filter(product__category='DEFAUT')
+        return locals()
+
+    @staticmethod
+    def _mailto_annotate(queryset):
+        return queryset.annotate(
+            subject=Concat('numero_de_dossier', V(' - '), 'modele_produit', output_field=CharField())
+        )
 
 
 class IndicatorAnalysis:
@@ -120,7 +136,8 @@ class IndicatorAnalysis:
 
     def new_result(self):
         last_60_days = timezone.datetime.today() - timezone.timedelta(60)
-        data = {"prodsAreaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [], "prodsLateValue": []}
+        data = {"prodsAreaLabels": [], "prodsInValue": [], "prodsRepValue": [], "prodsExpValue": [],
+                "prodsLateValue": []}
         prods = Indicator.objects.filter(date__gte=last_60_days).order_by('date')
         for prod in prods:
             data["prodsAreaLabels"].append(prod.date.strftime("%d/%m/%Y"))
@@ -192,9 +209,10 @@ class ToolsAnalysis:
     @staticmethod
     def _percent(value, total=None, total_multiplier=1):
         if isinstance(total, int) and total != 0 and isinstance(value, int) and value != 0:
-            return round(100 * value / (total * total_multiplier), 1)
-        else:
-            return 0
+            result = round(100 * value / (total * total_multiplier), 1)
+            if result <= 100:
+                return result
+        return 0
 
     @staticmethod
     def _bga_annotate(queryset):

@@ -34,6 +34,12 @@ class Command(BaseCommand):
             help='Specify import Excel Delay files',
         )
         parser.add_argument(
+            '-T',
+            '--time_limit_file',
+            dest='time_limit_file',
+            help='Specify import Excel Time Limit file',
+        )
+        parser.add_argument(
             '--xelon_update',
             action='store_true',
             dest='xelon_update',
@@ -67,14 +73,16 @@ class Command(BaseCommand):
             else:
                 squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             if options['delay_files']:
-                delay_list = string_to_list(options['delay_files'])
-                delay = ExcelDelayAnalysis(delay_list)
+                delay_files = string_to_list(options['delay_files'])
             else:
-                delay = ExcelDelayAnalysis(XLS_DELAY_FILES)
+                delay_files = XLS_DELAY_FILES
 
-            time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
+            if options['time_limit_file']:
+                time_limit = ExcelTimeLimitAnalysis(options['time_limit_file'])
+            else:
+                time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
             self._squalaetp_file(Xelon, squalaetp)
-            self._delay_files(Xelon, squalaetp, delay)
+            self._delay_files(Xelon, squalaetp, delay_files)
             self._time_limit_files(Xelon, squalaetp, time_limit)
             self._indicator()
 
@@ -125,6 +133,7 @@ class Command(BaseCommand):
                     logger.error(f"[XELON_CMD] {xelon_number} - {err}")
             model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
             nb_prod_after = model.objects.count()
+            self.stdout.write(f"[SQUALAETP_FILE] '{XLS_SQUALAETP_FILE}' => OK")
             self.stdout.write(
                 self.style.SUCCESS(
                     "[XELON] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
@@ -133,50 +142,57 @@ class Command(BaseCommand):
                 )
             )
         else:
-            self.stdout.write(self.style.WARNING("[XELON] No squalaetp file found"))
+            self.stdout.write(f"[SQUALAETP_FILE] {excel.ERROR}")
 
-    def _delay_files(self, model, squalaetp, delay):
+    def _delay_files(self, model, squalaetp, delay_files):
         self.stdout.write("[DELAY] Waiting...")
-        nb_prod_before, nb_prod_update, value_error_list = model.objects.count(), 0, []
         cat_old = ProductCategory.objects.count()
-        xelon_list, delay_list = squalaetp.xelon_number_list(), delay.xelon_number_list()
-        if not delay.ERROR:
-            self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
-            model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
-                                  Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
-                                  Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
-            for row in delay.table():
-                xelon_number = row.get("numero_de_dossier")
-                product_model = row.get("modele_produit")
-                defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
-                try:
-                    obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
-                    if not created:
-                        nb_prod_update += 1
-                    if product_model and not obj.modele_produit:
-                        obj.modele_produit = product_model
-                        obj.save()
-                except ValueError:
-                    value_error_list.append(xelon_number)
-                except Exception as err:
-                    logger.error(f"[DELAY_CMD] {xelon_number} - {err}")
-            if value_error_list:
-                logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
+        nb_prod_before, nb_prod_update, nrows, value_error_list = model.objects.count(), 0, 0, []
+        xelon_list, delay_list = squalaetp.xelon_number_list(), []
+        for count, file in enumerate(delay_files):
+            if count == 0:
+                delay = ExcelDelayAnalysis(file, datedelta=0)
+            else:
+                delay = ExcelDelayAnalysis(file)
+            if not delay.ERROR:
+                delay_list += delay.xelon_number_list()
+                for row in delay.table():
+                    xelon_number = row.get("numero_de_dossier")
+                    product_model = row.get("modele_produit")
+                    defaults = defaults_dict(model, row, "numero_de_dossier", "modele_produit")
+                    try:
+                        obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
+                        if not created:
+                            nb_prod_update += 1
+                        if product_model and not obj.modele_produit:
+                            obj.modele_produit = product_model
+                            obj.save()
+                    except ValueError:
+                        value_error_list.append(xelon_number)
+                    except Exception as err:
+                        logger.error(f"[DELAY_CMD] {xelon_number} - {err}")
+                if value_error_list:
+                    logger.error(f"[DELAY_CMD] ValueError row: {', '.join(value_error_list)}")
 
-            nb_prod_after = model.objects.count()
-            cat_new = ProductCategory.objects.count()
-            self.stdout.write(
-                self.style.SUCCESS(f"[DElAY] ProductCategory update completed: ADD = {cat_new - cat_old}")
+                self.stdout.write(f"[DELAY_FILE] '{file}' => OK")
+                nrows += delay.nrows
+            else:
+                self.stdout.write(f"[DELAY_FILE] {delay.ERROR}")
+        model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
+                              Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
+                              Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
+        nb_prod_after = model.objects.count()
+        cat_new = ProductCategory.objects.count()
+        self.stdout.write(
+            self.style.SUCCESS(f"[DElAY_CMD] ProductCategory update completed: ADD = {cat_new - cat_old}")
+        )
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"[DELAY_CMD] data update completed: EXCEL_LINES = {nrows} | " +
+                f"ADD = {nb_prod_after - nb_prod_before} | UPDATE = {nb_prod_update} | TOTAL = {nb_prod_after}"
             )
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "[DELAY] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                        delay.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
-                    )
-                )
-            )
-        else:
-            self.stdout.write(self.style.WARNING("[DELAY] No delay files found"))
+        )
+        self.stdout.write(f"[DELAY] Nb dossiers xelon: {len(xelon_list)} - Nb dossiers delais: {len(delay_list)}")
 
     def _time_limit_files(self, model, squalaetp, excel):
         self.stdout.write("[TIME_LIMIT] Waiting...")
@@ -197,6 +213,7 @@ class Command(BaseCommand):
                 logger.error(f"[TIME_LIMIT_CMD] ValueError row: {', '.join(value_error_list)}")
 
             nb_prod_after = model.objects.count()
+            self.stdout.write(f"[TIME_LIMIT_FILE] '{XLS_TIME_LIMIT_FILE}' => OK")
             self.stdout.write(
                 self.style.SUCCESS(
                     "[TIME_LIMIT] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
@@ -205,7 +222,7 @@ class Command(BaseCommand):
                 )
             )
         else:
-            self.stdout.write(self.style.WARNING("[TIME_LIMIT] No delay files found"))
+            self.stdout.write(f"[TIME_LIMIT_FILE] {excel.ERROR}")
 
     def _product_category(self):
         xelons = Xelon.objects.exclude(modele_produit="")

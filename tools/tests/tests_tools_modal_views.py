@@ -25,6 +25,8 @@ class MixinsTest(UnitTest):
             reverse('tools:tag_xelon_add'),
             data={
                 'xelon': 'wrong_xelon',
+                'calibre': True,
+                'telecode': False,
                 'comments': ''
             },
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -43,6 +45,8 @@ class MixinsTest(UnitTest):
             reverse('tools:tag_xelon_add'),
             data={
                 'xelon': 'A123456789',
+                'calibre': True,
+                'telecode': False,
                 'comments': ''
             }
         )

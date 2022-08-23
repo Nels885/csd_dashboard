@@ -48,30 +48,32 @@ class Command(BaseCommand):
                 excel = ExcelPrograming(options['filename'])
             else:
                 excel = ExcelPrograming(XLS_RASPEEDI_FILE)
-            self._programing(excel.read())
+            self._programing(excel)
 
-    def _programing(self, data):
+    def _programing(self, excel):
         nb_before = Programing.objects.count()
         nb_update = 0
-        for row in data:
-            logger.info(row)
-            psa_barcode = row.pop("psa_barcode")
-            try:
-                multimedia = Multimedia.objects.filter(comp_ref=psa_barcode).first()
-                values = {'multimedia': multimedia}
-                values.update(defaults_dict(Programing, row))
-                obj, created = Programing.objects.update_or_create(psa_barcode=psa_barcode, defaults=values)
-                if not created:
-                    nb_update += 1
-            except IntegrityError as err:
-                logger.error(f"[PROGRAMING_CMD] IntegrityError: {psa_barcode} - {err}")
-            except DataError as err:
-                logger.error(f"[PROGRAMING_CMD] DataError: {psa_barcode} - {err}")
-        nb_after = Programing.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[PROGRAMING] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    len(data), nb_after - nb_before, nb_update, nb_after
+        if not excel.ERROR:
+            for row in excel.read():
+                logger.info(row)
+                psa_barcode = row.pop("psa_barcode")
+                try:
+                    multimedia = Multimedia.objects.filter(comp_ref=psa_barcode).first()
+                    values = {'multimedia': multimedia}
+                    values.update(defaults_dict(Programing, row))
+                    obj, created = Programing.objects.update_or_create(psa_barcode=psa_barcode, defaults=values)
+                    if not created:
+                        nb_update += 1
+                except IntegrityError as err:
+                    logger.error(f"[PROGRAMING_CMD] IntegrityError: {psa_barcode} - {err}")
+                except DataError as err:
+                    logger.error(f"[PROGRAMING_CMD] DataError: {psa_barcode} - {err}")
+            nb_after = Programing.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"[PROGRAMING] data update completed: EXCEL_LINES = {excel.nrows} | " +
+                    f"ADD = {nb_after - nb_before} | UPDATE = {nb_update} | TOTAL = {nb_after}"
                 )
             )
-        )
+        else:
+            self.stdout.write(self.style.ERROR(f"[PROGRAMING_CMD] {excel.ERROR}"))

@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.validators import validate_vin, validate_nac, xml_parser

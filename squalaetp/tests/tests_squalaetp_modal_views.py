@@ -1,6 +1,6 @@
 from dashboard.tests.base import UnitTest, reverse
 
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Sivin
 from psa.models import Corvet
 from utils.django.urls import reverse
 
@@ -124,3 +124,42 @@ class MixinsTest(UnitTest):
         # redirection
         self.assertRedirects(
             response, reverse('squalaetp:detail', args=[xelon.pk], get={'select': 'ihm'}), status_code=302)
+
+    def test_sivin_create_ajax_mixin(self):
+        """
+        Create SIVIN throught BSModalCreateView.
+        """
+        self.add_perms_user(Sivin, 'add_sivin')
+        self.login()
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(reverse('squalaetp:sivin_create'),
+            data={
+                'immat_siv': self.immat,
+                # Wrong value
+                'xml_data': 'ERREUR COMMUNICATION SYSTEME SIVIN'
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+
+        # Form has errors
+        self.assertTrue(response.context_data['form'].errors)
+        # No redirection
+        self.assertEqual(response.status_code, 200)
+        # Object is not created
+        sivins = Sivin.objects.filter(immat_siv=self.immat)
+        self.assertEqual(sivins.count(), 0)
+
+        # Second post request = create object through BSModalUpdateView
+        response = self.client.post(reverse('squalaetp:sivin_create'),
+            data={
+                'immat_siv': self.immat,
+                'xml_data': self.xmlDataSivin,
+            }
+        )
+
+        # redirection
+        sivin = Sivin.objects.get(immat_siv=self.immat)
+        self.assertRedirects(response, reverse('squalaetp:sivin_detail', args=[sivin.pk]), status_code=302)
+        # Object is updated
+        self.assertEqual(Sivin.objects.count(), 1)

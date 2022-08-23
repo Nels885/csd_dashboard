@@ -2,8 +2,10 @@ from django.contrib import admin
 from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
+from django.contrib.auth.models import User
 
-from .models import Xelon, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
+from .models import Xelon, XelonTemporary, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
+from .forms import ProductCodeAdminForm
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -35,6 +37,14 @@ class XelonAdmin(admin.ModelAdmin):
     vin_error_disabled.short_description = _('Vin error disabled')
 
 
+class XelonTemporaryAdmin(admin.ModelAdmin):
+    list_display = (
+        'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'is_active'
+    )
+    list_filter = ('is_active',)
+    search_fields = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
+
+
 class SparePartAdmin(admin.ModelAdmin):
     list_display = ('get_code_produit', 'code_magasin', 'code_zone', 'code_site', 'code_emplacement', 'cumul_dispo')
     ordering = ('code_produit__name',)
@@ -55,10 +65,11 @@ class ActionAdmin(admin.ModelAdmin):
 
 
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('product_model', 'category', 'corvet_type')
+    list_display = ('product_model', 'category', 'corvet_type', 'animator')
     list_filter = ('category', 'corvet_type')
     search_fields = ('product_model', 'category')
     actions = (
+        'sc_animator', 'ts_animator', 'nz_animator',
         'psa_category_update', 'other_category_update', 'clarion_category_update', 'etude_category_update',
         'ecu_category_update', 'default_category_update', 'radio_corvet_type_update', 'btel_corvet_type_update',
         'emf_corvet_type_update', 'cmb_corvet_type_update', 'bsi_corvet_type_update', 'bsm_corvet_type_update',
@@ -86,6 +97,33 @@ class ProductCategoryAdmin(admin.ModelAdmin):
                 verb,
             ),
         )
+
+    @admin.action(description=_('Change animator for SCA01'))
+    def sc_animator(self, request, queryset):
+        try:
+            user = User.objects.get(username='SCA01')
+            rows_updated = queryset.update(animator=user)
+            self._message_user_about_update(request, rows_updated, 'SCA01')
+        except User.DoesNotExist:
+            pass
+
+    @admin.action(description=_('Change animator for TSA01'))
+    def ts_animator(self, request, queryset):
+        try:
+            user = User.objects.get(username='TSA01')
+            rows_updated = queryset.update(animator=user)
+            self._message_user_about_update(request, rows_updated, 'TSA01')
+        except User.DoesNotExist:
+            pass
+
+    @admin.action(description=_('Change animator for NZP01'))
+    def nz_animator(self, request, queryset):
+        try:
+            user = User.objects.get(username='NZP01')
+            rows_updated = queryset.update(animator=user)
+            self._message_user_about_update(request, rows_updated, 'NZP01')
+        except User.DoesNotExist:
+            pass
 
     def psa_category_update(self, request, queryset):
         rows_updated = queryset.update(category="PSA")
@@ -167,9 +205,16 @@ class SivinAdmin(admin.ModelAdmin):
     search_fields = ('immat_siv', 'codif_vin', 'marque', 'modele', 'genre_v')
 
 
+class ProductCodeAdmin(admin.ModelAdmin):
+    form = ProductCodeAdminForm
+    list_display = ('name', )
+    search_fields = ('name', )
+
+
 admin.site.register(Xelon, XelonAdmin)
+admin.site.register(XelonTemporary, XelonTemporaryAdmin)
 admin.site.register(SparePart, SparePartAdmin)
-admin.site.register(ProductCode)
+admin.site.register(ProductCode, ProductCodeAdmin)
 admin.site.register(Indicator, IndicatorAdmin)
 admin.site.register(Action, ActionAdmin)
 admin.site.register(ProductCategory, ProductCategoryAdmin)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-12 14:32+0200\n"
+"POT-Creation-Date: 2022-08-12 07:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: psa/admin.py:45 psa/admin.py:109
+#, python-brace-format
+msgid "{0} product{1} {2} successfully {3}"
+msgstr "{0} produit{1} {2} avec succès {3}"
+
+#: psa/admin.py:48 psa/admin.py:112
+msgid "was,were"
+msgstr "était, étaient"
+
+#: psa/admin.py:53 psa/admin.py:117
+msgid "Relation by name disabled"
+msgstr "Relation par nom désactivée"
+
+#: psa/admin.py:58 psa/admin.py:122
+msgid "Relation by name enabled"
+msgstr "Relation par nom activée"
 
 #: psa/forms.py:48
 msgid ""
@@ -56,6 +73,10 @@ msgid "Info NAC"
 msgstr "Info NAC"
 
 #: psa/templates/psa/detail/detail.html:42
+msgid "Info RCC"
+msgstr "Info RCC"
+
+#: psa/templates/psa/detail/detail.html:50
 msgid "VIN Barcode"
 msgstr "code barre VIN"
 
@@ -76,7 +97,8 @@ msgstr "Liens utiles"
 msgid "NAC tools"
 msgstr "Outils NAC"
 
-#: psa/tests/tests_psa_views.py:31 psa/tests/tests_psa_views.py:46
+#: psa/tests/tests_psa_views.py:35 psa/tests/tests_psa_views.py:50
+#: psa/tests/tests_psa_views.py:61
 msgid "This field is required."
 msgstr "Ce champ est requis."
 

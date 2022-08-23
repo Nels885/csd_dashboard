@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.db.models import Q, Count, Max
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
@@ -12,7 +12,7 @@ from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, E
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django.forms.fields import ListTextWidget
-from utils.django.validators import validate_psa_barcode, validate_identify_number, validate_barcode
+from utils.django.validators import validate_identify_number, validate_barcode
 
 
 """
@@ -169,7 +169,7 @@ class DefaultForm(forms.ModelForm):
         css = {
             'all': ('/static/admin/css/widgets.css', '/static/admin/css/overrides.css'),
         }
-        js = ('/admin/jsi18n',)
+        js = ('/jsi18n/',)
 
     class Meta:
         model = Default
@@ -491,13 +491,13 @@ SparePartFormset = forms.formset_factory(SparePartForm, extra=5)
 
 
 class CheckPartForm(forms.Form):
-    barcode = forms.CharField(label="Code Barre", max_length=50,
+    barcode = forms.CharField(label="Code Barre", max_length=100,
                               widget=forms.TextInput(attrs={'class': 'form-control', 'autofocus': ''}))
 
     def clean_barcode(self):
         data = self.cleaned_data['barcode']
-        data, message = validate_psa_barcode(data)
-        if message:
+        data, message = validate_barcode(data)
+        if not message:
             raise forms.ValidationError(
                 _("The barcode is invalid"),
                 code='invalid',
@@ -544,21 +544,35 @@ class EcuDumpModelForm(BSModalModelForm):
 
 class PartEcuModelForm(forms.ModelForm):
     hw_reference = forms.CharField(label="HW référence *", max_length=20, required=True)
+    technical_data = forms.CharField(label="Modèle produit *", max_length=50, required=True)
+    supplier_oe = forms.CharField(label="Fabriquant *", max_length=50, required=True)
 
     class Meta:
         model = EcuModel
-        fields = ['barcode', 'hw_reference', 'oe_raw_reference', 'former_oe_reference']
+        fields = ['barcode', 'hw_reference', 'technical_data', 'supplier_oe']
         widgets = {
             'barcode': forms.TextInput(attrs={'readonly': None})
         }
         labels = {
-            'barcode': 'Code barre PSA *'
+            'barcode': 'Code barre *'
         }
+
+    def __init__(self, *args, **kwargs):
+        ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
+        _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance', None)
+        if instance and instance.pk:
+            self.fields['hw_reference'].initial = instance.ecu_type.hw_reference
+        self.fields['hw_reference'].widget = ListTextWidget(data_list=_data_list, name='value-list')
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        type_obj, type_created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"])
-        instance.ecu_type = type_obj
+        defaults = {
+            "technical_data": self.cleaned_data["technical_data"], "supplier_oe": self.cleaned_data["supplier_oe"]
+        }
+        obj, created = EcuType.objects.get_or_create(hw_reference=self.cleaned_data["hw_reference"], defaults=defaults)
+        instance.ecu_type = obj
         if commit:
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
@@ -572,11 +586,6 @@ class PartEcuTypeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # instance = getattr(self, 'instance', None)
-        # if instance and instance.technical_data:
-        #     self.fields['technical_data'].widget.attrs['readonly'] = True
-        # if instance and instance.supplier_oe:
-        #     self.fields['supplier_oe'].widget.attrs['readonly'] = True
         self.fields['hw_reference'].widget.attrs['readonly'] = True
 
 
@@ -584,13 +593,3 @@ class PartSparePartForm(forms.ModelForm):
     class Meta:
         model = SparePart
         fields = ['code_produit', 'code_emplacement']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # instance = getattr(self, 'instance', None)
-        # if instance and instance.code_emplacement:
-        #     for field in self.fields:
-        #         self.fields[field].widget.attrs['readonly'] = True
-        # else:
-        # self.fields['code_produit'].widget.attrs['readonly'] = True
-        # self.fields['code_emplacement'].required = True

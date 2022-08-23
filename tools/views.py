@@ -1,14 +1,19 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from django.views.generic.edit import FormMixin
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, status
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
+
+from utils.django.datatables import QueryTableByArgs
+from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
 
 from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage
 from dashboard.forms import ParaErrorList
@@ -34,8 +39,27 @@ def tag_xelon_list(request):
     """ View of Software list page """
     title = _('Tools')
     table_title = _('Tag Xelon list')
-    tags = TagXelon.objects.all().order_by('-created_at')
     return render(request, 'tools/tag_xelon_table.html', locals())
+
+
+class TagXelonViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = TagXelon.objects.all()
+    serializer_class = TagXelonSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            query = QueryTableByArgs(self.queryset,  TAG_XELON_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(query["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": query["draw"],
+                "recordsTotal": query["total"],
+                "recordsFiltered": query["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @permission_required('tools.add_csdsoftware')
@@ -166,13 +190,14 @@ class SupTechCreateView(BSModalCreateView):
 
 
 def suptech_item_ajax(request):
-    data = {"extra": False, "mailing_list": ""}
+    data = {"extra": False, "mailing_list": "", "cc_mailing_list": ""}
     try:
         if request.GET.get('pk', None):
             suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
             data = {
                 "extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list,
-                "cc_mailing_list": suptech_item.cc_mailing_list
+                "cc_mailing_list": suptech_item.cc_mailing_list,
+                "is_48h": suptech_item.is_48h
             }
     except SuptechItem.DoesNotExist:
         pass

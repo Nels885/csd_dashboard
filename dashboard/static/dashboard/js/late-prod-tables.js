@@ -2,20 +2,22 @@
 $(document).ready(function () {
     $('#lateProdTable').DataTable({
         paging: false,
-        scrollX: true,
-        // order: [[4, "desc"]],
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
-    });
-    $('#lateProdNewTable').DataTable({
-        paging: false,
         order: false,
         scrollX: true,
         dom: 'Bfrtip',
+        language: {
+            searchPanes: {
+                collapse: {0: 'Search Options', _: 'Search Options (%d)'}
+            }
+        },
         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
+            'copy', 'csv', 'excel', 'pdf', 'print',
+            {
+                extend: 'searchPanes',
+                config: {
+                    columns: [3, 7, 8, 9]
+                }
+            }
         ],
         columnDefs: [
             {
@@ -33,8 +35,19 @@ $(document).ready(function () {
         order: false,
         scrollX: true,
         dom: 'Bfrtip',
+        language: {
+            searchPanes: {
+                collapse: {0: 'Search Options', _: 'Search Options (%d)'}
+            }
+        },
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print',
+            {
+                extend: 'searchPanes',
+                config: {
+                    columns: [3, 7, 8]
+                }
+            }
         ],
         columnDefs: [
             {

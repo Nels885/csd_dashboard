@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.messages import get_messages
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from dashboard.tests.base import UnitTest
 

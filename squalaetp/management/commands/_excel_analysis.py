@@ -1,19 +1,18 @@
 import logging
 
-from utils.microsoft_format import ExcelFormat, pd
+from utils.microsoft_format import ExcelFormat
 
 logger = logging.getLogger('command')
 
 
 class ExcelDelayAnalysis(ExcelFormat):
     """## Read data in Excel file for Delay Analysis ##"""
-    ERROR = False
     DROP_COLS = ['ref_produit_clarion', 'code_pdv', 'nom_pdv', 'date_daccord_de_la_demande', 'delai_prevu_sp',
                  'nom_equipe', 'n_commande_de_travaux', 'delai_expedition_attendue']
     COLS_DATE = {'date_retour': "'%d/%m/%Y", 'date_de_cloture': "'%d/%m/%Y %H:%M:%S",
                  'date_expedition_attendue': "'%d/%m/%Y"}
 
-    def __init__(self, files, sheet_name=0, columns=None):
+    def __init__(self, file, sheet_name=0, columns=None, datedelta=-1):
         """
         Initialize ExcelDelayAnalysis class
         :param file:
@@ -23,16 +22,21 @@ class ExcelDelayAnalysis(ExcelFormat):
         :param columns:
             Number of the last column to be processed
         """
-        dfs = []
-        for file in files:
-            try:
-                super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8)
-                self._drop_lines()
-                self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
-                dfs.append(self.sheet)
-            except FileNotFoundError as err:
-                logger.error(f'FileNotFoundError: {err}')
-        self._concat_files(dfs)
+        try:
+            super(ExcelDelayAnalysis, self).__init__(file, sheet_name, columns, skiprows=8, datedelta=datedelta)
+            self._drop_lines()
+            self.sheet['ilot'] = [self.basename for _ in range(self.nrows)]
+            self._columns_convert(digit=False)
+            self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
+            self.sheet.drop(columns=self.DROP_COLS, inplace=True)
+            self._date_converter(self.COLS_DATE)
+            # dfs.append(self.sheet)
+        except FileNotFoundError as err:
+            self.ERROR = f'FileNotFoundError: {err}'
+            logger.error(self.ERROR)
+        except KeyError as err:
+            self.ERROR = f'KeyError: {err} in the file : {file}'
+            logger.error(self.ERROR)
 
     def xelon_table(self, file_number):
         """
@@ -72,17 +76,17 @@ class ExcelDelayAnalysis(ExcelFormat):
         else:
             return []
 
-    def _concat_files(self, dfs):
-        if dfs:
-            self.sheet = pd.concat(dfs).reset_index(drop=True)
-            self.nrows = self.sheet.shape[0]
-            self._columns_convert(digit=False)
-            self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
-            self.sheet.drop(columns=self.DROP_COLS, inplace=True)
-            self._date_converter(self.COLS_DATE)
-        else:
-            logger.error("No EXCEL files found!")
-            self.ERROR = True
+    # def _concat_files(self, dfs):
+    #     if dfs:
+    #         self.sheet = pd.concat(dfs).reset_index(drop=True)
+    #         self.nrows = self.sheet.shape[0]
+    #         self._columns_convert(digit=False)
+    #         self.sheet.replace({"Oui": 1, "Non": 0}, inplace=True)
+    #         self.sheet.drop(columns=self.DROP_COLS, inplace=True)
+    #         self._date_converter(self.COLS_DATE)
+    #     else:
+    #         logger.error("No EXCEL files found!")
+    #         self.ERROR = True
 
     @staticmethod
     def _key_formatting(data):
@@ -98,7 +102,6 @@ class ExcelDelayAnalysis(ExcelFormat):
 
 
 class ExcelTimeLimitAnalysis(ExcelFormat):
-    ERROR = False
     COLS = {'A': 'numero_de_dossier', 'B': 'date_retour', 'D': 'date_de_cloture', 'E': 'type_de_cloture',
             'F': 'nom_technicien', 'M': 'famille_produit'}
     COLS_DATE = {'date_retour': "%d/%m/%Y", 'date_de_cloture': "%d/%m/%Y %H:%M:%S"}
@@ -110,11 +113,15 @@ class ExcelTimeLimitAnalysis(ExcelFormat):
             excel file to process
         """
         cols = ",".join(self.COLS.keys())
-        super().__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
-        self._columns_rename(self.COLS)
-        self.sheet.replace({"#": None}, inplace=True)
-        self.sheet.fillna('', inplace=True)
-        self._date_converter(self.COLS_DATE)
+        try:
+            super().__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols, datedelta=1, offdays=[6, 0])
+            self._columns_rename(self.COLS)
+            self.sheet.replace({"#": None}, inplace=True)
+            self.sheet.fillna('', inplace=True)
+            self._date_converter(self.COLS_DATE)
+        except FileNotFoundError as err:
+            self.ERROR = f"FileNotFoundError: {err}"
+            logger.error(self.ERROR)
 
     def read_all(self):
         """

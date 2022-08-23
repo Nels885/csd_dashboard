@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-12 14:32+0200\n"
+"POT-Creation-Date: 2022-08-12 07:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgstr "Annuler"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: reman/templates/reman/default_table.html:8 reman/views/__init__.py:119
+#: reman/templates/reman/default_table.html:8 reman/views/__init__.py:113
 msgid "Create Default"
 msgstr "Ajout panne"
 
@@ -202,44 +202,44 @@ msgstr "Pièces détachées"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: reman/tests/tests_reman_views.py:166 reman/views/__init__.py:228
+#: reman/tests/tests_reman_views.py:167 reman/views/part.py:109
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: reman/views/__init__.py:83
+#: reman/views/__init__.py:77
 msgid "Success: Reman reference was created."
 msgstr "Succès: La Référence REMAN a été créé."
 
-#: reman/views/__init__.py:104
+#: reman/views/__init__.py:98
 msgid "Success: Reman reference was updated."
 msgstr "Succès: La Référence REMAN a été mise à jour."
 
-#: reman/views/__init__.py:113
+#: reman/views/__init__.py:107
 msgid "Success: Reman Default was created."
 msgstr "Succès: La panne REMAN a été créé."
 
-#: reman/views/__init__.py:129
+#: reman/views/__init__.py:123
 msgid "Success: Reman Default was updated."
 msgstr "Succès: La panne REMAN a été mise à jour."
 
-#: reman/views/__init__.py:135
+#: reman/views/__init__.py:129
 msgid "Update Default"
 msgstr "Mise à jour panne"
 
-#: reman/views/__init__.py:275
+#: reman/views/__init__.py:176
 #, python-format
 msgid "Repair n°%(repair)s to batch n°%(batch)s ready for shipment"
 msgstr "Réparation n°%(repair)s du lot n°%(batch)s prêt pour expédition."
 
-#: reman/views/__init__.py:344
+#: reman/views/__init__.py:236
 msgid "Success: Reman ECU HW Reference was created."
 msgstr "Succès: la référence Hardware a été créé."
 
-#: reman/views/__init__.py:365
+#: reman/views/__init__.py:257
 msgid "Success: Reman ECU HW Reference was updated."
 msgstr "Succès: la référence Hardware a été mise à jour."
 
-#: reman/views/__init__.py:383
+#: reman/views/__init__.py:275
 msgid "Success: Reman ECU dump was updated."
 msgstr "Succès: La dump ECU Reman a été mise à jour."
 

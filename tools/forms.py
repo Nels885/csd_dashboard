@@ -1,10 +1,11 @@
 from django import forms
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.mail import EmailMessage
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 from constance import config
@@ -14,20 +15,21 @@ from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 
-from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage
-from .tasks import cmd_suptech_task, send_email_task
+from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile
+from .tasks import send_email_task
 
 
 class TagXelonForm(BSModalModelForm):
     class Meta:
         model = TagXelon
-        fields = ['xelon', 'comments']
+        fields = ['xelon', 'calibre', 'telecode', 'comments']
         widgets = {
-            'xelon': forms.TextInput(
-                attrs={'class': 'form-control col-sm-6', 'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''}
-            ),
-            'comments': forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
+            'xelon': forms.TextInput(attrs={'onkeypress': 'return event.keyCode != 13;', 'autofocus': ''}),
+            'calibre': forms.Select(attrs={'class': 'custom-select'}),
+            'telecode': forms.Select(attrs={'class': 'custom-select'}),
+            'comments': forms.Textarea()
         }
+        labels = {'calibre': 'Calibration fait avec'}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,7 +87,7 @@ class SuptechModalForm(BSModalModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['username', 'xelon', 'item', 'custom_item', 'time', 'to', 'cc', 'info', 'rmq', 'attach']
+        fields = ['username', 'xelon', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach']
 
     def __init__(self, *args, **kwargs):
         users = User.objects.all()
@@ -103,17 +105,24 @@ class SuptechModalForm(BSModalModelForm):
             self.add_error('username', _("Username not found."))
         return data
 
-    def send_email(self):
+    def send_email(self, files):
         current_site = get_current_site(self.request)
         from_email = self.cleaned_data["username"].email
-        files = self.request.FILES.getlist('attach')
         subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        send_email_task.delay(
+        # send_email_task(
+        #     subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
+        #     cc=([from_email] + string_to_list(self.instance.cc)), files=files
+        # )
+        email = EmailMessage(
             subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
-            cc=([from_email] + string_to_list(self.instance.cc)), files=files
+            cc=([from_email] + string_to_list(self.instance.cc))
         )
+        files = self.instance.suptechfile_set.all()
+        if files:
+            [email.attach_file(f.file.path) for f in files]
+        email.send()
 
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
@@ -123,19 +132,20 @@ class SuptechModalForm(BSModalModelForm):
         try:
             item = SuptechItem.objects.get(name=suptech.item)
             suptech.category = item.category
-            suptech.is_48h = item.is_48h
         except SuptechItem.DoesNotExist:
             pass
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
+            files = self.request.FILES.getlist('attach')
             for field in ['username', 'custom_item', 'attach']:
                 del self.fields[field]
             if self.cleaned_data['custom_item']:
                 suptech.item = f"{self.cleaned_data['item']} - {self.cleaned_data['custom_item']}"
             suptech.save()
-            cmd_suptech_task.delay()
-            self.send_email()
+            if files:
+                [SuptechFile.objects.create(file=f, suptech=suptech) for f in files]
+            self.send_email(files)
         return suptech
 
 
@@ -158,9 +168,11 @@ class SuptechResponseForm(forms.ModelForm):
             subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
             context = {"user": request.user, "suptech": self.instance}
             message = render_to_string('tools/email_format/suptech_response_email.html', context)
+            cc_list = [request.user.email] + string_to_list(self.instance.to) + string_to_list(self.instance.cc)
+            cc_list = [email for email in list(set(cc_list)) if email != self.instance.created_by.email]
             send_email_task.delay(
-                subject=subject, body=message, from_email=request.user.email,
-                to=self.instance.created_by.email, cc=config.SUPTECH_TO_EMAIL_LIST
+                subject=subject, body=message, from_email=request.user.email, to=self.instance.created_by.email,
+                cc=cc_list
             )
             return True
         except AttributeError:
@@ -173,7 +185,7 @@ class SuptechResponseForm(forms.ModelForm):
         suptech.modified_at = timezone.now()
         if commit:
             suptech.save()
-            cmd_suptech_task.delay()
+            # cmd_suptech_task.delay()
         return suptech
 
 

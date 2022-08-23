@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.i18n import JavaScriptCatalog
 
 from dashboard.views import index
 from .views import get_progress_view, download_file_view
@@ -26,18 +27,13 @@ from .views import get_progress_view, download_file_view
 favicon_view = RedirectView.as_view(url=staticfiles_storage.url('favicon.ico'))
 
 
-def trigger_error(request):
-    division_by_zero = 1 / 0
-    return division_by_zero
-
-
 urlpatterns = [
-    path('sentry-debug/', trigger_error),
     path('celery-progress/', get_progress_view, name='progress'),
     path('download-file/', download_file_view, name="download"),
     path('admin/', admin.site.urls),
     path('notifications/', include('django_nyt.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path('i18n/', include('django.conf.urls.i18n')),
     path('wiki/', include('wiki.urls')),
     path('api/', include('api.urls')),

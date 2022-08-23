@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
 
-from squalaetp.models import Xelon, Indicator, ProductCategory
+from squalaetp.models import Xelon, Indicator, ProductCategory, ProductCode, SparePart
 
 
 class Command(BaseCommand):
@@ -33,6 +33,18 @@ class Command(BaseCommand):
             dest='user_skills',
             help='Clear User Skills table',
         )
+        parser.add_argument(
+            '--parts',
+            action='store_true',
+            dest='parts',
+            help='Delete all data in SparePart table',
+        )
+        parser.add_argument(
+            '--part_relations',
+            action='store_true',
+            dest='part_relations',
+            help='Delete relationships between ProductCode, Ecu and Media tables'
+        )
 
     def handle(self, *args, **options):
 
@@ -43,7 +55,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table Xelon terminée!"))
+            self.stdout.write(self.style.WARNING("Suppression des données de la table Xelon terminée!"))
         if options['indicator']:
             Indicator.objects.all().delete()
 
@@ -51,7 +63,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table Indicator terminée!"))
+            self.stdout.write(self.style.WARNING("Suppression des données de la table Indicator terminée!"))
         if options['prod_category']:
             ProductCategory.objects.all().delete()
 
@@ -59,20 +71,45 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table ProductCategory terminée!"))
+            self.stdout.write(self.style.WARNING("Suppression des données de la table ProductCategory terminée!"))
         if options['user_skills']:
+            ProductCategory.niv_t_users.through.objects.all().delete()
             ProductCategory.niv_i_users.through.objects.all().delete()
             ProductCategory.niv_l_users.through.objects.all().delete()
             ProductCategory.niv_u_users.through.objects.all().delete()
             ProductCategory.niv_o_users.through.objects.all().delete()
+            ProductCategory.fa_users.through.objects.all().delete()
+            ProductCategory.fe_users.through.objects.all().delete()
 
             sequence_sql = connection.ops.sequence_reset_sql(
                 no_style(), [
-                    ProductCategory.niv_i_users.through, ProductCategory.niv_l_users.through,
-                    ProductCategory.niv_u_users.through, ProductCategory.niv_o_users.through
+                    ProductCategory.niv_t_users.through, ProductCategory.niv_i_users.through,
+                    ProductCategory.niv_l_users.through, ProductCategory.niv_u_users.through,
+                    ProductCategory.niv_o_users.through, ProductCategory.fa_users.through,
+                    ProductCategory.fe_users.through
                 ]
             )
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table ProductCategory terminée!"))
+            self.stdout.write(self.style.WARNING("Suppression des données polyvavence produits terminée!"))
+        if options['parts']:
+            SparePart.objects.all().delete()
+            ProductCode.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [SparePart, ProductCode, ])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
+            self.stdout.write(self.style.WARNING("Suppression des données de la table SparePart terminée!"))
+        if options['part_relations']:
+            ProductCode.ecus.through.objects.all().delete()
+            ProductCode.medias.through.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(
+                no_style(), [ProductCode.ecus.through, ProductCode.medias.through])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
+            self.stdout.write(
+                self.style.WARNING("Suppression des relations entre les tables ProductCode, Ecu et Media terminée!"))

@@ -59,7 +59,7 @@ $(document).ready(function () {
         buttons: [{
             extend: 'searchPanes',
             config: {
-                columns: [3, 5, 6]
+                columns: [3, 5, 6, 7]
             }
         }],
         dom: 'Bfrtip'

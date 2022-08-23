@@ -53,16 +53,6 @@ $ pipenv --python 3
 $ pipenv install --dev
 ```
 
-### Environment variables
-
-two variables must be created for the recovery of Corvet data from the
-website, as below, and added to the file **/etc/environment/**
-
-```bash
-export USER_CORVET="<username>"
-export PWD_CORVET="<password>"
-```
-
 ### Starting the server
 
 To launch the application, simply execute the following commands
@@ -81,3 +71,11 @@ $ pipenv shell
 $ ./manage.py sqlflush | ./manage.py dbshell
 $ ./manage.py loaddata <DATA_FILE>
 ```
+
+### Celery server
+
+```bash
+$ pipenv run celery -A sbadmin purge
+$ pipenv run celery -A sbadmin worker --beat --scheduler django --loglevel=info
+```
+

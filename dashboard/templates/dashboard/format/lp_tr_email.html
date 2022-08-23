@@ -1,0 +1,44 @@
+{% load custom_tags %}
+
+{% if prods %}
+    {% for prod in prods %}
+        {% with delai=prod.delai_expedition_attendue %}
+            <tr {% if delai >= 3 %}class="bg-danger text-light"
+                {% elif delai >= 1 %}class="bg-warning text-gray-800"
+                {% elif delai == 0 %}class="bg-info text-light"
+                {% else %}class="bg-success text-gray-700"{% endif %}>
+                <td>{{ activity }}</td>
+                <td><a href="http://{{ domain }}{% url 'squalaetp:detail' pk=prod.pk %}?select=xelon">{{ prod.numero_de_dossier }}</a>
+                </td>
+                <td>{{ prod.modele_produit }} {{ prod.dossier_vip|yesno:"(VIP)," }} {{ prod.express|yesno:"(EXP)," }}</td>
+                <td>{{ prod.date_retour|date:"d/m/Y" }}</td>
+                <td>{{ prod.date_expedition_attendue|date:"d/m/Y"|default_if_none:"" }}</td>
+                <td>{{ prod.delai_expedition_attendue|default_if_none:"" }}</td>
+                <td>{{ prod.type_de_cloture }}</td>
+                <td>{{ prod.nom_technicien }}</td>
+                {% with animator=prod.product.animator %}
+                    <td>
+                        {% if animator %}
+                            <a href="mailto:{{ animator.email }}?subject={{ prod.subject|urlencode }}" target="_blank">
+                                {{ animator.first_name|default_if_none:"" }} {{ animator.last_name|default_if_none:"" }}
+                            </a>
+                        {% endif %}
+                    </td>
+                {% endwith %}
+            </tr>
+        {% endwith %}
+    {% endfor %}
+
+    <tr class="bg-success text-light">
+        <td>Total {{ activity }}</td>
+        <td>{{ prods.count }}</td>
+        {% for _ in 0|range:7 %}
+            <td></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for _ in 0|range:9 %}
+            <td></td>
+        {% endfor %}
+    </tr>
+{% endif %}

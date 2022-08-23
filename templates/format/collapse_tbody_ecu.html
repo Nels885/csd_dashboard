@@ -1,4 +1,4 @@
-<tbody class="collapse" id="{{ id }}">
+<tbody class="collapse {% if show %}show{% endif %}" id="{{ id }}">
 <tr>
     <td class="text-dark td-ihm">Référence Comp. Mat.</td>
     <td>{{ object.comp_ref }}</td>
@@ -25,10 +25,10 @@
 
 {% include 'format/collapse_tr.html' with name="Référence PR" value=object.pr_reference %}
 
-{% if object.productcode_set.all %}
+{% if object.parts.all %}
     <tr>
         <td class="text-dark td-ihm">Pièces Xelon</td>
-        <td>{% for part in object.productcode_set.all %}{{ part.name }}<br>{% endfor %}</td>
+        <td>{% for part in object.parts.all %}{{ part.name }}<br>{% endfor %}</td>
     </tr>
 {% endif %}
 </tbody>

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import TemplateView
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView

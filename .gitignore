@@ -7,8 +7,6 @@ __pycache__
 sbadmin/settings/production.py
 staticfiles/
 geckodriver.log
-media/profile_pics/
-media/cache/
-media/wiki/
+media/*/
 utils/conf/current.py
 Pipfile.lock

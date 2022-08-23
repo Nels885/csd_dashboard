@@ -44,6 +44,13 @@
                         </a>
                     </li>
                 {% endif %}
+                {% if 'RCC' in corvet.prods.btel.get_name_display %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#nac" role="tab" aria-selected="false">
+                            {% trans "Info RCC" %}
+                        </a>
+                    </li>
+                {% endif %}
             {% endif %}
 
             {% include 'tab_select.html' with name='xelon' tab_title='Info Xelon' %}

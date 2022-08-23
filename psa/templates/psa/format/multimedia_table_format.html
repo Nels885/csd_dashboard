@@ -97,10 +97,10 @@
             <td>{{ object.usb_con }}</td>
         </tr>
     {% endif %}
-    {% if object.productcode_set.all %}
+    {% if object.parts.all %}
         <tr>
             <td class="text-dark td-ihm">Pièces Xelon</td>
-            <td>{% for part in object.productcode_set.all %}{{ part.name }}<br>{% endfor %}</td>
+            <td>{% for part in object.parts.all %}{{ part.name }}<br>{% endfor %}</td>
         </tr>
     {% endif %}
     </tbody>

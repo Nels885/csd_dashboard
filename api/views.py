@@ -1,14 +1,13 @@
 import requests
 
 from django.shortcuts import render, redirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db.utils import IntegrityError
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
-from constance import config
 
 from .serializers import (
     ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer, UnlockUpdateSerializer,
@@ -31,7 +30,6 @@ def documentation(request):
     """ View of API Documentation page """
     title = "Documentation API"
     card_title = "Documentation"
-    domain = config.WEBSITE_DOMAIN
     return render(request, 'api/doc.html', locals())
 
 
