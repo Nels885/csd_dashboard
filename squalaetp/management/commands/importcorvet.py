@@ -88,7 +88,7 @@ class Command(BaseCommand):
                         nb_import += 1
                         delay_time = time.time() - start_time
                         self.stdout.write(
-                            self.style.ERROR(f"{start_msg} error CORVET in {delay_time}"))
+                            self.style.ERROR(f"{start_msg} CorvetError in {delay_time}"))
                         break
                     elif row.get('vin') and row.get('donnee_date_entree_montage'):
                         defaults = defaults_dict(Corvet, row, "vin")
