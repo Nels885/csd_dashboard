@@ -84,7 +84,6 @@ class Command(BaseCommand):
                 start_time = time.time()
                 for attempt in range(3):
                     row = xml_parser(scrap.result(query.vin))
-                    print(row, scrap.ERROR, attempt)
                     if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row or attempt > 1:
                         nb_import += 1
                         delay_time = time.time() - start_time
