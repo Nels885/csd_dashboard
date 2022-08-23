@@ -88,7 +88,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en cours terminée!"))
         if options['vin_error']:
             subject = "Erreur VIN Xelon {}".format(date_joined)
-            xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')[:10]
+            xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')
 
             if xelons:
                 html_message = render_to_string(
@@ -105,7 +105,7 @@ class Command(BaseCommand):
         if options['vin_corvet']:
             subject = "Problème CORVET {}".format(date_joined)
             xelons = Xelon.objects.filter(date_retour__gte=last_7_days, vin__regex=VIN_PSA_REGEX,
-                                          vin_error=False, corvet__isnull=True).order_by('-date_retour')[:10]
+                                          vin_error=False, corvet__isnull=True).order_by('-date_retour')
             if xelons:
                 html_message = render_to_string(
                     'dashboard/email_format/vin_corvet_email.html', {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
