@@ -82,9 +82,10 @@ class Command(BaseCommand):
                 if squalaetp:
                     start_msg = f"{query.numero_de_dossier} - {start_msg}"
                 start_time = time.time()
-                for attempt in range(2):
+                for attempt in range(3):
                     row = xml_parser(scrap.result(query.vin))
-                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row or attempt == 0:
+                    print(row, scrap.ERROR, attempt)
+                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row or attempt > 1:
                         nb_import += 1
                         delay_time = time.time() - start_time
                         self.stdout.write(
@@ -107,6 +108,7 @@ class Command(BaseCommand):
                         delay_time = time.time() - start_time
                         self.stdout.write(
                             self.style.ERROR(f"{start_msg} error VIN in {delay_time}"))
+                        break
                 if squalaetp:
                     query.save()
                 if limit and nb_import >= 200:
