@@ -9,8 +9,15 @@ from utils.django.forms.fields import ListTextWidget
 FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 
+def brand_list():
+    brands = [('', '---')]
+    if CorvetChoices.objects.filter(column='DON_MAR_COMM'):
+        brands.extend(CorvetChoices.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
+    return brands
+
+
 class ExportCorvetForm(forms.Form):
-    BRANDS = [('', '---')] + list(CorvetChoices.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
+    BRANDS = brand_list()
     PRODUCTS = [
         ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('artiv', 'ARTIV'),
