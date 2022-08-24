@@ -38,6 +38,14 @@ class CorvetChoices(models.Model):
             models.UniqueConstraint(fields=['key', 'column'], name='key_column_unique')
         ]
 
+    @classmethod
+    def brands(cls):
+        return [('', '---')] + list(cls.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
+
+    @classmethod
+    def vehicles(cls):
+        return [('', '---')] + list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value'))
+
     def __str__(self):
         return f"{self.key} - {self.value} - {self.column}"
 

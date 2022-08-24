@@ -255,7 +255,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         Export CORVET data to excel format
         """
         self._product_filter(**kwargs)
-        self._brand_filter(**kwargs)
+        self._vehicle_filter(**kwargs)
         self._select_columns(**kwargs)
         queryset = self.queryset.annotate(
             date_debut_garantie=Cast(TruncSecond('donnee_date_debut_garantie', DateTimeField()), CharField()))
@@ -276,7 +276,9 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         values_list = queryset.values_list(*self.fields).distinct()
         return values_list
 
-    def _brand_filter(self, **kwargs):
+    def _vehicle_filter(self, **kwargs):
+        if kwargs.get('vehicle', None):
+            self.queryset = self.queryset.filter(donnee_ligne_de_produit=kwargs.get('vehicle'))
         if kwargs.get('brand', None):
             self.queryset = self.queryset.filter(donnee_marque_commerciale=kwargs.get('brand'))
 

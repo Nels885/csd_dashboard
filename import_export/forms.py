@@ -9,15 +9,7 @@ from utils.django.forms.fields import ListTextWidget
 FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 
-def brand_list():
-    brands = [('', '---')]
-    if CorvetChoices.objects.filter(column='DON_MAR_COMM'):
-        brands.extend(CorvetChoices.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
-    return brands
-
-
 class ExportCorvetForm(forms.Form):
-    BRANDS = brand_list()
     PRODUCTS = [
         ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('artiv', 'ARTIV'),
@@ -33,7 +25,9 @@ class ExportCorvetForm(forms.Form):
         ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
     ]
 
-    brand = forms.ChoiceField(label='Marque', required=False, choices=BRANDS, widget=forms.Select())
+    brand = forms.ChoiceField(label='Marque', required=False, choices=CorvetChoices.brands(), widget=forms.Select())
+    vehicle = forms.ChoiceField(
+        label='Véhicule (CORVET)', required=False, choices=CorvetChoices.vehicles(), widget=forms.Select())
     product = forms.ChoiceField(label='Type produit', required=False, choices=PRODUCTS, widget=forms.Select())
     hw_reference = forms.CharField(label="Réf. HW (CORVET)", required=False, widget=forms.TextInput())
     xelon_model = forms.CharField(label='Produit (XELON)', required=False, widget=forms.TextInput())
