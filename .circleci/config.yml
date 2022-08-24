@@ -32,6 +32,8 @@ jobs: # A basic unit of work in a run
             pipenv run flake8
       - run:
           name: Run Celery
+          environment:
+            DJANGO_SETTINGS_MODULE: sbadmin.settings.circleci
           command: |
             pipenv run celery -A sbadmin purge -f
             pipenv run celery -A sbadmin worker --beat --scheduler django --loglevel=info
