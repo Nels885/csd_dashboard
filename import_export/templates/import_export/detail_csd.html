@@ -23,6 +23,13 @@
         {% csrf_token %}
 
         <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.brand %}
+            <div class="col-sm-2">
+                {% render_field form.brand class="custom-select form-control" %}
+            </div>
+        </div>
+
+        <div class="form-group row">
             {% include 'format/label_form_group.html' with field=form.product %}
             <div class="col-sm-2">
                 {% render_field form.product class="custom-select form-control" %}

@@ -3,13 +3,14 @@ from django import forms
 # from .utils import CORVET_DICT
 from squalaetp.models import Xelon
 from reman.models import Batch
-from psa.models import CorvetOption
+from psa.models import CorvetOption, CorvetChoices
 from utils.django.forms.fields import ListTextWidget
 
 FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 
 class ExportCorvetForm(forms.Form):
+    BRANDS = [('', '---')] + list(CorvetChoices.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
     PRODUCTS = [
         ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('artiv', 'ARTIV'),
@@ -25,6 +26,7 @@ class ExportCorvetForm(forms.Form):
         ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
     ]
 
+    brand = forms.ChoiceField(label='Marque', required=False, choices=BRANDS, widget=forms.Select())
     product = forms.ChoiceField(label='Type produit', required=False, choices=PRODUCTS, widget=forms.Select())
     hw_reference = forms.CharField(label="Réf. HW (CORVET)", required=False, widget=forms.TextInput())
     xelon_model = forms.CharField(label='Produit (XELON)', required=False, widget=forms.TextInput())
