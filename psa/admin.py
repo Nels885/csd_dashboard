@@ -6,11 +6,24 @@ from django.contrib.admin import widgets
 from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct
 
 
+class CorvetListFilter(admin.SimpleListFilter):
+    title = 'Marque Commerciale'
+
+    parameter_name = 'donnee_marque_commerciale'
+
+    def lookups(self, request, model_admin):
+        return CorvetChoices.objects.filter(column='DON_MAR_COMM').values_list('key', 'value').distinct()
+
+    def queryset(self, request, queryset):
+        return queryset.filter(donnee_marque_commerciale=self.value())
+
+
 class CorvetAdmin(admin.ModelAdmin):
     list_display = (
-        'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
-        'electronique_94a',
+        'vin', 'donnee_marque_commerciale', 'electronique_14f', 'electronique_94f', 'electronique_14x',
+        'electronique_94x', 'electronique_14a', 'electronique_94a',
     )
+    list_filter = (CorvetListFilter,)
     ordering = ('vin',)
     search_fields = (
         'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
