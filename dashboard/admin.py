@@ -21,7 +21,8 @@ class ShowCollapseAdmin(admin.ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     inlines = (UserProfileAdmin,)
     list_display = (
-        'username', 'email', 'first_name', 'last_name', 'get_job_title', 'get_service', 'is_staff', 'is_active'
+        'username', 'email', 'first_name', 'last_name', 'last_login', 'get_job_title', 'get_service', 'is_staff',
+        'is_active'
     )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'profile__job_title', 'profile__service')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__job_title', 'profile__service')
