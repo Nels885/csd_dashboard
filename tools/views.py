@@ -289,3 +289,7 @@ def bga_time(request):
             BgaTime.objects.create(name=device)
         return JsonResponse({"response": "OK", "device": device, "status": status.upper()})
     return JsonResponse({"response": "ERROR"})
+
+
+def usb_devices(request):
+    return render(request, 'tools/usb_devices.html')

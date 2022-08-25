@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>
+    <button id="connect">Connect</button>
+</p>
+<div id="terminal" style="position:relative; width:100%; height:100%"></div>
+{#<button id="arduinoButton">Talk to Arduino</button>#}
+{##}
+{#<div id="target"></div>#}
+</body>
+</html>
+
+<script src="{% static 'tools/js/usb_device/hterm_all.js' %}"></script>
+<script src="{% static 'tools/js/usb_device/serial.js' %}"></script>
+<script src="{% static 'tools/js/usb_device/console.js' %}"></script>
+
+{#<script>#}
+{#    document.getElementById('arduinoButton').addEventListener('click', function () {#}
+{#        if (navigator.usb) {#}
+{#            talkToArduino();#}
+{#        } else {#}
+{#            alert('WebUSB not supported.');#}
+{#        }#}
+{#    });#}
+{##}
+{#    async function talkToArduino() {#}
+{#        try {#}
+{#            let device = await navigator.usb.requestDevice({filters: [{vendorId: 0x0d28}, {vendorId: 0x2a03}]});#}
+{#            await device.open(); // Begin a session.#}
+{#            console.log(`Product name: ${device.productName}`);#}
+{#            console.log('opened:', device);#}
+{#            await device.selectConfiguration(1); // Select configuration #1 for the device.#}
+{#            // await device.claimInterface(2); // Request exclusive control over interface #2.#}
+{#            await device.controlTransferOut({#}
+{#                requestType: 'class',#}
+{#                recipient: 'interface',#}
+{#                request: 0x22,#}
+{#                value: 0x01,#}
+{#                index: 0x02#}
+{#            });#}
+{##}
+{#            // Ready to receive data#}
+{#            let result = device.transferIn(5, 64); // Waiting for 64 bytes of data from endpoint #5.#}
+{#            let decoder = new TextDecoder();#}
+{#            document.getElementById('target').innerHTML = 'Received: ' + decoder.decode(result.data);#}
+{#            await device.close()#}
+{#        } catch (error) {#}
+{#            document.getElementById('target').innerHTML = error;#}
+{#        }#}
+{##}
+{#    }#}
+{#</script>#}
+
+{#<script>#}
+{#    document.addEventListener('DOMContentLoaded', event => {#}
+{#        let button = document.getElementById('connect')#}
+{##}
+{#        button.addEventListener('click', async () => {#}
+{#            let device#}
+{#            const VENDOR_ID = 0x0d28#}
+{##}
+{#            try {#}
+{#                device = await navigator.usb.requestDevice({#}
+{#                    filters: [{#}
+{#                        vendorId: VENDOR_ID#}
+{#                    }]#}
+{#                })#}
+{##}
+{#                console.log('open')#}
+{#                console.log(`Product name: ${device.productName}`);#}
+{#                await device.console.log('opened:', device)#}
+{##}
+{#                device.controlTransferIn({#}
+{#                    requestType: 'standard',#}
+{#                    recipient: 'device',#}
+{#                    request: 0x06,#}
+{#                    value: 0x0302,#}
+{#                    index: 0x409#}
+{#                }, 255)#}
+{#                    .then(result => {#}
+{#                        let decoder = new TextDecoder()#}
+{#                        console.log(decoder.decode(result.data));#}
+{#                        console.log('sent req');#}
+{#                    }).catch(error => {#}
+{#                    console.log(error);#}
+{#                });#}
+{#            } catch (error) {#}
+{#                console.log(error)#}
+{#            }#}
+{##}
+{#            await device.close()#}
+{#        })#}
+{#    })#}
+{#</script>#}
