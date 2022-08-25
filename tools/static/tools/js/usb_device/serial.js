@@ -27,13 +27,14 @@ var serial = {};
       { 'vendorId': 0x0403, 'productId': 0x6001}, // Arduino NANO
       { 'vendorId': 0x2a03, 'productId': 0x0043}, // Arduino UNO
     ];
-    return navigator.usb.requestDevice({ 'filters': filters }).then(
+    return navigator.usb.requestDevice({ 'filters': [] }).then(
       device => new serial.Port(device)
     );
   }
 
   serial.Port = function(device) {
     this.device_ = device;
+    console.log('select:', this.device_);
     this.interfaceNumber_ = 2;  // original interface number of WebUSB Arduino demo
     this.endpointIn_ = 5;       // original in endpoint ID of WebUSB Arduino demo
     this.endpointOut_ = 4;      // original out endpoint ID of WebUSB Arduino demo

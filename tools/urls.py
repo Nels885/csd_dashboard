@@ -28,5 +28,5 @@ urlpatterns = [
     path('suptech/<int:pk>/update/', views.SuptechResponseView.as_view(), name="suptech_update"),
     path('suptech/item/ajax/', views.suptech_item_ajax, name='suptech_item_ajax'),
     path('bga/time/', views.bga_time, name='bga_time'),
-    path('usb/', views.usb_devices, name='usb_devices'),
+    path('usb-devices/', views.usb_devices, name='usb_devices'),
 ]

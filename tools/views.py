@@ -292,4 +292,5 @@ def bga_time(request):
 
 
 def usb_devices(request):
-    return render(request, 'tools/usb_devices.html')
+    title = "USB Devices"
+    return render(request, 'tools/usb_devices.html', locals())
