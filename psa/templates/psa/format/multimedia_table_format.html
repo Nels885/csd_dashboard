@@ -4,102 +4,86 @@
 
     <tbody class="collapse {% if collapse.media %}show{% endif %}" id="collapseMedia">
     <tr>
-        <td class="text-dark td-ihm">Référence Comp. Mat.</td>
+        <td class="text-dark td-ihm-40">Référence Comp. Mat.</td>
         <td>{{ object.comp_ref|default:"???" }}</td>
     </tr>
-    {% if object.label_ref %}
+    {% if object.label_ref and object.label_ref != object.comp_ref|stringformat:"s" %}
         <tr>
-            <td class="text-dark td-ihm">Réf. étiquette</td>
+            <td class="text-dark td-ihm-40">Réf. étiquette</td>
             <td>{{ object.label_ref }}</td>
         </tr>
     {% endif %}
     <tr>
-        <td class="text-dark td-ihm">Modèle</td>
+        <td class="text-dark td-ihm-40">Modèle</td>
         <td>{{ object.get_name_display|default:"???" }}</td>
     </tr>
     <tr>
-        <td class="text-dark td-ihm">Modèle Xelon</td>
+        <td class="text-dark td-ihm-40">Modèle Xelon</td>
         <td>{{ object.xelon_name|default:"???" }}</td>
     </tr>
     {% if object.level %}
         <tr>
-            <td class="text-dark td-ihm">Niveau</td>
+            <td class="text-dark td-ihm-40">Niveau</td>
             <td>{{ object.level }}</td>
         </tr>
     {% endif %}
     {% if object.extra %}
         <tr>
-            <td class="text-dark td-ihm">Supplément</td>
+            <td class="text-dark td-ihm-40">Supplément</td>
             <td>{{ object.extra }}</td>
         </tr>
     {% endif %}
     {% if object.emmc %}
         <tr>
-            <td class="text-dark td-ihm">Réf. eMMC</td>
+            <td class="text-dark td-ihm-40">Réf. eMMC</td>
             <td>{{ object.emmc }}</td>
         </tr>
     {% endif %}
     {% if object.supplier_oe %}
         <tr>
-            <td class="text-dark td-ihm">Fabriquant</td>
+            <td class="text-dark td-ihm-40">Fabriquant</td>
             <td>{{ object.supplier_oe }}</td>
         </tr>
     {% endif %}
     {% if object.type %}
         <tr>
-            <td class="text-dark td-ihm">Type</td>
+            <td class="text-dark td-ihm-40">Type</td>
             <td>{{ object.get_type_display }}</td>
         </tr>
     {% endif %}
     {% if object.name %}
         <tr>
-            <td class="text-dark td-ihm">DAB</td>
-            <td>{% if object.dab %}Oui{% else %}Non{% endif %}</td>
-        </tr>
-        <tr>
-            <td class="text-dark td-ihm">Caméra de recul</td>
-            <td>{% if object.cam %}Oui{% else %}Non{% endif %}</td>
+            <td class="text-dark td-ihm-40">Options</td>
+            <td>DAB: {% if object.dab %}Oui{% else %}Non{% endif %}<span class="m-2">/</span>CAM recul: {% if object.cam %}Oui{% else %}Non{% endif %}</td>
         </tr>
     {% endif %}
     {% if object.jukebox %}
         <tr>
-            <td class="text-dark td-ihm">Jukebox</td>
+            <td class="text-dark td-ihm-40">Jukebox</td>
             <td>{% if object.jukebox %}Oui{% else %}Non{% endif %}</td>
         </tr>
     {% endif %}
     {% if object.carplay %}
         <tr>
-            <td class="text-dark td-ihm">CarPlay</td>
+            <td class="text-dark td-ihm-40">CarPlay</td>
             <td>{% if object.carplay %}Oui{% else %}Non{% endif %}</td>
         </tr>
     {% endif %}
     {% if object.media %}
         <tr>
-            <td class="text-dark td-ihm">Média</td>
+            <td class="text-dark td-ihm-40">Média</td>
             <td>{{ object.get_media_display }}</td>
         </tr>
     {% endif %}
-    {% if object.lvds_con %}
-        <tr>
-            <td class="text-dark td-ihm">Connecteur LVDS</td>
-            <td>{{ object.lvds_con }}</td>
-        </tr>
-    {% endif %}
-    {% if object.ant_con %}
-        <tr>
-            <td class="text-dark td-ihm">Connecteur antenne</td>
-            <td>{{ object.ant_con }}</td>
-        </tr>
-    {% endif %}
-    {% if object.usb_con %}
-        <tr>
-            <td class="text-dark td-ihm">Connecteur USB</td>
-            <td>{{ object.usb_con }}</td>
-        </tr>
-    {% endif %}
+    <tr>
+        <td class="text-dark td-ihm-40">Connecteurs</td>
+        <td>
+            LVDS: {{ object.lvds_con|default:"?" }}<span class="m-2">/</span>ANT: {{ object.ant_con|default:"?" }}<span class="m-2">/</span>USB: {{ object.usb_con|default:"?" }}
+        </td>
+    </tr>
     {% if object.parts.all %}
         <tr>
-            <td class="text-dark td-ihm">Pièces Xelon</td>
+            <td class="text-dark td-ihm-40">Pièces Xelon</td>
             <td>{% for part in object.parts.all %}{{ part.name }}<br>{% endfor %}</td>
         </tr>
     {% endif %}
