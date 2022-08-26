@@ -36,6 +36,11 @@ django-celery-beat = "*"
 django-celery-results = "*"
 django-searchable-encrypted-fields = "*"
 reportlab = "*"
-django-constance = {extras = [ "redis",], version = "*"}
 wiki = "*"
 tzdata = "*"
+channels = "*"
+daphne = "*"
+
+[packages.django-constance]
+extras = [ "redis",]
+version = "*"
