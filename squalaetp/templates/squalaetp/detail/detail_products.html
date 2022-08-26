@@ -10,26 +10,26 @@
             </thead>
             <tbody class="table-borderless">
             <tr>
-                <td class="text-dark td-ihm">Numéro de dossier</td>
+                <td class="text-dark td-ihm-40">Numéro de dossier</td>
                 <td id="xelon">{{ xelon.numero_de_dossier }}<a href="#" title="copie"
                                                                onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i
                         class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">V.I.N.</td>
+                <td class="text-dark td-ihm-40">V.I.N.</td>
                 <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i
                         class="fas fa-copy ml-2"></i></a></td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Modèle produit</td>
+                <td class="text-dark td-ihm-40">Modèle produit</td>
                 <td>{{ xelon.modele_produit }}</td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Modèle véhicule</td>
+                <td class="text-dark td-ihm-40">Modèle véhicule</td>
                 <td>{{ xelon.modele_vehicule }}</td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Date d'expédition attendue</td>
+                <td class="text-dark td-ihm-40">Date d'expédition attendue</td>
                 {% if xelon.date_expedition_attendue %}
                     <td class="font-weight-bold {% if xelon.delai_expedition_attendue > 0 %}bg-danger text-white{% endif %}">
                         {{ xelon.date_expedition_attendue }}
@@ -40,13 +40,13 @@
                 {% endif %}
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Option télécodage</td>
+                <td class="text-dark td-ihm-40">Option télécodage</td>
                 <td class="font-weight-bold {% if xelon.telecodage == '1' %}bg-danger text-white{% endif %}">
                     {% if xelon.telecodage == '1' %}OUI{% else %}NON{% endif %}
                 </td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Option appairage</td>
+                <td class="text-dark td-ihm-40">Option appairage</td>
                 <td class="font-weight-bold {% if xelon.appairage == '1' %}bg-danger text-white{% endif %}">
                     {% if xelon.appairage == '1' %}OUI{% else %}NON{% endif %}
                 </td>
@@ -54,7 +54,7 @@
             {% if xelon.product.animator %}
                 {% with user=xelon.product.animator %}
                     <tr>
-                        <td class="text-dark td-ihm">Animateur d'ilot</td>
+                        <td class="text-dark td-ihm-40">Animateur d'ilot</td>
                         <td class="font-weight-bold">
                             <a href="mailto:{{ user.email }}?subject={{ xelon.numero_de_dossier }} - {{ xelon.modele_produit }}"
                                target="_blank">{{ user.email }}</a>

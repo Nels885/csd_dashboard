@@ -15,12 +15,12 @@
             </thead>
             <tbody class="table-borderless">
             <tr>
-                <td class="text-dark td-ihm">V.I.N.</td>
+                <td class="text-dark td-ihm-40">V.I.N.</td>
                 <td>{{ corvet.vin }}<a href="#" title="copie" onclick="textCopy('{{ corvet.vin }}')"><i class="fas fa-copy ml-2"></i></a>
                 </td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Marque/Véhicule</td>
+                <td class="text-dark td-ihm-40">Marque/Véhicule</td>
                 <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
                     <span class="ml-2">
                         {% if corvet.donnee_marque_commerciale == "0P" %}
@@ -32,11 +32,11 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Silhouette</td>
+                <td class="text-dark td-ihm-40">Silhouette</td>
                 <td>{{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}</td>
             </tr>
             <tr>
-                <td class="text-dark td-ihm">Dossier(s) Xelon</td>
+                <td class="text-dark td-ihm-40">Dossier(s) Xelon</td>
                 <td>
                     {% for xelon in corvet.xelon_set.all %}
                         <a href="{% url 'squalaetp:detail' pk=xelon.pk %}" target="_blank">{{ xelon.numero_de_dossier }}</a>
