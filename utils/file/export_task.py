@@ -23,7 +23,6 @@ class ExportExcelTask(BaseTask):
         self.noValue = kwargs.get('novalue', "#")
         self.textCols = kwargs.get('text_cols', [])
         self.header = kwargs.get('header', [])
-        self.date = timezone.now()
 
     @staticmethod
     def copy_and_get_copied_path():
@@ -45,7 +44,7 @@ class ExportExcelTask(BaseTask):
         :return Destination path to file
         """
         path = self.copy_and_get_copied_path()
-        destination_path = os.path.join(path, f"{filename}.{excel_type}")
+        destination_path = os.path.join(path, f"{filename}_{timezone.now().strftime('%y-%m-%d_%H-%M')}.{excel_type}")
         if excel_type == "csv":
             self._create_csv(destination_path, values_list)
         elif excel_type == "xls":
@@ -139,9 +138,9 @@ class ExportExcelTask(BaseTask):
 
     def _file_yesterday(self, path, file):
         """ Creation of the backup file d-1 """
-        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        yesterday = timezone.now() - timezone.timedelta(days=1)
         if os.path.isfile(file):
-            file_date = datetime.datetime.fromtimestamp(os.path.getmtime(file)).date()
+            file_date = timezone.datetime.fromtimestamp(os.path.getmtime(file)).date()
             if file_date >= yesterday:
                 shutil.copyfile(file, os.path.join(path, "{}J-1.{}".format(self.filename, self.excelType)))
 

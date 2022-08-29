@@ -226,12 +226,12 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         vin_list = kwargs.pop('vin_list', None)
         if vin_list is None:
             if kwargs.get('xelon_model', None):
-                filename = f"{kwargs.get('xelon_model')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+                filename = f"{kwargs.get('xelon_model')}"
             else:
-                filename = f"{kwargs.get('product', 'corvet')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+                filename = f"{kwargs.get('product', 'corvet')}"
             values_list = self.extract_corvet(*args, **kwargs)
         else:
-            filename = f"ecu_{self.date.strftime('%y-%m-%d_%H-%M')}"
+            filename = "ecu"
             values_list = self.extract_ecu(vin_list)
         destination_path = self.file(filename, excel_type, values_list)
         return {
