@@ -15,7 +15,7 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
     def run(self, *args, **kwargs):
         excel_type = kwargs.pop('excel_type', 'xlsx')
         model = kwargs.get('table', 'suptech')
-        filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+        filename = f"{model}"
         values_list = self.extract_tools(*args, **kwargs)
         destination_path = self.file(filename, excel_type, values_list)
         return {
