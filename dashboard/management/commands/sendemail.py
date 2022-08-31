@@ -153,7 +153,7 @@ class Command(BaseCommand):
     @staticmethod
     def _excel_contract_generate(queryset):
         excel = ExportExcelContract()
-        filename = f"Contrats_a_renouveler_au_{excel.date.strftime('%y-%m-%d_%H-%M')}"
+        filename = "Contrats_a_renouveler_au"
         excel.header = [
             'N° ligne Excel', 'Service', 'Nature du document', 'Objet du document', 'Fournisseur', 'Site', 'Date fin',
             'Contract actif', 'Date prévenance'
