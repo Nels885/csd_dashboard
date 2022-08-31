@@ -418,6 +418,8 @@ CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
 CELERY_TIME_ZONE = "Europe/Paris"
 CELERY_ENABLE_UTC = False
+# this allows you to schedule items in the Django admin.
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 
 # DJANGO-WIKI CONFIGURATION
 WIKI_ACCOUNT_HANDLING = True
