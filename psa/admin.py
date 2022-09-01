@@ -3,7 +3,7 @@ from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
 
-from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct
+from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute
 
 
 class CorvetListFilter(admin.SimpleListFilter):
@@ -29,6 +29,12 @@ class CorvetAdmin(admin.ModelAdmin):
         'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
         'electronique_94a',
     )
+
+
+class CorvetAttributeAdmin(admin.ModelAdmin):
+    list_display = ('key_1', 'key_2', 'label', 'col_ext')
+    list_filter = ('key_1',)
+    search_fields = ('key_1', 'key_2', 'label')
 
 
 class MultimediaAdmin(admin.ModelAdmin):
@@ -148,6 +154,7 @@ class CorvetProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(CorvetProduct, CorvetProductAdmin)
+admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
 admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
