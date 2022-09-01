@@ -117,7 +117,7 @@ class Command(BaseCommand):
         nb_prod_before, nb_prod_update = model.objects.count(), 0
         if not excel.ERROR:
             model.objects.exclude(numero_de_dossier__in=excel.xelon_number_list()).update(is_active=False)
-            for row in excel.xelon_table():
+            for row in excel.read():
                 xelon_number = row.get("numero_de_dossier")
                 defaults = defaults_dict(model, row, "numero_de_dossier")
                 try:

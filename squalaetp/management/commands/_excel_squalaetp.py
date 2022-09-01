@@ -1,6 +1,6 @@
 import logging
 
-from utils.microsoft_format import ExcelFormat, pd
+from utils.microsoft_format import ExcelFormat
 
 logger = logging.getLogger('command')
 
@@ -30,7 +30,7 @@ class ExcelSqualaetp(ExcelFormat):
             self.ERROR = f'FileNotFoundError: {err}'
             logger.error(self.ERROR)
 
-    def xelon_table(self):
+    def read(self):
         """
         Extracting data for the Xelon table from the Database
         :return:
@@ -42,35 +42,6 @@ class ExcelSqualaetp(ExcelFormat):
                 row = self.sheet.loc[line, self._columns_check(self.XELON_COLS)]
                 if row[0]:
                     data.append(dict(row.dropna()))
-        return data
-
-    def corvet_table(self, attribut_file=None):
-        """
-        Extracting data for the Corvet table form the Database
-        :return:
-            list of dictionnaries that represents the data for Corvet table
-        """
-        data = []
-        if not self.ERROR:
-            df_corvet = self.sheet.drop(self._columns_check(self.CORVET_DROP_COLS), axis='columns')
-            df_corvet, nrows = self._add_attributs(df_corvet, attribut_file)
-            for line in range(nrows):
-                row = df_corvet.loc[line]  # get the data in the ith row
-                if row[0] and isinstance(row[2], pd.Timestamp):
-                    data.append(dict(row.dropna()))
-        return data
-
-    def corvet_backup_table(self):
-        """
-        Extracting data for the Corvet Backup table form the Database
-        :return:
-            list of dictionnaries that represents the data for Corvet Backup table
-        """
-        data = []
-        if not self.ERROR:
-            for row in self.corvet_table():
-                vin = row['vin']
-                data.append({'vin': vin, 'data': row})
         return data
 
     def xelon_number_list(self):
