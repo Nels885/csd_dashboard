@@ -9,8 +9,8 @@ from datetime import datetime
 from squalaetp.models import Xelon
 from psa.models import Corvet
 
-VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137]))\w{14}$'
-VIN_OLD_PSA_REGEX = r'^[VZ]((F[37])|(R[137]))\w{14}$'
+VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137]))\w*$'
+VIN_OLD_PSA_REGEX = r'^[VZ]((F[37])|(R[137]))\w*$'
 # VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
 COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
 

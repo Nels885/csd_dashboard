@@ -85,12 +85,11 @@ class Command(BaseCommand):
                 for attempt in range(3):
                     row = xml_parser(scrap.result(query.vin))
                     if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row or attempt > 1:
-                        nb_import += 1
                         delay_time = time.time() - start_time
                         self.stdout.write(
                             self.style.ERROR(f"{start_msg} CorvetError in {delay_time}"))
                         break
-                    elif row.get('vin') and row.get('donnee_date_entree_montage'):
+                    elif isinstance(row, dict) and row.get('vin') and row.get('donnee_date_entree_montage'):
                         defaults = defaults_dict(Corvet, row, "vin")
                         obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
                         obj.opts.update = False
@@ -100,7 +99,7 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS(f"{start_msg} updated in {delay_time}"))
                         break
-                    elif row.get('vin'):
+                    else:
                         if squalaetp:
                             query.vin_error = True
                         Corvet.objects.filter(vin=query.vin).delete()
