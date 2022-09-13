@@ -56,6 +56,9 @@ def pre_save_xelon(sender, instance, **kwargs):
     finally:
         if instance.modele_produit:
             instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
+            if "ZONECE" in instance.lieu_de_stockage:
+                instance.product.category = "ETUDE"
+                instance.product.save()
             product_update(instance)
         if instance.date_expedition_attendue and isinstance(instance.date_expedition_attendue, timezone.datetime):
             try:
