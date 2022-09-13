@@ -218,3 +218,18 @@ class ProductCodeAdminForm(forms.ModelForm):
     class Meta:
         model = ProductCode
         fields = ['name', 'medias', 'ecus']
+
+
+class XelonCloseModalForm(BSModalModelForm):
+
+    class Meta:
+        model = Xelon
+        fields = ['type_de_cloture']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.type_de_cloture = "N/A"
+            instance.save()
+            Action.objects.create(content="Dossier en retard => FAIT", content_object=instance)
+        return instance

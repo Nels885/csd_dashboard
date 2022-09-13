@@ -8,7 +8,11 @@
                 {% elif delai == 0 %}class="bg-info text-light"
                 {% else %}class="bg-success text-gray-700"{% endif %}>
                 <td class="bg-white" style="width: 20px;">
-                    <a href="{% url 'squalaetp:detail' pk=prod.pk %}?select=xelon" title="Détail" class="btn btn-info btn-circle btn-sm" target="_blank"><i class="fas fa-info-circle"></i></a>
+                    {% if perms.squalaetp.change_xelon %}
+                        <a href="#" data-form-url="{% url 'squalaetp:xelon_close' prod.pk %}" title="Cloturer dossier" class="bs-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    {% endif %}
+                    <a href="{% url 'squalaetp:detail' pk=prod.pk %}?select=xelon" title="Détail"
+                       class="btn btn-info btn-circle btn-sm" target="_blank"><i class="fas fa-info-circle"></i></a>
                 </td>
                 <td>{{ activity }}</td>
                 <td>{{ prod.numero_de_dossier }}</td>

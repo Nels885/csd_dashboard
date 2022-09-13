@@ -24,7 +24,7 @@ from .serializers import (
     SivinSerializer, SIVIN_COLUMN_LIST, SparePartSerializer, SPAREPART_COLUMN_LIST
 )
 from .models import Xelon, XelonTemporary, SparePart, Action, Sivin
-from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm
+from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm
 from .tasks import cmd_loadsqualaetp_task
 from psa.models import Corvet
 from psa.forms import CorvetForm
@@ -316,6 +316,23 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
     def get_success_url(self):
         return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
+
+
+class XelonCloseView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for product update """
+    model = Xelon
+    permission_required = ['squalaetp.change_xelon']
+    template_name = 'squalaetp/modal/xelon_close.html'
+    form_class = XelonCloseModalForm
+    success_message = _('Success: Xelon was updated.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'modal_title': self.object.numero_de_dossier})
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:products', get={'filter': 'late'})
 
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
