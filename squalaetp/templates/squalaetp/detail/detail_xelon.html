@@ -61,10 +61,21 @@
         <td class="text-dark">Libellé de la fiche K</td>
         <td>{{ xelon.libelle_de_la_fiche_cas }}</td>
     </tr>
-    <tr>
-        <td class="text-dark">Lieu de stockage</td>
-        <td>{{ xelon.lieu_de_stockage }}</td>
-    </tr>
+    {% if not xelon.code_magasin %}
+        <tr>
+            <td class="text-dark">Lieu de stockage</td>
+            <td>{{ xelon.lieu_de_stockage }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td class="text-dark">Code Magasin</td>
+            <td>{{ xelon.code_magasin }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark">Code Zone</td>
+            <td>{{ xelon.code_zone }}</td>
+        </tr>
+    {% endif %}
     <tr>
         <td class="text-dark">Dossier VIP</td>
         <td>{{ xelon.dossier_vip|yesno:'OUI,NON' }}</td>
