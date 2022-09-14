@@ -121,9 +121,7 @@ class Command(BaseCommand):
                 xelon_number = row.get("numero_de_dossier")
                 defaults = defaults_dict(model, row, "numero_de_dossier")
                 try:
-                    action_filter = Q(content__startswith='OLD_VIN') | Q(content__startswith='OLD_PROD')
-                    queryset = model.objects.filter(numero_de_dossier=xelon_number, actions__isnull=False).first()
-                    if queryset and queryset.actions.filter(action_filter):
+                    if self._actions_check(xelon_number):
                         self.stdout.write(f"[XELON] Xelon file {xelon_number} not modified")
                         continue
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
@@ -146,6 +144,14 @@ class Command(BaseCommand):
             )
         else:
             self.stdout.write(f"[SQUALAETP_FILE] {excel.ERROR}")
+
+    @classmethod
+    def _actions_check(cls, xelon_number):
+        action_filter = Q(content__startswith='OLD_VIN') | Q(content__startswith='OLD_PROD')
+        query = Xelon.objects.filter(numero_de_dossier=xelon_number, actions__isnull=False).first()
+        if query and query.actions.filter(action_filter):
+            return True
+        return False
 
     def _delay_files(self, model, squalaetp, delay_files):
         self.stdout.write("[DELAY] Waiting...")
