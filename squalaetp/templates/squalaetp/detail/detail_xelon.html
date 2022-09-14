@@ -1,4 +1,12 @@
-<table class="table table-striped table-condensed table-sm">
+<table class="table table-striped table-bordered table-condensed table-sm">
+    <thead class="table-primary">
+    <tr>
+        <th colspan="2" class="text-primary text-uppercase">
+            <i class="fas fa-info-circle mr-2"></i><span>INFO XELON :</span>
+        </th>
+    </tr>
+    </thead>
+
     <tbody>
 
     <tr>
@@ -95,3 +103,90 @@
 
     </tbody>
 </table>
+
+{% if xelon.actions.all %}
+    <div class="row">
+        <section class="col-sm-12">
+            <table class="table table-bordered table-striped table-sm mt-4">
+                <thead class="table-primary">
+                <tr>
+                    <th colspan="8" class="text-primary text-uppercase">
+                        <i class="fas fa-archive mr-2"></i><span>HISTORIQUE MODIFICATIONS :</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Action</th>
+                    <th>Modifié le</th>
+                    <th>Modifié par</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for action in xelon.actions.all %}
+
+                    <tr>
+                        <td>{{ action.content|linebreaksbr }}</td>
+                        <td>{{ action.modified_at }}</td>
+                        <td>{{ action.modified_by }}</td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </section>
+    </div>
+{% endif %}
+
+{% if suptechs.all %}
+    <div class="row">
+        <section class="col-sm-12">
+            <table class="table table-bordered table-striped table-sm mt-4">
+                <thead class="table-primary">
+                <tr>
+                    <th colspan="8" class="text-primary text-uppercase">
+                        <i class="fas fa-toolbox mr-2"></i><span>LISTE SUPTECH :</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th class="text-nowrap">N° Sup</th>
+                    <th>Date</th>
+                    <th>Qui</th>
+                    <th class="text-nowrap">N° XELON</th>
+                    <th>Objet</th>
+                    <th>Status</th>
+                    <th class="text-nowrap">Action par</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for obj in suptechs %}
+
+                    <tr>
+                        <td class="bg-white text-nowrap" style="width: 60px;">
+                            {% if perms.tools.change_suptech %}
+                                <a href="{% url 'tools:suptech_update' pk=obj.pk %}" title="Actions réalisées"
+                                   class="btn btn-success btn-circle btn-sm" target="_blank"><i class="fas fa-edit"></i></a>
+                            {% else %}
+                                <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                            {% endif %}
+                            <a href="{% url 'tools:suptech_detail' pk=obj.pk %}" title="Détail"
+                               class="btn btn-info btn-circle btn-sm" target="_blank"><i class="fas fa-info-circle"></i></a>
+                        </td>
+                        <td>{{ obj.id }}</td>
+                        <td class="text-nowrap">{{ obj.date }}</td>
+                        <td class="text-nowrap">{{ obj.user }}</td>
+                        <td>{{ obj.xelon }}</td>
+                        <td style="min-width: 15rem;">{{ obj.item }}</td>
+                        <td class="text-nowrap">{{ obj.status }}</td>
+                        <td class="text-nowrap">{{ obj.modified_by.first_name }} {{ obj.modified_by.last_name }}</td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+{% endif %}
