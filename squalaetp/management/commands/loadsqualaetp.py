@@ -129,6 +129,9 @@ class Command(BaseCommand):
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                     if not created:
                         nb_prod_update += 1
+                    if "ZONECE" in obj.lieu_de_stockage:
+                        obj.product.category = "ETUDE"
+                        obj.product.save()
                 except Exception as err:
                     logger.error(f"[XELON_CMD] {xelon_number} - {err}")
             model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
