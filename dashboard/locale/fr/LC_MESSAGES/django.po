@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-12 07:53+0200\n"
+"POT-Creation-Date: 2022-09-14 09:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,40 +18,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: dashboard/admin.py:47
+#: dashboard/admin.py:48
 #, python-brace-format
 msgid "{0} user{1} {2} successfully {3}"
 msgstr "{0} utilisateur{1} {2} avec succès {3}"
 
-#: dashboard/admin.py:50
+#: dashboard/admin.py:51
 msgid "was,were"
 msgstr "était, étaient"
 
-#: dashboard/admin.py:55
+#: dashboard/admin.py:56
 msgid "Change service for CE"
 msgstr "Changer de service pour CE"
 
-#: dashboard/admin.py:62
+#: dashboard/admin.py:63
 msgid "Change service for CO"
 msgstr "Changer de service pour CO"
 
-#: dashboard/admin.py:69
+#: dashboard/admin.py:70
 msgid "Change service for ADM"
 msgstr "Changr de service pour ADM"
 
-#: dashboard/admin.py:76
+#: dashboard/admin.py:77
 msgid "Change job title for technician"
 msgstr "Changer le titre du poste de Technicien"
 
-#: dashboard/admin.py:83
+#: dashboard/admin.py:84
 msgid "Change job title for operator"
 msgstr "Changer le titre du poste pour Opérateur"
 
-#: dashboard/admin.py:90
+#: dashboard/admin.py:91
 msgid "Change job title for animator"
 msgstr "Changer le titre du poste pour Animateur"
 
-#: dashboard/admin.py:97
+#: dashboard/admin.py:98
 msgid "Change job title for manager"
 msgstr "Changer le titre du poste pour Manager"
 

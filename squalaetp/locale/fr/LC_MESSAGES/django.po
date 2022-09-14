@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-12 07:53+0200\n"
+"POT-Creation-Date: 2022-09-14 09:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,11 +138,11 @@ msgstr ""
 msgid "XML data does not match IMMAT"
 msgstr "Les données XML ne correspondent pas à IMMAT"
 
-#: squalaetp/models.py:117
+#: squalaetp/models.py:119
 msgid "Xelon number exists !"
 msgstr "Le numéro Xelon existe !"
 
-#: squalaetp/models.py:121
+#: squalaetp/models.py:123
 msgid "A temporary Xelon is already active with this number !"
 msgstr "Un dossier Xelon temporaire est déjà actif avec ce numéro !"
 
@@ -184,6 +184,18 @@ msgstr ""
 msgid "Submit"
 msgstr "Soumettre"
 
+#: squalaetp/templates/squalaetp/modal/xelon_close.html:14
+msgid "Do you want to close as DONE this Xelon number?"
+msgstr "Voulez-vous clôturer comme FAIT ce N° Xelon ?"
+
+#: squalaetp/templates/squalaetp/modal/xelon_close.html:17
+msgid "No"
+msgstr "Non"
+
+#: squalaetp/templates/squalaetp/modal/xelon_close.html:18
+msgid "Yes"
+msgstr "Oui"
+
 #: squalaetp/templates/squalaetp/tab_select.html:5
 msgid "Current files"
 msgstr "Dossiers en cours"
@@ -217,7 +229,7 @@ msgstr "Succès: les données Squalaetp ont été mises à jour."
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
 
-#: squalaetp/views.py:297
+#: squalaetp/views.py:297 squalaetp/views.py:327
 msgid "Success: Xelon was updated."
 msgstr "Succès: les données Squalaetp ont été mises à jour."
 
@@ -226,18 +238,18 @@ msgstr "Succès: les données Squalaetp ont été mises à jour."
 msgid "Product update for %(file)s"
 msgstr "MAJ du produit pour %(file)s"
 
-#: squalaetp/views.py:341 squalaetp/views.py:368 squalaetp/views.py:401
+#: squalaetp/views.py:358 squalaetp/views.py:385 squalaetp/views.py:418
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: squalaetp/views.py:472
+#: squalaetp/views.py:489
 msgid "Detail SIVIN data for the Immat: "
 msgstr "Détail des données SIVIN pour l'Immat :"
 
-#: squalaetp/views.py:486
+#: squalaetp/views.py:503
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: squalaetp/views.py:490
+#: squalaetp/views.py:507
 msgid "SIVIN integration"
 msgstr "Intégration SIVIN"

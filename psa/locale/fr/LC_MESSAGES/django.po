@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-12 07:53+0200\n"
+"POT-Creation-Date: 2022-09-14 09:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: psa/admin.py:45 psa/admin.py:109
+#: psa/admin.py:64 psa/admin.py:128
 #, python-brace-format
 msgid "{0} product{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: psa/admin.py:48 psa/admin.py:112
+#: psa/admin.py:67 psa/admin.py:131
 msgid "was,were"
 msgstr "était, étaient"
 
-#: psa/admin.py:53 psa/admin.py:117
+#: psa/admin.py:72 psa/admin.py:136
 msgid "Relation by name disabled"
 msgstr "Relation par nom désactivée"
 
-#: psa/admin.py:58 psa/admin.py:122
+#: psa/admin.py:77 psa/admin.py:141
 msgid "Relation by name enabled"
 msgstr "Relation par nom activée"
 
