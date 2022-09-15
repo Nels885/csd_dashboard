@@ -128,7 +128,7 @@ def search(request):
             messages.success(request, _(f'Success: The reseach for {query} was successful.'))
             if len(corvets) > 1:
                 return redirect(reverse('psa:corvet', get={'filter': query}))
-            return redirect('psa:corvet_detail', vin=corvets.first().vin)
+            return redirect('psa:corvet_detail', pk=corvets.first().pk)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))
 

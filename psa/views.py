@@ -142,7 +142,7 @@ class CorvetViewSet(viewsets.ModelViewSet):
 
 
 @permission_required('psa.view_corvet')
-def corvet_detail(request, vin):
+def corvet_detail(request, pk):
     """
     detailed view of Corvet data for a file
     :param vin:
@@ -152,15 +152,15 @@ def corvet_detail(request, vin):
         "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True,
         "cmb": True
     }
-    corvet = get_object_or_404(Corvet, vin=vin)
+    corvet = get_object_or_404(Corvet, vin=pk)
     if corvet.electronique_14x.isdigit():
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
     if corvet.electronique_14a.isdigit():
         cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)
-    if Sivin.objects.filter(codif_vin=vin):
-        dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=vin).first())
+    if Sivin.objects.filter(codif_vin=pk):
+        dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=pk).first())
     select = "prods"
     context.update(locals())
     return render(request, 'psa/detail/detail.html', context)
