@@ -163,3 +163,25 @@ class MixinsTest(UnitTest):
         self.assertRedirects(response, reverse('squalaetp:sivin_detail', args=[sivin.pk]), status_code=302)
         # Object is updated
         self.assertEqual(Sivin.objects.count(), 1)
+
+    def test_xelon_close_ajax_mixin(self):
+        """
+        Xelon close throught BSModalCreateView.
+        """
+        self.add_perms_user(Xelon, 'change_xelon')
+        self.login()
+
+        # Update object through BSModalUpdateView
+        xelon = Xelon.objects.first()
+        response = self.client.post(
+            reverse('squalaetp:xelon_close', kwargs={'pk': xelon.pk}),
+            data={
+                'type_de_cloture': ''
+            }
+        )
+        # redirection
+        self.assertRedirects(
+            response, reverse('dashboard:products', get={'filter': 'late'}), status_code=302)
+        # Object is updated
+        xelon = Xelon.objects.first()
+        self.assertEqual(xelon.type_de_cloture, 'N/A')
