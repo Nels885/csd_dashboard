@@ -22,7 +22,7 @@ def save_corvet_to_models(vin):
                 delay_time = time.time() - start_time
                 msg = f"{vin} error CORVET in {delay_time}"
                 break
-            elif row and row.get('donnee_date_entree_montage'):
+            elif isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                 defaults = defaults_dict(Corvet, row, "vin")
                 obj, created = Corvet.objects.update_or_create(vin=row.get("vin"), defaults=defaults)
                 obj.prods.update = False
@@ -35,7 +35,6 @@ def save_corvet_to_models(vin):
                 msg = f"{vin} error VIN in {delay_time}"
                 Corvet.objects.filter(vin=vin).delete()
         scrap.close()
-    print(msg)
     return msg
 
 
@@ -75,7 +74,7 @@ def import_corvet_list_task(self, *args, **kwargs):
                         delay_time = time.time() - start_time
                         msg += f"{vin} error CORVET in {delay_time}"
                         break
-                    elif row and row.get('donnee_date_entree_montage'):
+                    elif isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                         defaults = defaults_dict(Corvet, row, "vin")
                         obj, created = Corvet.objects.update_or_create(vin=row.get("vin"), defaults=defaults)
                         obj.prods.update = False
@@ -85,7 +84,7 @@ def import_corvet_list_task(self, *args, **kwargs):
                         delay_time = time.time() - start_time
                         msg += f"{vin} updated in {delay_time}"
                         break
-                    if attempt:
+                    elif attempt:
                         delay_time = time.time() - start_time
                         msg += f"{vin} error VIN in {delay_time}"
                         Corvet.objects.filter(vin=vin).delete()

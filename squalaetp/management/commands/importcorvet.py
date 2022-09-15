@@ -82,9 +82,9 @@ class Command(BaseCommand):
                 if squalaetp:
                     start_msg = f"{query.numero_de_dossier} - {start_msg}"
                 start_time = time.time()
-                for attempt in range(3):
+                for attempt in range(2):
                     row = xml_parser(scrap.result(query.vin))
-                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row or attempt > 1:
+                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                         delay_time = time.time() - start_time
                         self.stdout.write(
                             self.style.ERROR(f"{start_msg} CorvetError in {delay_time}"))
@@ -99,14 +99,13 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS(f"{start_msg} updated in {delay_time}"))
                         break
-                    else:
+                    elif attempt:
                         if squalaetp:
                             query.vin_error = True
                         Corvet.objects.filter(vin=query.vin).delete()
                         delay_time = time.time() - start_time
                         self.stdout.write(
                             self.style.ERROR(f"{start_msg} error VIN in {delay_time}"))
-                        break
                 if squalaetp:
                     query.save()
                 if limit and nb_import >= 200:
@@ -123,7 +122,7 @@ class Command(BaseCommand):
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
             delay_time = time.time() - start_time
             self.stdout.write(self.style.ERROR(f"{immat} - error SIVIN in {delay_time}"))
-        elif data and data.get('immat_siv'):
+        elif isinstance(data, dict) and data.get('immat_siv'):
             delay_time = time.time() - start_time
             self.stdout.write(self.style.SUCCESS(f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"))
             if not Corvet.objects.filter(vin=data.get('codif_vin')):
