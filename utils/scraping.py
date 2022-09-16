@@ -162,9 +162,9 @@ class ScrapingPartslink24(Scraping):
 
     def __init__(self, *args, **kwargs):
         """ Initialization """
-        self.account = kwargs.get('account', '')
-        self.user = kwargs.get('user', '')
-        self.password = kwargs.get('password', '')
+        self.account = kwargs.get('account', 'fr-195875')
+        self.user = kwargs.get('user', 'admin')
+        self.password = kwargs.get('password', 'Faure2021++')
         if not kwargs.get('test', False) and self.account and self.user and self.password:
             try:
                 super(ScrapingPartslink24, self).__init__()
