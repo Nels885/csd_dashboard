@@ -3,6 +3,7 @@ import logging
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ChromeOptions as Options
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from constance import config
@@ -18,7 +19,7 @@ class Scraping(webdriver.Chrome):
         options = Options()
         if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
             options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-        options.add_argument('headless')
+        # options.add_argument('headless')
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
@@ -161,9 +162,9 @@ class ScrapingPartslink24(Scraping):
 
     def __init__(self, *args, **kwargs):
         """ Initialization """
-        self.account = kwargs.get('account', '')
-        self.user = kwargs.get('user', '')
-        self.password = kwargs.get('password', '')
+        self.account = kwargs.get('account', 'fr-195875')
+        self.user = kwargs.get('user', 'admin')
+        self.password = kwargs.get('password', 'Faure2021++')
         if not kwargs.get('test', False) and self.account and self.user and self.password:
             try:
                 super(ScrapingPartslink24, self).__init__()
@@ -206,9 +207,14 @@ class ScrapingPartslink24(Scraping):
         return data
 
     def privaty_settings(self):
-        WebDriverWait(self, 10).until(EC.presence_of_element_located((By.XPATH, '//button[@data-testid="uc-accept-all-button"]')))
-        accept_all = self.find_element_by_xpath('//button[@data-testid="uc-accept-all-button"]')
-        accept_all.click()
+        WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'usercentrics-root')))
+        shadow_host = self.find_element_by_id('usercentrics-root')
+        script = 'return arguments[0].shadowRoot'
+        shadow_root_dict = self.execute_script(script, shadow_host)
+        id = shadow_root_dict['shadow-6066-11e4-a52e-4f735466cecf']
+        shadow_root = WebElement(self, id, w3c=True)
+        WebDriverWait(shadow_root, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '[data-testid="uc-accept-all-button"]')))
+        shadow_root.find_element_by_css_selector('[data-testid="uc-accept-all-button"]').click()
 
     def login(self):
         """
@@ -222,10 +228,9 @@ class ScrapingPartslink24(Scraping):
             for element, value in {account: self.account, user: self.user, password: self.password}.items():
                 element.clear()
                 element.send_keys(value)
-            login = self.find_element_by_id('login-btn')
-            login.click()
-            if self.find_element_by_id('squeezeout-login-btn'):
-                self.find_element_by_id('squeezeout-login-btn').click()
+            WebDriverWait(self, 10).until(EC.element_to_be_clickable((By.ID, 'login-btn'))).click()
+            if self.is_element_exist('squeezeout-login-btn'):
+                WebDriverWait(self, 10).until(EC.element_to_be_clickable((By.ID, 'squeezeout-login-btn'))).click()
         except Exception as err:
             self._logger_error('login()', err)
             self.close(error=True)
@@ -244,3 +249,7 @@ class ScrapingPartslink24(Scraping):
             self.quit()
             return False
         return True
+
+    def is_element_exist(self, text):
+        elements = WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, text)))
+        return True if elements else False
