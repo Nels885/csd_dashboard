@@ -348,8 +348,6 @@ CONSTANCE_CONFIG = {
     'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN TO email list'),
     'CHANGE_PROD_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon produit TO email list'),
     'CSD_CC_EMAIL_LIST': ('test1@test.com; test2@test.com', 'CSD Atelier CC email list'),
-    'CORVET_USER': ('', 'CORVET user for RepairLab'),
-    'CORVET_PWD': ('', 'CORVET password for RepairLab'),
     'SQUALAETP_FILE_LIST': ('squalaetp_cal.xls, squalaetp_ecu.xls, squalaetp_prog.xls', 'Squalaetp file list'),
 
     # REMAN Options
@@ -381,6 +379,11 @@ CONSTANCE_CONFIG = {
     'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL'),
     'PROXY_HOST_SCRAPING': ('', 'Proxy HOST for Scraping'),
     'PROXY_PORT_SCRAPING': ('', 'Proxy PORT for Scraping'),
+    'CORVET_USER': ('', 'CORVET user for RepairLab'),
+    'CORVET_PWD': ('', 'CORVET password for RepairLab'),
+    'PL24_ACCOUNT': ('', 'Account for PartsLink24'),
+    'PL24_USER': ('', 'User for PartsLink24'),
+    'PL24_PWD': ('', 'Password for PartsLink24')
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -396,7 +399,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     '3. CSD Repair Options': (
         'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',
         'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
-        'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
+        'SQUALAETP_FILE_LIST'
     ),
     '4. REMAN Options': (
         'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
@@ -404,7 +407,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ),
     '5. Tools Options': (
         'SUPTECH_TO_EMAIL_LIST', 'SUPTECH_CC_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING',
-        'PROXY_PORT_SCRAPING'
+        'PROXY_PORT_SCRAPING', 'CORVET_USER', 'CORVET_PWD', 'PL24_ACCOUNT', 'PL24_USER', 'PL24_PWD'
     ),
     '6. MQTT Options': (
         'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'

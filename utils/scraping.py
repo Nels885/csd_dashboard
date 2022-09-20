@@ -1,6 +1,7 @@
 import time
 import logging
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ChromeOptions as Options
 from selenium.webdriver.remote.webelement import WebElement
@@ -13,24 +14,50 @@ logger = logging.getLogger('command')
 
 class Scraping(webdriver.Chrome):
     ERROR = False
+    STATUS = None
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """ Initialization """
         options = Options()
         if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
             options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-        # options.add_argument('headless')
+        if kwargs.get('headless', True):
+            options.add_argument('headless')
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
         self.set_page_load_timeout(30)
+        self.STATUS = "INIT"
 
-    def close(self, **kwargs):
+    def is_element_exist(self, by, value):
         try:
-            if not self.ERROR:
-                self.quit()
+            WebDriverWait(self, 2).until(EC.presence_of_element_located((by, value)))
+        except TimeoutException:
+            return False
+        return True
+
+    def is_element_clicked(self, by, value):
+        try:
+            WebDriverWait(self, 2).until(EC.element_to_be_clickable((by, value))).click()
+        except TimeoutException:
+            return False
+        return True
+
+    def close(self):
+        try:
+            if self.STATUS not in ["QUIT", "CLOSE"]:
+                super().close()
+                self.STATUS = "CLOSE"
         except Exception as err:
             self._logger_error('close()', err)
+
+    def quit(self, **kwargs):
+        try:
+            if self.STATUS != "QUIT":
+                super().quit()
+                self.STATUS = "QUIT"
+        except Exception as err:
+            self._logger_error('quit()', err)
         finally:
             self.ERROR = kwargs.get('error', self.ERROR)
 
@@ -50,11 +77,11 @@ class ScrapingCorvet(Scraping):
         self.password = kwargs.get('password', config.CORVET_PWD)
         if not kwargs.get('test', False) and self.username and self.password:
             try:
-                super(ScrapingCorvet, self).__init__()
+                super(ScrapingCorvet, self).__init__(**kwargs)
                 self.get(self.START_URLS)
             except Exception as err:
                 self._logger_error('__init__()', err)
-                self.close(error=True)
+                self.quit(error=True)
         else:
             self.ERROR = True
 
@@ -102,7 +129,7 @@ class ScrapingCorvet(Scraping):
             login.click()
         except Exception as err:
             self._logger_error('login()', err)
-            self.close(error=True)
+            self.quit(error=True)
             return False
         return True
 
@@ -115,7 +142,7 @@ class ScrapingCorvet(Scraping):
             WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'form:deconnect2'))).click()
         except Exception as err:
             self._logger_error('logout()', err)
-            self.quit()
+            self.quit(error=True)
             return False
         return True
 
@@ -162,18 +189,18 @@ class ScrapingPartslink24(Scraping):
 
     def __init__(self, *args, **kwargs):
         """ Initialization """
-        self.account = kwargs.get('account', '')
-        self.user = kwargs.get('user', '')
-        self.password = kwargs.get('password', '')
+        self.account = kwargs.get('account', config.PL24_ACCOUNT)
+        self.user = kwargs.get('user', config.PL24_USER)
+        self.password = kwargs.get('password', config.PL24_PWD)
         if not kwargs.get('test', False) and self.account and self.user and self.password:
             try:
-                super(ScrapingPartslink24, self).__init__()
+                super(ScrapingPartslink24, self).__init__(**kwargs)
 
                 self.get(self.START_URLS)
                 self.privaty_settings()
             except Exception as err:
                 self._logger_error('__init__()', err)
-                self.close(error=True)
+                self.quit(error=True)
         else:
             self.ERROR = True
 
@@ -221,21 +248,24 @@ class ScrapingPartslink24(Scraping):
         Login on the website
         """
         try:
-            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'accountLogin')))
-            account = self.find_element_by_name('accountLogin')
-            user = self.find_element_by_name('userLogin')
-            password = self.find_element_by_name('loginBean.password')
-            for element, value in {account: self.account, user: self.user, password: self.password}.items():
-                element.clear()
-                element.send_keys(value)
-            WebDriverWait(self, 10).until(EC.element_to_be_clickable((By.ID, 'login-btn'))).click()
-            if self.is_element_exist('squeezeout-login-btn'):
-                WebDriverWait(self, 10).until(EC.element_to_be_clickable((By.ID, 'squeezeout-login-btn'))).click()
+            if self.STATUS in ["INIT", "LOGOUT"]:
+                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'accountLogin')))
+                account = self.find_element_by_name('accountLogin')
+                user = self.find_element_by_name('userLogin')
+                password = self.find_element_by_name('loginBean.password')
+                for element, value in {account: self.account, user: self.user, password: self.password}.items():
+                    element.clear()
+                    element.send_keys(value)
+                WebDriverWait(self, 10).until(EC.element_to_be_clickable((By.ID, 'login-btn'))).click()
+                self.is_element_clicked(By.ID, 'squeezeout-login-btn')
+                if not self.is_element_exist(By.ID, 'logoutLink'):
+                    return False
+                self.STATUS = "LOGIN"
+                return True
         except Exception as err:
             self._logger_error('login()', err)
-            self.close(error=True)
-            return False
-        return True
+            self.quit(error=True)
+        return False
 
     def logout(self):
         """
@@ -243,13 +273,11 @@ class ScrapingPartslink24(Scraping):
         :return:
         """
         try:
-            WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'logoutLink'))).click()
+            if self.STATUS == "LOGIN":
+                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'logoutLink'))).click()
+                self.STATUS = "LOGOUT"
+                return True
         except Exception as err:
             self._logger_error('logout()', err)
-            self.quit()
-            return False
-        return True
-
-    def is_element_exist(self, text):
-        elements = WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, text)))
-        return True if elements else False
+            self.quit(error=True)
+        return False
