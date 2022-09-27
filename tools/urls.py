@@ -29,4 +29,5 @@ urlpatterns = [
     path('suptech/item/ajax/', views.suptech_item_ajax, name='suptech_item_ajax'),
     path('bga/time/', views.bga_time, name='bga_time'),
     path('usb-devices/', views.usb_devices, name='usb_devices'),
+    path('partslink24/', views.partlink24, name='partslink24'),
 ]
