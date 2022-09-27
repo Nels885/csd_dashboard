@@ -178,3 +178,19 @@ class ToolsTestCase(UnitTest):
         self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "STOP"})
         self.assertEqual(BgaTime.objects.count(), 2)
         self.assertNotEqual(BgaTime.objects.last().end_time, None)
+
+    def test_usb_device_page(self):
+        url = reverse('tools:usb_devices')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_partslink24_page(self):
+        url = reverse('tools:partslink24')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

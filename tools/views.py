@@ -294,11 +294,13 @@ def bga_time(request):
     return JsonResponse({"response": "ERROR"})
 
 
+@login_required
 def usb_devices(request):
     title = "USB Devices"
     return render(request, 'tools/usb_devices.html', locals())
 
 
+@login_required
 def partlink24(request):
     title = "Partslink24"
     card_title = "Scraping Partslink24"
