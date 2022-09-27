@@ -216,10 +216,13 @@ class ScrapingPartslink24(Scraping):
 
     def brand_select(self, brand="Abarth"):
         try:
-            if self.BRANDS.get(brand):
-                css_select = f"#brands-container-inner > div:nth-child({self.BRANDS[brand]}) > a"
+            if self.STATUS == "HOME":
+                if isinstance(brand, str) and self.BRANDS.get(brand):
+                    css_select = f"#brands-container-inner > div:nth-child({self.BRANDS[brand]}) > a"
+                else:
+                    css_select = f"#brands-container-inner > div:nth-child({brand}) > a"
                 WebDriverWait(self, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, css_select))).click()
-                self.STATUS = brand
+                self.STATUS = self.get_key_from_brands(brand)
                 return True
         except Exception as err:
             self._logger_error('brand_select()', err)
@@ -234,7 +237,7 @@ class ScrapingPartslink24(Scraping):
     def search(self, vin_value=None):
         data = {}
         try:
-            if self.STATUS in list(self.BRANDS.keys()):
+            if self.is_element_exist(By.NAME, 'vin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, "vin"))).clear()
                 vin = self.find_element_by_name("vin")
                 submit = self.find_element_by_id('vinGo')
@@ -317,3 +320,9 @@ class ScrapingPartslink24(Scraping):
         if result is True:
             self.STATUS = "LOGIN"
         return result
+
+    def get_key_from_brands(self, val):
+        keys = [key for key, value in self.BRANDS.items() if value == val]
+        if keys:
+            return keys[0]
+        return val
