@@ -1,7 +1,7 @@
 import time
 import logging
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ChromeOptions as Options
 from selenium.webdriver.remote.webelement import WebElement
@@ -232,6 +232,7 @@ class ScrapingPartslink24(Scraping):
         return result
 
     def search(self, vin_value=None):
+        data = {}
         try:
             if self.STATUS in list(self.BRANDS.keys()):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, "vin"))).clear()
@@ -240,23 +241,35 @@ class ScrapingPartslink24(Scraping):
                 if vin_value:
                     vin.send_keys(vin_value)
                 submit.click()
-                if self.is_element_clicked(By.XPATH, '/html/body/div[5]/div[3]/div/button'):
-                    return False
-                return True
+                if not self.is_element_clicked(By.XPATH, '/html/body/div[5]/div[3]/div/button'):
+                    data = self.result()
         except Exception as err:
             self._logger_error('search()', err)
-        return False
+        return data
 
     def result(self):
         """
         Corvet data recovery
         :param vin_value: VIN number for the Corvet data
         :return: Corvet data
+        //*[@id="vinTabsGeneral"]/table/tbody/tr
         """
-        if self.is_element_exist(By.XPATH, '//*[@id="vinTabsGeneral"]/table/tbody/tr'):
-            for tr in self.find_elements_by_xpath('//*[@id="vinTabsGeneral"]/table/tbody/tr'):
-                tds = tr.find_elements_by_tag_name('td')
-                print([td.text for td in tds])
+        data = {}
+        try:
+            if self.is_element_exist(By.XPATH, '//*/table[@class="vinInfoTable"]/tbody/tr'):
+                for tr in self.find_elements_by_xpath('//*/table[@class="vinInfoTable"]/tbody/tr'):
+                    tds = tr.find_elements_by_tag_name('td')
+                    if len(tds) == 1:
+                        try:
+                            th = tr.find_element_by_tag_name('th')
+                            data[th.get_attribute("textContent")] = tds[0].text
+                        except NoSuchElementException:
+                            pass
+                    elif len(tds) >= 2 and tds[0].text != "":
+                        data[tds[0].text] = " ".join([td.text for td in tds[1:]])
+        except Exception as err:
+            self._logger_error('result()', err)
+        return data
 
     def privaty_settings(self):
         WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'usercentrics-root')))
