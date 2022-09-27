@@ -186,6 +186,15 @@ class ScrapingSivin(ScrapingCorvet):
 class ScrapingPartslink24(Scraping):
     """ Scraping data Corvet of the partslink24 website"""
     START_URLS = 'https://www.partslink24.com'
+    BRANDS = {
+        "Abarth": 2, "Alfa Romeo": 3, "Audi": 4, "Bentley": 5, "BMW": 6, "BMW Classic": 7, "BMW Motorrad": 8,
+        "BMW Motorrad Classic": 9, "Citroën": 10, "Citroën DS": 11, "Dacia": 12, "Fiat": 13, "Fiat Professional": 14,
+        "Ford": 15, "Ford Commercial": 16, "Hyundai": 17, "Infiniti": 18, "Iveco": 19, "Jaguar": 20, "Jeep": 21,
+        "Kia": 22, "Lancia": 23, "Land Rover": 24, "MAN": 25, "Mercedes-Benz": 26, "Mercedes-Benz Trucks": 27,
+        "Mercedes-Benz Unimog": 28, "Mercedes-Benz Vans": 29, "MINI": 30, "Mitsubishi": 31, "Nissan": 32, "Opel": 33,
+        "Peugeot": 34, "Polestar": 35, "Porsche": 36, "Porsche Classic": 37, "Renault": 38, "SEAT": 39, "Škoda": 40,
+        "smart": 41, "Vauxhall": 42, "Volkswagen": 43, "Volkswagen Commercial Vehicles": 44, "Volvo": 45
+    }
 
     def __init__(self, *args, **kwargs):
         """ Initialization """
@@ -198,40 +207,56 @@ class ScrapingPartslink24(Scraping):
 
                 self.get(self.START_URLS)
                 self.privaty_settings()
+                self.STATUS = "LOGIN"
             except Exception as err:
                 self._logger_error('__init__()', err)
                 self.quit(error=True)
         else:
             self.ERROR = True
 
-    def result(self, vin_value=None):
+    def brand_select(self, brand="Abarth"):
+        try:
+            if self.BRANDS.get(brand):
+                css_select = f"#brands-container-inner > div:nth-child({self.BRANDS[brand]}) > a"
+                WebDriverWait(self, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, css_select))).click()
+                self.STATUS = brand
+                return True
+        except Exception as err:
+            self._logger_error('brand_select()', err)
+        return False
+
+    def get_home(self):
+        result = self.is_element_clicked(By.ID, 'portal')
+        if result:
+            self.STATUS = "HOME"
+        return result
+
+    def search(self, vin_value=None):
+        try:
+            if self.STATUS in list(self.BRANDS.keys()):
+                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, "vin"))).clear()
+                vin = self.find_element_by_name("vin")
+                submit = self.find_element_by_id('vinGo')
+                if vin_value:
+                    vin.send_keys(vin_value)
+                submit.click()
+                if self.is_element_clicked(By.XPATH, '/html/body/div[5]/div[3]/div/button'):
+                    return False
+                return True
+        except Exception as err:
+            self._logger_error('search()', err)
+        return False
+
+    def result(self):
         """
         Corvet data recovery
         :param vin_value: VIN number for the Corvet data
         :return: Corvet data
         """
-        if not self.ERROR and self.login():
-            try:
-                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
-                vin = self.find_element_by_name('form:input_vin')
-                submit = self.find_element_by_id('form:suite')
-                if vin_value:
-                    vin.send_keys(vin_value)
-                submit.click()
-                time.sleep(1)
-                data = WebDriverWait(self, 10).until(
-                    EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
-                ).text
-                if data and len(data) == 0:
-                    data = "ERREUR COMMUNICATION SYSTEME CORVET"
-            except Exception as err:
-                self._logger_error('CORVET result()', err)
-                data = "Exception or timeout error !"
-                self.ERROR = True
-            self.logout()
-        else:
-            data = "Corvet login Error !!!"
-        return data
+        if self.is_element_exist(By.XPATH, '//*[@id="vinTabsGeneral"]/table/tbody/tr'):
+            for tr in self.find_elements_by_xpath('//*[@id="vinTabsGeneral"]/table/tbody/tr'):
+                tds = tr.find_elements_by_tag_name('td')
+                print([td.text for td in tds])
 
     def privaty_settings(self):
         WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'usercentrics-root')))
@@ -248,7 +273,7 @@ class ScrapingPartslink24(Scraping):
         Login on the website
         """
         try:
-            if self.STATUS in ["INIT", "LOGOUT"]:
+            if self.is_element_exist(By.NAME, 'accountLogin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'accountLogin')))
                 account = self.find_element_by_name('accountLogin')
                 user = self.find_element_by_name('userLogin')
@@ -260,7 +285,7 @@ class ScrapingPartslink24(Scraping):
                 self.is_element_clicked(By.ID, 'squeezeout-login-btn')
                 if not self.is_element_exist(By.ID, 'logoutLink'):
                     return False
-                self.STATUS = "LOGIN"
+                self.STATUS = "HOME"
                 return True
         except Exception as err:
             self._logger_error('login()', err)
@@ -272,12 +297,10 @@ class ScrapingPartslink24(Scraping):
         Logout on the website
         :return:
         """
-        try:
-            if self.STATUS == "LOGIN":
-                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'logoutLink'))).click()
-                self.STATUS = "LOGOUT"
-                return True
-        except Exception as err:
-            self._logger_error('logout()', err)
-            self.quit(error=True)
-        return False
+        if self.is_element_exist(By.ID, 'logoutLink'):
+            result = self.is_element_clicked(By.ID, 'logoutLink')
+        else:
+            result = self.is_element_clicked(By.ID, 'logout')
+        if result is True:
+            self.STATUS = "LOGIN"
+        return result
