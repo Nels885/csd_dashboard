@@ -216,7 +216,7 @@ class ScrapingPartslink24(Scraping):
 
     def brand_select(self, brand="Abarth"):
         try:
-            if self.STATUS == "HOME":
+            if not self.ERROR and self.STATUS == "HOME":
                 if isinstance(brand, str) and self.BRANDS.get(brand):
                     css_select = f"#brands-container-inner > div:nth-child({self.BRANDS[brand]}) > a"
                 else:
@@ -237,7 +237,7 @@ class ScrapingPartslink24(Scraping):
     def search(self, vin_value=None):
         data = {}
         try:
-            if self.is_element_exist(By.NAME, 'vin'):
+            if not self.ERROR and self.is_element_exist(By.NAME, 'vin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, "vin"))).clear()
                 vin = self.find_element_by_name("vin")
                 submit = self.find_element_by_id('vinGo')
@@ -259,7 +259,7 @@ class ScrapingPartslink24(Scraping):
         """
         data = {}
         try:
-            if self.is_element_exist(By.XPATH, '//*/table[@class="vinInfoTable"]/tbody/tr'):
+            if not self.ERROR and self.is_element_exist(By.XPATH, '//*/table[@class="vinInfoTable"]/tbody/tr'):
                 for tr in self.find_elements_by_xpath('//*/table[@class="vinInfoTable"]/tbody/tr'):
                     tds = tr.find_elements_by_tag_name('td')
                     if len(tds) == 1:
@@ -289,7 +289,7 @@ class ScrapingPartslink24(Scraping):
         Login on the website
         """
         try:
-            if self.is_element_exist(By.NAME, 'accountLogin'):
+            if not self.ERROR and self.is_element_exist(By.NAME, 'accountLogin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'accountLogin')))
                 account = self.find_element_by_name('accountLogin')
                 user = self.find_element_by_name('userLogin')
@@ -313,12 +313,14 @@ class ScrapingPartslink24(Scraping):
         Logout on the website
         :return:
         """
-        if self.is_element_exist(By.ID, 'logoutLink'):
-            result = self.is_element_clicked(By.ID, 'logoutLink')
-        else:
-            result = self.is_element_clicked(By.ID, 'logout')
-        if result is True:
-            self.STATUS = "LOGIN"
+        result = False
+        if not self.ERROR:
+            if self.is_element_exist(By.ID, 'logoutLink'):
+                result = self.is_element_clicked(By.ID, 'logoutLink')
+            else:
+                result = self.is_element_clicked(By.ID, 'logout')
+            if result is True:
+                self.STATUS = "LOGIN"
         return result
 
     def get_key_from_brands(self, val):
