@@ -142,17 +142,21 @@ def xml_parser(value):
                             data[key.lower()] = make_aware(datetime.strptime(value, "%d/%m/%Y %H:%M:%S"))
                     else:
                         key, value = "DONNEE_{}".format(child.tag), child.text
-                        # print("{} : {}".format(key, value))
                         data[key.lower()] = value
             elif data_list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
                 for child in data_list:
                     key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
-                    # print("{} : {}".format(key, value))
                     data[key.lower()] = value
+            elif data_list.tag in ["LISTE_ATTRIBUTES_7"]:
+                for child in data_list:
+                    key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
+                    if value[-2:] == "CD":
+                        data[key.lower()] = value[:-2]
+                    else:
+                        data[key.lower()] = value
             elif data_list.tag == "LISTE_ORGANES":
                 for child in data_list:
                     key, value = "{}s_{}".format(child.tag, child.text[:2]), child.text[2:]
-                    # print("{} : {}".format(key, value))
                     data[key.lower()] = value
     except (ET.ParseError, KeyError, TypeError):
         data = value
