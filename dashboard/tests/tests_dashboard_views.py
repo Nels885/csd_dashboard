@@ -1,13 +1,16 @@
 import json
 
+from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext as _
 from django.utils import translation
 
+from psa.models import Corvet
+from utils.django.tokens import account_activation_token
 from .base import UnitTest, User
 from utils.django.urls import reverse
 
 from dashboard.models import ShowCollapse
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, Sivin
 
 
 class DashboardTestCase(UnitTest):
@@ -31,6 +34,24 @@ class DashboardTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(len(data), 21)
+
+    def test_activate(self):
+        # non-existent user
+        user = urlsafe_base64_encode(bytes(str(0), encoding="ascii"))
+        response = self.client.post(reverse("dashboard:activate", kwargs={"uidb64": user, "token": "abc-def"}))
+        self.assertEqual(response.status_code, 200)
+
+        # Incorrect token
+        user_model = User.objects.create(username="dummy", password="password")
+        user = urlsafe_base64_encode(bytes(str(user_model.pk), encoding="ascii"))
+        response = self.client.post(reverse("dashboard:activate", kwargs={"uidb64": user, "token": "abc-def"}))
+        self.assertEqual(response.status_code, 200)
+
+        # existent user and correct token
+        token = account_activation_token.make_token(user_model)
+        response = self.client.post(reverse("dashboard:activate", kwargs={"uidb64": user, "token": token}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("password_change"))
 
     def test_send_email_async(self):
         url = reverse('dashboard:email_ajax')
@@ -98,12 +119,12 @@ class DashboardTestCase(UnitTest):
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.login()
-        response = self.client.get(reverse('dashboard:user_profile'))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         # Testing the collapse activation form
         response = self.client.post(
-            reverse('dashboard:user_profile'),
+            url,
             data={
                 'user': self.user, 'general': True, 'motor': True, 'interior': True, 'diverse': True,
                 'btn_collapse': 'Submit'
@@ -112,6 +133,10 @@ class DashboardTestCase(UnitTest):
         collapse = ShowCollapse.objects.get(user=self.user)
         for field in [collapse.general, collapse.motor, collapse.interior, collapse.diverse]:
             self.assertEqual(field, True)
+
+        with open("dashboard/tests/files/Avatar.png", "rb") as avatar:
+            response = self.client.post(url, {"image": avatar, "btn_avatar": "Submit"})
+            self.assertEqual(response.status_code, 200)
 
     def test_signup_page(self):
         # Signug is not staff
@@ -142,7 +167,7 @@ class DashboardTestCase(UnitTest):
 
         # Signup is user exists
         old_user = User.objects.count()
-        response = self.client.post(url, {'username': 'toto', 'email': 'test@test.com'})
+        response = self.client.post(url, self.formUser)
         new_user = User.objects.count()
         self.assertEqual(new_user, old_user)
         self.assertEqual(response.status_code, 200)
@@ -175,8 +200,21 @@ class DashboardTestCase(UnitTest):
 
         # Search by Xelon is valid
         for value in ['A123456789', 'a123456789']:
-            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
+            response = self.client.get(url, {'query': value, 'select': 'atelier'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
+
+        # Sivin
+        immat_siv = "AA-123-AA"
+        Sivin.objects.create(immat_siv=immat_siv, codif_vin=self.vin).save()
+        response = self.client.get(url, {"query": immat_siv, "select": "sivin"})
+        # self.assertEqual(response.status_code, 302)
+        # self.assertEqual(response.url, reverse("squalaetp:sivin_detail", immat=immat_siv))
+
+        # Corvet
+        Corvet.objects.create(vin=self.vin)
+        response = self.client.get(url, {"query": self.vin, "select": "dummy"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("psa:corvet_detail", kwargs={"vin": self.vin}))
 
     def test_search_ajax(self):
         url = reverse('dashboard:search_ajax')
@@ -189,10 +227,25 @@ class DashboardTestCase(UnitTest):
 
         # Search is valid
         params = {'query': 'test', 'select': 'atelier'}
-        response = self.client.post(url, params )
+        response = self.client.post(url, params)
         data = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(data['url'], reverse('dashboard:search', get=params))
         self.assertEqual(len(data), 2)
+
+        # search corvet
+        response = self.client.post(url, {"query": self.vin, "select": "atelier"})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data["url"], reverse("dashboard:search", get={"query": self.vin, "select": "atelier"}))
+        self.assertIsNotNone(data["task_id"])
+
+        # search Sivin
+        response = self.client.post(url, {"query": "AA-123-AA", "select": "atelier"})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data["url"], reverse("dashboard:search", get={"query": "AA-123-AA", "select": "atelier"}))
+        self.assertIsNotNone(data["task_id"])
 
     def test_activity_log_page(self):
         url = reverse('dashboard:activity_log')

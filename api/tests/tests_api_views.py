@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from reman.models import EcuType, EcuModel, EcuRefBase, Batch, Repair
 from squalaetp.models import Xelon
 from raspeedi.models import UnlockProduct
+from tools.models import BgaTime
 
 
 class ApiTestCase(APITestCase):
@@ -24,12 +25,12 @@ class ApiTestCase(APITestCase):
             self.client.login(username='toto', password='totopassword')
 
     def api_view_list(self, url):
-        response = self.client.get(url, format='json')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data, self.authError)
 
         # Identification with Token
-        response = self.client.get(url + f'?auth_token={self.token}', format='json')
+        response = self.client.get(url, {"auth_token": self.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 4)
         self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
@@ -48,7 +49,12 @@ class ApiTestCase(APITestCase):
         self.assertEqual(response.data, {'id': 1, 'xelon': 'A123456789', 'vin': 'VF3ABCDEF12345678', 'active': False})
 
     def test_prog_list(self):
-        self.api_view_list(reverse('api:prog-list'))
+        url = reverse("api:prog-list")
+        self.api_view_list(url)
+
+        response = self.client.get(url, {"auth_token": self.token, "ref": 0})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"count": 0, "next": None, "previous": None, "results": []})
 
     def test_cal_list(self):
         self.api_view_list(reverse('api:cal-list'))
@@ -92,18 +98,69 @@ class ApiTestCase(APITestCase):
         self.api_view_list(reverse('api:reman_ecurefbase-list'))
 
     def test_nac_license_view(self):
-        response = self.client.get(reverse('api:nac_license'), format='json')
+        url = reverse("api:nac_license")
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data, self.authError)
 
         # Identification with Token
-        response = self.client.get(f'/api/nac-license/?auth_token={self.token}', format='json')
+        response = self.client.get(url, {"auth_token": self.token})
         self.assertEqual(response.status_code, 404)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data, {"error": "Request failed"})
 
+        # test with dummy values
+        response = self.client.get(url, {"auth_token": self.token, "update": "dummy", "uin": "dummy"}, format='json')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         'https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion=dummy&uin=dummy')
+
     def test_thermal_chamber_measure_list(self):
-        self.api_view_list(reverse('api:tools_tc_measure-list'))
+        url = reverse('api:tools_tc_measure-list')
+        self.api_view_list(url)
+
+        # post a mesure
+        response = self.client.post(f"{url}?auth_token={self.token}&value=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"value": 1})
+
+        # get
+        response = self.client.get(url, {"auth_token": self.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["next"], None)
+        self.assertEqual(response.data["previous"], None)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], 1)
+        self.assertEqual(response.data["results"][0]["value"], 1)
+        self.assertEqual(response.data["results"][0]["temp"], "-45.9°C")
 
     def test_bga_time_list(self):
-        self.api_view_list(reverse('api:tools_bga_time-list'))
+        url = reverse("api:tools_bga_time-list")
+        self.api_view_list(url)
+
+        # invalid device name
+        response = self.client.post(url + "?auth_token=" + str(self.token))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"response": "ERROR"})
+        response = self.client.post(url + "?auth_token=" + str(self.token) + "&device=test&status=stop")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"response": "OK", "device": "test", "status": "STOP"})
+
+        # valid device name
+        BgaTime.objects.create(name="test")
+        response = self.client.post(url + "?auth_token=" + str(self.token) + "&device=test&status=start")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"response": "OK", "device": "test", "status": "START"})
+
+        # get
+        response = self.client.get(url, {"auth_token": self.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 2)
+        self.assertEqual(response.data["next"], None)
+        self.assertEqual(response.data["previous"], None)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(response.data["results"][0]["id"], 1)
+        self.assertEqual(response.data["results"][0]["name"], "test")
+        self.assertEqual(response.data["results"][1]["id"], 2)
+        self.assertEqual(response.data["results"][1]["name"], "test")

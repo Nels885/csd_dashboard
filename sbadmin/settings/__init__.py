@@ -427,3 +427,6 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 # DJANGO-WIKI CONFIGURATION
 WIKI_ACCOUNT_HANDLING = True
 WIKI_ACCOUNT_SIGNUP_ALLOWED = False
+
+# INLINECSS CONFIG
+INLINECSS_CSS_LOADER = "django_inlinecss.css_loaders.StaticfilesFinderCSSLoader"
