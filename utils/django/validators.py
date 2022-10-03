@@ -150,7 +150,7 @@ def xml_parser(value):
             elif data_list.tag in ["LISTE_ATTRIBUTES_7"]:
                 for child in data_list:
                     key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
-                    if value[-2:] == "CD":
+                    if value[-2:] == "CD" or value[-2:] == "CP":
                         data[key.lower()] = value[:-2]
                     else:
                         data[key.lower()] = value
