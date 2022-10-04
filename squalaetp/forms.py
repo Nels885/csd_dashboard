@@ -12,6 +12,7 @@ from psa.models import Corvet, Multimedia, Ecu
 from .models import Xelon, Action, Sivin, ProductCode
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
+from utils.django.models import defaults_dict
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 
@@ -128,12 +129,24 @@ class VinCorvetModalForm(BSModalModelForm):
         cleaned_data = super(VinCorvetModalForm, self).clean()
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
-        if vin and self.request.is_ajax():
+        if vin and not self.request.is_ajax():
             if isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
                 raise forms.ValidationError(_('VIN error !'))
-            elif vin != self.instance.vin:
-                content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)
-                Action.objects.create(content=content, content_object=self.instance)
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            data = self.cleaned_data['xml_data']
+            vin = self.cleaned_data['vin']
+            del self.fields['xml_data']
+            instance.save()
+            if data and vin:
+                defaults = defaults_dict(Corvet, data, 'vin')
+                Corvet.objects.update_or_create(vin=vin, defaults=defaults)
+                if vin != self.instance.vin:
+                    content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)
+                    Action.objects.create(content=content, content_object=self.instance)
+        return instance
 
 
 class ProductModalForm(BSModalModelForm):
@@ -152,7 +165,7 @@ class ProductModalForm(BSModalModelForm):
         cleaned_data = super(ProductModalForm, self).clean()
         product = cleaned_data.get('modele_produit')
         vehicle = cleaned_data.get('modele_vehicule')
-        if product and vehicle and self.request.is_ajax():
+        if product and vehicle and not self.request.is_ajax():
             if product != self.instance.modele_produit:
                 content = "OLD_PROD: {}\nNEW_PROD: {}".format(self.instance.modele_produit, product)
                 Action.objects.create(content=content, content_object=self.instance)

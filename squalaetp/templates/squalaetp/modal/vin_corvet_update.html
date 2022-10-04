@@ -86,7 +86,7 @@
                 dataType: 'json',
                 success: function (data) {
                     var progressUrl = "{% url 'progress' %}?task_id=" + data.task_id;
-                    console.log(progressUrl);
+                    //console.log(progressUrl);
 
                     function customResult(resultElement, result) {
                         $("#id_xml_data").val(result);

@@ -25,8 +25,7 @@ from .serializers import (
 )
 from .models import Xelon, XelonTemporary, SparePart, Action, Sivin
 from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm
-from .tasks import cmd_loadsqualaetp_task
-from psa.models import Corvet
+from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
 from raspeedi.models import Programing
@@ -35,7 +34,6 @@ from tools.models import Suptech
 from .utils import collapse_select
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
-from utils.django.models import defaults_dict
 from utils.django.urls import reverse_lazy, http_referer
 from utils.django.validators import VIN_OLD_PSA_REGEX
 
@@ -193,6 +191,7 @@ def detail(request, pk):
     if Sivin.objects.filter(codif_vin=xelon.vin):
         dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=xelon.vin).first())
     select = request.GET.get('select', select)
+    task_id = request.GET.get('task_id', "")
     return render(request, 'squalaetp/detail/detail.html', locals())
 
 
@@ -258,7 +257,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     permission_required = ['squalaetp.change_vin']
     template_name = 'squalaetp/modal/vin_corvet_update.html'
     form_class = VinCorvetModalForm
-    success_message = _('Success: Squalaetp data was updated.')
+    success_message = _('Success: %(result)s was updated.')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -269,23 +268,15 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         })
         return context
 
-    def form_valid(self, form):
-        if not self.request.is_ajax():
-            data = form.cleaned_data['xml_data']
-            vin = form.cleaned_data['vin']
-            if data and vin:
-                defaults = defaults_dict(Corvet, data, 'vin')
-                Corvet.objects.update_or_create(vin=vin, defaults=defaults)
-            out = StringIO()
-            call_command("exportsqualaetp", stdout=out)
-            if "Export error" in out.getvalue():
-                messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
-            else:
-                messages.success(self.request, "Exportation Squalaetp terminée.")
-        return super().form_valid(form)
+    def get_success_message(self, cleaned_data):
+        value = "V.I.N."
+        if cleaned_data['vin'] and cleaned_data['xml_data']:
+            value = "V.I.N. / CORVET"
+        return self.success_message % dict(cleaned_data, result=value)
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
+        task = cmd_exportsqualaetp_task.delay()
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
 
 
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -294,7 +285,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     permission_required = ['squalaetp.change_product']
     template_name = 'squalaetp/modal/product_update.html'
     form_class = ProductModalForm
-    success_message = _('Success: Xelon was updated.')
+    success_message = _('Success: Product was updated.')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -304,18 +295,9 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         })
         return context
 
-    def form_valid(self, form):
-        if not self.request.is_ajax():
-            out = StringIO()
-            call_command("exportsqualaetp", stdout=out)
-            if "Export error" in out.getvalue():
-                messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
-            else:
-                messages.success(self.request, "Exportation Squalaetp terminée.")
-        return super().form_valid(form)
-
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
+        task = cmd_exportsqualaetp_task.delay()
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
 
 
 class XelonCloseView(PermissionRequiredMixin, BSModalUpdateView):
