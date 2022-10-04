@@ -16,7 +16,15 @@ def string_to_dict(string):
     return ast.literal_eval(string)
 
 
-CSD_ROOT = os.path.abspath(os.path.expanduser(conf.BASE_DIR[0]) + conf.BASE_DIR[1:])
+if len(conf.BASE_DIR) > 1:
+    CSD_ROOT = os.path.abspath(os.path.expanduser(conf.BASE_DIR[0]) + conf.BASE_DIR[1:])
+else:
+    CSD_ROOT = conf.BASE_DIR
+
+if len(conf.NAS_DIR) > 1:
+    NAS_ROOT = os.path.abspath(os.path.expanduser(conf.NAS_DIR[0]) + conf.NAS_DIR[1:])
+else:
+    NAS_ROOT = conf.NAS_DIR
 
 XLS_DELAY_PATH = os.path.join(CSD_ROOT, conf.XLS_DELAY_PATH)
 

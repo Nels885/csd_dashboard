@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import shutil
 from pathlib import Path
+from collections import OrderedDict
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -327,7 +328,7 @@ CONSTANCE_ADDITIONAL_FIELDS = {
     }],
 }
 
-CONSTANCE_CONFIG = {
+CONSTANCE_CONFIG = OrderedDict({
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
@@ -338,6 +339,7 @@ CONSTANCE_CONFIG = {
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
+    'NAS_DIR': ('', 'Network NAS drive path'),
     'XLS_RASPEEDI_FILE': ('PROG/RASPEEDI/table_boitier_PSA.xlsx', 'xls raspeedi file'),
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
     'XLS_ATTRIBUTS_FILE': ('EXTS/Attributs CORVET.xlsx', 'xls attributs file'),
@@ -396,7 +398,7 @@ CONSTANCE_CONFIG = {
     'PL24_ACCOUNT': ('', 'Account for PartsLink24'),
     'PL24_USER': ('', 'User for PartsLink24'),
     'PL24_PWD': ('', 'Password for PartsLink24', 'pwd_field')
-}
+})
 
 CONSTANCE_CONFIG_FIELDSETS = {
     '1. General Options': {
@@ -405,9 +407,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'collapse': True
     },
     '2. Network Options': {
-        'fields': ('BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
-                   'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
-                   'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'),
+        'fields': ('BASE_DIR', 'NAS_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE',
+                   'CSV_EXTRACTION_FILE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH',
+                   'TAG_XELON_PATH', 'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'),
         'collapse': False
     },
     '3. CSD Repair Options': {
