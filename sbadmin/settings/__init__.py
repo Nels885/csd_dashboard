@@ -315,6 +315,18 @@ TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
 CONSTANCE_REDIS_CONNECTION = 'redis://localhost:6379/1'
 
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'yes_no_field': ['django.forms.fields.ChoiceField', {
+        'widget': 'django.forms.Select',
+        'choices': ((True, "Yes"), (False, "No"))
+    }],
+    'pwd_field': ['django.forms.fields.CharField', {
+        'widget': 'django.forms.PasswordInput',
+        'widget_kwargs': {'render_value': True},
+        'required': False
+    }],
+}
+
 CONSTANCE_CONFIG = {
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
@@ -361,14 +373,14 @@ CONSTANCE_CONFIG = {
         "{2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U'}",
         'REMAN batch date formatting dictionary'
     ),
-    'CHECKOUT_BATCH_FILTER_DISABLE': (False, 'Checkout batch filter deactivation', bool),
+    'CHECKOUT_BATCH_FILTER_DISABLE': (False, 'Checkout batch filter deactivation', 'yes_no_field'),
 
     # MQTT Options
     "MQTT_TOPIC": ('TEMP/TC-01', 'Topic subcribe'),
     'MQTT_TEMP_ADJ': (4, 'Temp adjust', int),
     'MQTT_CLIENT': ('', 'Client name'),
     'MQTT_USER': ('', 'Login'),
-    'MQTT_PSWD': ('', 'Password'),
+    'MQTT_PSWD': ('', 'Password', 'pwd_field'),
     'MQTT_BROKER': ('test.mosquitto.org', 'Server address'),
     'MQTT_PORT': (1883, 'Server port', int),
     'KEEP_ALIVE': (45, 'Keep alive', int),
@@ -380,38 +392,45 @@ CONSTANCE_CONFIG = {
     'PROXY_HOST_SCRAPING': ('', 'Proxy HOST for Scraping'),
     'PROXY_PORT_SCRAPING': ('', 'Proxy PORT for Scraping'),
     'CORVET_USER': ('', 'CORVET user for RepairLab'),
-    'CORVET_PWD': ('', 'CORVET password for RepairLab'),
+    'CORVET_PWD': ('', 'CORVET password for RepairLab', 'pwd_field'),
     'PL24_ACCOUNT': ('', 'Account for PartsLink24'),
     'PL24_USER': ('', 'User for PartsLink24'),
-    'PL24_PWD': ('', 'Password for PartsLink24')
+    'PL24_PWD': ('', 'Password for PartsLink24', 'pwd_field')
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    '1. General Options': (
-        'SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'SYS_REPORT_TO_MAIL_LIST',
-        'CONTRACT_TO_EMAIL_LIST'
-    ),
-    '2. Network Options': (
-        'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
-        'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
-        'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'
-    ),
-    '3. CSD Repair Options': (
-        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',
-        'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
-        'SQUALAETP_FILE_LIST'
-    ),
-    '4. REMAN Options': (
-        'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
-        'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR', 'CHECKOUT_BATCH_FILTER_DISABLE'
-    ),
-    '5. Tools Options': (
-        'SUPTECH_TO_EMAIL_LIST', 'SUPTECH_CC_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING',
-        'PROXY_PORT_SCRAPING', 'CORVET_USER', 'CORVET_PWD', 'PL24_ACCOUNT', 'PL24_USER', 'PL24_PWD'
-    ),
-    '6. MQTT Options': (
-        'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
-    )
+    '1. General Options': {
+        'fields': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'SYS_REPORT_TO_MAIL_LIST',
+                   'CONTRACT_TO_EMAIL_LIST'),
+        'collapse': True
+    },
+    '2. Network Options': {
+        'fields': ('BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
+                   'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
+                   'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'),
+        'collapse': False
+    },
+    '3. CSD Repair Options': {
+        'fields': ('VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',
+                   'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
+                   'SQUALAETP_FILE_LIST'),
+        'collapse': False
+    },
+    '4. REMAN Options': {
+        'fields': ('ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
+                   'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR', 'CHECKOUT_BATCH_FILTER_DISABLE'),
+        'collapse': False
+    },
+    '5. Tools Options': {
+        'fields': ('SUPTECH_TO_EMAIL_LIST', 'SUPTECH_CC_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING',
+                   'PROXY_PORT_SCRAPING', 'CORVET_USER', 'CORVET_PWD', 'PL24_ACCOUNT', 'PL24_USER', 'PL24_PWD'),
+        'collapse': False
+    },
+    '6. MQTT Options': {
+        'fields': ('MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT',
+                   'KEEP_ALIVE'),
+        'collapse': True
+    },
 }
 
 # CELERY STUFF
