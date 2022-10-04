@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 09:35+0200\n"
+"POT-Creation-Date: 2022-10-04 17:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,6 +99,10 @@ msgstr "créé le"
 msgid "Delete"
 msgstr "Supprimer"
 
+#: tools/templates/tools/partlink24.html:31
+msgid "Search"
+msgstr ""
+
 #: tools/templates/tools/soft_form.html:7
 msgid "JIG Name"
 msgstr "Nom du JIG"
@@ -139,77 +143,77 @@ msgstr "Actualiser"
 msgid "Thermal Chamber Temperature"
 msgstr "Température Chambre Thermique"
 
-#: tools/tests/tests_tools_views.py:69 tools/views.py:111
+#: tools/tests/tests_tools_views.py:69 tools/views.py:114 tools/views.py:314
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: tools/views.py:32
+#: tools/views.py:35
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:40
+#: tools/views.py:43
 msgid "Tools"
 msgstr "Outils"
 
-#: tools/views.py:41
+#: tools/views.py:44
 msgid "Tag Xelon list"
 msgstr "Liste Tag Xelon"
 
-#: tools/views.py:69
+#: tools/views.py:72
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:76
+#: tools/views.py:79
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
-#: tools/views.py:91
+#: tools/views.py:94
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"
 
-#: tools/views.py:95 tools/views.py:109
+#: tools/views.py:98 tools/views.py:112 tools/views.py:311
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:101 tools/views.py:132
+#: tools/views.py:104 tools/views.py:135
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: tools/views.py:102
+#: tools/views.py:105
 msgid "Use of the thermal chamber"
 msgstr "Utilisation de la chambre thermique"
 
-#: tools/views.py:133
+#: tools/views.py:136
 msgid "Thermal chamber list"
 msgstr "liste Chambre thermique"
 
-#: tools/views.py:173
+#: tools/views.py:176
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:185 tools/views.py:253 tools/views.py:273
+#: tools/views.py:188 tools/views.py:256 tools/views.py:276
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: tools/views.py:210
+#: tools/views.py:213
 msgid "Support Tech list"
 msgstr "Liste Support Tech"
 
-#: tools/views.py:238
+#: tools/views.py:241
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Detail"
 msgstr "SUPTECH N°{self.object.pk} - Détail"
 
-#: tools/views.py:251
+#: tools/views.py:254
 msgid "Success: The message has been added."
 msgstr "Succès: Le message a été ajouté."
 
-#: tools/views.py:255 tools/views.py:275
+#: tools/views.py:258 tools/views.py:278
 msgid "Warning: Data update but without sending the email"
 msgstr "Attention : mise à jour des données mais sans envoi de l'email"
 
-#: tools/views.py:268
+#: tools/views.py:271
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Response"
 msgstr "SUPTECH N°{self.object.pk} - Réponse"

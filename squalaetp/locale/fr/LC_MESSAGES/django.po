@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 09:35+0200\n"
+"POT-Creation-Date: 2022-10-04 17:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,7 +99,7 @@ msgstr "Changer le type de Corvet pour COM200x"
 msgid "Change Corvet type for CMM"
 msgstr "Changer le type de Corvet pour CMM"
 
-#: squalaetp/forms.py:79
+#: squalaetp/forms.py:80
 msgid ""
 "Data in XML format available on the RepairNAV site during CORVET "
 "extraction..."
@@ -107,15 +107,15 @@ msgstr ""
 "Données au format XML disponible sur le site RepairNAV lors de l'extraction "
 "CORVET..."
 
-#: squalaetp/forms.py:91
+#: squalaetp/forms.py:92
 msgid "Enter the VIN number"
 msgstr "Entrez le numéro de VIN"
 
-#: squalaetp/forms.py:120
+#: squalaetp/forms.py:121
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:122 squalaetp/forms.py:200
+#: squalaetp/forms.py:123 squalaetp/forms.py:221
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
@@ -123,18 +123,22 @@ msgstr "Les données XML ne sont pas valide"
 msgid "VIN error !"
 msgstr "Erreur VIN"
 
-#: squalaetp/forms.py:167
+#: squalaetp/forms.py:166
+msgid "Xelon product model does not exist !"
+msgstr "Le modèle de produit Xelon n'existe pas!"
+
+#: squalaetp/forms.py:188
 msgid "Enter the IMMAT number"
 msgstr "Entrez le numéro d'IMMAT"
 
-#: squalaetp/forms.py:174
+#: squalaetp/forms.py:195
 msgid ""
 "Data in XML format available on the RepairNAV site during SIVIN extraction..."
 msgstr ""
 "Données au format XML disponibles sur le site RepairNAV lors de l'extraction "
 "SIVIN..."
 
-#: squalaetp/forms.py:198
+#: squalaetp/forms.py:219
 msgid "XML data does not match IMMAT"
 msgstr "Les données XML ne correspondent pas à IMMAT"
 
@@ -220,36 +224,41 @@ msgstr "Dossiers temporaires"
 msgid "Search:"
 msgstr "Recherche:"
 
-#: squalaetp/views.py:261
-msgid "Success: Squalaetp data was updated."
-msgstr "Succès: les données Squalaetp ont été mises à jour."
+#: squalaetp/views.py:260
+#, python-format
+msgid "Success: %(result)s was updated."
+msgstr "Succès: %(result)s ont été mises à jour."
 
-#: squalaetp/views.py:268
+#: squalaetp/views.py:267
 #, python-format
 msgid "CORVET update for %(file)s"
 msgstr "MAJ CORVET pour %(file)s"
 
-#: squalaetp/views.py:297 squalaetp/views.py:327
-msgid "Success: Xelon was updated."
-msgstr "Succès: les données Squalaetp ont été mises à jour."
+#: squalaetp/views.py:288
+msgid "Success: Product was updated."
+msgstr "Succès: le produit a été mis à jour."
 
-#: squalaetp/views.py:302
+#: squalaetp/views.py:293
 #, python-format
 msgid "Product update for %(file)s"
 msgstr "MAJ du produit pour %(file)s"
 
-#: squalaetp/views.py:358 squalaetp/views.py:385 squalaetp/views.py:418
+#: squalaetp/views.py:309
+msgid "Success: Xelon was updated."
+msgstr "Succès: les données Squalaetp ont été mises à jour."
+
+#: squalaetp/views.py:340 squalaetp/views.py:367 squalaetp/views.py:400
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: squalaetp/views.py:489
+#: squalaetp/views.py:471
 msgid "Detail SIVIN data for the Immat: "
 msgstr "Détail des données SIVIN pour l'Immat :"
 
-#: squalaetp/views.py:503
+#: squalaetp/views.py:485
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: squalaetp/views.py:507
+#: squalaetp/views.py:489
 msgid "SIVIN integration"
 msgstr "Intégration SIVIN"
