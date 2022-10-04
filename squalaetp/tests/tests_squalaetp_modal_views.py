@@ -11,6 +11,8 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         Xelon.objects.create(numero_de_dossier='A123456789', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
+        Xelon.objects.create(numero_de_dossier='A987654321', vin=self.vin, modele_produit='test',
+                             modele_vehicule='peugeot')
 
     def test_vin_corvet_update_ajax_mixin(self):
         """
