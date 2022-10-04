@@ -139,13 +139,13 @@ class VinCorvetModalForm(BSModalModelForm):
             data = self.cleaned_data['xml_data']
             vin = self.cleaned_data['vin']
             del self.fields['xml_data']
-            instance.save()
             if data and vin:
                 defaults = defaults_dict(Corvet, data, 'vin')
                 Corvet.objects.update_or_create(vin=vin, defaults=defaults)
                 if vin != self.instance.vin:
                     content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)
                     Action.objects.create(content=content, content_object=self.instance)
+            instance.save()
         return instance
 
 
