@@ -129,16 +129,14 @@ class VinCorvetModalForm(BSModalModelForm):
         cleaned_data = super(VinCorvetModalForm, self).clean()
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
-        if vin and not self.request.is_ajax():
-            if isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
-                raise forms.ValidationError(_('VIN error !'))
+        if vin and isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
+            raise forms.ValidationError(_('VIN error !'))
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
             data = self.cleaned_data['xml_data']
             vin = self.cleaned_data['vin']
-            del self.fields['xml_data']
             if data and vin:
                 defaults = defaults_dict(Corvet, data, 'vin')
                 Corvet.objects.update_or_create(vin=vin, defaults=defaults)
@@ -157,21 +155,31 @@ class ProductModalForm(BSModalModelForm):
 
     def __init__(self, *args, **kwargs):
         xelons = Xelon.objects.exclude(modele_produit="").order_by('modele_produit')
-        _data_list = list(xelons.values_list('modele_produit', flat=True).distinct())
+        self.data_list = list(xelons.values_list('modele_produit', flat=True).distinct())
         super(ProductModalForm, self).__init__(*args, **kwargs)
-        self.fields['modele_produit'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+        self.fields['modele_produit'].widget = ListTextWidget(data_list=self.data_list, name='value-list')
+        self.fields['modele_produit'].required = True
 
-    def clean(self):
-        cleaned_data = super(ProductModalForm, self).clean()
-        product = cleaned_data.get('modele_produit')
-        vehicle = cleaned_data.get('modele_vehicule')
-        if product and vehicle and not self.request.is_ajax():
-            if product != self.instance.modele_produit:
-                content = "OLD_PROD: {}\nNEW_PROD: {}".format(self.instance.modele_produit, product)
-                Action.objects.create(content=content, content_object=self.instance)
-            if vehicle != self.instance.modele_vehicule:
-                content = "OLD_VEH: {}\nNEW_VEH: {}".format(self.instance.modele_vehicule, vehicle)
-                Action.objects.create(content=content, content_object=self.instance)
+    def clean_modele_produit(self):
+        data = self.cleaned_data['modele_produit']
+        if data not in self.data_list:
+            self.add_error('modele_produit', _('Xelon product model does not exist !'))
+        return data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            product = self.cleaned_data['modele_produit']
+            vehicle = self.cleaned_data['modele_vehicule']
+            if product and vehicle and not self.request.is_ajax():
+                if product != self.instance.modele_produit:
+                    content = "OLD_PROD: {}\nNEW_PROD: {}".format(self.instance.modele_produit, product)
+                    Action.objects.create(content=content, content_object=self.instance)
+                if vehicle != self.instance.modele_vehicule:
+                    content = "OLD_VEH: {}\nNEW_VEH: {}".format(self.instance.modele_vehicule, vehicle)
+                    Action.objects.create(content=content, content_object=self.instance)
+            instance.save()
+        return instance
 
 
 class SivinModalForm(BSModalModelForm):
