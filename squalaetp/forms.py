@@ -9,7 +9,7 @@ from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet, Multimedia, Ecu
-from .models import Xelon, Action, Sivin, ProductCode
+from .models import Xelon, Action, Sivin, ProductCode, ProductCategory
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
 from utils.django.models import defaults_dict
@@ -154,8 +154,8 @@ class ProductModalForm(BSModalModelForm):
         widgets = {'modele_vehicule': forms.TextInput(attrs={'readonly': True})}
 
     def __init__(self, *args, **kwargs):
-        xelons = Xelon.objects.exclude(modele_produit="").order_by('modele_produit')
-        self.data_list = list(xelons.values_list('modele_produit', flat=True).distinct())
+        products = ProductCategory.objects.exclude(product_model="").order_by('product_model')
+        self.data_list = list(products.values_list('product_model', flat=True).distinct())
         super(ProductModalForm, self).__init__(*args, **kwargs)
         self.fields['modele_produit'].widget = ListTextWidget(data_list=self.data_list, name='value-list')
         self.fields['modele_produit'].required = True
