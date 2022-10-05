@@ -22,8 +22,8 @@ def cmd_exportsqualaetp_task():
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
     if "Export error" in out.getvalue():
-        return {"msg": out.getvalue()}
-    return {"msg": "Exportation Squalaetp terminée."}
+        return {"msg": "Erreur d'exportation Squalaetp, fichier en lecture seule !!", "tags": "warning"}
+    return {"msg": "Exportation Squalaetp terminée.", "tags": "success"}
 
 
 @celery_app.task()

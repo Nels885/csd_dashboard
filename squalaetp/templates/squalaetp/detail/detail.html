@@ -211,7 +211,7 @@
             function customResult(resultElement, result) {
                 // console.log(result)
                 $(".bd-loading-modal-lg").modal("hide");
-                addMessage(result.msg, "success");
+                addMessage(result.msg, result.tags);
                 window.history.pushState({}, null, url)
             }
 
