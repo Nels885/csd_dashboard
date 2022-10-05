@@ -275,8 +275,10 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return self.success_message % dict(cleaned_data, result=value)
 
     def get_success_url(self):
-        task = cmd_exportsqualaetp_task.delay()
-        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
+        if not self.request.is_ajax():
+            task = cmd_exportsqualaetp_task.delay()
+            return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
 class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
@@ -296,8 +298,10 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return context
 
     def get_success_url(self):
-        task = cmd_exportsqualaetp_task.delay()
-        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
+        if not self.request.is_ajax():
+            task = cmd_exportsqualaetp_task.delay()
+            return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
 class XelonCloseView(PermissionRequiredMixin, BSModalUpdateView):
