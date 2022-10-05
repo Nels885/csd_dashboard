@@ -211,7 +211,11 @@
             function customResult(resultElement, result) {
                 // console.log(result)
                 $(".bd-loading-modal-lg").modal("hide");
-                addMessage(result.msg, result.tags);
+                if (result.tags === "warning") {
+                    addMessage(result.msg, result.tags, true);
+                } else {
+                    addMessage(result.msg, result.tags);
+                }
                 window.history.pushState({}, null, url)
             }
 
