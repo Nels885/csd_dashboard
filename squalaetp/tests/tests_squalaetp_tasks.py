@@ -15,7 +15,7 @@ class XelonTaskTestCase(UnitTest):
 
     def test_cmd_exportsqualaetp_task(self):
         response = cmd_exportsqualaetp_task()
-        self.assertDictEqual(response, {"msg": "Exportation Squalaetp terminée."})
+        self.assertDictEqual(response, {"msg": "Exportation Squalaetp terminée.", "tags": "success"})
 
     def test_cmd_importcorvet_task(self):
         response = cmd_importcorvet_task("--test", self.vin)
