@@ -25,7 +25,7 @@ function clock() {
 }
 
 
-function addMessage(text, extra_tags="success", fixed = false) {
+function addMessage(text, extra_tags = "success", fixed = false) {
     var message = $(`
             <div style="border-radius:0;" class="alert alert-icon alert-${extra_tags} alert-dismissible fade show mb-0" role="alert">\n
                     ${text}\n
@@ -36,7 +36,7 @@ function addMessage(text, extra_tags="success", fixed = false) {
     $("#messages").append(message);
     message.fadeIn(500);
 
-    if (!fixed) {
+    if (!fixed && extra_tags === "success") {
         message.fadeTo(10000, 500).slideUp(500, function () {
             message.slideUp(500);
             message.remove();
@@ -69,6 +69,7 @@ function celeryTask(url) {
             // console.log(data);
             if (data.task_id) {
                 var progressUrl = "/celery-progress/?task_id=" + data.task_id;
+
                 // console.log(progressUrl);
 
                 function customResult(resultElement, result) {
@@ -90,6 +91,32 @@ function celeryTask(url) {
             addMessage("Vous n'avez pas la permissions !", "warning");
         },
     })
+}
+
+function resultTask(task_id, change_url=null) {
+    if (task_id) {
+        $(".bd-loading-modal-lg").modal("show");
+        var progressUrl = "/celery-progress/?task_id=" + task_id;
+
+        //console.log(progressUrl);
+
+        function customResult(resultElement, result) {
+            // console.log(result)
+            $(".bd-loading-modal-lg").modal("hide");
+            addMessage(result.msg, result.tags);
+            if (change_url != null) {
+                window.history.pushState({}, null, change_url)
+            }
+        }
+
+        CeleryProgressBar.initProgressBar(progressUrl, {
+            progressBarId: "search-progress-bar",
+            progressBarMessageId: "search-progress-bar-message",
+            onResult: customResult,
+        })
+    } else {
+        $(".bd-loading-modal-lg").modal("hide");
+    }
 }
 
 
@@ -164,6 +191,7 @@ $("#searchForm").submit(function (e) {
             // console.log(data);
             if (data.task_id) {
                 var progressUrl = "/celery-progress/?task_id=" + data.task_id;
+
                 // console.log(progressUrl);
 
                 function customResult(resultElement, result) {
