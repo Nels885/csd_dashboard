@@ -16,6 +16,7 @@ from utils.django.datatables import QueryTableByArgs
 from reman.models import Repair, RepairPart
 from reman.serializers import RemanRepairSerializer, RemanRepairPartSerializer, REPAIR_COLUMN_LIST
 from reman.forms import AddRepairForm, EditRepairForm, CloseRepairForm, RepairPartForm, RepairForm, SelectRepairForm
+from reman.tasks import cmd_exportreman_task
 
 
 """
@@ -35,9 +36,10 @@ def repair_edit(request, pk):
     if request.POST:
         if "repair_part" not in request.POST and form.is_valid():
             form.save()
-            messages.success(request, _('Modification done successfully!'))
             if "btn_repair_close" in request.POST:
                 return redirect(reverse('reman:close_repair', kwargs={'pk': prod.pk}))
+            messages.success(request, _('Modification done successfully!'))
+            cmd_exportreman_task.delay('--repair')
             return redirect(reverse('reman:repair_table', get={'filter': 'pending'}))
     context.update(locals())
     return render(request, 'reman/repair/repair_edit.html', context)

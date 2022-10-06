@@ -308,7 +308,6 @@ class EditRepairForm(forms.ModelForm):
                 instance.checkout = False
                 instance.closing_date = None
             instance.save()
-            cmd_exportreman_task.delay('--repair')
         return instance
 
 
