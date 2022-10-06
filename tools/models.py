@@ -189,8 +189,11 @@ class SuptechItem(models.Model):
     extra = models.BooleanField(default=False)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
     is_48h = models.BooleanField("Traitement 48h", default=True)
+    is_active = models.BooleanField("Actif", default=True)
     mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
     cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
+    to_users = models.ManyToManyField(User, related_name="to_sup_items", blank=True)
+    cc_users = models.ManyToManyField(User, related_name="cc_sup_items", blank=True)
 
     class Meta:
         verbose_name = "SupTech Item"
