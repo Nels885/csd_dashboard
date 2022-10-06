@@ -79,7 +79,7 @@ class SuptechModalForm(BSModalModelForm):
         ('Scan IN/OUT', 'Scan IN/OUT'), ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
     ]
     username = forms.CharField(max_length=50, required=True)
-    item = forms.ModelChoiceField(queryset=SuptechItem.objects.all())
+    item = forms.ModelChoiceField(queryset=SuptechItem.objects.filter(is_active=True))
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
     to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
     cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
