@@ -34,8 +34,9 @@ class BatchForm(BSModalModelForm):
         exclude = ['batch_number']
         labels = {'ecu_ref_base': 'Réf. REMAN'}
         widgets = {
-            'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
-            'quantity': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
+            'year': forms.TextInput(attrs={'readonly': ''}),
+            'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number', 'readonly': ''}),
+            'quantity': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number', 'readonly': ''}),
             'box_quantity': forms.Select(choices=BOX_NUMBER, attrs={'style': 'width: 40%;'}),
         }
 
