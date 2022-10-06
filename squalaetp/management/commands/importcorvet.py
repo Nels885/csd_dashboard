@@ -110,7 +110,7 @@ class Command(BaseCommand):
                     query.save()
                 if limit and nb_import >= 200:
                     break
-            scrap.close()
+            scrap.quit()
         return nb_import
 
     def _import_sivin(self, immat, test):
@@ -118,7 +118,7 @@ class Command(BaseCommand):
         self.stdout.write("[IMPORT_SIVIN] Waiting...")
         sivin = ScrapingSivin(test=test)
         data = xml_sivin_parser(sivin.result(immat))
-        sivin.close()
+        sivin.quit()
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
             delay_time = time.time() - start_time
             self.stdout.write(self.style.ERROR(f"{immat} - error SIVIN in {delay_time}"))
@@ -128,8 +128,8 @@ class Command(BaseCommand):
             if not Corvet.objects.filter(vin=data.get('codif_vin')):
                 corvet = ScrapingCorvet()
                 row = xml_parser(corvet.result(data.get('codif_vin')))
-                corvet.close()
-                if row and row.get('donnee_date_entree_montage'):
+                corvet.quit()
+                if isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                     def_corvet = defaults_dict(Corvet, row, "vin")
                     Corvet.objects.update_or_create(vin=row["vin"], defaults=def_corvet)
                     delay_time = time.time() - start_time

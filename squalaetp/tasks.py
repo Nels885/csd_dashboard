@@ -53,19 +53,19 @@ def save_sivin_to_models(immat, **kwargs):
         start_time = time.time()
         sivin = ScrapingSivin(test=test)
         data = xml_sivin_parser(sivin.result(immat))
-        sivin.close()
+        sivin.quit()
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
             delay_time = time.time() - start_time
             msg = f"{immat} - error SIVIN in {delay_time}"
-        elif data and data.get('immat_siv'):
+        elif isinstance(data, dict) and data.get('immat_siv'):
             delay_time = time.time() - start_time
             msg = f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"
             vin = data.get('codif_vin')
             if vin_psa_isvalid(vin) and not Corvet.objects.filter(vin=vin):
                 corvet = ScrapingCorvet()
                 row = xml_parser(corvet.result(data.get('codif_vin')))
-                corvet.close()
-                if row and row.get('donnee_date_entree_montage'):
+                corvet.quit()
+                if isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                     def_corvet = defaults_dict(Corvet, row, "vin")
                     Corvet.objects.update_or_create(vin=row["vin"], defaults=def_corvet)
                     delay_time = time.time() - start_time
