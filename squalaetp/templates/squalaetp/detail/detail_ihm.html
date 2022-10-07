@@ -43,9 +43,9 @@
 
         <h6 class="font-weight-bold text-uppercase">Outils réparation :</h6>
         {% if xelon.is_active %}
-            <a class="btn btn-secondary btn-block mb-3" href="#">PROG Actif</a>
+            <a class="btn btn-secondary btn-block mb-3" href="#">Dossier Actif</a>
         {% else %}
-            <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer PROG</a>
+            <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer Dossier</a>
         {% endif %}
         <a class="btn btn-secondary btn-block mb-3" href="{% url 'squalaetp:barcode_pdf' pk=xelon.pk %}" target="_blank">Générer code barre</a>
         <a class="btn btn-success btn-block" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
