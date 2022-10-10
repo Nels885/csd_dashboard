@@ -31,7 +31,8 @@
 
                                 <h6 class="m-0 font-weight-bold text-primary">
                                     <img alt="avatar" class="rounded-circle" width="32"
-                                         src="{{ post.author.profile.image.url }}" onerror="this.src='{% static 'img/avatar.png' %}';">
+                                         src="{{ post.author.profile.image.url }}"
+                                         onerror="this.src='{% static 'img/avatar.png' %}';">
                                     <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ post.author }}</span>{{ post.title }}
                                     <span class="small text-gray-500">{{ post.timestamp }}</span>
                                 </h6>
@@ -67,12 +68,12 @@
             </div>
         </div>
 
-        <!-- Facebook Plugins -->
+        <!-- Suptech -->
         <div class="col-lg-4 mb-2">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">ReparLab Facebook</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Suptech en attente</h6>
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">
@@ -89,27 +90,33 @@
                     </div>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body justify-content-center text-center">
-                    <!-- Facebook HTML code -->
-                    <div id="fb-root"></div>
-                    <div class="fb-page" data-href="https://www.facebook.com/reparlabbyclarion/" data-tabs="timeline"
-                         data-width="500" data-height="800" data-small-header="true" data-adapt-container-width="true"
-                         data-hide-cover="false" data-show-facepile="false">
-                        <blockquote cite="https://www.facebook.com/reparlabbyclarion/" class="fb-xfbml-parse-ignore"><a
-                                href="https://www.facebook.com/reparlabbyclarion/">Reparlab</a></blockquote>
-                    </div>
+                <div class="card-body justify-content-center">
+                    <table class="table table-striped table-sm">
+                        <tbody>
+                        {% for sup in suptechs %}
+                            <tr class="font-weight-bold">
+                                <td style="width: 3rem;">
+                                    <a href="{% url 'tools:suptech_detail' sup.id %}" target="_blank">{{ sup.id }}</a>
+                                    - {{ sup.user }} - <span class="font-italic font-weight-normal">{{ sup.date }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ sup.info }}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <div class="text-center">
+                                <a>Pas de suptech en attente</a>
+                            </div>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
     </div>
 
-
-{% endblock %}
-
-{% block extrascripts %}
-
-    <!-- Facebook Plugin Pages scripts -->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v12.0" nonce="KD4nmmWw"></script>
 
 {% endblock %}
