@@ -102,11 +102,12 @@ $.ajax({
         // Suptech CE Area Chart
         var ctx2 = document.getElementById("suptechCeChart");
         var suptechCeChart = new Chart(ctx2, {
-            type: 'line',
+
             data: {
                 labels: data['suptechCeLabels'],
                 datasets: [
                     {
+                        type: 'line',
                         data: data['twoDays'],
                         label: "1 à 2 jours",
                         lineTension: 0.3,
@@ -117,6 +118,7 @@ $.ajax({
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['twoToSixDays'],
                         label: "3 à 6 jours",
                         lineTension: 0.3,
@@ -127,6 +129,7 @@ $.ajax({
                         pointBorderColor: "rgba(240, 132, 40, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['sixDays'],
                         label: "7 jours et plus",
                         lineTension: 0.3,
@@ -135,6 +138,13 @@ $.ajax({
                         pointRadius: 2,
                         pointBackgroundColor: "rgba(214, 54, 33, 1)",
                         pointBorderColor: "rgba(214, 54, 33, 1)",
+                    },
+                    {
+                        type: 'bar',
+                        data: data['expRate'],
+                        label: "Taux 48h",
+                        backgroundColor: "rgba(78, 115, 223, 0.2)",
+                        borderWidth: 1
                     },
                 ],
             },
@@ -340,11 +350,11 @@ $.ajax({
         // Suptech Area Chart
         var ctx5 = document.getElementById("suptechCoChart");
         var suptechCoChart = new Chart(ctx5, {
-            type: 'line',
             data: {
                 labels: data['suptechCoLabels'],
                 datasets: [
                     {
+                        type: 'line',
                         data: data['coTwoDays'],
                         label: "1 à 2 jours",
                         lineTension: 0.3,
@@ -355,6 +365,7 @@ $.ajax({
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['coTwoToSixDays'],
                         label: "3 à 6 jours",
                         lineTension: 0.3,
@@ -365,6 +376,7 @@ $.ajax({
                         pointBorderColor: "rgba(240, 132, 40, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['coSixDays'],
                         label: "7 jours et plus",
                         lineTension: 0.3,
@@ -373,6 +385,13 @@ $.ajax({
                         pointRadius: 2,
                         pointBackgroundColor: "rgba(214, 54, 33, 1)",
                         pointBorderColor: "rgba(214, 54, 33, 1)",
+                    },
+                                        {
+                        type: 'bar',
+                        data: data['coExpRate'],
+                        label: "Taux 48h",
+                        backgroundColor: "rgba(78, 115, 223, 0.2)",
+                        borderWidth: 1
                     },
                 ],
             },
