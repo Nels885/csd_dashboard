@@ -127,10 +127,14 @@
                         </a>
                     {% endif %}
                     {% if perms.squalaetp.add_xelon %}
-                        <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'squalaetp:excel_import_async' %}`)">
+                        <a class="import-btn dropdown-item" href="#">
                             <i class="fas fa-file-import fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>
                         </a>
+{#                        <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'squalaetp:excel_import_async' %}`)">#}
+{#                            <i class="fas fa-file-import fa-sm fa-fw mr-2 text-gray-400"></i>#}
+{#                            <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>#}
+{#                        </a>#}
                         <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'dashboard:email_ajax' %}`)">
                             <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
                             <strong class="text-danger">{% trans "send emails" %}</strong>

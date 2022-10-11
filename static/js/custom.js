@@ -56,42 +56,6 @@ function textCopy(text) {
     // alert("Copied the text: " + elem.value);
 }
 
-function celeryTask(url) {
-    $(".bd-loading-modal-lg").modal("show");
-    $.ajax({
-        type: "GET",
-        url: url,
-        contentType: false,
-        processData: false,
-        cache: false,
-        async: true,
-        success: function (data) {
-            // console.log(data);
-            if (data.task_id) {
-                var progressUrl = "/celery-progress/?task_id=" + data.task_id;
-
-                // console.log(progressUrl);
-
-                function customResult(resultElement, result) {
-                    // console.log(result)
-                    $(".bd-loading-modal-lg").modal("hide");
-                    addMessage(result.msg, "success");
-                }
-
-                CeleryProgressBar.initProgressBar(progressUrl, {
-                    progressBarId: "search-progress-bar",
-                    progressBarMessageId: "search-progress-bar-message",
-                    onResult: customResult,
-                })
-            } else $(".bd-loading-modal-lg").modal("hide");
-        },
-        error: function (err) {
-            // console.log(err);
-            $(".bd-loading-modal-lg").modal("hide");
-            addMessage("Vous n'avez pas la permissions !", "warning");
-        },
-    })
-}
 
 function resultTask(task_id, change_url=null) {
     if (task_id) {
@@ -118,6 +82,30 @@ function resultTask(task_id, change_url=null) {
         $(".bd-loading-modal-lg").modal("hide");
     }
 }
+
+
+function celeryTask(url) {
+    $(".bd-loading-modal-lg").modal("show");
+    $.ajax({
+        type: "GET",
+        url: url,
+        contentType: false,
+        processData: false,
+        cache: false,
+        async: true,
+        success: function (data) {
+            // console.log(data);
+            resultTask(data.task_id);
+        },
+        error: function (err) {
+            // console.log(err);
+            $(".bd-loading-modal-lg").modal("hide");
+            addMessage("Vous n'avez pas la permissions !", "warning");
+        },
+    })
+}
+
+
 
 
 $(function () {

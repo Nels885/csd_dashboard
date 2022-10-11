@@ -46,6 +46,11 @@ def index(request):
     return render(request, 'dashboard/index.html', locals())
 
 
+class ImportSqualaetpView(LoginRequiredMixin, TemplateView):
+    """ View of modal import squalaetp """
+    template_name = 'dashboard/modal/import_squalaetp.html'
+
+
 def charts(request):
     """ View of charts page """
     title = _("Dashboard")

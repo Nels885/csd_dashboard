@@ -12,8 +12,13 @@ from psa.models import Corvet
 
 
 @celery_app.task
-def cmd_loadsqualaetp_task():
-    call_command("importexcel", "--tests")
+def cmd_loadsqualaetp_task(*args):
+    print("cmd_loadsqualaetp_tash in progress...")
+    print(f"cmd : importexcel {' '.join(args)}")
+    out = StringIO()
+    call_command("importexcel", *args, stdout=out)
+    if "email Erreur" in out.getvalue():
+        return {"msg": "Erreur d'importation Squalaetp, voir l'email du rapport !!", "tags": "warning"}
     return {"msg": "Importation Squalaetp terminée."}
 
 
@@ -26,7 +31,7 @@ def cmd_exportsqualaetp_task():
     return {"msg": "Exportation Squalaetp terminée.", "tags": "success"}
 
 
-@celery_app.task()
+@celery_app.task
 def cmd_importcorvet_task(*args):
     print("cmd_importcorvet_tash in progress...")
     print(f"cmd : importcorvet {' '.join(args)}")

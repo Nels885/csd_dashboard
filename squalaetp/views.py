@@ -66,7 +66,10 @@ def prog_activate(request, pk):
 
 def excel_import_async(request):
     if request.user.has_perm('squalaetp.add_xelon'):
-        task = cmd_loadsqualaetp_task.delay()
+        if request.GET.get("report") == "yes":
+            task = cmd_loadsqualaetp_task.delay("--tests")
+        else:
+            task = cmd_loadsqualaetp_task.delay()
         return JsonResponse({"task_id": task.id})
     raise Http404
 

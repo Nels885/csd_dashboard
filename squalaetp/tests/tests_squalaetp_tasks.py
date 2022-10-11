@@ -11,7 +11,9 @@ class XelonTaskTestCase(UnitTest):
 
     def test_cmd_loadsqualaetp_task(self):
         response = cmd_loadsqualaetp_task()
-        self.assertDictEqual(response, {"msg": "Importation Squalaetp terminée."})
+        self.assertDictEqual(response, {
+            "msg": "Erreur d'importation Squalaetp, voir l'email du rapport !!", "tags": "warning"
+        })
 
     def test_cmd_exportsqualaetp_task(self):
         response = cmd_exportsqualaetp_task()
