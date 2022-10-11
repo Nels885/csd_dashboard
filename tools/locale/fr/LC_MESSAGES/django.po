@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-04 17:12+0200\n"
+"POT-Creation-Date: 2022-10-11 14:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: tools/admin.py:47
+#: tools/admin.py:50
 #, python-brace-format
 msgid "{0} product{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: tools/admin.py:50
+#: tools/admin.py:53 tools/admin.py:97
 msgid "was,were"
 msgstr "était, étaient"
 
-#: tools/admin.py:58
+#: tools/admin.py:61 tools/admin.py:105
 msgid "48h processing disabled"
 msgstr "Traitement 48h désactivé"
 
-#: tools/admin.py:63
+#: tools/admin.py:66 tools/admin.py:110
 msgid "48h processing enabled"
 msgstr "Traitement 48h activé"
+
+#: tools/admin.py:94
+#, fuzzy, python-brace-format
+#| msgid "{0} product{1} {2} successfully {3}"
+msgid "{0} item{1} {2} successfully {3}"
+msgstr "{0} produit{1} {2} avec succès {3}"
+
+#: tools/admin.py:115
+msgid "Item disabled"
+msgstr ""
+
+#: tools/admin.py:120
+msgid "Item activated"
+msgstr ""
 
 #: tools/forms.py:105
 msgid "Username not found."

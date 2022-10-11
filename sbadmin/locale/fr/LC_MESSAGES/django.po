@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-04 17:12+0200\n"
+"POT-Creation-Date: 2022-10-11 14:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,23 +88,23 @@ msgstr "Nouveau utilisateur"
 msgid "Import Squalaetp"
 msgstr "Import Squalaetp"
 
-#: templates/base/top_bar.html:137
+#: templates/base/top_bar.html:141
 msgid "send emails"
 msgstr "Envoi des emails"
 
-#: templates/base/top_bar.html:142
+#: templates/base/top_bar.html:146
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:146
+#: templates/base/top_bar.html:150
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:151 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:155 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:156
+#: templates/base/top_bar.html:160
 msgid "Guest"
 msgstr "Invité"
 
