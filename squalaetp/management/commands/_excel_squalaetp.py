@@ -30,18 +30,21 @@ class ExcelSqualaetp(ExcelFormat):
             self.ERROR = f'FileNotFoundError: {err}'
             logger.error(self.ERROR)
 
-    def read(self):
+    def read(self, add_fields=None):
         """
         Extracting data for the Xelon table from the Database
+        :param add_fields:
+            Adding fields to list of dictionaries that represents the data for Xelon table
         :return:
-            list of dictionnaries that represents the data for Xelon table
+            list of dictionaries that represents the data for Xelon table
         """
         data = []
         if not self.ERROR:
             for line in range(self.nrows):
-                row = self.sheet.loc[line, self._columns_check(self.XELON_COLS)]
-                if row[0]:
-                    data.append(dict(row.dropna()))
+                row = dict(self.sheet.loc[line, self._columns_check(self.XELON_COLS)].dropna())
+                if isinstance(add_fields, dict):
+                    row.update(add_fields)
+                data.append(row)
         return data
 
     def xelon_number_list(self):

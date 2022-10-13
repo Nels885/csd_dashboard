@@ -116,8 +116,10 @@ class Command(BaseCommand):
         self.stdout.write("[XELON] Waiting...")
         nb_prod_before, nb_prod_update = model.objects.count(), 0
         if not excel.ERROR:
-            model.objects.exclude(numero_de_dossier__in=excel.xelon_number_list()).update(is_active=False)
-            for row in excel.read():
+            model.objects.exclude(Q(numero_de_dossier__in=excel.xelon_number_list()) |
+                                  Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
+                                  Q(date_retour__isnull=True)).update(type_de_cloture='N/A', is_active=False)
+            for row in excel.read({'is_active': True}):
                 xelon_number = row.get("numero_de_dossier")
                 defaults = defaults_dict(model, row, "numero_de_dossier")
                 try:
@@ -132,7 +134,6 @@ class Command(BaseCommand):
                         obj.product.save()
                 except Exception as err:
                     logger.error(f"[XELON_CMD] {xelon_number} - {err}")
-            model.objects.filter(numero_de_dossier__in=list(excel.sheet['numero_de_dossier'])).update(is_active=True)
             nb_prod_after = model.objects.count()
             self.stdout.write(f"[SQUALAETP_FILE] '{XLS_SQUALAETP_FILE}' => OK")
             self.stdout.write(
@@ -187,9 +188,6 @@ class Command(BaseCommand):
                 nrows += delay.nrows
             else:
                 self.stdout.write(f"[DELAY_FILE] {delay.ERROR}")
-        model.objects.exclude(Q(numero_de_dossier__in=delay_list) |
-                              Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
-                              Q(date_retour__isnull=True)).update(type_de_cloture='N/A')
         nb_prod_after = model.objects.count()
         cat_new = ProductCategory.objects.count()
         self.stdout.write(
