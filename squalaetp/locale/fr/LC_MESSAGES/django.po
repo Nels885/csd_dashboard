@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-11 14:36+0200\n"
+"POT-Creation-Date: 2022-10-13 13:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -115,7 +115,7 @@ msgstr "Entrez le numéro de VIN"
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: squalaetp/forms.py:123 squalaetp/forms.py:221
+#: squalaetp/forms.py:123 squalaetp/forms.py:226
 msgid "Invalid XML data"
 msgstr "Les données XML ne sont pas valide"
 
@@ -123,22 +123,26 @@ msgstr "Les données XML ne sont pas valide"
 msgid "VIN error !"
 msgstr "Erreur VIN"
 
-#: squalaetp/forms.py:166
+#: squalaetp/forms.py:136
+msgid "New PSA VIN, please use the Import CORVET button !"
+msgstr "Nouveau VIN PSA, veuillez utiliser le bouton Import CORVET !"
+
+#: squalaetp/forms.py:171
 msgid "Xelon product model does not exist !"
 msgstr "Le modèle de produit Xelon n'existe pas!"
 
-#: squalaetp/forms.py:188
+#: squalaetp/forms.py:193
 msgid "Enter the IMMAT number"
 msgstr "Entrez le numéro d'IMMAT"
 
-#: squalaetp/forms.py:195
+#: squalaetp/forms.py:200
 msgid ""
 "Data in XML format available on the RepairNAV site during SIVIN extraction..."
 msgstr ""
 "Données au format XML disponibles sur le site RepairNAV lors de l'extraction "
 "SIVIN..."
 
-#: squalaetp/forms.py:219
+#: squalaetp/forms.py:224
 msgid "XML data does not match IMMAT"
 msgstr "Les données XML ne correspondent pas à IMMAT"
 
@@ -180,7 +184,7 @@ msgstr "Annuler"
 
 #: squalaetp/templates/squalaetp/modal/log_file.html:17
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: squalaetp/templates/squalaetp/modal/product_update.html:58
 #: squalaetp/templates/squalaetp/modal/sivin_form.html:53
