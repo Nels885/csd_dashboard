@@ -37,11 +37,10 @@ def validate_vin(value, psa_type=True):
     :return:
         Error message if not valid
     """
-    message = 'The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'
     if psa_type and not vin_psa_isvalid(value):
-        return _(message)
+        return _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles')
     elif not re.match(r'^[S-Z]\w{16}$', str(value)):
-        return _(message[:-27])
+        return _('The V.I.N. is invalid, it should be 17 characters')
     return None
 
 
