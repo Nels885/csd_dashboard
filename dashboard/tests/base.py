@@ -19,6 +19,7 @@ class BaseTest:
 
     def __init__(self):
         self.vin = 'VF3ABCDEF12345678'
+        self.vinNG = 'VF3ABCDEF12345679'
         self.xmlData = (
             '<?xml version="1.0" encoding="UTF-8"?><MESSAGE><ENTETE><EMETTEUR>CLARION_PROD</EMETTEUR></ENTETE>'
             '<VEHICULE Existe="O">'
@@ -60,6 +61,7 @@ class BaseTest:
         content_type = ContentType.objects.get_for_model(model)
         for codename in args:
             self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))
+
 
 
 class UnitTest(TestCase, BaseTest):
