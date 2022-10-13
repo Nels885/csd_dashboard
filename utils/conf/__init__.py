@@ -27,10 +27,11 @@ if len(conf.NAS_DIR) > 1:
 else:
     NAS_ROOT = conf.NAS_DIR
 
-# Paths CSD and NAS for EXTS folder
-EXTS_PATHS = [os.path.join(CSD_ROOT, "EXTS")]
+# Paths CSD and NAS
+EXTS_PATHS, ROOT_PATHS = [os.path.join(CSD_ROOT, "EXTS")], [CSD_ROOT]
 if NAS_ROOT:
     EXTS_PATHS.append(os.path.join(NAS_ROOT, "EXTS"))
+    ROOT_PATHS.append(NAS_ROOT)
 
 
 XLS_DELAY_PATH = os.path.join(CSD_ROOT, conf.XLS_DELAY_PATH)
