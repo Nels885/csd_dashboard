@@ -146,7 +146,8 @@ class Command(BaseCommand):
                 'products_to_repair': indicator.products_to_repair,
                 'late_products': indicator.late_products,
                 'express_products': indicator.express_products,
-                'vip_products': prods.vip
+                'vip_products': prods.vip,
+                'tronik_products': prods.tronik
             })
         return prods, data
 
