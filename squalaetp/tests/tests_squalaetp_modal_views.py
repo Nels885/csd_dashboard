@@ -45,7 +45,7 @@ class MixinsTest(UnitTest):
 
         # Second post request = Update object through BSModalUpdateView
         xelon = Xelon.objects.get(pk=self.xelon.pk)
-        for xml_data, corvet_nb in [('', 0), (self.xmlData, 1)]:
+        for xml_data, corvet_nb in [(self.xmlData, 1), ('', 1)]:
             response = self.client.post(
                 reverse('squalaetp:vin_edit', kwargs={'pk': xelon.pk}),
                 data={

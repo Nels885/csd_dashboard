@@ -27,16 +27,21 @@ def vin_psa_isvalid(value):
     return False
 
 
-def validate_vin(value):
+def validate_vin(value, psa_type=True):
     """
     Function for the VIN validation
     :param value:
         VIN value
+    :param psa_type:
+        boolean if VIN is PSA vehicle
     :return:
         Error message if not valid
     """
-    if not vin_psa_isvalid(value):
-        return _('The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles')
+    message = 'The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles'
+    if psa_type and not vin_psa_isvalid(value):
+        return _(message)
+    elif not re.match(r'^[S-Z]\w{16}$', str(value)):
+        return _(message[:-27])
     return None
 
 

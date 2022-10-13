@@ -5,7 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 
-from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser
+from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser, vin_psa_isvalid
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet, Multimedia, Ecu
@@ -131,6 +131,9 @@ class VinCorvetModalForm(BSModalModelForm):
         data = cleaned_data.get('xml_data')
         if vin and isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
             raise forms.ValidationError(_('VIN error !'))
+        elif vin != self.oldVin and vin_psa_isvalid(vin) and not isinstance(data, dict):
+            if not Corvet.objects.filter(vin=vin):
+                raise forms.ValidationError(_('New PSA VIN, please use the Import CORVET button !'))
 
     def save(self, commit=True):
         instance = super().save(commit=False)
