@@ -93,15 +93,15 @@ class VinCorvetModalForm(BSModalModelForm):
             ),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(VinCorvetModalForm, self).__init__(*args, **kwargs)
+        self.oldVin = self.instance.vin
+
     def clean_vin(self):
         data = self.cleaned_data['vin']
         message = validate_vin(data)
         if message:
-            raise forms.ValidationError(
-                _(message),
-                code='invalid',
-                params={'value': data},
-            )
+            raise forms.ValidationError(_(message), code='invalid', params={'value': data})
         return data
 
     def clean_xml_data(self):
@@ -140,9 +140,9 @@ class VinCorvetModalForm(BSModalModelForm):
             if data and vin:
                 defaults = defaults_dict(Corvet, data, 'vin')
                 Corvet.objects.update_or_create(vin=vin, defaults=defaults)
-                if vin != self.instance.vin:
-                    content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.instance.vin, vin)
-                    Action.objects.create(content=content, content_object=self.instance)
+            if vin != self.oldVin:
+                content = "OLD_VIN: {}\nNEW_VIN: {}".format(self.oldVin, vin)
+                Action.objects.create(content=content, content_object=self.instance)
             instance.save()
         return instance
 
@@ -159,6 +159,8 @@ class ProductModalForm(BSModalModelForm):
         super(ProductModalForm, self).__init__(*args, **kwargs)
         self.fields['modele_produit'].widget = ListTextWidget(data_list=self.data_list, name='value-list')
         self.fields['modele_produit'].required = True
+        self.oldProduct = self.instance.modele_produit
+        self.oldVehicle = self.instance.modele_vehicule
 
     def clean_modele_produit(self):
         data = self.cleaned_data['modele_produit']
@@ -172,11 +174,11 @@ class ProductModalForm(BSModalModelForm):
             product = self.cleaned_data['modele_produit']
             vehicle = self.cleaned_data['modele_vehicule']
             if product and vehicle and not self.request.is_ajax():
-                if product != self.instance.modele_produit:
-                    content = "OLD_PROD: {}\nNEW_PROD: {}".format(self.instance.modele_produit, product)
+                if product != self.oldProduct:
+                    content = "OLD_PROD: {}\nNEW_PROD: {}".format(self.oldProduct, product)
                     Action.objects.create(content=content, content_object=self.instance)
-                if vehicle != self.instance.modele_vehicule:
-                    content = "OLD_VEH: {}\nNEW_VEH: {}".format(self.instance.modele_vehicule, vehicle)
+                if vehicle != self.oldVehicle:
+                    content = "OLD_VEH: {}\nNEW_VEH: {}".format(self.oldProduct, vehicle)
                     Action.objects.create(content=content, content_object=self.instance)
             instance.save()
         return instance
