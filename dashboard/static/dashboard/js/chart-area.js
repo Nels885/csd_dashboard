@@ -2,6 +2,56 @@
 Chart.defaults.font.Family = 'Nunito,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.color = '#858796';
 
+const suptechOptions = {
+    maintainAspectRatio: false,
+    layout: {
+        padding: {
+            left: 10,
+            right: 25,
+            top: 25,
+            bottom: 0
+        }
+    },
+    scales: {
+        x: {
+            grid: {
+                display: false,
+                drawBorder: false
+            },
+            ticks: {
+                maxTicksLimit: 10
+            }
+        },
+        y: {
+            max: 100,
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Valeur en %',
+            },
+            ticks: {
+                maxTicksLimit: 6,
+            },
+            grid: {
+                color: "rgb(234, 236, 244)",
+                zeroLineColor: "rgb(234, 236, 244)",
+                drawBorder: false,
+                borderDash: [2],
+                zeroLineBorderDash: [2]
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: true
+        },
+        datalabels: {
+            display: false
+        }
+    }
+}
+
+
 $.ajax({
     method: "GET",
     url: $("#dataCharts").attr("data-url"),
@@ -141,58 +191,23 @@ $.ajax({
                     },
                     {
                         type: 'bar',
-                        data: data['expRate'],
-                        label: "Taux 48h",
+                        data: data['supNumber'],
+                        label: "Nombre suptech",
                         backgroundColor: "rgba(78, 115, 223, 0.2)",
-                        borderWidth: 1
+                        borderWidth: 1,
+                        datalabels: {
+                            align: 'end',
+                            anchor: 'end',
+                            display: true,
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
                     },
                 ],
             },
-            options: {
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 10
-                        }
-                    },
-                    y: {
-                        max: 100,
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valeur en %',
-                        },
-                        ticks: {
-                            maxTicksLimit: 6,
-                        },
-                        grid: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true
-                    }
-                }
-            },
+            options: suptechOptions,
+            plugins: [ChartDataLabels]
         });
 
         // BGA Duration Area Chart
@@ -386,60 +401,25 @@ $.ajax({
                         pointBackgroundColor: "rgba(214, 54, 33, 1)",
                         pointBorderColor: "rgba(214, 54, 33, 1)",
                     },
-                                        {
+                    {
                         type: 'bar',
-                        data: data['coExpRate'],
-                        label: "Taux 48h",
+                        data: data['coSupNumber'],
+                        label: "Nombre Suptech",
                         backgroundColor: "rgba(78, 115, 223, 0.2)",
-                        borderWidth: 1
+                        borderWidth: 1,
+                        datalabels: {
+                            align: 'end',
+                            anchor: 'end',
+                            display: true,
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
                     },
                 ],
             },
-            options: {
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 10
-                        }
-                    },
-                    y: {
-                        max: 100,
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valeur en %',
-                        },
-                        ticks: {
-                            maxTicksLimit: 6,
-                        },
-                        grid: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true
-                    }
-                }
-            },
+            options: suptechOptions,
+            plugins: [ChartDataLabels]
         });
 
     },

@@ -1,3 +1,4 @@
+from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 # import itertools
 
@@ -153,18 +154,24 @@ class ToolsAnalysis:
     BGA = {"bgaOneValue": "DES-48", "bgaTwoValue": "DES-51"}
     LAST_60_DAYS = timezone.datetime.today() - timezone.timedelta(60)
     LAST_30_DAYS = timezone.datetime.today() - timezone.timedelta(30)
+    LAST_12_MONTHS = timezone.datetime.today() + relativedelta(months=-12)
     TOTAL_HOURS = 7 * 60 * 60
 
     def __init__(self):
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
-        suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
+        # suptechs = Suptech.objects.filter(created_at__isnull=False, modified_at__isnull=False)
+        suptechs = Suptech.objects.filter(
+            created_at__isnull=False, modified_at__isnull=False, date__gte=self.LAST_12_MONTHS)
         self.suptechs = suptechs.annotate(day_number=day_number).order_by('date')
         self.bgaTimes = BgaTime.objects.filter(date__gte=self.LAST_60_DAYS)
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
 
     def suptech_co(self):
         suptechs = self.suptechs.filter(category=3)
-        data = {"suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": [], "coExpRate": []}
+        data = {
+            "suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": [], "coExpRate": [],
+            "coSupNumber": []
+        }
         queryset = self._suptech_annotate(suptechs)
         for query in queryset:
             data["suptechCoLabels"].append(query['month'].strftime("%m/%Y"))
@@ -172,11 +179,14 @@ class ToolsAnalysis:
             data["coTwoToSixDays"].append(self._percent(query['two_to_six_days'], query['total']))
             data["coSixDays"].append(self._percent(query['six_days'], query['total']))
             data["coExpRate"].append(self._percent(query['total_48h'], query['total']))
+            data["coSupNumber"].append(query['total'])
         return data
 
     def suptech_ce(self):
         suptechs = self.suptechs.exclude(category=3)
-        data = {"suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": [], "expRate": []}
+        data = {
+            "suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": [], "expRate": [], "supNumber": []
+        }
         queryset = self._suptech_annotate(suptechs)
         for query in queryset:
             data["suptechCeLabels"].append(query['month'].strftime("%m/%Y"))
@@ -184,6 +194,7 @@ class ToolsAnalysis:
             data["twoToSixDays"].append(self._percent(query['two_to_six_days'], query['total_48h']))
             data["sixDays"].append(self._percent(query['six_days'], query['total_48h']))
             data["expRate"].append(self._percent(query['total_48h'], query['total']))
+            data["supNumber"].append(query['total'])
         return data
 
     def bga_time(self):
