@@ -73,6 +73,8 @@
 
         $(".create-post").modalForm({formURL: "{% url 'dashboard:create_post' %}", modalID: "#large-modal"});
 
+        $(".create-suggest").modalForm({formURL: "{% url 'dashboard:create_suggest' %}", modalID: "#large-modal"});
+
         $(".create-weblink").modalForm({formURL: "{% url 'dashboard:create_weblink' %}", modalID: "#large-modal"});
 
         $(".create-corvet").modalForm({formURL: "{% url 'psa:create_corvet' %}", modalID: "#large-modal"});

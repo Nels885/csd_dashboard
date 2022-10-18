@@ -1,0 +1,75 @@
+{% load i18n widget_tweaks %}
+
+<form id="suptechForm" method="post" action="" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    <div class="modal-header">
+        <h3 class="modal-title">Proposition d'idée</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="{% if form.non_field_errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.username.id_for_label }}" class="col-form-label col-sm-2">Autheur *</label>
+            <div class="col-sm-4">
+                {% render_field form.username class="form-control" %}
+                <div class="{% if form.username.errors %} invalid{% endif %}">
+                    {% for error in form.username.errors %}
+                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.title.id_for_label }}" class="col-form-label col-sm-2">Titre *</label>
+            <div class="col-sm-10 mb-3 mb-sm-0">
+                {% render_field form.title class="form-control" %}
+                <div class="{% if form.title.errors %} invalid{% endif %}">
+                    {% for error in form.title.errors %}
+                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.description.id_for_label }}" class="col-form-label col-sm-2">Description *</label>
+            <div class="col-sm-10">
+                {% render_field form.description class="form-control" rows=5 %}
+                <div class="{% if form.description.errors %} invalid{% endif %}">
+                    {% for error in form.description.errors %}
+                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="{{ form.objective.id_for_label }}" class="col-form-label col-sm-2">Objectif</label>
+            <div class="col-sm-10">
+                {% render_field form.objective class="form-control" rows=5 %}
+                <div class="{% if form.objective.errors %} invalid{% endif %}">
+                    {% for error in form.objective.errors %}
+                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Create' %}</button>
+    </div>
+</form>

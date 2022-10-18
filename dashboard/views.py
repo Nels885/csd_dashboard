@@ -31,7 +31,7 @@ from psa.tasks import save_corvet_to_models
 from .models import Post, UserProfile, WebLink
 from .forms import (
     UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm,
-    SearchForm
+    SearchForm, SuggestBoxModalForm
 )
 from .tasks import cmd_sendemail_task
 from .utils import global_search
@@ -325,3 +325,12 @@ def other_links(request):
     card_title = "Autres liens"
     web_links = WebLink.objects.filter(type="AUTRES")
     return render(request, 'dashboard/weblink.html', locals())
+
+
+class SuggestCreateView(BSModalCreateView):
+    template_name = 'dashboard/modal/suggest_create.html'
+    form_class = SuggestBoxModalForm
+    success_message = "Succès : Ajout d'une idée avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)

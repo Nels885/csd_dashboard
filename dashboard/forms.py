@@ -8,7 +8,9 @@ from django.contrib.auth.models import User, Group
 from django.conf import settings
 
 from bootstrap_modal_forms.forms import BSModalModelForm
-from .models import UserProfile, Post, WebLink, ShowCollapse
+from .models import UserProfile, Post, WebLink, ShowCollapse, SuggestBox
+
+from utils.django.forms.fields import ListTextWidget
 
 SERVICE_CHOICES = [('', '---'), ('CO', 'CO'), ('CE', 'CE'), ('ADM', 'ADM')]
 JOB_TITLE_CHOICES = [
@@ -138,3 +140,35 @@ class SearchForm(forms.Form):
 
     select = forms.ChoiceField(choices=SELECTS, widget=forms.Select())
     query = forms.CharField(widget=forms.TextInput(attrs={"placeholder": _("Search Xelon, VIN or SN...")}))
+
+
+class SuggestBoxModalForm(BSModalModelForm):
+    username = forms.CharField(max_length=50, required=True)
+
+    class Meta:
+        model = SuggestBox
+        fields = ['username', 'title', 'description', 'objective']
+
+    def __init__(self, *args, **kwargs):
+        users = User.objects.all()
+        _data_list = list(users.values_list('username', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        if self.request.user:
+            self.fields['username'].initial = self.request.user.username
+        self.fields['username'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        try:
+            data = User.objects.get(username=data)
+        except User.DoesNotExist:
+            self.add_error('username', _("Username not found."))
+        return data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        user = self.cleaned_data['username']
+        instance.created_by = user
+        if commit and not self.request.is_ajax():
+            instance.save()
+        return instance
