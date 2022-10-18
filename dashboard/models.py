@@ -80,3 +80,23 @@ class Contract(models.Model):
 
     def __str__(self):
         return self.code
+
+
+class SuggestBox(models.Model):
+    STATUS_CHOICES = [
+        ('En Attente', 'En Attente'), ('En Cours', 'En Cours'), ('Terminée', 'Terminée'), ('Abandonnée', 'Abandonnée')
+    ]
+
+    title = models.CharField('titre', max_length=200)
+    description = models.TextField('description', max_length=5000)
+    objective = models.TextField('objectif', max_length=1000, blank=True)
+    status = models.CharField('statut', max_length=20, choices=STATUS_CHOICES, default='En Attente')
+    created_at = models.DateTimeField('créer le', editable=False, auto_now_add=True)
+    created_by = models.ForeignKey(User, related_name="suggests_created", editable=False, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Boite à idée"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
