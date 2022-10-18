@@ -36,6 +36,12 @@ class Command(BaseCommand):
             dest='email_48h',
             help='Send email processing 48h for Suptech'
         )
+        parser.add_argument(
+            '--email_graph',
+            action='store_true',
+            dest='email_graph',
+            help='Send email graph for Suptech'
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
@@ -55,6 +61,11 @@ class Command(BaseCommand):
                 Q(status="En Attente", is_48h=True) | Q(deadline=timezone.now())).order_by('-date')
             for suptech in suptechs:
                 self._send_single_email(suptech)
+        if options['email_graph']:
+            date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
+            supject = "Suptech graphique {}".format(date_joined)
+            suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(category=3)).order_by('-date')
+            self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_TO_EMAIL_LIST)
         if not options:
             try:
                 path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
