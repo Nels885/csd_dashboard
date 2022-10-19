@@ -175,9 +175,9 @@ class ToolsAnalysis:
         queryset = self._suptech_annotate(suptechs)
         for query in queryset:
             data["suptechCoLabels"].append(query['month'].strftime("%m/%Y"))
-            data["coTwoDays"].append(self._percent(query['two_days'], query['total']))
-            data["coTwoToSixDays"].append(self._percent(query['two_to_six_days'], query['total']))
-            data["coSixDays"].append(self._percent(query['six_days'], query['total']))
+            data["coTwoDays"].append(self._percent(query['two_days'], query['total_48h']))
+            data["coTwoToSixDays"].append(self._percent(query['two_to_six_days'], query['total_48h']))
+            data["coSixDays"].append(self._percent(query['six_days'], query['total_48h']))
             data["coExpRate"].append(self._percent(query['total_48h'], query['total']))
             data["coSupNumber"].append(query['total'])
         return data
@@ -239,11 +239,11 @@ class ToolsAnalysis:
 
     @staticmethod
     def _suptech_annotate(queryset):
-        queryset = queryset.annotate(month=TruncMonth("modified_at")).values("month").order_by("month")
+        queryset = queryset.annotate(month=TruncMonth("created_at")).values("month").order_by("month")
         queryset = queryset.annotate(total=Count("month"))
         queryset = queryset.annotate(total_48h=Count("month", filter=Q(is_48h=True)))
-        queryset = queryset.annotate(two_days=Count("day_number", filter=Q(day_number__lte=2, is_48h=True)))
+        queryset = queryset.annotate(two_days=Count("month", filter=Q(day_number__lte=2, is_48h=True)))
         queryset = queryset.annotate(
-            two_to_six_days=Count("day_number", filter=Q(day_number__gt=2, day_number__lte=6, is_48h=True)))
-        queryset = queryset.annotate(six_days=Count("day_number", filter=Q(day_number__gt=6, is_48h=True)))
+            two_to_six_days=Count("month", filter=Q(day_number__gt=2, day_number__lte=6, is_48h=True)))
+        queryset = queryset.annotate(six_days=Count("month", filter=Q(day_number__gt=6, is_48h=True)))
         return queryset

@@ -159,7 +159,7 @@ $.ajax({
                     {
                         type: 'line',
                         data: data['twoDays'],
-                        label: "1 à 2 jours",
+                        label: "1 à 2 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(0, 143, 136, 1)",
@@ -170,7 +170,7 @@ $.ajax({
                     {
                         type: 'line',
                         data: data['twoToSixDays'],
-                        label: "3 à 6 jours",
+                        label: "3 à 6 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(240, 132, 40, 1)",
@@ -181,7 +181,7 @@ $.ajax({
                     {
                         type: 'line',
                         data: data['sixDays'],
-                        label: "7 jours et plus",
+                        label: "7 jours et plus (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(214, 54, 33, 1)",
@@ -192,7 +192,7 @@ $.ajax({
                     {
                         type: 'bar',
                         data: data['supNumber'],
-                        label: "Nombre suptech",
+                        label: "Total suptech",
                         backgroundColor: "rgba(78, 115, 223, 0.2)",
                         borderWidth: 1,
                         datalabels: {
@@ -371,7 +371,7 @@ $.ajax({
                     {
                         type: 'line',
                         data: data['coTwoDays'],
-                        label: "1 à 2 jours",
+                        label: "1 à 2 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(0, 143, 136, 1)",
@@ -382,7 +382,7 @@ $.ajax({
                     {
                         type: 'line',
                         data: data['coTwoToSixDays'],
-                        label: "3 à 6 jours",
+                        label: "3 à 6 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(240, 132, 40, 1)",
@@ -393,7 +393,7 @@ $.ajax({
                     {
                         type: 'line',
                         data: data['coSixDays'],
-                        label: "7 jours et plus",
+                        label: "7 jours et plus (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(214, 54, 33, 1)",
@@ -404,7 +404,7 @@ $.ajax({
                     {
                         type: 'bar',
                         data: data['coSupNumber'],
-                        label: "Nombre Suptech",
+                        label: "Total Suptech",
                         backgroundColor: "rgba(78, 115, 223, 0.2)",
                         borderWidth: 1,
                         datalabels: {
