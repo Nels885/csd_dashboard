@@ -1,7 +1,9 @@
 import os
+import subprocess
 
 from celery import Celery
 from celery.signals import setup_logging
+from celery.exceptions import TaskError
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sbadmin.settings.development')
@@ -29,3 +31,13 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
+
+@app.task()
+def subprocess_task(*args):
+    args_list = list(args)
+    if args_list:
+        p = subprocess.Popen(args_list, stdout=subprocess.PIPE, shell=True, encoding="utf-8")
+        out, err = p.communicate()
+        return {"out": out, "err": err}
+    raise TaskError('Arguments not found !')
