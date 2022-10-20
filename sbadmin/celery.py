@@ -35,9 +35,18 @@ def debug_task(self):
 
 @app.task()
 def subprocess_task(*args):
+    """
+    :param args:
+        The different arguments of the shell command for linux
+        example:
+            ("rsync", "-avr", "<SOURCE>" "<DIR>")
+    :return:
+        Information dictionary or error message if not args
+    """
     args_list = list(args)
     if args_list:
-        p = subprocess.Popen(args_list, stdout=subprocess.PIPE, shell=True, encoding="utf-8")
+        p = subprocess.Popen(args_list, stdout=subprocess.PIPE, shell=False, encoding="utf-8")
+        p.wait()
         out, err = p.communicate()
-        return {"out": out, "err": err}
+        return {"cmd": " ".join(args_list), "out": out, "err": err}
     raise TaskError('Arguments not found !')
