@@ -31,8 +31,8 @@ BATCH_TYPE = [
 class BatchForm(BSModalModelForm):
     class Meta:
         model = Batch
-        exclude = ['batch_number']
-        labels = {'ecu_ref_base': 'Réf. REMAN'}
+        exclude = ['batch_number', 'closing_date', 'ecu_ref_base']
+        labels = {'ecu_ref_base': 'Réf. REMAN', 'active': 'En cours'}
         widgets = {
             'year': forms.TextInput(attrs={'readonly': ''}),
             'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number', 'readonly': ''}),
