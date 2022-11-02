@@ -268,7 +268,11 @@ class SelectRepairForm(BSModalForm):
         data = cleaned_data.get("repair")
         if data:
             try:
-                Repair.objects.get(identify_number__exact=data)
+                obj = Repair.objects.get(identify_number__exact=data)
+                if not obj.batch.active:
+                    raise forms.ValidationError("Ce dossier fait partie d'un lot cloturé")
+                if obj.closing_date:
+                    raise forms.ValidationError("Ce dossier a été cloturé")
             except Repair.DoesNotExist:
                 raise forms.ValidationError("Pas de dossier associé")
             except Repair.MultipleObjectsReturned:
