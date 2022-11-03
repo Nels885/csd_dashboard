@@ -259,3 +259,13 @@ class BgaTime(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.date} {self.start_time}"
+
+
+class ConfigFile(models.Model):
+    name = models.CharField("nom du logiciel", max_length=100, unique=True)
+    path = models.CharField("chemin du fichier", max_length=500, unique=True)
+    filename = models.CharField("nom du fichier", max_length=100)
+    content = models.TextField("contenu du fichier")
+
+    def __str__(self):
+        return self.name

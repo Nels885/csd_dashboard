@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
-    SuptechMessage, SuptechFile, BgaTime
+    SuptechMessage, SuptechFile, BgaTime, ConfigFile
 )
 
 
@@ -144,3 +144,4 @@ admin.site.register(SuptechMessage, SuptechMessageAdmin)
 admin.site.register(SuptechFile, SuptechFileAdmin)
 admin.site.register(BgaTime)
 admin.site.register(ThermalChamberMeasure, ThermalChamberMeasureAdmin)
+admin.site.register(ConfigFile)
