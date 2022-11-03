@@ -30,4 +30,6 @@ urlpatterns = [
     path('bga/time/', views.bga_time, name='bga_time'),
     path('usb-devices/', views.usb_devices, name='usb_devices'),
     path('partslink24/', views.partlink24, name='partslink24'),
+    path('config-files/', views.config_files, name='config_files'),
+    path('config-files/add/', views.ConfigFileCreateView.as_view(), name='config_add')
 ]

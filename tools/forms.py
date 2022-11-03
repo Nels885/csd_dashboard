@@ -15,7 +15,9 @@ from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 
-from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile
+from .models import (
+    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile, ConfigFile
+)
 from .tasks import send_email_task
 
 
@@ -225,3 +227,21 @@ class Partslink24Form(forms.Form):
 
     brand = forms.ChoiceField(choices=BRAND_CHOICES, widget=forms.Select(attrs={'class': 'custom-select'}))
     vin = forms.CharField(widget=forms.TextInput(), required=True)
+
+
+class ConfigFileForm(BSModalModelForm):
+    file = forms.FileField(
+        label="Fichier config", widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
+
+    class Meta:
+        model = ConfigFile
+        fields = ['name', 'path', 'file']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        file = self.request.FILES.get('file')
+        if commit and file:
+            instance.filename = file.name
+            instance.content = file.read().decode('utf-8')
+            instance.save()
+        return instance

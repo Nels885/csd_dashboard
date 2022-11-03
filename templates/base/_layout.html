@@ -98,6 +98,8 @@
         $(".create-tag-xelon").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
 
         $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});
+
+        $(".create-config").modalForm({formURL: "{% url 'tools:config_add' %}", modalID: "#create-large-modal"});
     });
 
     getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {

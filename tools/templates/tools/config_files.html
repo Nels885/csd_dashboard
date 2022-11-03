@@ -1,0 +1,12 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n widget_tweaks %}
+
+{% block detail_content %}
+
+        <button class="create-config btn btn-success btn-icon-split mb-2 mr-4">
+            <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+            <span class="text">{% trans "Add config file" %}</span>
+        </button>
+
+{% endblock %}

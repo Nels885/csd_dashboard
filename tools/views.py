@@ -18,7 +18,8 @@ from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
 from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage
 from dashboard.forms import ParaErrorList
 from .forms import (
-    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm, Partslink24Form
+    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm, Partslink24Form,
+    ConfigFileForm
 )
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
@@ -314,3 +315,17 @@ def partlink24(request):
             messages.warning(request, _('You do not have the required permissions'))
     errors = form.errors.items()
     return render(request, 'tools/partlink24.html', locals())
+
+
+@login_required
+def config_files(request):
+    title = _('Tools')
+    detail_title = _('Config files')
+    return render(request, 'tools/config_files.html', locals())
+
+
+class ConfigFileCreateView(BSModalCreateView):
+    template_name = 'tools/modal/config_file_create.html'
+    form_class = ConfigFileForm
+    success_message = "Succès : Création d'un fichier de config avec succès !"
+    success_url = reverse_lazy('tools:config_files')

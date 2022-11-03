@@ -1,0 +1,78 @@
+{% load i18n widget_tweaks %}
+
+<form method="post" action="">
+    {% csrf_token %}
+
+    <div class="modal-header">
+        <h3 class="modal-title">{{ modal_title }}</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} text-center text-danger text-uppercase mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <div class="form-group row">
+                <label for="{{ form.name.id_for_label }}" class="col-sm-4 col-form-label">
+                    {{ form.name.label }}
+                    {% if form.name.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                </label>
+                <div class="col-sm-8">
+                    {% render_field form.name class="form-control" %}
+                    <div class="{% if form.name.errors %} invalid{% endif %}">
+                        {% for error in form.name.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group row">
+                <label for="{{ form.path.id_for_label }}" class="col-sm-4 col-form-label">
+                    {{ form.path.label }}
+                    {% if form.path.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                </label>
+                <div class="col-sm-8">
+                    {% render_field form.path class="form-control" %}
+                    <div class="{% if form.path.errors %} invalid{% endif %}">
+                        {% for error in form.path.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group row">
+                <label for="{{ form.file.id_for_label }}" class="col-sm-4 col-form-label">
+                    {{ form.file.label }}
+                    {% if form.file.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                </label>
+                <div class="col-sm-8">
+                    {% render_field form.file class="form-control-file" %}
+                    <div class="{% if form.file.errors %} invalid{% endif %}">
+                        {% for error in form.file.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Create' %}</button>
+    </div>
+
+</form>
