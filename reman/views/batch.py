@@ -75,15 +75,14 @@ class BatchUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     form_class = BatchForm
     success_message = _('Success: Batch was updated.')
 
-    def form_valid(self, form):
-        if form.cleaned_data['number'] > 900:
+    def get_success_url(self):
+        if self.object.number > 900:
             filter = 'etude'
-        elif form.cleaned_data['year'] == "X":
+        elif self.object.year == "X":
             filter = 'workshop'
         else:
             filter = 'pending'
-        self.success_url = reverse_lazy('reman:batch_table', get={'filter': filter})
-        return super().form_valid(form)
+        return reverse_lazy('reman:batch_table', get={'filter': filter})
 
 
 class BatchDeleteView(PermissionRequiredMixin, BSModalDeleteView):

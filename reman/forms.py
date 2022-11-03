@@ -29,23 +29,33 @@ BATCH_TYPE = [
 
 
 class BatchForm(BSModalModelForm):
+    ACTIVE_CHOICES = ((True, _("No")), (False, _("Yes")))
+    BARCODE_CHOICES = ((False, _("No")), (True, _("Yes")))
+
+    active = forms.ChoiceField(label="Terminé ?", choices=ACTIVE_CHOICES)
+    is_barcode = forms.ChoiceField(label="Nouveau code barre ?", choices=BARCODE_CHOICES)
+
     class Meta:
         model = Batch
-        exclude = ['batch_number', 'closing_date', 'ecu_ref_base']
-        labels = {'ecu_ref_base': 'Réf. REMAN', 'active': 'En cours'}
+        fields = ['box_quantity', 'active', 'is_barcode', 'start_date', 'end_date']
         widgets = {
-            'year': forms.TextInput(attrs={'readonly': ''}),
-            'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number', 'readonly': ''}),
-            'quantity': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number', 'readonly': ''}),
             'box_quantity': forms.Select(choices=BOX_NUMBER, attrs={'style': 'width: 40%;'}),
+            'start_date': DatePicker(
+                attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
+                options={'format': 'DD/MM/YYYY'}
+            ),
+            'end_date': DatePicker(
+                attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
+                options={'format': 'DD/MM/YYYY'}
+            )
         }
 
     def save(self, commit=True):
-        batch = super().save(commit=False)
+        instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
-            batch.save()
+            instance.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
-        return batch
+        return instance
 
 
 class AddBatchForm(BSModalModelForm):
