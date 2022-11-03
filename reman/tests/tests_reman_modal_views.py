@@ -144,25 +144,22 @@ class MixinsTest(RemanTest):
         self.login()
 
         # Update object through BSModalUpdateView
-        batch = Batch.objects.first()
+        old_batch = Batch.objects.create(number=99, quantity=20, batch_number='G099020000', created_by=self.user)
         response = self.client.post(
-            reverse('reman:update_batch', kwargs={'pk': batch.pk}),
+            reverse('reman:update_batch', kwargs={'pk': old_batch.pk}),
             data={
-                'year': 'A',
-                'number': '2',
-                'quantity': '20',
                 'box_quantity': '6',
-                'customer': 'PSA',
+                'active': True,
+                'is_barcode': True,
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_ref_base': self.psaRefBase.id
             },
         )
         # redirection
         self.assertRedirects(response, reverse('reman:batch_table') + "?filter=pending", status_code=302)
         # Object is updated
-        batch = Batch.objects.first()
-        self.assertEqual(batch.year, 'A')
+        new_batch = Batch.objects.get(pk=old_batch.pk)
+        self.assertNotEqual(new_batch.is_barcode, old_batch.is_barcode)
 
     def test_update_etude_batch_ajax_mixin(self):
         """
@@ -172,25 +169,22 @@ class MixinsTest(RemanTest):
         self.login()
 
         # Update Batch under etude through BSModalUpdateView
-        batch = Batch.objects.first()
+        old_batch = Batch.objects.create(number=999, quantity=20, batch_number='G999020000', created_by=self.user)
         response = self.client.post(
-            reverse('reman:update_batch', kwargs={'pk': batch.pk}),
+            reverse('reman:update_batch', kwargs={'pk': old_batch.pk}),
             data={
-                'year': 'A',
-                'number': '902',
-                'quantity': '20',
                 'box_quantity': '6',
-                'customer': 'PSA',
+                'active': True,
+                'is_barcode': True,
                 'start_date': '01/01/1970',
                 'end_date': '01/01/1970',
-                'ecu_ref_base': self.psaRefBase.id
             },
         )
         # redirection
         self.assertRedirects(response, reverse('reman:batch_table') + "?filter=etude", status_code=302)
         # Object is updated
-        batch = Batch.objects.first()
-        self.assertEqual(batch.year, 'A')
+        new_batch = Batch.objects.get(pk=old_batch.pk)
+        self.assertNotEqual(new_batch.is_barcode, old_batch.is_barcode)
 
     def test_Delete_batch_ajax_mixin(self):
         """
