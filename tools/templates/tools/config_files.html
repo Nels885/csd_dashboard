@@ -4,9 +4,38 @@
 
 {% block detail_content %}
 
-        <button class="create-config btn btn-success btn-icon-split mb-2 mr-4">
+    <button class="create-config btn btn-success btn-icon-split mb-2 mr-4">
+        <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+        <span class="text">{% trans "Add config file" %}</span>
+    </button>
+
+    <form class="form-inline" method="post" action="">
+
+        {% csrf_token %}
+
+        <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        {% for field in form %}
+            <div class="form-group mx-sm-3 mb-2">
+                <label class="mx-sm-3" for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                {{ field }}
+                <div class="{% if field.errors %} invalid{% endif %}">
+                    {% for error in field.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success btn-icon-split mb-2 mr-4">
             <span class="icon text-white-50"><i class="fas fa-check"></i></span>
-            <span class="text">{% trans "Add config file" %}</span>
+            <span class="text">{% trans "Select" %}</span>
         </button>
+
+    </form>
 
 {% endblock %}

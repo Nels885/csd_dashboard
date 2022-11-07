@@ -19,7 +19,7 @@ from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem,
 from dashboard.forms import ParaErrorList
 from .forms import (
     TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm, Partslink24Form,
-    ConfigFileForm
+    ConfigFileForm, SelectConfigForm
 )
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
@@ -318,9 +318,13 @@ def partlink24(request):
 
 
 @login_required
-def config_files(request):
+def config_files(request, pk=None):
     title = _('Tools')
-    detail_title = _('Config files')
+    card_title = _('Config files')
+    form = SelectConfigForm(request.POST or None, error_class=ParaErrorList)
+    if request.POST and form.is_valid():
+        messages.success(request, 'Chargement du fichier de config!')
+        return reverse_lazy('tools:config_edit', kwargs={'pk': 0})
     return render(request, 'tools/config_files.html', locals())
 
 

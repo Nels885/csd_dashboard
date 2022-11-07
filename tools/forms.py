@@ -245,3 +245,22 @@ class ConfigFileForm(BSModalModelForm):
             instance.content = file.read().decode('utf-8')
             instance.save()
         return instance
+
+
+class SelectConfigForm(forms.Form):
+    select = forms.CharField(label='Selection', max_length=500)
+
+    def __init__(self, *args, **kwargs):
+        configs = ConfigFile.objects.all()
+        _data_list = list(configs.values_list('name', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['select'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+
+    def clean_select(self):
+        data = self.cleaned_data['select']
+        try:
+            obj = ConfigFile.objects.get(name=data)
+            data = obj.pk
+        except ConfigFile.DoesNotExist:
+            self.add_error('select', 'Fichier de config non trouvé !')
+        return data
