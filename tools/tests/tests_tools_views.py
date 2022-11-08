@@ -194,3 +194,11 @@ class ToolsTestCase(UnitTest):
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_config_files_page(self):
+        url = reverse('tools:config_files')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
