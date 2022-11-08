@@ -15,11 +15,11 @@ from constance import config
 from utils.django.datatables import QueryTableByArgs
 from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage, ConfigFile
 from dashboard.forms import ParaErrorList
 from .forms import (
     TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm, Partslink24Form,
-    ConfigFileForm, SelectConfigForm
+    ConfigFileForm, SelectConfigForm, EditConfigForm
 )
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
@@ -322,13 +322,24 @@ def config_files(request, pk=None):
     title = _('Tools')
     card_title = _('Config files')
     form = SelectConfigForm(request.POST or None, error_class=ParaErrorList)
-    if request.POST and form.is_valid():
-        messages.success(request, 'Chargement du fichier de config!')
-        return reverse_lazy('tools:config_edit', kwargs={'pk': 0})
+    if pk:
+        obj = get_object_or_404(ConfigFile, pk=pk)
+        form2 = EditConfigForm(request.POST or None, error_class=ParaErrorList, instance=obj)
+        if request.POST and form2.is_valid():
+            form2.save()
+            messages.success(request, _('Success: Editing the config file.'))
+            return redirect('tools:config_files')
+    elif "btn_select" in request.POST and form.is_valid():
+        pk = form.cleaned_data['select']
+        if pk != -1:
+            messages.success(request, 'Chargement du fichier de config!')
+            return redirect('tools:config_edit', pk=pk)
+        messages.warning(request, 'Fichier de config non trouvé !')
     return render(request, 'tools/config_files.html', locals())
 
 
 class ConfigFileCreateView(BSModalCreateView):
+    permission_required = 'tools.add_configfile'
     template_name = 'tools/modal/config_file_create.html'
     form_class = ConfigFileForm
     success_message = "Succès : Création d'un fichier de config avec succès !"

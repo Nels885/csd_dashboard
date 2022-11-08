@@ -248,7 +248,7 @@ class ConfigFileForm(BSModalModelForm):
 
 
 class SelectConfigForm(forms.Form):
-    select = forms.CharField(label='Selection', max_length=500)
+    select = forms.CharField(label='Selection', max_length=500, required=False)
 
     def __init__(self, *args, **kwargs):
         configs = ConfigFile.objects.all()
@@ -262,5 +262,12 @@ class SelectConfigForm(forms.Form):
             obj = ConfigFile.objects.get(name=data)
             data = obj.pk
         except ConfigFile.DoesNotExist:
-            self.add_error('select', 'Fichier de config non trouvé !')
+            data = -1
         return data
+
+
+class EditConfigForm(forms.ModelForm):
+
+    class Meta:
+        model = ConfigFile
+        fields = ['content']
