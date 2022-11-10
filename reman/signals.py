@@ -10,7 +10,7 @@ from .models import Repair, Batch
 @disable_for_loaddata
 def post_save_repair(sender, instance, **kwargs):
     prod_ok = Repair.objects.filter(batch=instance.batch, status="Réparé").order_by('-closing_date')
-    if prod_ok.count() >= instance.batch.quantity or instance.batch.active is False:
+    if prod_ok.count() >= instance.batch.quantity:
         instance.batch.active = False
         if prod_ok:
             instance.batch.closing_date = prod_ok.first().closing_date
