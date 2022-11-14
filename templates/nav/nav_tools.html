@@ -135,12 +135,14 @@
         </a>
     </li>
 
-    <!-- Nav Item - Config Files -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'tools:config_files' %}">
-            <i class="fas fa-fw fa-desktop"></i><span>Fichiers config</span>
-        </a>
-    </li>
+    {% if perms.tools.change_configfile %}
+        <!-- Nav Item - Config Files -->
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'tools:config_files' %}">
+                <i class="fas fa-fw fa-desktop"></i><span>Fichiers config</span>
+            </a>
+        </li>
+    {% endif %}
 
     {% comment %}
     <!-- Nav Item - USB Devices -->

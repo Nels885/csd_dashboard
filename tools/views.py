@@ -317,7 +317,7 @@ def partlink24(request):
     return render(request, 'tools/partlink24.html', locals())
 
 
-@login_required
+@permission_required('tools.change_configfile')
 def config_files(request, pk=None):
     title = _('Tools')
     card_title = _('Config files')
