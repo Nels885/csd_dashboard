@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 
 from dashboard.tests.base import UnitTest
 
-from tools.models import CsdSoftware, ThermalChamber, Suptech, BgaTime
+from tools.models import CsdSoftware, ThermalChamber, Suptech, BgaTime, ConfigFile
 
 
 class ToolsTestCase(UnitTest):
@@ -199,6 +199,7 @@ class ToolsTestCase(UnitTest):
         url = reverse('tools:config_files')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.add_perms_user(ConfigFile, 'change_configfile')
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
