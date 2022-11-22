@@ -1,9 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from . import ajax
 
 router = DefaultRouter()
-router.register(r'api/corvet', views.CorvetViewSet, basename='api_corvet')
+router.register(r'api/corvet', ajax.CorvetViewSet, basename='api_corvet')
 
 app_name = 'psa'
 
@@ -18,7 +19,7 @@ urlpatterns = [
     path('corvet/create/', views.CorvetCreateView.as_view(), name='create_corvet'),
     path('corvet/<slug:pk>/edit/', views.CorvetUpdateView.as_view(), name='update_corvet'),
     path('corvet/<slug:pk>/detail/', views.corvet_detail, name='corvet_detail'),
-    path('corvet/import/async/', views.import_corvet_async, name='import_corvet'),
+    path('corvet/import/async/', ajax.import_corvet_async, name='import_corvet'),
     path('product/', views.product_table, name='product'),
     path('majestic-web/', views.majestic_web, name='majestic_web')
 ]
