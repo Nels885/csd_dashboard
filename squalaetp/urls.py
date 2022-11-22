@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from . import ajax
 
 router = DefaultRouter()
-router.register(r'api/xelon', views.XelonViewSet, basename='api_xelon')
-router.register(r'api/temporary', views.TemporaryViewSet, basename='api_temporary')
-router.register(r'api/sivin', views.SivinViewSet, basename='api_sivin')
-router.register(r'api/sparepart', views.StockViewSet, basename='api_stock')
+router.register(r'api/xelon', ajax.XelonViewSet, basename='api_xelon')
+router.register(r'api/temporary', ajax.TemporaryViewSet, basename='api_temporary')
+router.register(r'api/sivin', ajax.SivinViewSet, basename='api_sivin')
+router.register(r'api/sparepart', ajax.StockViewSet, basename='api_stock')
 
 app_name = 'squalaetp'
 

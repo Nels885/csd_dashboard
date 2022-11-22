@@ -10,20 +10,13 @@ from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView, BSModalCreateView
 from django.forms.models import model_to_dict
 from django.core.management import call_command
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.lib.pagesizes import A4
 from reportlab.graphics.barcode import code128
 from constance import config
 
-from utils.django.datatables import QueryTableByArgs
-from .serializers import (
-    XelonSerializer, XELON_COLUMN_LIST, XelonTemporarySerializer, XELON_TEMP_COLUMN_LIST,
-    SivinSerializer, SIVIN_COLUMN_LIST, SparePartSerializer, SPAREPART_COLUMN_LIST
-)
-from .models import Xelon, XelonTemporary, SparePart, Action, Sivin
+from .models import Xelon, Action, Sivin
 from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.forms import CorvetForm
@@ -35,7 +28,6 @@ from .utils import collapse_select
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.urls import reverse_lazy, http_referer
-from utils.django.validators import VIN_OLD_PSA_REGEX
 
 
 @login_required
@@ -83,65 +75,12 @@ def xelon_table(request):
     return render(request, 'squalaetp/xelon_table.html', locals())
 
 
-class XelonViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.filter(date_retour__isnull=False)
-    serializer_class = XelonSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            self._filter(request)
-            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(xelon["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": xelon["draw"],
-                "recordsTotal": xelon["total"],
-                "recordsFiltered": xelon["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
-
-    def _filter(self, request):
-        query = request.query_params.get('filter', None)
-        if query and query == 'pending':
-            self.queryset = self.queryset.exclude(type_de_cloture__in=['Réparé', 'N/A'])
-        elif query and query == "vin-error":
-            self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
-        elif query and query == "corvet-error":
-            self.queryset = self.queryset.filter(
-                vin__regex=VIN_OLD_PSA_REGEX, vin_error=False, corvet__isnull=True).order_by('-date_retour')
-        elif query:
-            self.queryset = Xelon.search(query)
-
-
 @login_required
 def temporary_table(request):
     """ View of Xelon temporary table page """
     title = 'Xelon'
     table_title = 'Dossiers temporaires'
     return render(request, 'squalaetp/temporary_table.html', locals())
-
-
-class TemporaryViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = XelonTemporary.objects.all()
-    serializer_class = XelonTemporarySerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset, XELON_TEMP_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required
@@ -151,26 +90,6 @@ def stock_table(request):
     table_title = 'Pièces détachées'
     # stocks = SparePart.objects.all()
     return render(request, 'squalaetp/stock_table.html', locals())
-
-
-class StockViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = SparePart.objects.all()
-    serializer_class = SparePartSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset, SPAREPART_COLUMN_LIST, 0, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required
@@ -439,26 +358,6 @@ def sivin_table(request):
     """ View of Sivin table page """
     title = 'Sivin'
     return render(request, 'squalaetp/sivin_table.html', locals())
-
-
-class SivinViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Sivin.objects.all()
-    serializer_class = SivinSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            sivin = QueryTableByArgs(self.queryset, SIVIN_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(sivin["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": sivin["draw"],
-                "recordsTotal": sivin["total"],
-                "recordsFiltered": sivin["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required
