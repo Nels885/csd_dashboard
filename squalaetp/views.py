@@ -1,4 +1,4 @@
-from io import StringIO, BytesIO
+from io import BytesIO
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,7 +9,6 @@ from django.http import JsonResponse, Http404, FileResponse
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView, BSModalCreateView
 from django.forms.models import model_to_dict
-from django.core.management import call_command
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.lib.pagesizes import A4
@@ -33,15 +32,8 @@ from utils.django.urls import reverse_lazy, http_referer
 @login_required
 def generate(request):
     """ Generating squalaetp EXCEL files """
-    out = StringIO()
-    call_command("exportsqualaetp", stdout=out)
-    if "Export error" in out.getvalue():
-        for msg in out.getvalue().split('\n'):
-            if "Export error" in msg:
-                messages.warning(request, msg)
-    else:
-        messages.success(request, "Exportation Squalaetp terminée.")
-    return redirect(http_referer(request))
+    task = cmd_exportsqualaetp_task.delay()
+    return redirect(f"{http_referer(request)}?task_id={task.id}")
 
 
 @login_required
