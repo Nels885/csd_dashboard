@@ -33,7 +33,10 @@ from utils.django.urls import reverse_lazy, http_referer
 def generate(request):
     """ Generating squalaetp EXCEL files """
     task = cmd_exportsqualaetp_task.delay()
-    return redirect(f"{http_referer(request)}?task_id={task.id}")
+    url = http_referer(request)
+    if '?' in url:
+        return redirect(f"{url}&task_id={task.id}")
+    return redirect(f"{url}?task_id={task.id}")
 
 
 @login_required
