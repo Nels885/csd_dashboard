@@ -57,19 +57,27 @@ function textCopy(text) {
 }
 
 
-function resultTask(task_id, change_url=null) {
+function resultTask(task_id=null) {
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+    if (task_id === null){
+        task_id = params.get('task_id')
+    }
     if (task_id) {
         $(".bd-loading-modal-lg").modal("show");
         var progressUrl = "/celery-progress/?task_id=" + task_id;
-
-        //console.log(progressUrl);
+        // console.log(progressUrl);
 
         function customResult(resultElement, result) {
             // console.log(result)
             $(".bd-loading-modal-lg").modal("hide");
             addMessage(result.msg, result.tags);
-            if (change_url != null) {
-                window.history.pushState({}, null, change_url)
+
+            if (params.get('task_id')) {
+                params.delete('task_id');
+                url.search = params;
+                // console.log(url.toString());
+                window.history.pushState({}, null, url.toString())
             }
         }
 

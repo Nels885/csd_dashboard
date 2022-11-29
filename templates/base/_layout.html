@@ -66,6 +66,9 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        // Waiting for tasks to be finalized for the IHM extraction
+        resultTask();
+
         // Log in buttons
         $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
         $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});

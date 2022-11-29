@@ -193,17 +193,12 @@
 
     <script type="text/javascript" src="{% static 'js/JsBarcode/JsBarcode.all.min.js' %}"></script>
     <script type="text/javascript">
-        let task_id = "{{ task_id }}";
-        let url = "{% url 'squalaetp:detail' xelon.id %}?select=ihm"
-
         // Barcode generator
         JsBarcode("#barcode", "{{ xelon.vin }}", {
             width: 2.2,
             height: 100,
         });
 
-        // Waiting for tasks to be finalized for the IHM extraction
-        resultTask(task_id, url);
     </script>
 
 {% endblock %}
