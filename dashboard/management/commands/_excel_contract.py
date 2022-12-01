@@ -14,7 +14,7 @@ class ExcelContract(ExcelFormat):
     COLS_DATE = {'end_date': "%Y-%m-%d %H:%M:%S", 'renew_date': "%Y-%m-%d %H:%M:%S"}
     COLS_BOOLEAN = {'is_active': {"oui": True, "OUI": True, "Oui": True, "non": False}}
 
-    def __init__(self, file, sheet_name=0, columns=None, skiprows=None):
+    def __init__(self, file, sheet_name=1, columns=None, skiprows=None):
         """
         Initialize ExcelContract class
         :param file:
