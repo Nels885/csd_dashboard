@@ -68,7 +68,8 @@ class XelonTestCase(UnitTest):
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.login()
         response = self.client.get(url)
-        self.assertRedirects(response, reverse('index'), status_code=302)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/?task_id=', response.url)
 
     def test_change_table_page(self):
         url = reverse('squalaetp:change_table')
