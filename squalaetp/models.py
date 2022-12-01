@@ -261,6 +261,7 @@ class Sivin(models.Model):
     hauteur = models.CharField('Hauteur', max_length=100, blank=True)
     largeur = models.CharField('Largeur', max_length=100, blank=True)
     longueur = models.CharField('Longueur', max_length=100, blank=True)
+    latitude = models.CharField('Latitude', max_length=100, blank=True)
     poids_vide = models.CharField('Poids à vide', max_length=100, blank=True)
     ptr = models.CharField('PTR', max_length=100, blank=True)
     ptr_prf = models.CharField('PTR Prf', max_length=100, blank=True)
