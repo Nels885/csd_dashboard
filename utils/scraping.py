@@ -1,5 +1,9 @@
 import time
 import logging
+import xml.etree.ElementTree as ET
+from datetime import datetime
+from django.utils.timezone import make_aware
+
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -328,3 +332,70 @@ class ScrapingPartslink24(Scraping):
         if keys:
             return keys[0]
         return val
+
+
+def xml_parser(value):
+    data = {"vin": ""}
+    try:
+        root = ET.XML(value)
+        for data_list in root[1]:
+            if data_list.tag == "DONNEES_VEHICULE":
+                for child in data_list:
+                    if child.tag in ["WMI", "VDS", "VIS"]:
+                        data['vin'] += child.text
+                    elif child.tag in ["DATE_DEBUT_GARANTIE", "DATE_ENTREE_MONTAGE"]:
+                        key, value = "DONNEE_{}".format(child.tag), child.text
+                        if value:
+                            data[key.lower()] = make_aware(datetime.strptime(value, "%d/%m/%Y %H:%M:%S"))
+                    else:
+                        key, value = "DONNEE_{}".format(child.tag), child.text
+                        data[key.lower()] = value
+            elif data_list.tag in ["LISTE_ATTRIBUTS", "LISTE_ELECTRONIQUES"]:
+                for child in data_list:
+                    key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
+                    data[key.lower()] = value
+            elif data_list.tag in ["LISTE_ATTRIBUTES_7"]:
+                for child in data_list:
+                    key, value = "{}_{}".format(child.tag, child.text[:3]), child.text[3:]
+                    if value[-2:] == "CD" or value[-2:] == "CP":
+                        data[key.lower()] = value[:-2]
+                    else:
+                        data[key.lower()] = value
+            elif data_list.tag == "LISTE_ORGANES":
+                for child in data_list:
+                    key, value = "{}s_{}".format(child.tag, child.text[:2]), child.text[2:]
+                    data[key.lower()] = value
+    except (ET.ParseError, KeyError, TypeError):
+        data = value
+    return data
+
+
+def xml_sivin_parser(value):
+    fields = {
+        'carrosserie': 'carrosserie', 'carrosserieCG': 'carrosserie_cg', 'co2': 'co2', 'codeMoteur': 'code_moteur',
+        'codifVin': 'codif_vin', 'consExurb': 'cons_exurb', 'consMixte': 'cons_mixte', 'consUrb': 'cons_urb',
+        'couleurVehic': 'couleur_vehic', 'cylindree': 'cylindree', 'date1erCir': 'date_1er_cir', 'dateDCG': 'date_dcg',
+        'depollution': 'depollution', 'empat': 'empat', 'energie': 'energie', 'genreV': 'genre_v',
+        'genreVCG': 'genre_vcg', 'hauteur': 'hauteur', 'immatSiv': 'immat_siv', 'largeur': 'largeur',
+        'longueur': 'longueur', 'marque': 'marque', 'marqueCarros': 'marque_carros', 'modeInject': 'mode_inject',
+        'modele': 'modele', 'modeleEtude': 'modele_etude', 'modelePrf': 'modele_prf', 'nSerie': 'n_serie',
+        'nSiren': 'n_siren', 'nbCylind': 'nb_cylind', 'nbPlAss': 'nb_pl_ass', 'nbPortes': 'nb_portes',
+        'nbSoupape': 'nb_soupape', 'nbVitesse': 'nb_vitesse', 'nbVolume': 'nb_volume', 'poidsVide': 'poids_vide',
+        'prixVehic': 'prix_vehic', 'propulsion': 'propulsion', 'ptr': 'ptr', 'ptrPrf': 'ptr_prf', 'puisCh': 'puis_ch',
+        'puisFisc': 'puis_fisc', 'puisKw': 'puis_kw', 'tpBoiteVit': 'tp_boite_vit', 'turboCompr': 'turbo_compr',
+        'type': 'type', 'typeVarVersPrf': 'type_var_vers_prf', 'typeVinCG': 'type_vin_cg', 'version': 'version',
+        'pneus': 'pneus', 'latitude': 'latitude'
+    }
+    data = {}
+    try:
+        root = ET.fromstring(value)
+        for element in root[0][0][0]:
+            if element.tag and element.text:
+                try:
+                    data[fields[element.tag.split('}')[-1]]] = element.text.strip()
+                except KeyError as err:
+                    exception_type = type(err).__name__
+                    logger.error(f"{exception_type} xml_sivin_parser(): {err}")
+    except (ET.ParseError, TypeError):
+        data = value
+    return data

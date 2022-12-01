@@ -2,9 +2,8 @@ import time
 from sbadmin import celery_app
 from celery_progress.backend import ProgressRecorder
 
-from utils.scraping import ScrapingCorvet
+from utils.scraping import ScrapingCorvet, xml_parser
 from utils.django.models import defaults_dict
-from utils.django.validators import xml_parser
 from .models import Corvet, CorvetOption
 
 from utils.django.validators import vin_psa_isvalid

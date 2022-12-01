@@ -4,9 +4,9 @@ from sbadmin import celery_app
 from django.core.management import call_command
 from django.core.mail import EmailMessage
 
-from utils.scraping import ScrapingSivin, ScrapingCorvet
+from utils.scraping import ScrapingSivin, ScrapingCorvet, xml_sivin_parser, xml_parser
 from utils.django.models import defaults_dict
-from utils.django.validators import xml_sivin_parser, xml_parser, vin_psa_isvalid
+from utils.django.validators import vin_psa_isvalid
 from .models import Sivin
 from psa.models import Corvet
 

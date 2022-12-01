@@ -5,7 +5,8 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from constance import config
 
-from utils.django.validators import validate_vin, xml_parser, xml_sivin_parser, vin_psa_isvalid
+from utils.scraping import xml_parser, xml_sivin_parser
+from utils.django.validators import validate_vin, vin_psa_isvalid
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet, Multimedia, Ecu

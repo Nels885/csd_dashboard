@@ -5,8 +5,8 @@ from django.db.models import Q
 from ._excel_squalaetp import ExcelSqualaetp
 from squalaetp.models import Xelon, Sivin
 from psa.models import Corvet
-from utils.scraping import ScrapingCorvet, ScrapingSivin
-from utils.django.validators import xml_parser, xml_sivin_parser, VIN_PSA_REGEX
+from utils.scraping import ScrapingCorvet, ScrapingSivin, xml_parser, xml_sivin_parser
+from utils.django.validators import VIN_PSA_REGEX
 from utils.django.models import defaults_dict
 from utils.conf import XLS_SQUALAETP_FILE
 
