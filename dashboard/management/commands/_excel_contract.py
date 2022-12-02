@@ -12,7 +12,8 @@ class ExcelContract(ExcelFormat):
     COLS = {'A': 'code', 'B': 'service', 'D': 'nature', 'E': 'object', 'F': 'supplier',
             'H': 'site', 'K': 'end_date', 'L': 'is_active', 'N': 'renew_date'}
     COLS_DATE = {'end_date': "%Y-%m-%d %H:%M:%S", 'renew_date': "%Y-%m-%d %H:%M:%S"}
-    COLS_BOOLEAN = {'is_active': {"oui": True, "OUI": True, "Oui": True, "non": False}}
+    # COLS_BOOLEAN = {'is_active': {"oui": True, "OUI": True, "Oui": True, "non": False}}
+    COLS_BOOLEAN = {'is_active': {r"[Oo][Uu][Ii]": True, r"[Nn][Oo][Nn]": False}}
 
     def __init__(self, file, sheet_name=1, columns=None, skiprows=None):
         """
@@ -31,7 +32,7 @@ class ExcelContract(ExcelFormat):
 #             self._columns_convert()
             self._columns_rename(self.COLS)
             self._date_converter(self.COLS_DATE)
-            self._boolean_convert(self.COLS_BOOLEAN)
+            self._boolean_convert(self.COLS_BOOLEAN, regex=True)
         except FileNotFoundError as err:
             logger.error(f'FileNotFoundError: {err}')
             self.ERROR = True

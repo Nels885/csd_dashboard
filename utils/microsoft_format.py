@@ -60,14 +60,14 @@ class BaseFormat:
     def _columns_check(self, col_dict):
         return [column for column in col_dict if column in self.columns]
 
-    def _boolean_convert(self, col_dict):
+    def _boolean_convert(self, col_dict, regex=False):
         """
         Converting string values 'O' or 'N' in boolean
         :return:
             Data line converts
         """
         for col, to_replace in col_dict.items():
-            self.sheet[col].replace(to_replace=to_replace, inplace=True)
+            self.sheet[col].replace(to_replace=to_replace, regex=regex, inplace=True)
 
 
 class ExcelFormat(BaseFormat):
