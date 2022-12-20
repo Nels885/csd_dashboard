@@ -15,6 +15,7 @@ from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 
+from squalaetp.models import Xelon
 from .models import (
     TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile, ConfigFile
 )
@@ -89,15 +90,20 @@ class SuptechModalForm(BSModalModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['username', 'xelon', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach']
+        fields = [
+            'username', 'xelon', 'product', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach'
+        ]
 
     def __init__(self, *args, **kwargs):
         users = User.objects.all()
-        _data_list = list(users.values_list('username', flat=True).distinct())
+        xelons = Xelon.objects.all()
+        _user_list = list(users.values_list('username', flat=True).distinct())
+        _prod_list = list(xelons.values_list('modele_produit', flat=True).distinct())
         super().__init__(*args, **kwargs)
         if self.request.user:
             self.fields['username'].initial = self.request.user.username
-        self.fields['username'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+        self.fields['username'].widget = ListTextWidget(data_list=_user_list, name='user-list')
+        self.fields['product'].widget = ListTextWidget(data_list=_prod_list, name='prod-list')
 
     def clean_username(self):
         data = self.cleaned_data['username']

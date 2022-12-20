@@ -25,6 +25,7 @@ urlpatterns = [
     path('generate/', views.generate, name='generate'),
     path('excel/import/async/', views.excel_import_async, name='excel_import_async'),
     path('xelon/', views.xelon_table, name='xelon'),
+    path('xelon/prod/async/', ajax.xelon_prod_ajax, name='xelon_prod_async'),
     path('temporary/', views.temporary_table, name='temporary'),
     path('stock-parts/', views.stock_table, name='stock_parts'),
     path('log/<int:pk>/detail/', views.LogFileView.as_view(), name='log_detail'),

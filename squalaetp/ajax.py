@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 
@@ -102,3 +103,14 @@ class SivinViewSet(viewsets.ModelViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as err:
             return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+
+def xelon_prod_ajax(request):
+    data = {"prod": ""}
+    try:
+        if request.GET.get('xelon', None):
+            xelon = Xelon.objects.get(numero_de_dossier=request.GET.get('xelon', None))
+            data = {"prod": xelon.modele_produit}
+    except Xelon.DoesNotExist:
+        pass
+    return JsonResponse(data)
