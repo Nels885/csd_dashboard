@@ -94,6 +94,8 @@ class CorvetVinListForm(forms.Form):
 
 class ExportToolsForm(forms.Form):
     TABLES = [('suptech', 'SUPTECH'), ('bga_time', 'UTILISATION BGA')]
+    MONTH_CHOICES = [('', 'All'), ('6', '6 derniers mois'), ('12', '12 derniers mois')]
 
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
+    date_delta = forms.ChoiceField(label='Date', required=False, choices=MONTH_CHOICES, widget=forms.Select())
