@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 
 from constance import config
 
+from squalaetp.models import Xelon
 from tools.models import Suptech
 from utils.conf import CSD_ROOT, string_to_list
 from utils.django.models import defaults_dict
@@ -42,6 +43,12 @@ class Command(BaseCommand):
             dest='email_graph',
             help='Send email graph for Suptech'
         )
+        parser.add_argument(
+            '--prod_update',
+            action='store_true',
+            dest='prod_update',
+            help='Update product Xelon for Suptech'
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[SUPTECH] Waiting...")
@@ -66,6 +73,16 @@ class Command(BaseCommand):
             supject = "Suptech graphique {}".format(date_joined)
             suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(category=3)).order_by('-date')
             self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_TO_EMAIL_LIST)
+        if options['prod_update']:
+            suptechs = Suptech.objects.exclude(xelon__isnull=True)
+            for suptech in suptechs:
+                try:
+                    product = Xelon.objects.get(numero_de_dossier=suptech.xelon).modele_produit
+                    suptech.product = product
+                    suptech.save()
+                except Xelon.DoesNotExist:
+                    pass
+            self.stdout.write(self.style.SUCCESS("[SUPTECH] Update xelon product completed."))
         if not options:
             try:
                 path = os.path.join(CSD_ROOT, "LOGS/LOG_SUPTECH")
