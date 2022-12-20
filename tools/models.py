@@ -145,6 +145,7 @@ class Suptech(models.Model):
     date = models.DateField('DATE')
     user = models.CharField('QUI', max_length=50)
     xelon = models.CharField('XELON', max_length=10, blank=True)
+    product = models.CharField('PRODUCT', max_length=200, blank=True)
     item = models.CharField('ITEM', max_length=200)
     time = models.CharField('TIME', max_length=10)
     info = models.TextField('INFO', max_length=2000)

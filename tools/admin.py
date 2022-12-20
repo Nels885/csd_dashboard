@@ -34,10 +34,11 @@ class SuptechFileline(admin.TabularInline):
 
 class SuptechAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'date', 'user', 'xelon', 'item', 'category', 'is_48h', 'time', 'info', 'rmq', 'action', 'status')
+        'id', 'date', 'user', 'xelon', 'product', 'item', 'category', 'is_48h', 'time', 'info', 'rmq', 'action',
+        'status')
     ordering = ('-date',)
     list_filter = ('status', 'category', 'is_48h')
-    search_fields = ('id', 'user', 'xelon', 'item')
+    search_fields = ('id', 'user', 'xelon', 'product', 'item')
     actions = ('is_48h_disabled', 'is_48h_enabled')
     inlines = (SuptechFileline, )
 
