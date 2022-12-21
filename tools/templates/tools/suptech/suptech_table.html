@@ -49,7 +49,7 @@
                         <a href="{% url 'tools:suptech_detail' pk=obj.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                     </td>
                     <td>{{ obj.id }}</td>
-                    <td class="text-nowrap">{{ obj.date }}</td>
+                    <td class="text-nowrap">{{ obj.date|date:"d/m/Y" }}</td>
                     <td class="text-nowrap">{{ obj.user }}</td>
                     <td>{{ obj.xelon }}</td>
                     <td style="min-width: 15rem;">{{ obj.item }}</td>
