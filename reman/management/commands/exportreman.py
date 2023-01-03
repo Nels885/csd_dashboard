@@ -1,4 +1,5 @@
-from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 from django.core.management.base import BaseCommand
 
 from reman.models import Batch, Repair, EcuRefBase
@@ -46,7 +47,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['batch']:
             self.stdout.write("[BATCH] Waiting...")
-            year = datetime.now().year
+            last_6_months = timezone.datetime.today() + relativedelta(months=-6)
             filename = conf.BATCH_EXPORT_FILE
 
             header = [
@@ -54,7 +55,7 @@ class Command(BaseCommand):
                 'Date_de_Debut', 'Date_de_fin', 'Actif', 'Client', 'Ajoute par', 'Ajoute le'
             ]
             # Batch for PSA
-            psa_batch = Batch.objects.filter(end_date__year=year).order_by('batch_number')
+            psa_batch = Batch.objects.filter(end_date__gte=last_6_months).order_by('-end_date')
             values_list = list(psa_batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__pf_code', 'ecu_ref_base__ecu_type__supplier_oe',
