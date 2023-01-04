@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-13 13:09+0200\n"
+"POT-Creation-Date: 2023-01-04 09:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,9 +55,13 @@ msgstr "Changer le titre du poste pour Animateur"
 msgid "Change job title for manager"
 msgstr "Changer le titre du poste pour Manager"
 
-#: dashboard/forms.py:140
+#: dashboard/forms.py:142
 msgid "Search Xelon, VIN or SN..."
 msgstr "Recherche Xelon, VIN ou SN..."
+
+#: dashboard/forms.py:165
+msgid "Username not found."
+msgstr ""
 
 #: dashboard/templates/dashboard/done.html:21
 msgid "Back to Dashboard"
@@ -122,6 +126,7 @@ msgstr ""
 #: dashboard/templates/dashboard/modal/post_create.html:53
 #: dashboard/templates/dashboard/modal/post_delete.html:18
 #: dashboard/templates/dashboard/modal/post_update.html:53
+#: dashboard/templates/dashboard/modal/suggest_create.html:72
 #: dashboard/templates/dashboard/modal/weblink_create.html:37
 #: dashboard/templates/dashboard/modal/weblink_delete.html:18
 #: dashboard/templates/dashboard/modal/weblink_update.html:37
@@ -135,6 +140,7 @@ msgid "Logout"
 msgstr "Déconnexion"
 
 #: dashboard/templates/dashboard/modal/post_create.html:54
+#: dashboard/templates/dashboard/modal/suggest_create.html:73
 #: dashboard/templates/dashboard/modal/weblink_create.html:38
 msgid "Create"
 msgstr "Création"

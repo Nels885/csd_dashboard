@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-13 13:09+0200\n"
+"POT-Creation-Date: 2023-01-04 09:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,23 +31,31 @@ msgstr "était, étaient"
 msgid "Checkout enabled"
 msgstr "Vérification activée"
 
-#: reman/forms.py:90
+#: reman/forms.py:32 reman/forms.py:33
+msgid "No"
+msgstr ""
+
+#: reman/forms.py:32 reman/forms.py:33
+msgid "Yes"
+msgstr ""
+
+#: reman/forms.py:100
 msgid "Unauthorized batch number!"
 msgstr "Numéro de lot non autorisé !"
 
-#: reman/forms.py:92
+#: reman/forms.py:102
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:99
+#: reman/forms.py:109
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:236 reman/forms.py:363
+#: reman/forms.py:246 reman/forms.py:377
 msgid "barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/forms.py:502 reman/tests/tests_reman_views.py:141
+#: reman/forms.py:516 reman/tests/tests_reman_views.py:141
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
@@ -255,7 +263,7 @@ msgstr "Création d'un lot"
 msgid "Success: Batch was updated."
 msgstr "Succès: le lot a été mis à jour."
 
-#: reman/views/batch.py:93
+#: reman/views/batch.py:92
 msgid "Success: Batch was deleted."
 msgstr "Succès: le lot a été supprimé."
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-13 13:09+0200\n"
+"POT-Creation-Date: 2023-01-04 09:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,127 +18,127 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: raspeedi/forms.py:49
+#: prog/forms.py:49
 msgid "This Xelon number is already present for unlocking"
 msgstr "Ce numéro Xelon est déjà présent pour le déverrouillage"
 
-#: raspeedi/templates/raspeedi/form.html:7
+#: prog/templates/prog/form.html:7
 msgid "Case reference"
 msgstr "Référence Boîtier"
 
-#: raspeedi/templates/raspeedi/form.html:14
+#: prog/templates/prog/form.html:14
 msgid "Product"
 msgstr "Produit"
 
-#: raspeedi/templates/raspeedi/form.html:20
+#: prog/templates/prog/form.html:20
 msgid "Front"
 msgstr "Façade"
 
-#: raspeedi/templates/raspeedi/form.html:40
+#: prog/templates/prog/form.html:40
 msgid "Reversing camera"
 msgstr "Caméra de recul"
 
-#: raspeedi/templates/raspeedi/form.html:48
+#: prog/templates/prog/form.html:48
 msgid "PEEDI dump"
 msgstr "Dump PEEDI"
 
-#: raspeedi/templates/raspeedi/form.html:53
+#: prog/templates/prog/form.html:53
 msgid "RENESAS dump"
 msgstr "Dump RENESAS"
 
-#: raspeedi/templates/raspeedi/form.html:60
+#: prog/templates/prog/form.html:60
 msgid "Version CD"
 msgstr "Version CD"
 
-#: raspeedi/templates/raspeedi/form.html:66
+#: prog/templates/prog/form.html:66
 msgid "Media type"
 msgstr "Type Media"
 
-#: raspeedi/templates/raspeedi/form.html:72
+#: prog/templates/prog/form.html:72
 msgid "Carto version"
 msgstr "Version Carto"
 
-#: raspeedi/templates/raspeedi/form.html:78
+#: prog/templates/prog/form.html:78
 msgid "Screens number"
 msgstr "Nombre d'écran"
 
-#: raspeedi/templates/raspeedi/form.html:87
+#: prog/templates/prog/form.html:87
 msgid "MM reference"
 msgstr "Référence MM"
 
-#: raspeedi/templates/raspeedi/form.html:102
+#: prog/templates/prog/form.html:102
 msgid "Submit"
 msgstr "Soumettre"
 
-#: raspeedi/templates/raspeedi/modal/unlock_delete.html:7
+#: prog/templates/prog/modal/unlock_delete.html:7
 msgid "Delete unlock product input"
 msgstr "Supprimer l'entrée de produit de déverrouillage"
 
-#: raspeedi/templates/raspeedi/modal/unlock_delete.html:14
+#: prog/templates/prog/modal/unlock_delete.html:14
 msgid "Are you sure you want to delete input"
 msgstr "Êtes-vous sûr de vouloir supprimer l'entrée"
 
-#: raspeedi/templates/raspeedi/modal/unlock_delete.html:15
+#: prog/templates/prog/modal/unlock_delete.html:15
 msgid "created at"
 msgstr "créé le"
 
-#: raspeedi/templates/raspeedi/modal/unlock_delete.html:20
+#: prog/templates/prog/modal/unlock_delete.html:20
 msgid "Cancel"
 msgstr "Annuler"
 
-#: raspeedi/templates/raspeedi/modal/unlock_delete.html:21
+#: prog/templates/prog/modal/unlock_delete.html:21
 msgid "Delete"
 msgstr "Supprimer"
 
-#: raspeedi/templates/raspeedi/unlock_prods.html:22
+#: prog/templates/prog/unlock_prods.html:22
 msgid "Add"
 msgstr "Ajouter"
 
-#: raspeedi/templates/raspeedi/unlock_prods.html:27
+#: prog/templates/prog/unlock_prods.html:27
 msgid "Refresh"
 msgstr "Actualiser"
 
-#: raspeedi/views.py:25
+#: prog/views.py:25
 msgid "Table Products Telematics PSA"
 msgstr "Table produits télématique PSA"
 
-#: raspeedi/views.py:39
+#: prog/views.py:39
 msgid "Detail raspeedi data for the ref case of Product: "
 msgstr "Détail des données raspeedi pour le cas de référence du produit: "
 
-#: raspeedi/views.py:47
+#: prog/views.py:47
 msgid "Unlocking product for programming"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: raspeedi/views.py:53
+#: prog/views.py:53
 #, python-format
 msgid "Adding the Xelon number %(xelon)s successfully"
 msgstr "Ajout du dossier Xelon %(xelon)s avec succès"
 
-#: raspeedi/views.py:56
+#: prog/views.py:56
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: raspeedi/views.py:71
+#: prog/views.py:71
 msgid "Unlock product table"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: raspeedi/views.py:79
+#: prog/views.py:79
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: raspeedi/views.py:86
+#: prog/views.py:86
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: raspeedi/views.py:95
+#: prog/views.py:95
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "
 
-#: raspeedi/views.py:100
+#: prog/views.py:100
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: raspeedi/views.py:110
+#: prog/views.py:110
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
