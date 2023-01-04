@@ -4,10 +4,9 @@
 
 {% block table_content %}
 
-    <table class="table table-bordered text-nowrap" id="raspTable" width="100%" cellspacing="0">
+    <table class="table table-bordered table-sm text-nowrap display" id="raspTable" style="width: 100%;">
         <thead>
         <tr>
-            <th class="all"></th>
             <th class="all"></th>
             <th class="all">Réf. boîtier</th>
             <th>Produit</th>
@@ -19,7 +18,6 @@
         </thead>
         <tfoot>
         <tr>
-            <th></th>
             <th></th>
             <th>Réf. boîtier</th>
             <th>Produit</th>
@@ -34,10 +32,8 @@
         {% for prod in products %}
 
             <tr {% if prod.dump_renesas %}class="bg-success text-gray-700"{% endif %}>
-                <td class="bg-white">
+                <td class="bg-white text-nowrap" style="width: 60px;">
                     <a href="{% url 'prog:edit' ref_case=prod.ref_boitier %}" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
-                </td>
-                <td class="bg-white">
                     <a href="{% url 'prog:detail' ref_case=prod.ref_boitier %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
                 <td>{{ prod.ref_boitier }}</td>
