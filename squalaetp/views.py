@@ -20,7 +20,7 @@ from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, Sivi
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
-from raspeedi.models import Programing
+from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
 from .utils import collapse_select

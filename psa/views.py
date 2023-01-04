@@ -14,7 +14,7 @@ from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, Corvet
 from .models import Corvet, Multimedia
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
-from raspeedi.models import Programing
+from prog.models import Programing
 from reman.models import EcuType
 
 context = {

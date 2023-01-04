@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from psa.serializers import CorvetSerializer
 from squalaetp.models import Xelon
-from raspeedi.models import Raspeedi, UnlockProduct
+from prog.models import Raspeedi, UnlockProduct
 from tools.models import ThermalChamberMeasure, BgaTime
 
 

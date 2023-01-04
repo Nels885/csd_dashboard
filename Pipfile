@@ -7,6 +7,7 @@ verify_ssl = true
 flake8 = "*"
 coverage = "*"
 django-debug-toolbar = "*"
+django-rename-app = "*"
 
 [packages]
 django = ">=3.2.12,<4.0.0"
@@ -40,7 +41,4 @@ wiki = "*"
 tzdata = "*"
 channels = "*"
 daphne = "*"
-
-[packages.django-constance]
-extras = [ "redis",]
-version = "*"
+django-constance = {extras = [ "redis",], version = "*"}

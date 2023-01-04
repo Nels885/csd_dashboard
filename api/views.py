@@ -17,7 +17,7 @@ from reman.serializers import (
     RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, RemanRepairCreateSerializer,
     EcuRefBaseSerializer
 )
-from raspeedi.models import Raspeedi, UnlockProduct
+from prog.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair, EcuRefBase
 from tools.models import ThermalChamberMeasure, BgaTime

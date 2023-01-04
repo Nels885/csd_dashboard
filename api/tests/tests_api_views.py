@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 
 from reman.models import EcuType, EcuModel, EcuRefBase, Batch, Repair
 from squalaetp.models import Xelon
-from raspeedi.models import UnlockProduct
+from prog.models import UnlockProduct
 
 
 class ApiTestCase(APITestCase):

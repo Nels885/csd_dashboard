@@ -1,0 +1,14 @@
+{% extends 'format/forms_format.html' %}
+
+{% block form_content %}
+
+    <div class="p-2">
+        <form method="post" action="{% url 'prog:edit' ref_case=prod.ref_boitier %}">
+
+            {% include 'prog/form.html' %}
+
+        </form>
+
+    </div>
+
+{% endblock %}

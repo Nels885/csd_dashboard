@@ -71,7 +71,7 @@ INSTALLED_APPS = [
 
     # My apps
     'dashboard.apps.DashboardConfig',
-    'raspeedi.apps.RaspeediConfig',
+    'prog.apps.RaspeediConfig',
     'squalaetp.apps.SqualaetpConfig',
     'reman.apps.RemanConfig',
     'tools.apps.ToolsConfig',
