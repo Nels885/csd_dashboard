@@ -134,6 +134,7 @@ class Command(BaseCommand):
                         obj.product.save()
                 except Exception as err:
                     logger.error(f"[XELON_CMD] {xelon_number} - {err}")
+            model.objects.exclude(numero_de_dossier__in=excel.xelon_number_list()).update(is_active=False)
             nb_prod_after = model.objects.count()
             self.stdout.write(f"[SQUALAETP_FILE] '{XLS_SQUALAETP_FILE}' => OK")
             self.stdout.write(
