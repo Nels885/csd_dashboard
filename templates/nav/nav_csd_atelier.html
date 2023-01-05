@@ -1,6 +1,6 @@
 {% load i18n user_tags %}
 
-{% if perms.squalaetp or perms.raspeedi.view_unlockproduct %}
+{% if perms.squalaetp or perms.prog.view_unlockproduct %}
 
     <!-- Heading -->
     <div class="sidebar-heading">
@@ -157,7 +157,7 @@
 
     {% endif %}
 
-    {% if perms.raspeedi.view_unlockproduct %}
+    {% if perms.prog.view_unlockproduct %}
 
         <li class="nav-item">
             <a class="nav-link" href="{% url 'prog:unlock_prods' %}">
