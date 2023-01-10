@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, utils
 from django.db.models import Q
 
 
@@ -40,11 +40,17 @@ class CorvetChoices(models.Model):
 
     @classmethod
     def brands(cls):
-        return [('', '---')] + list(cls.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
+        try:
+            return [('', '---')] + list(cls.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
+        except utils.ProgrammingError:
+            return []
 
     @classmethod
     def vehicles(cls):
-        return [('', '---')] + list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value'))
+        try:
+            return [('', '---')] + list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value'))
+        except utils.ProgrammingError:
+            return []
 
     def __str__(self):
         return f"{self.key} - {self.value} - {self.column}"
