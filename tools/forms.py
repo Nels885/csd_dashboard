@@ -163,7 +163,7 @@ class SuptechResponseForm(forms.ModelForm):
     ]
     action = forms.CharField(widget=forms.Textarea(), required=True)
     status = forms.CharField(widget=forms.Select(choices=STATUS_CHOICES), required=True)
-    deadline = forms.DateField(required=False, widget=DatePicker(
+    deadline = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=DatePicker(
         attrs={'append': 'fa fa-calendar', 'icon_toggle': True}, options={'format': 'DD/MM/YYYY'},
     ))
 
