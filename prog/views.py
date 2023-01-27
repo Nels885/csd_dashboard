@@ -109,3 +109,10 @@ class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     template_name = 'prog/modal/unlock_delete.html'
     success_message = _('Success: Input was deleted.')
     success_url = reverse_lazy('prog:unlock_prods')
+
+
+@permission_required('prog.view_raspeedi')
+def raspeedi_info(request):
+    card_title = "Info Raspeedi"
+    context.update(locals())
+    return render(request, 'prog/raspeedi_info.html', context)
