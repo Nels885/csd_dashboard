@@ -115,6 +115,7 @@ class Command(BaseCommand):
     def _squalaetp_file(self, model, excel):
         self.stdout.write("[XELON] Waiting...")
         nb_prod_before, nb_prod_update = model.objects.count(), 0
+        nb_category_change = 0
         if not excel.ERROR:
             model.objects.exclude(Q(numero_de_dossier__in=excel.xelon_number_list()) |
                                   Q(type_de_cloture__in=['Réparé', 'Rebut', 'N/A']) |
@@ -129,14 +130,16 @@ class Command(BaseCommand):
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                     if not created:
                         nb_prod_update += 1
-                    if "ZONECE" in obj.lieu_de_stockage:
+                    if "ZONECE" in obj.lieu_de_stockage and obj.product.animator is None:
                         obj.product.category = "ETUDE"
                         obj.product.save()
+                        nb_category_change += 1
                 except Exception as err:
                     logger.error(f"[XELON_CMD] {xelon_number} - {err}")
             model.objects.exclude(numero_de_dossier__in=excel.xelon_number_list()).update(is_active=False)
             nb_prod_after = model.objects.count()
             self.stdout.write(f"[SQUALAETP_FILE] '{XLS_SQUALAETP_FILE}' => OK")
+            self.stdout.write(self.style.SUCCESS(f"[XELON] Product category changed: {nb_category_change}"))
             self.stdout.write(
                 self.style.SUCCESS(
                     "[XELON] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
@@ -157,7 +160,6 @@ class Command(BaseCommand):
 
     def _delay_files(self, model, squalaetp, delay_files):
         self.stdout.write("[DELAY] Waiting...")
-        cat_old = ProductCategory.objects.count()
         nb_prod_before, nb_prod_update, nrows, value_error_list = model.objects.count(), 0, 0, []
         xelon_list, delay_list = squalaetp.xelon_number_list(), []
         for count, file in enumerate(delay_files):
@@ -190,10 +192,6 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(f"[DELAY_FILE] {delay.ERROR}")
         nb_prod_after = model.objects.count()
-        cat_new = ProductCategory.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(f"[DElAY_CMD] ProductCategory update completed: ADD = {cat_new - cat_old}")
-        )
         self.stdout.write(
             self.style.SUCCESS(
                 f"[DELAY_CMD] data update completed: EXCEL_LINES = {nrows} | " +
