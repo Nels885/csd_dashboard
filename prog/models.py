@@ -56,7 +56,7 @@ class Programing(models.Model):
     peedi_path = models.CharField('dossier PEEDI', max_length=20)
     peedi_dump = models.CharField('dump PEEDI', max_length=25, blank=True)
     renesas_dump = models.CharField('dump RENESAS', max_length=50, blank=True)
-    multimedia = models.OneToOneField('psa.Multimedia', on_delete=models.SET_NULL, null=True)
+    multimedia = models.OneToOneField('psa.Multimedia', related_name='prog', on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "Données Programmation"
