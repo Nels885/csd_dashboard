@@ -70,12 +70,17 @@ class ProgViewSet(viewsets.ModelViewSet):
         :return:
             Serialized data
         """
-        ref_case = self.request.query_params.get('ref', None)
-        if ref_case:
+        queryset = Xelon.objects.filter(corvet__isnull=False)
+        querystring = self.request.query_params
+        if querystring.get('active', 'false') in ['true', 'True']:
+            queryset = queryset.filter(is_active=True)
+        if querystring.get('prod'):
+            queryset = queryset.filter(modele_produit__icontains=querystring.get('prod'))
+        if querystring.get('ref'):
             self.serializer_class = RaspeediSerializer
-            queryset = Raspeedi.objects.filter(ref_boitier=ref_case)
-        else:
-            queryset = Xelon.objects.all()
+            queryset = Raspeedi.objects.all()
+            if querystring.get('ref') != 'all':
+                queryset = queryset.filter(ref_boitier=querystring.get('ref'))
         return queryset
 
 
