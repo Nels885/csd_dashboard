@@ -1,6 +1,7 @@
 import time
 import logging
 import xml.etree.ElementTree as ET
+import chromedriver_autoinstaller
 from datetime import datetime
 from django.utils.timezone import make_aware
 
@@ -13,7 +14,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from constance import config
 
+
 logger = logging.getLogger('command')
+
+chromedriver_autoinstaller.install()
 
 
 class Scraping(webdriver.Chrome):
@@ -29,7 +33,7 @@ class Scraping(webdriver.Chrome):
             options.add_argument('headless')
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-        super().__init__(executable_path="/usr/local/bin/chromedriver", chrome_options=options)
+        super().__init__(chrome_options=options)
         self.set_page_load_timeout(30)
         self.STATUS = "INIT"
 

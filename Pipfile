@@ -42,3 +42,4 @@ tzdata = "*"
 channels = "*"
 daphne = "*"
 django-constance = {extras = [ "redis",], version = "*"}
+chromedriver-autoinstaller = "*"
