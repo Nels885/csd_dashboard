@@ -22,6 +22,8 @@ jobs: # A basic unit of work in a run
           pkg-manager: pipenv
       - browser-tools/install-firefox
       - browser-tools/install-geckodriver
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           command: |
             firefox --version
