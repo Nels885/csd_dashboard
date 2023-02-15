@@ -13,6 +13,8 @@ def collapse_select(query):
             return {"hdc": True, "ecu": True}
         elif type == "CVM2":
             return {"cvm": True, "ecu": True}
+        elif type == "VMF":
+            return {'vmf': True, "ecu": True}
         elif type == "CMB":
             return {"cmb": True, "display": True}
         elif type == "EMF":

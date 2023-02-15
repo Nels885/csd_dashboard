@@ -113,7 +113,11 @@ CORVET_DICT = {
         ('44A_CMM_FOURN.NO.SERIE', 'electronique_44a'), ('54A_CMM_FOURN.DATE.FAB', 'electronique_54a'),
         ('64A_CMM_FOURN.CODE', 'electronique_64a'), ('84A_CMM_DOTE', 'electronique_84a'),
         ('P4A_CMM_EOBD', 'electronique_p4a')
-    ]
+    ],
+    'vmf': [
+        ('Modèle VMF', 'prods__vmf__name'),
+        ('11M_VMF_HARD', 'electronique_11m')
+    ],
 }
 
 XELON_LIST = [
@@ -183,7 +187,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
         'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
         'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
-        'cmb': {'electronique_14k__exact': ''}
+        'cmb': {'electronique_14k__exact': ''}, 'vmf':  {'electronique_11m__exact': ''}
     }
 
     def __init__(self, *args, **kwargs) -> None:
