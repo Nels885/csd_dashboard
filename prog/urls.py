@@ -12,5 +12,5 @@ urlpatterns = [
     path('unlock/<int:pk>/delete/', views.UnlockProductDeleteView.as_view(), name='unlock_delete'),
     path('<int:ref_case>/edit/', views.edit, name='edit'),
     path('<int:ref_case>/detail/', views.detail, name="detail"),
-    path('raspeedi/info/', views.raspeedi_info, name='raspeedi_info'),
+    path('tool/info/', views.tool_info, name='tool_info'),
 ]

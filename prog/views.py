@@ -6,7 +6,7 @@ from django.contrib import messages
 from bootstrap_modal_forms.generic import BSModalDeleteView
 from django.urls import reverse_lazy
 
-from .models import Raspeedi, UnlockProduct
+from .models import Raspeedi, UnlockProduct, ToolStatus
 from .forms import RaspeediForm, UnlockForm
 from dashboard.forms import ParaErrorList
 
@@ -112,7 +112,8 @@ class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
 
 
 @permission_required('prog.view_raspeedi')
-def raspeedi_info(request):
-    card_title = "Info Raspeedi"
+def tool_info(request):
+    card_title = "Info Outils"
+    object_list = ToolStatus.objects.all()
     context.update(locals())
-    return render(request, 'prog/raspeedi_info.html', context)
+    return render(request, 'prog/tool_info.html', context)
