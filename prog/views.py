@@ -124,9 +124,11 @@ def tool_info(request):
 def ajax_tool_info(request):
     data = {}
     for obj in ToolStatus.objects.all():
-        response = requests.get(obj.url + obj.api_path)
-        if response.status_code == 201:
-            data[obj.name] = response.json().get('status', '')
-        else:
+        try:
             data[obj.name] = 'Hors ligne'
+            response = requests.get(url=obj.api_url)
+            if response.status_code >= 200 or response.status_code < 300:
+                data[obj.name] = response.json().get('status', 'N/A')
+        except Exception:
+            pass
     return JsonResponse(data)

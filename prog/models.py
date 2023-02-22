@@ -1,3 +1,4 @@
+from urllib.parse import urljoin
 from django.db import models
 
 from squalaetp.models import Xelon
@@ -93,6 +94,7 @@ class UnlockProduct(models.Model):
 
 class ToolStatus(models.Model):
     name = models.CharField("Nom de l'outils", max_length=50)
+    comment = models.TextField("Commentaire", blank=True)
     url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
     api_path = models.CharField("Chemin API", max_length=500, blank=True)
@@ -100,6 +102,11 @@ class ToolStatus(models.Model):
     class Meta:
         verbose_name = "Statut Outil"
         ordering = ['name']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        setattr(self, 'status_url', urljoin(self.url, self.status_path))
+        setattr(self, 'api_url', urljoin(self.url, self.api_path))
 
     def __str__(self):
         return f"{self.name} - {self.url}"
