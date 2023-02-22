@@ -89,3 +89,17 @@ class UnlockProduct(models.Model):
 
     def __str__(self):
         return self.unlock.numero_de_dossier
+
+
+class ToolStatus(models.Model):
+    name = models.CharField("Nom de l'outils", max_length=50)
+    url = models.CharField("Lien web", max_length=500)
+    status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
+    api_path = models.CharField("Chemin API", max_length=500, blank=True)
+
+    class Meta:
+        verbose_name = "Statut Outil"
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} - {self.url}"

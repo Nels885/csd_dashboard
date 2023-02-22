@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Raspeedi, UnlockProduct, Programing
+from .models import Raspeedi, UnlockProduct, Programing, ToolStatus
 
 
 class RaspeediAdmin(admin.ModelAdmin):
@@ -35,3 +35,4 @@ class ProgramingAdmin(admin.ModelAdmin):
 admin.site.register(Raspeedi, RaspeediAdmin)
 admin.site.register(UnlockProduct, UnlockProductAdmin)
 admin.site.register(Programing, ProgramingAdmin)
+admin.site.register(ToolStatus)
