@@ -18,11 +18,44 @@
                     {% endwith %}
                 </td>
                 <td class="col-3 font-weight-bold">
-                    STATUS :<span id="{{ obj.name }}" class="m"></span>
+                    STATUS :<span id="{{ obj.name|slugify }}" class="ml-4"></span>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        const slugify = str =>
+          str
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        function get_tool_info() {
+            $.ajax({
+                method: "get",
+                url: "{% url 'prog:ajax_tool_info' %}",
+                success: function(data) {
+                    console.log(data);
+                    for (var key in data) {
+                        $('#' + slugify(key)).html(data[key]);
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            })
+        }
+
+        get_tool_info();
+        setInterval(get_tool_info, 5000);
+    </script>
 
 {% endblock %}

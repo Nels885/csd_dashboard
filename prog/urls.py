@@ -13,4 +13,5 @@ urlpatterns = [
     path('<int:ref_case>/edit/', views.edit, name='edit'),
     path('<int:ref_case>/detail/', views.detail, name="detail"),
     path('tool/info/', views.tool_info, name='tool_info'),
+    path('tool/info/ajax', views.ajax_tool_info, name='ajax_tool_info'),
 ]

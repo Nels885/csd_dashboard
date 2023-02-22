@@ -1,3 +1,4 @@
+import requests
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
@@ -5,6 +6,7 @@ from django.utils.translation import gettext as _
 from django.contrib import messages
 from bootstrap_modal_forms.generic import BSModalDeleteView
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 
 from .models import Raspeedi, UnlockProduct, ToolStatus
 from .forms import RaspeediForm, UnlockForm
@@ -117,3 +119,14 @@ def tool_info(request):
     object_list = ToolStatus.objects.all()
     context.update(locals())
     return render(request, 'prog/tool_info.html', context)
+
+
+def ajax_tool_info(request):
+    data = {}
+    for obj in ToolStatus.objects.all():
+        response = requests.get(obj.url + obj.api_path)
+        if response.status_code == 201:
+            data[obj.name] = response.json().get('status', '')
+        else:
+            data[obj.name] = 'Hors ligne'
+    return JsonResponse(data)
