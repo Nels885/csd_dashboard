@@ -5,21 +5,24 @@
 {% block detail_content %}
 
     <table class="table table-striped" style="width: 100%;">
+        <thead class="thead-dark text-uppercase">
+            <tr>
+                <th class="col-2">Nom</th>
+                <th class="col-3">Commentaire</th>
+                <th class="col-3">Status</th>
+                <th class="col-2">Version</th>
+                <th class="col-2"></th>
+            </tr>
+        </thead>
         <tbody>
-
             {% for obj in object_list %}
             <tr>
-                <td class="col-2 font-weight-bold">
-                    {{ obj.name }}
-                </td>
-                <td class="col-4">
-                    {{ obj.comment }}
-                </td>
-                <td class="col-4 font-weight-bold">
-                    STATUS :<span id="{{ obj.name|slugify }}" class="ml-4"></span>
-                </td>
-                <td class="col-2">
-                    <a class="btn btn-block btn-secondary" href="{{ obj.status_url }}" target="_blank" disabled>Configuration</a>
+                <td class="font-weight-bold">{{ obj.name }}</td>
+                <td class="">{{ obj.comment }}</td>
+                <td class="font-weight-bold" id="{{ obj.name|slugify }}">Hors ligne</td>
+                <td class="font-weight-bold" id="{{ obj.name|slugify }}-v"></td>
+                <td id="{{ obj.name|slugify }}-btn">
+                    <button class="btn btn-block btn-secondary" disabled>Configuration</button>
                 </td>
             </tr>
             {% endfor %}
@@ -45,8 +48,18 @@
                 url: "{% url 'prog:ajax_tool_info' %}",
                 success: function(data) {
                     console.log(data);
-                    for (var key in data) {
-                        $('#' + slugify(key)).html(data[key]);
+                    for (let key in data) {
+                        let href = data[key]['href'];
+                        let idStatus = '#' + slugify(key);
+                        let idVersion = idStatus + '-v';
+                        let idButton = idStatus + '-btn';
+                        $(idStatus).html(data[key]['status']);
+                        $(idVersion).html(data[key]['version']);
+                        if (data[key]['status_code'] === 404) {
+                            $(idButton).html('<button class="btn btn-block btn-secondary" disabled>Configuration</button>');
+                        } else {
+                            $(idButton).html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Configuration</a>');
+                        }
                     }
                 },
                 error: function(error) {
