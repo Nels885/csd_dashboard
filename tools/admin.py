@@ -34,8 +34,8 @@ class SuptechFileline(admin.TabularInline):
 
 class SuptechAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'date', 'user', 'xelon', 'product', 'item', 'category', 'is_48h', 'time', 'info', 'rmq', 'action',
-        'status')
+        'id', 'date', 'days_late', 'user', 'modified_by', 'status', 'xelon', 'product', 'item', 'category', 'is_48h',
+        'action')
     ordering = ('-date',)
     list_filter = ('status', 'category', 'is_48h')
     search_fields = ('id', 'user', 'xelon', 'product', 'item')
@@ -65,6 +65,13 @@ class SuptechAdmin(admin.ModelAdmin):
         rows_updated = queryset.update(is_48h=True)
         self._message_user_about_update(request, rows_updated, 'enabled')
     is_48h_enabled.short_description = _('48h processing enabled')
+
+    @admin.display(description="Delta")
+    def days_late(self, obj):
+        try:
+            return (obj.modified_at.date() - obj.date).days
+        except Exception:
+            return ""
 
 
 class SuptechItemAdminForm(forms.ModelForm):
