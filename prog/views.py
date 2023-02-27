@@ -126,10 +126,10 @@ def ajax_tool_info(request):
     for obj in ToolStatus.objects.all():
         data[obj.name] = {'status': 'Hors ligne', 'version': '', 'status_code': 404}
         try:
-            response = requests.get(url=obj.api_url, timeout=1)
+            response = requests.get(url=obj.api_url, timeout=(0.05, 0.5))
             if response.status_code >= 200 or response.status_code < 300:
                 data[obj.name] = response.json()
             data[obj.name].update({'href': obj.status_url, 'status_code': response.status_code})
-        except Exception:
+        except requests.exceptions.RequestException:
             pass
     return JsonResponse(data)
