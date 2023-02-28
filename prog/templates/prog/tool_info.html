@@ -19,9 +19,9 @@
             <tr>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="">{{ obj.comment }}</td>
-                <td class="font-weight-bold" id="{{ obj.name|slugify }}">Hors ligne</td>
-                <td class="font-weight-bold" id="{{ obj.name|slugify }}-v"></td>
-                <td id="{{ obj.name|slugify }}-btn">
+                <td class="font-weight-bold" id="tool{{ obj.id }}">Hors ligne</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-v"></td>
+                <td id="tool{{ obj.id }}-btn">
                     <button class="btn btn-block btn-secondary" disabled>Configuration</button>
                 </td>
             </tr>
@@ -34,42 +34,41 @@
 {% block extrascripts %}
 
     <script type="text/javascript">
-        const slugify = str =>
-          str
-            .toLowerCase()
-            .trim()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/[\s_-]+/g, '-')
-            .replace(/^-+|-+$/g, '');
+        let obj_list = [
+            {% for obj in object_list %}
+                "{{ obj.id }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
 
         function get_tool_info() {
-            $.ajax({
-                method: "get",
-                url: "{% url 'prog:ajax_tool_info' %}",
-                success: function(data) {
-                    console.log(data);
-                    for (let key in data) {
-                        let href = data[key]['href'];
-                        let idStatus = '#' + slugify(key);
+            for (let i in obj_list) {
+                let pk = obj_list[i];
+                $.ajax({
+                    method: "get",
+                    url: "{% url 'prog:ajax_tool_info' pk=0 %}".replace('0', pk),
+                    success: function(data) {
+                        console.log(data);
+                        let href = data['href'];
+                        let idStatus = '#tool' + pk;
                         let idVersion = idStatus + '-v';
                         let idButton = idStatus + '-btn';
-                        $(idStatus).html(data[key]['status']);
-                        $(idVersion).html(data[key]['version']);
-                        if (data[key]['status_code'] === 404) {
+                        $(idStatus).html(data['status']);
+                        $(idVersion).html(data['version']);
+                        if (data['status_code'] === 404) {
                             $(idButton).html('<button class="btn btn-block btn-secondary" disabled>Configuration</button>');
                         } else {
                             $(idButton).html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Configuration</a>');
                         }
+                    },
+                    error: function(error) {
+                        console.log(error);
                     }
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            })
+                });
+            }
         }
 
         get_tool_info();
-        setInterval(get_tool_info, 5000);
+        setInterval(get_tool_info, 10000);
     </script>
 
 {% endblock %}
