@@ -115,7 +115,7 @@ class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
 
 @permission_required('prog.view_toolstatus')
 def tool_info(request):
-    card_title = "Info Outils"
+    table_title = "Info Outils"
     object_list = ToolStatus.objects.all()
     context.update(locals())
     return render(request, 'prog/tool_info.html', context)
