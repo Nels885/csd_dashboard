@@ -9,9 +9,11 @@
             <tr>
                 <th class="col-2">Nom</th>
                 <th class="col-3">Commentaire</th>
+                <th class="col-1">Adresse IP</th>
+                <th class="col-1">Logiciel</th>
+                <th class="col-1">Version</th>
                 <th class="col-1">Produit</th>
-                <th class="col-3">Status</th>
-                <th class="col-2">Version</th>
+                <th class="col-2">Status</th>
                 <th class="col-1"></th>
             </tr>
         </thead>
@@ -20,9 +22,11 @@
             <tr>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td>{{ obj.comment }}</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-ip"></td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-s"></td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-v"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-d"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}">Hors ligne</td>
-                <td class="font-weight-bold" id="tool{{ obj.id }}-v"></td>
                 <td id="tool{{ obj.id }}-btn">
                     <button class="btn btn-block btn-secondary" disabled>Configuration</button>
                 </td>
@@ -52,12 +56,12 @@
                         console.log(data);
                         let href = data['href'];
                         let idStatus = '#tool' + pk;
-                        let idDevice = idStatus + '-d';
-                        let idVersion = idStatus + '-v';
                         let idButton = idStatus + '-btn';
-                        $(idDevice).html(data['device']);
+                        $(idStatus + '-ip').html(data['ip_addr']);
+                        $(idStatus + '-s').html(data['soft']);
+                        $(idStatus + '-v').html(data['version']);
+                        $(idStatus + '-d').html(data['device']);
                         $(idStatus).html(data['status']);
-                        $(idVersion).html(data['version']);
                         if (data['status_code'] === 404) {
                             $(idButton).html('<button class="btn btn-block btn-secondary" disabled>Configuration</button>');
                         } else {
