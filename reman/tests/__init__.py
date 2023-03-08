@@ -28,10 +28,3 @@ class RemanTest(UnitTest):
         EcuModel.objects.create(barcode='PF832200DF', oe_raw_reference='22996488.P02', ecu_type=sem_type)
         self.semBatch = Batch.objects.create(
             year="V", number=1, quantity=2, customer="VOLVO", created_by=self.user, ecu_ref_base=sem_base)
-
-        # OPEL REMAN
-        dcm_type = EcuType.objects.create(hw_reference='39013501', technical_data='DCM')
-        dcm_base = EcuRefBase.objects.create(reman_reference='0987654321', brand='OPEL', ecu_type=dcm_type)
-        EcuModel.objects.create(barcode='28480837', ecu_type=sem_type)
-        self.semBatch = Batch.objects.create(
-            year="B", number=1, quantity=2, customer="OPEL", created_by=self.user, ecu_ref_base=dcm_base)

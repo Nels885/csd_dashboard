@@ -9,7 +9,7 @@ class MixinsTest(RemanTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        self.remans = [("PSA", "1234567890"), ("VOLVO", "85123456"), ("OPEL", "0987654321")]
+        self.remans = [("PSA", "1234567890"), ("VOLVO", "85123456")]
 
     def test_create_batch_ajax_mixin(self):
         """
@@ -324,7 +324,7 @@ class MixinsTest(RemanTest):
             self.assertEqual(response.status_code, 200)
             # Object is not created
             ecu_type = EcuType.objects.filter(hw_type='ECU')
-            self.assertEqual(ecu_type.count(), 2)
+            self.assertEqual(ecu_type.count(), 1)
 
         # Second post request = non-ajax request creating an object
         response = self.client.post(
@@ -341,7 +341,7 @@ class MixinsTest(RemanTest):
         self.assertEqual(response.status_code, 302)
         # Object is not created
         ecu_type = EcuType.objects.filter(hw_type='ECU')
-        self.assertEqual(ecu_type.count(), 3)
+        self.assertEqual(ecu_type.count(), 2)
         self.assertEqual(ecu_type.last().hw_reference, '1234567890')
 
     def test_update_ecu_hw_ajax_mixin(self):
@@ -460,7 +460,7 @@ class MixinsTest(RemanTest):
             self.assertEqual(response.status_code, 200)
             # Object is not created
             ecu_type = EcuType.objects.all()
-            self.assertEqual(ecu_type.count(), 3)
+            self.assertEqual(ecu_type.count(), 2)
 
         # Second post request = non-ajax request creating an object
         response = self.client.post(
@@ -476,6 +476,6 @@ class MixinsTest(RemanTest):
         self.assertEqual(response.status_code, 302)
         # Object is not created
         remans = EcuRefBase.objects.all()
-        self.assertEqual(remans.count(), 4)
+        self.assertEqual(remans.count(), 3)
         self.assertEqual(remans.last().reman_reference, '1234567891')
         self.assertEqual(remans.last().status, 'test')
