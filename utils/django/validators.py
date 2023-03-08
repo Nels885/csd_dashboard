@@ -100,6 +100,8 @@ def validate_barcode(value):
         return value[:10], "VOLVO"
     elif re.match(r'^\d{9}R$', str(value)):
         return value, "PSA"
+    elif re.match(r'^\d{13}\w{6}$', str(value)):
+        return value[:8], "OPEL"
     return value, None
 
 
