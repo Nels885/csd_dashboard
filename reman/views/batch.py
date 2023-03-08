@@ -58,8 +58,6 @@ def batch_type_ajax(request):
             batchs = Batch.objects.all().exclude(number__gte=900)
         if "VOLVO" in batch_type:
             batchs = batchs.filter(year="V")
-        elif "OPEL" in batch_type:
-            batchs = batchs.filter(year="B")
         elif "REPAIR" in batch_type:
             batchs = batchs.filter(year="X")
         else:

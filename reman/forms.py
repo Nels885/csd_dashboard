@@ -24,8 +24,7 @@ MANAGER FORMS
 BOX_NUMBER = [(1, 1), (3, 3), (6, 6)]
 BATCH_TYPE = [
     ('REMAN_PSA', 'REMAN PSA'), ('ETUDE_PSA', 'ETUDE PSA'), ('REMAN_VOLVO', 'REMAN VOLVO'),
-    ('ETUDE_VOLVO', 'ETUDE VOLVO'), ('REMAN_OPEL', 'REMAN OPEL'), ('ETUDE_OPEL', 'ETUDE OPEL'),
-    ('REPAIR', 'REPAIR')
+    ('ETUDE_VOLVO', 'ETUDE VOLVO'), ('REPAIR', 'REPAIR')
 ]
 
 
@@ -94,7 +93,7 @@ class AddBatchForm(BSModalModelForm):
         batch_type = self.cleaned_data['type']
         date = timezone.now()
         year = DICT_YEAR.get(date.year)
-        for key, value in [("REPAIR", "X"), ("VOLVO", "V"), ("OPEL", "B")]:
+        for key, value in [("REPAIR", "X"), ("VOLVO", "V")]:
             if key in batch_type:
                 year = value
         if ("ETUDE" in batch_type and data <= 900) or ("REMAN" in batch_type and data >= 900):
@@ -132,9 +131,6 @@ class AddBatchForm(BSModalModelForm):
                 batch.year = "V"
                 batch.customer = "VOLVO"
                 batch.is_barcode = True
-            elif batch_type in ["REMAN_OPEL", "ETUDE_OPEL"]:
-                batch.year = "B"
-                batch.customer = "OPEL"
             batch.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return batch
