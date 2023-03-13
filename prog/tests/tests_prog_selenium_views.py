@@ -1,6 +1,6 @@
 from selenium.webdriver.support.ui import Select
 
-from dashboard.tests.base import FunctionalTest
+from dashboard.tests.base import FunctionalTest, By
 from prog.models import Raspeedi
 
 
@@ -23,13 +23,13 @@ class RaspeediSeleniumTestCase(FunctionalTest):
         driver.get(self.live_server_url + '/prog/insert/')
 
         # Inserting values into the form
-        ref_case = driver.find_element_by_name('ref_boitier')
-        product = driver.find_element_by_name('produit')
-        front = driver.find_element_by_name('facade')
-        type = driver.find_element_by_name('type')
-        media = driver.find_element_by_name('media')
-        screen_connector = driver.find_element_by_name('connecteur_ecran')
-        submit = driver.find_element_by_name('btn_raspeedi_insert')
+        ref_case = driver.find_element(By.NAME, 'ref_boitier')
+        product = driver.find_element(By.NAME, 'produit')
+        front = driver.find_element(By.NAME, 'facade')
+        type = driver.find_element(By.NAME, 'type')
+        media = driver.find_element(By.NAME, 'media')
+        screen_connector = driver.find_element(By.NAME, 'connecteur_ecran')
+        submit = driver.find_element(By.NAME, 'btn_raspeedi_insert')
         ref_case.send_keys('1234567890')
         product.send_keys('RT4')
         front.send_keys('FF')
