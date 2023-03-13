@@ -18,7 +18,7 @@ gunicorn = "*"
 xlwt = "*"
 djangorestframework = "*"
 pillow = ">=9.1.0"
-selenium = "==3.141.0"
+selenium = "*"
 django-model-utils = "*"
 sentry-sdk = "*"
 django-bootstrap-modal-forms = "==2.2.0"
@@ -41,5 +41,10 @@ wiki = ">=0.10b1"
 tzdata = "*"
 channels = "*"
 daphne = "*"
-django-constance = {extras = [ "redis",], version = "*"}
 webdriver-manager = "*"
+selenium_wire = "*"
+update = "*"
+
+[packages.django-constance]
+extras = [ "redis",]
+version = "*"

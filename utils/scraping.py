@@ -5,10 +5,17 @@ from datetime import datetime
 from django.utils.timezone import make_aware
 
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
+# from selenium import webdriver
+# from selenium.common.exceptions import TimeoutException, NoSuchElementException
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver import ChromeOptions as Options
+# from selenium.webdriver.remote.webelement import WebElement
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+from seleniumwire import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver import ChromeOptions as Options
+from seleniumwire.webdriver import ChromeOptions as Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -16,6 +23,15 @@ from constance import config
 
 
 logger = logging.getLogger('command')
+
+
+options_seleniumWire = {
+    'proxy': {
+        'https': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
+        'http': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
+        'no_proxy': 'localhost,127.0.0.1'
+    }
+}
 
 
 class Scraping(webdriver.Chrome):
@@ -31,7 +47,7 @@ class Scraping(webdriver.Chrome):
             options.add_argument('headless')
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-        super().__init__(ChromeDriverManager().install(), chrome_options=options)
+        super().__init__(ChromeDriverManager().install(), options=options, seleniumwire_options=options_seleniumWire)
         self.set_page_load_timeout(30)
         self.STATUS = "INIT"
 
@@ -100,8 +116,10 @@ class ScrapingCorvet(Scraping):
         if not self.ERROR and self.login():
             try:
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
-                vin = self.find_element_by_name('form:input_vin')
-                submit = self.find_element_by_id('form:suite')
+                # vin = self.find_element_by_name('form:input_vin')
+                # submit = self.find_element_by_id('form:suite')
+                vin = self.find_element(By.NAME, 'form:input_vin')
+                submit = self.find_element(By.ID, 'form:suite')
                 if vin_value:
                     vin.send_keys(vin_value)
                 submit.click()
@@ -126,9 +144,12 @@ class ScrapingCorvet(Scraping):
         """
         try:
             WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:identifiant2')))
-            username = self.find_element_by_name('form:identifiant2')
-            password = self.find_element_by_name('form:password2')
-            login = self.find_element_by_id('form:login2')
+            # username = self.find_element_by_name('form:identifiant2')
+            # password = self.find_element_by_name('form:password2')
+            # login = self.find_element_by_id('form:login2')
+            username = self.find_element(By.NAME, 'form:identifiant2')
+            password = self.find_element(By.NAME, 'form:password2')
+            login = self.find_element(By.ID, 'form:login2')
             for element, value in {username: self.username, password: self.password}.items():
                 element.clear()
                 element.send_keys(value)
@@ -167,8 +188,10 @@ class ScrapingSivin(ScrapingCorvet):
             try:
                 self.get(self.SIVIN_URLS)
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_immat'))).clear()
-                immat = self.find_element_by_name('form:input_immat')
-                submit = self.find_element_by_id('form:suite')
+                # immat = self.find_element_by_name('form:input_immat')
+                # submit = self.find_element_by_id('form:suite')
+                immat = self.find_element(By.NAME, 'form:input_immat')
+                submit = self.find_element(By.ID, 'form:suite')
                 if immat_value:
                     immat.send_keys(immat_value)
                 submit.click()
@@ -245,8 +268,10 @@ class ScrapingPartslink24(Scraping):
         try:
             if not self.ERROR and self.is_element_exist(By.NAME, 'vin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, "vin"))).clear()
-                vin = self.find_element_by_name("vin")
-                submit = self.find_element_by_id('vinGo')
+                # vin = self.find_element_by_name("vin")
+                # submit = self.find_element_by_id('vinGo')
+                vin = self.find_element(By.NAME, "vin")
+                submit = self.find_element(By.ID, 'vinGo')
                 if vin_value:
                     vin.send_keys(vin_value)
                 submit.click()
@@ -266,11 +291,14 @@ class ScrapingPartslink24(Scraping):
         data = {}
         try:
             if not self.ERROR and self.is_element_exist(By.XPATH, '//*/table[@class="vinInfoTable"]/tbody/tr'):
-                for tr in self.find_elements_by_xpath('//*/table[@class="vinInfoTable"]/tbody/tr'):
-                    tds = tr.find_elements_by_tag_name('td')
+                # for tr in self.find_elements_by_xpath('//*/table[@class="vinInfoTable"]/tbody/tr'):
+                for tr in self.find_elements(By.XPATH, '//*/table[@class="vinInfoTable"]/tbody/tr'):
+                    # tds = tr.find_elements_by_tag_name('td')
+                    tds = tr.find_elements(By.TAG_NAME, 'td')
                     if len(tds) == 1:
                         try:
-                            th = tr.find_element_by_tag_name('th')
+                            # th = tr.find_element_by_tag_name('th')
+                            th = tr.find_element(By.TAG_NAME, 'th')
                             data[th.get_attribute("textContent")] = tds[0].text
                         except NoSuchElementException:
                             pass
@@ -282,13 +310,15 @@ class ScrapingPartslink24(Scraping):
 
     def privaty_settings(self):
         WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'usercentrics-root')))
-        shadow_host = self.find_element_by_id('usercentrics-root')
+        # shadow_host = self.find_element_by_id('usercentrics-root')
+        shadow_host = self.find_element(By.ID, 'usercentrics-root')
         script = 'return arguments[0].shadowRoot'
         shadow_root_dict = self.execute_script(script, shadow_host)
         id = shadow_root_dict['shadow-6066-11e4-a52e-4f735466cecf']
         shadow_root = WebElement(self, id, w3c=True)
         WebDriverWait(shadow_root, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '[data-testid="uc-accept-all-button"]')))
-        shadow_root.find_element_by_css_selector('[data-testid="uc-accept-all-button"]').click()
+        # shadow_root.find_element_by_css_selector('[data-testid="uc-accept-all-button"]').click()
+        shadow_root.find_element(By.CSS_SELECTOR, '[data-testid="uc-accept-all-button"]').click()
 
     def login(self):
         """
@@ -297,9 +327,12 @@ class ScrapingPartslink24(Scraping):
         try:
             if not self.ERROR and self.is_element_exist(By.NAME, 'accountLogin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'accountLogin')))
-                account = self.find_element_by_name('accountLogin')
-                user = self.find_element_by_name('userLogin')
-                password = self.find_element_by_name('loginBean.password')
+                # account = self.find_element_by_name('accountLogin')
+                # user = self.find_element_by_name('userLogin')
+                # password = self.find_element_by_name('loginBean.password')
+                account = self.find_element(By.NAME, 'accountLogin')
+                user = self.find_element(By.NAME, 'userLogin')
+                password = self.find_element(By.NAME, 'loginBean.password')
                 for element, value in {account: self.account, user: self.user, password: self.password}.items():
                     element.clear()
                     element.send_keys(value)
