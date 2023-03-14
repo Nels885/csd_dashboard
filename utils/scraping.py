@@ -7,8 +7,9 @@ from django.utils.timezone import make_aware
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions as Options
-#from seleniumwire import webdriver
-#from seleniumwire.webdriver import ChromeOptions as Options
+from selenium.webdriver.chrome.service import Service as ChromeService
+# from seleniumwire import webdriver
+# from seleniumwire.webdriver import ChromeOptions as Options
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -34,14 +35,14 @@ class Scraping(webdriver.Chrome):
     def __init__(self, **kwargs):
         """ Initialization """
         options = Options()
+        options.add_argument("no-sandbox")  # bypass OS security model
+        options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
             options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
         if kwargs.get('headless', True):
             options.add_argument('headless')
-        options.add_argument("no-sandbox")  # bypass OS security model
-        options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         # super().__init__(ChromeDriverManager().install(), options=options, seleniumwire_options=options_seleniumWire)
-        super().__init__(ChromeDriverManager().install(), chrome_options=options)
+        super().__init__(service=ChromeService(ChromeDriverManager().install()), chrome_options=options)
         self.set_page_load_timeout(30)
         self.STATUS = "INIT"
 
