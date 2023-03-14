@@ -13,9 +13,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 # from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support import expected_conditions as EC
 from seleniumwire import webdriver
+from seleniumwire.webdriver import ChromeOptions as Options
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
-from seleniumwire.webdriver import ChromeOptions as Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -41,8 +41,8 @@ class Scraping(webdriver.Chrome):
     def __init__(self, **kwargs):
         """ Initialization """
         options = Options()
-        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-            options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+        # if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+        #     options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
         if kwargs.get('headless', True):
             options.add_argument('headless')
         options.add_argument("no-sandbox")  # bypass OS security model
