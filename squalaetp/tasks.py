@@ -13,7 +13,7 @@ from psa.models import Corvet
 
 @celery_app.task
 def cmd_loadsqualaetp_task(*args):
-    print("cmd_loadsqualaetp_tash in progress...")
+    print("cmd_loadsqualaetp_task in progress...")
     print(f"cmd : importexcel {' '.join(args)}")
     out = StringIO()
     call_command("importexcel", *args, stdout=out)
@@ -24,8 +24,10 @@ def cmd_loadsqualaetp_task(*args):
 
 @celery_app.task
 def cmd_exportsqualaetp_task():
+    print("cmd_exportsqualaetp_task in progress...")
     out = StringIO()
     call_command("exportsqualaetp", stdout=out)
+    print(out.getvalue())
     if "Export error" in out.getvalue():
         return {"msg": "Erreur d'exportation Squalaetp, fichier en lecture seule !!", "tags": "warning"}
     return {"msg": "Exportation Squalaetp terminée.", "tags": "success"}
@@ -33,7 +35,7 @@ def cmd_exportsqualaetp_task():
 
 @celery_app.task
 def cmd_importcorvet_task(*args):
-    print("cmd_importcorvet_tash in progress...")
+    print("cmd_importcorvet_task in progress...")
     print(f"cmd : importcorvet {' '.join(args)}")
     out = StringIO()
     call_command("importcorvet", *args, stdout=out)

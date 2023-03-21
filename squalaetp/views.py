@@ -194,6 +194,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     def get_success_url(self):
         if not self.request.is_ajax():
             task = cmd_exportsqualaetp_task.delay()
+            print(task.id)
             return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
         return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 

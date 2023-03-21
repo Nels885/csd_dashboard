@@ -381,7 +381,6 @@ class CloseRepairForm(forms.ModelForm):
         instance = super().save(commit=False)
         if commit:
             instance.save()
-            cmd_exportreman_task.delay('--repair')
         return instance
 
 

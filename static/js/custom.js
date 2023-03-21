@@ -58,10 +58,15 @@ function textCopy(text) {
 
 
 function resultTask(task_id=null) {
-    let url = new URL(window.location.href);
+    let url = new URL(document.location.href);
     let params = new URLSearchParams(url.search);
-    if (task_id === null){
+    if (task_id === null && params.get('task_id')) {
+        console.log(url.toString());
         task_id = params.get('task_id')
+        params.delete('task_id');
+        url.search = params;
+        console.log(url.toString());
+        window.history.pushState({}, null, url.toString())
     }
     if (task_id) {
         $(".bd-loading-modal-lg").modal("show");
@@ -72,13 +77,6 @@ function resultTask(task_id=null) {
             // console.log(result)
             $(".bd-loading-modal-lg").modal("hide");
             addMessage(result.msg, result.tags);
-
-            if (params.get('task_id')) {
-                params.delete('task_id');
-                url.search = params;
-                // console.log(url.toString());
-                window.history.pushState({}, null, url.toString())
-            }
         }
 
         CeleryProgressBar.initProgressBar(progressUrl, {
