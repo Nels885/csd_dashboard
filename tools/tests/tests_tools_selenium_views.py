@@ -1,6 +1,6 @@
 from selenium.webdriver.support.ui import Select
 
-from dashboard.tests.base import FunctionalTest
+from dashboard.tests.base import FunctionalTest, By
 from tools.models import CsdSoftware
 
 
@@ -23,11 +23,11 @@ class ToolsSeleniumTestCase(FunctionalTest):
         driver.get(self.live_server_url + '/tools/soft/add/')
 
         # Inserting values into the form
-        jig = driver.find_element_by_name('jig')
-        version = driver.find_element_by_name('new_version')
-        link = driver.find_element_by_name('link_download')
-        status = driver.find_element_by_name('status')
-        submit = driver.find_element_by_name('btn_soft_add')
+        jig = driver.find_element(By.NAME, 'jig')
+        version = driver.find_element(By.NAME, 'new_version')
+        link = driver.find_element(By.NAME, 'link_download')
+        status = driver.find_element(By.NAME, 'status')
+        submit = driver.find_element(By.NAME, 'btn_soft_add')
         jig.send_keys('1234567890')
         version.send_keys('RT4')
         link.send_keys('FF')

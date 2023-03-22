@@ -1,4 +1,4 @@
-from io import StringIO, BytesIO
+from io import BytesIO
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,49 +9,34 @@ from django.http import JsonResponse, Http404, FileResponse
 from django.views.generic import TemplateView
 from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView, BSModalCreateView
 from django.forms.models import model_to_dict
-from django.core.management import call_command
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.lib.pagesizes import A4
 from reportlab.graphics.barcode import code128
 from constance import config
 
-from utils.django.datatables import QueryTableByArgs
-from .serializers import (
-    XelonSerializer, XELON_COLUMN_LIST, XelonTemporarySerializer, XELON_TEMP_COLUMN_LIST,
-    SivinSerializer, SIVIN_COLUMN_LIST, SparePartSerializer, SPAREPART_COLUMN_LIST
-)
-from .models import Xelon, XelonTemporary, SparePart, Action, Sivin
-from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm
-from .tasks import cmd_loadsqualaetp_task
-from psa.models import Corvet
+from .models import Xelon, Action, Sivin
+from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm
+from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
-from raspeedi.models import Programing
+from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
 from .utils import collapse_select
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
-from utils.django.models import defaults_dict
 from utils.django.urls import reverse_lazy, http_referer
-from utils.django.validators import VIN_OLD_PSA_REGEX
 
 
 @login_required
 def generate(request):
     """ Generating squalaetp EXCEL files """
-    out = StringIO()
-    call_command("exportsqualaetp", stdout=out)
-    if "Export error" in out.getvalue():
-        for msg in out.getvalue().split('\n'):
-            if "Export error" in msg:
-                messages.warning(request, msg)
-    else:
-        messages.success(request, "Exportation Squalaetp terminée.")
-    return redirect(http_referer(request))
+    task = cmd_exportsqualaetp_task.delay()
+    url = http_referer(request)
+    if '?' in url:
+        return redirect(f"{url}&task_id={task.id}")
+    return redirect(f"{url}?task_id={task.id}")
 
 
 @login_required
@@ -68,7 +53,10 @@ def prog_activate(request, pk):
 
 def excel_import_async(request):
     if request.user.has_perm('squalaetp.add_xelon'):
-        task = cmd_loadsqualaetp_task.delay()
+        if request.GET.get("report") == "yes":
+            task = cmd_loadsqualaetp_task.delay("--tests")
+        else:
+            task = cmd_loadsqualaetp_task.delay()
         return JsonResponse({"task_id": task.id})
     raise Http404
 
@@ -82,65 +70,12 @@ def xelon_table(request):
     return render(request, 'squalaetp/xelon_table.html', locals())
 
 
-class XelonViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Xelon.objects.filter(date_retour__isnull=False)
-    serializer_class = XelonSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            self._filter(request)
-            xelon = QueryTableByArgs(self.queryset, XELON_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(xelon["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": xelon["draw"],
-                "recordsTotal": xelon["total"],
-                "recordsFiltered": xelon["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
-
-    def _filter(self, request):
-        query = request.query_params.get('filter', None)
-        if query and query == 'pending':
-            self.queryset = self.queryset.exclude(type_de_cloture__in=['Réparé', 'N/A'])
-        elif query and query == "vin-error":
-            self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
-        elif query and query == "corvet-error":
-            self.queryset = self.queryset.filter(
-                vin__regex=VIN_OLD_PSA_REGEX, vin_error=False, corvet__isnull=True).order_by('-date_retour')
-        elif query:
-            self.queryset = Xelon.search(query)
-
-
 @login_required
 def temporary_table(request):
     """ View of Xelon temporary table page """
     title = 'Xelon'
     table_title = 'Dossiers temporaires'
     return render(request, 'squalaetp/temporary_table.html', locals())
-
-
-class TemporaryViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = XelonTemporary.objects.all()
-    serializer_class = XelonTemporarySerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset, XELON_TEMP_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required
@@ -150,26 +85,6 @@ def stock_table(request):
     table_title = 'Pièces détachées'
     # stocks = SparePart.objects.all()
     return render(request, 'squalaetp/stock_table.html', locals())
-
-
-class StockViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = SparePart.objects.all()
-    serializer_class = SparePartSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset, SPAREPART_COLUMN_LIST, 0, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required
@@ -193,6 +108,7 @@ def detail(request, pk):
     if Sivin.objects.filter(codif_vin=xelon.vin):
         dict_sivin = model_to_dict(Sivin.objects.filter(codif_vin=xelon.vin).first())
     select = request.GET.get('select', select)
+    task_id = request.GET.get('task_id', "")
     return render(request, 'squalaetp/detail/detail.html', locals())
 
 
@@ -258,33 +174,28 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     permission_required = ['squalaetp.change_vin']
     template_name = 'squalaetp/modal/vin_corvet_update.html'
     form_class = VinCorvetModalForm
-    success_message = _('Success: Squalaetp data was updated.')
+    success_message = _('Success: %(result)s was updated.')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
             'active_import': 'true',
-            'xelon': self.object,
+            'xelon': Xelon.objects.get(pk=self.object.pk),
             'modal_title': _('CORVET update for %(file)s' % {'file': self.object.numero_de_dossier})
         })
         return context
 
-    def form_valid(self, form):
-        if not self.request.is_ajax():
-            data = form.cleaned_data['xml_data']
-            vin = form.cleaned_data['vin']
-            if data and vin:
-                defaults = defaults_dict(Corvet, data, 'vin')
-                Corvet.objects.update_or_create(vin=vin, defaults=defaults)
-            out = StringIO()
-            call_command("exportsqualaetp", stdout=out)
-            if "Export error" in out.getvalue():
-                messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
-            else:
-                messages.success(self.request, "Exportation Squalaetp terminée.")
-        return super().form_valid(form)
+    def get_success_message(self, cleaned_data):
+        value = "V.I.N."
+        if cleaned_data['vin'] and cleaned_data['xml_data']:
+            value = "V.I.N. / CORVET"
+        return self.success_message % dict(cleaned_data, result=value)
 
     def get_success_url(self):
+        if not self.request.is_ajax():
+            task = cmd_exportsqualaetp_task.delay()
+            print(task.id)
+            return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
         return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
@@ -294,7 +205,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     permission_required = ['squalaetp.change_product']
     template_name = 'squalaetp/modal/product_update.html'
     form_class = ProductModalForm
-    success_message = _('Success: Xelon was updated.')
+    success_message = _('Success: Product was updated.')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -304,18 +215,28 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         })
         return context
 
-    def form_valid(self, form):
+    def get_success_url(self):
         if not self.request.is_ajax():
-            out = StringIO()
-            call_command("exportsqualaetp", stdout=out)
-            if "Export error" in out.getvalue():
-                messages.warning(self.request, "Erreur d'exportation Squalaetp, fichier en lecture seule !!")
-            else:
-                messages.success(self.request, "Exportation Squalaetp terminée.")
-        return super().form_valid(form)
+            task = cmd_exportsqualaetp_task.delay()
+            return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
+
+
+class XelonCloseView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for product update """
+    model = Xelon
+    permission_required = ['squalaetp.change_xelon']
+    template_name = 'squalaetp/modal/xelon_close.html'
+    form_class = XelonCloseModalForm
+    success_message = _('Success: Xelon was updated.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'modal_title': self.object.numero_de_dossier})
+        return context
 
     def get_success_url(self):
-        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
+        return reverse_lazy('dashboard:products', get={'filter': 'late'})
 
 
 class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
@@ -433,26 +354,6 @@ def sivin_table(request):
     """ View of Sivin table page """
     title = 'Sivin'
     return render(request, 'squalaetp/sivin_table.html', locals())
-
-
-class SivinViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Sivin.objects.all()
-    serializer_class = SivinSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            sivin = QueryTableByArgs(self.queryset, SIVIN_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(sivin["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": sivin["draw"],
-                "recordsTotal": sivin["total"],
-                "recordsFiltered": sivin["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
 @login_required

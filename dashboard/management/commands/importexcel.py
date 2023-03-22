@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 context["delay"].append(line)
             if "TIME_LIMIT_FILE" in line:
                 context["limit"].append(line)
-            if "error CORVET in" in line:
+            if "CorvetError in" in line:
                 context["corvet"].append(line)
 
         html_message = render_to_string('dashboard/email_format/check_commands.html', context)

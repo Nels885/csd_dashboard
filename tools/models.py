@@ -145,6 +145,7 @@ class Suptech(models.Model):
     date = models.DateField('DATE')
     user = models.CharField('QUI', max_length=50)
     xelon = models.CharField('XELON', max_length=10, blank=True)
+    product = models.CharField('PRODUCT', max_length=200, blank=True)
     item = models.CharField('ITEM', max_length=200)
     time = models.CharField('TIME', max_length=10)
     info = models.TextField('INFO', max_length=2000)
@@ -189,8 +190,11 @@ class SuptechItem(models.Model):
     extra = models.BooleanField(default=False)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
     is_48h = models.BooleanField("Traitement 48h", default=True)
+    is_active = models.BooleanField("Actif", default=True)
     mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
     cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
+    to_users = models.ManyToManyField(User, related_name="to_sup_items", blank=True)
+    cc_users = models.ManyToManyField(User, related_name="cc_sup_items", blank=True)
 
     class Meta:
         verbose_name = "SupTech Item"
@@ -256,3 +260,13 @@ class BgaTime(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.date} {self.start_time}"
+
+
+class ConfigFile(models.Model):
+    name = models.CharField("nom du logiciel", max_length=100, unique=True)
+    path = models.CharField("chemin du fichier", max_length=500, unique=True)
+    filename = models.CharField("nom du fichier", max_length=100)
+    content = models.TextField("contenu du fichier")
+
+    def __str__(self):
+        return self.name

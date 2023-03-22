@@ -69,7 +69,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     list_filter = ('category', 'corvet_type')
     search_fields = ('product_model', 'category')
     actions = (
-        'sc_animator', 'ts_animator', 'nz_animator',
+        'sc_animator', 'ts_animator', 'nz_animator', 'null_animator',
         'psa_category_update', 'other_category_update', 'clarion_category_update', 'etude_category_update',
         'ecu_category_update', 'default_category_update', 'radio_corvet_type_update', 'btel_corvet_type_update',
         'emf_corvet_type_update', 'cmb_corvet_type_update', 'bsi_corvet_type_update', 'bsm_corvet_type_update',
@@ -122,6 +122,14 @@ class ProductCategoryAdmin(admin.ModelAdmin):
             user = User.objects.get(username='NZP01')
             rows_updated = queryset.update(animator=user)
             self._message_user_about_update(request, rows_updated, 'NZP01')
+        except User.DoesNotExist:
+            pass
+
+    @admin.action(description=_('Change animator for NULL'))
+    def null_animator(self, request, queryset):
+        try:
+            rows_updated = queryset.update(animator=None)
+            self._message_user_about_update(request, rows_updated, 'NULL')
         except User.DoesNotExist:
             pass
 

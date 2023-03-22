@@ -1,4 +1,4 @@
-from dashboard.tests.base import FunctionalTest
+from dashboard.tests.base import FunctionalTest, By
 
 from reman.models import EcuModel
 
@@ -35,8 +35,8 @@ class RemanSeleniumTestCase(FunctionalTest):
         driver.get(self.live_server_url + '/reman/part/check/')
 
         # Inserting values into the form
-        barcode = driver.find_element_by_name('barcode')
-        submit = driver.find_elements_by_css_selector('button.btn.btn-success.btn-icon-split')
+        barcode = driver.find_element(By.NAME, 'barcode')
+        submit = driver.find_elements(By.CSS_SELECTOR, 'button.btn.btn-success.btn-icon-split')
         barcode.send_keys('9887654321')
         submit[0].click()
 

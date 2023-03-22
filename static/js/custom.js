@@ -25,7 +25,7 @@ function clock() {
 }
 
 
-function addMessage(text, extra_tags="success", fixed = false) {
+function addMessage(text, extra_tags = "success", fixed = false) {
     var message = $(`
             <div style="border-radius:0;" class="alert alert-icon alert-${extra_tags} alert-dismissible fade show mb-0" role="alert">\n
                     ${text}\n
@@ -36,7 +36,7 @@ function addMessage(text, extra_tags="success", fixed = false) {
     $("#messages").append(message);
     message.fadeIn(500);
 
-    if (!fixed) {
+    if (!fixed && extra_tags === "success") {
         message.fadeTo(10000, 500).slideUp(500, function () {
             message.slideUp(500);
             message.remove();
@@ -56,6 +56,40 @@ function textCopy(text) {
     // alert("Copied the text: " + elem.value);
 }
 
+
+function resultTask(task_id=null) {
+    let url = new URL(document.location.href);
+    let params = new URLSearchParams(url.search);
+    if (task_id === null && params.get('task_id')) {
+        console.log(url.toString());
+        task_id = params.get('task_id')
+        params.delete('task_id');
+        url.search = params;
+        console.log(url.toString());
+        window.history.pushState({}, null, url.toString())
+    }
+    if (task_id) {
+        $(".bd-loading-modal-lg").modal("show");
+        var progressUrl = "/celery-progress/?task_id=" + task_id;
+        // console.log(progressUrl);
+
+        function customResult(resultElement, result) {
+            // console.log(result)
+            $(".bd-loading-modal-lg").modal("hide");
+            addMessage(result.msg, result.tags);
+        }
+
+        CeleryProgressBar.initProgressBar(progressUrl, {
+            progressBarId: "search-progress-bar",
+            progressBarMessageId: "search-progress-bar-message",
+            onResult: customResult,
+        })
+    } else {
+        $(".bd-loading-modal-lg").modal("hide");
+    }
+}
+
+
 function celeryTask(url) {
     $(".bd-loading-modal-lg").modal("show");
     $.ajax({
@@ -67,22 +101,7 @@ function celeryTask(url) {
         async: true,
         success: function (data) {
             // console.log(data);
-            if (data.task_id) {
-                var progressUrl = "/celery-progress/?task_id=" + data.task_id;
-                // console.log(progressUrl);
-
-                function customResult(resultElement, result) {
-                    // console.log(result)
-                    $(".bd-loading-modal-lg").modal("hide");
-                    addMessage(result.msg, "success");
-                }
-
-                CeleryProgressBar.initProgressBar(progressUrl, {
-                    progressBarId: "search-progress-bar",
-                    progressBarMessageId: "search-progress-bar-message",
-                    onResult: customResult,
-                })
-            } else $(".bd-loading-modal-lg").modal("hide");
+            resultTask(data.task_id);
         },
         error: function (err) {
             // console.log(err);
@@ -91,6 +110,8 @@ function celeryTask(url) {
         },
     })
 }
+
+
 
 
 $(function () {
@@ -164,6 +185,7 @@ $("#searchForm").submit(function (e) {
             // console.log(data);
             if (data.task_id) {
                 var progressUrl = "/celery-progress/?task_id=" + data.task_id;
+
                 // console.log(progressUrl);
 
                 function customResult(resultElement, result) {

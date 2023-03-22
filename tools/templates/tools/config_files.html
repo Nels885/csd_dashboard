@@ -1,0 +1,92 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n widget_tweaks %}
+
+{% block detail_content %}
+
+    <div class="{% if form.select.errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
+        {% for error in form.select.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+
+    <form class="form-inline" method="post" action="">
+
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="form-group mx-sm-3 mb-2">
+                <label class="mx-sm-3" for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit" name="btn_select" class="btn btn-success btn-icon-split mb-2 mr-4">
+            <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+            <span class="text">{% trans "Select" %}</span>
+        </button>
+
+        {% if perms.tools.add_configfile %}
+            <a href="#" class="create-config btn btn-primary btn-icon-split mb-2">
+                <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                <span class="text">{% trans "Add config file" %}</span>
+            </a>
+        {% endif %}
+
+    </form>
+
+    <hr>
+
+    {% if form2 %}
+
+        <form method="post" action="">
+
+            {% csrf_token %}
+
+            <h5 class="text-gray-800 my-4">Modification :</h5>
+
+            <div class="form-group row">
+                <label for="name" class="col-sm-2 col-form-label">Nom du logiciel</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control" id="name" value="{{ obj.name }}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="path" class="col-sm-2 col-form-label">Chemin du fichier</label>
+                <div class="col-sm-8">
+                    <input type="text" readonly class="form-control" id="path" value="L:\{{ obj.path }}\{{ obj.filename }}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                {% include 'format/label_form_group.html' with field=form2.content %}
+                <div class="col-sm-10">{% render_field form2.content class="form-control" rows=30 %}</div>
+                <div class="{% if form2.content.errors %} invalid{% endif %}">
+                    {% for error in form2.content.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <hr class="">
+
+            <div class="offset-sm-5 align-self-center">
+                <a href="{% url 'tools:config_files' %}" role="button" class="btn btn-secondary">
+                    {% trans "Cancel" %}
+                </a>
+                <button type="submit" class="ml-2 btn btn-primary">
+                    {% trans "Save" %}
+                </button>
+            </div>
+
+        </form>
+    {% else %}
+
+        <div class="row align-content-center justify-content-center" style="min-height: 300px;">
+            <h5>Veuillez sélectionner le fichier de config à modifier.</h5>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

@@ -88,7 +88,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Envoi de l'email des produits en cours terminée!"))
         if options['vin_error']:
             subject = "Erreur VIN Xelon {}".format(date_joined)
-            xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')[:10]
+            xelons = Xelon.objects.filter(vin_error=True, date_retour__gte=last_7_days).order_by('-date_retour')
 
             if xelons:
                 html_message = render_to_string(
@@ -105,7 +105,7 @@ class Command(BaseCommand):
         if options['vin_corvet']:
             subject = "Problème CORVET {}".format(date_joined)
             xelons = Xelon.objects.filter(date_retour__gte=last_7_days, vin__regex=VIN_PSA_REGEX,
-                                          vin_error=False, corvet__isnull=True).order_by('-date_retour')[:10]
+                                          vin_error=False, corvet__isnull=True).order_by('-date_retour')
             if xelons:
                 html_message = render_to_string(
                     'dashboard/email_format/vin_corvet_email.html', {'xelons': xelons, 'domain': config.WEBSITE_DOMAIN}
@@ -146,14 +146,15 @@ class Command(BaseCommand):
                 'products_to_repair': indicator.products_to_repair,
                 'late_products': indicator.late_products,
                 'express_products': indicator.express_products,
-                'vip_products': prods.vip
+                'vip_products': prods.vip,
+                'tronik_products': prods.tronik
             })
         return prods, data
 
     @staticmethod
     def _excel_contract_generate(queryset):
         excel = ExportExcelContract()
-        filename = f"Contrats_a_renouveler_au_{excel.date.strftime('%y-%m-%d_%H-%M')}"
+        filename = "Contrats_a_renouveler_au"
         excel.header = [
             'N° ligne Excel', 'Service', 'Nature du document', 'Objet du document', 'Fournisseur', 'Site', 'Date fin',
             'Contract actif', 'Date prévenance'

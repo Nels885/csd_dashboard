@@ -8,9 +8,13 @@
                     <i class="fas fa-print"></i></a>
             {% endif %}
             {% if perms.reman.change_batch %}
+                {% if not batch.closing_date %}
                 <button data-form-url="{% url 'reman:update_batch' batch.pk %}"
                         class="bs-modal btn btn-success btn-circle btn-sm" title="Modification dossier">
                     <i class="fas fa-edit"></i></button>
+                {% else %}
+                    <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                {% endif %}
             {% endif %}
             {% if perms.reman.delete_batch %}
                 {% if not batch.total %}

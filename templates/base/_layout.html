@@ -66,11 +66,17 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        // Waiting for tasks to be finalized for the IHM extraction
+        resultTask();
+
         // Log in buttons
         $(".login-btn").modalForm({formURL: "{% url 'dashboard:login' %}"});
         $(".logout-btn").modalForm({formURL: "{% url 'dashboard:logout' %}"});
+        $(".import-btn").modalForm({formURL: "{% url 'dashboard:import' %}"});
 
         $(".create-post").modalForm({formURL: "{% url 'dashboard:create_post' %}", modalID: "#large-modal"});
+
+        $(".create-suggest").modalForm({formURL: "{% url 'dashboard:create_suggest' %}", modalID: "#large-modal"});
 
         $(".create-weblink").modalForm({formURL: "{% url 'dashboard:create_weblink' %}", modalID: "#large-modal"});
 
@@ -95,6 +101,8 @@
         $(".create-tag-xelon").modalForm({formURL: "{% url 'tools:tag_xelon_add' %}", modalID: "#create-modal"});
 
         $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});
+
+        $(".create-config").modalForm({formURL: "{% url 'tools:config_add' %}", modalID: "#create-large-modal"});
     });
 
     getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {

@@ -3,6 +3,7 @@ from django.core.management import call_command
 from django.core.mail import EmailMessage
 
 from utils.conf import string_to_list
+from utils.scraping import ScrapingPartslink24
 
 
 @celery_app.task
@@ -27,3 +28,13 @@ def send_email_task(self, subject, body, from_email, to, cc, files=None):
     if files:
         [email.attach(f.name, f.read(), f.content_type) for f in files]
     email.send()
+
+
+@celery_app.task(bind=True)
+def partslink24_task(*args, **kwargs):
+    scrap = ScrapingPartslink24()
+    scrap.login()
+    scrap.brand_select(kwargs.get("brand"))
+    data = scrap.search(kwargs.get("vin", ""))
+    scrap.quit()
+    return data

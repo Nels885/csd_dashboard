@@ -1,17 +1,19 @@
 <tbody class="collapse {% if show %}show{% endif %}" id="{{ id }}">
 <tr>
-    <td class="text-dark td-ihm">Référence Comp. Mat.</td>
+    <td class="text-dark td-ihm-40">Référence Comp. Mat.</td>
     <td>{{ object.comp_ref }}</td>
 </tr>
 
-{% include 'format/collapse_tr.html' with name="Réf. étiquette" value=object.label_ref %}
+{% if object.label_ref and object.label_ref != object.comp_ref %}
+    {% include 'format/collapse_tr.html' with name="Réf. étiquette" value=object.label_ref %}
+{% endif %}
 
 <tr>
-    <td class="text-dark td-ihm">Modèle</td>
+    <td class="text-dark td-ihm-40">Modèle</td>
     <td>{{ object.name|default:"???" }}</td>
 </tr>
 <tr>
-    <td class="text-dark td-ihm">Modèle Xelon</td>
+    <td class="text-dark td-ihm-40">Modèle Xelon</td>
     <td>{{ object.xelon_name|default:"???" }}</td>
 </tr>
 
@@ -27,7 +29,7 @@
 
 {% if object.parts.all %}
     <tr>
-        <td class="text-dark td-ihm">Pièces Xelon</td>
+        <td class="text-dark td-ihm-40">Pièces Xelon</td>
         <td>{% for part in object.parts.all %}{{ part.name }}<br>{% endfor %}</td>
     </tr>
 {% endif %}

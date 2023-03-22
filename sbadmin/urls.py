@@ -38,7 +38,7 @@ urlpatterns = [
     path('wiki/', include('wiki.urls')),
     path('api/', include('api.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('raspeedi/', include('raspeedi.urls')),
+    path('prog/', include('prog.urls')),
     path('squalaetp/', include('squalaetp.urls')),
     path('reman/', include('reman.urls')),
     path('tools/', include('tools.urls')),

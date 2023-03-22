@@ -5,8 +5,8 @@ from django.db.models import Q
 from ._excel_squalaetp import ExcelSqualaetp
 from squalaetp.models import Xelon, Sivin
 from psa.models import Corvet
-from utils.scraping import ScrapingCorvet, ScrapingSivin
-from utils.django.validators import xml_parser, xml_sivin_parser, VIN_PSA_REGEX
+from utils.scraping import ScrapingCorvet, ScrapingSivin, xml_parser, xml_sivin_parser
+from utils.django.validators import VIN_PSA_REGEX
 from utils.django.models import defaults_dict
 from utils.conf import XLS_SQUALAETP_FILE
 
@@ -84,13 +84,12 @@ class Command(BaseCommand):
                 start_time = time.time()
                 for attempt in range(2):
                     row = xml_parser(scrap.result(query.vin))
-                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row or attempt == 0:
-                        nb_import += 1
+                    if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                         delay_time = time.time() - start_time
                         self.stdout.write(
-                            self.style.ERROR(f"{start_msg} error CORVET in {delay_time}"))
+                            self.style.ERROR(f"{start_msg} CorvetError in {delay_time}"))
                         break
-                    elif row.get('vin') and row.get('donnee_date_entree_montage'):
+                    elif isinstance(row, dict) and row.get('vin') and row.get('donnee_date_entree_montage'):
                         defaults = defaults_dict(Corvet, row, "vin")
                         obj, created = Corvet.objects.update_or_create(vin=row["vin"], defaults=defaults)
                         obj.opts.update = False
@@ -100,7 +99,7 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS(f"{start_msg} updated in {delay_time}"))
                         break
-                    elif row.get('vin'):
+                    elif attempt:
                         if squalaetp:
                             query.vin_error = True
                         Corvet.objects.filter(vin=query.vin).delete()
@@ -111,7 +110,7 @@ class Command(BaseCommand):
                     query.save()
                 if limit and nb_import >= 200:
                     break
-            scrap.close()
+            scrap.quit()
         return nb_import
 
     def _import_sivin(self, immat, test):
@@ -119,18 +118,18 @@ class Command(BaseCommand):
         self.stdout.write("[IMPORT_SIVIN] Waiting...")
         sivin = ScrapingSivin(test=test)
         data = xml_sivin_parser(sivin.result(immat))
-        sivin.close()
+        sivin.quit()
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:
             delay_time = time.time() - start_time
             self.stdout.write(self.style.ERROR(f"{immat} - error SIVIN in {delay_time}"))
-        elif data and data.get('immat_siv'):
+        elif isinstance(data, dict) and data.get('immat_siv'):
             delay_time = time.time() - start_time
             self.stdout.write(self.style.SUCCESS(f"SIVIN Data {data.get('immat_siv')} updated in {delay_time}"))
             if not Corvet.objects.filter(vin=data.get('codif_vin')):
                 corvet = ScrapingCorvet()
                 row = xml_parser(corvet.result(data.get('codif_vin')))
-                corvet.close()
-                if row and row.get('donnee_date_entree_montage'):
+                corvet.quit()
+                if isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                     def_corvet = defaults_dict(Corvet, row, "vin")
                     Corvet.objects.update_or_create(vin=row["vin"], defaults=def_corvet)
                     delay_time = time.time() - start_time

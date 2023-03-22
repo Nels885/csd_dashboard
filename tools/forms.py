@@ -15,7 +15,10 @@ from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 
-from .models import TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile
+from squalaetp.models import Xelon
+from .models import (
+    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile, ConfigFile
+)
 from .tasks import send_email_task
 
 
@@ -79,7 +82,7 @@ class SuptechModalForm(BSModalModelForm):
         ('Scan IN/OUT', 'Scan IN/OUT'), ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
     ]
     username = forms.CharField(max_length=50, required=True)
-    item = forms.ModelChoiceField(queryset=SuptechItem.objects.all())
+    item = forms.ModelChoiceField(queryset=SuptechItem.objects.filter(is_active=True))
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
     to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
     cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
@@ -87,15 +90,20 @@ class SuptechModalForm(BSModalModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['username', 'xelon', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach']
+        fields = [
+            'username', 'xelon', 'product', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach'
+        ]
 
     def __init__(self, *args, **kwargs):
         users = User.objects.all()
-        _data_list = list(users.values_list('username', flat=True).distinct())
+        xelons = Xelon.objects.all()
+        _user_list = list(users.values_list('username', flat=True).distinct())
+        _prod_list = list(xelons.values_list('modele_produit', flat=True).distinct())
         super().__init__(*args, **kwargs)
         if self.request.user:
             self.fields['username'].initial = self.request.user.username
-        self.fields['username'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+        self.fields['username'].widget = ListTextWidget(data_list=_user_list, name='user-list')
+        self.fields['product'].widget = ListTextWidget(data_list=_prod_list, name='prod-list')
 
     def clean_username(self):
         data = self.cleaned_data['username']
@@ -155,7 +163,7 @@ class SuptechResponseForm(forms.ModelForm):
     ]
     action = forms.CharField(widget=forms.Textarea(), required=True)
     status = forms.CharField(widget=forms.Select(choices=STATUS_CHOICES), required=True)
-    deadline = forms.DateField(required=False, widget=DatePicker(
+    deadline = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=DatePicker(
         attrs={'append': 'fa fa-calendar', 'icon_toggle': True}, options={'format': 'DD/MM/YYYY'},
     ))
 
@@ -209,3 +217,63 @@ class SuptechMessageForm(forms.ModelForm):
             return True
         except AttributeError:
             return False
+
+
+class Partslink24Form(forms.Form):
+    BRAND_CHOICES = [
+        (2, "Abarth"), (3, "Alfa Romeo"), (4, "Audi"), (5, "Bentley"), (6, "BMW"), (7, "BMW Classic"),
+        (8, "BMW Motorrad"), (9, "BMW Motorrad Classic"), (10, "Citroën"), (10, "Citroën DS"), (12, "Dacia"),
+        (13, "Fiat"), (14, "Fiat Professional"), (15, "Ford"), (16, "Ford Commercial"), (17, "Hyundai"),
+        (18, "Infiniti"), (19, "Iveco"), (20, "Jaguar"), (21, "Jeep"), (22, "Kia"), (23, "Lancia"), (24, "Land Rover"),
+        (25, "MAN"), (26, "Mercedes-Benz"), (27, "Mercedes-Benz Trucks"), (28, "Mercedes-Benz Unimog"),
+        (29, "Mercedes-Benz Vans"), (30, "MINI"), (31, "Mitsubishi"), (32, "Nissan"), (33, "Opel"), (34, "Peugeot"),
+        (35, "Polestar"), (36, "Porsche"), (37, "Porsche Classic"), (38, "Renault"), (39, "SEAT"), (40, "Škoda"),
+        (41, "smart"), (42, "Vauxhall"), (43, "Volkswagen"), (44, "Volkswagen Commercial Vehicles"), (45, "Volvo")
+    ]
+
+    brand = forms.ChoiceField(choices=BRAND_CHOICES, widget=forms.Select(attrs={'class': 'custom-select'}))
+    vin = forms.CharField(widget=forms.TextInput(), required=True)
+
+
+class ConfigFileForm(BSModalModelForm):
+    file = forms.FileField(
+        label="Fichier config", widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
+
+    class Meta:
+        model = ConfigFile
+        fields = ['name', 'path', 'file']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        file = self.request.FILES.get('file')
+        if commit and file:
+            instance.filename = file.name
+            instance.content = file.read().decode('utf-8')
+            instance.save()
+        return instance
+
+
+class SelectConfigForm(forms.Form):
+    select = forms.CharField(label='Selection', max_length=500, required=False)
+
+    def __init__(self, *args, **kwargs):
+        configs = ConfigFile.objects.all()
+        _data_list = list(configs.values_list('name', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['select'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+
+    def clean_select(self):
+        data = self.cleaned_data['select']
+        try:
+            obj = ConfigFile.objects.get(name=data)
+            data = obj.pk
+        except ConfigFile.DoesNotExist:
+            data = -1
+        return data
+
+
+class EditConfigForm(forms.ModelForm):
+
+    class Meta:
+        model = ConfigFile
+        fields = ['content']

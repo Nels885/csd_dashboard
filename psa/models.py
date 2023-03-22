@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, utils
 from django.db.models import Q
 
 
@@ -37,6 +37,20 @@ class CorvetChoices(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['key', 'column'], name='key_column_unique')
         ]
+
+    @classmethod
+    def brands(cls):
+        try:
+            return [('', '---')] + list(cls.objects.filter(column='DON_MAR_COMM').values_list('key', 'value'))
+        except utils.ProgrammingError:
+            return []
+
+    @classmethod
+    def vehicles(cls):
+        try:
+            return [('', '---')] + list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value'))
+        except utils.ProgrammingError:
+            return []
 
     def __str__(self):
         return f"{self.key} - {self.value} - {self.column}"
@@ -264,6 +278,7 @@ class CorvetProduct(models.Model):
     fmux = models.ForeignKey('psa.Ecu', related_name='corvet_fmux', on_delete=models.SET_NULL, limit_choices_to={'type': 'FMUX'}, null=True, blank=True)
     mds = models.ForeignKey('psa.Ecu', related_name='corvet_mds', on_delete=models.SET_NULL, limit_choices_to={'type': 'MDS'}, null=True, blank=True)
     cvm2 = models.ForeignKey('psa.Ecu', related_name='corvet_cvm2', on_delete=models.SET_NULL, limit_choices_to={'type': 'CVM2'}, null=True, blank=True)
+    vmf = models.ForeignKey('psa.Ecu', related_name='corvet_vmf', on_delete=models.SET_NULL, limit_choices_to={'type': 'VMF'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"
@@ -415,7 +430,7 @@ class Ecu(models.Model):
         ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
         ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
         ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
-        ('CVM2', 'Camera Video Multifonction V2')
+        ('CVM2', 'Camera Video Multifonction V2'), ('VMF', 'Module Commutation Integre')
     ]
 
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)

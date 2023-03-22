@@ -1,6 +1,8 @@
 import logging
 from utils.microsoft_format import ExcelFormat, pd
 
+from psa.models import CorvetAttribute
+
 logger = logging.getLogger('command')
 
 
@@ -10,7 +12,7 @@ class ExcelCorvet(ExcelFormat):
     CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule']
     COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
-    def __init__(self, file, attribut_file=None, sheet_name=0, columns=None):
+    def __init__(self, file, sheet_name=0, columns=None):
         """
         Initialize ExcelSqualaetp class
         :param file:
@@ -26,7 +28,7 @@ class ExcelCorvet(ExcelFormat):
             self.sheet.replace({"#": None}, inplace=True)
             self._date_converter(self.COLS_DATE)
             df_corvet = self.sheet.drop(self.CORVET_DROP_COLS, axis='columns')
-            self.sheet, self.nrows = self._add_attributs(df_corvet, attribut_file)
+            self._add_attributs(df_corvet)
         except FileNotFoundError as err:
             logger.error(f'FileNotFoundError: {err}')
             self.ERROR = True
@@ -57,6 +59,21 @@ class ExcelCorvet(ExcelFormat):
                 vin = row['vin']
                 data.append({'vin': vin, 'data': row})
         return data
+
+    def _add_attributs(self, df_corvet):
+        new_columns = {}
+        attributes = CorvetAttribute.objects.all()
+        for col in df_corvet.columns:
+            if attributes.filter(key_2__iexact=col):
+                new_columns[col] = f"{attributes.filter(key_2__iexact=col).first().key_1}_{col}"
+            elif attributes.filter(label__iexact=col):
+                new_columns[col] = f"{attributes.filter(label__iexact=col).first().key_1}_{col}"
+            else:
+                new_columns[col] = col
+        df_corvet.rename(columns=new_columns, inplace=True)
+        self.sheet = df_corvet.rename(str.lower, axis='columns')
+        self.columns = list(self.sheet.columns)
+        self.nrows = self.sheet.shape[0]
 
 
 class ExcelCorvetAttribute(ExcelFormat):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-12 07:53+0200\n"
+"POT-Creation-Date: 2023-01-04 09:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,23 +31,31 @@ msgstr "était, étaient"
 msgid "Checkout enabled"
 msgstr "Vérification activée"
 
-#: reman/forms.py:89
+#: reman/forms.py:32 reman/forms.py:33
+msgid "No"
+msgstr ""
+
+#: reman/forms.py:32 reman/forms.py:33
+msgid "Yes"
+msgstr ""
+
+#: reman/forms.py:100
 msgid "Unauthorized batch number!"
 msgstr "Numéro de lot non autorisé !"
 
-#: reman/forms.py:91
+#: reman/forms.py:102
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:98
+#: reman/forms.py:109
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:235 reman/forms.py:363
+#: reman/forms.py:246 reman/forms.py:377
 msgid "barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/forms.py:502 reman/tests/tests_reman_views.py:141
+#: reman/forms.py:516 reman/tests/tests_reman_views.py:141
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
@@ -255,30 +263,30 @@ msgstr "Création d'un lot"
 msgid "Success: Batch was updated."
 msgstr "Succès: le lot a été mis à jour."
 
-#: reman/views/batch.py:93
+#: reman/views/batch.py:92
 msgid "Success: Batch was deleted."
 msgstr "Succès: le lot a été supprimé."
 
-#: reman/views/repair.py:31 reman/views/repair.py:82
+#: reman/views/repair.py:32 reman/views/repair.py:84
 msgid "Modification customer file"
 msgstr "Modification dossier client"
 
-#: reman/views/repair.py:38 reman/views/repair.py:87
+#: reman/views/repair.py:41 reman/views/repair.py:89
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views/repair.py:96
+#: reman/views/repair.py:98
 msgid "Detail customer file"
 msgstr "Dossier client détaillé"
 
-#: reman/views/repair.py:107
+#: reman/views/repair.py:109
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#: reman/views/repair.py:117
+#: reman/views/repair.py:119
 msgid "Repair REMAN"
 msgstr "Réparation REMAN"
 
-#: reman/views/repair.py:118
+#: reman/views/repair.py:120
 msgid "Open"
 msgstr "Ouvrir"

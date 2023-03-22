@@ -1,18 +1,20 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from . import ajax
 
 router = DefaultRouter()
-router.register(r'api/xelon', views.XelonViewSet, basename='api_xelon')
-router.register(r'api/temporary', views.TemporaryViewSet, basename='api_temporary')
-router.register(r'api/sivin', views.SivinViewSet, basename='api_sivin')
-router.register(r'api/sparepart', views.StockViewSet, basename='api_stock')
+router.register(r'api/xelon', ajax.XelonViewSet, basename='api_xelon')
+router.register(r'api/temporary', ajax.TemporaryViewSet, basename='api_temporary')
+router.register(r'api/sivin', ajax.SivinViewSet, basename='api_sivin')
+router.register(r'api/sparepart', ajax.StockViewSet, basename='api_stock')
 
 app_name = 'squalaetp'
 
 urlpatterns = [
     path('', include(router.urls)),
     path('<int:pk>/detail/', views.detail, name='detail'),
+    path('<int:pk>/close/', views.XelonCloseView.as_view(), name="xelon_close"),
     path('<int:pk>/pdf/', views.barcode_pdf_generate, name='barcode_pdf'),
     path('<int:pk>/vin/edit/', views.VinCorvetUpdateView.as_view(), name='vin_edit'),
     path('<int:pk>/vin/email/', views.VinEmailFormView.as_view(), name='vin_email'),
@@ -23,6 +25,7 @@ urlpatterns = [
     path('generate/', views.generate, name='generate'),
     path('excel/import/async/', views.excel_import_async, name='excel_import_async'),
     path('xelon/', views.xelon_table, name='xelon'),
+    path('xelon/prod/async/', ajax.xelon_prod_ajax, name='xelon_prod_async'),
     path('temporary/', views.temporary_table, name='temporary'),
     path('stock-parts/', views.stock_table, name='stock_parts'),
     path('log/<int:pk>/detail/', views.LogFileView.as_view(), name='log_detail'),

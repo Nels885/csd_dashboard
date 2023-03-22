@@ -67,9 +67,9 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING("[CORVET_CMD] No Attribute file found"))
         else:
             if options['filename'] is not None:
-                excel = ExcelCorvet(options['filename'], XLS_ATTRIBUTS_FILE)
+                excel = ExcelCorvet(options['filename'])
             else:
-                excel = ExcelCorvet(XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE)
+                excel = ExcelCorvet(XLS_SQUALAETP_FILE)
 
             if self._update_or_create(Corvet, excel):
                 self.stdout.write(self.style.WARNING("[CORVET_CMD] No squalaetp file found"))

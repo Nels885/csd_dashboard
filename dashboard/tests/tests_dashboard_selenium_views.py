@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 
-from dashboard.tests.base import FunctionalTest
+from dashboard.tests.base import FunctionalTest, By
 
 
 class DashboardSeleniumTestCase(FunctionalTest):
@@ -13,9 +13,9 @@ class DashboardSeleniumTestCase(FunctionalTest):
         driver.get(self.live_server_url + '/accounts/login/')
 
         # Inserting values into the form
-        username = driver.find_element_by_id('id_username')
-        password = driver.find_element_by_id('id_password')
-        login = driver.find_elements_by_css_selector('button.btn.btn-primary.btn-user.btn-block')
+        username = driver.find_element(By.ID, 'id_username')
+        password = driver.find_element(By.ID, 'id_password')
+        login = driver.find_elements(By.CSS_SELECTOR, 'button.btn.btn-primary.btn-user.btn-block')
         username.send_keys('toto')
         password.send_keys('totopassword')
         login[0].click()
@@ -27,9 +27,9 @@ class DashboardSeleniumTestCase(FunctionalTest):
         driver.get(self.live_server_url + '/accounts/login/')
 
         # Inserting values into the form
-        username = driver.find_element_by_id('id_username')
-        password = driver.find_element_by_id('id_password')
-        login = driver.find_elements_by_css_selector('button.btn.btn-primary.btn-user.btn-block')
+        username = driver.find_element(By.ID, 'id_username')
+        password = driver.find_element(By.ID, 'id_password')
+        login = driver.find_elements(By.CSS_SELECTOR, 'button.btn.btn-primary.btn-user.btn-block')
         username.send_keys('toto')
         password.send_keys('toto')
         login[0].click()
@@ -47,11 +47,11 @@ class DashboardSeleniumTestCase(FunctionalTest):
         driver.refresh()
 
         # User clicks logout button
-        driver.find_element_by_id('logout-nav-btn').click()
+        driver.find_element(By.ID, 'logout-nav-btn').click()
 
         #logout modal opens
         modal = self.wait_for(element_id='modal')
-        modal.find_element_by_css_selector('a.btn.btn-primary').click()
+        modal.find_element(By.CSS_SELECTOR, 'a.btn.btn-primary').click()
 
         # The user is redirected to the homepage
         self.assertEqual(driver.current_url, self.live_server_url + "/")

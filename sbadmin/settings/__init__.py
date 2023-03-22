@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import shutil
 from pathlib import Path
+from collections import OrderedDict
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'encrypted_fields',
+    'channels',
 
     # Django-wiki
     'django.contrib.sites.apps.SitesConfig',
@@ -69,7 +71,7 @@ INSTALLED_APPS = [
 
     # My apps
     'dashboard.apps.DashboardConfig',
-    'raspeedi.apps.RaspeediConfig',
+    'prog.apps.ProgConfig',
     'squalaetp.apps.SqualaetpConfig',
     'reman.apps.RemanConfig',
     'tools.apps.ToolsConfig',
@@ -121,7 +123,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sbadmin.wsgi.application'
+# WSGI_APPLICATION = 'sbadmin.wsgi.application'
+ASGI_APPLICATION = 'sbadmin.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -313,7 +316,19 @@ TEMPUS_DOMINUS_INCLUDE_ASSETS = False
 CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
 CONSTANCE_REDIS_CONNECTION = 'redis://localhost:6379/1'
 
-CONSTANCE_CONFIG = {
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'yes_no_field': ['django.forms.fields.ChoiceField', {
+        'widget': 'django.forms.Select',
+        'choices': ((True, "Yes"), (False, "No"))
+    }],
+    'pwd_field': ['django.forms.fields.CharField', {
+        'widget': 'django.forms.PasswordInput',
+        'widget_kwargs': {'render_value': True},
+        'required': False
+    }],
+}
+
+CONSTANCE_CONFIG = OrderedDict({
     # General Options
     'SITE_NAME': ('CSD Dashboard', 'Website title'),
     'SITE_DESCRIPTION': ('', 'Website description'),
@@ -324,6 +339,7 @@ CONSTANCE_CONFIG = {
 
     # Network Options
     'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
+    'NAS_DIR': ('', 'Network NAS drive path'),
     'XLS_RASPEEDI_FILE': ('PROG/RASPEEDI/table_boitier_PSA.xlsx', 'xls raspeedi file'),
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
     'XLS_ATTRIBUTS_FILE': ('EXTS/Attributs CORVET.xlsx', 'xls attributs file'),
@@ -346,8 +362,6 @@ CONSTANCE_CONFIG = {
     'CHANGE_VIN_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon VIN TO email list'),
     'CHANGE_PROD_TO_EMAIL_LIST': ('test1@test.com; test2@test.com', 'Change Xelon produit TO email list'),
     'CSD_CC_EMAIL_LIST': ('test1@test.com; test2@test.com', 'CSD Atelier CC email list'),
-    'CORVET_USER': ('', 'CORVET user for RepairLab'),
-    'CORVET_PWD': ('', 'CORVET password for RepairLab'),
     'SQUALAETP_FILE_LIST': ('squalaetp_cal.xls, squalaetp_ecu.xls, squalaetp_prog.xls', 'Squalaetp file list'),
 
     # REMAN Options
@@ -361,14 +375,14 @@ CONSTANCE_CONFIG = {
         "{2020: 'C', 2021: 'D', 2022: 'G', 2023: 'H', 2024: 'K', 2025: 'L', 2026: 'O', 2027: 'T', 2028: 'U'}",
         'REMAN batch date formatting dictionary'
     ),
-    'CHECKOUT_BATCH_FILTER_DISABLE': (False, 'Checkout batch filter deactivation', bool),
+    'CHECKOUT_BATCH_FILTER_DISABLE': (False, 'Checkout batch filter deactivation', 'yes_no_field'),
 
     # MQTT Options
     "MQTT_TOPIC": ('TEMP/TC-01', 'Topic subcribe'),
     'MQTT_TEMP_ADJ': (4, 'Temp adjust', int),
     'MQTT_CLIENT': ('', 'Client name'),
     'MQTT_USER': ('', 'Login'),
-    'MQTT_PSWD': ('', 'Password'),
+    'MQTT_PSWD': ('', 'Password', 'pwd_field'),
     'MQTT_BROKER': ('test.mosquitto.org', 'Server address'),
     'MQTT_PORT': (1883, 'Server port', int),
     'KEEP_ALIVE': (45, 'Keep alive', int),
@@ -379,34 +393,46 @@ CONSTANCE_CONFIG = {
     'PRINTER_STREAM_URL': ('http://10.115.141.42:8080/?action=stream', '3D printer streaming URL'),
     'PROXY_HOST_SCRAPING': ('', 'Proxy HOST for Scraping'),
     'PROXY_PORT_SCRAPING': ('', 'Proxy PORT for Scraping'),
-}
+    'CORVET_USER': ('', 'CORVET user for RepairLab'),
+    'CORVET_PWD': ('', 'CORVET password for RepairLab', 'pwd_field'),
+    'PL24_ACCOUNT': ('', 'Account for PartsLink24'),
+    'PL24_USER': ('', 'User for PartsLink24'),
+    'PL24_PWD': ('', 'Password for PartsLink24', 'pwd_field')
+})
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    '1. General Options': (
-        'SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'SYS_REPORT_TO_MAIL_LIST',
-        'CONTRACT_TO_EMAIL_LIST'
-    ),
-    '2. Network Options': (
-        'BASE_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE', 'CSV_EXTRACTION_FILE',
-        'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH', 'TAG_XELON_PATH',
-        'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'
-    ),
-    '3. CSD Repair Options': (
-        'VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',
-        'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
-        'CORVET_USER', 'CORVET_PWD', 'SQUALAETP_FILE_LIST'
-    ),
-    '4. REMAN Options': (
-        'ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
-        'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR', 'CHECKOUT_BATCH_FILTER_DISABLE'
-    ),
-    '5. Tools Options': (
-        'SUPTECH_TO_EMAIL_LIST', 'SUPTECH_CC_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING',
-        'PROXY_PORT_SCRAPING'
-    ),
-    '6. MQTT Options': (
-        'MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT', 'KEEP_ALIVE'
-    )
+    '1. General Options': {
+        'fields': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'SYS_REPORT_TO_MAIL_LIST',
+                   'CONTRACT_TO_EMAIL_LIST'),
+        'collapse': True
+    },
+    '2. Network Options': {
+        'fields': ('BASE_DIR', 'NAS_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE',
+                   'CSV_EXTRACTION_FILE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH',
+                   'TAG_XELON_PATH', 'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'),
+        'collapse': False
+    },
+    '3. CSD Repair Options': {
+        'fields': ('VIN_ERROR_TO_EMAIL_LIST', 'LATE_PRODUCTS_TO_EMAIL_LIST', 'PENDING_PRODUCTS_TO_EMAIL_LIST',
+                   'REMAN_TO_EMAIL_LIST', 'CHANGE_VIN_TO_EMAIL_LIST', 'CHANGE_PROD_TO_EMAIL_LIST', 'CSD_CC_EMAIL_LIST',
+                   'SQUALAETP_FILE_LIST'),
+        'collapse': False
+    },
+    '4. REMAN Options': {
+        'fields': ('ECU_TO_EMAIL_LIST', 'ECU_CC_EMAIL_LIST', 'BATCH_EXPORT_FILE', 'REPAIR_EXPORT_FILE',
+                   'CHECKOUT_EXPORT_FILE', 'SCAN_IN_OUT_EXPORT_FILE', 'DICT_YEAR', 'CHECKOUT_BATCH_FILTER_DISABLE'),
+        'collapse': False
+    },
+    '5. Tools Options': {
+        'fields': ('SUPTECH_TO_EMAIL_LIST', 'SUPTECH_CC_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING',
+                   'PROXY_PORT_SCRAPING', 'CORVET_USER', 'CORVET_PWD', 'PL24_ACCOUNT', 'PL24_USER', 'PL24_PWD'),
+        'collapse': False
+    },
+    '6. MQTT Options': {
+        'fields': ('MQTT_TOPIC', 'MQTT_TEMP_ADJ', 'MQTT_CLIENT', 'MQTT_USER', 'MQTT_PSWD', 'MQTT_BROKER', 'MQTT_PORT',
+                   'KEEP_ALIVE'),
+        'collapse': True
+    },
 }
 
 # CELERY STUFF
@@ -414,8 +440,10 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
-# CELERY_TIME_ZONE = "Europe/Paris"
+CELERY_TIME_ZONE = "Europe/Paris"
 CELERY_ENABLE_UTC = False
+# this allows you to schedule items in the Django admin.
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 
 # DJANGO-WIKI CONFIGURATION
 WIKI_ACCOUNT_HANDLING = True

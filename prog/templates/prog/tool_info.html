@@ -1,0 +1,82 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n %}
+
+{% block table_content %}
+
+    <table class="table table-striped" style="width: 100%;">
+        <thead class="thead-dark text-uppercase">
+            <tr>
+                <th class="col-2">Nom</th>
+                <th class="col-3">Commentaire</th>
+                <th class="col-1">Adresse IP</th>
+                <th class="col-1">Logiciel</th>
+                <th class="col-1">Version</th>
+                <th class="col-1">Produit</th>
+                <th class="col-2">Status</th>
+                <th class="col-1"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in object_list %}
+            <tr>
+                <td class="font-weight-bold">{{ obj.name }}</td>
+                <td>{{ obj.comment }}</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-ip"></td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-s"></td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-v"></td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-d"></td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}">Hors ligne</td>
+                <td id="tool{{ obj.id }}-btn">
+                    <button class="btn btn-block btn-secondary" disabled>Configuration</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        let obj_list = [
+            {% for obj in object_list %}
+                "{{ obj.id }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        function get_tool_info() {
+            for (let i in obj_list) {
+                let pk = obj_list[i];
+                $.ajax({
+                    method: "get",
+                    url: "{% url 'prog:ajax_tool_info' pk=0 %}".replace('0', pk),
+                    success: function(data) {
+                        console.log(data);
+                        let href = data['href'];
+                        let idStatus = '#tool' + pk;
+                        let idButton = idStatus + '-btn';
+                        $(idStatus + '-ip').html(data['ip_addr']);
+                        $(idStatus + '-s').html(data['soft']);
+                        $(idStatus + '-v').html(data['version']);
+                        $(idStatus + '-d').html(data['device']);
+                        $(idStatus).html(data['status']);
+                        if (data['status_code'] === 404) {
+                            $(idButton).html('<button class="btn btn-block btn-secondary" disabled>Configuration</button>');
+                        } else {
+                            $(idButton).html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Configuration</a>');
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+
+        get_tool_info();
+        setInterval(get_tool_info, 10000);
+    </script>
+
+{% endblock %}

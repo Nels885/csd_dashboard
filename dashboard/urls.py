@@ -20,6 +20,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
+    path('import/', views.ImportSqualaetpView.as_view(), name='import'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('post/create/', views.PostCreateView.as_view(), name='create_post'),
     path('post/<int:pk>/edit/', views.PostUpdateView.as_view(), name='update_post'),
@@ -28,5 +29,6 @@ urlpatterns = [
     path('weblink/<int:pk>/update/', views.WebLinkUpdateView.as_view(), name='update_weblink'),
     path('weblink/<int:pk>/delete/', views.WebLinkDeleteView.as_view(), name='delete_weblink'),
     path('weblink/parts-suppliers/', views.supplier_links, name='supplier_links'),
-    path('weblink/other/', views.other_links, name='other_links')
+    path('weblink/other/', views.other_links, name='other_links'),
+    path('suggest/create/', views.SuggestCreateView.as_view(), name='create_suggest')
 ]

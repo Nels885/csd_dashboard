@@ -25,6 +25,7 @@
                 <th>Date</th>
                 <th>Qui</th>
                 <th class="text-nowrap">N° XELON</th>
+                <th class="text-nowrap">Modèle produit</th>
                 <th>Objet</th>
                 <th>Catégorie</th>
                 <th>48h</th>
@@ -49,9 +50,10 @@
                         <a href="{% url 'tools:suptech_detail' pk=obj.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                     </td>
                     <td>{{ obj.id }}</td>
-                    <td class="text-nowrap">{{ obj.date }}</td>
+                    <td class="text-nowrap">{{ obj.date|date:"d/m/Y" }}</td>
                     <td class="text-nowrap">{{ obj.user }}</td>
                     <td>{{ obj.xelon }}</td>
+                    <td>{{ obj.product }}</td>
                     <td style="min-width: 15rem;">{{ obj.item }}</td>
                     <td class="text-nowrap">{{ obj.category|default:"---" }}</td>
                     <td>{% if obj.is_48h %}OUI{% else %}NON{% endif %}</td>
@@ -72,6 +74,7 @@
                     <th>Date</th>
                     <th>Qui</th>
                     <th class="text-nowrap">N° XELON</th>
+                    <th class="text-nowrap">Modèle produit</th>
                     <th>Objet</th>
                     <th>Catégorie</th>
                     <th>Durée</th>

@@ -2,6 +2,56 @@
 Chart.defaults.font.Family = 'Nunito,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.color = '#858796';
 
+const suptechOptions = {
+    maintainAspectRatio: false,
+    layout: {
+        padding: {
+            left: 10,
+            right: 25,
+            top: 25,
+            bottom: 0
+        }
+    },
+    scales: {
+        x: {
+            grid: {
+                display: false,
+                drawBorder: false
+            },
+            ticks: {
+                maxTicksLimit: 10
+            }
+        },
+        y: {
+            max: 100,
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Valeur en %',
+            },
+            ticks: {
+                maxTicksLimit: 6,
+            },
+            grid: {
+                color: "rgb(234, 236, 244)",
+                zeroLineColor: "rgb(234, 236, 244)",
+                drawBorder: false,
+                borderDash: [2],
+                zeroLineBorderDash: [2]
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: true
+        },
+        datalabels: {
+            display: false
+        }
+    }
+}
+
+
 $.ajax({
     method: "GET",
     url: $("#dataCharts").attr("data-url"),
@@ -102,13 +152,14 @@ $.ajax({
         // Suptech CE Area Chart
         var ctx2 = document.getElementById("suptechCeChart");
         var suptechCeChart = new Chart(ctx2, {
-            type: 'line',
+
             data: {
                 labels: data['suptechCeLabels'],
                 datasets: [
                     {
+                        type: 'line',
                         data: data['twoDays'],
-                        label: "1 à 2 jours",
+                        label: "1 à 2 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(0, 143, 136, 1)",
@@ -117,8 +168,9 @@ $.ajax({
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['twoToSixDays'],
-                        label: "3 à 6 jours",
+                        label: "3 à 6 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(240, 132, 40, 1)",
@@ -127,8 +179,9 @@ $.ajax({
                         pointBorderColor: "rgba(240, 132, 40, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['sixDays'],
-                        label: "7 jours et plus",
+                        label: "7 jours et plus (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(214, 54, 33, 1)",
@@ -136,53 +189,25 @@ $.ajax({
                         pointBackgroundColor: "rgba(214, 54, 33, 1)",
                         pointBorderColor: "rgba(214, 54, 33, 1)",
                     },
-                ],
-            },
-            options: {
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 10
+                    {
+                        type: 'bar',
+                        data: data['supNumber'],
+                        label: "Total suptech",
+                        backgroundColor: "rgba(78, 115, 223, 0.2)",
+                        borderWidth: 1,
+                        datalabels: {
+                            align: 'end',
+                            anchor: 'end',
+                            display: true,
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     },
-                    y: {
-                        max: 100,
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valeur en %',
-                        },
-                        ticks: {
-                            maxTicksLimit: 6,
-                        },
-                        grid: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true
-                    }
-                }
+                ],
             },
+            options: suptechOptions,
+            plugins: [ChartDataLabels]
         });
 
         // BGA Duration Area Chart
@@ -340,13 +365,13 @@ $.ajax({
         // Suptech Area Chart
         var ctx5 = document.getElementById("suptechCoChart");
         var suptechCoChart = new Chart(ctx5, {
-            type: 'line',
             data: {
                 labels: data['suptechCoLabels'],
                 datasets: [
                     {
+                        type: 'line',
                         data: data['coTwoDays'],
-                        label: "1 à 2 jours",
+                        label: "1 à 2 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(0, 143, 136, 1)",
@@ -355,8 +380,9 @@ $.ajax({
                         pointBorderColor: "rgba(0, 143, 136, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['coTwoToSixDays'],
-                        label: "3 à 6 jours",
+                        label: "3 à 6 jours (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(240, 132, 40, 1)",
@@ -365,8 +391,9 @@ $.ajax({
                         pointBorderColor: "rgba(240, 132, 40, 1)",
                     },
                     {
+                        type: 'line',
                         data: data['coSixDays'],
-                        label: "7 jours et plus",
+                        label: "7 jours et plus (%)",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(214, 54, 33, 1)",
@@ -374,53 +401,25 @@ $.ajax({
                         pointBackgroundColor: "rgba(214, 54, 33, 1)",
                         pointBorderColor: "rgba(214, 54, 33, 1)",
                     },
-                ],
-            },
-            options: {
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 10
+                    {
+                        type: 'bar',
+                        data: data['coSupNumber'],
+                        label: "Total Suptech",
+                        backgroundColor: "rgba(78, 115, 223, 0.2)",
+                        borderWidth: 1,
+                        datalabels: {
+                            align: 'end',
+                            anchor: 'end',
+                            display: true,
+                            font: {
+                                weight: 'bold'
+                            }
                         }
                     },
-                    y: {
-                        max: 100,
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valeur en %',
-                        },
-                        ticks: {
-                            maxTicksLimit: 6,
-                        },
-                        grid: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true
-                    }
-                }
+                ],
             },
+            options: suptechOptions,
+            plugins: [ChartDataLabels]
         });
 
     },

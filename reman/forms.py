@@ -29,22 +29,33 @@ BATCH_TYPE = [
 
 
 class BatchForm(BSModalModelForm):
+    ACTIVE_CHOICES = ((True, _("No")), (False, _("Yes")))
+    BARCODE_CHOICES = ((False, _("No")), (True, _("Yes")))
+
+    active = forms.ChoiceField(label="Terminé ?", choices=ACTIVE_CHOICES)
+    is_barcode = forms.ChoiceField(label="Nouveau code barre ?", choices=BARCODE_CHOICES)
+
     class Meta:
         model = Batch
-        exclude = ['batch_number']
-        labels = {'ecu_ref_base': 'Réf. REMAN'}
+        fields = ['box_quantity', 'active', 'is_barcode', 'start_date', 'end_date']
         widgets = {
-            'number': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
-            'quantity': forms.TextInput(attrs={'min': 1, 'max': 999, 'type': 'number'}),
             'box_quantity': forms.Select(choices=BOX_NUMBER, attrs={'style': 'width: 40%;'}),
+            'start_date': DatePicker(
+                attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
+                options={'format': 'DD/MM/YYYY'}
+            ),
+            'end_date': DatePicker(
+                attrs={'append': 'fa fa-calendar', 'icon_toggle': True},
+                options={'format': 'DD/MM/YYYY'}
+            )
         }
 
     def save(self, commit=True):
-        batch = super().save(commit=False)
+        instance = super().save(commit=False)
         if commit and not self.request.is_ajax():
-            batch.save()
+            instance.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
-        return batch
+        return instance
 
 
 class AddBatchForm(BSModalModelForm):
@@ -267,7 +278,11 @@ class SelectRepairForm(BSModalForm):
         data = cleaned_data.get("repair")
         if data:
             try:
-                Repair.objects.get(identify_number__exact=data)
+                obj = Repair.objects.get(identify_number__exact=data)
+                if not obj.batch.active:
+                    raise forms.ValidationError("Ce dossier fait partie d'un lot cloturé")
+                if obj.closing_date:
+                    raise forms.ValidationError("Ce dossier a été cloturé")
             except Repair.DoesNotExist:
                 raise forms.ValidationError("Pas de dossier associé")
             except Repair.MultipleObjectsReturned:
@@ -308,7 +323,6 @@ class EditRepairForm(forms.ModelForm):
                 instance.checkout = False
                 instance.closing_date = None
             instance.save()
-            cmd_exportreman_task.delay('--repair')
         return instance
 
 
@@ -367,7 +381,6 @@ class CloseRepairForm(forms.ModelForm):
         instance = super().save(commit=False)
         if commit:
             instance.save()
-            cmd_exportreman_task.delay('--repair')
         return instance
 
 

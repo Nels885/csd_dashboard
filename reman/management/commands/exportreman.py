@@ -1,10 +1,11 @@
-from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 from django.core.management.base import BaseCommand
 
 from reman.models import Batch, Repair, EcuRefBase
 
 from utils.file.export import ExportExcel, os
-from utils.conf import CSD_ROOT, conf
+from utils.conf import CSD_ROOT, conf, ROOT_PATHS
 from utils.file import LogFile
 
 
@@ -44,10 +45,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        path = CSD_ROOT
         if options['batch']:
             self.stdout.write("[BATCH] Waiting...")
-            year = datetime.now().year
+            last_6_months = timezone.datetime.today() + relativedelta(months=-6)
             filename = conf.BATCH_EXPORT_FILE
 
             header = [
@@ -55,20 +55,21 @@ class Command(BaseCommand):
                 'Date_de_Debut', 'Date_de_fin', 'Actif', 'Client', 'Ajoute par', 'Ajoute le'
             ]
             # Batch for PSA
-            psa_batch = Batch.objects.filter(end_date__year=year).order_by('batch_number')
+            psa_batch = Batch.objects.filter(end_date__gte=last_6_months).order_by('-end_date')
             values_list = list(psa_batch.values_list(
                 'batch_number', 'quantity', 'ecu_ref_base__reman_reference', 'ecu_ref_base__ecu_type__technical_data',
                 'ecu_ref_base__ecu_type__hw_reference', 'ecu_ref_base__pf_code', 'ecu_ref_base__ecu_type__supplier_oe',
                 'start_date', 'end_date', 'active', 'customer', 'created_by__username', 'created_at'
             ).distinct())
-            ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
-                        psa_batch.count(), os.path.join(path, filename)
+            for path in ROOT_PATHS:
+                ExportExcel(values_list=values_list, filename=filename, header=header).file(path)
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "[BATCH] Export completed: NB_BATCH = {} | FILE = {}".format(
+                            psa_batch.count(), os.path.join(path, filename)
+                        )
                     )
                 )
-            )
         if options['repair']:
             self.stdout.write("[REPAIR] Waiting...")
 
@@ -77,14 +78,15 @@ class Command(BaseCommand):
             repairs = Repair.objects.exclude(status="Rebut").filter(checkout=False).order_by('identify_number')
             values_list = repairs.values_list('identify_number', 'barcode', 'status', 'quality_control').distinct()
             # values_list = self._repair_list_generate(values_list)
-            ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}".format(
-                        repairs.count(), os.path.join(path, filename)
+            for path in ROOT_PATHS:
+                ExportExcel(values_list=values_list, filename=filename, header=header).file(path, False)
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "[REPAIR] Export completed: NB_REPAIR = {} | FILE = {}".format(
+                            repairs.count(), os.path.join(path, filename)
+                        )
                     )
                 )
-            )
         if options['cal_ecu']:
             self.stdout.write("[ECU_CAL] Waiting...")
 
@@ -108,15 +110,16 @@ class Command(BaseCommand):
                 'ecu_type__ecumodel__barcode', 'ref_cal_out', 'ref_psa_out', 'open_diag', 'ref_mat', 'ref_comp',
                 'cal_ktag', 'status'
             ).distinct()
-            ExportExcel(
-                values_list=values_list, filename=filename, header=header).file(path, False)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}".format(
-                        queryset.count(), os.path.join(path, filename)
+            for path in ROOT_PATHS:
+                ExportExcel(
+                    values_list=values_list, filename=filename, header=header).file(path, False)
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "[CHECK_OUT] Export completed: NB_REMAN = {} | FILE = {}".format(
+                            queryset.count(), os.path.join(path, filename)
+                        )
                     )
                 )
-            )
 
         if options['scan_in_out']:
             self.stdout.write("[SCAN_IN_OUT] Waiting...")
@@ -136,15 +139,16 @@ class Command(BaseCommand):
             )
             values_list = queryset.values_list(*values_list).distinct()
             values_list = [self._replace_value(val) for val in values_list]
-            ExportExcel(
-                values_list=values_list, filename=filename, header=header, novalue="").file(path, False)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}".format(
-                        queryset.count(), os.path.join(path, filename)
+            for path in ROOT_PATHS:
+                ExportExcel(
+                    values_list=values_list, filename=filename, header=header, novalue="").file(path, False)
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "[SCAN_IN_OUT] Export completed: NB_REF = {} | FILE = {}".format(
+                            queryset.count(), os.path.join(path, filename)
+                        )
                     )
                 )
-            )
 
     @staticmethod
     def _repair_list_generate(values_list):

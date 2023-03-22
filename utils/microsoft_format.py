@@ -60,14 +60,14 @@ class BaseFormat:
     def _columns_check(self, col_dict):
         return [column for column in col_dict if column in self.columns]
 
-    def _boolean_convert(self, col_dict):
+    def _boolean_convert(self, col_dict, regex=False):
         """
         Converting string values 'O' or 'N' in boolean
         :return:
             Data line converts
         """
         for col, to_replace in col_dict.items():
-            self.sheet[col].replace(to_replace=to_replace, inplace=True)
+            self.sheet[col].replace(to_replace=to_replace, regex=regex, inplace=True)
 
 
 class ExcelFormat(BaseFormat):
@@ -146,23 +146,6 @@ class ExcelFormat(BaseFormat):
         except UnicodeDecodeError as err:
             print(f"UnicodeDecodeError: {err} - file : {file}")
             return pd.DataFrame()
-
-    @staticmethod
-    def _add_attributs(df_corvet, attribut_file):
-        nrows, new_columns = df_corvet.shape[0], {}
-        if attribut_file:
-            df_attributs = pd.read_excel(attribut_file, 1, converters={'cle2': str})
-            for col in df_corvet.columns:
-                col_upper = col.upper()
-                if len(df_attributs[df_attributs.cle2 == col_upper]) != 0:
-                    new_columns[col] = list(df_attributs.loc[df_attributs.cle2 == col_upper].cle1)[0] + "_" + col
-                elif len(df_attributs[df_attributs.libelle == col_upper]) != 0:
-                    new_columns[col] = list(df_attributs.loc[df_attributs.libelle == col_upper].cle1)[0] + "_" + col
-                else:
-                    new_columns[col] = col
-            df_corvet.rename(columns=new_columns, inplace=True)
-            df_corvet.rename(str.lower, axis='columns', inplace=True)
-        return df_corvet, nrows
 
     def _check_file_date(self, file, datedelta, offdays):
         now = datetime.now()

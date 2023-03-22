@@ -113,7 +113,11 @@ CORVET_DICT = {
         ('44A_CMM_FOURN.NO.SERIE', 'electronique_44a'), ('54A_CMM_FOURN.DATE.FAB', 'electronique_54a'),
         ('64A_CMM_FOURN.CODE', 'electronique_64a'), ('84A_CMM_DOTE', 'electronique_84a'),
         ('P4A_CMM_EOBD', 'electronique_p4a')
-    ]
+    ],
+    'vmf': [
+        ('Modèle VMF', 'prods__vmf__name'),
+        ('11M_VMF_HARD', 'electronique_11m')
+    ],
 }
 
 XELON_LIST = [
@@ -183,7 +187,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
         'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
         'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
-        'cmb': {'electronique_14k__exact': ''}
+        'cmb': {'electronique_14k__exact': ''}, 'vmf':  {'electronique_11m__exact': ''}
     }
 
     def __init__(self, *args, **kwargs) -> None:
@@ -226,12 +230,12 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         vin_list = kwargs.pop('vin_list', None)
         if vin_list is None:
             if kwargs.get('xelon_model', None):
-                filename = f"{kwargs.get('xelon_model')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+                filename = f"{kwargs.get('xelon_model')}"
             else:
-                filename = f"{kwargs.get('product', 'corvet')}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+                filename = f"{kwargs.get('product', 'corvet')}"
             values_list = self.extract_corvet(*args, **kwargs)
         else:
-            filename = f"ecu_{self.date.strftime('%y-%m-%d_%H-%M')}"
+            filename = "ecu"
             values_list = self.extract_ecu(vin_list)
         destination_path = self.file(filename, excel_type, values_list)
         return {
@@ -255,6 +259,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         Export CORVET data to excel format
         """
         self._product_filter(**kwargs)
+        self._vehicle_filter(**kwargs)
         self._select_columns(**kwargs)
         queryset = self.queryset.annotate(
             date_debut_garantie=Cast(TruncSecond('donnee_date_debut_garantie', DateTimeField()), CharField()))
@@ -272,8 +277,14 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         if kwargs.get('end_date', None):
             queryset = queryset.filter(donnee_date_debut_garantie__lte=kwargs.get('end_date'))
 
-        values_list = queryset.values_list(*self.fields).distinct()[:30000]
+        values_list = queryset.values_list(*self.fields).distinct()
         return values_list
+
+    def _vehicle_filter(self, **kwargs):
+        if kwargs.get('vehicle', None):
+            self.queryset = self.queryset.filter(donnee_ligne_de_produit=kwargs.get('vehicle'))
+        if kwargs.get('brand', None):
+            self.queryset = self.queryset.filter(donnee_marque_commerciale=kwargs.get('brand'))
 
     def _product_filter(self, **kwargs):
         corvet = Corvet.hw_search(kwargs.get('hw_reference'))

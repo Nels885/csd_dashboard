@@ -103,7 +103,7 @@ class ExcelDelayAnalysis(ExcelFormat):
 
 class ExcelTimeLimitAnalysis(ExcelFormat):
     COLS = {'A': 'numero_de_dossier', 'B': 'date_retour', 'D': 'date_de_cloture', 'E': 'type_de_cloture',
-            'F': 'nom_technicien', 'M': 'famille_produit'}
+            'F': 'nom_technicien', 'H': 'code_magasin', 'I': 'code_zone', 'M': 'famille_produit'}
     COLS_DATE = {'date_retour': "%d/%m/%Y", 'date_de_cloture': "%d/%m/%Y %H:%M:%S"}
 
     def __init__(self, file, sheet_name=0, columns=None, skiprows=2):

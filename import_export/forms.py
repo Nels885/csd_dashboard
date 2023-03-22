@@ -3,7 +3,7 @@ from django import forms
 # from .utils import CORVET_DICT
 from squalaetp.models import Xelon
 from reman.models import Batch
-from psa.models import CorvetOption
+from psa.models import CorvetOption, CorvetChoices
 from utils.django.forms.fields import ListTextWidget
 
 FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
@@ -13,7 +13,7 @@ class ExportCorvetForm(forms.Form):
     PRODUCTS = [
         ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('artiv', 'ARTIV'),
-        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'),
+        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('vmf', 'VMF'),
         ('xelon', 'ALL Xelon')
     ]
     # COLS = [(key, key.upper()) for key in CORVET_DICT.keys()]
@@ -21,10 +21,13 @@ class ExportCorvetForm(forms.Form):
         ('data_extra', 'Info Véhicule'), ('audio_cfg', 'Config Audio'),
         ('cmm', 'ECU'), ('cmm_extra', 'ECU Extra'), ('bsi', 'BSI'), ('bsi_extra', 'BSI Extra'), ('com200x', 'COM200x'),
         ('bsm', 'BSM'), ('cvm', 'CVM'), ('cvm_extra', 'CVM Extra'), ('artiv', 'ARTIV'), ('artiv_extra', 'ARTIV Extra'),
-        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('emf', 'DISPLAY'),
+        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('emf', 'DISPLAY'), ('vmf', 'VMF'),
         ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
     ]
 
+    brand = forms.ChoiceField(label='Marque', required=False, choices=CorvetChoices.brands(), widget=forms.Select())
+    vehicle = forms.ChoiceField(
+        label='Véhicule (CORVET)', required=False, choices=CorvetChoices.vehicles(), widget=forms.Select())
     product = forms.ChoiceField(label='Type produit', required=False, choices=PRODUCTS, widget=forms.Select())
     hw_reference = forms.CharField(label="Réf. HW (CORVET)", required=False, widget=forms.TextInput())
     xelon_model = forms.CharField(label='Produit (XELON)', required=False, widget=forms.TextInput())
@@ -91,6 +94,8 @@ class CorvetVinListForm(forms.Form):
 
 class ExportToolsForm(forms.Form):
     TABLES = [('suptech', 'SUPTECH'), ('bga_time', 'UTILISATION BGA')]
+    MONTH_CHOICES = [('', 'All'), ('6', '6 derniers mois'), ('12', '12 derniers mois')]
 
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
+    date_delta = forms.ChoiceField(label='Date', required=False, choices=MONTH_CHOICES, widget=forms.Select())

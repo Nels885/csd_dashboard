@@ -28,6 +28,7 @@ $(document).ready(function () {
             {data: "supplier_oe"},
             {data: "hw_reference"},
             {data: "barcode"},
+            {data: "new_barcode"},
             {data: "status"},
             {data: "quality_control"},
             {data: "closing_date"},

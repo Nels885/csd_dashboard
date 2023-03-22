@@ -110,7 +110,8 @@
         </div>
 
         <!-- Detail Info véhicule -->
-        <div class="tab-pane {% if select == 'vehicle' %}active{% endif %}" id="vehicle" role="tabpanel" aria-labelledby="vehicle-tab">
+        <div class="tab-pane {% if select == 'vehicle' %}active{% endif %}" id="vehicle" role="tabpanel"
+             aria-labelledby="vehicle-tab">
 
             {% include 'psa/detail/detail_vehicle.html' %}
 
@@ -172,9 +173,13 @@
                 <div class="modal-body text-center">
                     <div>
                         {% if corvet.donnee_marque_commerciale == "0P" %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
+                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
+                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
+                            {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
                         {% else %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
+                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
+                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
+                            {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
                         {% endif %}                    </div>
                     <img id="barcode" src="" alt="{{ xelon.vin }}"/>
                 </div>
@@ -188,10 +193,12 @@
 
     <script type="text/javascript" src="{% static 'js/JsBarcode/JsBarcode.all.min.js' %}"></script>
     <script type="text/javascript">
+        // Barcode generator
         JsBarcode("#barcode", "{{ xelon.vin }}", {
             width: 2.2,
             height: 100,
         });
+
     </script>
 
 {% endblock %}

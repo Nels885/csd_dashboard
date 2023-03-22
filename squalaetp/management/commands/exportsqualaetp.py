@@ -8,7 +8,7 @@ from squalaetp.models import Xelon
 from psa.models import Corvet
 
 from utils.file.export import ExportExcel, os
-from utils.conf import CSD_ROOT
+from utils.conf import CSD_ROOT, EXTS_PATHS
 
 logger = logging.getLogger('command')
 
@@ -44,7 +44,6 @@ class Command(BaseCommand):
         else:
             self.stdout.write("[SQUALAETP_EXPORT] Waiting...")
 
-            path = os.path.join(CSD_ROOT, "EXTS")
             header = [
                 'Numero de dossier', 'V.I.N.', 'Modele produit', 'Modele vehicule', 'DATE_DEBUT_GARANTIE',
                 'DATE_ENTREE_MONTAGE', 'LIGNE_DE_PRODUIT', 'MARQUE_COMMERCIALE', 'SILHOUETTE', 'GENRE_DE_PRODUIT',
@@ -70,25 +69,26 @@ class Command(BaseCommand):
                 extra_list = ('telecodage', 'appairage')
 
                 values_list = queryset.values_list(*(xelon_list + corvet_list + extra_list)).distinct()
-                for filename in string_to_list(config.SQUALAETP_FILE_LIST):
-                    error = ExportExcel(
-                        values_list=values_list, filename=filename, header=header).file(path, False)
-                    if error:
-                        self.stdout.write(
-                            self.style.ERROR(
-                                "[SQUALAETP_EXPORT] Export error because {} file is read-only!".format(
-                                    os.path.join(path, filename)
+                for path in EXTS_PATHS:
+                    for filename in string_to_list(config.SQUALAETP_FILE_LIST):
+                        error = ExportExcel(
+                            values_list=values_list, filename=filename, header=header).file(path, False)
+                        if error:
+                            self.stdout.write(
+                                self.style.ERROR(
+                                    "[SQUALAETP_EXPORT] Export error because {} file is read-only!".format(
+                                        os.path.join(path, filename)
+                                    )
                                 )
                             )
-                        )
-                    else:
-                        self.stdout.write(
-                            self.style.SUCCESS(
-                                "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}".format(
-                                    queryset.count(), os.path.join(path, filename)
+                        else:
+                            self.stdout.write(
+                                self.style.SUCCESS(
+                                    "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}".format(
+                                        queryset.count(), os.path.join(path, filename)
+                                    )
                                 )
                             )
-                        )
             except FileNotFoundError as err:
                 self.stdout.write(self.style.ERROR("[SQUALAETP_EXPORT] {}".format(err)))
                 logger.error(f"FileNotFoundError: {err}")

@@ -3,7 +3,6 @@ from django.test import TransactionTestCase
 
 from sbadmin.celery import app
 
-from dashboard.tests.base import UnitTest
 from psa.tasks import save_corvet_to_models, import_corvet_task, import_corvet_list_task
 
 

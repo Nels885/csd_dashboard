@@ -53,7 +53,7 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
     def run(self, *args, **kwargs):
         excel_type = kwargs.pop('excel_type', 'xlsx')
         model = kwargs.pop('table', 'batch')
-        filename = f"{model}_{self.date.strftime('%y-%m-%d_%H-%M')}"
+        filename = f"{model}"
         if model == "base_ref_reman":
             values_list = self.extract_ecurefbase(*args, **kwargs)
         elif model == "repair_reman":

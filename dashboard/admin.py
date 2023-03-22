@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Permission, User
 from django.contrib.auth.admin import UserAdmin
 
-from .models import UserProfile, Post, WebLink, ShowCollapse, Contract
+from .models import UserProfile, Post, WebLink, ShowCollapse, Contract, SuggestBox
 from .forms import UserProfileAdminForm
 
 
@@ -21,7 +21,8 @@ class ShowCollapseAdmin(admin.ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     inlines = (UserProfileAdmin,)
     list_display = (
-        'username', 'email', 'first_name', 'last_name', 'get_job_title', 'get_service', 'is_staff', 'is_active'
+        'username', 'email', 'first_name', 'last_name', 'last_login', 'get_job_title', 'get_service', 'is_staff',
+        'is_active'
     )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'profile__job_title', 'profile__service')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__job_title', 'profile__service')
@@ -109,6 +110,12 @@ class ContractAdmin(admin.ModelAdmin):
     list_filter = ('is_active',)
 
 
+class SuggestBoxAdmin(admin.ModelAdmin):
+    list_display = ('title', 'status', 'created_by', 'created_at')
+    search_fields = ('title', 'created_by')
+    list_filter = ('status',)
+
+
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Permission)
@@ -116,3 +123,4 @@ admin.site.register(Post)
 admin.site.register(WebLink)
 admin.site.register(ShowCollapse, ShowCollapseAdmin)
 admin.site.register(Contract, ContractAdmin)
+admin.site.register(SuggestBox, SuggestBoxAdmin)

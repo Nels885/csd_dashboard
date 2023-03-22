@@ -82,7 +82,7 @@ class PsaTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_detail_page(self):
-        url = reverse('psa:corvet_detail', kwargs={'vin': self.vin})
+        url = reverse('psa:corvet_detail', kwargs={'pk': self.vin})
 
         # Detail page is disconnected
         response = self.client.get(url)
@@ -92,11 +92,11 @@ class PsaTestCase(UnitTest):
         self.login()
 
         # Detail is not found
-        response = self.client.get(reverse('psa:corvet_detail', kwargs={'vin': "123456789"}))
+        response = self.client.get(reverse('psa:corvet_detail', kwargs={'pk': "123456789"}))
         self.assertEqual(response.status_code, 404)
 
         # Detail is found
-        response = self.client.get(reverse('psa:corvet_detail', kwargs={'vin': self.vin}))
+        response = self.client.get(reverse('psa:corvet_detail', kwargs={'pk': self.vin}))
         self.assertEqual(response.status_code, 200)
 
     def test_corvet_view_set_is_disconnected(self):

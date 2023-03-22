@@ -32,6 +32,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
         default.update({"mds": Ecu.objects.filter(comp_ref__startswith=instance.electronique_19h, type='MDS').first()})
     if instance.electronique_12y.isdigit():
         default.update({"cvm2": Ecu.objects.filter(comp_ref__startswith=instance.electronique_12y, type='CVM2').first()})
+    if instance.electronique_11m.isdigit():
+        default.update({"vmf": Ecu.objects.filter(comp_ref__startswith=instance.electronique_11m, type='VMF').first()})
     CorvetProduct.objects.update_or_create(corvet=instance, defaults=default)
     Xelon.objects.filter(vin=instance.vin).update(corvet=instance)
     Sivin.objects.filter(codif_vin=instance.vin).update(corvet=instance)
@@ -67,3 +69,5 @@ def post_save_ecu(sender, created, instance, **kwargs):
         CorvetProduct.objects.filter(corvet__electronique_19h__startswith=instance.comp_ref).update(mds=instance.pk)
     if instance.type == "CVM2":
         CorvetProduct.objects.filter(corvet__electronique_12y__startswith=instance.comp_ref).update(cvm2=instance.pk)
+    if instance.type == "VMF":
+        CorvetProduct.objects.filter(corvet__electronique_11m__startswith=instance.comp_ref).update(vmf=instance.pk)

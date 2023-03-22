@@ -2,7 +2,7 @@ from django.contrib.messages import get_messages
 
 from .base import UnitTest, reverse
 
-from dashboard.models import Post, WebLink
+from dashboard.models import Post, WebLink, SuggestBox
 
 
 class MixinsTest(UnitTest):
@@ -170,3 +170,23 @@ class MixinsTest(UnitTest):
         messages = get_messages(response.wsgi_request)
         self.assertEqual(len(messages), 1)
         self.assertEqual(WebLink.objects.count(), old_link_nb - 1)
+
+    def test_create_suggest_ajax_mixin(self):
+        """
+        Create Post throught BSModalCreateView.
+        """
+
+        # First post request = ajax request checking if form in view is valid
+        response = self.client.post(
+            reverse('dashboard:create_suggest'),
+            data={
+                'title': 'test1',
+                'description': 'texte',
+                'username': self.user.username,
+            },
+        )
+        # Redirection
+        self.assertRedirects(response, reverse('index'), status_code=302)
+        # Object is created
+        objects = SuggestBox.objects.all()
+        self.assertEqual(objects.count(), 1)
