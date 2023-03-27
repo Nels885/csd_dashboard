@@ -13,7 +13,7 @@ class ExportCorvetForm(forms.Form):
     PRODUCTS = [
         ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('artiv', 'ARTIV'),
-        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('vmf', 'VMF'),
+        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('vmf', 'VMF'), ('dmtx', 'DMTX'),
         ('xelon', 'ALL Xelon')
     ]
     # COLS = [(key, key.upper()) for key in CORVET_DICT.keys()]
@@ -22,6 +22,7 @@ class ExportCorvetForm(forms.Form):
         ('cmm', 'ECU'), ('cmm_extra', 'ECU Extra'), ('bsi', 'BSI'), ('bsi_extra', 'BSI Extra'), ('com200x', 'COM200x'),
         ('bsm', 'BSM'), ('cvm', 'CVM'), ('cvm_extra', 'CVM Extra'), ('artiv', 'ARTIV'), ('artiv_extra', 'ARTIV Extra'),
         ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('emf', 'DISPLAY'), ('vmf', 'VMF'),
+        ('dmtx', 'DMTX'), ('dmtx_extra', 'DMTX Extra'),
         ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
     ]
 

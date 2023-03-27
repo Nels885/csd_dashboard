@@ -118,6 +118,15 @@ CORVET_DICT = {
         ('Modèle VMF', 'prods__vmf__name'),
         ('11M_VMF_HARD', 'electronique_11m')
     ],
+    'dmtx': [
+        ('11Q_DMTX_HARD', 'electronique_11q')
+    ],
+    'dmtx_extra': [
+        ('41Q_DMTX_FOURN.NO.SERIE', 'electronique_41q'),
+        ('51Q_DMTX_FOURN.DATE.FAB', 'electronique_51q'),
+        ('61Q_DMTX_FOURN.CODE', 'electronique_61q'),
+        ('91Q_DMTX_SOFT', 'electronique_91q')
+    ]
 }
 
 XELON_LIST = [
