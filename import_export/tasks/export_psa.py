@@ -196,7 +196,8 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
         'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
         'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
-        'cmb': {'electronique_14k__exact': ''}, 'vmf':  {'electronique_11m__exact': ''}
+        'cmb': {'electronique_14k__exact': ''}, 'vmf':  {'electronique_11m__exact': ''},
+        'dmtx': {'electronique_11q__exact': ''}
     }
 
     def __init__(self, *args, **kwargs) -> None:
