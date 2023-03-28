@@ -32,7 +32,7 @@ class Command(BaseCommand):
         self.stdout.write("[IMPORT_EXCEL] Waiting...")
         call_command("loadraspeedi", stdout=out)
         call_command("programing", stdout=out)
-        call_command("loadsqualaetp", "--xelon_update", stdout=out)
+        call_command("loadsqualaetp", stdout=out)
         call_command("importcorvet", "--squalaetp", stdout=out)
         call_command("exportsqualaetp")
         call_command("loadsqualaetp", "--relations")
