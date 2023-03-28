@@ -1,3 +1,5 @@
+{% load corvet_tags %}
+
 <table class="table table-bordered table-striped table-sm">
 
     {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display upper_title="affichage" %}
@@ -53,6 +55,12 @@
             <td class="text-dark td-ihm">N° série RAD</td>
             <td>{{ object.electronique_44f }}</td>
         </tr>
+        {% if object.electronique_64f %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur RAD</td>
+                <td>{{ object.electronique_64f|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
     {% endif %}
     {% if object.electronique_14x %}
         <tr>
@@ -70,6 +78,12 @@
             <td class="text-dark td-ihm">N° série NAV</td>
             <td>{{ object.electronique_44x }}</td>
         </tr>
+        {% if object.electronique_64x %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur NAV</td>
+                <td>{{ object.electronique_64x|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
     {% endif %}
     </tbody>
 </table>
@@ -99,6 +113,12 @@
             <td class="text-dark td-ihm">N° série ECU moteur</td>
             <td>{{ object.electronique_44a }}</td>
         </tr>
+        {% if object.electronique_64a %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur moteur</td>
+                <td>{{ object.electronique_64a|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
         <!-- BSM -->
         <tr>
             <td class="text-dark td-ihm">Réf HW BSM</td>
@@ -112,6 +132,12 @@
             <td class="text-dark td-ihm">N° série BSM</td>
             <td>{{ object.electronique_46b }}</td>
         </tr>
+        {% if object.electronique_66b %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur BSM</td>
+                <td>{{ object.electronique_66b|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
         <!-- DMTX - Dispositif Maintien Tension -->
         <tr>
             <td class="text-dark td-ihm">Réf HW DMTX</td>
@@ -125,10 +151,12 @@
             <td class="text-dark td-ihm">N° série DMTX</td>
             <td>{{ object.electronique_41q }}</td>
         </tr>
-        <tr>
-            <td class="text-dark td-ihm">Fournisseur DMTX</td>
-            <td>{{ object.electronique_61q }}</td>
-        </tr>
+        {% if object.electronique_61q %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur DMTX</td>
+                <td>{{ object.electronique_61q|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
     </tbody>
 </table>
 
@@ -153,6 +181,12 @@
             <td class="text-dark td-ihm">N° série BSI</td>
             <td>{{ object.electronique_44b }}</td>
         </tr>
+        {% if object.electronique_64b %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur BSI</td>
+                <td>{{ object.electronique_64b|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
         <!-- COM200x -->
         <tr>
             <td class="text-dark td-ihm">Réf HW COM200x</td>
@@ -165,6 +199,12 @@
             <td class="text-dark td-ihm">N° série COM200x</td>
             <td>{{ object.electronique_46p }}</td>
         </tr>
+        {% if object.electronique_66p %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur COM200x</td>
+                <td>{{ object.electronique_66p|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
         <!-- VMF -->
         <tr>
             <td class="text-dark td-ihm">Réf HW VMF</td>

@@ -3,7 +3,9 @@ from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
 
-from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute
+from .models import (
+    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode
+)
 
 
 class CorvetListFilter(admin.SimpleListFilter):
@@ -160,3 +162,4 @@ admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
 admin.site.register(Ecu, EcuAdmin)
+admin.site.register(SupplierCode)

@@ -519,3 +519,15 @@ class Ecu(models.Model):
 
     def __str__(self):
         return f"{self.comp_ref}_{self.name}"
+
+
+class SupplierCode(models.Model):
+    code = models.CharField('code', max_length=4, primary_key=True)
+    name = models.CharField('nom fournisseur', max_length=200)
+
+    class Meta:
+        verbose_name = "Code Fournisseur"
+        ordering = ['code']
+
+    def __str__(self):
+        return self.name
