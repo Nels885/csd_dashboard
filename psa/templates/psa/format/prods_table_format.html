@@ -1,0 +1,77 @@
+<!-- CMB Info -->
+{% if prods.cmb %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseCmb" expanded=collapse.cmb upper_title="combiné planche de bord" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseCmb" show=collapse.cmb object=prods.cmb %}
+
+    </table>
+
+{% endif %}
+
+<!-- EMF Info -->
+{% if prods.emf %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseEmf" expanded=collapse.emf upper_title="écran multifonction" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseEmf" show=collapse.emf object=prods.emf %}
+
+    </table>
+
+{% endif %}
+
+<!-- CMM Info -->
+{% if prods.cmm %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseCmm" expanded=collapse.cmm upper_title="calculateur moteur" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseCmm" show=collapse.cmm object=prods.cmm %}
+
+    </table>
+
+{% endif %}
+
+<!-- BSI Info -->
+{% if prods.bsi %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseBsi" expanded=collapse.bsi upper_title="bsi" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseBsi" show=collapse.bsi object=prods.bsi %}
+
+    </table>
+
+{% endif %}
+
+<!-- COM200x Info -->
+{% if prods.hdc %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseHdc" expanded=collapse.hdc thead_title="COM200x" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseHdc" show=collapse.hdc object=prods.hdc %}
+
+    </table>
+
+{% endif %}
+
+<!-- CVM Info -->
+{% if prods.cvm %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseCvm" expanded=collapse.cvm thead_title="CVM v2" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseCvm" show=collapse.cvm object=prods.cvm %}
+
+    </table>
+
+{% endif %}

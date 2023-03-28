@@ -55,17 +55,7 @@
 
         {% include 'prog/format/prog_table_format.html' with object=prog %}
 
-        {% include 'psa/format/cmb_table_format.html' with object=corvet.prods.cmb %}
-
-        {% include 'psa/format/emf_table_format.html' with object=corvet.prods.emf %}
-
-        {% include 'psa/format/cmm_table_format.html' with object=corvet.prods.cmm %}
-
-        {% include 'psa/format/bsi_table_format.html' with object=corvet.prods.bsi %}
-
-        {% include 'psa/format/hdc_table_format.html' with object=corvet.prods.hdc %}
-
-        {% include 'psa/format/cvm_table_format.html' with object=corvet.prods.cvm2 %}
+        {% include 'psa/format/prods_table_format.html' with prods=corvet.prods %}
 
     </section>
     <section class="col-sm-6">

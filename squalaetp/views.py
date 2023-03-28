@@ -20,10 +20,10 @@ from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, Sivi
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.forms import CorvetForm
 from psa.templatetags.corvet_tags import get_corvet
+from psa.utils import collapse_select
 from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
-from .utils import collapse_select
 from utils.file import LogFile
 from utils.conf import CSD_ROOT
 from utils.django.urls import reverse_lazy, http_referer
@@ -95,7 +95,7 @@ def detail(request, pk):
     title = xelon.numero_de_dossier
     suptechs = Suptech.objects.filter(xelon=xelon.numero_de_dossier)
     select = "xelon"
-    collapse = collapse_select(xelon)
+    collapse = collapse_select(xelon.modele_produit)
     if corvet:
         if corvet.electronique_14x.isdigit():
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()

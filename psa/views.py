@@ -12,6 +12,7 @@ from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm
 from .models import Corvet, Multimedia
+from .utils import COLLAPSE_LIST
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
 from prog.models import Programing
@@ -113,13 +114,10 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
 def corvet_detail(request, pk):
     """
     detailed view of Corvet data for a file
-    :param vin:
+    :param pk:
         VIN for Corvet data
     """
-    collapse = {
-        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True,
-        "cmb": True
-    }
+    collapse = {key: True for key in COLLAPSE_LIST}
     corvet = get_object_or_404(Corvet, vin=pk)
     if corvet.electronique_14x.isdigit():
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
