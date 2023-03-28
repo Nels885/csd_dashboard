@@ -52,8 +52,6 @@ class BaseTest:
         self.user.save()
         self.redirectUrl = reverse('index')
         self.nextLoginUrl = '/accounts/login/?next='
-        call_command('constance', 'set', 'CORVET_USER', '')
-        call_command('constance', 'set', 'CORVET_PWD', '')
 
     def add_group_user(self, *args):
         for group in args:

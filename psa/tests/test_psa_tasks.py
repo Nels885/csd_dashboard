@@ -1,11 +1,14 @@
 from celery.contrib.testing.worker import start_worker
 from django.test import TransactionTestCase
+from constance.test import override_config
 
 from sbadmin.celery import app
 
 from psa.tasks import save_corvet_to_models, import_corvet_task, import_corvet_list_task
 
 
+@override_config(CORVET_USER="")
+@override_config(CORVET_PWD="")
 class PsaTaskTestCase(TransactionTestCase):
 
     def setUp(self):
