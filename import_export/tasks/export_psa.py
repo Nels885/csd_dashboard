@@ -119,13 +119,13 @@ CORVET_DICT = {
         ('11M_VMF_HARD', 'electronique_11m')
     ],
     'dmtx': [
+        ('Modèle DMTX', 'prods__dmtx__name'),
         ('11Q_DMTX_HARD', 'electronique_11q')
     ],
     'dmtx_extra': [
-        ('41Q_DMTX_FOURN.NO.SERIE', 'electronique_41q'),
-        ('51Q_DMTX_FOURN.DATE.FAB', 'electronique_51q'),
-        ('61Q_DMTX_FOURN.CODE', 'electronique_61q'),
-        ('91Q_DMTX_SOFT', 'electronique_91q')
+        ('41Q_DMTX_FOURN.NO.SERIE', 'electronique_41q'), ('51Q_DMTX_FOURN.DATE.FAB', 'electronique_51q'),
+        ('61Q_DMTX_FOURN.CODE', 'electronique_61q'), ('91Q_DMTX_SOFT', 'electronique_91q'),
+        ('Réf. Setplate DMTX', 'prods__dmtx__label_ref'),
     ]
 }
 
