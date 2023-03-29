@@ -215,9 +215,9 @@
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.ecu upper_title="sécurité" %}
+    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.security upper_title="sécurité" %}
 
-    <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseSecu">
+    <tbody class="collapse {% if collapse.security %}show{% endif %}" id="collapseSecu">
         <!-- ASS -->
         <tr>
             <td class="text-dark td-ihm">Réf HW boitier AAS</td>

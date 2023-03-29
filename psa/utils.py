@@ -1,9 +1,9 @@
-from .models import Ecu
+from .models import Ecu, Multimedia
 
 
 COLLAPSE_LIST = [
     "media", "prog", "cmb", "emf", "cmm", "bsi", "hdc", "cvm", 'vmf',
-    "display", "audio", "ecu", "cockpit"
+    "display", "audio", "ecu", "cockpit", "security"
 ]
 
 
@@ -14,23 +14,30 @@ def collapse_select(xelon_name):
     @return: Dictionary of the different names of collapses with their status
     """
     ecu = Ecu.objects.filter(xelon_name=xelon_name)
+    media = Multimedia.objects.filter(xelon_name=xelon_name)
     collapse = {key: False for key in COLLAPSE_LIST}
     if ecu:
-        type = ecu.first().type
-        if type == "CMM":
-            collapse.update({"cmm": True, "ecu": True})
-        elif type == "BSI":
-            collapse.update({"bsi": True, "ecu": True})
-        elif type == "HDC":
-            collapse.update({"hdc": True, "ecu": True})
-        elif type == "CVM2":
-            collapse.update({"cvm": True, "ecu": True})
-        elif type == "VMF":
-            collapse.update({'vmf': True, "ecu": True})
-        elif type == "CMB":
+        ecu_type = ecu.first().type
+        # Display collapse
+        if ecu_type == "CMB":
             collapse.update({"cmb": True, "display": True})
-        elif type == "EMF":
-            collapse.update({"media": True, "emf": True, "display": True, "audio": True})
+        elif ecu_type == "EMF":
+            collapse.update({"emf": True, "media": True, "display": True, "audio": True})
+        # Motor collapse
+        elif ecu_type == "CMM":
+            collapse.update({"cmm": True, "ecu": True})
+        # Cockpit collapse
+        elif ecu_type == "BSI":
+            collapse.update({"bsi": True, "cockpit": True})
+        elif ecu_type == "HDC":
+            collapse.update({"hdc": True, "cockpit": True})
+        elif ecu_type == "VMF":
+            collapse.update({'vmf': True, "cockpit": True})
+        # Security collapse
+        elif ecu_type == "CVM2":
+            collapse.update({"cvm": True, "security": True})
+    elif media:
+        collapse.update({"media": True, "emf": True, "audio": True})
     else:
-        collapse.update({"media": True, "audio": True, "emf": True})
+        collapse.update({key: True for key in ["display", "audio", "ecu", "cockpit", "security"]})
     return collapse
