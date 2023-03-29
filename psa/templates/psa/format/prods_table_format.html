@@ -75,3 +75,16 @@
     </table>
 
 {% endif %}
+
+<!-- DMTX Info -->
+{% if prods.dmtx %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseDmtx" expanded=collapse.dmtx upper_title="dispositif maintien tension" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseDmtx" show=collapse.dmtx object=prods.dmtx %}
+
+    </table>
+
+{% endif %}
