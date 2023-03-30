@@ -54,11 +54,10 @@ def send_email_task(self, subject: str, body: str, from_email: str, to: list, cc
 
 @celery_app.task
 def save_sivin_to_models(immat, **kwargs):
-    test = kwargs.get("test", False)
     msg = "SIVIN not Found"
     if not immat.isnumeric() and (6 < len(immat) < 11):
         start_time = time.time()
-        sivin = ScrapingSivin(test=test)
+        sivin = ScrapingSivin(test=kwargs.get("test", False))
         data = xml_sivin_parser(sivin.result(immat))
         sivin.quit()
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:

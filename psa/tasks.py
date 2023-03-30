@@ -10,10 +10,10 @@ from utils.django.validators import vin_psa_isvalid
 
 
 @celery_app.task
-def save_corvet_to_models(vin):
+def save_corvet_to_models(vin, **kwargs):
     msg = f"{vin} Not VIN PSA"
     if vin_psa_isvalid(vin):
-        scrap = ScrapingCorvet()
+        scrap = ScrapingCorvet(test=kwargs.get("test", False))
         start_time = time.time()
         for attempt in range(2):
             row = xml_parser(scrap.result(vin))
@@ -24,16 +24,16 @@ def save_corvet_to_models(vin):
             elif isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                 defaults = defaults_dict(Corvet, row, "vin")
                 obj, created = Corvet.objects.update_or_create(vin=row.get("vin"), defaults=defaults)
-                obj.prods.update = False
-                obj.prods.save()
+                obj.opts.update = False
+                obj.opts.save()
                 delay_time = time.time() - start_time
                 msg = f"{vin} updated in {delay_time}"
                 break
             if attempt:
+                Corvet.objects.filter(vin=vin).delete()
                 delay_time = time.time() - start_time
                 msg = f"{vin} error VIN in {delay_time}"
-                Corvet.objects.filter(vin=vin).delete()
-        scrap.close()
+        scrap.quit()
     return msg
 
 
@@ -50,7 +50,7 @@ def import_corvet_task(self, vin):
         else:
             msg = scrap.result(vin)
         progress_recorder.set_progress(3, 4)
-        scrap.close()
+        scrap.quit()
     return msg
 
 
@@ -76,9 +76,8 @@ def import_corvet_list_task(self, *args, **kwargs):
                     elif isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                         defaults = defaults_dict(Corvet, row, "vin")
                         obj, created = Corvet.objects.update_or_create(vin=row.get("vin"), defaults=defaults)
-                        obj.prods.update = False
-                        obj.prods.save()
                         obj.opts.tag = "ICARE"
+                        obj.opts.update = False
                         obj.opts.save()
                         delay_time = time.time() - start_time
                         msg += f"{vin} updated in {delay_time}"
@@ -87,7 +86,7 @@ def import_corvet_list_task(self, *args, **kwargs):
                         delay_time = time.time() - start_time
                         msg += f"{vin} error VIN in {delay_time}"
                         Corvet.objects.filter(vin=vin).delete()
-                scrap.close()
+                scrap.quit()
             else:
                 msg += f"{vin} Not VIN PSA"
         else:
