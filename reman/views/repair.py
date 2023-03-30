@@ -171,3 +171,5 @@ class RepairViewSet(viewsets.ModelViewSet):
             self.queryset = self.queryset.exclude(status="Rebut").filter(checkout=False)
         elif query and query == 'checkout':
             self.queryset = self.queryset.filter(status="Réparé", quality_control=True, checkout=False)
+        elif query:
+            self.queryset = Repair.search(query)

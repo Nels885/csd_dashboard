@@ -133,7 +133,7 @@ def search_ajax(request):
         select = form.cleaned_data['select']
         if query and select:
             if vin_psa_isvalid(query.upper()):
-                if not Corvet.search(query):
+                if not Corvet.objects.filter(vin__iexact=query):
                     task = save_corvet_to_models.delay(query)
                     data['task_id'] = task.id
             elif not re.match(r'^[9a-zA-Z]\d{9}$', str(query)) and (6 < len(query) < 11):

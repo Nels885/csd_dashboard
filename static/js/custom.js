@@ -185,7 +185,6 @@ $("#searchForm").submit(function (e) {
             // console.log(data);
             if (data.task_id) {
                 var progressUrl = "/celery-progress/?task_id=" + data.task_id;
-
                 // console.log(progressUrl);
 
                 function customResult(resultElement, result) {

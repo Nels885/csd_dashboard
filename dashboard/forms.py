@@ -135,7 +135,7 @@ class WebLinkForm(BSModalModelForm):
 
 class SearchForm(forms.Form):
     SELECTS = [
-        ('atelier', 'Atelier'), ('reman', 'Reman'), ('sivin', 'SIVIN')
+        ('repair', 'Repair'), ('reman', 'Reman')
     ]
 
     select = forms.ChoiceField(choices=SELECTS, widget=forms.Select())

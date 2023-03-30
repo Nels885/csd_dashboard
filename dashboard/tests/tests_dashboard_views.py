@@ -164,18 +164,18 @@ class DashboardTestCase(UnitTest):
 
         # Search by VIN is valid
         for value in [self.vin, self.vin.lower()]:
-            response = self.client.get(url, {'query': value, 'select': 'atelier'})
+            response = self.client.get(url, {'query': value, 'select': 'repair'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
         Xelon.objects.create(numero_de_dossier='A123456780', vin=self.vin, modele_produit='produit',
                              modele_vehicule='peugeot')
-        response = self.client.get(url, {'query': self.vin, 'select': 'atelier'})
+        response = self.client.get(url, {'query': self.vin, 'select': 'repair'})
         self.assertRedirects(response, '/squalaetp/xelon/?filter=' + self.vin, status_code=302)
         response = self.client.get(reverse('dashboard:search'), {'query': self.vin, 'select': 'reman'})
         self.assertRedirects(response, self.redirectUrl, status_code=302)
 
         # Search by Xelon is valid
         for value in ['A123456789', 'a123456789']:
-            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'atelier'})
+            response = self.client.get(reverse('dashboard:search'), {'query': value, 'select': 'repair'})
             self.assertRedirects(response, '/squalaetp/' + self.xelonId + '/detail/', status_code=302)
 
     def test_search_ajax(self):
@@ -188,7 +188,7 @@ class DashboardTestCase(UnitTest):
         self.assertEqual(len(data), 2)
 
         # Search is valid
-        params = {'query': 'test', 'select': 'atelier'}
+        params = {'query': 'test', 'select': 'repair'}
         response = self.client.post(url, params )
         data = json.loads(response.content)
         self.assertEqual(data['url'], reverse('dashboard:search', get=params))
