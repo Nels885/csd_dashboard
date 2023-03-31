@@ -13,9 +13,9 @@ from utils.django.validators import vin_psa_isvalid
 def save_corvet_to_models(vin, **kwargs):
     msg = f"{vin} Not VIN PSA"
     if vin_psa_isvalid(vin):
-        scrap = ScrapingCorvet(test=kwargs.get("test", False))
         start_time = time.time()
-        for attempt in range(2):
+        scrap = ScrapingCorvet(test=kwargs.get("test", False))
+        for attempt in reversed(range(2)):
             row = xml_parser(scrap.result(vin))
             if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                 delay_time = time.time() - start_time
@@ -29,7 +29,7 @@ def save_corvet_to_models(vin, **kwargs):
                 delay_time = time.time() - start_time
                 msg = f"{vin} updated in {delay_time}"
                 break
-            if attempt:
+            if attempt == 0:
                 Corvet.objects.filter(vin=vin).delete()
                 delay_time = time.time() - start_time
                 msg = f"{vin} error VIN in {delay_time}"
