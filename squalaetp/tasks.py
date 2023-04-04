@@ -17,7 +17,9 @@ def cmd_loadsqualaetp_task(*args):
     print(f"cmd : importexcel {' '.join(args)}")
     out = StringIO()
     call_command("importexcel", *args, stdout=out)
-    if "email Erreur" in out.getvalue():
+    if "--tests" in args:
+        return {"msg": "Importation Squalaetp terminée avec rapport de test."}
+    elif "email Erreur" in out.getvalue():
         return {"msg": "Erreur d'importation Squalaetp, voir l'email du rapport !!", "tags": "warning"}
     return {"msg": "Importation Squalaetp terminée."}
 

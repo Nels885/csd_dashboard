@@ -30,7 +30,7 @@ options_seleniumWire = {
 
 class Scraping(webdriver.Chrome):
     ERROR = False
-    STATUS = None
+    STATUS = "INIT"
 
     def __init__(self, **kwargs):
         """ Initialization """
@@ -44,7 +44,6 @@ class Scraping(webdriver.Chrome):
         # super().__init__(ChromeDriverManager().install(), options=options, seleniumwire_options=options_seleniumWire)
         super().__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
         self.set_page_load_timeout(30)
-        self.STATUS = "INIT"
 
     def is_element_exist(self, by, value):
         try:
@@ -90,11 +89,11 @@ class ScrapingCorvet(Scraping):
 
     def __init__(self, *args, **kwargs):
         """ Initialization """
+        super(ScrapingCorvet, self).__init__(**kwargs)
         self.username = kwargs.get('username', config.CORVET_USER)
         self.password = kwargs.get('password', config.CORVET_PWD)
         if not kwargs.get('test', False) and self.username and self.password:
             try:
-                super(ScrapingCorvet, self).__init__(**kwargs)
                 self.get(self.START_URLS)
             except Exception as err:
                 self._logger_error('__init__()', err)
