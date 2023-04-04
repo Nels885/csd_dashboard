@@ -334,7 +334,7 @@ CONSTANCE_CONFIG = OrderedDict({
     'SITE_DESCRIPTION': ('', 'Website description'),
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
     'WIKI_URL': ('127.0.0.1:8001', 'URL of the wiki web application'),
-    'SYS_REPORT_TO_MAIL_LIST': ('system1@test.com; system2@test.com', 'System report TO email list'),
+    'SYS_REPORT_TO_MAIL_LIST': ('', 'System report TO email list'),
     'CONTRACT_TO_EMAIL_LIST': ('contract1@test.com; contract2@test.com', 'Contracts TO email list'),
 
     # Network Options

@@ -1,9 +1,13 @@
 from dashboard.tests.base import UnitTest
+from constance.test import override_config
 from squalaetp.tasks import (
     cmd_loadsqualaetp_task, cmd_exportsqualaetp_task, cmd_importcorvet_task, send_email_task, save_sivin_to_models
 )
 
 
+@override_config(CORVET_USER="")
+@override_config(CORVET_PWD="")
+@override_config(SYS_REPORT_TO_MAIL_LIST="")
 class XelonTaskTestCase(UnitTest):
 
     def setUp(self):
