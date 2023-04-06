@@ -71,6 +71,10 @@ class ExportRemanForm(forms.Form):
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
     columns = forms.MultipleChoiceField(
         label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
+    start_date = forms.DateField(
+        label='Date de début', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
+    end_date = forms.DateField(
+        label='Date de fin', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
 
     def __init__(self, *args, **kwargs):
         batchs = Batch.objects.exclude(customer="").order_by('customer')
