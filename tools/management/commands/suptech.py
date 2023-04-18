@@ -212,13 +212,13 @@ class Command(BaseCommand):
         domain = config.WEBSITE_DOMAIN
         days_late = (timezone.now().date() - query.date).days
         subject = f"[SUPTECH_{query.id} !!RAPPEL_{days_late}J!!] {query.item}"
+        to_list = list(set(string_to_list(f"{query.to}; {query.category.to}")))
+        cc_list = list(set(string_to_list(f"{query.cc}; {query.category.cc}")))
         try:
             email = query.created_by.email
         except AttributeError:
             email = "No Found"
         context = {'email': email, 'suptech': query, 'domain': domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        EmailMessage(
-            subject=subject, body=message, from_email=None, to=string_to_list(query.to), cc=string_to_list(query.cc)
-        ).send()
+        EmailMessage(subject=subject, body=message, from_email=None, to=to_list, cc=cc_list).send()
         self.stdout.write(self.style.SUCCESS(f"Envoi de l'email Suptech n°{query.id} en attente terminée !"))
