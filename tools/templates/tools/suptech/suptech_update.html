@@ -56,9 +56,9 @@
                 <div class="col-sm-4 mb-3 mb-sm-0">
                     <input type="text" value="{{ object.date|default_if_none:"---" }}" maxlength="200" disabled class="form-control" id="id_time">
                 </div>
-                <label for="id_is_48h" class="col-form-label col-sm-3">Traitement 48h</label>
+                <label for="{{ form.is_48h.id_for_label }}" class="col-form-label col-sm-3">Traitement 48h</label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <input type="checkbox" {% if object.is_48h %}checked{% endif %} disabled class="form-control" id="id_is_48h">
+                    {% render_field form.is_48h class="form-control" %}
                 </div>
             </div>
 
@@ -85,17 +85,6 @@
                             <p class="help-block text-danger">* {{ error }}</p>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="id_modified_by" class="col-form-label col-sm-2">Traité par</label>
-                <div class="col-sm-4">
-                    <input type="text" name="modified_by" value="{{ object.modified_by|default:'' }}" maxlength="200" readonly="" class="form-control" required id="id_modified_by">
-                </div>
-                <label for="id_modified_at" class="col-form-label col-sm-3">Date du traitement</label>
-                <div class="col-sm-3">
-                    <input type="text" name="modified_at" value="{{ object.modified_at|default:'' }}" maxlength="200" readonly="" class="form-control" required id="id_modified_at">
                 </div>
             </div>
 
@@ -144,6 +133,34 @@
 
     </div>
 
+    {% if object.actions.all %}
+
+        <hr class="mt-5">
+
+        <h3>ACTIONS :</h3>
+
+        <table class="table table-striped table-sm">
+            <tbody>
+            {% for action in object.actions.all %}
+
+                <tr>
+                    <td style="width: 14rem;">
+                        <img alt="" class="rounded-circle" width="32" src="{{ action.added_by.profile.image.url }}" onerror="this.src='{% static 'img/avatar.png' %}';">
+                        <span class="font-weight-bold">{{ action.added_by.first_name }} {{ action.added_by.last_name }}</span><br>
+                        <span>{{ action.added_at }}</span>
+                    </td>
+                    <td>
+                        {{ action.content|linebreaksbr }}
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
     {% if object.messages.all %}
 
         <hr class="mt-5">
@@ -170,5 +187,13 @@
         </table>
 
     {% endif %}
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        $("#id_action").text("")
+    </script>
 
 {% endblock %}

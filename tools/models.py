@@ -164,6 +164,7 @@ class Suptech(models.Model):
     modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
     messages = GenericRelation('SuptechMessage')
+    actions = GenericRelation('SuptechAction')
 
     class Meta:
         verbose_name = "SupTech"
@@ -180,6 +181,8 @@ class Suptech(models.Model):
 class SuptechCategory(models.Model):
     name = models.CharField('nom', max_length=200)
     manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
+    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
+    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
 
     def __str__(self):
         return self.name
@@ -218,6 +221,28 @@ class SuptechMessage(models.Model):
 
     def __str__(self):
         return f"Message de {self.added_by} sur {self.content_object}"
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and user.pk:
+            self.added_by = user
+        super().save(*args, **kwargs)
+
+
+class SuptechAction(models.Model):
+    content = models.TextField()
+    added_at = models.DateTimeField('ajouté le', auto_now=True)
+    added_by = models.ForeignKey(User, related_name="action_added", on_delete=models.SET_NULL, null=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "SupTech Action"
+        ordering = ['-added_at']
+
+    def __str__(self):
+        return f"Action de {self.added_by} sur {self.content_object}"
 
     def save(self, *args, **kwargs):
         user = get_current_user()
