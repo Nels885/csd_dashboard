@@ -210,7 +210,8 @@ class Command(BaseCommand):
 
     def _send_single_email(self, query):
         domain = config.WEBSITE_DOMAIN
-        subject = f"[SUPTECH_{query.id} !!RAPPEL!!] {query.item}"
+        days_late = (timezone.now().date() - query.date).days
+        subject = f"[SUPTECH_{query.id} !!RAPPEL_{days_late}J!!] {query.item}"
         try:
             email = query.created_by.email
         except AttributeError:

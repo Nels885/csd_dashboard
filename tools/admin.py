@@ -4,6 +4,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import User
 from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
@@ -69,7 +70,9 @@ class SuptechAdmin(admin.ModelAdmin):
     @admin.display(description="Delta")
     def days_late(self, obj):
         try:
-            return (obj.modified_at.date() - obj.date).days
+            if obj.modified_at:
+                return (obj.modified_at.date() - obj.date).days
+            return (timezone.now().date() - obj.date).days
         except Exception:
             return ""
 
