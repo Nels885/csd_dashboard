@@ -11,7 +11,7 @@ Statut : {{ suptech.status }}
 Date limite : {{ suptech.deadline|default:"---" }}
 
 Si l'action n'a pas résolu le problème, cliquez sur le lien ci-dessous et ajoutez un message :
-<a href="http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}?resolved=false">Problème non résolu</a>
+http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}?resolved=false
 
 Cordialement
 
