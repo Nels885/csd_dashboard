@@ -17,7 +17,7 @@ from utils.django.forms.fields import ListTextWidget
 
 from squalaetp.models import Xelon
 from .models import (
-    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechAction, SuptechFile, ConfigFile
+    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile, ConfigFile
 )
 from .tasks import send_email_task
 
@@ -171,10 +171,6 @@ class SuptechResponseForm(forms.ModelForm):
         model = Suptech
         fields = ['user', 'xelon', 'item', 'category', 'time', 'is_48h', 'info', 'rmq', 'action', 'status', 'deadline']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['action'].render = ""
-
     def send_email(self, request):
         try:
             subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
@@ -191,15 +187,14 @@ class SuptechResponseForm(forms.ModelForm):
             return False
 
     def save(self, commit=True):
-        suptech = super().save(commit=False)
+        instance = super().save(commit=False)
         user = get_current_user()
-        suptech.modified_by = user
-        suptech.modified_at = timezone.now()
+        instance.modified_by = user
+        instance.modified_at = timezone.now()
         if commit:
-            SuptechAction.objects.create(content=suptech.action, content_object=suptech)
-            suptech.save()
+            instance.save()
             # cmd_suptech_task.delay()
-        return suptech
+        return instance
 
 
 class SuptechMessageForm(forms.ModelForm):

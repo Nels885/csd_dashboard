@@ -31,3 +31,25 @@ def usage_time(obj):
             return "---"
     except (ThermalChamber.DoesNotExist, AttributeError):
         return "---"
+
+
+@register.filter(name='suptech_msg')
+def suptech_msg(value):
+    try:
+        data_dict = eval(value)
+        if isinstance(data_dict, dict):
+            return data_dict.get('msg')
+    except Exception:
+        pass
+    return value
+
+
+@register.filter(name='suptech_type')
+def suptech_type(value):
+    try:
+        data_dict = eval(value)
+        if isinstance(data_dict, dict):
+            return f"{data_dict.get('type').capitalize()}:"
+    except Exception:
+        pass
+    return "Message:"

@@ -273,6 +273,11 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
+        object = self.get_object()
+        if object.action:
+            content = {"type": "action", "msg": object.action}
+            SuptechMessage.objects.create(
+                content=content, added_at=object.modified_at, added_by=object.modified_by, content_object=object)
         if form.send_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:

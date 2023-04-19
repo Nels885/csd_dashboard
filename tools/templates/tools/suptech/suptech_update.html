@@ -1,6 +1,6 @@
 {% extends 'format/forms_format.html' %}
 
-{% load i18n widget_tweaks static %}
+{% load i18n widget_tweaks static tools_extras %}
 
 {% block form_content %}
 
@@ -133,39 +133,9 @@
 
     </div>
 
-    {% if object.actions.all %}
-
-        <hr class="mt-5">
-
-        <h3>ACTIONS :</h3>
-
-        <table class="table table-striped table-sm">
-            <tbody>
-            {% for action in object.actions.all %}
-
-                <tr>
-                    <td style="width: 14rem;">
-                        <img alt="" class="rounded-circle" width="32" src="{{ action.added_by.profile.image.url }}" onerror="this.src='{% static 'img/avatar.png' %}';">
-                        <span class="font-weight-bold">{{ action.added_by.first_name }} {{ action.added_by.last_name }}</span><br>
-                        <span>{{ action.added_at }}</span>
-                    </td>
-                    <td>
-                        {{ action.content|linebreaksbr }}
-                    </td>
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-        </table>
-
-    {% endif %}
-
     {% if object.messages.all %}
 
-        <hr class="mt-5">
-
-        <h3>MESSAGES :</h3>
+        <h3>HISTORIQUE :</h3>
 
         <table class="table table-striped table-sm">
             <tbody>
@@ -173,11 +143,13 @@
 
                 <tr>
                     <td style="width: 14rem;">
+                        <img alt="" class="rounded-circle" width="32" src="{{ message.added_by.profile.image.url }}" onerror="this.src='{% static 'img/avatar.png' %}';">
                         <span class="font-weight-bold">{{ message.added_by.first_name }} {{ message.added_by.last_name }}</span><br>
                         <span>{{ message.added_at }}</span>
                     </td>
                     <td>
-                        {{ message.content|linebreaksbr }}
+                        <span class="font-weight-bold">{{ message.content|suptech_type }}</span><br>
+                        <span>{{ message.content|suptech_msg|linebreaksbr }}</span>
                     </td>
                 </tr>
 
@@ -185,6 +157,7 @@
 
             </tbody>
         </table>
+        <hr>
 
     {% endif %}
 
