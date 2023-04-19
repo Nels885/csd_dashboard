@@ -232,6 +232,13 @@ class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     template_name = 'tools/suptech/suptech_detail.html'
     form_class = SuptechMessageForm
 
+    def get_queryset(self):
+        if self.request.GET.get("resolved", "true") == "false":
+            query = self.model.objects.get(pk=self.kwargs.get('pk'))
+            query.status = "En Cours"
+            query.save()
+        return super().get_queryset()
+
     def get_success_url(self):
         from django.urls import reverse
         return reverse('tools:suptech_detail', kwargs={'pk': self.object.pk})

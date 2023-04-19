@@ -534,3 +534,19 @@ class SupplierCode(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class DefaultCode(models.Model):
+#     code = models.CharField('code', max_length=5, primary_key=True)
+#     description = models.CharField('description', max_length=200)
+#     type = models.IntegerField('type', blank=True, null=True)
+#     characterization = models.CharField('nom fournisseur', max_length=500, blank=True)
+#     ecu_type = models.CharField('type ECU', max_length=100, blank=True)
+#     brand = models.CharField('marque', max_length=100, blank=True)
+#
+#     class Meta:
+#         verbose_name = "Code Defaut"
+#         ordering = ['code']
+#
+#     def __str__(self):
+#         return self.code
