@@ -232,13 +232,6 @@ class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     template_name = 'tools/suptech/suptech_detail.html'
     form_class = SuptechMessageForm
 
-    def get_queryset(self):
-        if self.request.GET.get("resolved", "true") == "false":
-            query = self.model.objects.get(pk=self.kwargs.get('pk'))
-            query.status = "En Cours"
-            query.save()
-        return super().get_queryset()
-
     def get_success_url(self):
         from django.urls import reverse
         return reverse('tools:suptech_detail', kwargs={'pk': self.object.pk})
@@ -258,6 +251,10 @@ class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
+        if self.request.GET.get("resolved", "true") == "false":
+            query = self.model.objects.get(pk=self.kwargs.get('pk'))
+            query.status = "En Cours"
+            query.save()
         SuptechMessage.objects.create(content=form.cleaned_data['content'], content_object=self.object)
         messages.success(self.request, _('Success: The message has been added.'))
         if form.send_email(self.request, self.object):
