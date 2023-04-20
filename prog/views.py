@@ -4,13 +4,13 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import gettext as _
 from django.contrib import messages
-from bootstrap_modal_forms.generic import BSModalDeleteView
-from django.urls import reverse_lazy
+from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalCreateView, BSModalUpdateView
 from django.http import JsonResponse
 
 from .models import Raspeedi, UnlockProduct, ToolStatus
-from .forms import RaspeediForm, UnlockForm
+from .forms import RaspeediForm, UnlockForm, ToolStatusForm
 from dashboard.forms import ParaErrorList
+from utils.django.urls import reverse_lazy, http_referer
 
 context = {'title': 'Prog'}
 
@@ -132,3 +132,24 @@ def ajax_tool_info(request, pk):
     except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
         pass
     return JsonResponse(data)
+
+
+class ToolCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'prog.add_toolstatus'
+    template_name = 'prog/modal/tool_create.html'
+    form_class = ToolStatusForm
+    success_message = "Success: Ajout d'un outil avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    model = ToolStatus
+    permission_required = 'prog.change_toolstatus'
+    template_name = 'prog/modal/tool_update.html'
+    form_class = ToolStatusForm
+    success_message = "Success: Modification d'un outil avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)

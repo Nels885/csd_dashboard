@@ -13,5 +13,7 @@ urlpatterns = [
     path('<int:ref_case>/edit/', views.edit, name='edit'),
     path('<int:ref_case>/detail/', views.detail, name="detail"),
     path('tool/info/', views.tool_info, name='tool_info'),
+    path('tool/add/', views.ToolCreateView.as_view(), name='tool_add'),
+    path('tool/<int:pk>/edit/', views.ToolUpdateView.as_view(), name='tool_update'),
     path('tool/info/<int:pk>/ajax/', views.ajax_tool_info, name='ajax_tool_info'),
 ]

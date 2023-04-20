@@ -4,9 +4,15 @@
 
 {% block table_content %}
 
+    <button class="add-tool btn btn-sm btn-primary mb-3"
+            {% if not perms.prog.add_toolstatus %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Outil
+    </button>
+
     <table class="table table-striped" style="width: 100%;">
         <thead class="thead-dark text-uppercase">
             <tr>
+                <th></th>
                 <th class="col-2">Nom</th>
                 <th class="col-3">Commentaire</th>
                 <th class="col-1">Adresse IP</th>
@@ -20,6 +26,22 @@
         <tbody>
             {% for obj in object_list %}
             <tr>
+                <td class="text-nowrap" style="width: 60px;">
+                    {% if perms.prog.change_toolstatus %}
+                        <a href="#" title="Modif. info outil" data-form-url="{% url 'prog:tool_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                        <span id="tool{{ obj.id }}-rb">
+                            <button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-rotate"></i></button>
+                        </span>
+                        <span id="tool{{ obj.id }}-stp">
+                            <button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-power-off"></i></button>
+                        </span>
+                    {% else %}
+                        <button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-rotate"></i></button>
+                        <button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-power-off"></i></button>
+                    {% endif %}
+
+                </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td>{{ obj.comment }}</td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-ip"></td>
@@ -28,7 +50,7 @@
                 <td class="font-weight-bold" id="tool{{ obj.id }}-d"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}">Hors ligne</td>
                 <td id="tool{{ obj.id }}-btn">
-                    <button class="btn btn-block btn-secondary" disabled>Configuration</button>
+                    <button class="btn btn-block btn-secondary" disabled>Webapp</button>
                 </td>
             </tr>
             {% endfor %}
@@ -55,17 +77,24 @@
                     success: function(data) {
                         console.log(data);
                         let href = data['href'];
-                        let idStatus = '#tool' + pk;
-                        let idButton = idStatus + '-btn';
-                        $(idStatus + '-ip').html(data['ip_addr']);
-                        $(idStatus + '-s').html(data['soft']);
-                        $(idStatus + '-v').html(data['version']);
-                        $(idStatus + '-d').html(data['device']);
-                        $(idStatus).html(data['status']);
+                        let id = '#tool' + pk;
+                        $(id+'-ip').html(data['ip_addr']);
+                        $(id+'-s').html(data['soft']);
+                        $(id+'-v').html(data['version']);
+                        $(id+'-d').html(data['device']);
+                        $(id).html(data['status']);
                         if (data['status_code'] === 404) {
-                            $(idButton).html('<button class="btn btn-block btn-secondary" disabled>Configuration</button>');
+                            $(id + '-btn').html('<button class="btn btn-block btn-secondary" disabled>Webapp</button>');
+                            $(id+'-rb').html('<button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-rotate"></i></button>');
+                            $(id+'-stp').html('<button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-power-off"></i></button>');
+                        } else if (data['status'] === 'Libre') {
+                            $(id+'-btn').html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Webapp</a>');
+                            $(id+'-rb').html('<button title="Reboot outil" class="btn btn-warning btn-circle btn-sm"><i class="fas fa-rotate"></i></button>');
+                            $(id+'-stp').html('<a title="Arrêt outil" class="btn btn-danger btn-circle btn-sm" href="#"><i class="fas fa-power-off"></i></a>');
                         } else {
-                            $(idButton).html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Configuration</a>');
+                            $(id+'-btn').html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Webapp</a>');
+                            $(id+'-rb').html('<button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-rotate"></i></button>');
+                            $(id+'-stp').html('<button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-power-off"></i></button>');
                         }
                     },
                     error: function(error) {

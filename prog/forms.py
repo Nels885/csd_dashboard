@@ -1,9 +1,10 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 from django.utils.translation import gettext as _
+from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 
 from utils.django.validators import validate_xelon
-from .models import Raspeedi, UnlockProduct
+from .models import Raspeedi, UnlockProduct, ToolStatus
 from squalaetp.models import Xelon
 
 
@@ -56,3 +57,9 @@ class UnlockForm(Form):
         if commit:
             instance.save()
         return instance
+
+
+class ToolStatusForm(BSModalModelForm):
+    class Meta:
+        model = ToolStatus
+        fields = '__all__'

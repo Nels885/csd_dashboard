@@ -103,6 +103,8 @@
         $(".create-suptech").modalForm({formURL: "{% url 'tools:suptech_add' %}", modalID: "#create-large-modal"});
 
         $(".create-config").modalForm({formURL: "{% url 'tools:config_add' %}", modalID: "#create-large-modal"});
+
+        $(".add-tool").modalForm({formURL: "{% url 'prog:tool_add' %}", modalID: "#create-large-modal"});
     });
 
     getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
