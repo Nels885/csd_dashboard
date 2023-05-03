@@ -75,6 +75,7 @@ function resultTask(task_id=null) {
 
         function customResult(resultElement, result) {
             // console.log(result)
+            $(".bd-loading-modal-lg").modal("hide");
             if (result.msg) {
                 addMessage(result.msg, result.tags);
             }
