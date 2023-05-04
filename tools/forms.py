@@ -14,6 +14,7 @@ from tempus_dominus.widgets import DatePicker
 from utils.conf import string_to_list
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
+from utils.django.forms import MultipleFileField
 
 from squalaetp.models import Xelon
 from .models import (
@@ -72,6 +73,10 @@ class ThermalFrom(forms.ModelForm):
         }
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
 class SuptechModalForm(BSModalModelForm):
     ITEM_CHOICES = [
         ('', '---------'),
@@ -86,7 +91,7 @@ class SuptechModalForm(BSModalModelForm):
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
     to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
     cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
-    attach = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+    attach = MultipleFileField(required=False)
 
     class Meta:
         model = Suptech
