@@ -122,7 +122,7 @@ def tool_info(request):
 
 
 def ajax_tool_info(request, pk):
-    data = {'pk': pk, 'status': 'Hors ligne', 'version': '', 'status_code': 404}
+    data = {'pk': pk, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404}
     try:
         tool = ToolStatus.objects.get(pk=pk)
         response = requests.get(url=tool.api_url, timeout=(0.05, 0.5))

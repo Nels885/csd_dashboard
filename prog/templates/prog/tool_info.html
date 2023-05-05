@@ -13,14 +13,15 @@
         <thead class="thead-dark text-uppercase">
             <tr>
                 <th></th>
-                <th class="col-2">Nom</th>
-                <th class="col-3">Commentaire</th>
-                <th class="col-1">Adresse IP</th>
-                <th class="col-1">Logiciel</th>
-                <th class="col-1">Version</th>
-                <th class="col-1">Produit</th>
-                <th class="col-2">Status</th>
-                <th class="col-1"></th>
+                <th>Nom</th>
+                <th class="col-2">Commentaire</th>
+                <th class="text-nowrap">N° Xelon</th>
+                <th class="">Status</th>
+                <th class="text-nowrap">Adresse IP</th>
+                <th class="">Logiciel</th>
+                <th class="text-nowrap">Type Produit</th>
+                <th class="">Version</th>
+                <th class=""></th>
             </tr>
         </thead>
         <tbody>
@@ -42,13 +43,14 @@
                     {% endif %}
 
                 </td>
-                <td class="font-weight-bold">{{ obj.name }}</td>
+                <td class="font-weight-bold text-nowrap">{{ obj.name }}</td>
                 <td>{{ obj.comment }}</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-x"></td>
+                <td class="font-weight-bold text-nowrap" id="tool{{ obj.id }}">Hors ligne</td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-ip"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-s"></td>
-                <td class="font-weight-bold" id="tool{{ obj.id }}-v"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-d"></td>
-                <td class="font-weight-bold" id="tool{{ obj.id }}">Hors ligne</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-v"></td>
                 <td id="tool{{ obj.id }}-btn">
                     <button class="btn btn-block btn-secondary" disabled>Webapp</button>
                 </td>
@@ -82,6 +84,7 @@
                         $(id+'-s').html(data['soft']);
                         $(id+'-v').html(data['version']);
                         $(id+'-d').html(data['device']);
+                        $(id+'-x').html(data['xelon']);
                         $(id).html(data['status']);
                         if (data['status_code'] === 404) {
                             $(id + '-btn').html('<button class="btn btn-block btn-secondary" disabled>Webapp</button>');
