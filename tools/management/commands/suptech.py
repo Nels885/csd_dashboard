@@ -62,10 +62,8 @@ class Command(BaseCommand):
             suptechs = Suptech.objects.filter(category=3).exclude(status="Cloturée").order_by('-date')
             self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_CC_EMAIL_LIST)
         if options['email_48h']:
-            date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
-            supject = "Suptech en cours {}".format(date_joined)
-            suptechs = Suptech.objects.filter(
-                Q(status="En Attente", is_48h=True) | Q(deadline=timezone.now())).order_by('-date')
+            suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(status="Annulée")).filter(
+                Q(is_48h=True) | Q(deadline=timezone.now())).order_by('-date')
             for suptech in suptechs:
                 self._send_single_email(suptech)
         if options['email_graph']:
