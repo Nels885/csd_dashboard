@@ -42,7 +42,8 @@ def index(request):
     """ View of index page """
     title = _("Home")
     posts = Post.objects.all().order_by('-timestamp')[:5]
-    suptechs = Suptech.objects.filter(status="En Attente")[:15]
+    sups_pending = Suptech.objects.filter(status="En Attente").order_by('date')
+    sups_progress = Suptech.objects.filter(status="En Cours").order_by('date')
     return render(request, 'dashboard/index.html', locals())
 
 
