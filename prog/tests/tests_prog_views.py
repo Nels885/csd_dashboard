@@ -116,4 +116,5 @@ class RaspeediTestCase(UnitTest):
         url = reverse('prog:ajax_tool_info', kwargs={'pk': 1})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {'pk': 1, 'status': 'Hors ligne', 'version': '', 'status_code': 404})
+        self.assertJSONEqual(
+            response.content, {'pk': 1, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404})
