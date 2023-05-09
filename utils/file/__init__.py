@@ -43,7 +43,6 @@ class LogFile:
 
     def vin_err_filter(self, product, xelon_number):
         keys, files = [key for key in self.paths.keys() if key in product], []
-        print(keys)
         if keys:
             for path in self.paths[keys[0]]:
                 files = files + glob.glob(os.path.join(path, f"{keys[0]}*/{xelon_number}") + "*_Erreur_VIN.txt")
