@@ -10,14 +10,17 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 
 from .serializers import (
-    ProgSerializer, CalSerializer, RaspeediSerializer, UnlockSerializer, UnlockUpdateSerializer,
-    ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer, BgaTimeSerializer, BgaTimeCreateSerializer
+    ProgSerializer, CalSerializer, ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer,
+    BgaTimeSerializer, BgaTimeCreateSerializer
+)
+from prog.serializers import (
+    UnlockSerializer, UnlockUpdateSerializer, RaspeediSerializer, ToolStatusSerializer, ToolLogSerializer
 )
 from reman.serializers import (
     RemanBatchSerializer, RemanCheckOutSerializer, RemanRepairSerializer, RemanRepairCreateSerializer,
     EcuRefBaseSerializer
 )
-from prog.models import Raspeedi, UnlockProduct
+from prog.models import Raspeedi, UnlockProduct, ToolStatus, Log
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair, EcuRefBase
 from tools.models import ThermalChamberMeasure, BgaTime
@@ -52,6 +55,25 @@ class UnlockViewSet(viewsets.ModelViewSet):
             return UnlockUpdateSerializer
         else:
             return UnlockSerializer
+
+
+class ToolStatusViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = ToolStatus.objects.all()
+    serializer_class = ToolStatusSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name']
+    http_method_names = ['get']
+
+
+class ToolLogViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Log.objects.all()
+    serializer_class = ToolLogSerializer
+    http_method_names = ['get']
 
 
 class ProgViewSet(viewsets.ModelViewSet):

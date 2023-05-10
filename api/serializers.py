@@ -1,21 +1,7 @@
 from rest_framework import serializers
 
 from squalaetp.models import Xelon
-from prog.models import Raspeedi, UnlockProduct
 from tools.models import ThermalChamberMeasure, BgaTime
-
-
-class RaspeediSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Raspeedi table
-    """
-    hw_ref = serializers.CharField(source='ref_boitier', read_only=True)
-    product = serializers.CharField(source='produit', read_only=True)
-    level = serializers.CharField(source='facade', read_only=True)
-
-    class Meta:
-        model = Raspeedi
-        fields = ('hw_ref', 'product', 'level', 'type', 'dump_peedi', 'media', 'dump_renesas',)
 
 
 class ProgSerializer(serializers.ModelSerializer):
@@ -61,21 +47,6 @@ class CalSerializer(serializers.ModelSerializer):
             'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'rad_ref', 'rad_cal', 'radio_name',
             'nav_ref', 'nav_cal', 'btel_name', 'cmm_ref', 'cmm_cal', 'cmm_name', 'bsi_ref', 'bsi_cal', 'bsi_name'
         )
-
-
-class UnlockSerializer(serializers.ModelSerializer):
-    xelon = serializers.CharField(source='unlock.numero_de_dossier', read_only=True)
-    vin = serializers.CharField(source='unlock.vin', read_only=True)
-
-    class Meta:
-        model = UnlockProduct
-        fields = ('id', 'xelon', 'vin')
-
-
-class UnlockUpdateSerializer(UnlockSerializer):
-    class Meta:
-        model = UnlockProduct
-        fields = UnlockSerializer.Meta.fields + ('active',)
 
 
 class ThermalChamberMeasureSerializer(serializers.ModelSerializer):

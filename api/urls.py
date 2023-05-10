@@ -13,6 +13,8 @@ router.register(r'reman/repair', views.RemanRepairViewSet, basename='reman_repai
 router.register(r'reman/ecurefbase', views.RemanEcuRefBaseViewSet, basename='reman_ecurefbase')
 router.register(r'tools/tc-measure', views.ThermalChamberMeasureViewSet, basename='tools_tc_measure')
 router.register(r'tools/bga-time', views.BgaTimeViewSet, basename='tools_bga_time')
+router.register(r'tools/status', views.ToolStatusViewSet, basename='tools_status')
+router.register(r'tools/log', views.ToolLogViewSet, basename='tools_log')
 
 app_name = 'api'
 
