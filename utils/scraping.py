@@ -6,6 +6,7 @@ from django.utils.timezone import make_aware
 
 # from webdriver_manager.chrome import ChromeDriverManager
 # import chromedriver_autoinstaller
+from utils import chromedriver_installer
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -44,7 +45,7 @@ class Scraping(webdriver.Chrome):
             options.add_argument('headless')
         # super().__init__(ChromeDriverManager().install(), options=options, seleniumwire_options=options_seleniumWire)
         # super().__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
-        super().__init__(service=ChromeService(executable_path='/usr/local/bin/chromedriver'), options=options)
+        super().__init__(service=ChromeService(executable_path=chromedriver_installer.install()), options=options)
         self.set_page_load_timeout(30)
 
     def is_element_exist(self, by, value):
