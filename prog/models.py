@@ -1,5 +1,7 @@
 from urllib.parse import urljoin
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from squalaetp.models import Xelon
 from dashboard.models import UserProfile, User
@@ -98,6 +100,7 @@ class ToolStatus(models.Model):
     url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
     api_path = models.CharField("Chemin API", max_length=500, blank=True)
+    logs = GenericRelation('Log')
 
     class Meta:
         verbose_name = "Statut Outil"
@@ -110,3 +113,18 @@ class ToolStatus(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.url}"
+
+
+class Log(models.Model):
+    content = models.TextField()
+    added_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Log"
+        ordering = ['-added_at']
+
+    def __str__(self):
+        return self.content_object
