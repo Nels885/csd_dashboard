@@ -113,7 +113,6 @@ class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     success_url = reverse_lazy('prog:unlock_prods')
 
 
-@permission_required('prog.view_toolstatus')
 def tool_info(request):
     table_title = "Info Outils"
     object_list = ToolStatus.objects.all()
