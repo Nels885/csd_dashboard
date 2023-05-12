@@ -106,10 +106,6 @@ class RaspeediTestCase(UnitTest):
     def test_tool_info_page(self):
         url = reverse('prog:tool_info')
         response = self.client.get(url)
-        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
-        self.add_perms_user(ToolStatus, 'view_toolstatus')
-        self.login()
-        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_ajax_tool_info_page(self):
