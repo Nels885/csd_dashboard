@@ -1,0 +1,115 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <body>
+
+    {% if ce_suptechs %}
+
+    <p> Liste des Suptechs en retard de la CE.</p>
+
+    <table class="table table-bordered text-nowrap">
+        <thead>
+        <tr>
+            <td class="text-nowrap">N° Suptech</td>
+            <th>date</th>
+            <th>Qui</th>
+            <th class="text-nowrap">N° XELON</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for suptech in ce_suptechs %}
+
+            <tr>
+                <td><a href="http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}">{{ suptech.pk }}</a></td>
+                <td>{{ suptech.date|date:"d/m/Y" }}</td>
+                <td>{{ suptech.user }}</td>
+                <td>{{ suptech.xelon }}</td>
+                <td>{{ suptech.status }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    {% endif %}
+
+    {% if co_suptechs %}
+
+        <p> Liste des Suptechs en retard de la CO.</p>
+
+        <table class="table table-bordered text-nowrap">
+            <thead>
+                <tr>
+                    <td class="text-nowrap">N° Suptech</td>
+                    <th>date</th>
+                    <th>Qui</th>
+                    <th class="text-nowrap">N° XELON</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for suptech in co_suptechs %}
+
+                <tr>
+                    <td><a href="http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}">{{ suptech.pk }}</a></td>
+                    <td>{{ suptech.date|date:"d/m/Y" }}</td>
+                    <td>{{ suptech.user }}</td>
+                    <td>{{ suptech.xelon }}</td>
+                    <td>{{ suptech.status }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+        {% if process_suptechs %}
+
+        <p> Liste des Suptechs en retard en Modif Process.</p>
+
+        <table class="table table-bordered text-nowrap">
+            <thead>
+                <tr>
+                    <td class="text-nowrap">N° Suptech</td>
+                    <th>date</th>
+                    <th>Qui</th>
+                    <th class="text-nowrap">N° XELON</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for suptech in process_suptechs %}
+
+                <tr>
+                    <td><a href="http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}">{{ suptech.pk }}</a></td>
+                    <td>{{ suptech.date|date:"d/m/Y" }}</td>
+                    <td>{{ suptech.user }}</td>
+                    <td>{{ suptech.xelon }}</td>
+                    <td>{{ suptech.status }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% endif %}
+
+    <p>Cordialement</p>
+
+    <p>CSD Dashboard</p>
+
+    </body>
+    </html>
+
+{% endinlinecss %}

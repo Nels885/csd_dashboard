@@ -38,6 +38,12 @@ class Command(BaseCommand):
             help='Send email processing 48h for Suptech'
         )
         parser.add_argument(
+            '--email_48h_late',
+            action='store_true',
+            dest='email_48h_late',
+            help='Send email processing 48h late for Suptech'
+        )
+        parser.add_argument(
             '--email_graph',
             action='store_true',
             dest='email_graph',
@@ -66,6 +72,14 @@ class Command(BaseCommand):
                 Q(is_48h=True) | Q(deadline=timezone.now())).order_by('-date')
             for suptech in suptechs:
                 self._send_single_email(suptech)
+        if options['email_48h_late']:
+            date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
+            supject = "Suptech 48h en retard {}".format(date_joined)
+            more_48h = timezone.datetime.today() + timezone.timedelta(2)
+            suptechs = Suptech.objects.exclude(
+                Q(date__gt=more_48h) | Q(status="Cloturée") | Q(status="Annulée")).filter(
+                Q(is_48h=True) | Q(deadline=timezone.now())).order_by('-date')
+            self._send_48h_late_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_CC_EMAIL_LIST)
         if options['email_graph']:
             date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
             supject = "Suptech graphique {}".format(date_joined)
@@ -220,3 +234,21 @@ class Command(BaseCommand):
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
         EmailMessage(subject=subject, body=message, from_email=None, to=to_list, cc=cc_list).send()
         self.stdout.write(self.style.SUCCESS(f"Envoi de l'email Suptech n°{query.id} en attente terminée !"))
+
+    def _send_48h_late_email(self, queryset, subject, to_email):
+        if queryset:
+            co_suptechs = queryset.filter(category__name="Cellule Operation")
+            ce_suptechs = queryset.filter(category__name="Cellule Etude")
+            process_suptechs = queryset.filter(category__name="Modif. process")
+            html_message = render_to_string(
+                'tools/email_format/suptech_list_email_new.html',
+                {
+                    'co_suptechs': co_suptechs, 'process_suptechs': process_suptechs,
+                    'ce_suptechs': ce_suptechs, 'domain': config.WEBSITE_DOMAIN,
+                }
+            )
+            plain_message = strip_tags(html_message)
+            send_mail(subject, plain_message, None, string_to_list(to_email), html_message=html_message)
+            self.stdout.write(self.style.SUCCESS("Envoi de l'email des Suptech en retard terminée !"))
+        else:
+            self.stdout.write(self.style.SUCCESS("Pas de Suptech en retard à envoyer !"))
