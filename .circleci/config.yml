@@ -8,13 +8,13 @@ jobs: # A basic unit of work in a run
     working_directory: ~/circleci-csd-dashboard
     docker: # run the steps with Docker
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
-      - image: cimg/python:3.8.16
+      - image: cimg/python:3.10.6
       # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
       - image: cimg/postgres:9.6.24
         environment: # environment variables for the Postgres container.
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
-      - image: cimg/redis:5.0.14
+      - image: cimg/redis:6.0.16
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
       - python/install-packages:
