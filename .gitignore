@@ -9,3 +9,4 @@ staticfiles/
 geckodriver.log
 media/*/
 utils/conf/current.py
+Pipfile.lock
