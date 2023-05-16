@@ -70,7 +70,34 @@
             {% endfor %}
         ];
 
-        function get_tool_info() {
+        function toolSystem(pk, mode) {
+            let url = "{% url 'prog:ajax_tool_system' pk=0 %}".replace('0', pk);
+            url = url + "?mode=" + mode;
+            $.ajax({
+                method: "get",
+                url: url,
+                success: function(data) {
+                    console.log(data);
+                    if (data['status'] === "busy") {
+                        addMessage(data['msg'], "warning");
+                    } else addMessage(data['msg']);
+                },
+                error: function(error) {
+                    console.log(error);
+                    addMessage("Action impossible !", "danger");
+                }
+            })
+        }
+
+        function toolStop(pk){
+            toolSystem(pk, "stop");
+        }
+
+        function toolRestart(pk){
+            toolSystem(pk, "restart");
+        }
+
+        function getToolInfo() {
             for (let i in obj_list) {
                 let pk = obj_list[i];
                 $.ajax({
@@ -92,8 +119,8 @@
                             $(id+'-stp').html('<button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-power-off"></i></button>');
                         } else if (data['status'] === 'Libre') {
                             $(id+'-btn').html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Webapp</a>');
-                            $(id+'-rb').html('<button title="Reboot outil" class="btn btn-warning btn-circle btn-sm"><i class="fas fa-rotate"></i></button>');
-                            $(id+'-stp').html('<a title="Arrêt outil" class="btn btn-danger btn-circle btn-sm" href="#"><i class="fas fa-power-off"></i></a>');
+                            $(id+'-rb').html('<button title="Reboot outil" class="btn btn-warning btn-circle btn-sm" onclick="toolRestart(' + pk + ')"><i class="fas fa-rotate"></i></button>');
+                            $(id+'-stp').html('<button title="Arrêt outil" class="btn btn-danger btn-circle btn-sm" onclick="toolStop(' + pk + ')"><i class="fas fa-power-off"></i></button>');
                         } else {
                             $(id+'-btn').html('<a class="btn btn-block btn-secondary" href="' + href + '" target="_blank">Webapp</a>');
                             $(id+'-rb').html('<button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-rotate"></i></button>');
@@ -107,8 +134,8 @@
             }
         }
 
-        get_tool_info();
-        setInterval(get_tool_info, 10000);
+        getToolInfo();
+        setInterval(getToolInfo, 10000);
     </script>
 
 {% endblock %}

@@ -111,6 +111,13 @@ class ToolStatus(models.Model):
         setattr(self, 'status_url', urljoin(self.url, self.status_path))
         setattr(self, 'api_url', urljoin(self.url, self.api_path))
 
+    def get_url(self, mode):
+        if mode and mode == 'restart':
+            return urljoin(self.url, "api/restart/")
+        elif mode and mode == 'stop':
+            return urljoin(self.url, "api/stop/")
+        return ""
+
     def __str__(self):
         return f"{self.name} - {self.url}"
 

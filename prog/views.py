@@ -133,6 +133,19 @@ def ajax_tool_info(request, pk):
     return JsonResponse(data)
 
 
+def ajax_tool_system(request, pk):
+    data = {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404}
+    try:
+        tool = ToolStatus.objects.get(pk=pk)
+        url = tool.get_url(request.GET.get('mode'))
+        response = requests.get(url=url)
+        if response.status_code >= 200 or response.status_code < 300:
+            data = response.json()
+    except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+        pass
+    return JsonResponse(data)
+
+
 class ToolCreateView(PermissionRequiredMixin, BSModalCreateView):
     permission_required = 'prog.add_toolstatus'
     template_name = 'prog/modal/tool_create.html'

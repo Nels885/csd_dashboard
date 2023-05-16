@@ -16,4 +16,5 @@ urlpatterns = [
     path('tool/add/', views.ToolCreateView.as_view(), name='tool_add'),
     path('tool/<int:pk>/edit/', views.ToolUpdateView.as_view(), name='tool_update'),
     path('tool/info/<int:pk>/ajax/', views.ajax_tool_info, name='ajax_tool_info'),
+    path('tool/system/<int:pk>/ajax/', views.ajax_tool_system, name='ajax_tool_system'),
 ]
