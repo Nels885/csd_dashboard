@@ -85,19 +85,28 @@ class ExportSuptechIntoExcelTask(ExportExcelTask):
         queryset = Suptech.objects.all()
         if kwargs.get('category', None):
             queryset = queryset.filter(category=kwargs.get('category'))
+        queryset = self.is_48h_valid(queryset, **kwargs)
         if kwargs.get('start_date', None):
             queryset = queryset.filter(created_at__gte=kwargs.get('start_date'))
         if kwargs.get('end_date', None):
             queryset = queryset.filter(created_at__lte=kwargs.get('end_date'))
         if datedelta and datedelta.isnumeric():
             last_months = timezone.datetime.today() + relativedelta(months=-int(datedelta))
-            queryset = Suptech.objects.filter(date__gte=last_months)
+            queryset = queryset.filter(date__gte=last_months)
         fullname = Concat('modified_by__first_name', Value(' '), 'modified_by__last_name')
         day_number = ExtractDay(F('modified_at') - F('created_at')) + 1
         queryset = queryset.annotate(fullname=fullname, day_number=day_number).order_by('date')
         self._select_columns(**kwargs)
         values_list = queryset.values_list(*self.fields).distinct()
         return values_list
+
+    @staticmethod
+    def is_48h_valid(queryset, **kwargs):
+        if kwargs.get('is_48h', '').lower() == 'true':
+            queryset = queryset.filter(is_48h=True)
+        elif kwargs.get('is_48h', '').lower() == 'false':
+            queryset = queryset.filter(is_48h=False)
+        return queryset
 
     def _select_columns(self, **kwargs):
         data_list = SUPTECH_DICT['min']

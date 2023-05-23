@@ -100,6 +100,7 @@ class CorvetVinListForm(forms.Form):
 
 class ExportSuptechForm(forms.Form):
     CATEGORIES = [('', '---')]
+    IS_48H_CHOICES = [('', 'All'), (True, 'Oui'), (False, 'Non')]
     MONTH_CHOICES = [('', 'All'), ('6', '6 derniers mois'), ('12', '12 derniers mois')]
     COLS = [
         ('time', 'TIME'), ('info', 'INFO'),
@@ -108,6 +109,7 @@ class ExportSuptechForm(forms.Form):
     ]
 
     category = forms.ChoiceField(label='Catégorie', required=False, choices=CATEGORIES, widget=forms.Select())
+    is_48h = forms.ChoiceField(label='Traitement 48h', required=False, choices=IS_48H_CHOICES, widget=forms.Select())
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     columns = forms.MultipleChoiceField(
         label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
