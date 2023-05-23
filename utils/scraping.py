@@ -110,15 +110,12 @@ class ScrapingCorvet(Scraping):
         :param vin_value: VIN number for the Corvet data
         :return: Corvet data
         """
-        if not self.ERROR and self.login():
+        if not self.ERROR and self.login() and isinstance(vin_value, str):
             try:
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
-                # vin = self.find_element_by_name('form:input_vin')
-                # submit = self.find_element_by_id('form:suite')
                 vin = self.find_element(By.NAME, 'form:input_vin')
                 submit = self.find_element(By.ID, 'form:suite')
-                if vin_value:
-                    vin.send_keys(vin_value)
+                vin.send_keys(vin_value.upper())
                 submit.click()
                 time.sleep(1)
                 data = WebDriverWait(self, 10).until(
@@ -141,9 +138,6 @@ class ScrapingCorvet(Scraping):
         """
         try:
             WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:identifiant2')))
-            # username = self.find_element_by_name('form:identifiant2')
-            # password = self.find_element_by_name('form:password2')
-            # login = self.find_element_by_id('form:login2')
             username = self.find_element(By.NAME, 'form:identifiant2')
             password = self.find_element(By.NAME, 'form:password2')
             login = self.find_element(By.ID, 'form:login2')
@@ -181,16 +175,13 @@ class ScrapingSivin(ScrapingCorvet):
         :param immat_value: Immat number for the SIVIN data
         :return: SIVIN data
         """
-        if not self.ERROR and self.login():
+        if not self.ERROR and self.login() and isinstance(immat_value, str):
             try:
                 self.get(self.SIVIN_URLS)
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_immat'))).clear()
-                # immat = self.find_element_by_name('form:input_immat')
-                # submit = self.find_element_by_id('form:suite')
                 immat = self.find_element(By.NAME, 'form:input_immat')
                 submit = self.find_element(By.ID, 'form:suite')
-                if immat_value:
-                    immat.send_keys(immat_value)
+                immat.send_keys(immat_value.upper())
                 submit.click()
                 time.sleep(1)
                 data = WebDriverWait(self, 10).until(
@@ -265,8 +256,6 @@ class ScrapingPartslink24(Scraping):
         try:
             if not self.ERROR and self.is_element_exist(By.NAME, 'vin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, "vin"))).clear()
-                # vin = self.find_element_by_name("vin")
-                # submit = self.find_element_by_id('vinGo')
                 vin = self.find_element(By.NAME, "vin")
                 submit = self.find_element(By.ID, 'vinGo')
                 if vin_value:
@@ -288,13 +277,10 @@ class ScrapingPartslink24(Scraping):
         data = {}
         try:
             if not self.ERROR and self.is_element_exist(By.XPATH, '//*/table[@class="vinInfoTable"]/tbody/tr'):
-                # for tr in self.find_elements_by_xpath('//*/table[@class="vinInfoTable"]/tbody/tr'):
                 for tr in self.find_elements(By.XPATH, '//*/table[@class="vinInfoTable"]/tbody/tr'):
-                    # tds = tr.find_elements_by_tag_name('td')
                     tds = tr.find_elements(By.TAG_NAME, 'td')
                     if len(tds) == 1:
                         try:
-                            # th = tr.find_element_by_tag_name('th')
                             th = tr.find_element(By.TAG_NAME, 'th')
                             data[th.get_attribute("textContent")] = tds[0].text
                         except NoSuchElementException:
@@ -307,14 +293,12 @@ class ScrapingPartslink24(Scraping):
 
     def privaty_settings(self):
         WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'usercentrics-root')))
-        # shadow_host = self.find_element_by_id('usercentrics-root')
         shadow_host = self.find_element(By.ID, 'usercentrics-root')
         script = 'return arguments[0].shadowRoot'
         shadow_root_dict = self.execute_script(script, shadow_host)
         id = shadow_root_dict['shadow-6066-11e4-a52e-4f735466cecf']
         shadow_root = WebElement(self, id, w3c=True)
         WebDriverWait(shadow_root, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '[data-testid="uc-accept-all-button"]')))
-        # shadow_root.find_element_by_css_selector('[data-testid="uc-accept-all-button"]').click()
         shadow_root.find_element(By.CSS_SELECTOR, '[data-testid="uc-accept-all-button"]').click()
 
     def login(self):
@@ -324,9 +308,6 @@ class ScrapingPartslink24(Scraping):
         try:
             if not self.ERROR and self.is_element_exist(By.NAME, 'accountLogin'):
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'accountLogin')))
-                # account = self.find_element_by_name('accountLogin')
-                # user = self.find_element_by_name('userLogin')
-                # password = self.find_element_by_name('loginBean.password')
                 account = self.find_element(By.NAME, 'accountLogin')
                 user = self.find_element(By.NAME, 'userLogin')
                 password = self.find_element(By.NAME, 'loginBean.password')
