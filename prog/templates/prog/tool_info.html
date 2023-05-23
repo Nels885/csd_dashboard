@@ -14,6 +14,7 @@
             <tr>
                 <th></th>
                 <th class="col-2">Nom</th>
+                <th class="col-1">Type</th>
                 <th class="col-3">Commentaire</th>
                 <th class="col-1">Adresse IP</th>
                 <th class="col-1">Logiciel</th>
@@ -43,6 +44,7 @@
 
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
+                <td class="font-weight-bold">{{ obj.type }}</td>
                 <td>{{ obj.comment }}</td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-ip"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-s"></td>

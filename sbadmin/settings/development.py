@@ -27,7 +27,7 @@ DATABASES = {
         'NAME': 'csd_atelier',
         'USER': 'nels885',
         'PASSWORD': 'kikoulol',
-        'HOST': '',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

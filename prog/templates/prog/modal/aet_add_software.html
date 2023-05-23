@@ -1,0 +1,13 @@
+{% load i18n widget_tweaks %}
+
+<form method="post" action="">
+    {% csrf_token %}
+
+    {% include 'format/modal_form_size_format.html' with label_size=3 field_size=9 %}
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Create' %}</button>
+    </div>
+
+</form>

@@ -1,14 +1,16 @@
 import requests
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import gettext as _
 from django.contrib import messages
 from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalCreateView, BSModalUpdateView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.core.files.storage import FileSystemStorage
 
-from .models import Raspeedi, UnlockProduct, ToolStatus
-from .forms import RaspeediForm, UnlockForm, ToolStatusForm
+from .models import Raspeedi, UnlockProduct, ToolStatus, AET
+from prog.models import MbedSoftware
+from .forms import RaspeediForm, UnlockForm, ToolStatusForm, AETModalForm, AETSendSoftwareForm, AETAddSoftwareModalForm
 from dashboard.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 
@@ -150,6 +152,67 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     template_name = 'prog/modal/tool_update.html'
     form_class = ToolStatusForm
     success_message = "Success: Modification d'un outil avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+def AET_info(request, pk=None):
+    title = _('AET')
+    card_title = _('AET')
+    AET_list = AET.objects.all()
+    context.update(locals())
+    return render(request, 'prog/aet.html', context)
+
+
+class AETCreateView(BSModalCreateView):
+    template_name = 'prog/modal/aet_create.html'
+    form_class = AETModalForm
+    success_message = "Succès : Ajout d'un AET avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+class AETUpdateView(BSModalUpdateView):
+    model = AET
+    template_name = 'prog/modal/aet_update.html'
+    form_class = AETModalForm
+    success_message = "Success: Modification des infos AET avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+def AETAddSoftwareView(request):
+    form = AETAddSoftwareModalForm(request.POST or None, request.FILES or None)
+    if form.is_valid() and request.method == "POST":
+        request_file = request.FILES['filepath'] if 'filepath' in request.FILES else None
+        if request_file:
+            fs = FileSystemStorage()
+            file = fs.save(request_file.name, request_file)
+            MbedSoftware.objects.create(name=request.POST['name'], version=request.POST['version'],
+                                        filepath=fs.url(file))
+            success_message = "Success: Modification d'un outil avec succès !"
+            context.update(locals())
+            AET_info(request)
+    else:
+        context.update(locals())
+        return render(request, 'prog/modal/aet_add_software.html', context)
+
+
+class AETSendSoftwareView(BSModalCreateView):
+    model = AET
+    template_name = 'prog/modal/aet_send_software.html'
+    form_class = AETSendSoftwareForm
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        context['form'] = AETSendSoftwareForm(pk=pk)
+        context["modal_title"] = AET.objects.filter(pk=pk).first().name
+        return context
 
     def get_success_url(self):
         return http_referer(self.request)

@@ -105,6 +105,11 @@
         $(".create-config").modalForm({formURL: "{% url 'tools:config_add' %}", modalID: "#create-large-modal"});
 
         $(".add-tool").modalForm({formURL: "{% url 'prog:tool_add' %}", modalID: "#create-large-modal"});
+
+        $(".add-aet").modalForm({formURL: "{% url 'prog:aet_add' %}", modalID: "#create-large-modal"});
+
+        $(".add-soft-aet").modalForm({formURL: "{% url 'prog:aet_add_software' %}", modalID: "#create-large-modal"});
+
     });
 
     getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {

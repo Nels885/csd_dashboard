@@ -1,11 +1,15 @@
-from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
+from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField, FileField
+from utils.django.forms.fields import ListTextWidget
 from django.utils.translation import gettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
+from django.core.files.storage import FileSystemStorage
 
 from utils.django.validators import validate_xelon
-from .models import Raspeedi, UnlockProduct, ToolStatus
+from .models import Raspeedi, UnlockProduct, ToolStatus, AET
 from squalaetp.models import Xelon
+from prog.models import MbedSoftware
+
 
 
 class RaspeediForm(ModelForm):
@@ -63,3 +67,32 @@ class ToolStatusForm(BSModalModelForm):
     class Meta:
         model = ToolStatus
         fields = '__all__'
+
+
+class AETModalForm(BSModalModelForm):
+    class Meta:
+        model = AET
+        fields = '__all__'
+
+
+class AETAddSoftwareModalForm(BSModalModelForm):
+    class Meta:
+        model = MbedSoftware
+        fields = ['name', 'version', 'filepath']
+
+
+class AETSendSoftwareForm(BSModalModelForm):
+    select = CharField(label='Nom du soft Mbed', max_length=500, required=False)
+
+    def __init__(self, pk=None, *args, **kwargs):
+        if pk is not None:
+            aet = AET.objects.get(id=pk)
+        softs = MbedSoftware.objects.all()
+        _data_list = list(softs.values_list('name', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['select'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+
+    class Meta:
+        model = MbedSoftware
+        fields = ['name', 'version']
+

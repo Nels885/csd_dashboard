@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 
 from . import views
 
@@ -16,4 +18,10 @@ urlpatterns = [
     path('tool/add/', views.ToolCreateView.as_view(), name='tool_add'),
     path('tool/<int:pk>/edit/', views.ToolUpdateView.as_view(), name='tool_update'),
     path('tool/info/<int:pk>/ajax/', views.ajax_tool_info, name='ajax_tool_info'),
-]
+    path('AET/info/', views.AET_info, name='AET_info'),
+    path('AET/add/', views.AETCreateView.as_view(), name='aet_add'),
+    path('AET/<int:pk>/update/', views.AETUpdateView.as_view(), name='aet_update'),
+    # path('AET/add_software/', views.AETAddSoftwareView.as_view(), name='aet_add_software'),
+    path('AET/add_software/', views.AETAddSoftwareView, name='aet_add_software'),
+    path('AET/<int:pk>/send_software/', views.AETSendSoftwareView.as_view(), name='aet_send_software'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

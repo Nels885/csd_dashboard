@@ -1,9 +1,11 @@
 from urllib.parse import urljoin
 from django.db import models
+from django.core.files.storage import FileSystemStorage
 
 from squalaetp.models import Xelon
 from dashboard.models import UserProfile, User
 
+fs = FileSystemStorage()
 
 class Raspeedi(models.Model):
 
@@ -94,6 +96,7 @@ class UnlockProduct(models.Model):
 
 class ToolStatus(models.Model):
     name = models.CharField("Nom de l'outils", max_length=50)
+    type = models.TextField("Type", max_length=50, blank=True)
     comment = models.TextField("Commentaire", blank=True)
     url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
@@ -110,3 +113,26 @@ class ToolStatus(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.url}"
+
+
+class AET(models.Model):
+    name = models.CharField("Nom de l'AET", max_length=100, unique=True)
+    raspi_ip = models.CharField("Addresse IP raspi", max_length=500, blank=True)
+    mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
+
+    class Meta:
+        verbose_name = "Statut AET"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class MbedSoftware(models.Model):
+    name = models.CharField("Nom du soft mbed", max_length=100, unique=True)
+    version = models.CharField("Version du soft", max_length=500)
+    modified_at = models.DateTimeField('Modifié le', auto_now=True)
+    filepath = models.FileField(upload_to=fs, default="null")
+
+    def __str__(self):
+        return self.name + self.filepath

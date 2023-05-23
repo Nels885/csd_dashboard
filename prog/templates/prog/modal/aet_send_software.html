@@ -1,0 +1,106 @@
+{% load i18n widget_tweaks %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h3 class="modal-title">{% trans 'Update Mbed' %} - AET {{ modal_title }}</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} text-center text-danger text-uppercase mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <div class="form-group row">
+                <label  for="{{ form.select.id_for_label }}" class="col-sm-4 col-form-label">
+                    {{ form.select.label }}
+                    {% if form.select.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                </label>
+                <div class="col-sm-8">
+                     {% render_field form.select class="form-control"%}
+                    <div class="{% if form.select.errors %} invalid{% endif %}">
+                        {% for error in form.select.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="software_detail" style="display: none">
+            <div class="form-group">
+                <div class="form-group row">
+                    <label for="{{ form.new_version.id_for_label }}" class="col-sm-4 col-form-label">
+                        Version
+                        {% if form.new_version.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                    </label>
+                    <div class="col-sm-8">
+                        {{ form.new_version.value }}
+                        <div class="{% if form.new_version.errors %} invalid{% endif %}">
+                            {% for error in form.new_version.errors %}
+                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="form-group row">
+                    <label for="{{ form.link_download.id_for_label }}" class="col-sm-4 col-form-label">
+                        {{ form.link_download.label }}
+                    </label>
+                    <div class="col-sm-8">
+                        {{ form.link_download.value }}
+                        <div class="{% if form.link_download.errors %} invalid{% endif %}">
+                            {% for error in form.link_download.errors %}
+                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-group row">
+                    <label for="{{ form.status.id_for_label }}" class="col-sm-4 col-form-label">
+                        {{ form.status.label }}
+                        {% if form.status.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                    </label>
+                    <div class="col-sm-8">
+                        {{ form.status.value }}
+                        <div class="{% if form.status.errors %} invalid{% endif %}">
+                            {% for error in form.status.errors %}
+                                <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Start' %}</button>
+    </div>
+
+</form>
+
+{#<script>#}
+{#    $('#id_select').on('change', function () {#}
+{#        if ($('#id_select')[0].value != "") {#}
+{#            $('.software_detail').show();#}
+{#        } else {#}
+{#            $('.software_detail').hide();#}
+{#        }#}
+{#    });#}
+{#</script>#}
