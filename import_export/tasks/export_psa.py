@@ -309,5 +309,5 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         else:
             data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
             for col in kwargs.get('columns', []):
-                data_list.extend(CORVET_DICT.get(col, []))
+                data_list = data_list + CORVET_DICT.get(col, [])
             self.header, self.fields = self.get_header_fields(data_list)
