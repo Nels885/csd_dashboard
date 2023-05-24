@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9586136d642effc02d1beb161852486d18b607dbd87642d417c0e862795c4155"
+            "sha256": "c556b16f47ab64449ffccd72d7f3b5c9513d108812bd8297deae5d4037883225"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -473,11 +473,11 @@
         },
         "django-bootstrap-modal-forms": {
             "hashes": [
-                "sha256:460186264e9b25e04a5dfccb21b77f8f52a607f5c014245273da642775f76fa6",
-                "sha256:c790d1c653ba9ac95dfc7054c3f5069bd8752c542a88c0bc9757dfb72839ecad"
+                "sha256:7f76cb47301702fbbaab22ebe9a6ee7c0c60d048b91079e07479a5149d56056c",
+                "sha256:e2badbfbed50ad5b2c943e6c6bc3478bd56b1c73a5b4ea05e861f98fa0da8d19"
             ],
             "index": "pypi",
-            "version": "==3.0.2"
+            "version": "==2.2.1"
         },
         "django-celery-beat": {
             "hashes": [
@@ -701,6 +701,14 @@
                 "sha256:b864a1f30885ee72c5ac2835a761b8fe8aa9c28b9395cacf27286602688d3e51"
             ],
             "version": "==22.10.0"
+        },
+        "install": {
+            "hashes": [
+                "sha256:0d3fadf4aa62c95efe8d34757c8507eb46177f86c016c21c6551eafc6a53d5a9",
+                "sha256:e67c8a0be5ccf8cb4ffa17d090f3a61b6e820e6a7e21cd1d2c0f7bc59b18e647"
+            ],
+            "index": "pypi",
+            "version": "==1.3.5"
         },
         "kaitaistruct": {
             "hashes": [
