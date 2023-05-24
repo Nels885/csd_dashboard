@@ -79,18 +79,11 @@ class AETAddSoftwareModalForm(BSModalModelForm):
         model = MbedFirmware
         fields = ['name', 'version', 'filepath']
 
-    # def save(self, commit=True):
-    #     instance = super().save(commit=False)
-    #     if self.request.is_ajax():
-    #         file = self.request.FILES.get('filepath')
-    #         print(file)
-    #         instance.filepath = file
-    #     if commit and not self.request.is_ajax():
-    #         instance.save()
-    #         # MbedFirmware.objects.create(name=self.cleaned_data['name'], version=self.cleaned_data['version'],
-    #         #                             filepath=request_file)
-    #     return instance
-
+    def clean_filepath(self):
+        data = self.cleaned_data['filepath']
+        if ".bin" not in str(data):
+            self.add_error('filepath', _('Please upload bin file.'))
+        return data
 
 class AETSendSoftwareForm(BSModalModelForm):
     select_target = CharField(label='Mbed à mettre à jour', max_length=500, required=False)

@@ -1,5 +1,6 @@
 from urllib.parse import urljoin
 from django.db import models
+from django.core.validators import RegexValidator
 
 from squalaetp.models import Xelon
 from dashboard.models import UserProfile, User
@@ -139,7 +140,7 @@ class AET(models.Model):
 
 class MbedFirmware(models.Model):
     name = models.CharField("Nom du soft mbed", max_length=100, unique=True)
-    version = models.CharField("Version du soft", max_length=500)
+    version = models.CharField("Version du soft", max_length=10, validators=[RegexValidator(r'[0-9]{1,2}.[0-9]{2}$', "Please respect version format (ex : 1.23)")])
     modified_at = models.DateTimeField('Modifié le', auto_now=True)
     filepath = models.FileField(upload_to='firmware/')
 
