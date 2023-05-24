@@ -9,7 +9,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.core.files.storage import FileSystemStorage
 
 from .models import Raspeedi, UnlockProduct, ToolStatus, AET
-from prog.models import MbedSoftware
+from prog.models import MbedFirmware
 from .forms import RaspeediForm, UnlockForm, ToolStatusForm, AETModalForm, AETSendSoftwareForm, AETAddSoftwareModalForm
 from dashboard.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
@@ -184,27 +184,28 @@ class AETUpdateView(BSModalUpdateView):
         return http_referer(self.request)
 
 
-def AETAddSoftwareView(request):
-    form = AETAddSoftwareModalForm(request.POST or None, request.FILES or None)
-    if form.is_valid() and request.method == "POST":
-        request_file = request.FILES['filepath'] if 'filepath' in request.FILES else None
-        if request_file:
-            fs = FileSystemStorage()
-            file = fs.save(request_file.name, request_file)
-            MbedSoftware.objects.create(name=request.POST['name'], version=request.POST['version'],
-                                        filepath=fs.url(file))
-            success_message = "Success: Modification d'un outil avec succès !"
-            context.update(locals())
-            AET_info(request)
-    else:
-        context.update(locals())
-        return render(request, 'prog/modal/aet_add_software.html', context)
+class AETAddSoftwareView(BSModalCreateView):
+    model = MbedFirmware
+    template_name = 'prog/modal/aet_add_software.html'
+    form_class = AETAddSoftwareModalForm
+    success_message = "Succès : Ajout d'un firmware avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
 
 
 class AETSendSoftwareView(BSModalCreateView):
     model = AET
     template_name = 'prog/modal/aet_send_software.html'
     form_class = AETSendSoftwareForm
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        selected_firmware = MbedFirmware.objects.get(name=request.POST['select_firmware'])
+        aet = AET.objects.get(pk=pk)
+        url = aet.raspi_ip + "/updateMbed/version"
+        JsonResponse({'version': selected_firmware.version})
+        return context
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

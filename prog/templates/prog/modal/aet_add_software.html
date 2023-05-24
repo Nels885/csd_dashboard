@@ -1,6 +1,6 @@
 {% load i18n widget_tweaks %}
 
-<form method="post" action="">
+<form method="post" action="" enctype="multipart/form-data">
     {% csrf_token %}
 
     {% include 'format/modal_form_size_format.html' with label_size=3 field_size=9 %}

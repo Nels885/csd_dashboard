@@ -1,15 +1,14 @@
-from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField, FileField
+from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 from utils.django.forms.fields import ListTextWidget
 from django.utils.translation import gettext as _
+from django.core.files.storage import FileSystemStorage
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
-from django.core.files.storage import FileSystemStorage
 
 from utils.django.validators import validate_xelon
 from .models import Raspeedi, UnlockProduct, ToolStatus, AET
 from squalaetp.models import Xelon
-from prog.models import MbedSoftware
-
+from prog.models import MbedFirmware
 
 
 class RaspeediForm(ModelForm):
@@ -77,22 +76,39 @@ class AETModalForm(BSModalModelForm):
 
 class AETAddSoftwareModalForm(BSModalModelForm):
     class Meta:
-        model = MbedSoftware
+        model = MbedFirmware
         fields = ['name', 'version', 'filepath']
+
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     if self.request.is_ajax():
+    #         file = self.request.FILES.get('filepath')
+    #         print(file)
+    #         instance.filepath = file
+    #     if commit and not self.request.is_ajax():
+    #         instance.save()
+    #         # MbedFirmware.objects.create(name=self.cleaned_data['name'], version=self.cleaned_data['version'],
+    #         #                             filepath=request_file)
+    #     return instance
 
 
 class AETSendSoftwareForm(BSModalModelForm):
-    select = CharField(label='Nom du soft Mbed', max_length=500, required=False)
+    select_target = CharField(label='Mbed à mettre à jour', max_length=500, required=False)
+    select_firmware = CharField(label='Nom du firmware Mbed', max_length=500, required=False)
 
     def __init__(self, pk=None, *args, **kwargs):
         if pk is not None:
             aet = AET.objects.get(id=pk)
-        softs = MbedSoftware.objects.all()
-        _data_list = list(softs.values_list('name', flat=True).distinct())
+            _target_list = list(aet.mbed_list.split(";\r\n"))
+        else:
+            _target_list = None
+        firmwares = MbedFirmware.objects.all()
+        _firmware_list = list(firmwares.values_list('name', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        self.fields['select'].widget = ListTextWidget(data_list=_data_list, name='value-list')
+        self.fields['select_target'].widget = ListTextWidget(data_list=_target_list, name='target-list')
+        self.fields['select_firmware'].widget = ListTextWidget(data_list=_firmware_list, name='firmware-list')
 
     class Meta:
-        model = MbedSoftware
-        fields = ['name', 'version']
+        model = MbedFirmware
+        fields = '__all__'
 
