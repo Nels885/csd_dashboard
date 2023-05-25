@@ -79,9 +79,7 @@ class CsdSoftware(models.Model):
 
     def save(self, *args, **kwargs):
         user = get_current_user()
-        if user and not user.pk:
-            user = None
-        if not self.pk:
+        if user and user.pk and not self.pk:
             self.created_by = user
         super().save(*args, **kwargs)
 

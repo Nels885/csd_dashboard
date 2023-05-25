@@ -30,16 +30,34 @@ class ToolsTestCase(UnitTest):
         form_data = {'jig': 'test', 'new_version': '1', 'link_download': 'test', 'status': 'En test'}
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
-        self.add_perms_user(CsdSoftware, 'add_csdsoftware', 'change_csdsoftware')
+        self.add_perms_user(CsdSoftware, 'add_csdsoftware')
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         # Adding Software is valid
         old_soft = CsdSoftware.objects.count()
-        response = self.client.post(reverse('tools:soft_add'), form_data)
+        response = self.client.post(url, form_data)
         new_soft = CsdSoftware.objects.count()
         self.assertEqual(new_soft, old_soft + 1)
+        self.assertEqual(response.status_code, 302)
+
+    def test_soft_edit_page(self):
+        pk = CsdSoftware.objects.create(
+            jig='test', new_version='1', link_download='test', status='En test', created_by=self.user).pk
+        url = reverse('tools:soft_edit', kwargs={'soft_id': pk})
+        form_data = {'jig': 'test', 'new_version': '2', 'link_download': 'test', 'status': 'En test'}
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.add_perms_user(CsdSoftware, 'change_csdsoftware')
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        # Editing Software is valid
+        response = self.client.post(url, form_data)
+        soft = CsdSoftware.objects.get(pk=pk)
+        self.assertEqual(soft.new_version, '2')
         self.assertEqual(response.status_code, 302)
 
     def test_tag_xelon_is_disconnected(self):
@@ -49,6 +67,14 @@ class ToolsTestCase(UnitTest):
 
     def test_tag_xelon_list_page(self):
         url = reverse('tools:tag_xelon_list')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_ultimaker_stream_page(self):
+        url = reverse('tools:ultimaker_stream')
         response = self.client.get(url)
         self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
         self.login()
