@@ -4,7 +4,7 @@ from django.test import TestCase
 from io import StringIO
 
 
-class RaspeediCommandTestCase(TestCase):
+class ProgCommandTestCase(TestCase):
 
     def setUp(self):
         super(type(self), self).setUp()
