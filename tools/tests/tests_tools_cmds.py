@@ -26,6 +26,10 @@ class ToolsCommandTestCase(UnitTest):
         call_command('cleartools', '--thermal_chamber', stdout=self.out)
         self.assertIn("Suppression des données de la table ThermalChamber terminée!", self.out.getvalue())
 
+    def test_clear_ThermalChamberMeasure_table(self):
+        call_command('cleartools', '--thermal_chamber_measure', stdout=self.out)
+        self.assertIn("Suppression des données de la table ThermalChamberMeasure terminée!", self.out.getvalue())
+
     def test_clear_Suptech_table(self):
         call_command('cleartools', '--suptech', stdout=self.out)
         self.assertIn("Suppression des données de la table Suptech terminée!", self.out.getvalue())
@@ -57,3 +61,7 @@ class ToolsCommandTestCase(UnitTest):
         # If no Suptech 48 late
         call_command('suptech', '--email_48h_late', stdout=self.out)
         self.assertIn("Pas de Suptech en retard à envoyer !", self.out.getvalue())
+
+    def test_suptech_product_update(self):
+        call_command('suptech', '--prod_update', stdout=self.out)
+        self.assertIn("[SUPTECH] Update xelon product completed.", self.out.getvalue())
