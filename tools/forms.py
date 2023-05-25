@@ -225,22 +225,6 @@ class SuptechMessageForm(forms.ModelForm):
             return False
 
 
-class Partslink24Form(forms.Form):
-    BRAND_CHOICES = [
-        (2, "Abarth"), (3, "Alfa Romeo"), (4, "Audi"), (5, "Bentley"), (6, "BMW"), (7, "BMW Classic"),
-        (8, "BMW Motorrad"), (9, "BMW Motorrad Classic"), (10, "Citroën"), (10, "Citroën DS"), (12, "Dacia"),
-        (13, "Fiat"), (14, "Fiat Professional"), (15, "Ford"), (16, "Ford Commercial"), (17, "Hyundai"),
-        (18, "Infiniti"), (19, "Iveco"), (20, "Jaguar"), (21, "Jeep"), (22, "Kia"), (23, "Lancia"), (24, "Land Rover"),
-        (25, "MAN"), (26, "Mercedes-Benz"), (27, "Mercedes-Benz Trucks"), (28, "Mercedes-Benz Unimog"),
-        (29, "Mercedes-Benz Vans"), (30, "MINI"), (31, "Mitsubishi"), (32, "Nissan"), (33, "Opel"), (34, "Peugeot"),
-        (35, "Polestar"), (36, "Porsche"), (37, "Porsche Classic"), (38, "Renault"), (39, "SEAT"), (40, "Škoda"),
-        (41, "smart"), (42, "Vauxhall"), (43, "Volkswagen"), (44, "Volkswagen Commercial Vehicles"), (45, "Volvo")
-    ]
-
-    brand = forms.ChoiceField(choices=BRAND_CHOICES, widget=forms.Select(attrs={'class': 'custom-select'}))
-    vin = forms.CharField(widget=forms.TextInput(), required=True)
-
-
 class ConfigFileForm(BSModalModelForm):
     file = forms.FileField(
         label="Fichier config", widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
