@@ -118,7 +118,6 @@ class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     success_url = reverse_lazy('prog:unlock_prods')
 
 
-@permission_required('prog.view_toolstatus')
 def tool_info(request):
     table_title = "Info Outils"
     object_list = ToolStatus.objects.all()
@@ -127,13 +126,26 @@ def tool_info(request):
 
 
 def ajax_tool_info(request, pk):
-    data = {'pk': pk, 'status': 'Hors ligne', 'version': '', 'status_code': 404}
+    data = {'pk': pk, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404}
     try:
         tool = ToolStatus.objects.get(pk=pk)
         response = requests.get(url=tool.api_url, timeout=(0.05, 0.5))
         if response.status_code >= 200 or response.status_code < 300:
             data = response.json()
         data.update({'href': tool.status_url, 'status_code': response.status_code})
+    except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+        pass
+    return JsonResponse(data)
+
+
+def ajax_tool_system(request, pk):
+    data = {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404}
+    try:
+        tool = ToolStatus.objects.get(pk=pk)
+        url = tool.get_url(request.GET.get('mode'))
+        response = requests.get(url=url)
+        if response.status_code >= 200 or response.status_code < 300:
+            data = response.json()
     except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
         pass
     return JsonResponse(data)

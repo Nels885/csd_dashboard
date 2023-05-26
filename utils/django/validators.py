@@ -9,6 +9,7 @@ VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137])|X[A-Z])\w*$'
 VIN_OLD_PSA_REGEX = r'^[VZ]((F[37])|(R[137]))\w*$'
 # VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
 COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
+XELON_REGEX = r'^[9a-zA-Z]\d{9}$'
 
 
 def comp_ref_isvalid(value):
@@ -17,9 +18,16 @@ def comp_ref_isvalid(value):
     return False
 
 
-def vin_psa_isvalid(value):
-    if re.match(VIN_PSA_REGEX, str(value)):
+def vin_psa_isvalid(value: str) -> bool:
+    if isinstance(value, str) and re.match(VIN_PSA_REGEX, value.upper()):
         return True
+    return False
+
+
+def immat_isvalid(value: str) -> bool:
+    if isinstance(value, str):
+        if not re.match(XELON_REGEX, value) and (6 < len(value) < 11):
+            return True
     return False
 
 

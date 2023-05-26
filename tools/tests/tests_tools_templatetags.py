@@ -35,3 +35,41 @@ class ToolsTemplateTagsTest(UnitTest):
         context = Context({'test': self.tc})
         rendered_template = template_to_render.render(context)
         self.assertInHTML('2:02:00', rendered_template)
+
+    def test_suptech_msg(self):
+        # If test is valid
+        context = Context({'test': "{'msg': 'test'}"})
+        template_to_render = Template(
+            '{% load tools_extras %}'
+            '{{ test|suptech_msg }}'
+        )
+        rendered_template = template_to_render.render(context)
+        self.assertInHTML('test', rendered_template)
+
+        # If test is not valid
+        context = Context({'test': ''})
+        template_to_render = Template(
+            '{% load tools_extras %}'
+            '{{ test|suptech_msg }}'
+        )
+        rendered_template = template_to_render.render(context)
+        self.assertInHTML('', rendered_template)
+
+    def test_suptech_type(self):
+        # If test is valid
+        context = Context({'test': "{'type': 'test'}"})
+        template_to_render = Template(
+            '{% load tools_extras %}'
+            '{{ test|suptech_type }}'
+        )
+        rendered_template = template_to_render.render(context)
+        self.assertInHTML('Test:', rendered_template)
+
+        # If test is not valid
+        context = Context({'test': ''})
+        template_to_render = Template(
+            '{% load tools_extras %}'
+            '{{ test|suptech_type }}'
+        )
+        rendered_template = template_to_render.render(context)
+        self.assertInHTML('Message:', rendered_template)

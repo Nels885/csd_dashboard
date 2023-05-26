@@ -4,10 +4,10 @@ from dashboard.tests.base import FunctionalTest, By
 from prog.models import Raspeedi
 
 
-class RaspeediSeleniumTestCase(FunctionalTest):
+class ProgSeleniumTestCase(FunctionalTest):
 
     def setUp(self):
-        super(RaspeediSeleniumTestCase, self).setUp()
+        super(ProgSeleniumTestCase, self).setUp()
         self.add_perms_user(Raspeedi, "view_raspeedi", "add_raspeedi")
 
     def test_raspeedi_insert_is_valid(self):

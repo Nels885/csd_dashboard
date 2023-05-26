@@ -8,7 +8,7 @@ jobs: # A basic unit of work in a run
     working_directory: ~/circleci-csd-dashboard
     docker: # run the steps with Docker
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
-      - image: cimg/python:3.8.16
+      - image: cimg/python:3.8.10
       # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
       - image: cimg/postgres:9.6.24
         environment: # environment variables for the Postgres container.
@@ -17,18 +17,25 @@ jobs: # A basic unit of work in a run
       - image: cimg/redis:5.0.14
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
-      - python/install-packages:
-          args: "--dev"
-          pkg-manager: pipenv
-      - browser-tools/install-firefox
-      - browser-tools/install-geckodriver
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
+      - restore_cache:
+          keys:
+            - cache-{{ checksum "Pipfile.lock" }}
+            - cache-
+      - run:
+          name: Install dependencies
+          command: pipenv sync --dev
+      - save_cache:
+          key: cache-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ~/.local
+            - ~/.cache
       - run:
           command: |
-            firefox --version
-            geckodriver --version
-          name: Check Firefox install
+            google-chrome --version
+            chromedriver --version
+          name: Check Google Chrome install
       - run:
           name: Run pipenv graph
           command: |
@@ -40,8 +47,6 @@ jobs: # A basic unit of work in a run
       - run:
           name: Run tests django
           environment:
-            USER_CORVET: test
-            PWD_CORVET: test
             DJANGO_SETTINGS_MODULE: sbadmin.settings.circleci
           command: |
             mkdir -m 0755 -p ~/Documents/CSD_DATABASE/EXTS/

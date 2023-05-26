@@ -7,16 +7,17 @@ from prog.models import Raspeedi, UnlockProduct, ToolStatus
 from squalaetp.models import Xelon
 
 
-class RaspeediTestCase(UnitTest):
+class ProgTestCase(UnitTest):
 
     def setUp(self):
-        super(RaspeediTestCase, self).setUp()
+        super(ProgTestCase, self).setUp()
         self.form_data = {
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
         self.add_perms_user(UnlockProduct, 'add_unlockproduct', 'view_unlockproduct')
         self.add_perms_user(Raspeedi, 'add_raspeedi', 'view_raspeedi', 'change_raspeedi')
+        self.tools = ToolStatus.objects.create(name="test", url="http://test.test")
 
     def test_raspeedi_table_page(self):
         response = self.client.get(reverse('prog:table'))
@@ -106,14 +107,20 @@ class RaspeediTestCase(UnitTest):
     def test_tool_info_page(self):
         url = reverse('prog:tool_info')
         response = self.client.get(url)
-        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
-        self.add_perms_user(ToolStatus, 'view_toolstatus')
-        self.login()
-        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_ajax_tool_info_page(self):
-        url = reverse('prog:ajax_tool_info', kwargs={'pk': 1})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content, {'pk': 1, 'status': 'Hors ligne', 'version': '', 'status_code': 404})
+        for pk in [self.tools.pk, 999]:
+            url = reverse('prog:ajax_tool_info', kwargs={'pk': pk})
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertJSONEqual(
+                response.content, {'pk': pk, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404})
+
+    def test_ajax_tool_system_page(self):
+        for pk in [self.tools.pk, 999]:
+            url = reverse('prog:ajax_tool_system', kwargs={'pk': pk})
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertJSONEqual(
+                response.content, {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404})

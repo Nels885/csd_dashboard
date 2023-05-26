@@ -126,20 +126,6 @@
                             <strong class="text-primary">{% trans "New user" %}</strong>
                         </a>
                     {% endif %}
-                    {% if perms.squalaetp.add_xelon %}
-                        <a class="import-btn dropdown-item" href="#">
-                            <i class="fas fa-file-import fa-sm fa-fw mr-2 text-gray-400"></i>
-                            <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>
-                        </a>
-{#                        <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'squalaetp:excel_import_async' %}`)">#}
-{#                            <i class="fas fa-file-import fa-sm fa-fw mr-2 text-gray-400"></i>#}
-{#                            <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>#}
-{#                        </a>#}
-                        <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'dashboard:email_ajax' %}`)">
-                            <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
-                            <strong class="text-danger">{% trans "send emails" %}</strong>
-                        </a>
-                    {% endif %}
                     <a class="dropdown-item" href="{% url 'api:doc' %}">
                         <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "API Documentation" %}
@@ -148,6 +134,25 @@
                         <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                         {% trans "Activity Log" %}
                     </a>
+                    <div class="dropdown-divider"></div>
+                    {% if  perms.squalaetp.change_xelon or perms.psa.change_corvet %}
+                        <!-- Nav Item - Generate Squalaetp -->
+                         <a class="dropdown-item font-weight-bold text-warning" href="{% url 'squalaetp:generate' %}">
+                            <i class="fas fa-fw fa-sync-alt mr-2"></i><span>{% trans "Generate Squalaetp" %}</span>
+                        </a>
+                    {% endif %}
+                    {% if perms.squalaetp.add_xelon %}
+                        <a class="import-btn dropdown-item font-weight-bold text-danger" href="#">
+                            <i class="fas fa-file-import fa-sm fa-fw mr-2"></i><span>{% trans "Import Squalaetp" %}</span>
+                        </a>
+{#                        <a class="dropdown-item" href="#" onclick="celeryTask(`{% url 'squalaetp:excel_import_async' %}`)">#}
+{#                            <i class="fas fa-file-import fa-sm fa-fw mr-2 text-gray-400"></i>#}
+{#                            <strong class="text-danger">{% trans "Import Squalaetp" %}</strong>#}
+{#                        </a>#}
+                        <a class="dropdown-item font-weight-bold text-danger" href="#" onclick="celeryTask(`{% url 'dashboard:email_ajax' %}`)">
+                            <i class="fas fa-envelope fa-sm fa-fw mr-2"></i><span>{% trans "send emails" %}</span>
+                        </a>
+                    {% endif %}
                     <div class="dropdown-divider"></div>
                     <a id="logout-top-btn" class="logout-btn dropdown-item" href="#">
                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

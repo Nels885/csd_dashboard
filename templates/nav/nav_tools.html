@@ -144,15 +144,6 @@
         </li>
     {% endif %}
 
-    {% if perms.prog.view_raspeedi %}
-        <!-- Nav Item - Tool info -->
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'prog:tool_info' %}" target="_blank">
-                <i class="fas fa-fw fa-desktop"></i><span>Etat outils</span>
-            </a>
-        </li>
-    {% endif %}
-
     <li class="nav-item">
         <a class="nav-link" href="{% url 'prog:AET_info' %}" target="_blank">
             <i class="fas fa-fw fa-desktop"></i><span>AET</span>
@@ -164,13 +155,6 @@
     <li class="nav-item">
         <a class="nav-link" href="{% url 'tools:usb_devices' %}">
             <i class="fas fa-fw fa-desktop"></i><span>USB Devices</span>
-        </a>
-    </li>
-
-    <!-- Nav Item - Partslink24 -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'tools:partslink24' %}" target="_blank">
-            <i class="fas fa-fw fa-link"></i><span>Partslink24</span>
         </a>
     </li>
     {% endcomment %}

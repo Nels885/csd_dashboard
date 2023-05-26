@@ -7,19 +7,17 @@
     </a>
 </li>
 
-{% if  perms.squalaetp.change_xelon or perms.psa.change_corvet %}
-    <!-- Nav Item - Generate Squalaetp -->
-    <li class="nav-item">
-        <a class="nav-link font-weight-bold text-warning" href="{% url 'squalaetp:generate' %}">
-            <i class="fas fa-fw fa-sync-alt text-warning"></i><span>{% trans "Generate Squalaetp" %}</span>
-        </a>
-    </li>
-{% endif %}
-
 <!-- Nav Item - Thermal Chamber -->
 <li class="nav-item">
     <a class="nav-link" href="{% url 'tools:thermal' %}">
         <i class="fas fa-fw fa-thermometer"></i><span>{% trans "Thermal chamber" %}</span>
+    </a>
+</li>
+
+<!-- Nav Item - Tool info -->
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'prog:tool_info' %}" target="_blank">
+        <i class="fas fa-fw fa-desktop"></i><span>Etat outils</span>
     </a>
 </li>
 

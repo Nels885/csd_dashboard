@@ -8,10 +8,10 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 from django.http import JsonResponse, Http404
 
-from .forms import ExportCorvetForm, ExportRemanForm, CorvetVinListForm, ExportToolsForm
+from .forms import ExportCorvetForm, ExportRemanForm, CorvetVinListForm, ExportToolsForm, ExportSuptechForm
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
-from .tasks import export_corvet_task, export_reman_task, export_tools_task
+from .tasks import export_corvet_task, export_reman_task, export_tools_task, export_suptech_task
 from psa.tasks import import_corvet_list_task
 
 context = {
@@ -43,9 +43,15 @@ def export_reman_async(request):
 @login_required
 def export_tools_async(request):
     form = ExportToolsForm(request.POST or None)
-    if request.POST and form.is_valid():
-        task = export_tools_task.delay(**form.cleaned_data)
-        return JsonResponse({"task_id": task.id})
+    form_suptech = ExportSuptechForm(request.POST or None)
+    if request.POST:
+        if "table" in request.POST and form.is_valid():
+            task = export_tools_task.delay(**form.cleaned_data)
+            return JsonResponse({"task_id": task.id})
+        elif form_suptech.is_valid():
+            print(form_suptech.cleaned_data)
+            task = export_suptech_task.delay(**form_suptech.cleaned_data)
+            return JsonResponse({"task_id": task.id})
     context.update(locals())
     return render(request, 'import_export/detail_tools.html', context)
 

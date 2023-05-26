@@ -18,13 +18,12 @@ from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
 from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage, ConfigFile
 from dashboard.forms import ParaErrorList
 from .forms import (
-    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm, Partslink24Form,
+    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
     ConfigFileForm, SelectConfigForm, EditConfigForm
 )
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
 from api.utils import thermal_chamber_use
-from .tasks import partslink24_task
 
 MQTT_CLIENT = MQTTClass()
 
@@ -308,22 +307,6 @@ def bga_time(request):
 def usb_devices(request):
     title = "USB Devices"
     return render(request, 'tools/usb_devices.html', locals())
-
-
-@login_required
-def partlink24(request):
-    title = "Partslink24"
-    card_title = "Scraping Partslink24"
-    form = Partslink24Form(request.POST or None, error_class=ParaErrorList)
-    if form.is_valid():
-        if request.user.is_authenticated:
-            data = partslink24_task(**form.cleaned_data)
-            messages.success(request, _('Modification done successfully!'))
-            form = Partslink24Form(None, error_class=ParaErrorList)
-        else:
-            messages.warning(request, _('You do not have the required permissions'))
-    errors = form.errors.items()
-    return render(request, 'tools/partlink24.html', locals())
 
 
 @permission_required('tools.change_configfile')
