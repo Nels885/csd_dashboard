@@ -1,7 +1,6 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 from utils.django.forms.fields import ListTextWidget
 from django.utils.translation import gettext as _
-from django.core.files.storage import FileSystemStorage
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 
@@ -90,7 +89,7 @@ class AETSendSoftwareForm(BSModalModelForm):
     select_target = CharField(label='Mbed à mettre à jour', max_length=500, required=False)
     select_firmware = CharField(label='Nom du firmware Mbed', max_length=500, required=False)
 
-    def __init__(self, pk=None,*args, **kwargs):
+    def __init__(self, pk=None, *args, **kwargs):
         if pk is not None:
             aet = AET.objects.get(id=pk)
             _target_list = list(aet.mbed_list.split(";\r\n"))
@@ -102,8 +101,6 @@ class AETSendSoftwareForm(BSModalModelForm):
         self.fields['select_target'].widget = ListTextWidget(data_list=_target_list, name='target-list')
         self.fields['select_firmware'].widget = ListTextWidget(data_list=_firmware_list, name='firmware-list')
 
-
     class Meta:
         model = MbedFirmware
         fields = '__all__'
-
