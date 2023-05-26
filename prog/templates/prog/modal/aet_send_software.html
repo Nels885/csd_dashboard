@@ -1,0 +1,61 @@
+{% load i18n widget_tweaks %}
+
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h3 class="modal-title">{% trans 'Update Mbed' %} - AET {{ modal_title }}</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} text-center text-danger text-uppercase mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <div class="form-group row">
+                <label  for="{{ form.select_target.id_for_label }}" class="col-sm-4 col-form-label">
+                    {{ form.select_target.label }}
+                    {% if form.select_target.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                </label>
+                <div class="col-sm-8">
+                     {% render_field form.select_target class="form-control"%}
+                    <div class="{% if form.select_target.errors %} invalid{% endif %}">
+                        {% for error in form.select_target.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group row">
+                <label  for="{{ form.select_firmware.id_for_label }}" class="col-sm-4 col-form-label">
+                    {{ form.select_firmware.label }}
+                    {% if form.select_firmware.field.required %}<span class="text-danger font-weight-bold">*</span>{% endif %}
+                </label>
+                <div class="col-sm-8">
+                     {% render_field form.select_firmware class="form-control"%}
+                    <div class="{% if form.select_firmware.errors %} invalid{% endif %}">
+                        {% for error in form.select_firmware.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Send' %}</button>
+    </div>
+
+</form>

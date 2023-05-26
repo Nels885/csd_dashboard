@@ -1,5 +1,6 @@
 from urllib.parse import urljoin
 from django.db import models
+from django.core.validators import RegexValidator
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
@@ -96,6 +97,7 @@ class UnlockProduct(models.Model):
 
 class ToolStatus(models.Model):
     name = models.CharField("Nom de l'outils", max_length=50)
+    type = models.TextField("Type", max_length=50, blank=True)
     comment = models.TextField("Commentaire", blank=True)
     url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
@@ -135,3 +137,37 @@ class Log(models.Model):
 
     def __str__(self):
         return self.content_object
+
+
+class AET(models.Model):
+    FIRMWARE_CHOICES = [
+        ('0', 'DIGITAL_OUT;'),
+        ('1', 'DIGITAL_IN;'),
+        ('2', 'DIGITAL_POT_1;'),
+        ('7', 'DIGITAL_POT_2;'),
+        ('8', 'DIGITAL_POT_3;'),
+        ('3', 'ANALOG_IN;'),
+        ('4', 'CYL_REG;'),
+        ('5', 'GATEWAY_JULIE;'),
+    ]
+
+    name = models.CharField("Nom de l'AET", max_length=100, unique=True)
+    raspi_ip = models.CharField("Addresse IP raspi", max_length=500, blank=True)
+    mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
+
+    class Meta:
+        verbose_name = "Statut AET"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class MbedFirmware(models.Model):
+    name = models.CharField("Nom du soft mbed", max_length=100, unique=True)
+    version = models.CharField("Version du soft", max_length=10, validators=[RegexValidator(r'[0-9]{1,2}.[0-9]{2}$', "Please respect version format (ex : 1.23)")])
+    modified_at = models.DateTimeField('Modifié le', auto_now=True)
+    filepath = models.FileField(upload_to='firmware/')
+
+    def __str__(self):
+        return self.name
