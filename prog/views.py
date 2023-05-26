@@ -1,12 +1,15 @@
-import requests
+import json
+
+import requests, os
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.utils.translation import gettext as _
 from django.contrib import messages
-from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalCreateView, BSModalUpdateView
-from django.http import JsonResponse, HttpResponseRedirect
-from django.core.files.storage import FileSystemStorage
+from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalCreateView, BSModalUpdateView, BSModalFormView
+from django.http import JsonResponse
+from django.core.files.storage import default_storage
+from django.conf import settings
 
 from .models import Raspeedi, UnlockProduct, ToolStatus, AET
 from prog.models import MbedFirmware
@@ -194,7 +197,7 @@ class AETAddSoftwareView(BSModalCreateView):
         return http_referer(self.request)
 
 
-class AETSendSoftwareView(BSModalCreateView):
+class AETSendSoftwareView(BSModalFormView):
     model = AET
     template_name = 'prog/modal/aet_send_software.html'
     form_class = AETSendSoftwareForm
@@ -203,9 +206,14 @@ class AETSendSoftwareView(BSModalCreateView):
         pk = self.kwargs.get('pk')
         selected_firmware = MbedFirmware.objects.get(name=request.POST['select_firmware'])
         aet = AET.objects.get(pk=pk)
-        url = aet.raspi_ip + "/updateMbed/version"
-        JsonResponse({'version': selected_firmware.version})
-        return context
+        version = selected_firmware.version
+        with default_storage.open(str(selected_firmware.filepath), "rb") as f:
+            while True:
+                file_data = f.read()
+                if not file_data:
+                    f.close()
+                    break
+        return self.form_valid(self.get_form())
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
