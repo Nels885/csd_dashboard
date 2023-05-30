@@ -6,9 +6,10 @@ from django.utils.translation import gettext as _
 from django.contrib import messages
 from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalCreateView, BSModalUpdateView, BSModalFormView
 from django.http import JsonResponse
-from django.core.files.storage import default_storage
+
 
 from .models import Raspeedi, UnlockProduct, ToolStatus, AET
+from .tasks import send_firmware_task
 from prog.models import MbedFirmware
 from .forms import RaspeediForm, UnlockForm, ToolStatusForm, AETModalForm, AETSendSoftwareForm, AETAddSoftwareModalForm
 from dashboard.forms import ParaErrorList
@@ -207,28 +208,20 @@ class AETAddSoftwareView(BSModalCreateView):
 
 
 class AETSendSoftwareView(BSModalFormView):
-    model = AET
     template_name = 'prog/modal/aet_send_software.html'
     form_class = AETSendSoftwareForm
-    success_message = "Succès : Envoi du firmware avec succès !"
 
-    def post(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        selected_firmware = MbedFirmware.objects.get(name=request.POST['select_firmware'])
-        aet = AET.objects.get(pk=pk)
-        version = selected_firmware.version
-        print(aet, version)
-        with default_storage.open(str(selected_firmware.filepath), "rb") as f:
-            while True:
-                file_data = f.read()
-                if not file_data:
-                    f.close()
-                    break
-
-        return self.form_valid(self.get_form())
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            pk = self.kwargs.get('pk')
+            aet = AET.objects.get(pk=pk)
+            # uri = "ws://" + aet.raspi_ip
+            uri = "ws://mqttpi.cuc.fr.corp:1881/ws/nodered"
+            task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'])
+            self.task_id = task.id
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get('pk')
         context['form'] = AETSendSoftwareForm(pk=pk)
@@ -236,4 +229,7 @@ class AETSendSoftwareView(BSModalFormView):
         return context
 
     def get_success_url(self):
-        return http_referer(self.request)
+        if not self.request.is_ajax():
+            print(self.task_id)
+            return reverse_lazy('prog:AET_info', get={'task_id': self.task_id})
+        return reverse_lazy('prog:AET_info')
