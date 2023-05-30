@@ -179,6 +179,7 @@ def AET_info(request, pk=None):
 
 
 class AETCreateView(BSModalCreateView):
+    permission_required = 'prog.add_aet'
     template_name = 'prog/modal/aet_create.html'
     form_class = AETModalForm
     success_message = "Succès : Ajout d'un AET avec succès !"
@@ -188,6 +189,7 @@ class AETCreateView(BSModalCreateView):
 
 
 class AETUpdateView(BSModalUpdateView):
+    permission_required = 'prog.change_aet'
     model = AET
     template_name = 'prog/modal/aet_update.html'
     form_class = AETModalForm
@@ -198,6 +200,7 @@ class AETUpdateView(BSModalUpdateView):
 
 
 class AETAddSoftwareView(BSModalCreateView):
+    permission_required = 'prog.add_aet'
     model = MbedFirmware
     template_name = 'prog/modal/aet_add_software.html'
     form_class = AETAddSoftwareModalForm
@@ -208,6 +211,7 @@ class AETAddSoftwareView(BSModalCreateView):
 
 
 class AETSendSoftwareView(BSModalFormView):
+    permission_required = 'prog.change_aet'
     template_name = 'prog/modal/aet_send_software.html'
     form_class = AETSendSoftwareForm
 

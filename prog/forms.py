@@ -86,14 +86,14 @@ class AETAddSoftwareModalForm(BSModalModelForm):
 
 
 class AETSendSoftwareForm(BSModalForm):
-    select_target = CharField(label='Mbed à mettre à jour', max_length=500, required=False)
-    select_firmware = CharField(label='Nom du firmware Mbed', max_length=500, required=False)
+    select_target = CharField(label='Mbed à mettre à jour', max_length=500)
+    select_firmware = CharField(label='Nom du firmware Mbed', max_length=500)
 
     def __init__(self, *args, **kwargs):
         pk = kwargs.pop('pk', None)
         if pk is not None:
             aet = AET.objects.get(pk=pk)
-            _target_list = list(aet.mbed_list.split(";\r\n"))
+            _target_list = list(aet.mbed_list.split(";"))
         else:
             _target_list = None
         firmwares = MbedFirmware.objects.all()
