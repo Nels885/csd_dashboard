@@ -152,7 +152,7 @@ class AET(models.Model):
     ]
 
     name = models.CharField("Nom de l'AET", max_length=100, unique=True)
-    raspi_ip = models.CharField("Addresse IP raspi", max_length=500, blank=True)
+    raspi_url = models.CharField("Addresse IP raspi", max_length=500, blank=True)
     mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
 
     class Meta:

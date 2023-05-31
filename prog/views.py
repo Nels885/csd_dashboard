@@ -219,7 +219,7 @@ class AETSendSoftwareView(BSModalFormView):
         if not self.request.is_ajax():
             pk = self.kwargs.get('pk')
             aet = AET.objects.get(pk=pk)
-            # uri = "ws://" + aet.raspi_ip
+            # uri = "ws://" + aet.raspi_url
             uri = "ws://mqttpi.cuc.fr.corp:1881/ws/nodered"
             task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'])
             self.task_id = task.id

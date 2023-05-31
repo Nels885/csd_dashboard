@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from crum import get_current_user
 
-from utils.django.validators import validate_xelon
+from utils.django.validators import validate_xelon, url_isvalid
 from .models import Raspeedi, UnlockProduct, ToolStatus, AET
 from squalaetp.models import Xelon
 from prog.models import MbedFirmware
@@ -68,6 +68,12 @@ class ToolStatusForm(BSModalModelForm):
 
 
 class AETModalForm(BSModalModelForm):
+    def clean_raspi_url(self):
+        data = self.cleaned_data['raspi_url']
+        if not url_isvalid(str(data)):
+            self.add_error('raspi_url', _("URL invalid"))
+        return data
+
     class Meta:
         model = AET
         fields = '__all__'

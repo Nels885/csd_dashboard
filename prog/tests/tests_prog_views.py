@@ -16,7 +16,7 @@ class ProgTestCase(UnitTest):
             'media': 'HDD', 'connecteur_ecran': '1',
         }
         self.aet_data = {
-            'name': 'AET-test', 'raspi_ip': '10.56.0.0', 'mbed_list': 'DIGITAL_IN;ANALOG_IN;DIGITAL_POT',
+            'name': 'AET-test', 'raspi_url': '10.56.0.0', 'mbed_list': 'DIGITAL_IN;ANALOG_IN;DIGITAL_POT',
         }
         self.add_perms_user(UnlockProduct, 'add_unlockproduct', 'view_unlockproduct')
         self.add_perms_user(Raspeedi, 'add_raspeedi', 'view_raspeedi', 'change_raspeedi')
@@ -133,4 +133,3 @@ class ProgTestCase(UnitTest):
         url = reverse('prog:AET_info')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        
