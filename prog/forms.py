@@ -1,7 +1,7 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
 from utils.django.forms.fields import ListTextWidget
 from django.utils.translation import gettext as _
-from bootstrap_modal_forms.forms import BSModalModelForm
+from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from crum import get_current_user
 
 from utils.django.validators import validate_xelon
@@ -85,14 +85,15 @@ class AETAddSoftwareModalForm(BSModalModelForm):
         return data
 
 
-class AETSendSoftwareForm(BSModalModelForm):
-    select_target = CharField(label='Mbed à mettre à jour', max_length=500, required=False)
-    select_firmware = CharField(label='Nom du firmware Mbed', max_length=500, required=False)
+class AETSendSoftwareForm(BSModalForm):
+    select_target = CharField(label='Mbed à mettre à jour', max_length=500)
+    select_firmware = CharField(label='Nom du firmware Mbed', max_length=500)
 
-    def __init__(self, pk=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        pk = kwargs.pop('pk', None)
         if pk is not None:
-            aet = AET.objects.get(id=pk)
-            _target_list = list(aet.mbed_list.split(";\r\n"))
+            aet = AET.objects.get(pk=pk)
+            _target_list = list(aet.mbed_list.split(";"))
         else:
             _target_list = None
         firmwares = MbedFirmware.objects.all()
@@ -102,5 +103,4 @@ class AETSendSoftwareForm(BSModalModelForm):
         self.fields['select_firmware'].widget = ListTextWidget(data_list=_firmware_list, name='firmware-list')
 
     class Meta:
-        model = MbedFirmware
         fields = '__all__'

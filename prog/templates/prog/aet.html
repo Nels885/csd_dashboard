@@ -5,12 +5,12 @@
 {% block detail_content %}
 
     <button class="add-aet btn btn-sm btn-primary mb-3"
-            {% if not perms.prog.add_toolstatus %}disabled{% endif %}>
+            {% if not perms.prog.add_aet %}disabled{% endif %}>
         <i class="fas fa-plus-square text-white-50"></i> Ajout AET
     </button>
 
     <button class="add-soft-aet btn btn-sm btn-primary mb-3"
-            {% if not perms.prog.add_toolstatus %}disabled{% endif %}>
+            {% if not perms.prog.add_aet %}disabled{% endif %}>
         <i class="fas fa-plus-square text-white-50"></i> Ajout Soft Mbed
     </button>
 
@@ -42,7 +42,7 @@
                 <td class="font-weight-bold">
                     <form class="form-inline" method="post" action="">
                         {% csrf_token %}
-                        <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2">
+                        <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2" >
                             <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                             <span class="text">{% trans "Mettre à jour un Mbed" %}</span>
                         </a>
