@@ -10,6 +10,8 @@ VIN_OLD_PSA_REGEX = r'^[VZ]((F[37])|(R[137]))\w*$'
 # VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
 COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
 XELON_REGEX = r'^[9a-zA-Z]\d{9}$'
+URL_REGEX = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$'
+URL_DNS = "cuc.fr.corp"
 
 
 def comp_ref_isvalid(value):
@@ -27,6 +29,27 @@ def vin_psa_isvalid(value: str) -> bool:
 def immat_isvalid(value: str) -> bool:
     if isinstance(value, str):
         if not re.match(XELON_REGEX, value) and (6 < len(value) < 11):
+            return True
+    return False
+
+
+def url_isvalid(url: str) -> bool:
+    """
+        Function for URL validation
+        :param url:
+            URL
+        :return:
+            True if valid
+            False otherwise
+        """
+    if isinstance(url, str):
+        if re.match(URL_REGEX, url) and (6 < len(url) < 16):
+            bytes = url.split('.')
+            for ip_bytes in bytes:
+                if 0 > int(ip_bytes) or int(ip_bytes) > 255:
+                    return False
+            return True
+        elif URL_DNS in url:
             return True
     return False
 
