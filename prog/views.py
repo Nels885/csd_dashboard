@@ -228,7 +228,6 @@ class AETSendSoftwareView(BSModalFormView):
             pk = self.kwargs.get('pk')
             aet = AET.objects.get(pk=pk)
             uri = "ws://" + aet.raspi_url + ":8080/updateMbed"
-            # uri = "ws://mqttpi.cuc.fr.corp:1881/ws/nodered"
             task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'], form.cleaned_data['select_target'])
             self.task_id = task.id
         return super().form_valid(form)
@@ -242,6 +241,5 @@ class AETSendSoftwareView(BSModalFormView):
 
     def get_success_url(self):
         if not self.request.is_ajax():
-            print(self.task_id)
             return reverse_lazy('prog:AET_info', get={'task_id': self.task_id})
         return reverse_lazy('prog:AET_info')
