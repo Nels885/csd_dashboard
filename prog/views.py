@@ -180,10 +180,23 @@ def AET_info(request, pk=None):
                 data = response.json()
                 obj.mbed_list = str(data['mbed_list']).replace("'", "")[1:-1]
                 obj.save()
+                obj.status = data['status']
         except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
             pass
     context.update(locals())
     return render(request, 'prog/aet.html', context)
+
+
+def ajax_aet_status(request, pk):
+    data = {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404}
+    try:
+        aet = AET.objects.get(pk=pk)
+        response = requests.get(url="http://" + aet.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+        if response.status_code >= 200 or response.status_code < 300:
+            data = response.json()
+    except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+        pass
+    return JsonResponse(data)
 
 
 class AETCreateView(BSModalCreateView):

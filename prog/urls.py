@@ -18,6 +18,7 @@ urlpatterns = [
     path('tool/info/<int:pk>/ajax/', views.ajax_tool_info, name='ajax_tool_info'),
     path('tool/system/<int:pk>/ajax/', views.ajax_tool_system, name='ajax_tool_system'),
     path('AET/info/', views.AET_info, name='AET_info'),
+    path('AET/info/<int:pk>/ajax/', views.ajax_aet_status, name='ajax_aet_status'),
     path('AET/add/', views.AETCreateView.as_view(), name='aet_add'),
     path('AET/<int:pk>/update/', views.AETUpdateView.as_view(), name='aet_update'),
     path('AET/add_software/', views.AETAddSoftwareView.as_view(), name='aet_add_software'),

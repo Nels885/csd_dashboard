@@ -7,7 +7,6 @@ from prog.models import MbedFirmware
 
 @celery_app.task
 def send_firmware_task(ws_uri, fw_name, target):
-    msg = {"msg": "Error : could not send firmware", "tags": "danger"}
     try:
         selected_firmware = MbedFirmware.objects.get(name=fw_name)
         with connect(str(ws_uri)) as wsocket:
@@ -24,5 +23,5 @@ def send_firmware_task(ws_uri, fw_name, target):
                     wsocket.send(file_data)
         msg = {"msg": "Succès : Envoi du firmware avec succès !"}
     except MbedFirmware.DoesNotExist:
-        msg = {"msg": "Not found", "tags": "danger"}
+        msg = {"msg": "Not found", "tags": "warning"}
     return msg
