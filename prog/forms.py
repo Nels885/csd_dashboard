@@ -99,7 +99,7 @@ class AETSendSoftwareForm(BSModalForm):
         pk = kwargs.pop('pk', None)
         if pk is not None:
             aet = AET.objects.get(pk=pk)
-            _target_list = list(aet.mbed_list.split(";"))
+            _target_list = list(aet.mbed_list.split(","))
         else:
             _target_list = None
         firmwares = MbedFirmware.objects.all()
