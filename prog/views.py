@@ -173,6 +173,15 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 def AET_info(request, pk=None):
     card_title = _('AET info')
     AET_list = AET.objects.all()
+    for obj in AET_list:
+        try:
+            response = requests.get(url="http://" + obj.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+            if response.status_code >= 200 or response.status_code < 300:
+                data = response.json()
+                obj.mbed_list = str(data['mbed_list']).replace("'", "")[1:-1]
+                obj.save()
+        except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+            pass
     context.update(locals())
     return render(request, 'prog/aet.html', context)
 
@@ -220,7 +229,7 @@ class AETSendSoftwareView(BSModalFormView):
             aet = AET.objects.get(pk=pk)
             uri = "ws://" + aet.raspi_url + ":8080/updateMbed"
             # uri = "ws://mqttpi.cuc.fr.corp:1881/ws/nodered"
-            task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'])
+            task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'], form.cleaned_data['select_target'])
             self.task_id = task.id
         return super().form_valid(form)
 
