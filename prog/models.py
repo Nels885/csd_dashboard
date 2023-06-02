@@ -141,7 +141,7 @@ class Log(models.Model):
 
 class AET(models.Model):
     name = models.CharField("Nom de l'AET", max_length=100, unique=True)
-    raspi_url = models.CharField("Addresse IP raspi", max_length=500, blank=True)
+    raspi_url = models.CharField("URL Raspi", max_length=500)
     mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
 
     class Meta:
