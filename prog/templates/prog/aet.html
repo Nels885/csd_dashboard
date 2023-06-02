@@ -27,6 +27,7 @@
                 <th class="col-2">Nom</th>
                 <th class="col-1">Adresse IP</th>
                 <th class="col-3">Liste Mbed</th>
+                <th class="col-3">Status</th>
                 <th></th>
             </tr>
         </thead>
@@ -37,8 +38,9 @@
                      <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
-                <td class="font-weight-bold">{{ obj.raspi_ip }}</td>
+                <td class="font-weight-bold">{{ obj.raspi_url }}</td>
                 <td class="font-weight-bold">{{ obj.mbed_list }}</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}">Hors Ligne</td>
                 <td class="font-weight-bold">
                     <form class="form-inline" method="post" action="">
                         {% csrf_token %}
@@ -56,5 +58,38 @@
 
 
     <hr>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        let obj_list = [
+            {% for obj in AET_list %}
+                "{{ obj.id }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        function getAetStatus() {
+            for (let i in obj_list) {
+                let pk = obj_list[i];
+                $.ajax({
+                    method: "get",
+                    url: "{% url 'prog:ajax_aet_status' pk=0 %}".replace('0', pk),
+                    success: function(data) {
+                        console.log(data);
+                        let id = '#tool' + pk;
+                        $(id).html(data['status']);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+
+        getAetStatus();
+        setInterval(getAetStatus, 10000);
+    </script>
 
 {% endblock %}

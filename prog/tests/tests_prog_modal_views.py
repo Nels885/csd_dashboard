@@ -13,7 +13,7 @@ class MixinsTest(UnitTest):
         super(MixinsTest, self).setUp()
         self.add_perms_user(UnlockProduct, 'delete_unlockproduct')
         self.add_perms_user(AET, 'add_aet')
-        AET.objects.create(name='test', raspi_ip='10.0.0.0')
+        AET.objects.create(name='test', raspi_url='10.0.0.0')
         xelon = Xelon.objects.create(numero_de_dossier='A123456789')
         UnlockProduct.objects.create(unlock=xelon, user=self.user)
 
@@ -111,7 +111,7 @@ class MixinsTest(UnitTest):
             reverse('prog:aet_add'),
             data={
                 'name': '',
-                'raspi_ip': '',
+                'raspi_url': '',
                 'mbed_list': '',
             },
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
@@ -130,7 +130,7 @@ class MixinsTest(UnitTest):
             reverse('prog:aet_add'),
             data={
                 'name': 'AET test',
-                'raspi_ip': '',
+                'raspi_url': '',
                 'mbed_list': '',
             },
         )
@@ -154,7 +154,7 @@ class MixinsTest(UnitTest):
             reverse('prog:aet_update', kwargs={'pk': old_aet.pk}),
             data={
                 'name': 'AET test 2',
-                'raspi_ip': '',
+                'raspi_url': '',
                 'mbed_list': '',
             },
         )

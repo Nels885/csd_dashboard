@@ -140,19 +140,8 @@ class Log(models.Model):
 
 
 class AET(models.Model):
-    FIRMWARE_CHOICES = [
-        ('0', 'DIGITAL_OUT;'),
-        ('1', 'DIGITAL_IN;'),
-        ('2', 'DIGITAL_POT_1;'),
-        ('7', 'DIGITAL_POT_2;'),
-        ('8', 'DIGITAL_POT_3;'),
-        ('3', 'ANALOG_IN;'),
-        ('4', 'CYL_REG;'),
-        ('5', 'GATEWAY_JULIE;'),
-    ]
-
     name = models.CharField("Nom de l'AET", max_length=100, unique=True)
-    raspi_ip = models.CharField("Addresse IP raspi", max_length=500, blank=True)
+    raspi_url = models.CharField("Addresse IP raspi", max_length=500, blank=True)
     mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
 
     class Meta:

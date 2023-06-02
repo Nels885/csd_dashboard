@@ -171,11 +171,32 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
 
 def AET_info(request, pk=None):
-    title = _('AET')
-    card_title = _('AET')
+    card_title = _('AET info')
     AET_list = AET.objects.all()
+    for obj in AET_list:
+        try:
+            response = requests.get(url="http://" + obj.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+            if response.status_code >= 200 or response.status_code < 300:
+                data = response.json()
+                obj.mbed_list = str(data['mbed_list']).replace("'", "")[1:-1]
+                obj.save()
+                obj.status = data['status']
+        except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+            pass
     context.update(locals())
     return render(request, 'prog/aet.html', context)
+
+
+def ajax_aet_status(request, pk):
+    data = {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404}
+    try:
+        aet = AET.objects.get(pk=pk)
+        response = requests.get(url="http://" + aet.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+        if response.status_code >= 200 or response.status_code < 300:
+            data = response.json()
+    except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+        pass
+    return JsonResponse(data)
 
 
 class AETCreateView(BSModalCreateView):
@@ -219,9 +240,8 @@ class AETSendSoftwareView(BSModalFormView):
         if not self.request.is_ajax():
             pk = self.kwargs.get('pk')
             aet = AET.objects.get(pk=pk)
-            # uri = "ws://" + aet.raspi_ip
-            uri = "ws://mqttpi.cuc.fr.corp:1881/ws/nodered"
-            task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'])
+            uri = "ws://" + aet.raspi_url + ":8080/updateMbed"
+            task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'], form.cleaned_data['select_target'])
             self.task_id = task.id
         return super().form_valid(form)
 
@@ -234,6 +254,5 @@ class AETSendSoftwareView(BSModalFormView):
 
     def get_success_url(self):
         if not self.request.is_ajax():
-            print(self.task_id)
             return reverse_lazy('prog:AET_info', get={'task_id': self.task_id})
         return reverse_lazy('prog:AET_info')
