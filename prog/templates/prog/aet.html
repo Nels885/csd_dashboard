@@ -25,7 +25,7 @@
             <tr>
                 <th></th>
                 <th class="col-2">Nom</th>
-                <th class="col-1">Adresse IP</th>
+                <th class="col-1">URL Raspi</th>
                 <th class="col-3">Liste Mbed</th>
                 <th class="col-3">Status</th>
                 <th></th>
@@ -50,6 +50,34 @@
                         </a>
                     </form>
                 </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <h3>Liste des Firmware</h3>
+    <table class="table table-striped" style="width: 100%;">
+        <thead class="thead-dark text-uppercase">
+            <tr>
+                <th></th>
+                <th class="col-2">Nom</th>
+                <th class="col-1">Version</th>
+                <th class="col-1">Date de modification</th>
+                <th class="col-1">Fichier</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in firmware_list %}
+            <tr>
+                <td class="text-nowrap" style="width: 60px;">
+                     <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                </td>
+                <td class="font-weight-bold">{{ obj.name }}</td>
+                <td class="font-weight-bold">{{ obj.version }}</td>
+                <td class="font-weight-bold">{{ obj.modified_at }}</td>
+                <td class="font-weight-bold">{{ obj.filepath }}</td>
+                <td></td>
             </tr>
             {% endfor %}
         </tbody>

@@ -21,6 +21,7 @@ urlpatterns = [
     path('AET/info/<int:pk>/ajax/', views.ajax_aet_status, name='ajax_aet_status'),
     path('AET/add/', views.AETCreateView.as_view(), name='aet_add'),
     path('AET/<int:pk>/update/', views.AETUpdateView.as_view(), name='aet_update'),
+    path('AET/<int:pk>/edit_firmware/', views.MbedFirmwareUpdateView.as_view(), name='firmware_update'),
     path('AET/add_software/', views.AETAddSoftwareView.as_view(), name='aet_add_software'),
     path('AET/<int:pk>/send_software/', views.AETSendSoftwareView.as_view(), name='aet_send_software'),
 ]

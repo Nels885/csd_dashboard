@@ -130,7 +130,7 @@ class MixinsTest(UnitTest):
             reverse('prog:aet_add'),
             data={
                 'name': 'AET test',
-                'raspi_url': '',
+                'raspi_url': '10.0.0.0',
                 'mbed_list': '',
             },
         )
@@ -154,7 +154,7 @@ class MixinsTest(UnitTest):
             reverse('prog:aet_update', kwargs={'pk': old_aet.pk}),
             data={
                 'name': 'AET test 2',
-                'raspi_url': '',
+                'raspi_url': '10.0.0.0',
                 'mbed_list': '',
             },
         )

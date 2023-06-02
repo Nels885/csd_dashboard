@@ -173,6 +173,7 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 def AET_info(request, pk=None):
     card_title = _('AET info')
     AET_list = AET.objects.all()
+    firmware_list = MbedFirmware.objects.all()
     for obj in AET_list:
         try:
             response = requests.get(url="http://" + obj.raspi_url + "/api/info/", timeout=(0.05, 0.5))
@@ -226,6 +227,17 @@ class AETAddSoftwareView(BSModalCreateView):
     template_name = 'prog/modal/aet_add_software.html'
     form_class = AETAddSoftwareModalForm
     success_message = "Succès : Ajout d'un firmware avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+class MbedFirmwareUpdateView(BSModalUpdateView):
+    permission_required = 'prog.change_aet'
+    model = MbedFirmware
+    template_name = 'prog/modal/firmware_update.html'
+    form_class = AETAddSoftwareModalForm
+    success_message = "Success: Modification des infos firmware avec succès !"
 
     def get_success_url(self):
         return http_referer(self.request)
