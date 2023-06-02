@@ -45,7 +45,5 @@ webdriver-manager = "*"
 selenium_wire = "*"
 update = "*"
 chromedriver-autoinstaller = "*"
-
-[packages.django-constance]
-extras = [ "redis",]
-version = "*"
+websockets = "*"
+django-constance = {extras = [ "redis",], version = "*"}
