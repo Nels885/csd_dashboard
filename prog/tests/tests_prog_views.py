@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from dashboard.tests.base import UnitTest
 
-from prog.models import Raspeedi, UnlockProduct, ToolStatus
+from prog.models import Raspeedi, UnlockProduct, ToolStatus, AET, MbedFirmware
 from squalaetp.models import Xelon
 
 
@@ -15,8 +15,12 @@ class ProgTestCase(UnitTest):
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
+        self.aet_data = {
+            'name': 'AET-test', 'raspi_url': '10.56.0.0', 'mbed_list': 'DIGITAL_IN;ANALOG_IN;DIGITAL_POT',
+        }
         self.add_perms_user(UnlockProduct, 'add_unlockproduct', 'view_unlockproduct')
         self.add_perms_user(Raspeedi, 'add_raspeedi', 'view_raspeedi', 'change_raspeedi')
+        self.add_perms_user(AET, 'add_aet', 'change_aet')
         self.tools = ToolStatus.objects.create(name="test", url="http://test.test")
 
     def test_raspeedi_table_page(self):
@@ -124,3 +128,8 @@ class ProgTestCase(UnitTest):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 response.content, {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404})
+
+    def test_aet_info_page(self):
+        url = reverse('prog:AET_info')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

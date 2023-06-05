@@ -6,9 +6,10 @@ from django.utils.translation import gettext as _
 from django.contrib import messages
 from bootstrap_modal_forms.generic import BSModalDeleteView, BSModalCreateView, BSModalUpdateView, BSModalFormView
 from django.http import JsonResponse
-from django.core.files.storage import default_storage
+
 
 from .models import Raspeedi, UnlockProduct, ToolStatus, AET
+from .tasks import send_firmware_task
 from prog.models import MbedFirmware
 from .forms import RaspeediForm, UnlockForm, ToolStatusForm, AETModalForm, AETSendSoftwareForm, AETAddSoftwareModalForm
 from dashboard.forms import ParaErrorList
@@ -170,14 +171,37 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
 
 def AET_info(request, pk=None):
-    title = _('AET')
-    card_title = _('AET')
+    card_title = _('AET info')
     AET_list = AET.objects.all()
+    firmware_list = MbedFirmware.objects.all()
+    for obj in AET_list:
+        try:
+            response = requests.get(url="http://" + obj.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+            if response.status_code >= 200 or response.status_code < 300:
+                data = response.json()
+                obj.mbed_list = str(data['mbed_list']).replace("'", "")[1:-1]
+                obj.save()
+                obj.status = data['status']
+        except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+            pass
     context.update(locals())
     return render(request, 'prog/aet.html', context)
 
 
+def ajax_aet_status(request, pk):
+    data = {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404}
+    try:
+        aet = AET.objects.get(pk=pk)
+        response = requests.get(url="http://" + aet.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+        if response.status_code >= 200 or response.status_code < 300:
+            data = response.json()
+    except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+        pass
+    return JsonResponse(data)
+
+
 class AETCreateView(BSModalCreateView):
+    permission_required = 'prog.add_aet'
     template_name = 'prog/modal/aet_create.html'
     form_class = AETModalForm
     success_message = "Succès : Ajout d'un AET avec succès !"
@@ -187,6 +211,7 @@ class AETCreateView(BSModalCreateView):
 
 
 class AETUpdateView(BSModalUpdateView):
+    permission_required = 'prog.change_aet'
     model = AET
     template_name = 'prog/modal/aet_update.html'
     form_class = AETModalForm
@@ -197,6 +222,7 @@ class AETUpdateView(BSModalUpdateView):
 
 
 class AETAddSoftwareView(BSModalCreateView):
+    permission_required = 'prog.add_aet'
     model = MbedFirmware
     template_name = 'prog/modal/aet_add_software.html'
     form_class = AETAddSoftwareModalForm
@@ -206,29 +232,32 @@ class AETAddSoftwareView(BSModalCreateView):
         return http_referer(self.request)
 
 
+class MbedFirmwareUpdateView(BSModalUpdateView):
+    permission_required = 'prog.change_aet'
+    model = MbedFirmware
+    template_name = 'prog/modal/firmware_update.html'
+    form_class = AETAddSoftwareModalForm
+    success_message = "Success: Modification des infos firmware avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
 class AETSendSoftwareView(BSModalFormView):
-    model = AET
+    permission_required = 'prog.change_aet'
     template_name = 'prog/modal/aet_send_software.html'
     form_class = AETSendSoftwareForm
-    success_message = "Succès : Envoi du firmware avec succès !"
 
-    def post(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        selected_firmware = MbedFirmware.objects.get(name=request.POST['select_firmware'])
-        aet = AET.objects.get(pk=pk)
-        version = selected_firmware.version
-        print(aet, version)
-        with default_storage.open(str(selected_firmware.filepath), "rb") as f:
-            while True:
-                file_data = f.read()
-                if not file_data:
-                    f.close()
-                    break
-
-        return self.form_valid(self.get_form())
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+            pk = self.kwargs.get('pk')
+            aet = AET.objects.get(pk=pk)
+            uri = "ws://" + aet.raspi_url + ":8080/updateMbed"
+            task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'], form.cleaned_data['select_target'])
+            self.task_id = task.id
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get('pk')
         context['form'] = AETSendSoftwareForm(pk=pk)
@@ -236,4 +265,6 @@ class AETSendSoftwareView(BSModalFormView):
         return context
 
     def get_success_url(self):
-        return http_referer(self.request)
+        if not self.request.is_ajax():
+            return reverse_lazy('prog:AET_info', get={'task_id': self.task_id})
+        return reverse_lazy('prog:AET_info')

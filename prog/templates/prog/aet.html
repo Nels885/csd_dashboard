@@ -5,12 +5,12 @@
 {% block detail_content %}
 
     <button class="add-aet btn btn-sm btn-primary mb-3"
-            {% if not perms.prog.add_toolstatus %}disabled{% endif %}>
+            {% if not perms.prog.add_aet %}disabled{% endif %}>
         <i class="fas fa-plus-square text-white-50"></i> Ajout AET
     </button>
 
     <button class="add-soft-aet btn btn-sm btn-primary mb-3"
-            {% if not perms.prog.add_toolstatus %}disabled{% endif %}>
+            {% if not perms.prog.add_aet %}disabled{% endif %}>
         <i class="fas fa-plus-square text-white-50"></i> Ajout Soft Mbed
     </button>
 
@@ -25,8 +25,9 @@
             <tr>
                 <th></th>
                 <th class="col-2">Nom</th>
-                <th class="col-1">Adresse IP</th>
+                <th class="col-1">URL Raspi</th>
                 <th class="col-3">Liste Mbed</th>
+                <th class="col-3">Status</th>
                 <th></th>
             </tr>
         </thead>
@@ -37,12 +38,13 @@
                      <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
-                <td class="font-weight-bold">{{ obj.raspi_ip }}</td>
+                <td class="font-weight-bold">{{ obj.raspi_url }}</td>
                 <td class="font-weight-bold">{{ obj.mbed_list }}</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}">Hors Ligne</td>
                 <td class="font-weight-bold">
                     <form class="form-inline" method="post" action="">
                         {% csrf_token %}
-                        <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2">
+                        <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2" >
                             <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                             <span class="text">{% trans "Mettre à jour un Mbed" %}</span>
                         </a>
@@ -52,9 +54,70 @@
             {% endfor %}
         </tbody>
     </table>
+    <hr>
+    <h3>Liste des Firmware</h3>
+    <table class="table table-striped" style="width: 100%;">
+        <thead class="thead-dark text-uppercase">
+            <tr>
+                <th></th>
+                <th class="col-2">Nom</th>
+                <th class="col-1">Version</th>
+                <th class="col-1">Date de modification</th>
+                <th class="col-1">Fichier</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in firmware_list %}
+            <tr>
+                <td class="text-nowrap" style="width: 60px;">
+                     <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                </td>
+                <td class="font-weight-bold">{{ obj.name }}</td>
+                <td class="font-weight-bold">{{ obj.version }}</td>
+                <td class="font-weight-bold">{{ obj.modified_at }}</td>
+                <td class="font-weight-bold">{{ obj.filepath }}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 
 
     <hr>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        let obj_list = [
+            {% for obj in AET_list %}
+                "{{ obj.id }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        function getAetStatus() {
+            for (let i in obj_list) {
+                let pk = obj_list[i];
+                $.ajax({
+                    method: "get",
+                    url: "{% url 'prog:ajax_aet_status' pk=0 %}".replace('0', pk),
+                    success: function(data) {
+                        console.log(data);
+                        let id = '#tool' + pk;
+                        $(id).html(data['status']);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+
+        getAetStatus();
+        setInterval(getAetStatus, 10000);
+    </script>
 
 {% endblock %}
