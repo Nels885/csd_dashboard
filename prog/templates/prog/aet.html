@@ -25,10 +25,10 @@
             <tr>
                 <th></th>
                 <th class="col-2">Nom</th>
-                <th class="col-1">URL Raspi</th>
-                <th class="col-3">Liste Mbed</th>
-                <th class="col-3">Status</th>
-                <th></th>
+                <th class="col-3 text-nowrap">URL Raspi</th>
+                <th class="col-2 text-nowrap">Liste Mbed</th>
+                <th class="col-2">Status</th>
+                <th class="col-auto"></th>
             </tr>
         </thead>
         <tbody>
@@ -41,14 +41,11 @@
                 <td class="font-weight-bold">{{ obj.raspi_url }}</td>
                 <td class="font-weight-bold">{{ obj.mbed_list }}</td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}">Hors Ligne</td>
-                <td class="font-weight-bold">
-                    <form class="form-inline" method="post" action="">
-                        {% csrf_token %}
-                        <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2" >
-                            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
-                            <span class="text">{% trans "Mettre à jour un Mbed" %}</span>
-                        </a>
-                    </form>
+                <td class="font-weight-bold text-nowrap">
+                    <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2" >
+                        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                        <span class="text">{% trans "Mettre à jour un Mbed" %}</span>
+                    </a>
                 </td>
             </tr>
             {% endfor %}
@@ -62,9 +59,8 @@
                 <th></th>
                 <th class="col-2">Nom</th>
                 <th class="col-1">Version</th>
-                <th class="col-1">Date de modification</th>
-                <th class="col-1">Fichier</th>
-                <th></th>
+                <th class="col-2 text-nowrap">Date de modification</th>
+                <th>Fichier</th>
             </tr>
         </thead>
         <tbody>
@@ -75,15 +71,12 @@
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.version }}</td>
-                <td class="font-weight-bold">{{ obj.modified_at }}</td>
+                <td class="font-weight-bold">{{ obj.modified_at|date:"d/m/Y H:i" }}</td>
                 <td class="font-weight-bold">{{ obj.filepath }}</td>
-                <td></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
-
 
     <hr>
 
