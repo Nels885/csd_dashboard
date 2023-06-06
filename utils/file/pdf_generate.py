@@ -18,6 +18,8 @@ class CorvetBarcode:
         self.vin = kwargs.get('vin', self.NOP)
         self.brand = kwargs.get('brand', self.NOP)
         self.corvet = kwargs.get('corvet')
+        if self.corvet:
+            self.vin = self.corvet.vin
         self.hwRef = self.swRef = self.NOP
 
     def result(self):
@@ -46,12 +48,13 @@ class CorvetBarcode:
         p.line(50, 535, 550, 535)
 
         p.setFont('Courier-Bold', 15)
+
+        p.drawString(250, 700, str(self.xelonNumber))
         if self.xelonNumber != self.NOP:
-            p.drawString(250, 700, str(self.xelonNumber))
             barcode = code128.Code128(str(self.xelonNumber), barWidth=0.5 * mm, barHeight=10 * mm)
             barcode.drawOn(p, 200, 660)
+        p.drawString(250, 600, str(self.vin))
         if self.vin != self.NOP:
-            p.drawString(250, 600, str(self.vin))
             barcode = code128.Code128(str(self.vin), barWidth=0.5 * mm, barHeight=10 * mm)
             barcode.drawOn(p, 170, 560)
         return p

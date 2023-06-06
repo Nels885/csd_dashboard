@@ -19,6 +19,7 @@ urlpatterns = [
     path('corvet/create/', views.CorvetCreateView.as_view(), name='create_corvet'),
     path('corvet/<slug:pk>/edit/', views.CorvetUpdateView.as_view(), name='update_corvet'),
     path('corvet/<slug:pk>/detail/', views.corvet_detail, name='corvet_detail'),
+    path('corvet/<slug:pk>/pdf/', views.barcode_pdf_generate, name='barcode_pdf'),
     path('corvet/import/async/', ajax.import_corvet_async, name='import_corvet'),
     path('product/', views.product_table, name='product'),
     path('majestic-web/', views.majestic_web, name='majestic_web')
