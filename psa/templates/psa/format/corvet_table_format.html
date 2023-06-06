@@ -85,6 +85,42 @@
             </tr>
         {% endif %}
     {% endif %}
+    {% if object.electronique_1m2 %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW IVI</td>
+            <td>
+                {{ object.electronique_1m2 }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.ivi id="ivi" %}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL IVI</td>
+            <td>{{ object.electronique_3m2 }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série IVI</td>
+            <td>{{ object.electronique_4m2 }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Date Fab. IVI</td>
+            <td>{{ object.electronique_5m2 }}</td>
+        </tr>
+        {% if object.electronique_6m2 %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur IVI</td>
+                <td>{{ object.electronique_6m2|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td class="text-dark td-ihm">Ref. 8m2 ? IVI</td>
+            <td>{{ object.electronique_8m2 }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Data Library IVI</td>
+            <td>{{ object.electronique_xm2 }}</td>
+        </tr>
+    {% endif %}
+
     </tbody>
 </table>
 
