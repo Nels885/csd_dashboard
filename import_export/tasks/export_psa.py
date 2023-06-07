@@ -44,6 +44,23 @@ CORVET_DICT = {
         ('84F_RADIO_DOTE', 'electronique_84f'), ('Réf. Setplate', 'prods__radio__label_ref'),
         ('Niv.', 'prods__radio__level'), ('HW variant', 'prods__radio__extra')
     ],
+    'ivi': [
+        ('1M2_IVI_HARD', 'electronique_1m2'), ('3M2_IVI_SOFT', 'electronique_3m2')
+    ],
+    'ivi_extra': [
+        ('4M2_IVI_FOURN.NO.SERIE', 'electronique_4m2'), ('5M2_IVI_FOUN.DATE.FAB.', 'electronique_5m2'),
+        ('6M2_IVI_FOURN.CODE', 'electronique_6m2'), ('8M2_IVI_???', 'electronique_8m2'),
+        ('XM2_IVI_DATA_LIBRARY', 'electronique_xm2')
+    ],
+    'bsrf': [
+        ('1L9_BSRF_HARD', 'electronique_1l9'), ('3L9_BSRF_SOFT', 'electronique_3l9')
+    ],
+    'bsrf_extra': [
+        ('4L9_BSRF_FOURN.NO.SERIE', 'electronique_4l9'), ('6L9_BSRF_FOURN.CODE', 'electronique_6l9'),
+        ('8L9_BSRF_???', 'electronique_8l9'), ('9L9_BSRF_???', 'electronique_9l9'),
+        ('KL9_BSRF_NUMERO.IMEI', 'electronique_kl9'), ('ML9_BSRF_NUMERO.IMSI', 'electronique_ml9'),
+        ('RL9_BSRF_NUMERO.ICCID', 'electronique_rl9'), ('YL9_BSRF_VEHICLE.APP', 'electronique_yl9')
+    ],
     'emf': [
         ('Modèle Ecran Multi', 'prods__emf__name'), ('14L_EMF_HARD', 'electronique_14l'),
         ('44L_EMF_FOURN.NO.SERIE', 'electronique_44l'), ('54L_EMF_FOUN.DATE.FAB', 'electronique_54l'),
@@ -191,6 +208,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
     }
     PROD_DICT = {
         'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
+        'ivi': {'electronique_1m2__exact': ''}, 'bsrf': {'electronique_1l9__exact': ''},
         'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
         'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
         'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
