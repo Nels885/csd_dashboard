@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from utils.django.api_rest.serializers import DynamicFieldsModelSerializer
-from .models import Corvet
+from .models import Corvet, DefaultCode
 
 CORVET_COLUMN_LIST = [
     'vin', 'electronique_14f', 'electronique_94f', 'prods__radio__xelon_name', 'electronique_14x', 'electronique_94x',
@@ -31,3 +31,10 @@ class CorvetSerializer(DynamicFieldsModelSerializer):
         model = Corvet
         fields = ('vin', 'rad_ref', 'rad_cal', 'radio_name', 'nav_ref', 'nav_cal', 'btel_name',
                   'cmm_ref', 'cmm_cal', 'cmm_name', 'bsi_ref', 'bsi_cal', 'bsi_name', )
+
+
+class DefaultCodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DefaultCode
+        fields = ('code', 'type', 'description', 'characterization', 'ecu_type')

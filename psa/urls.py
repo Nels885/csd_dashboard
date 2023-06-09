@@ -5,6 +5,7 @@ from . import ajax
 
 router = DefaultRouter()
 router.register(r'api/corvet', ajax.CorvetViewSet, basename='api_corvet')
+router.register(r'api/dtc', ajax.DefaultCodeViewSet, basename='api_psa_dtc')
 
 app_name = 'psa'
 
