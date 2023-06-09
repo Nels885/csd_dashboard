@@ -554,17 +554,21 @@ class SupplierCode(models.Model):
         return self.name
 
 
-# class DefaultCode(models.Model):
-#     code = models.CharField('code', max_length=5, primary_key=True)
-#     description = models.CharField('description', max_length=200)
-#     type = models.IntegerField('type', blank=True, null=True)
-#     characterization = models.CharField('nom fournisseur', max_length=500, blank=True)
-#     ecu_type = models.CharField('type ECU', max_length=100, blank=True)
-#     brand = models.CharField('marque', max_length=100, blank=True)
-#
-#     class Meta:
-#         verbose_name = "Code Defaut"
-#         ordering = ['code']
-#
-#     def __str__(self):
-#         return self.code
+class DefaultCode(models.Model):
+    code = models.CharField('code', max_length=5)
+    description = models.CharField('description', max_length=200)
+    type = models.CharField('type', max_length=2)
+    characterization = models.CharField('caractérisation', max_length=500, blank=True)
+    location = models.CharField('localisation', max_length=500, blank=True)
+    help = models.CharField('aide', max_length=500, blank=True)
+    ecu_type = models.CharField('type ECU', max_length=100)
+
+    class Meta:
+        verbose_name = "Code Defaut"
+        ordering = ['code']
+        constraints = [
+            models.UniqueConstraint(fields=['code', 'type', 'ecu_type'], name="Default code unique")
+        ]
+
+    def __str__(self):
+        return f"{self.code} {self.type} {self.ecu_type}"
