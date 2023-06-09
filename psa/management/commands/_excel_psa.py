@@ -7,14 +7,14 @@ logger = logging.getLogger('command')
 
 
 class ExcelCorvet(ExcelFormat):
-    """## Read data in Excel file for Squalaetp ##"""
+    """## Read data in Excel file for Corvet ##"""
     ERROR = False
     CORVET_DROP_COLS = ['numero_de_dossier', 'modele_produit', 'modele_vehicule']
     COLS_DATE = {'date_debut_garantie': "%d/%m/%Y %H:%M:%S", 'date_entree_montage': "%d/%m/%Y %H:%M:%S"}
 
     def __init__(self, file, sheet_name=0, columns=None):
         """
-        Initialize ExcelSqualaetp class
+        Initialize ExcelCorvet class
         :param file:
             excel file to process
         :param sheet_name:
@@ -83,7 +83,7 @@ class ExcelCorvetAttribute(ExcelFormat):
 
     def __init__(self, file, sheet_name=1, columns=None):
         """
-        Initialize ExcelSqualaetp class
+        Initialize ExcelCorvetAttribute class
         :param file:
             excel file to process
         :param sheet_name:
@@ -114,4 +114,46 @@ class ExcelCorvetAttribute(ExcelFormat):
                     data.append(row)
                 except KeyError:
                     pass
+        return data
+
+
+class ExcelDefaultCode(ExcelFormat):
+    """## Read data in Excel file for PSA_code_defaults.xlsx ##"""
+    ERROR = False
+    COLS = {
+        "A": "code", "B": "description", "C": "type", "D": "characterization", "E": "location", "F": "help",
+        "G": "ecu_type"
+    }
+
+    def __init__(self, file, sheet_name=0, columns=None, skiprows=None):
+        """
+        Initialize ExcelDefaultCode class
+        :param file:
+            excel file to process
+        :param sheet_name:
+            Sheet index to be processed from excel file
+        :param columns:
+            Number of the last column to be processed
+        """
+        try:
+            cols = ",".join(self.COLS.keys())
+            super(ExcelDefaultCode, self).__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
+            self.sheet.dropna(axis='columns', how='all', inplace=True)
+            self._columns_rename(self.COLS)
+            self.sheet.replace({"": None, "#": None}, inplace=True)
+        except FileNotFoundError as err:
+            logger.error(f'FileNotFoundError: {err}')
+            self.ERROR = True
+
+    def read(self):
+        """
+        Extracting data for the DefaultCode table form the Database
+        :return:
+            list of dictionnaries that represents the data for DefaultCode table
+        """
+        data = []
+        if not self.ERROR:
+            for line in range(self.nrows):
+                row = self.sheet.loc[line]  # get the data in the ith row
+                data.append(dict(row.dropna()))
         return data
