@@ -5,8 +5,9 @@ from django.contrib.admin import widgets
 
 from .models import (
     Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
-    DefaultCode
+    DefaultCode, ProductChoice
 )
+from .forms import EcuAdminForm
 
 
 class CorvetListFilter(admin.SimpleListFilter):
@@ -105,6 +106,7 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 
 
 class EcuAdmin(admin.ModelAdmin):
+    form = EcuAdminForm
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe',
         'relation_by_name'
@@ -162,6 +164,13 @@ class DefaultCodeAdmin(admin.ModelAdmin):
     search_fields = ('code', 'description', 'type', 'ecu_type')
 
 
+class ProductChoiceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
+    list_filter = ('family', 'ecu_type', 'protocol')
+    ordering = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
+    search_fields = ('name', 'short_name', 'cal_attribute')
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(CorvetProduct, CorvetProductAdmin)
 admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
@@ -172,3 +181,4 @@ admin.site.register(CorvetChoices, CorvetChoicesAdmin)
 admin.site.register(Ecu, EcuAdmin)
 admin.site.register(SupplierCode)
 admin.site.register(DefaultCode, DefaultCodeAdmin)
+admin.site.register(ProductChoice, ProductChoiceAdmin)

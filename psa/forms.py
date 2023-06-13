@@ -4,7 +4,8 @@ from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.scraping import xml_parser
 from utils.django.validators import validate_vin, validate_nac
-from .models import Corvet, Firmware
+from utils.django.forms.fields import ListTextWidget
+from .models import Corvet, Firmware, Ecu, SupplierCode
 
 
 class NacLicenseForm(forms.Form):
@@ -105,3 +106,17 @@ class CorvetModalForm(CorvetForm, BSModalModelForm):
         if commit and not self.request.is_ajax():
             instance.save()
         return instance
+
+
+class EcuAdminForm(forms.ModelForm):
+    supplier_oe = forms.ModelChoiceField(queryset=SupplierCode.objects.all())
+
+    class Meta:
+        model = Ecu
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        suppliers = SupplierCode.objects.all()
+        _supplier_list = list(suppliers.values_list('name', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')

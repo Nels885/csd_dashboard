@@ -385,12 +385,17 @@ class CorvetAttribute(models.Model):
 
 class ProductChoice(models.Model):
     MODEL_CHOICES = [('MULTIMEDIA', 'Multimédia'), ('ECU', 'Calculateur')]
+    PROTO_CHOICES = [('AEE2004', 'AEE2004'), ('AEE2010', 'AEE2010')]
 
     name = models.CharField('Nom', max_length=200, unique=True)
     family = models.CharField('Famille', max_length=50, choices=MODEL_CHOICES)
     short_name = models.CharField('Nom court', max_length=20)
     ecu_type = models.CharField('Type ECU', max_length=10)
     cal_attribute = models.CharField('Attribut CAL', max_length=3, blank=True)
+    protocol = models.CharField('Protocole', max_length=100, choices=PROTO_CHOICES, blank=True)
+
+    def __str__(self):
+        return f"{self.name}_{self.protocol}"
 
 
 class Multimedia(models.Model):
