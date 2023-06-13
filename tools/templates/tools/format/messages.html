@@ -1,0 +1,29 @@
+{% load i18n static tools_extras %}
+
+{% if object.messages.all %}
+
+    <h4 class="font-weight-bold text-uppercase">HISTORIQUE :</h4>
+
+    <table class="table table-striped table-sm">
+        <tbody>
+        {% for message in object.messages.all %}
+
+            <tr>
+                <td style="width: 14rem;">
+                    <img alt="" class="rounded-circle" width="32" height="32" src="{{ message.added_by.profile.image.url }}" onerror="this.src='{% static 'img/avatar.png' %}';">
+                    <span class="font-weight-bold">{{ message.added_by.first_name }} {{ message.added_by.last_name }}</span><br>
+                    <span>{{ message.added_at }}</span>
+                </td>
+                <td>
+                    <span class="font-weight-bold">{{ message.content|suptech_type }}</span><br>
+                    <span>{{ message.content|suptech_msg|linebreaksbr }}</span>
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <hr>
+
+{% endif %}

@@ -46,11 +46,11 @@ class UserProfileAdminForm(forms.ModelForm):
             w, h = get_image_dimensions(avatar)
 
             # validate dimensions
-            max_width = max_height = 150
-            if w > max_width or h > max_height:
-                raise forms.ValidationError(
-                    'Please use an image that is %s x %s pixels or smaller.' % (max_width, max_height)
-                )
+            # max_width = max_height = 150
+            # if w > max_width or h > max_height:
+            #     raise forms.ValidationError(
+            #         'Please use an image that is %s x %s pixels or smaller.' % (max_width, max_height)
+            #     )
 
             # validate content type
             main, sub = avatar.content_type.split('/')
@@ -58,8 +58,8 @@ class UserProfileAdminForm(forms.ModelForm):
                 raise forms.ValidationError('Please use a JPEG, GIF or PNG image.')
 
             # validate file size
-            if len(avatar) > (70 * 1024):
-                raise forms.ValidationError('Avatar file size may not exceed 70k.')
+            # if len(avatar) > (70 * 1024):
+            #     raise forms.ValidationError('Avatar file size may not exceed 70k.')
 
         except AttributeError:
             """
