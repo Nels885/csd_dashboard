@@ -188,7 +188,7 @@ def AET_info(request, pk=None):
 
 
 def ajax_aet_status(request, pk):
-    data = {'pk': pk, 'msg': 'No response', 'status': 'Hors Ligne', 'percent': 0, 'status_code': 404}
+    data = {'pk': pk, 'msg': 'No response', 'status': 'Hors Ligne', 'percent': '0', 'status_code': 404}
     try:
         aet = AET.objects.get(pk=pk)
         response = requests.get(url="http://" + aet.raspi_url + "/api/info/", timeout=(0.05, 0.5))
