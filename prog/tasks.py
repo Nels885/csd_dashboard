@@ -39,4 +39,8 @@ def send_firmware_task(self, raspi_url, fw_name, target):
             time.sleep(2)
     except MbedFirmware.DoesNotExist:
         msg = {"msg": "Not found", "tags": "warning"}
+    except TimeoutError:
+        msg = {"msg": "Connection timed out : connection au raspberry impossible !", "tags": "warning"}
+    except ConnectionRefusedError:
+        msg = {"msg": "Connection refused : connection au raspberry refusée !", "tags": "warning"}
     return msg
