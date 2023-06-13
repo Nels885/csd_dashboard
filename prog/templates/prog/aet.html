@@ -47,7 +47,7 @@
                     </div>
                 </td>
                 <td class="font-weight-bold text-nowrap">
-                    <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2" >
+                    <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2 {% if not perms.prog.change_aet %}disabled{% endif %}">
                         <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                         <span class="text">{% trans "Mettre à jour un Mbed" %}</span>
                     </a>
