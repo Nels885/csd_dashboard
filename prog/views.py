@@ -181,7 +181,6 @@ def AET_info(request, pk=None):
                 data = response.json()
                 obj.mbed_list = str(data['mbed_list']).replace("'", "")[1:-1]
                 obj.save()
-                obj.status = data['status']
         except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
             pass
     context.update(locals())
@@ -189,13 +188,13 @@ def AET_info(request, pk=None):
 
 
 def ajax_aet_status(request, pk):
-    data = {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404}
+    data = {'pk': pk, 'msg': 'No response', 'status': 'Hors Ligne', 'percent': 0, 'status_code': 404}
     try:
         aet = AET.objects.get(pk=pk)
         response = requests.get(url="http://" + aet.raspi_url + "/api/info/", timeout=(0.05, 0.5))
         if response.status_code >= 200 or response.status_code < 300:
             data = response.json()
-    except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
+    except (requests.exceptions.RequestException, AET.DoesNotExist):
         pass
     return JsonResponse(data)
 
@@ -252,8 +251,8 @@ class AETSendSoftwareView(BSModalFormView):
         if not self.request.is_ajax():
             pk = self.kwargs.get('pk')
             aet = AET.objects.get(pk=pk)
-            uri = "ws://" + aet.raspi_url + ":8080/updateMbed"
-            task = send_firmware_task.delay(uri, form.cleaned_data['select_firmware'], form.cleaned_data['select_target'])
+            task = send_firmware_task.delay(raspi_url=aet.raspi_url, fw_name=form.cleaned_data['select_firmware'],
+                                            target=form.cleaned_data['select_target'])
             self.task_id = task.id
         return super().form_valid(form)
 
@@ -261,6 +260,7 @@ class AETSendSoftwareView(BSModalFormView):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get('pk')
         context['form'] = AETSendSoftwareForm(pk=pk)
+        context['pk'] = pk
         context["modal_title"] = AET.objects.filter(pk=pk).first().name
         return context
 
