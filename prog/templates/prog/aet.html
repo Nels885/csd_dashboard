@@ -35,7 +35,7 @@
             {% for obj in AET_list %}
             <tr>
                 <td class="text-nowrap" style="width: 60px;">
-                     <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                     <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.raspi_url }}</td>
@@ -72,7 +72,7 @@
             {% for obj in firmware_list %}
             <tr>
                 <td class="text-nowrap" style="width: 60px;">
-                     <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                     <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.version }}</td>
@@ -103,6 +103,7 @@
                     method: "get",
                     url: "{% url 'prog:ajax_aet_status' pk=0 %}".replace('0', pk),
                     success: function(data) {
+                        console.log(data)
                         let id = '#aet' + pk;
                         $(id).html(data['status']);
                         if(data['percent'] === '0') {
@@ -119,10 +120,8 @@
                 });
             }
         }
-
-
         getAetStatus();
-        setInterval(getAetStatus, 10000);
+        setInterval(getAetStatus, 8000);
     </script>
 
 {% endblock %}
