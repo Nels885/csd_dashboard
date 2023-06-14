@@ -2,6 +2,18 @@
 
 {% load static i18n widget_tweaks %}
 
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'prog/tab_select.html' with select='aet' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
 {% block detail_content %}
 
     <button class="add-aet btn btn-sm btn-primary mb-3"
@@ -121,7 +133,7 @@
             }
         }
         getAetStatus();
-        setInterval(getAetStatus, 8000);
+        setInterval(getAetStatus, 10000);
     </script>
 
 {% endblock %}

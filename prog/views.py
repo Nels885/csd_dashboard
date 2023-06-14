@@ -171,7 +171,6 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
 
 def AET_info(request, pk=None):
-    card_title = _('AET info')
     AET_list = AET.objects.all()
     firmware_list = MbedFirmware.objects.all()
     for obj in AET_list:
