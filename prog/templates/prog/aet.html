@@ -35,14 +35,19 @@
             {% for obj in AET_list %}
             <tr>
                 <td class="text-nowrap" style="width: 60px;">
-                     <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                     <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.raspi_url }}</td>
                 <td class="font-weight-bold">{{ obj.mbed_list }}</td>
-                <td class="font-weight-bold" id="tool{{ obj.id }}">Hors Ligne</td>
+                <td class="font-weight-bold">
+                    <span class="text" id="aet{{ obj.id }}">Hors Ligne</span>
+                    <div class="progress" id="aet{{ obj.id }}-progress" style="display: none">
+                        <div id="aet{{ obj.id }}-progressbar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuemax="100" aria-valuemin="0"></div>
+                    </div>
+                </td>
                 <td class="font-weight-bold text-nowrap">
-                    <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2" >
+                    <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2 {% if not perms.prog.change_aet %}disabled{% endif %}">
                         <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                         <span class="text">{% trans "Mettre à jour un Mbed" %}</span>
                     </a>
@@ -67,7 +72,7 @@
             {% for obj in firmware_list %}
             <tr>
                 <td class="text-nowrap" style="width: 60px;">
-                     <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                     <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.version }}</td>
@@ -98,9 +103,16 @@
                     method: "get",
                     url: "{% url 'prog:ajax_aet_status' pk=0 %}".replace('0', pk),
                     success: function(data) {
-                        console.log(data);
-                        let id = '#tool' + pk;
+                        console.log(data)
+                        let id = '#aet' + pk;
                         $(id).html(data['status']);
+                        if(data['percent'] === '0') {
+                            $(id + '-progress').hide()
+                        }
+                        else {
+                            $(id + '-progressbar').css({'width': data['percent'].toString() + '%'});
+                            $(id + '-progress').show()
+                        }
                     },
                     error: function(error) {
                         console.log(error);
@@ -108,9 +120,8 @@
                 });
             }
         }
-
         getAetStatus();
-        setInterval(getAetStatus, 10000);
+        setInterval(getAetStatus, 8000);
     </script>
 
 {% endblock %}
