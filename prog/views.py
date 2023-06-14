@@ -208,6 +208,16 @@ class AETCreateView(BSModalCreateView):
         return http_referer(self.request)
 
 
+class AetDeleteView(BSModalDeleteView):
+    model = AET
+    permission_required = 'prog.change_aet'
+    template_name = 'prog/modal/aet_delete.html'
+    success_message = _('Success: AET was deleted.')
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
 class AETUpdateView(BSModalUpdateView):
     permission_required = 'prog.change_aet'
     model = AET
@@ -225,6 +235,16 @@ class AETAddSoftwareView(BSModalCreateView):
     template_name = 'prog/modal/aet_add_software.html'
     form_class = AETAddSoftwareModalForm
     success_message = "Succès : Ajout d'un firmware avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+class MbedFirmwareDeleteView(BSModalDeleteView):
+    model = MbedFirmware
+    permission_required = 'prog.change_aet'
+    template_name = 'prog/modal/firmware_delete.html'
+    success_message = _('Success: Firmware was deleted.')
 
     def get_success_url(self):
         return http_referer(self.request)

@@ -47,7 +47,10 @@
             {% for obj in AET_list %}
             <tr>
                 <td class="text-nowrap" style="width: 60px;">
-                     <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                    <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                    <button data-form-url="{% url 'prog:aet_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.change_aet %}disabled{% endif %}>
+                            <i class="fas fa-trash-alt"></i>
+                    </button>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.raspi_url }}</td>
@@ -84,7 +87,10 @@
             {% for obj in firmware_list %}
             <tr>
                 <td class="text-nowrap" style="width: 60px;">
-                     <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                    <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                    <button data-form-url="{% url 'prog:firmware_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.change_aet %}disabled{% endif %}>
+                            <i class="fas fa-trash-alt"></i>
+                    </button>
                 </td>
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.version }}</td>
