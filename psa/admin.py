@@ -4,7 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
 
 from .models import (
-    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode
+    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
+    DefaultCode
 )
 
 
@@ -154,6 +155,13 @@ class CorvetProductAdmin(admin.ModelAdmin):
     )
 
 
+class DefaultCodeAdmin(admin.ModelAdmin):
+    list_display = ('code', 'description', 'type', 'characterization', 'ecu_type')
+    list_filter = ('ecu_type',)
+    ordering = ('code', 'description', 'ecu_type')
+    search_fields = ('code', 'description', 'type', 'ecu_type')
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(CorvetProduct, CorvetProductAdmin)
 admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
@@ -163,3 +171,4 @@ admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
 admin.site.register(Ecu, EcuAdmin)
 admin.site.register(SupplierCode)
+admin.site.register(DefaultCode, DefaultCodeAdmin)

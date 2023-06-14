@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http import FileResponse
 from django.views.generic import TemplateView
 from django.utils.translation import gettext as _
 from django.forms.models import model_to_dict
@@ -10,6 +11,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
 from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
+from utils.file.pdf_generate import CorvetBarcode
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm
 from .models import Corvet, Multimedia
 from .utils import COLLAPSE_LIST
@@ -130,6 +132,12 @@ def corvet_detail(request, pk):
     select = "prods"
     context.update(locals())
     return render(request, 'psa/detail/detail.html', context)
+
+
+def barcode_pdf_generate(request, pk):
+    query = get_object_or_404(Corvet, pk=pk)
+    buffer = CorvetBarcode(corvet=query).result()
+    return FileResponse(buffer, filename=f"corvet_{query.vin}.pdf")
 
 
 class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):

@@ -4,9 +4,11 @@ from rest_framework import viewsets, permissions, status
 
 from utils.django.datatables import QueryTableByArgs
 
-from .serializers import CorvetSerializer, CORVET_COLUMN_LIST
-from .models import Corvet
+from .serializers import CorvetSerializer, CORVET_COLUMN_LIST, DefaultCodeSerializer
+from .models import Corvet, DefaultCode
 from .tasks import import_corvet_task
+
+from api.utils import TokenAuthSupportQueryString
 
 
 class CorvetViewSet(viewsets.ModelViewSet):
@@ -41,3 +43,19 @@ def import_corvet_async(request):
         task = import_corvet_task.delay(vin=vin)
         return JsonResponse({"task_id": task.id})
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
+
+
+class DefaultCodeViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = DefaultCode.objects.all()
+    serializer_class = DefaultCodeSerializer
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        product = self.request.query_params.get('prod', None)
+        queryset = self.queryset
+        if product:
+            queryset = DefaultCode.objects.filter(ecu_type=product)
+        return queryset

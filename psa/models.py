@@ -329,8 +329,13 @@ class Corvet(models.Model):
 
 class CorvetProduct(models.Model):
     corvet = models.OneToOneField('psa.Corvet', related_name='prods', on_delete=models.CASCADE, primary_key=True)
+
+    # Multimedia
     radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
     btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
+    ivi = models.ForeignKey('Multimedia', related_name='corvet_ivi', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
+
+    # ECU
     bsi = models.ForeignKey('psa.Ecu', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
     emf = models.ForeignKey('psa.Ecu', related_name='corvet_emf', on_delete=models.SET_NULL, limit_choices_to={'type': 'EMF'}, null=True, blank=True)
     cmm = models.ForeignKey('psa.Ecu', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
@@ -378,6 +383,16 @@ class CorvetAttribute(models.Model):
         return f"{self.key_1}_{self.key_2} - {self.label}"
 
 
+class ProductChoice(models.Model):
+    MODEL_CHOICES = [('MULTIMEDIA', 'Multimédia'), ('ECU', 'Calculateur')]
+
+    name = models.CharField('Nom', max_length=200, unique=True)
+    family = models.CharField('Famille', max_length=50, choices=MODEL_CHOICES)
+    short_name = models.CharField('Nom court', max_length=20)
+    ecu_type = models.CharField('Type ECU', max_length=10)
+    cal_attribute = models.CharField('Attribut CAL', max_length=3, blank=True)
+
+
 class Multimedia(models.Model):
     TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
@@ -391,6 +406,7 @@ class Multimedia(models.Model):
         ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
         ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
         ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
+        ('IVI', 'In-Vehicle Infotainment')
     ]
     LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
@@ -399,6 +415,7 @@ class Multimedia(models.Model):
     comp_ref = models.BigIntegerField('réf. comp. matériel', primary_key=True)
     mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
+    product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
@@ -502,7 +519,8 @@ class Ecu(models.Model):
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
-    type = models.CharField('type', max_length=7, choices=TYPE_CHOICES)
+    product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.CharField('type', max_length=10, choices=TYPE_CHOICES)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)
     hw = models.CharField('HW', max_length=10, blank=True)
@@ -536,17 +554,21 @@ class SupplierCode(models.Model):
         return self.name
 
 
-# class DefaultCode(models.Model):
-#     code = models.CharField('code', max_length=5, primary_key=True)
-#     description = models.CharField('description', max_length=200)
-#     type = models.IntegerField('type', blank=True, null=True)
-#     characterization = models.CharField('nom fournisseur', max_length=500, blank=True)
-#     ecu_type = models.CharField('type ECU', max_length=100, blank=True)
-#     brand = models.CharField('marque', max_length=100, blank=True)
-#
-#     class Meta:
-#         verbose_name = "Code Defaut"
-#         ordering = ['code']
-#
-#     def __str__(self):
-#         return self.code
+class DefaultCode(models.Model):
+    code = models.CharField('code', max_length=5)
+    description = models.CharField('description', max_length=200)
+    type = models.CharField('type', max_length=2)
+    characterization = models.CharField('caractérisation', max_length=500, blank=True)
+    location = models.CharField('localisation', max_length=500, blank=True)
+    help = models.CharField('aide', max_length=500, blank=True)
+    ecu_type = models.CharField('type ECU', max_length=100)
+
+    class Meta:
+        verbose_name = "Code Defaut"
+        ordering = ['code']
+        constraints = [
+            models.UniqueConstraint(fields=['code', 'type', 'ecu_type'], name="Default code unique")
+        ]
+
+    def __str__(self):
+        return f"{self.code} {self.type} {self.ecu_type}"

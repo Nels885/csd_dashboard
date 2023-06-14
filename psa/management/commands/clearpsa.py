@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection
 
-from psa.models import Multimedia, Ecu, Corvet, CorvetAttribute
+from psa.models import Multimedia, Ecu, Corvet, CorvetAttribute, DefaultCode
 
 
 class Command(BaseCommand):
@@ -26,6 +26,12 @@ class Command(BaseCommand):
             action='store_true',
             dest='corvet',
             help='Clear Corvet table',
+        )
+        parser.add_argument(
+            '--dtc',
+            action='store_true',
+            dest='dtc',
+            help='Clear defaultCode table',
         )
         parser.add_argument(
             '--corvet_attribute',
@@ -60,6 +66,14 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             self.stdout.write(self.style.WARNING("Suppression des données de la table Corvet terminée!"))
+        if options['dtc']:
+            DefaultCode.objects.all().delete()
+
+            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [DefaultCode, ])
+            with connection.cursor() as cursor:
+                for sql in sequence_sql:
+                    cursor.execute(sql)
+            self.stdout.write(self.style.WARNING("Suppression des données de la table DefaultCode terminée!"))
         if options['corvet_attribute']:
             CorvetAttribute.objects.all().delete()
 
