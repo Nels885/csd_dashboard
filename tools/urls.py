@@ -27,6 +27,7 @@ urlpatterns = [
     path('suptech/<int:pk>/detail/', views.SuptechDetailView.as_view(), name="suptech_detail"),
     path('suptech/<int:pk>/update/', views.SuptechResponseView.as_view(), name="suptech_update"),
     path('suptech/item/ajax/', views.suptech_item_ajax, name='suptech_item_ajax'),
+    path('infotech/add/', views.InfotechCreateView.as_view(), name="infotech_add"),
     path('bga/time/', views.bga_time, name='bga_time'),
     path('usb-devices/', views.usb_devices, name='usb_devices'),
     path('config-files/', views.config_files, name='config_files'),
