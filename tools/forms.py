@@ -6,7 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.mail import EmailMessage
-from bootstrap_modal_forms.forms import BSModalModelForm
+from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from crum import get_current_user
 from constance import config
 from tempus_dominus.widgets import DatePicker
@@ -78,14 +78,6 @@ class MultipleFileInput(forms.ClearableFileInput):
 
 
 class SuptechModalForm(BSModalModelForm):
-    ITEM_CHOICES = [
-        ('', '---------'),
-        ('Hot Line Tech', 'Hot Line Tech'), ('Support Admin', 'Support Admin'), ('R.M.', 'R.M.'),
-        ('Temps Annexe', 'Temps Annexe'), ('Validation Tech', 'Validation Tech'),
-        ('Retour Autotronik', 'Retour Autotronik'), ('Probleme process', 'Probleme process'),
-        ('Informatique/Reseau', 'Informatique/Reseau'), ('Inter Maintenance(AF/YM)', 'Inter Maintenance(AF/YM)'),
-        ('Scan IN/OUT', 'Scan IN/OUT'), ('Autres... (Avec resumé)', 'Autres... (Avec resumé)')
-    ]
     username = forms.CharField(max_length=50, required=True)
     item = forms.ModelChoiceField(queryset=SuptechItem.objects.filter(is_active=True))
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
@@ -267,3 +259,23 @@ class EditConfigForm(forms.ModelForm):
     class Meta:
         model = ConfigFile
         fields = ['content']
+
+
+class InfotechModalForm(BSModalForm):
+    username = forms.CharField(max_length=50, required=True)
+    item = forms.ModelChoiceField(queryset=SuptechItem.objects.filter(is_active=True))
+    custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
+    to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
+    cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
+    info = forms.CharField(max_length=5000, widget=forms.Textarea(), required=True)
+
+    def __init__(self, *args, **kwargs):
+        users = User.objects.all()
+        _user_list = list(users.values_list('username', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        if self.request.user:
+            self.fields['username'].initial = self.request.user.username
+        self.fields['username'].widget = ListTextWidget(data_list=_user_list, name='user-list')
+
+    class Meta:
+        fields = '__all__'

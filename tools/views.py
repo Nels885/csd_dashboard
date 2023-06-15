@@ -8,7 +8,7 @@ from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from django.views.generic.edit import FormMixin
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
-from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView, BSModalFormView
 from django.utils import timezone
 from constance import config
 
@@ -19,7 +19,7 @@ from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem,
 from dashboard.forms import ParaErrorList
 from .forms import (
     TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
-    ConfigFileForm, SelectConfigForm, EditConfigForm
+    ConfigFileForm, SelectConfigForm, EditConfigForm, InfotechModalForm
 )
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
@@ -178,7 +178,6 @@ class ThermalDeleteView(LoginRequiredMixin, BSModalDeleteView):
 
 
 class SupTechCreateView(BSModalCreateView):
-    # permission_required = 'tools.add_suptech'
     template_name = 'tools/modal/suptech_create.html'
     form_class = SuptechModalForm
     success_message = "Succès : Création d'un SupTech avec succès !"
@@ -336,3 +335,12 @@ class ConfigFileCreateView(BSModalCreateView):
     form_class = ConfigFileForm
     success_message = "Succès : Création d'un fichier de config avec succès !"
     success_url = reverse_lazy('tools:config_files')
+
+
+class InfotechCreateView(BSModalFormView):
+    template_name = 'tools/modal/infotech_create.html'
+    form_class = InfotechModalForm
+    success_message = 'Success: Infotech was created.'
+
+    def get_success_url(self):
+        return http_referer(self.request)
