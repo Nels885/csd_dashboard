@@ -14,6 +14,7 @@ class MixinsTest(UnitTest):
         self.add_perms_user(UnlockProduct, 'delete_unlockproduct')
         self.add_perms_user(AET, 'add_aet')
         AET.objects.create(name='test', raspi_url='10.0.0.0')
+        MbedFirmware.objects.create(name='test', version='0.0', filepath='test.bin')
         xelon = Xelon.objects.create(numero_de_dossier='A123456789')
         UnlockProduct.objects.create(unlock=xelon, user=self.user)
 
@@ -76,7 +77,7 @@ class MixinsTest(UnitTest):
 
     def test_update_tool_ajax_mixin(self):
         """
-        Update batch throught BSModalUpdateView.
+        Update batch through BSModalUpdateView.
         """
         self.add_perms_user(ToolStatus, 'change_toolstatus')
         self.login()
@@ -164,9 +165,21 @@ class MixinsTest(UnitTest):
         new_aet = AET.objects.get(pk=old_aet.pk)
         self.assertNotEqual(new_aet.name, old_aet.name)
 
+    def test_delete_aet_ajax_mixin(self):
+        """
+        Delete AET through BSModalDeleteView.
+        """
+        self.add_perms_user(AET, 'change_aet')
+        self.login()
+        # Request to delete view passes message to the response
+        post = AET.objects.first()
+        response = self.client.post(reverse('prog:aet_delete', kwargs={'pk': post.pk}))
+        messages = get_messages(response.wsgi_request)
+        self.assertEqual(len(messages), 1)
+
     def test_add_firmware_ajax_mixin(self):
         """
-        Add AET through BSModalCreateView.
+        Add MbedFirmware through BSModalCreateView.
         """
         self.add_perms_user(AET, 'add_aet')
         self.login()
@@ -188,55 +201,40 @@ class MixinsTest(UnitTest):
         self.assertEqual(response.status_code, 200)
         # Object is not created
         firmware = MbedFirmware.objects.all()
-        self.assertEqual(firmware.count(), 0)
+        self.assertEqual(firmware.count(), 1)
 
-        # # Second post request = non-ajax request creating an object
-        # response = self.client.post(
-        #     reverse('prog:aet_add_software'),
-        #     data={
-        #         'name': 'firmware test',
-        #         'version': '1.23',
-        #         'filepath': 'test.bin',
-        #     },
-        # )
-        #
-        # # redirection
-        # self.assertEqual(response.status_code, 302)
-        # # Object is not created
-        # firmware = MbedFirmware.objects.all()
-        # self.assertEqual(firmware.count(), 1)
+    def test_update_firmware_ajax_mixin(self):
+        """
+        Update MbedFirmware through BSModalUpdateView.
+        """
+        self.add_perms_user(AET, 'change_aet')
+        self.login()
 
-    # def test_send_firmware_ajax_mixin(self):
-    #     """
-    #     Send firmware through BSModalFormView.
-    #     """
-    #     self.add_perms_user(AET, 'change_aet')
-    #     self.login()
-    #     aet = AET.objects.first()
-    #
-    #     # First post request = ajax request checking if form in view is not valid
-    #     response = self.client.post(
-    #         reverse('prog:aet_send_software'),
-    #         data={
-    #             'select_target': '',
-    #             'select_firmware': '',
-    #         },
-    #         HTTP_X_REQUESTED_WITH='XMLHttpRequest'
-    #     )
-    #
-    #     # Form has errors
-    #     self.assertTrue(response.context_data['form'].errors)
-    #     # No redirection
-    #     self.assertEqual(response.status_code, 200)
-    #
-    #     # First post request = ajax request checking if form in view is not valid
-    #     response = self.client.post(
-    #         reverse('prog:aet_send_software'),
-    #         data={
-    #             'select_target': 'test',
-    #             'select_firmware': 'test',
-    #         },
-    #     )
-    #
-    #     # No redirection
-    #     self.assertEqual(response.status_code, 200)
+        # Update AET through BSModalUpdateView
+        old_firmware = MbedFirmware.objects.create(name='firmware test', version='0.09', filepath='test.bin')
+        response = self.client.post(
+            reverse('prog:firmware_update', kwargs={'pk': old_firmware.pk}),
+            data={
+                'name': 'firmware test 2',
+                'version': '1.00',
+                'filepath': 'test.bin',
+            },
+        )
+        # redirection
+        self.assertEqual(response.status_code, 302)
+        # Object is updated
+        new_firmware = MbedFirmware.objects.get(pk=old_firmware.pk)
+        self.assertNotEqual(new_firmware.name, old_firmware.name)
+
+    def test_delete_firmware_ajax_mixin(self):
+        """
+        Delete MbedFirmware through BSModalDeleteView.
+        """
+        self.add_perms_user(AET, 'change_aet')
+        self.login()
+        # Request to delete view passes message to the response
+        post = MbedFirmware.objects.first()
+        response = self.client.post(reverse('prog:firmware_delete', kwargs={'pk': post.pk}))
+        messages = get_messages(response.wsgi_request)
+        self.assertEqual(len(messages), 1)
+
