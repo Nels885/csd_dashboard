@@ -2,6 +2,19 @@
 
 {% load static i18n %}
 
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'prog/tab_select.html' with select='tools' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+
 {% block table_content %}
 
     <button class="add-tool btn btn-sm btn-primary mb-3"

@@ -29,9 +29,13 @@ def send_firmware_task(self, raspi_url, fw_name, target):
         while True:
             response = requests.get(url="http://" + raspi_url + "/api/info/", timeout=(0.05, 0.5))
             progress = response.json()['percent']
+            status = response.json()['status']
             timeout += 1
             if progress == '100':
                 msg = {"msg": "Succès : Mise à jour du mbed avec succès !"}
+                break
+            if 'Pas besoin de MAJ' in status:
+                msg = {"msg": "Pas besoin de MAJ, Mbed déjà à jour !", "tags": "warning"}
                 break
             if timeout > 60:
                 msg = {"msg": "Erreur : Timeout!", "tags": "warning"}
