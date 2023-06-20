@@ -1,4 +1,4 @@
-{% extends 'format/detail_format.html' %}
+{% extends 'format/datatables_format.html' %}
 
 {% load static i18n widget_tweaks %}
 
@@ -14,7 +14,7 @@
 
 {% endblock %}
 
-{% block detail_content %}
+{% block table_content %}
 
     <button class="add-aet btn btn-sm btn-primary mb-3"
             {% if not perms.prog.add_aet %}disabled{% endif %}>
