@@ -2,18 +2,6 @@ version: 2.1
 orbs:
   python: circleci/python@2.0.3
   browser-tools: circleci/browser-tools@1.4.1
-commands:
-  checkout-and-restore-deps:
-    steps:
-      - checkout
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
-      - run: python --version > python_version
-      - restore_cache:
-          keys:
-            - pipenv-v3-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-{{ checksum "python_version" }}
-            - pipenv-v3-{{ .Branch }}
-            - pipenv-v3
 jobs: # A basic unit of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
     # directory where steps are run
@@ -28,20 +16,12 @@ jobs: # A basic unit of work in a run
           POSTGRES_DB: circle_test
       - image: cimg/redis:5.0.14
     steps: # steps that comprise the `build` job
-      - checkout-and-restore-deps
-      - run:
-          name: Wipe venv in case of stale symlink to old pyenv version
-          command: |
-            if [[ -d .venv/bin ]] && [[ ! -e .venv/bin/python ]]
-              then pipenv --rm
-            fi
+      - checkout
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Install dependencies
           command: pipenv sync --dev
-      - save_cache:
-          key: pipenv-v3-{{ .Branch }}-{{ checksum "Pipfile.lock" }}-{{ checksum "python_version" }}
-          paths:
-            - ".venv"
       - run:
           command: |
             google-chrome --version
