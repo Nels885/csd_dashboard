@@ -171,7 +171,15 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
 
 
 def AET_info(request, pk=None):
-    card_title = _('AET info')
+    """
+    View of the AET/MbedFirmware table page
+    :param request:
+        Parameters of the request
+    :param pk:
+        Primary key of the AET to get its mbed list
+    :return:
+        AET/MbedFirmware table page
+    """
     AET_list = AET.objects.all()
     firmware_list = MbedFirmware.objects.all()
     for obj in AET_list:
@@ -188,6 +196,15 @@ def AET_info(request, pk=None):
 
 
 def ajax_aet_status(request, pk):
+    """
+    View to get AET status
+    :param request:
+        Parameters of the request
+    :param pk:
+        Primary key of the AET to get status
+    :return:
+        AET status with JSON format
+    """
     data = {'pk': pk, 'msg': 'No response', 'status': 'Hors Ligne', 'percent': '0', 'status_code': 404}
     try:
         aet = AET.objects.get(pk=pk)
@@ -200,10 +217,27 @@ def ajax_aet_status(request, pk):
 
 
 class AETCreateView(BSModalCreateView):
+    """
+    View to create new AET
+    :param BSModalCreateView:
+        Create Modal View
+    :return:
+        Modal view to create AET
+    """
     permission_required = 'prog.add_aet'
     template_name = 'prog/modal/aet_create.html'
     form_class = AETModalForm
     success_message = "Succès : Ajout d'un AET avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+class AetDeleteView(BSModalDeleteView):
+    model = AET
+    permission_required = 'prog.change_aet'
+    template_name = 'prog/modal/aet_delete.html'
+    success_message = _('Success: AET was deleted.')
 
     def get_success_url(self):
         return http_referer(self.request)
@@ -226,6 +260,16 @@ class AETAddSoftwareView(BSModalCreateView):
     template_name = 'prog/modal/aet_add_software.html'
     form_class = AETAddSoftwareModalForm
     success_message = "Succès : Ajout d'un firmware avec succès !"
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+class MbedFirmwareDeleteView(BSModalDeleteView):
+    model = MbedFirmware
+    permission_required = 'prog.change_aet'
+    template_name = 'prog/modal/firmware_delete.html'
+    success_message = _('Success: Firmware was deleted.')
 
     def get_success_url(self):
         return http_referer(self.request)
