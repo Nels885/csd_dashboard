@@ -43,6 +43,11 @@
                 <td class="text-nowrap" style="width: 60px;">
                     {% if perms.prog.change_toolstatus %}
                         <a href="#" title="Modif. info outil" data-form-url="{% url 'prog:tool_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                        {% if perms.prog.delete_toolstatus %}
+                            <button data-form-url="{% url 'prog:tool_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        {% endif %}
                         <span id="tool{{ obj.id }}-rb">
                             <button class="btn btn-dark btn-circle btn-sm" disabled><i class="fas fa-rotate"></i></button>
                         </span>

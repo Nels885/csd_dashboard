@@ -170,6 +170,21 @@ class ToolUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return http_referer(self.request)
 
 
+class ToolDeleteView(BSModalDeleteView):
+    model = ToolStatus
+    permission_required = 'prog.delete_toolstatus'
+    template_name = 'format/modal_delete.html'
+    success_message = _('Success: tools info was deleted.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['modal_title'] = _('Delete Tool info')
+        return context
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
 def AET_info(request, pk=None):
     """
     View of the AET/MbedFirmware table page
@@ -235,7 +250,7 @@ class AETCreateView(BSModalCreateView):
 
 class AetDeleteView(BSModalDeleteView):
     model = AET
-    permission_required = 'prog.change_aet'
+    permission_required = 'prog.delete_aet'
     template_name = 'prog/modal/aet_delete.html'
     success_message = _('Success: AET was deleted.')
 

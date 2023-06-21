@@ -11,10 +11,13 @@
     </div>
 
     <div class="modal-body">
-        <p>{% trans "Are you sure you want to delete ?" %}</p>
+        <p>
+            {% if modal_content %}{{ modal_content }}{% else %}{% trans "Are you sure you want to delete ?" %}{% endif %}
+        </p>
     </div>
 
     <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
         <button type="submit" class="btn btn-danger">{% trans 'Delete' %}</button>
     </div>
 

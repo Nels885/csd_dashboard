@@ -100,6 +100,18 @@ class MixinsTest(UnitTest):
         new_tool = ToolStatus.objects.get(pk=old_tool.pk)
         self.assertNotEqual(new_tool.name, old_tool.name)
 
+    def test_delete_tool_ajax_mixin(self):
+        """
+        Delete ToolsStatus through BSModalDeleteView.
+        """
+        self.add_perms_user(ToolStatus, 'delete_toolstatus')
+        self.login()
+        # Request to delete view passes message to the response
+        query = ToolStatus.objects.create(name='test', url='http://test.com/')
+        response = self.client.post(reverse('prog:tool_delete', kwargs={'pk': query.pk}))
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+
     def test_add_aet_ajax_mixin(self):
         """
         Add AET through BSModalCreateView.
@@ -169,12 +181,12 @@ class MixinsTest(UnitTest):
         """
         Delete AET through BSModalDeleteView.
         """
-        self.add_perms_user(AET, 'change_aet')
+        self.add_perms_user(AET, 'delete_aet')
         self.login()
         # Request to delete view passes message to the response
         post = AET.objects.first()
         response = self.client.post(reverse('prog:aet_delete', kwargs={'pk': post.pk}))
-        messages = get_messages(response.wsgi_request)
+        messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
 
     def test_add_firmware_ajax_mixin(self):
@@ -235,6 +247,6 @@ class MixinsTest(UnitTest):
         # Request to delete view passes message to the response
         post = MbedFirmware.objects.first()
         response = self.client.post(reverse('prog:firmware_delete', kwargs={'pk': post.pk}))
-        messages = get_messages(response.wsgi_request)
+        messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
 
