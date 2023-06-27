@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'encrypted_fields',
-    'channels',
 
     # Django-wiki
     'django.contrib.sites.apps.SitesConfig',
@@ -125,7 +124,7 @@ TEMPLATES = [
 ]
 
 # WSGI_APPLICATION = 'sbadmin.wsgi.application'
-ASGI_APPLICATION = 'sbadmin.routing.application'
+ASGI_APPLICATION = 'sbadmin.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
