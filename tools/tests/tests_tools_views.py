@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 
 from dashboard.tests.base import UnitTest
 
-from tools.models import CsdSoftware, ThermalChamber, Suptech, BgaTime, ConfigFile
+from tools.models import CsdSoftware, ThermalChamber, Suptech, BgaTime, ConfigFile, Infotech
 
 
 class ToolsTestCase(UnitTest):
@@ -16,6 +16,7 @@ class ToolsTestCase(UnitTest):
             date=timezone.now(), user='test', xelon='A123456789', item='Hot Line Tech', time='5', info='test',
             rmq='test', created_by=self.user
         )
+        Infotech.objects.create(item="Infotech test", info="test", created_by=self.user)
 
     def test_soft_list_page(self):
         url = reverse('tools:soft_list')
@@ -221,3 +222,42 @@ class ToolsTestCase(UnitTest):
         self.login()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_create_infotech_is_disconnected(self):
+        url = reverse('tools:infotech_add')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_infotech_list_page(self):
+        url = reverse('tools:infotech_list')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_infotech_detail_page(self):
+        obj = Infotech.objects.first()
+        url = reverse('tools:infotech_detail', kwargs={'pk': obj.pk})
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_action_infotech_page(self):
+        obj = Infotech.objects.first()
+        url = reverse('tools:infotech_update', kwargs={'pk': obj.pk})
+        url_detail = reverse('tools:infotech_detail', kwargs={'pk': obj.pk})
+        form_data = {
+            'user': self.user, 'item': 'Infotech test', 'info': 'test', 'action': 'test',
+            'status': 'Cloturée'
+        }
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        self.add_perms_user(Infotech, 'change_infotech')
+        self.login()
+
+        response = self.client.post(url, form_data)
+        self.assertRedirects(response, url_detail, status_code=302)
