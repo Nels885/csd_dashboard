@@ -1,0 +1,29 @@
+{% autoescape off %}
+Bonjour,
+
+Lien page détail Infotech :
+http://{{ domain }}{% url 'tools:infotech_detail' pk=obj.pk %}
+
+Action(s) réalisée(s) :
+{{ obj.action }}
+
+Statut : {{ obj.status }}
+
+Si l'action n'a pas résolu le problème, cliquez sur le lien ci-dessous et ajoutez un message :
+http://{{ domain }}{% url 'tools:infotech_detail' pk=obj.pk %}?resolved=false
+
+Cordialement
+
+{{ user.first_name }} {{ user.last_name }}
+
+-----------
+
+Qui: {{ obj.created_by.email }}
+==========================================================
+Date: {{ obj.created_at|date:"d/m/Y" }}
+==========================================================
+Item: {{ obj.item|safe|escape }}
+==========================================================
+{{ obj.info }}
+======================== E.O.Mail =========================
+{% endautoescape %}

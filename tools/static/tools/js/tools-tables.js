@@ -64,4 +64,16 @@ $(document).ready(function () {
         }],
         dom: 'Bfrtip'
     });
+
+    $('#infotechTable').DataTable({
+        pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
+        scrollX: true,
+        order: [],
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
+    });
 });

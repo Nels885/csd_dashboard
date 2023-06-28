@@ -1,0 +1,89 @@
+{% extends 'format/forms_format.html' %}
+
+{% load i18n widget_tweaks static tools_extras %}
+
+{% block form_content %}
+
+    <div class="p-2">
+        <div class="form-group row">
+            <label for="id_user" class="col-form-label col-sm-2">Qui</label>
+            <div class="col-sm-4">
+                <input type="text" value="{{ object.created_by }}" maxlength="50" disabled class="form-control" id="id_user">
+            </div>
+            <label for="id_created_at" class="col-form-label col-sm-3">Date de la demande</label>
+            <div class="col-sm-3 mb-3 mb-sm-0">
+                <input type="text" value="{{ object.created_at|default:'' }}" maxlength="10" disabled class="form-control" id="id_created_at">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_item" class="col-form-label col-sm-2">Objet</label>
+            <div class="col-sm-4 mb-3 mb-sm-0">
+                <input type="text" value="{{ object.item }}" maxlength="200" disabled class="form-control" id="id_item">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_info" class="col-form-label col-sm-2">Infos</label>
+            <div class="col-sm-10">
+                <textarea cols="40" rows="5" maxlength="2000" disabled class="form-control" id="id_info">{{ object.info }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_action" class="col-form-label col-sm-2">Action</label>
+            <div class="col-sm-10">
+                <textarea cols="40" rows="5" maxlength="2000" disabled class="form-control" id="id_action">{{ object.action }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="id_status" class="col-form-label col-sm-2">Statut</label>
+            <div class="col-sm-2">
+                <input type="text" value="{{ object.status }}" maxlength="200" disabled class="form-control" id="id_status">
+            </div>
+        </div>
+
+        {% if perms.tools.change_infotech %}
+
+            <div class="mt-5 row">
+                <div class="col text-center">
+                    <a type="button" href="{% url 'tools:infotech_update' pk=object.pk %}" class="text-justify btn btn-primary">{% trans 'Respond to request' %}</a>
+                </div>
+            </div>
+
+        {% endif %}
+
+        <hr class="mt-5">
+
+        {% include 'tools/format/messages.html' %}
+
+        <h4 class="font-weight-bold">AJOUTER UN MESSAGE :</h4>
+        <p>Si vous voulez laisser un message à propos de cette demande, merci de bien vouloir le renseigner dans le champ ci-dessous</p>
+
+        <form method="post" action="">
+
+            {% csrf_token %}
+
+            <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+
+            <div class="form-group row">
+                <label for="{{ form.content.id_for_label }}" class="col-form-label col-sm-2">Votre message</label>
+                <div class="col-sm-10">
+                    {% render_field form.content class="form-control" cols="40" rows="5" maxlength="2000" %}
+                </div>
+            </div>
+
+            <div class="float-right">
+                <button type="submit" class="btn btn-primary">{% trans 'Send' %}</button>
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock %}

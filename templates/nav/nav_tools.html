@@ -69,6 +69,31 @@
         </li>
     {% endwith %}
 
+    <!-- Nav Item - Infotech Settings Menu -->
+    {% with name="Infotech" icon="fa-info" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Tabs" %} :</h6>
+                    <a class="collapse-item"
+                       href="{% url 'tools:infotech_list' %}?filter=progress">{% trans "Progress" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:infotech_list' %}?filter=close">{% trans "Close" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:infotech_list' %}">{% trans "All" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                    <a class="collapse-item create-suptech" href="#">{% trans "Add Infotech" %}</a>
+
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
     {% if perms.tools.view_csdsoftware %}
         <!-- Nav Item - Software Settings Menu -->
         {% with name="Software" icon="fa-table" %}

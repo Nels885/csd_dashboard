@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext as _
 from django.contrib import messages
+from django.contrib.auth.models import Group
 from django.http import JsonResponse
 from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from django.views.generic.edit import FormMixin
@@ -15,11 +16,14 @@ from constance import config
 from utils.django.datatables import QueryTableByArgs
 from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, Message, ConfigFile
+from .models import (
+    CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, Message, ConfigFile, InfotechMailingList,
+    Infotech
+)
 from dashboard.forms import ParaErrorList
 from .forms import (
-    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, MessageForm,
-    ConfigFileForm, SelectConfigForm, EditConfigForm
+    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
+    ConfigFileForm, SelectConfigForm, EditConfigForm, InfotechModalForm, InfotechMessageForm, InfotechActionForm
 )
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
@@ -198,7 +202,7 @@ def suptech_item_ajax(request):
         if request.GET.get('pk', None):
             suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
             data = {
-                "extra": suptech_item.extra, "mailing_list": suptech_item.mailing_list,
+                "extra": suptech_item.extra, "mailing_list": suptech_item.to_list(),
                 "cc_mailing_list": suptech_item.cc_mailing_list,
                 "is_48h": suptech_item.is_48h
             }
@@ -229,7 +233,7 @@ def suptech_list(request):
 class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Suptech
     template_name = 'tools/suptech/suptech_detail.html'
-    form_class = MessageForm
+    form_class = SuptechMessageForm
 
     def get_success_url(self):
         from django.urls import reverse
@@ -336,3 +340,101 @@ class ConfigFileCreateView(BSModalCreateView):
     form_class = ConfigFileForm
     success_message = "Succès : Création d'un fichier de config avec succès !"
     success_url = reverse_lazy('tools:config_files')
+
+
+class InfotechCreateView(BSModalCreateView):
+    permission_required = 'tools.add_infotech'
+    template_name = 'tools/modal/infotech_create.html'
+    form_class = InfotechModalForm
+    success_message = 'Success: Infotech was created.'
+
+    def get_success_url(self):
+        return http_referer(self.request)
+
+
+def infotech_mailing_ajax(request):
+    data = {"to_list": "", "cc_list": ""}
+    try:
+        if request.GET.get('pk', None):
+            mailing = InfotechMailingList.objects.get(pk=request.GET.get('pk', None))
+            data = {
+                "to_list": mailing.to_list(),
+                "cc_list": mailing.cc_list()
+            }
+    except Group.DoesNotExist:
+        pass
+    return JsonResponse(data)
+
+
+@login_required
+def infotech_list(request):
+    """ View of Infotech list page """
+    title = _('Info Tech list')
+    select = request.GET.get('filter', 'all')
+    table_title = 'Total'
+    objects = Infotech.objects.all().order_by('-created_at')
+    if select == "progress":
+        table_title = 'En Cours'
+        objects = objects.filter(status="En Cours")
+    elif select == "close":
+        table_title = 'Cloturées'
+        objects = objects.filter(status="Cloturée")
+    return render(request, 'tools/infotech/infotech_table.html', locals())
+
+
+class InfotechDetailView(LoginRequiredMixin, FormMixin, DetailView):
+    model = Infotech
+    template_name = 'tools/infotech/infotech_detail.html'
+    form_class = InfotechMessageForm
+
+    def get_success_url(self):
+        from django.urls import reverse
+        return reverse('tools:infotech_detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Tools"
+        context['card_title'] = _(f"INFOTECH N°{self.object.pk} - Detail")
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        Message.objects.create(content=form.cleaned_data['content'], content_object=self.object)
+        messages.success(self.request, _('Success: The message has been added.'))
+        if form.send_email(self.request, self.object):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
+        return super().form_valid(form)
+
+
+class InfotechActionView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'tools.change_infotech'
+    model = Infotech
+    form_class = InfotechActionForm
+    template_name = 'tools/infotech/infotech_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Tools"
+        context['card_title'] = _(f"INFOTECH N°{self.object.pk} - Response")
+        return context
+
+    def form_valid(self, form):
+        object = self.get_object()
+        if object.action:
+            content = {"type": "action", "msg": object.action}
+            Message.objects.create(
+                content=content, added_at=object.modified_at, added_by=object.modified_by, content_object=object)
+        if form.send_email(self.request):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
+        return super().form_valid(form)

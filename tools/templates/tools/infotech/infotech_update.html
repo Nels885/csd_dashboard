@@ -1,0 +1,89 @@
+{% extends 'format/forms_format.html' %}
+
+{% load i18n widget_tweaks static tools_extras %}
+
+{% block form_content %}
+
+    <div class="p-2">
+        <form method="post" action="">
+
+            {% csrf_token %}
+
+            <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+
+            <div class="form-group row">
+                <label for="id_user" class="col-form-label col-sm-2">Qui</label>
+                <div class="col-sm-4">
+                    <input type="text" value="{{ object.created_by.username }}" maxlength="10" disabled class="form-control"
+                           id="id_user">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="{{ form.item.id_for_label }}" class="col-form-label col-sm-2">Objet</label>
+                <div class="col-sm-4 mb-3 mb-sm-0">
+                    {% render_field form.item class="form-control" readonly="" %}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="{{ form.info.id_for_label }}" class="col-form-label col-sm-2">Infos</label>
+                <div class="col-sm-10">
+                    {% render_field form.info class="form-control" rows=5 readonly="" %}
+                </div>
+            </div>
+
+            <hr class="mt-5">
+
+            {% include 'tools/format/messages.html' %}
+
+            <h4 class="font-weight-bold text-uppercase">repondre a la demande :</h4>
+
+            <div class="form-group row">
+                <label for="{{ form.action.id_for_label }}" class="col-form-label col-sm-2">Action *</label>
+                <div class="col-sm-10">
+                    {% render_field form.action class="form-control" rows=5 %}
+                    <div class="{% if form.action.errors %} invalid{% endif %}">
+                        {% for error in form.action.errors %}
+                            <p class="help-block text-danger">* {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="{{ form.status.id_for_label }}" class="col-form-label col-sm-2">Statut *</label>
+                <div class="col-sm-2">
+                    {% render_field form.status class="form-control" rows=5 %}
+                    <div class="{% if form.status.errors %} invalid{% endif %}">
+                        {% for error in form.status.errors %}
+                            <p class="help-block text-danger">* {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="float-right">
+                <a type="button" href="{% url 'tools:infotech_detail' object.pk %}"
+                   class="btn btn-secondary">{% trans "Cancel" %}</a>
+                <button type="submit" class="btn btn-primary ml-3">{% trans 'Update' %}</button>
+            </div>
+
+        </form>
+
+    </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        $("#id_action").text("")
+    </script>
+
+{% endblock %}
