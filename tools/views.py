@@ -15,10 +15,10 @@ from constance import config
 from utils.django.datatables import QueryTableByArgs
 from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
 
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, SuptechMessage, ConfigFile
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, Message, ConfigFile
 from dashboard.forms import ParaErrorList
 from .forms import (
-    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
+    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, MessageForm,
     ConfigFileForm, SelectConfigForm, EditConfigForm
 )
 from utils.data.mqtt import MQTTClass
@@ -229,7 +229,7 @@ def suptech_list(request):
 class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Suptech
     template_name = 'tools/suptech/suptech_detail.html'
-    form_class = SuptechMessageForm
+    form_class = MessageForm
 
     def get_success_url(self):
         from django.urls import reverse
@@ -254,7 +254,7 @@ class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
             query = self.model.objects.get(pk=self.kwargs.get('pk'))
             query.status = "En Cours"
             query.save()
-        SuptechMessage.objects.create(content=form.cleaned_data['content'], content_object=self.object)
+        Message.objects.create(content=form.cleaned_data['content'], content_object=self.object)
         messages.success(self.request, _('Success: The message has been added.'))
         if form.send_email(self.request, self.object):
             messages.success(self.request, _('Success: The email has been sent.'))
@@ -279,7 +279,7 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         object = self.get_object()
         if object.action:
             content = {"type": "action", "msg": object.action}
-            SuptechMessage.objects.create(
+            Message.objects.create(
                 content=content, added_at=object.modified_at, added_by=object.modified_by, content_object=object)
         if form.send_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))

@@ -6,7 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.mail import EmailMessage
-from bootstrap_modal_forms.forms import BSModalModelForm
+from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from crum import get_current_user
 from constance import config
 from tempus_dominus.widgets import DatePicker
@@ -18,7 +18,7 @@ from utils.django.forms import MultipleFileField
 
 from squalaetp.models import Xelon
 from .models import (
-    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, SuptechMessage, SuptechFile, ConfigFile
+    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, Message, SuptechFile, ConfigFile
 )
 from .tasks import send_email_task
 
@@ -203,10 +203,10 @@ class SuptechResponseForm(forms.ModelForm):
         return instance
 
 
-class SuptechMessageForm(forms.ModelForm):
+class MessageForm(forms.ModelForm):
 
     class Meta:
-        model = SuptechMessage
+        model = Message
         fields = ['content']
 
     @staticmethod
@@ -267,3 +267,23 @@ class EditConfigForm(forms.ModelForm):
     class Meta:
         model = ConfigFile
         fields = ['content']
+
+
+class InfotechModalForm(BSModalForm):
+    username = forms.CharField(max_length=50, required=True)
+    item = forms.ModelChoiceField(queryset=SuptechItem.objects.filter(is_active=True))
+    custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
+    to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
+    cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
+    info = forms.CharField(max_length=5000, widget=forms.Textarea(), required=True)
+
+    def __init__(self, *args, **kwargs):
+        users = User.objects.all()
+        _user_list = list(users.values_list('username', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        if self.request.user:
+            self.fields['username'].initial = self.request.user.username
+        self.fields['username'].widget = ListTextWidget(data_list=_user_list, name='user-list')
+
+    class Meta:
+        fields = '__all__'

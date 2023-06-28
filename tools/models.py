@@ -161,7 +161,7 @@ class Suptech(models.Model):
     modified_at = models.DateTimeField('modifié le', null=True)
     modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
-    messages = GenericRelation('SuptechMessage')
+    messages = GenericRelation('Message')
     # actions = GenericRelation('SuptechAction')
 
     class Meta:
@@ -205,7 +205,7 @@ class SuptechItem(models.Model):
         return self.name
 
 
-class SuptechMessage(models.Model):
+class Message(models.Model):
     content = models.TextField()
     added_at = models.DateTimeField('ajouté le', null=True, blank=True)
     added_by = models.ForeignKey(User, related_name="message_added", on_delete=models.SET_NULL, null=True)

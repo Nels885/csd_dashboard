@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
-    SuptechMessage, SuptechFile, BgaTime, ConfigFile
+    Message, SuptechFile, BgaTime, ConfigFile
 )
 
 
@@ -135,7 +135,7 @@ class SuptechCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'manager')
 
 
-class SuptechContentTypeAdmin(admin.ModelAdmin):
+class MessageAdmin(admin.ModelAdmin):
     list_display = ('content', 'added_at', 'added_by', 'content_object')
 
 
@@ -151,7 +151,7 @@ admin.site.register(ThermalChamber, ThermalChamberAdmin)
 admin.site.register(Suptech, SuptechAdmin)
 admin.site.register(SuptechCategory, SuptechCategoryAdmin)
 admin.site.register(SuptechItem, SuptechItemAdmin)
-admin.site.register(SuptechMessage, SuptechContentTypeAdmin)
+admin.site.register(Message, MessageAdmin)
 admin.site.register(SuptechFile, SuptechFileAdmin)
 admin.site.register(BgaTime)
 admin.site.register(ThermalChamberMeasure, ThermalChamberMeasureAdmin)
