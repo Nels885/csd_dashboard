@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
-    Message, SuptechFile, BgaTime, ConfigFile
+    Message, SuptechFile, BgaTime, ConfigFile, Infotech, InfotechMailingList
 )
 
 
@@ -144,6 +144,57 @@ class SuptechFileAdmin(admin.ModelAdmin):
     ordering = ('suptech',)
 
 
+class InfotechMailingListAdminForm(forms.ModelForm):
+    to_users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    cc_users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+
+    class Meta:
+        model = InfotechMailingList
+        fields = '__all__'
+
+
+class InfotechAdmin(admin.ModelAdmin):
+    list_display = ('id', 'item', 'info', 'created_by', 'created_at', 'status')
+    ordering = ('id',)
+    list_filter = ('status',)
+    search_fields = ('id', 'created_by', 'item')
+
+
+class InfotechMailingListAdmin(admin.ModelAdmin):
+    form = InfotechMailingListAdminForm
+    list_display = ('name', 'is_active')
+    ordering = ('name',)
+    list_filter = ('is_active',)
+    search_fields = ('name',)
+    actions = ('is_disabled', 'is_activated')
+
+    def _message_user_about_update(self, request, rows_updated, verb):
+        """Send message about action to user.
+        `verb` should shortly describe what have changed (e.g. 'enabled').
+        """
+        self.message_user(
+            request,
+            _('{0} item{1} {2} successfully {3}').format(
+                rows_updated,
+                pluralize(rows_updated),
+                pluralize(rows_updated, _('was,were')),
+                verb,
+            ),
+        )
+
+    def is_disabled(self, request, queryset):
+        rows_updated = queryset.update(is_active=False)
+        self._message_user_about_update(request, rows_updated, 'disabled')
+    is_disabled.short_description = _('Item disabled')
+
+    def is_activated(self, request, queryset):
+        rows_updated = queryset.update(is_active=True)
+        self._message_user_about_update(request, rows_updated, 'activated')
+    is_activated.short_description = _('Item activated')
+
+
 admin.site.register(TagXelon, TagXelonAdmin)
 admin.site.register(CsdSoftware)
 admin.site.register(EtudeProject)
@@ -156,3 +207,5 @@ admin.site.register(SuptechFile, SuptechFileAdmin)
 admin.site.register(BgaTime)
 admin.site.register(ThermalChamberMeasure, ThermalChamberMeasureAdmin)
 admin.site.register(ConfigFile)
+admin.site.register(Infotech, InfotechAdmin)
+admin.site.register(InfotechMailingList, InfotechMailingListAdmin)

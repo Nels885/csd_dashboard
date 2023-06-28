@@ -5,10 +5,10 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.urls import reverse
 from django.core.mail import EmailMessage
-from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
+from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
-from constance import config
 from tempus_dominus.widgets import DatePicker
 
 from utils.conf import string_to_list
@@ -18,7 +18,8 @@ from utils.django.forms import MultipleFileField
 
 from squalaetp.models import Xelon
 from .models import (
-    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, Message, SuptechFile, ConfigFile
+    TagXelon, CsdSoftware, ThermalChamber, Suptech, SuptechItem, Message, SuptechFile, ConfigFile, Infotech,
+    InfotechMailingList
 )
 from .tasks import send_email_task
 
@@ -203,7 +204,7 @@ class SuptechResponseForm(forms.ModelForm):
         return instance
 
 
-class MessageForm(forms.ModelForm):
+class SuptechMessageForm(forms.ModelForm):
 
     class Meta:
         model = Message
@@ -214,11 +215,12 @@ class MessageForm(forms.ModelForm):
         try:
             current_site = get_current_site(request)
             subject = f"[SUPTECH_{instance.id}] {instance.item}"
-            to_list = config.SUPTECH_TO_EMAIL_LIST + "; " + instance.created_by.email
-            context = {'suptech': instance, 'domain': current_site.domain}
-            message = render_to_string('tools/email_format/suptech_message_email.html', context)
+            to_list = instance.to + "; " + instance.created_by.email
+            cc_list = [request.user.email] + string_to_list(instance.cc)
+            context = {'url': current_site.domain + reverse('tools:suptech_detail', args=[instance.id])}
+            message = render_to_string('tools/email_format/message_email.html', context)
             send_email_task.delay(
-                subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=[request.user.email]
+                subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=cc_list
             )
             return True
         except AttributeError:
@@ -269,11 +271,11 @@ class EditConfigForm(forms.ModelForm):
         fields = ['content']
 
 
-class InfotechModalForm(BSModalForm):
+class InfotechModalForm(BSModalModelForm):
     username = forms.CharField(max_length=50, required=True)
-    item = forms.ModelChoiceField(queryset=SuptechItem.objects.filter(is_active=True))
-    custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
-    to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
+    item = forms.CharField(max_length=200, required=True)
+    mailing = forms.ModelChoiceField(queryset=InfotechMailingList.objects.filter(is_active=True))
+    to = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
     cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
     info = forms.CharField(max_length=5000, widget=forms.Textarea(), required=True)
 
@@ -286,4 +288,93 @@ class InfotechModalForm(BSModalForm):
         self.fields['username'].widget = ListTextWidget(data_list=_user_list, name='user-list')
 
     class Meta:
-        fields = '__all__'
+        model = Infotech
+        fields = ['username', 'item', 'mailing', 'to', 'cc', 'info']
+
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        try:
+            data = User.objects.get(username=data)
+        except User.DoesNotExist:
+            self.add_error('username', _("Username not found."))
+        return data
+
+    def send_email(self):
+        current_site = get_current_site(self.request)
+        from_email = self.cleaned_data["username"].email
+        subject = f"[INFOTECH_{self.instance.id}] {self.instance.item}"
+        context = {'email': from_email, 'instance': self.instance, 'domain': current_site.domain}
+        message = render_to_string('tools/email_format/infotech_email.html', context)
+        send_email_task.delay(
+            subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
+            cc=([from_email] + string_to_list(self.instance.cc))
+        )
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.created_by = self.cleaned_data['username']
+        if commit and not self.request.is_ajax():
+            for field in ['username', 'mailing']:
+                del self.fields[field]
+            instance.save()
+            self.send_email()
+        return instance
+
+
+class InfotechMessageForm(forms.ModelForm):
+
+    class Meta:
+        model = Message
+        fields = ['content']
+
+    @staticmethod
+    def send_email(request, instance):
+        try:
+            current_site = get_current_site(request)
+            subject = f"[INFOTECH_{instance.id}] {instance.item}"
+            to_list = instance.to + "; " + instance.created_by.email
+            cc_list = [request.user.email] + string_to_list(instance.cc)
+            context = {'url': current_site.domain + reverse('tools:infotech_detail', args=[instance.id])}
+            message = render_to_string('tools/email_format/message_email.html', context)
+            send_email_task.delay(
+                subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=cc_list
+            )
+            return True
+        except AttributeError:
+            return False
+
+
+class InfotechActionForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('', '---------'), ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée')
+    ]
+    action = forms.CharField(widget=forms.Textarea(), required=True)
+    status = forms.CharField(widget=forms.Select(choices=STATUS_CHOICES), required=True)
+
+    class Meta:
+        model = Infotech
+        fields = ['item', 'info', 'action', 'status']
+
+    def send_email(self, request):
+        try:
+            current_site = get_current_site(request)
+            subject = f"[INFOTECH_{self.instance.id}] {self.instance.item}"
+            context = {'user': request.user, 'obj': self.instance, 'domain': current_site.domain}
+            message = render_to_string('tools/email_format/infotech_action_email.html', context)
+            cc_list = [request.user.email] + string_to_list(self.instance.cc)
+            send_email_task.delay(
+                subject=subject, body=message, from_email=request.user.email, to=self.instance.to,
+                cc=cc_list
+            )
+            return True
+        except AttributeError:
+            return False
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        user = get_current_user()
+        instance.modified_by = user
+        instance.modified_at = timezone.now()
+        if commit:
+            instance.save()
+        return instance

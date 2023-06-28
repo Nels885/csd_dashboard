@@ -162,7 +162,6 @@ class Suptech(models.Model):
     modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
     messages = GenericRelation('Message')
-    # actions = GenericRelation('SuptechAction')
 
     class Meta:
         verbose_name = "SupTech"
@@ -200,6 +199,75 @@ class SuptechItem(models.Model):
     class Meta:
         verbose_name = "SupTech Item"
         ordering = ['name']
+
+    def to_list(self):
+        emails = list(self.to_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return self.mailing_list
+
+    def cc_list(self):
+        emails = list(self.cc_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return self.cc_mailing_list
+
+    def __str__(self):
+        return self.name
+
+
+class Infotech(models.Model):
+    STATUS_CHOICES = [
+        ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée')
+    ]
+
+    item = models.CharField('ITEM', max_length=200)
+    info = models.TextField('INFO', max_length=2000)
+    action = models.TextField('ACTION/RETOUR', max_length=2000, blank=True)
+    status = models.TextField('STATUT', max_length=50, default='En Cours', choices=STATUS_CHOICES)
+    to = models.TextField("TO", max_length=5000)
+    cc = models.TextField("CC", max_length=5000)
+    created_at = models.DateTimeField('ajouté le', auto_now_add=True)
+    created_by = models.ForeignKey(User, related_name="infotechs_created", editable=False, on_delete=models.SET_NULL,
+                                   null=True, blank=True)
+    modified_at = models.DateTimeField('modifié le', null=True)
+    modified_by = models.ForeignKey(User, related_name="infotechs_modified", on_delete=models.SET_NULL, null=True,
+                                    blank=True)
+    messages = GenericRelation('Message')
+
+    class Meta:
+        verbose_name = "InfoTech"
+        ordering = ['pk']
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('tools:infotech_detail', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return f"{self.pk} - {self.item}"
+
+
+class InfotechMailingList(models.Model):
+    name = models.CharField('Nom', max_length=100, unique=True)
+    is_active = models.BooleanField("Actif", default=True)
+    to_users = models.ManyToManyField(User, related_name="to_info_emails", blank=True)
+    cc_users = models.ManyToManyField(User, related_name="cc_info_emails", blank=True)
+
+    class Meta:
+        verbose_name = "InfoTech Mailing List"
+        ordering = ['name']
+
+    def to_list(self):
+        emails = list(self.to_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return ""
+
+    def cc_list(self):
+        emails = list(self.cc_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return ""
 
     def __str__(self):
         return self.name
