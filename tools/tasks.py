@@ -1,3 +1,4 @@
+from io import StringIO
 from sbadmin import celery_app
 from django.core.management import call_command
 from django.core.mail import EmailMessage
@@ -16,7 +17,24 @@ def cmd_suptech_task(*args):
         --first: Adding first data in Suptech table
         None: Import data from CSV file to Suptech table and export data to XLS file
     """
-    call_command('suptech', *args)
+    out = StringIO()
+    call_command('suptech', *args, stdout=out)
+    return out.getvalue()
+
+
+@celery_app.task
+def cmd_infotech_task(*args):
+    """
+    Task for the Infotech command
+        Interact with the Infotech table in the database
+    :param args: --email or None
+    :return:
+        --email: Send email for Suptech in progress
+        None: do nothing
+    """
+    out = StringIO()
+    call_command('infotech', *args, stdout=out)
+    return out.getvalue()
 
 
 @celery_app.task(bind=True)
