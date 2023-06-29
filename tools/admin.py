@@ -11,7 +11,7 @@ from .models import (
     Message, SuptechFile, BgaTime, ConfigFile, Infotech, InfotechMailingList
 )
 
-ACTIVE_USERS = User.objects.filter(is_active=True)
+ACTIVE_USERS = User.objects.filter(is_active=True).order_by('first_name')
 
 
 class UserMultipleChoiceField(forms.ModelMultipleChoiceField):

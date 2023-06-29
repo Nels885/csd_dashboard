@@ -28,7 +28,8 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username', 'email', 'first_name', 'last_name', 'profile__job_title', 'profile__service')
     actions = (
         'ce_service_update', 'co_service_update', 'adm_service_update', 'technician_job_title_update',
-        'operator_job_title_update', 'animator_job_title_update', 'manager_job_title_update'
+        'operator_job_title_update', 'animator_job_title_update', 'manager_job_title_update', 'is_disabled',
+        'is_activated'
     )
 
     @admin.display(description='Job Title', ordering='profile__job_title')
@@ -101,6 +102,16 @@ class CustomUserAdmin(UserAdmin):
             query.profile.job_title = "manager"
             query.profile.save()
         self._message_user_about_update(request, queryset.count(), 'Manager')
+
+    def is_disabled(self, request, queryset):
+        rows_updated = queryset.update(is_active=False)
+        self._message_user_about_update(request, rows_updated, 'disabled')
+    is_disabled.short_description = _('User disabled')
+
+    def is_activated(self, request, queryset):
+        rows_updated = queryset.update(is_active=True)
+        self._message_user_about_update(request, rows_updated, 'activated')
+    is_activated.short_description = _('User activated')
 
 
 class ContractAdmin(admin.ModelAdmin):
