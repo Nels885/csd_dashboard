@@ -11,6 +11,18 @@ from .models import (
     Message, SuptechFile, BgaTime, ConfigFile, Infotech, InfotechMailingList
 )
 
+ACTIVE_USERS = User.objects.filter(is_active=True)
+
+
+class UserMultipleChoiceField(forms.ModelMultipleChoiceField):
+    """
+    Custom multiple select Field with full name + username
+    """
+    def label_from_instance(self, obj):
+        if obj.first_name and obj.last_name:
+            return f"{obj.first_name} {obj.last_name} ({obj.username})"
+        return obj.username
+
 
 class TagXelonAdmin(admin.ModelAdmin):
     list_display = ('xelon', 'calibre', 'telecode', 'comments', 'created_by', 'created_at')
@@ -78,10 +90,10 @@ class SuptechAdmin(admin.ModelAdmin):
 
 
 class SuptechItemAdminForm(forms.ModelForm):
-    to_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
-    cc_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    to_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    cc_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
 
     class Meta:
         model = SuptechItem
@@ -145,10 +157,10 @@ class SuptechFileAdmin(admin.ModelAdmin):
 
 
 class InfotechMailingListAdminForm(forms.ModelForm):
-    to_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
-    cc_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    to_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    cc_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
 
     class Meta:
         model = InfotechMailingList
