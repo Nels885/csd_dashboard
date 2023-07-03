@@ -37,6 +37,13 @@
                 </div>
             </div>
 
+            <div class="form-group row">
+                <label for="id_action_old" class="col-form-label col-sm-2">Action</label>
+                <div class="col-sm-10">
+                    <textarea cols="40" rows="5" maxlength="2000" disabled class="form-control" id="id_action_old">{{ form.action.initial }}</textarea>
+                </div>
+            </div>
+
             <hr class="mt-5">
 
             {% include 'tools/format/messages.html' %}
