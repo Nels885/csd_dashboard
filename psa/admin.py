@@ -7,7 +7,7 @@ from .models import (
     Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
     DefaultCode, ProductChoice
 )
-from .forms import EcuAdminForm
+from .forms import EcuAdminForm, MultimediaAdminForm
 
 
 class CorvetListFilter(admin.SimpleListFilter):
@@ -42,6 +42,7 @@ class CorvetAttributeAdmin(admin.ModelAdmin):
 
 
 class MultimediaAdmin(admin.ModelAdmin):
+    form = MultimediaAdminForm
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
         'media', 'firmware', 'relation_by_name'
