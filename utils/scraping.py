@@ -38,6 +38,7 @@ class Scraping(webdriver.Chrome):
         options = Options()
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
+        options.add_argument("ignore-certificate-errors")
         if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
             options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
         if kwargs.get('headless', True):
