@@ -35,7 +35,7 @@ postgres=# CREATE USER nels885 WITH PASSWORD 'kikoulol';
 CREATE ROLE
 postgres=# ALTER ROLE nels885 SET client_encoding TO 'utf8';
 ALTER ROLE
-postgres=# ALTER ROLE nels885 SET default_transaction_isolation TO 'read commited';
+postgres=# ALTER ROLE nels885 SET default_transaction_isolation TO 'read committed';
 ALTER ROLE
 postgres=# ALTER ROLE nels885 SET timezone TO 'Europe/Paris';
 ALTER ROLE
@@ -50,7 +50,7 @@ Download the repository and create the virtual environment:
 $ git clone https://github.com/Nels885/csd_dashboard
 $ cd csd_dashboard
 $ pipenv --python 3 
-$ pipenv install --dev
+$ pipenv sync --dev
 ```
 
 ### Starting the server
@@ -79,3 +79,19 @@ $ pipenv run celery -A sbadmin purge
 $ pipenv run celery -A sbadmin worker --beat --scheduler django --loglevel=info
 ```
 
+### Test application
+
+```bash
+$ sudo -i -u postgres psql
+psql (9.6.10)
+Type "help" for help.
+
+postgres=# ALTER USER nels885 CREATEDB;
+ALTER ROLE
+postgres=# \q 
+```
+
+```bash
+$ pipenv run coverage run --source="." manage.py test -v 2
+$ pipenv run coverage html
+````
