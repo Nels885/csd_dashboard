@@ -54,13 +54,9 @@ class Command(BaseCommand):
         self.stdout.write("[SUPTECH] Waiting...")
         if options['email']:
             date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
-            supject = "Suptech en cours {}".format(date_joined)
-            suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(category=3)).order_by('-date')
+            suptechs = Suptech.objects.exclude(Q(status__in=["Cloturée", "Annulée"]) | Q(is_48h=False)).order_by('-date')
+            supject = "Suptech non 48h en attente au {}".format(date_joined)
             self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_TO_EMAIL_LIST)
-
-            supject = "Autres Moyens en cours {}".format(date_joined)
-            suptechs = Suptech.objects.filter(category=3).exclude(status="Cloturée").order_by('-date')
-            self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_CC_EMAIL_LIST)
         if options['email_48h']:
             suptechs = Suptech.objects.exclude(Q(status="Cloturée") | Q(status="Annulée")).filter(
                 Q(is_48h=True) | Q(deadline=timezone.now())).order_by('-date')
@@ -128,7 +124,7 @@ class Command(BaseCommand):
             ce_suptechs = queryset.filter(category__name="Cellule Etude")
             process_suptechs = queryset.filter(category__name="Modif. process")
             html_message = render_to_string(
-                'tools/email_format/suptech_list_email_new.html',
+                'tools/email_format/suptech_list_48h_late_email.html',
                 {
                     'co_suptechs': co_suptechs, 'process_suptechs': process_suptechs,
                     'ce_suptechs': ce_suptechs, 'domain': config.WEBSITE_DOMAIN,
