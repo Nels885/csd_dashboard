@@ -54,7 +54,7 @@ class Command(BaseCommand):
         self.stdout.write("[SUPTECH] Waiting...")
         if options['email']:
             date_joined = timezone.datetime.strftime(timezone.localtime(), "%d/%m/%Y %H:%M:%S")
-            suptechs = Suptech.objects.exclude(Q(status__in=["Cloturée", "Annulée"]) | Q(is_48h=False)).order_by('-date')
+            suptechs = Suptech.objects.exclude(Q(status__in=["Cloturée", "Annulée"]) | Q(is_48h=True)).order_by('-date')
             supject = "Suptech non 48h en attente au {}".format(date_joined)
             self._send_email(queryset=suptechs, subject=supject, to_email=config.SUPTECH_TO_EMAIL_LIST)
         if options['email_48h']:
