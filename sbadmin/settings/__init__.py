@@ -338,7 +338,7 @@ CONSTANCE_CONFIG = OrderedDict({
     'CONTRACT_TO_EMAIL_LIST': ('contract1@test.com; contract2@test.com', 'Contracts TO email list'),
 
     # Network Options
-    'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
+    'CSD_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
     'NAS_DIR': ('', 'Network NAS drive path'),
     'XLS_RASPEEDI_FILE': ('PROG/RASPEEDI/table_boitier_PSA.xlsx', 'xls raspeedi file'),
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
@@ -407,7 +407,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'collapse': True
     },
     '2. Network Options': {
-        'fields': ('BASE_DIR', 'NAS_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE',
+        'fields': ('CSD_DIR', 'NAS_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE',
                    'CSV_EXTRACTION_FILE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH',
                    'TAG_XELON_PATH', 'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'),
         'collapse': False
