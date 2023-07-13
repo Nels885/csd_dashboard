@@ -2,6 +2,8 @@ from django.core.management import call_command
 from django.contrib.auth.models import ContentType
 from django.utils import timezone
 
+from constance.test import override_config
+
 from .base import UnitTest, User, Group, Permission
 from dashboard.models import Post, UserProfile, ShowCollapse, WebLink, Contract
 from squalaetp.models import Indicator, Xelon
@@ -9,6 +11,7 @@ from squalaetp.models import Indicator, Xelon
 from io import StringIO
 
 
+@override_config(SYS_REPORT_TO_MAIL_LIST="")
 class DashboardCommandTestCase(UnitTest):
 
     def setUp(self):
@@ -124,3 +127,12 @@ class DashboardCommandTestCase(UnitTest):
 
         call_command("loadcontract", "-f" "test.xlsx", stdout=self.out)
         self.assertIn("[CONTRACT] No excel file found", self.out.getvalue())
+
+    def test_importexcel_is_not_sys_report_email(self):
+        call_command("importexcel", "--tests", stdout=self.out)
+        self.assertIn("[IMPORT_EXCEL] Update completed.", self.out.getvalue())
+
+    @override_config(SYS_REPORT_TO_MAIL_LIST="test@test.com")
+    def test_importexcel_is_sys_report_email(self):
+        call_command("importexcel", "--tests", stdout=self.out)
+        self.assertIn("[IMPORT_EXCEL] Update completed.", self.out.getvalue())

@@ -16,6 +16,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service as ChromeService
 
+from constance.test import override_config
+
 MAX_WAIT = 10
 
 
@@ -65,6 +67,8 @@ class BaseTest:
             self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))
 
 
+@override_config(CORVET_USER="")
+@override_config(CORVET_PWD="")
 class UnitTest(TestCase, BaseTest):
 
     def setUp(self):
@@ -78,6 +82,8 @@ class UnitTest(TestCase, BaseTest):
             self.client.login(username='toto', password='totopassword')
 
 
+@override_config(CORVET_USER="")
+@override_config(CORVET_PWD="")
 class FunctionalTest(StaticLiveServerTestCase, BaseTest):
 
     # Basic setUp & tearDown
@@ -119,7 +125,7 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # Infinite loop
         while True:
             try:
-                body = self.driver.find_element_by_tag_name('body')
+                body = self.driver.find_element(By.TAG_NAME, 'body')
                 body_text = body.text
                 # Check that text is in body
                 if not not_in:
@@ -142,7 +148,7 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # Infinite loop
         while True:
             try:
-                modal = self.driver.find_element_by_id(modalID)
+                modal = self.driver.find_element(By.ID, modalID)
                 return modal
             except (AssertionError, WebDriverException) as e:
                 # Return exception if more than 10s pass
@@ -156,10 +162,10 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # Infinite loop
         while True:
             try:
-                table = self.driver.find_element_by_tag_name('table')
-                tbody = table.find_element_by_tag_name('tbody')
+                table = self.driver.find_element(By.TAG_NAME, 'table')
+                tbody = table.find_element(By.TAG_NAME, 'tbody')
                 # Slice removes tr in thead
-                trs = tbody.find_elements_by_tag_name('tr')
+                trs = tbody.find_elements(By.TAG_NAME, 'tr')
                 return trs
             except (AssertionError, WebDriverException) as e:
                 # Return exception if more than 10s pass

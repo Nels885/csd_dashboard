@@ -31,3 +31,9 @@ class DashboardTaskTestCase(UnitTest):
 
         response = cmd_database_backup_task(base_dir="~/Documents/CSD_DATABASE/EXTS/")
         self.assertDictEqual(response, {"msg": "Backup database success!"})
+
+    def test_cmd_import_excel_task(self):
+        response = cmd_import_excel_task()
+        self.assertIn("[IMPORT_EXCEL] Update completed.", response.get("importexcel"))
+        self.assertIn("[SPAREPART] Data update completed:", response.get("loadsparepart"))
+        self.assertIn("[IMPORT_CORVET] Import completed:", response.get("importcorvet"))
