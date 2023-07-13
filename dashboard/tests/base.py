@@ -69,6 +69,7 @@ class BaseTest:
 
 @override_config(CORVET_USER="")
 @override_config(CORVET_PWD="")
+@override_config(CSV_EXTRACTION_FILE="test.csv")
 class UnitTest(TestCase, BaseTest):
 
     def setUp(self):
