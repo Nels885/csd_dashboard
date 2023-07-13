@@ -1,4 +1,8 @@
+import logging
+
 from utils.microsoft_format import CsvFormat
+
+logger = logging.getLogger('command')
 
 
 class CsvSparePart(CsvFormat):
@@ -14,9 +18,13 @@ class CsvSparePart(CsvFormat):
         :param columns:
             Number of the last column to be processed
         """
-        super().__init__(file, columns)
-        self._columns_convert()
-        self.sheet.replace({"#": None}, inplace=True)
+        try:
+            super().__init__(file, columns)
+            self._columns_convert()
+            self.sheet.replace({"#": None}, inplace=True)
+        except FileNotFoundError as err:
+            self.ERROR = f'FileNotFoundError: {err}'
+            logger.error(self.ERROR)
 
     def read(self):
         """
@@ -25,6 +33,7 @@ class CsvSparePart(CsvFormat):
             list of dictionnaries that represents the data in the sheet
         """
         data = []
-        for line in range(self.nrows):
-            data.append(dict(self.sheet.loc[line, self.SPARE_COLS].dropna()))
+        if not self.ERROR:
+            for line in range(self.nrows):
+                data.append(dict(self.sheet.loc[line, self.SPARE_COLS].dropna()))
         return data
