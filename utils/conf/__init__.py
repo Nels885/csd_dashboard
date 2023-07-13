@@ -16,18 +16,19 @@ def string_to_dict(string):
     return ast.literal_eval(string)
 
 
-def get_path(filename: str) -> str:
+def get_path(filename=None, path=None) -> str:
     # Paths to network drives
-    if len(conf.CSD_DIR) > 1:
-        CSD_ROOT = os.path.abspath(os.path.expanduser(conf.CSD_DIR[0]) + conf.CSD_DIR[1:])
-    else:
-        CSD_ROOT = conf.CSD_DIR
+    if not path:
+        if len(conf.CSD_DIR) > 1:
+            path = os.path.abspath(os.path.expanduser(conf.CSD_DIR[0]) + conf.CSD_DIR[1:])
+        else:
+            path = conf.CSD_DIR
     if isinstance(filename, str):
         try:
-            return os.path.join(CSD_ROOT, conf.__getattr__(filename))
+            return os.path.join(path, conf.__getattr__(filename))
         except AttributeError:
             pass
-    return ""
+    return path
 
 
 # Paths to network drives

@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from squalaetp.models import Xelon, ProductCategory, Indicator
 from psa.models import Multimedia, Ecu
-from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, XLS_TIME_LIMIT_FILE, string_to_list
+from utils.conf import string_to_list, get_path, XLS_DELAY_FILES
 from utils.django.models import defaults_dict
 from utils.django.validators import comp_ref_isvalid
 from utils.data.analysis import ProductAnalysis
@@ -68,7 +68,7 @@ class Command(BaseCommand):
         if options['squalaetp_file'] is not None:
             squalaetp = ExcelSqualaetp(options['squalaetp_file'])
         else:
-            squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
+            squalaetp = ExcelSqualaetp(get_path('XLS_SQUALAETP_FILE'))
         if options['delay_files']:
             delay_files = string_to_list(options['delay_files'])
         else:
@@ -77,7 +77,7 @@ class Command(BaseCommand):
         if options['time_limit_file']:
             time_limit = ExcelTimeLimitAnalysis(options['time_limit_file'])
         else:
-            time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
+            time_limit = ExcelTimeLimitAnalysis(get_path('XLS_TIME_LIMIT_FILE'))
         self._squalaetp_file(Xelon, squalaetp)
         self._delay_files(Xelon, squalaetp, delay_files)
         self._time_limit_files(Xelon, squalaetp, time_limit)
@@ -133,7 +133,7 @@ class Command(BaseCommand):
                     logger.error(f"[SQUALAETP_CMD] {xelon_number} - {err}")
             model.objects.exclude(numero_de_dossier__in=excel.xelon_number_list()).update(is_active=False)
             nb_prod_after = model.objects.count()
-            self.stdout.write(f"[SQUALAETP_FILE] '{XLS_SQUALAETP_FILE}' => OK")
+            self.stdout.write(f"[SQUALAETP_FILE] '{get_path('XLS_SQUALAETP_FILE')}' => OK")
             self.stdout.write(self.style.SUCCESS(f"[SQUALAETP] Product category changed: {nb_category_change}"))
             self.stdout.write(
                 self.style.SUCCESS(
@@ -214,7 +214,7 @@ class Command(BaseCommand):
                 logger.error(f"[TIME_LIMIT_CMD] ValueError row: {', '.join(value_error_list)}")
 
             nb_prod_after = model.objects.count()
-            self.stdout.write(f"[TIME_LIMIT_FILE] '{XLS_TIME_LIMIT_FILE}' => OK")
+            self.stdout.write(f"[TIME_LIMIT_FILE] '{get_path('XLS_TIME_LIMIT_FILE')}' => OK")
             self.stdout.write(
                 self.style.SUCCESS(
                     "[TIME_LIMIT] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
