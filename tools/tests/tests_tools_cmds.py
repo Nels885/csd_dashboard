@@ -40,7 +40,7 @@ class ToolsCommandTestCase(UnitTest):
 
     def test_send_email_suptech(self):
         call_command('suptech', '--email', stdout=self.out)
-        self.assertIn("Envoi de l'email des Suptech en cours terminée !", self.out.getvalue())
+        self.assertIn("Pas de Suptech en cours à envoyer !", self.out.getvalue())
 
         # If Suptech 48h pending or in progress
         call_command('suptech', '--email_48h', stdout=self.out)
