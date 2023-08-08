@@ -18,14 +18,12 @@ jobs: # A basic unit of work in a run
     steps: # steps that comprise the `build` job
       - checkout
       - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
       - run:
           name: Install dependencies
           command: pipenv sync --dev
       - run:
           command: |
             google-chrome --version
-            chromedriver --version
           name: Check Google Chrome install
       - run:
           name: Run pipenv graph
