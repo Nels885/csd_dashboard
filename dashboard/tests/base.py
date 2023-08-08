@@ -4,17 +4,13 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from django.core.management import call_command
-# from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-# from selenium.webdriver.firefox.options import Options
-from selenium.webdriver import ChromeOptions as Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.service import Service
 
 from constance.test import override_config
 
@@ -96,8 +92,7 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # self.driver = webdriver.Firefox(firefox_profile=profile, firefox_options=options)
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-        self.driver = webdriver.Chrome(
-            service=ChromeService(executable_path="/usr/local/bin/chromedriver"), options=options)
+        self.driver = webdriver.Chrome(service=Service(), options=options)
         self.driver.implicitly_wait(30)
         StaticLiveServerTestCase.setUp(self)
         BaseTest.__init__(self)
