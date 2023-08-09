@@ -6,7 +6,7 @@ from django.db import connection
 
 from prog.models import Programing
 from psa.models import Multimedia
-from utils.conf import XLS_RASPEEDI_FILE
+from utils.conf import get_path
 from utils.django.models import defaults_dict
 
 from ._excel_raspeedi import ExcelPrograming
@@ -45,9 +45,11 @@ class Command(BaseCommand):
 
         else:
             if options['filename'] is not None:
-                excel = ExcelPrograming(options['filename'])
+                path_file = options['filename']
+                excel = ExcelPrograming(path_file)
             else:
-                excel = ExcelPrograming(XLS_RASPEEDI_FILE)
+                path_file = get_path('XLS_RASPEEDI_FILE')
+                excel = ExcelPrograming(path_file)
             self._programing(excel)
 
     def _programing(self, excel):

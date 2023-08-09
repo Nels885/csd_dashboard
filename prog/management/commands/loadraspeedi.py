@@ -6,7 +6,7 @@ from django.db import connection
 
 from prog.models import Raspeedi
 from psa.models import Multimedia
-from utils.conf import XLS_RASPEEDI_FILE
+from utils.conf import get_path
 from utils.django.models import defaults_dict
 
 from ._excel_raspeedi import ExcelRaspeedi
@@ -47,9 +47,11 @@ class Command(BaseCommand):
 
         else:
             if options['filename'] is not None:
-                excel = ExcelRaspeedi(options['filename'])
+                path_file = options['filename']
+                excel = ExcelRaspeedi(path_file)
             else:
-                excel = ExcelRaspeedi(XLS_RASPEEDI_FILE)
+                path_file = get_path('XLS_RASPEEDI_FILE')
+                excel = ExcelRaspeedi(path_file)
             nb_before = Raspeedi.objects.count()
             nb_update = 0
             if not excel.ERROR:
@@ -69,13 +71,13 @@ class Command(BaseCommand):
                         Multimedia.objects.update_or_create(comp_ref=ref_boitier, defaults=values)
                     except IntegrityError as err:
                         logger.error(
-                            f"[RASPEEDI_CMD] IntegrityError: {ref_boitier} - {err} of file : '{XLS_RASPEEDI_FILE}'"
+                            f"[RASPEEDI_CMD] IntegrityError: {ref_boitier} - {err} of file : '{path_file}'"
                         )
                     except DataError as err:
                         logger.error(
-                            f"[RASPEEDI_CMD] DataError: {ref_boitier} - {err} of file : '{XLS_RASPEEDI_FILE}'")
+                            f"[RASPEEDI_CMD] DataError: {ref_boitier} - {err} of file : '{path_file}'")
                 nb_after = Raspeedi.objects.count()
-                self.stdout.write(f"[RASPEEDI_FILE] '{XLS_RASPEEDI_FILE}' => OK")
+                self.stdout.write(f"[RASPEEDI_FILE] '{path_file}' => OK")
                 self.stdout.write(
                     self.style.SUCCESS(
                         f"[RASPEEDI_CMD] data update completed: EXCEL_LINES = {excel.nrows} | " +
