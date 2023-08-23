@@ -276,3 +276,17 @@ class XelonTemporaryForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['modele_produit'].widget = ListTextWidget(data_list=prod_list, name='prod-list')
         self.fields['modele_vehicule'].widget = ListTextWidget(data_list=vehicle_list, name='vehicle-list')
+
+
+class XelonTemporaryModalForm(XelonTemporaryForm, BSModalModelForm):
+
+    def __init_(self, *args, **kwargs):
+        super().__init(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.type_de_cloture = "N/A"
+            instance.save()
+            Action.objects.create(content="Dossier en retard => FAIT", content_object=instance)
+        return instance

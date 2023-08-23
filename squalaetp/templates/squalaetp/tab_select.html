@@ -20,11 +20,13 @@
         {% trans "Customer files" %}
     </a>
 </li>
-<li class="nav-item {% if select == 'temp' %}active{% endif %}">
-    <a class="nav-link {% if select == 'temp' %}active{% endif %}" href="{% url 'squalaetp:temporary' %}">
-        {% trans "Temporary files" %}
-    </a>
-</li>
+{% if perms.squalaetp.add_xelontemporary %}
+    <li class="nav-item {% if select == 'temp' %}active{% endif %}">
+        <a class="nav-link {% if select == 'temp' %}active{% endif %}" href="{% url 'squalaetp:temporary' %}">
+            {% trans "Temporary files" %}
+        </a>
+    </li>
+{% endif %}
 {% if select and not 'error' in select and select != 'pending' and select != 'temp' %}
     <li class="nav-item active">
         <a class="nav-link active" href="{% url 'squalaetp:xelon' %}?filter={{ select }}">

@@ -9,8 +9,11 @@ from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView, BS
 from django.forms.models import model_to_dict
 from constance import config
 
-from .models import Xelon, Action, Sivin
-from .forms import VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm
+from .models import Xelon, Action, Sivin, XelonTemporary
+from .forms import (
+    VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm,
+    XelonTemporaryModalForm
+)
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.forms import CorvetForm
 from psa.utils import collapse_select
@@ -69,7 +72,19 @@ def temporary_table(request):
     """ View of Xelon temporary table page """
     title = 'Xelon'
     table_title = 'Dossiers temporaires'
+    object_list = XelonTemporary.objects.filter(is_active=True)
     return render(request, 'squalaetp/temporary_table.html', locals())
+
+
+class TemporaryFormView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for sending email for VIN errors """
+    model = XelonTemporary
+    permission_required = ['squalaetp.change_xelontemporary']
+    template_name = 'squalaetp/modal/xelon_temp_update.html'
+    form_class = XelonTemporaryModalForm
+
+    def get_success_url(self):
+        return http_referer(self.request)
 
 
 @login_required
@@ -84,7 +99,11 @@ def stock_table(request):
 @login_required
 def detail(request, pk):
     """ Detailed view of the selected Xelon number """
-    xelon = get_object_or_404(Xelon, pk=pk)
+    query_param = request.GET.get('filter', '')
+    if query_param == "temp":
+        xelon = get_object_or_404(XelonTemporary, pk=pk)
+    else:
+        xelon = get_object_or_404(Xelon, pk=pk)
     corvet = xelon.corvet
     title = xelon.numero_de_dossier
     suptechs = Suptech.objects.filter(xelon=xelon.numero_de_dossier)

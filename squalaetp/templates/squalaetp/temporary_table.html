@@ -16,6 +16,44 @@
 
 {% block table_content %}
 
+    <table class="table table-bordered table-sm text-nowrap display" id="temporaryActiveTable" style="width: 100%;">
+        <thead>
+        <tr>
+            <th></th>
+            <th class="all">Numéro de dossier</th>
+            <th>V.I.N.</th>
+            <th class="all">Modèle produit</th>
+            <th>Modèle véhicule</th>
+            <th>Actif</th>
+            <th>Date de fin</th>
+            <th>Créé le</th>
+            <th>Par</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for obj in object_list %}
+            <tr>
+                <td class="text-nowrap" style="width: 60px;">
+                    <a href="#" title="Modification" data-form-url="{% url 'squalaetp:temporary_update' pk=obj.pk %}" class="bs-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    <a  href="{% url 'squalaetp:detail' obj.pk %}?filter=temp" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
+                </td>
+                <td>{{ obj.numero_de_dossier }}</td>
+                <td>{{ obj.vin }}</td>
+                <td>{{ obj.modele_produit }}</td>
+                <td>{{ obj.modele_vehicule }}</td>
+                <td>{{ obj.is_active }}</td>
+                <td>{{ obj.end_date }}</td>
+                <td>{{ obj.created_at }}</td>
+                <td>{{ obj.created_by }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr class="mt-5">
+
+    <h4 class="font-weight-bold">HISTORIQUE :</h4>
+
     <table class="table table-bordered table-sm text-nowrap display" id="temporaryTable" style="width: 100%;">
         <thead>
         <tr>

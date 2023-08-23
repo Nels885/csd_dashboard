@@ -70,13 +70,26 @@ $(document).ready(function () {
         }],
     });
 
-        $('#temporaryTable').DataTable({
+    $('#temporaryActiveTable').DataTable({
+        pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
+        scrollX: true,
+        order: [],
+        // Disable sorting for the Tags and Actions columns.
+        columnDefs: [{
+            targets: 0,
+            searchable: false,
+            orderable: false,
+        }],
+    });
+
+    $('#temporaryTable').DataTable({
         pagingType: "full_numbers",
         lengthMenu: [[25, 50, 100], [25, 50, 100]],
         processing: true,
         serverSide: true,
         scrollX: true,
-        order: [[1, 'desc']],
+        order: [[7, 'desc']],
         ajax: {
             url: URL_AJAX,
             type: "GET",
@@ -85,8 +98,8 @@ $(document).ready(function () {
             {
                 sortable: false,
                 render: function (data, type, full, meta) {
-                    let vin = full.vin;
-                    let url = '/psa/corvet/' + vin + '/detail/';
+                    let id = full.id;
+                    let url = '/squalaetp/' + id + '/detail/?filter=temp';
                     return '<a  href="' + url + '" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
                 },
             },
