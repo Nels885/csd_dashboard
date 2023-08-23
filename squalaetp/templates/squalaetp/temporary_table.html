@@ -16,9 +16,10 @@
 
 {% block table_content %}
 
-    <button class="bs-modal btn btn-primary mb-3" data-form-url="{% url 'squalaetp:temporary_create' %}">
+    <button class="bs-modal btn btn-primary mb-3 mr-2" data-form-url="{% url 'squalaetp:temporary_create' %}">
         Ajout dossier temporaire
     </button>
+    <a class="btn btn-success mb-3" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
 
     <table class="table table-bordered table-sm text-nowrap display" id="temporaryActiveTable" style="width: 100%;">
         <thead>
@@ -37,8 +38,10 @@
         <tbody>
             {% for obj in object_list %}
             <tr>
-                <td class="text-nowrap" style="width: 60px;">
-                    <a href="#" title="Modification" data-form-url="{% url 'squalaetp:temporary_update' pk=obj.pk %}" class="bs-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                <td class="text-nowrap" style="width: 30px;">
+                    {% if perms.squalaetp.change_xelontemporary %}
+                        <a href="#" title="Modification" data-form-url="{% url 'squalaetp:temporary_update' pk=obj.pk %}" class="bs-modal btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                    {% endif %}
                     <a  href="{% url 'squalaetp:detail' obj.pk %}?filter=temp" type="button" title="Detail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>'
                 </td>
                 <td>{{ obj.numero_de_dossier }}</td>
@@ -61,7 +64,7 @@
     <table class="table table-bordered table-sm text-nowrap display" id="temporaryTable" style="width: 100%;">
         <thead>
         <tr>
-            <th></th>
+            <th class="text-nowrap" style="width: 30px;"></th>
             <th class="all">Numéro de dossier</th>
             <th>V.I.N.</th>
             <th class="all">Modèle produit</th>

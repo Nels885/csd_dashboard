@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from constance import config
 
 from utils.conf import string_to_list
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, XelonTemporary
 from psa.models import Corvet
 
 from utils.file.export import ExportExcel, os
@@ -70,14 +70,16 @@ class Command(BaseCommand):
                 'TELECODAGE', 'APPAIRAGE'
             ]
             try:
-                queryset = Xelon.objects.filter(is_active=True).distinct()
+                xelons = Xelon.objects.filter(is_active=True).distinct()
+                temporaries = XelonTemporary.objects.filter(is_active=True).distinct()
 
                 corvet_list = tuple([f"corvet__{field.name}" for col_nb, field in enumerate(Corvet._meta.fields) if
                                      col_nb < (len(header) - 5) and field.name not in ['vin']])
                 xelon_list = ('numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule')
                 extra_list = ('telecodage', 'appairage')
 
-                values_list = queryset.values_list(*(xelon_list + corvet_list + extra_list)).distinct()
+                values_list = list(xelons.values_list(*(xelon_list + corvet_list + extra_list)).distinct())
+                values_list = values_list + list(temporaries.values_list(*(xelon_list + corvet_list)).distinct())
                 for path in EXTS_PATHS:
                     for filename in string_to_list(config.SQUALAETP_FILE_LIST):
                         error = ExportExcel(
@@ -94,7 +96,7 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(
                                     "[SQUALAETP_EXPORT] Export completed: NB_FILE = {} | FILE = {}".format(
-                                        queryset.count(), os.path.join(path, filename)
+                                        len(values_list), os.path.join(path, filename)
                                     )
                                 )
                             )

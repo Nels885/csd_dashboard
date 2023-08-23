@@ -72,7 +72,7 @@ def temporary_table(request):
     """ View of Xelon temporary table page """
     title = 'Xelon'
     table_title = 'Dossiers temporaires'
-    object_list = XelonTemporary.objects.filter(is_active=True)
+    object_list = XelonTemporary.objects.filter(is_active=True).order_by('-created_by')
     return render(request, 'squalaetp/temporary_table.html', locals())
 
 
