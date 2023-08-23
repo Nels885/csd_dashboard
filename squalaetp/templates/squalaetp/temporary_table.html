@@ -16,6 +16,10 @@
 
 {% block table_content %}
 
+    <button class="bs-modal btn btn-primary mb-3" data-form-url="{% url 'squalaetp:temporary_create' %}">
+        Ajout dossier temporaire
+    </button>
+
     <table class="table table-bordered table-sm text-nowrap display" id="temporaryActiveTable" style="width: 100%;">
         <thead>
         <tr>

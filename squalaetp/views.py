@@ -76,10 +76,18 @@ def temporary_table(request):
     return render(request, 'squalaetp/temporary_table.html', locals())
 
 
-class TemporaryFormView(PermissionRequiredMixin, BSModalUpdateView):
+class TemporaryCreateView(PermissionRequiredMixin, BSModalCreateView):
+    permission_required = 'squalaetp.add_xelontemporary'
+    template_name = 'squalaetp/modal/xelon_temp_create.html'
+    form_class = XelonTemporaryModalForm
+    success_message = _('Modification done successfully!')
+    success_url = reverse_lazy('squalaetp:temporary')
+
+
+class TemporaryUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     """ Modal view for sending email for VIN errors """
     model = XelonTemporary
-    permission_required = ['squalaetp.change_xelontemporary']
+    permission_required = 'squalaetp.change_xelontemporary'
     template_name = 'squalaetp/modal/xelon_temp_update.html'
     form_class = XelonTemporaryModalForm
 
