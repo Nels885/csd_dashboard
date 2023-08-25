@@ -62,7 +62,7 @@
                     <a class="collapse-item" href="{% url 'tools:suptech_list' %}">{% trans "All" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                    <a class="collapse-item create-suptech" href="#">{% trans "Add Suptech" %}</a>
+                    <a class="bs-large-modal collapse-item" href="#" data-form-url="{% url 'tools:suptech_add' %}">{% trans "Add Suptech" %}</a>
 
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     <a class="collapse-item" href="{% url 'tools:infotech_list' %}">{% trans "All" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                    <a class="collapse-item create-suptech" href="#">{% trans "Add Infotech" %}</a>
+                    <a class="bs-large-modal collapse-item" href="#" data-form-url="{% url 'tools:infotech_add' %}">{% trans "Add Infotech" %}</a>
 
                 </div>
             </div>
@@ -147,7 +147,7 @@
     {% if perms.tools.add_tagxelon %}
         <!-- Nav Item - TAG Xelon Multi -->
         <li class="nav-item">
-            <a class="create-tag-xelon nav-link" href="#">
+            <a class="bs-modal nav-link" href="#" data-form-url="{% url 'tools:tag_xelon_add' %}">
                 <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
             </a>
         </li>

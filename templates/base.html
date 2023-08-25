@@ -71,10 +71,10 @@
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary create-suggest shadow-sm mr-2">
                             <i class="fas fa-lightbulb fa-sm text-white-50"></i> Boite à idées</a>
                         {% if perms.tools.add_infotech %}
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning create-infotech shadow-sm mr-2">
+                            <a href="#" data-form-url="{% url 'tools:infotech_add' %}" class="bs-large-modal d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm mr-2">
                                 <i class="fas fa-info fa-sm text-white-50"></i> Info Tech</a>
                         {% endif %}
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger create-suptech shadow-sm">
+                        <a href="#" data-form-url="{% url 'tools:suptech_add' %}" class="bs-large-modal d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                             <i class="fas fa-radiation fa-sm text-white-50"></i> Support Tech</a>
                     </div>
 
