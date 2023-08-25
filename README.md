@@ -79,6 +79,24 @@ $ pipenv run celery -A sbadmin purge
 $ pipenv run celery -A sbadmin worker --beat --scheduler django --loglevel=info
 ```
 
+### Email testing tool for developers
+
+To test emails during development, we use the MailHog tool, [Github link](https://github.com/mailhog/MailHog/releases).
+
+Installation on Linux:
+
+```bash
+$ wget <MailHog_linux_amd64 release link>
+$ chmod u+x MailHog_linux_amd64
+$ ./MailHog_linux_amd64
+2023/08/25 15:52:51 Using in-memory storage
+2023/08/25 15:52:51 [SMTP] Binding to address: 0.0.0.0:1025
+[HTTP] Binding to address: 0.0.0.0:8025
+2023/08/25 15:52:51 Serving under http://0.0.0.0:8025/
+Creating API v1 with WebPath:
+Creating API v2 with WebPath:
+```
+
 ### Test application
 
 ```bash
