@@ -90,7 +90,7 @@ class SuptechModalForm(BSModalModelForm):
     username = forms.CharField(max_length=50, required=True)
     item = forms.ModelChoiceField(queryset=SuptechItem.objects.filter(is_active=True))
     custom_item = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'readonly': ''}), required=False)
-    to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=False)
+    to = forms.CharField(max_length=5000, widget=forms.TextInput(), required=True)
     cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={"rows": 2, 'readonly': ''}), required=False)
     attach = MultipleFileField(required=False)
 

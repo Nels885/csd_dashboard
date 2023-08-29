@@ -20,7 +20,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.username.id_for_label }}" class="col-form-label col-sm-2">QUI *</label>
+            {% include 'format/form_label.html' with field=form.username label='QUI' %}
             <div class="col-sm-4">
                 {% render_field form.username class="form-control" %}
                 <div class="{% if form.username.errors %} invalid{% endif %}">
@@ -29,7 +29,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <label for="{{ form.is_48h.id_for_label }}" class="col-form-label col-sm-3">Traitement 48h</label>
+            {% include 'format/form_label.html' with field=form.is_48h label='Traitement 48h' size=3 %}
             <div class="col-sm-3 mb-3 mb-sm-0">
                 {% render_field form.is_48h class="form-control" %}
                 <div class="{% if form.is_48h.errors %} invalid{% endif %}">
@@ -41,7 +41,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.xelon.id_for_label }}" class="col-form-label col-sm-2">N° XELON</label>
+            {% include 'format/form_label.html' with field=form.xelon label='N° DOSSIER' %}
             <div class="col-sm-4">
                 {% render_field form.xelon class="form-control" %}
                 <div class="{% if form.xelon.errors %} invalid{% endif %}">
@@ -50,7 +50,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <label for="{{ form.time.id_for_label }}" class="col-form-label col-sm-3">Temps/Durée (en min) *</label>
+            {% include 'format/form_label.html' with field=form.time label='Temps/Durée (en min)' size=3 %}
             <div class="col-sm-3 mb-3 mb-sm-0">
                 {% render_field form.time class="form-control" %}
                 <div class="{% if form.time.errors %} invalid{% endif %}">
@@ -63,7 +63,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.product.id_for_label }}" class="col-form-label col-sm-2">PRODUIT</label>
+            {% include 'format/form_label.html' with field=form.product label='PRODUIT' %}
             <div class="col-sm-6">
                 {% render_field form.product class="form-control" %}
                 <div class="{% if form.product.errors %} invalid{% endif %}">
@@ -75,7 +75,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.item.id_for_label }}" class="col-form-label col-sm-2">Objet *</label>
+            {% include 'format/form_label.html' with field=form.item label='Objet' %}
             <div class="col-sm-4 mb-3 mb-sm-0">
                 {% render_field form.item class="custom-select form-control" %}
                 <div class="{% if form.item.errors %} invalid{% endif %}">
@@ -95,7 +95,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.to.id_for_label }}" class="col-form-label col-sm-2">À *</label>
+            {% include 'format/form_label.html' with field=form.to label='À' %}
             <div class="col-sm-10 mb-3 mb-sm-0">
                 {% render_field form.to class="form-control" %}
                 <div class="{% if form.to.errors %} invalid{% endif %}">
@@ -107,7 +107,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.cc.id_for_label }}" class="col-form-label col-sm-2">Cc</label>
+            {% include 'format/form_label.html' with field=form.cc label='Cc' %}
             <div class="col-sm-10 mb-3 mb-sm-0">
                 {% render_field form.cc class="form-control" %}
                 <div class="{% if form.cc.errors %} invalid{% endif %}">
@@ -119,7 +119,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.info.id_for_label }}" class="col-form-label col-sm-2">Infos *</label>
+            {% include 'format/form_label.html' with field=form.info label='Info' %}
             <div class="col-sm-10">
                 {% render_field form.info class="form-control" rows=5 %}
                 <div class="{% if form.info.errors %} invalid{% endif %}">
@@ -131,7 +131,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.rmq.id_for_label }}" class="col-form-label col-sm-2">Rmqs</label>
+            {% include 'format/form_label.html' with field=form.rmq label='Rmqs' %}
             <div class="col-sm-10">
                 {% render_field form.rmq class="form-control" rows=5 %}
                 <div class="{% if form.rmq.errors %} invalid{% endif %}">
@@ -143,7 +143,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="{{ form.attach.id_for_label }}" class="col-form-label col-sm-2">Joindre</label>
+            {% include 'format/form_label.html' with field=form.attach label='Joindre' %}
             <div class="col-sm-10">
                 {% render_field form.attach class="form-control-file" %}
                 <div class="{% if form.attach.errors %} invalid{% endif %}">
