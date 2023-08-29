@@ -84,6 +84,7 @@ class VinCorvetModalForm(BSModalModelForm):
         ),
         required=False
     )
+    force_vin = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = Xelon
@@ -100,7 +101,7 @@ class VinCorvetModalForm(BSModalModelForm):
 
     def clean_vin(self):
         data = self.cleaned_data['vin']
-        message = validate_vin(data)
+        message = validate_vin(data, psa_type=False)
         if message:
             raise forms.ValidationError(_(message), code='invalid', params={'value': data})
         return data
@@ -130,11 +131,13 @@ class VinCorvetModalForm(BSModalModelForm):
         cleaned_data = super(VinCorvetModalForm, self).clean()
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
-        if vin and isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
-            raise forms.ValidationError(_('VIN error !'))
-        elif vin != self.oldVin and vin_psa_isvalid(vin) and not isinstance(data, dict):
-            if not Corvet.objects.filter(vin=vin):
-                raise forms.ValidationError(_('New PSA VIN, please use the Import CORVET button !'))
+        print(cleaned_data.get('force_vin'), type(cleaned_data.get('force_vin')))
+        if not cleaned_data.get('force_vin'):
+            if vin and isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
+                raise forms.ValidationError(_('VIN error !'))
+            elif vin != self.oldVin and vin_psa_isvalid(vin) and not isinstance(data, dict):
+                if not Corvet.objects.filter(vin=vin):
+                    raise forms.ValidationError(_('New PSA VIN, please use the Import CORVET button !'))
 
     def save(self, commit=True):
         instance = super().save(commit=False)
