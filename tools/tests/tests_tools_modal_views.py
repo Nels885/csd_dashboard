@@ -89,6 +89,7 @@ class MixinsTest(UnitTest):
                 'xelon': 'A123456789',
                 'item': item.id,
                 'time': '5',
+                'to': 'test@test.com',
                 'info': 'test',
                 'rmq': 'test',
             },
