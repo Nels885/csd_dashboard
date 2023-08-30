@@ -88,7 +88,7 @@ def repair_close(request, pk):
         form.save()
         task = cmd_exportreman_task.delay('--repair')
         messages.success(request, _('Modification done successfully!'))
-        return redirect(reverse('reman:repair_table', get={'task_id': task.id, 'filter': 'pending'}))
+        return redirect(reverse_lazy('reman:repair_table', get={'filter': 'pending', 'task_id': task.id}))
     context.update(locals())
     return render(request, 'reman/repair/repair_close.html', context)
 
