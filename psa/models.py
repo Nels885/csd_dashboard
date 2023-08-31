@@ -278,6 +278,12 @@ class Corvet(models.Model):
     electronique_xm2 = models.CharField('DATA LIBRARY - IVI - IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
     electronique_yl9 = models.CharField('VEHICLE APP - BSRF - BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
 
+    # Adding the 31/08/2023
+    electronique_11n = models.CharField('BPGA HARD BOITIER PROTECTION ALIMENT RESEAU ELEC [FR]', max_length=200, blank=True)
+    electronique_41n = models.CharField('BPGA FOURN.NO.SERIE BOITIER PROTECT ALIMENT RESEAU ELEC[FR]', max_length=200, blank=True)
+    electronique_51n = models.CharField('BPGA FOURN.DATE.FAB- BOITIER PROTECT ALIMENT RESEAU ELEC[FR]', max_length=200, blank=True)
+    electronique_61n = models.CharField('BPGA FOURN.CODE - BOITIER PROTECTION ALIMENT RESEAU ELEC[FR]', max_length=200, blank=True)
+
     class Meta:
         verbose_name = "données CORVET"
         ordering = ['vin']
