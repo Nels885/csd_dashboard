@@ -193,6 +193,25 @@
                 <td>{{ object.electronique_61q|get_supplier_code }}</td>
             </tr>
         {% endif %}
+        <!-- BPGA - Boitier Protection Alimentation Reseau -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW BPGA</td>
+            <td>{{ object.electronique_11n }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série BPGA</td>
+            <td>{{ object.electronique_41n }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Date Fab. BPGA</td>
+            <td>{{ object.electronique_51n }}</td>
+        </tr>
+        {% if object.electronique_61n %}
+            <tr>
+                <td class="text-dark td-ihm">Fournisseur BPGA</td>
+                <td>{{ object.electronique_61n|get_supplier_code }}</td>
+            </tr>
+        {% endif %}
     </tbody>
 </table>
 

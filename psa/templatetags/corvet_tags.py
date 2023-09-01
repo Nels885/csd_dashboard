@@ -41,7 +41,9 @@ def get_field_name(field_name):
 def get_supplier_code(value):
     if value:
         try:
-            data = SupplierCode.objects.get(code=value[-4:])
+            value = value.replace('0', '')
+            value = "0"*(4 - len(value)) + value
+            data = SupplierCode.objects.get(code=value)
             return data.name
         except SupplierCode.DoesNotExist:
             return f"* {value} *"
