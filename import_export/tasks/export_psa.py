@@ -143,6 +143,10 @@ CORVET_DICT = {
         ('41Q_DMTX_FOURN.NO.SERIE', 'electronique_41q'), ('51Q_DMTX_FOURN.DATE.FAB', 'electronique_51q'),
         ('61Q_DMTX_FOURN.CODE', 'electronique_61q'), ('91Q_DMTX_SOFT', 'electronique_91q'),
         ('Réf. Setplate DMTX', 'prods__dmtx__label_ref'),
+    ],
+    'bpga': [
+        ('11N_BPGA_HARD', 'electronique_11n'), ('41N_BPGA_FOURN.NO.SERIE', 'electronique_41n'),
+        ('51N_BPGA_FOURN.DATE.FAB', 'electronique_51n'), ('61N_BPGA_FOURN.CODE', 'electronique_61n'),
     ]
 }
 
@@ -215,7 +219,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
         'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
         'cmb': {'electronique_14k__exact': ''}, 'vmf':  {'electronique_11m__exact': ''},
-        'dmtx': {'electronique_11q__exact': ''}
+        'dmtx': {'electronique_11q__exact': ''}, 'bpga': {'electronique_11n__exact': ''}
     }
 
     def __init__(self, *args, **kwargs) -> None:
