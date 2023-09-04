@@ -302,10 +302,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         if kwargs.get('vins', None):
             vin_list = kwargs.get('vins').split('\r\n')
             queryset = queryset.filter(vin__in=vin_list)
-        if kwargs.get('xelon_model', None):
-            queryset = queryset.select_related().filter(xelon__modele_produit__startswith=kwargs.get('xelon_model'))
-        if kwargs.get('xelon_vehicle', None):
-            queryset = queryset.select_related().filter(xelon__modele_vehicule__startswith=kwargs.get('xelon_vehicle'))
+        queryset = self._xelon_filter(queryset, **kwargs)
         if kwargs.get('start_date', None):
             queryset = queryset.filter(donnee_date_debut_garantie__gte=kwargs.get('start_date'))
         if kwargs.get('end_date', None):
@@ -326,6 +323,14 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
             self.queryset = corvet.exclude(**PROD_DICT.get(kwargs.get('product')).get('filter', {}))
         else:
             self.queryset = corvet.all()
+
+    @staticmethod
+    def _xelon_filter(queryset, **kwargs):
+        if kwargs.get('xelon_vehicle', None):
+            queryset = queryset.select_related().filter(xelon__modele_vehicule__startswith=kwargs.get('xelon_vehicle'))
+        if kwargs.get('xelon_model', None):
+            queryset = queryset.select_related().filter(xelon__modele_produit__startswith=kwargs.get('xelon_model'))
+        return queryset
 
     def _select_columns(self, **kwargs):
         checkbox_dict = {
