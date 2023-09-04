@@ -74,16 +74,45 @@
             </div>
         </div>
 
-        <div class="form-group mt-4 mb-4 row">
-            {% include 'format/label_form_group.html' with field=form.columns %}
+        <hr class="col-8 mt-4">
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.info_cols %}
             <div class="col-sm-10">
-                {% for col in form.columns %}
+                {% for col in form.info_cols %}
                     <div class="form-check-inline col-sm-2">{{ col }}</div>
                 {% endfor %}
             </div>
         </div>
-
+        <hr class="col-8">
         <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.engine_cols %}
+            <div class="col-sm-10">
+                {% for col in form.engine_cols %}
+                    <div class="form-check-inline col-sm-2">{{ col }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr class="col-8">
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.interior_cols %}
+            <div class="col-sm-10">
+                {% for col in form.interior_cols %}
+                    <div class="form-check-inline col-sm-2">{{ col }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr class="col-8">
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.security_cols %}
+            <div class="col-sm-10">
+                {% for col in form.security_cols %}
+                    <div class="form-check-inline col-sm-2">{{ col }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr class="col-8">
+
+        <div class="form-group row mt-4">
             {% include 'format/label_form_group.html' with field=form.excel_type %}
             <div class="col-sm-2">
                 {% render_field form.excel_type class="custom-select form-control" %}

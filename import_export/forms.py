@@ -1,6 +1,6 @@
 from django import forms
 
-# from .utils import CORVET_DICT
+from .tasks.export_psa import ENGINE_DICT, INTERIOR_DICT, SECURITY_DICT
 from squalaetp.models import Xelon
 from reman.models import Batch
 from psa.models import CorvetOption, CorvetChoices
@@ -19,16 +19,10 @@ class ExportCorvetForm(forms.Form):
         ('bpga', 'BPGA'),
         ('xelon', 'ALL Xelon')
     ]
-    # COLS = [(key, key.upper()) for key in CORVET_DICT.keys()]
-    COLS = [
-        ('data_extra', 'Info Véhicule'), ('audio_cfg', 'Config Audio'),
-        ('cmm', 'ECU'), ('cmm_extra', 'ECU Extra'), ('bsi', 'BSI'), ('bsi_extra', 'BSI Extra'), ('com200x', 'COM200x'),
-        ('bsm', 'BSM'), ('cvm', 'CVM'), ('cvm_extra', 'CVM Extra'), ('artiv', 'ARTIV'), ('artiv_extra', 'ARTIV Extra'),
-        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('emf', 'DISPLAY'), ('vmf', 'VMF'),
-        ('dmtx', 'DMTX'), ('dmtx_extra', 'DMTX Extra'), ('bpga', 'BPGA'),
-        ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('ivi', 'IVI'), ('ivi_extra', 'IVI Extra'),
-        ('bsrf', 'BSRF'), ('bsrf_extra', 'BSRF Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
-    ]
+    INF_COLS = [('data_extra', 'Info Véhicule'), ('audio_cfg', 'Config Audio')]
+    ENG_COLS = [(key, value.get('label')) for key, value in ENGINE_DICT.items()]
+    INT_COLS = [(key, value.get('label')) for key, value in INTERIOR_DICT.items()]
+    SEC_COLS = [(key, value.get('label')) for key, value in SECURITY_DICT.items()]
 
     brand = forms.ChoiceField(label='Marque', required=False, choices=CorvetChoices.brands(), widget=forms.Select())
     vehicle = forms.ChoiceField(
@@ -38,8 +32,14 @@ class ExportCorvetForm(forms.Form):
     xelon_model = forms.CharField(label='Produit (XELON)', required=False, widget=forms.TextInput())
     xelon_vehicle = forms.CharField(label='Véhicule (XELON)', required=False, widget=forms.TextInput())
     vins = forms.CharField(label='Liste de V.I.N.', required=False, widget=forms.Textarea())
-    columns = forms.MultipleChoiceField(
-        label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
+    info_cols = forms.MultipleChoiceField(
+        label='Info véhicule', required=False, choices=INF_COLS, widget=forms.CheckboxSelectMultiple())
+    engine_cols = forms.MultipleChoiceField(
+        label='Comp. Moteur', required=False, choices=ENG_COLS, widget=forms.CheckboxSelectMultiple())
+    interior_cols = forms.MultipleChoiceField(
+        label='Habitacle', required=False, choices=INT_COLS, widget=forms.CheckboxSelectMultiple())
+    security_cols = forms.MultipleChoiceField(
+        label='Securité', required=False, choices=SEC_COLS, widget=forms.CheckboxSelectMultiple())
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     tag = forms.CharField(label="TAG Corvet", required=False, widget=forms.TextInput())
     start_date = forms.DateField(

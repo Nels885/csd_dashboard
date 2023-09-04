@@ -10,119 +10,23 @@ from psa.templatetags.corvet_tags import get_corvet
 from psa.models import Corvet
 
 
-CORVET_DICT = {
-    'xelon': [
+INFO_DICT = {
+    'xelon': {'label': 'Xelon', 'data': [
         ('Dossier (XELON)', 'xelon__numero_de_dossier'), ('Produit (XELON)', 'xelon__modele_produit'),
         ('Vehicule (XELON)', 'xelon__modele_vehicule'), ('Date Retour (XELON)', 'xelon__date_retour')
-    ],
-    'data': [
+    ]},
+    'data': {'label': 'Donnée', 'data': [
         ('V.I.N.', 'vin'), ('DATE_DEBUT_GARANTIE', 'date_debut_garantie')
-    ],
-    'data_extra': [
+    ]},
+    'data_extra': {'label': 'Info Véhicule', 'data': [
         ('LIGNE_DE_PRODUIT', 'donnee_ligne_de_produit'), ('SILHOUETTE', 'donnee_silhouette'),
         ('GENRE_DE_PRODUIT', 'donnee_genre_de_produit'), ('MOTEUR', 'donnee_moteur'),
-    ],
-    'audio_cfg': [
+    ]},
+    'audio_cfg': {'label': 'Config Audio', 'data': [
         ('DHB_HAUT_PARLEUR', 'attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'attribut_drc'),
         ('DUN_AMPLI_EQUALISEUR', 'attribut_dun'), ('DYR_BTA', 'attribut_dyr')
-    ],
-    'btel': [
-        ('Modele NAV', 'prods__btel__name'), ('14X_BTEL_HARD', 'electronique_14x'),
-        ('94X_BTEL_SOFT', 'electronique_94x')
-    ],
-    'btel_extra': [
-        ('44X_BTEL_FOURN.NO.SERIE', 'electronique_44x'), ('64X_BTEL_FOURN.CODE', 'electronique_64x'),
-        ('84X_BTEL_DOTE', 'electronique_84x'), ('Réf. Setplate', 'prods__btel__label_ref'),
-        ('Niv.', 'prods__btel__level'), ('HW variant', 'prods__btel__extra')
-    ],
-    'rad': [
-        ('Modele RADIO', 'prods__radio__name'), ('14F_RADIO_HARD', 'electronique_14f'),
-        ('94F_RADIO_SOFT', 'electronique_94f')
-    ],
-    'rad_extra': [
-        ('44F_RADIO_FOURN.NO.SERIE', 'electronique_44f'), ('64F_RADIO_FOURN.CODE', 'electronique_64f'),
-        ('84F_RADIO_DOTE', 'electronique_84f'), ('Réf. Setplate', 'prods__radio__label_ref'),
-        ('Niv.', 'prods__radio__level'), ('HW variant', 'prods__radio__extra')
-    ],
-    'ivi': [
-        ('1M2_IVI_HARD', 'electronique_1m2'), ('3M2_IVI_SOFT', 'electronique_3m2')
-    ],
-    'ivi_extra': [
-        ('4M2_IVI_FOURN.NO.SERIE', 'electronique_4m2'), ('5M2_IVI_FOUN.DATE.FAB.', 'electronique_5m2'),
-        ('6M2_IVI_FOURN.CODE', 'electronique_6m2'), ('8M2_IVI_???', 'electronique_8m2'),
-        ('XM2_IVI_DATA_LIBRARY', 'electronique_xm2')
-    ],
-    'bsrf': [
-        ('1L9_BSRF_HARD', 'electronique_1l9'), ('3L9_BSRF_SOFT', 'electronique_3l9')
-    ],
-    'bsrf_extra': [
-        ('4L9_BSRF_FOURN.NO.SERIE', 'electronique_4l9'), ('6L9_BSRF_FOURN.CODE', 'electronique_6l9'),
-        ('8L9_BSRF_???', 'electronique_8l9'), ('9L9_BSRF_???', 'electronique_9l9'),
-        ('KL9_BSRF_NUMERO.IMEI', 'electronique_kl9'), ('ML9_BSRF_NUMERO.IMSI', 'electronique_ml9'),
-        ('RL9_BSRF_NUMERO.ICCID', 'electronique_rl9'), ('YL9_BSRF_VEHICLE.APP', 'electronique_yl9')
-    ],
-    'emf': [
-        ('Modèle Ecran Multi', 'prods__emf__name'), ('14L_EMF_HARD', 'electronique_14l'),
-        ('44L_EMF_FOURN.NO.SERIE', 'electronique_44l'), ('54L_EMF_FOUN.DATE.FAB', 'electronique_54l'),
-        ('84L_EMF_DOTE', 'electronique_84l'), ('94L_EMF_SOFT', 'electronique_94l')
-    ],
-    'cmb': [
-        ('Modèle COMBINE', 'prods__cmb__name'), ('14K_CMB_HARD', 'electronique_14k'),
-        ('54K_CMB_FOUN.DATE.FAB', 'electronique_54k'), ('94K_CMB_SOFT', 'electronique_94k')
-    ],
-    'com200x': [
-        ('Modele COM200x', 'prods__hdc__name'), ('Marque COM200x', 'prods__hdc__supplier_oe'),
-        ('Ref HW COM200x', 'electronique_16p'),
-    ],
-    'cmm': [
-        ('Modèle ECU', 'prods__cmm__name'),
-        ('14A_CMM_HARD', 'electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'electronique_34a'),
-        ('94A_CMM_SOFT', 'electronique_94a')
-    ],
-    'cmm_extra': [
-        ('44A_CMM_FOURN.NO.SERIE', 'electronique_44b'),
-        ('54A_CMM_FOURN.DATE.FAB', 'electronique_54b'), ('64A_CMM_FOURN.CODE', 'electronique_64b'),
-        ('84A_CMM_DOTE', 'electronique_84a'), ('P4A_CMM_EOBD', 'electronique_p4a')
-    ],
-    'bsi': [
-        ('Modèle B.S.I.', 'prods__bsi__name'), ('14B_BSI_HARD', 'electronique_14b'), ('94B_BSI_SOFT', 'electronique_94b')
-    ],
-    'bsi_extra': [
-        ('44B_BSI_FOURN.NO.SERIE', 'electronique_44b'), ('54B_BSI_FOURN.DATE.FAB', 'electronique_54b'),
-        ('64B_BSI_FOURN.CODE', 'electronique_64b'), ('84B_BSI_DOTE', 'electronique_84b'), ('HW', 'prods__bsi__hw'),
-        ('SW', 'prods__bsi__sw'),
-    ],
-    'bsm': [
-        ('Modele BSM', 'prods__bsm__name'), ('Marque BSM', 'prods__bsm__supplier_oe'),
-        ('Ref HW BSM', 'electronique_16b'),
-    ],
-    'cvm': [
-        ('Modèle CVM2', 'prods__cvm2__name'),
-        ('12Y_CVM2_2_HARD', 'electronique_12y'), ('92Y_CVM2_2_SOFT', 'electronique_92y')
-    ],
-    'cvm_extra': [
-        ('T2Y_CVM2_2_CODE', 'electronique_t2y'), ('Réf. Setplate CVM2', 'prods__cvm2__label_ref'),
-        ('Complément CVM2', 'prods__cvm2__extra')
-    ],
-    'artiv': [
-        ('19K_ARTIV_HARD', 'electronique_19k'), ('99K_ARTIV_SOFT', 'electronique_99k')
-    ],
-    'artiv_extra': [
-        ('69K_ARTIV_FOURN.CODE', 'electronique_69k'), ('49K_ARTIV_FOURN.NO.SERIE', 'electronique_49k'),
-        ('59K_ARTIV_FOURN.DATE.FAB', 'electronique_59k')
-    ],
-    'dae': [
-        ('16L_DAE_HARD', 'electronique_16l'),
-        ('96L_DAE_SOFT', 'electronique_96l')
-    ],
-    'abs_esp': [
-        ('14P_FREIN_HARD', 'electronique_14p'), ('94P_FREIN_SOFT', 'electronique_94p'),
-        ('34P_FREIN_SOFT_LIVRE', 'electronique_34p')
-    ],
-    'airbag': [
-        ('14M_RBG_HARD_(AIRBAG)', 'electronique_14m'), ('14M_RBG_SOFT_(AIRBAG)', 'electronique_94m')
-    ],
-    'extra_ecu': [
+    ]},
+    'extra_ecu': {'label': 'Extra ECU', 'data': [
         ('Numero de dossier', 'xelon__numero_de_dossier'), ('V.I.N.', 'vin'),
         ('Modele produit', 'xelon__modele_produit'), ('Modele vehicule', 'xelon__modele_vehicule'),
         ('DATE_DEBUT_GARANTIE', 'donnee_date_debut_garantie'), ('14A_CMM_HARD', 'electronique_14a'),
@@ -130,25 +34,134 @@ CORVET_DICT = {
         ('44A_CMM_FOURN.NO.SERIE', 'electronique_44a'), ('54A_CMM_FOURN.DATE.FAB', 'electronique_54a'),
         ('64A_CMM_FOURN.CODE', 'electronique_64a'), ('84A_CMM_DOTE', 'electronique_84a'),
         ('P4A_CMM_EOBD', 'electronique_p4a')
-    ],
-    'vmf': [
-        ('Modèle VMF', 'prods__vmf__name'),
-        ('11M_VMF_HARD', 'electronique_11m')
-    ],
-    'dmtx': [
+    ]},
+}
+
+ENGINE_DICT = {
+    'cmm': {'label': 'ECU', 'filter': {'electronique_14a__exact': ''}, 'data': [
+        ('Modèle ECU', 'prods__cmm__name'),
+        ('14A_CMM_HARD', 'electronique_14a'), ('34A_CMM_SOFT_LIVRE', 'electronique_34a'),
+        ('94A_CMM_SOFT', 'electronique_94a')
+    ]},
+    'cmm_extra': {'label': 'ECU Extra', 'data': [
+        ('44A_CMM_FOURN.NO.SERIE', 'electronique_44b'),
+        ('54A_CMM_FOURN.DATE.FAB', 'electronique_54b'), ('64A_CMM_FOURN.CODE', 'electronique_64b'),
+        ('84A_CMM_DOTE', 'electronique_84a'), ('P4A_CMM_EOBD', 'electronique_p4a')
+    ]},
+    'bsm': {'label': 'BSM', 'filter': {'electronique_16p__exact': ''}, 'data': [
+        ('Modele BSM', 'prods__bsm__name'), ('Marque BSM', 'prods__bsm__supplier_oe'),
+        ('Ref HW BSM', 'electronique_16b'),
+    ]},
+    'dmtx': {'label': 'DMTX', 'filter': {'electronique_11q__exact': ''}, 'data': [
         ('Modèle DMTX', 'prods__dmtx__name'),
         ('11Q_DMTX_HARD', 'electronique_11q')
-    ],
-    'dmtx_extra': [
+    ]},
+    'dmtx_extra': {'label': 'DMTX Extra', 'data': [
         ('41Q_DMTX_FOURN.NO.SERIE', 'electronique_41q'), ('51Q_DMTX_FOURN.DATE.FAB', 'electronique_51q'),
         ('61Q_DMTX_FOURN.CODE', 'electronique_61q'), ('91Q_DMTX_SOFT', 'electronique_91q'),
         ('Réf. Setplate DMTX', 'prods__dmtx__label_ref'),
-    ],
-    'bpga': [
+    ]},
+    'bpga': {'label': 'BPGA', 'filter': {'electronique_11n__exact': ''}, 'data': [
         ('11N_BPGA_HARD', 'electronique_11n'), ('41N_BPGA_FOURN.NO.SERIE', 'electronique_41n'),
         ('51N_BPGA_FOURN.DATE.FAB', 'electronique_51n'), ('61N_BPGA_FOURN.CODE', 'electronique_61n'),
-    ]
+    ]},
 }
+
+INTERIOR_DICT = {
+    'bsi': {'label': 'BSI', 'filter': {'electronique_14b__exact': ''}, 'data': [
+        ('Modèle B.S.I.', 'prods__bsi__name'), ('14B_BSI_HARD', 'electronique_14b'),
+        ('94B_BSI_SOFT', 'electronique_94b')
+    ]},
+    'bsi_extra': {'label': 'BSI Extra', 'data': [
+        ('44B_BSI_FOURN.NO.SERIE', 'electronique_44b'), ('54B_BSI_FOURN.DATE.FAB', 'electronique_54b'),
+        ('64B_BSI_FOURN.CODE', 'electronique_64b'), ('84B_BSI_DOTE', 'electronique_84b'), ('HW', 'prods__bsi__hw'),
+        ('SW', 'prods__bsi__sw'),
+    ]},
+    'btel': {'label': 'NAV', 'filter': {'electronique_14x__exact': ''}, 'data': [
+        ('Modele NAV', 'prods__btel__name'), ('14X_BTEL_HARD', 'electronique_14x'),
+        ('94X_BTEL_SOFT', 'electronique_94x')
+    ]},
+    'btel_extra': {'label': 'NAV Extra', 'data': [
+        ('44X_BTEL_FOURN.NO.SERIE', 'electronique_44x'), ('64X_BTEL_FOURN.CODE', 'electronique_64x'),
+        ('84X_BTEL_DOTE', 'electronique_84x'), ('Réf. Setplate', 'prods__btel__label_ref'),
+        ('Niv.', 'prods__btel__level'), ('HW variant', 'prods__btel__extra')
+    ]},
+    'rad': {'label': 'RADIO', 'filter': {'electronique_14f__exact': ''}, 'data': [
+        ('Modele RADIO', 'prods__radio__name'), ('14F_RADIO_HARD', 'electronique_14f'),
+        ('94F_RADIO_SOFT', 'electronique_94f')
+    ]},
+    'rad_extra': {'label': 'RADIO Extra', 'data': [
+        ('44F_RADIO_FOURN.NO.SERIE', 'electronique_44f'), ('64F_RADIO_FOURN.CODE', 'electronique_64f'),
+        ('84F_RADIO_DOTE', 'electronique_84f'), ('Réf. Setplate', 'prods__radio__label_ref'),
+        ('Niv.', 'prods__radio__level'), ('HW variant', 'prods__radio__extra')
+    ]},
+    'ivi': {'label': 'IVI', 'filter': {'electronique_1m2__exact': ''}, 'data': [
+        ('1M2_IVI_HARD', 'electronique_1m2'), ('3M2_IVI_SOFT', 'electronique_3m2')
+    ]},
+    'ivi_extra': {'label': 'IVI Extra', 'data': [
+        ('4M2_IVI_FOURN.NO.SERIE', 'electronique_4m2'), ('5M2_IVI_FOUN.DATE.FAB.', 'electronique_5m2'),
+        ('6M2_IVI_FOURN.CODE', 'electronique_6m2'), ('8M2_IVI_???', 'electronique_8m2'),
+        ('XM2_IVI_DATA_LIBRARY', 'electronique_xm2')
+    ]},
+    'bsrf': {'label': 'BSRF', 'filter': {'electronique_1l9__exact': ''}, 'data': [
+        ('1L9_BSRF_HARD', 'electronique_1l9'), ('3L9_BSRF_SOFT', 'electronique_3l9')
+    ]},
+    'bsrf_extra': {'label': 'BSRF Extra', 'data': [
+        ('4L9_BSRF_FOURN.NO.SERIE', 'electronique_4l9'), ('6L9_BSRF_FOURN.CODE', 'electronique_6l9'),
+        ('8L9_BSRF_???', 'electronique_8l9'), ('9L9_BSRF_???', 'electronique_9l9'),
+        ('KL9_BSRF_NUMERO.IMEI', 'electronique_kl9'), ('ML9_BSRF_NUMERO.IMSI', 'electronique_ml9'),
+        ('RL9_BSRF_NUMERO.ICCID', 'electronique_rl9'), ('YL9_BSRF_VEHICLE.APP', 'electronique_yl9')
+    ]},
+    'emf': {'label': 'DISPLAY', 'fitler': {'electronique_16l__exact': ''}, 'data': [
+        ('Modèle Ecran Multi', 'prods__emf__name'), ('14L_EMF_HARD', 'electronique_14l'),
+        ('44L_EMF_FOURN.NO.SERIE', 'electronique_44l'), ('54L_EMF_FOUN.DATE.FAB', 'electronique_54l'),
+        ('84L_EMF_DOTE', 'electronique_84l'), ('94L_EMF_SOFT', 'electronique_94l')
+    ]},
+    'cmb': {'label': 'COMBINE', 'filter': {'electronique_14k__exact': ''}, 'data': [
+        ('Modèle COMBINE', 'prods__cmb__name'), ('14K_CMB_HARD', 'electronique_14k'),
+        ('54K_CMB_FOUN.DATE.FAB', 'electronique_54k'), ('94K_CMB_SOFT', 'electronique_94k')
+    ]},
+    'com200x': {'label': 'COM200x', 'filter': {'electronique_16p__exact': ''}, 'data': [
+        ('Modele COM200x', 'prods__hdc__name'), ('Marque COM200x', 'prods__hdc__supplier_oe'),
+        ('Ref HW COM200x', 'electronique_16p'),
+    ]},
+    'vmf': {'label': 'VMF', 'filter': {'electronique_11m__exact': ''}, 'data': [
+        ('Modèle VMF', 'prods__vmf__name'),
+        ('11M_VMF_HARD', 'electronique_11m')
+    ]},
+}
+
+SECURITY_DICT = {
+    'cvm': {'label': 'CVM', 'filter': {'electronique_12y__exact': ''}, 'data': [
+        ('Modèle CVM2', 'prods__cvm2__name'),
+        ('12Y_CVM2_2_HARD', 'electronique_12y'), ('92Y_CVM2_2_SOFT', 'electronique_92y')
+    ]},
+    'cvm_extra': {'label': 'CVM Extra', 'data': [
+        ('T2Y_CVM2_2_CODE', 'electronique_t2y'), ('Réf. Setplate CVM2', 'prods__cvm2__label_ref'),
+        ('Complément CVM2', 'prods__cvm2__extra')
+    ]},
+    'artiv': {'label': 'ARTIV', 'filter': {'electronique_19k__exact': ''}, 'data': [
+        ('19K_ARTIV_HARD', 'electronique_19k'), ('99K_ARTIV_SOFT', 'electronique_99k')
+    ]},
+    'artiv_extra': {'label': 'ARTIV Extra', 'data': [
+        ('69K_ARTIV_FOURN.CODE', 'electronique_69k'), ('49K_ARTIV_FOURN.NO.SERIE', 'electronique_49k'),
+        ('59K_ARTIV_FOURN.DATE.FAB', 'electronique_59k')
+    ]},
+    'dae': {'label': 'DAE', 'filter': {'electronique_16l__exact': ''}, 'data': [
+        ('16L_DAE_HARD', 'electronique_16l'), ('96L_DAE_SOFT', 'electronique_96l')
+    ]},
+    'abs_esp': {'label': 'ABS/ESP', 'filter': {'electronique_14p__exact': ''}, 'data': [
+        ('14P_FREIN_HARD', 'electronique_14p'), ('94P_FREIN_SOFT', 'electronique_94p'),
+        ('34P_FREIN_SOFT_LIVRE', 'electronique_34p')
+    ]},
+    'airbag': {'label': 'AIRBAG', 'filter': {'electronique_14m__exact': ''}, 'data': [
+        ('14M_RBG_HARD_(AIRBAG)', 'electronique_14m'), ('14M_RBG_SOFT_(AIRBAG)', 'electronique_94m')
+    ]},
+}
+
+PROD_DICT = {}
+for d in [ENGINE_DICT, INTERIOR_DICT, SECURITY_DICT]:
+    PROD_DICT.update(d)
 
 XELON_LIST = [
     ('Dossier (XELON)', 'xelon__numero_de_dossier'), ('Produit (XELON)', 'xelon__modele_produit'),
@@ -209,17 +222,6 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'donnee_genre_de_produit': 'DON_GEN_PROD', 'attribut_dhb': 'ATT_DHB',
         'attribut_dlx': 'ATT_DLX', 'attribut_drc': 'ATT_DRC', 'attribut_dun': 'ATT_DUN',
         'attribut_dym': 'ATT_DYM', 'attribut_dyr': 'ATT_DYR', 'donnee_moteur': 'DON_MOT'
-    }
-    PROD_DICT = {
-        'btel': {'electronique_14x__exact': ''}, 'rad': {'electronique_14f__exact': ''},
-        'ivi': {'electronique_1m2__exact': ''}, 'bsrf': {'electronique_1l9__exact': ''},
-        'ecu': {'electronique_14a__exact': ''}, 'bsi': {'electronique_14b__exact': ''},
-        'com200x': {'electronique_16p__exact': ''}, 'bsm': {'electronique_16p__exact': ''},
-        'cvm': {'electronique_12y__exact': ''}, 'artiv': {'electronique_19k__exact': ''},
-        'dae': {'electronique_16l__exact': ''}, 'abs_esp': {'electronique_14p__exact': ''},
-        'airbag': {'electronique_14m__exact': ''}, 'emf': {'electronique_16l__exact': ''},
-        'cmb': {'electronique_14k__exact': ''}, 'vmf':  {'electronique_11m__exact': ''},
-        'dmtx': {'electronique_11q__exact': ''}, 'bpga': {'electronique_11n__exact': ''}
     }
 
     def __init__(self, *args, **kwargs) -> None:
@@ -282,7 +284,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         Export ECU data to excel format
         """
         corvets = Corvet.objects.filter(vin__in=vin_list)
-        self.header, self.fields = self.get_header_fields(CORVET_DICT.get("extract_ecu", []))
+        self.header, self.fields = self.get_header_fields(INFO_DICT.get("extract_ecu", []).get('data', []))
         values_list = corvets.values_list(*self.fields).distinct()
         return values_list
 
@@ -320,16 +322,24 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
 
     def _product_filter(self, **kwargs):
         corvet = Corvet.hw_search(kwargs.get('hw_reference'))
-        if self.PROD_DICT.get(kwargs.get('product')):
-            self.queryset = corvet.exclude(**self.PROD_DICT.get(kwargs.get('product')))
+        if PROD_DICT.get(kwargs.get('product')):
+            self.queryset = corvet.exclude(**PROD_DICT.get(kwargs.get('product')).get('filter', {}))
         else:
             self.queryset = corvet.all()
 
     def _select_columns(self, **kwargs):
+        checkbox_dict = {
+            'info_cols': INFO_DICT, 'engine_cols': ENGINE_DICT, 'interior_cols': INTERIOR_DICT,
+            'security_cols': SECURITY_DICT
+        }
         if kwargs.get('product') == "xelon":
             self.header, self.fields = self.get_header_fields(XELON_LIST + DATA_LIST + PRODS_XELON_LIST)
         else:
-            data_list = CORVET_DICT['xelon'] + CORVET_DICT['data']
-            for col in kwargs.get('columns', []):
-                data_list = data_list + CORVET_DICT.get(col, [])
+            data_list = INFO_DICT.get('xelon', []).get('data', []) + INFO_DICT.get('data', []).get('data', [])
+            for key, value in checkbox_dict.items():
+                for col in kwargs.get(key, []):
+                    if isinstance(value, dict):
+                        data_list = data_list + value.get(col, []).get('data', [])
+                    else:
+                        data_list = data_list + value.get(col, [])
             self.header, self.fields = self.get_header_fields(data_list)
