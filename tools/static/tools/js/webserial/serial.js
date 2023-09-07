@@ -3,6 +3,7 @@ let portPromise; // promise used to wait until port succesfully closed
 let holdPort = null; // use this to park a SerialPort object when we change settings so that we don't need to ask the user to select it again
 let port; // current SerialPort object
 let reader; // current port reader object so we can call .cancel() on it to interrupt port reading
+let termWindow = document.getElementById("term_window");
 
 // Do these things when the window is done loading
 window.onload = function () {
@@ -65,7 +66,7 @@ async function openClose() {
           holdPort = null;
         }
         // Grab the currently selected baud rate from the drop down menu
-        var baudSelected = parseInt(document.getElementById("baud_rate").value);
+        let baudSelected = parseInt(document.getElementById("baud_rate").value);
         // Open the serial port with the selected baud rate
         await port.open({ baudRate: baudSelected });
 
@@ -95,14 +96,20 @@ async function openClose() {
         // Serial read loop. We'll stay here until the serial connection is ended externally or reader.cancel() is called
         // It's OK to sit in a while(true) loop because this is an async function and it will not block while it's await-ing
         // When reader.cancel() is called by another function, reader will be forced to return done=true and break the loop
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) {
-            reader.releaseLock(); // release the lock on the reader so the owner port can be closed
-            break;
+        try {
+          while (true) {
+            const {value, done} = await reader.read();
+            if (done) {
+              reader.releaseLock(); // release the lock on the reader so the owner port can be closed
+              break;
+            }
+            termWindow.value += value; // write the incoming string to the term_window textarea
+            scrollLogToBottom();
+            // console.log(value);
           }
-          document.getElementById("term_window").value += value; // write the incoming string to the term_window textarea
-          console.log(value);
+        } catch (error) {
+          // TODO: Handle non-fatal read error.
+          console.log(error);
         }
 
         // If we've reached this point then we're closing the port
@@ -131,8 +138,6 @@ async function openClose() {
       })();
     });
   }
-
-  return;
 }
 
 // Change settings that require a connection reset.
@@ -144,7 +149,7 @@ async function changeSettings() {
   console.log("waiting for port to close...");
   await portPromise; // wait for the port to be closed
   console.log("port closed, opening with new settings...");
-  openClose(); // open the port again (it will grab the new settings while opening the port)
+  await openClose(); // open the port again (it will grab the new settings while opening the port)
 }
 
 // Send a string over the serial port.
@@ -161,27 +166,31 @@ async function sendString() {
   // write the outString to the writer
   await writer.write(outString);
   // add the outgoing string to the term_window textarea on its own new line denoted by a ">"
-  document.getElementById("term_window").value += "\n>" + outString + "\n";
+  termWindow.value += "\n>" + outString + "\n";
+  scrollLogToBottom();
 
   // close the writer since we're done sending for now
-  writer.close();
+  await writer.close();
   await writableStreamClosed;
 }
 
 // Clear the contents of the term_window textarea
 function clearTerminal() {
-  document.getElementById("term_window").value = "";
+  termWindow.value = "";
 }
 
 // This function in bound to "keydown" in the term_input textarea.
 // It intercepts Enter keystrokes and calls the sendString function
 function detectEnter(e) {
-  var key = e.keyCode;
+  let key = e.keyCode;
 
   // If the user has pressed enter
   if (key == 13) {
     e.preventDefault();
     sendString();
   }
-  return;
+}
+
+function scrollLogToBottom() {
+  termWindow.scrollTop = termWindow.scrollHeight;
 }
