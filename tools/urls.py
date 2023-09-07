@@ -34,6 +34,7 @@ urlpatterns = [
     path('infotech/mailing/ajax/', views.infotech_mailing_ajax, name='infotech_mailing_ajax'),
     path('bga/time/', views.bga_time, name='bga_time'),
     path('usb-devices/', views.usb_devices, name='usb_devices'),
+    path('serial-devices/', views.serial_devices, name='serial_devices'),
     path('config-files/', views.config_files, name='config_files'),
     path('config-files/add/', views.ConfigFileCreateView.as_view(), name='config_add'),
     path('config-files/<int:pk>/edit/', views.config_files, name='config_edit')

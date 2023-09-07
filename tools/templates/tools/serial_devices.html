@@ -1,0 +1,53 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n %}
+
+{% block customcss %}
+
+    <link rel="stylesheet" href="{% static 'tools/css/serial_style.css' %}">
+
+{% endblock %}
+
+{% block detail_content %}
+
+    <div id="outDiv" class="form-group">
+        <textarea id="term_window" class="form-control text-white bg-dark" rows="20" readonly></textarea>
+    </div>
+    <div id="inDiv" class="form-group row">
+        <div class="col-10">
+            <textarea id="term_input" class="form-control" rows="1"></textarea>
+        </div>
+        <div class="col-1">
+            <button id="send" class="btn btn-primary form-control" disabled>Send</button>
+        </div>
+        <div class="col-1">
+            <button id="clear" class="btn btn-primary form-control" disabled>Clear</button>
+        </div>
+    </div>
+    <div id="setDiv" class="form-group row">
+        <div class="col-1">
+            <button id="openclose_port" class="btn btn-primary form-control">Open</button>
+        </div>
+        <label for="baud_rate" class="col-1 mt-2">Baud Rate: </label>
+        <div class="col-2">
+            <select id="baud_rate" class="form-control">
+                <option value="9600">9600</option>
+                <option value="19200">19200</option>
+                <option value="38400">38400</option>
+                <option value="57600">57600</option>
+                <option value="115200">115200</option>
+            </select>
+        </div>
+        <div class="col-1">
+            <button id="change" class="btn btn-primary" disabled>Change</button>
+        </div>
+        <span id="port_info" class="mt-2">Disconnected</span>
+    </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script src="{% static 'tools/js/webserial/serial.js' %}"></script>
+
+{% endblock %}

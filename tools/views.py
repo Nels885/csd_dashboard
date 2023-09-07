@@ -313,6 +313,12 @@ def usb_devices(request):
     return render(request, 'tools/usb_devices.html', locals())
 
 
+@login_required
+def serial_devices(request):
+    title = "Serial Devices"
+    return render(request, 'tools/serial_devices.html', locals())
+
+
 @permission_required('tools.change_configfile')
 def config_files(request, pk=None):
     title = _('Tools')
