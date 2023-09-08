@@ -4,6 +4,12 @@ let holdPort = null; // use this to park a SerialPort object when we change sett
 let port; // current SerialPort object
 let reader; // current port reader object so we can call .cancel() on it to interrupt port reading
 let termWindow = document.getElementById("term_window");
+let termInput = document.getElementById("term_input");
+let openclosePort= document.getElementById("openclose_port");
+let changeBtn = document.getElementById("change");
+let clearBtn = document.getElementById("clear");
+let sendBtn = document.getElementById("send");
+
 
 // Do these things when the window is done loading
 window.onload = function () {
@@ -11,15 +17,11 @@ window.onload = function () {
   if ("serial" in navigator) {
     // The Web Serial API is supported.
     // Connect event listeners to DOM elements
-    document
-      .getElementById("openclose_port")
-      .addEventListener("click", openClose);
-    document.getElementById("change").addEventListener("click", changeSettings);
-    document.getElementById("clear").addEventListener("click", clearTerminal);
-    document.getElementById("send").addEventListener("click", sendString);
-    document
-      .getElementById("term_input")
-      .addEventListener("keydown", detectEnter);
+    openclosePort.addEventListener("click", openClose);
+    changeBtn.addEventListener("click", changeSettings);
+    clearBtn.addEventListener("click", clearTerminal);
+    sendBtn.addEventListener("click", sendString);
+    termInput.addEventListener("keydown", detectEnter);
 
     // Clear the term_window textarea
     clearTerminal();
@@ -32,7 +34,7 @@ window.onload = function () {
     let preFill = params.prefill; // "some_value"
     if (preFill != null) {
       // If there's a prefill string then pop it into the term_input textarea
-      document.getElementById("term_input").value = preFill;
+      termInput.value = preFill;
     }
   } else {
     // The Web Serial API is not supported.
@@ -78,11 +80,11 @@ async function openClose() {
         // If we've reached this point then we're connected to a serial port
         // Set a bunch of variables and enable the appropriate DOM elements
         portOpen = true;
-        document.getElementById("openclose_port").innerText = "Close";
-        document.getElementById("term_input").disabled = false;
-        document.getElementById("send").disabled = false;
-        document.getElementById("clear").disabled = false;
-        document.getElementById("change").disabled = false;
+        openclosePort.innerText = "Close";
+        termInput.disabled = false;
+        sendBtn.disabled = false;
+        clearBtn.disabled = false;
+        changeBtn.disabled = false;
 
         // NOT SUPPORTED BY ALL ENVIRONMENTS
         // Get port info and display it to the user in the port_info span
@@ -125,10 +127,10 @@ async function openClose() {
 
         // Set a bunch of variables and disable the appropriate DOM elements
         portOpen = false;
-        document.getElementById("openclose_port").innerText = "Open";
-        document.getElementById("term_input").disabled = true;
-        document.getElementById("send").disabled = true;
-        document.getElementById("change").disabled = true;
+        openclosePort.innerText = "Open";
+        termInput.disabled = true;
+        sendBtn.disabled = true;
+        changeBtn.disabled = true;
         document.getElementById("port_info").innerText = "Disconnected";
 
         console.log("port closed");
@@ -155,8 +157,8 @@ async function changeSettings() {
 // Send a string over the serial port.
 // This is easier than listening because we know when we're done sending
 async function sendString() {
-  let outString = document.getElementById("term_input").value; // get the string to send from the term_input textarea
-  document.getElementById("term_input").value = ""; // clear the term_input textarea for the next user input
+  let outString = termInput.value; // get the string to send from the term_input textarea
+  termInput.value = ""; // clear the term_input textarea for the next user input
 
   // Get a text encoder, pipe it to the SerialPort object, and get a writer
   const textEncoder = new TextEncoderStream();
@@ -185,7 +187,7 @@ function detectEnter(e) {
   let key = e.keyCode;
 
   // If the user has pressed enter
-  if (key == 13) {
+  if (key === 13) {
     e.preventDefault();
     sendString();
   }
