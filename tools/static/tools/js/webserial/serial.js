@@ -168,7 +168,7 @@ async function sendString() {
   // write the outString to the writer
   await writer.write(outString);
   // add the outgoing string to the term_window textarea on its own new line denoted by a ">"
-  termWindow.value += "\n>" + outString + "\n";
+  termWindow.value += "\n>" + outString + "\r\n";
   scrollLogToBottom();
 
   // close the writer since we're done sending for now
