@@ -166,9 +166,9 @@ async function sendString() {
   const writer = textEncoder.writable.getWriter();
 
   // write the outString to the writer
-  await writer.write(outString);
+  await writer.write(outString + "\r\n");
   // add the outgoing string to the term_window textarea on its own new line denoted by a ">"
-  termWindow.value += "\n>" + outString + "\r\n";
+  termWindow.value += "\n>" + outString + "\n";
   scrollLogToBottom();
 
   // close the writer since we're done sending for now
