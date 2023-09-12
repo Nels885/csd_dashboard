@@ -34,6 +34,12 @@ def nac_tools(request):
     return render(request, 'psa/nac_tools.html', context)
 
 
+def can_tools(request):
+    btn_list = [{'label': 'media', 'value': 'test'} for _ in range(10)]
+    context.update(locals())
+    return render(request, 'psa/can_tools.html', context)
+
+
 def nac_license(request):
     form = NacLicenseForm(request.POST or None)
     if request.POST and form.is_valid():

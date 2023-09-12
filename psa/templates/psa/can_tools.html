@@ -1,0 +1,43 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n widget_tweaks %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'psa/tab_select.html' with select='can-tools' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block detail_content %}
+    <div class="row">
+        <button id="openclose_port" type="button" class="btn btn-secondary ml-2 col-lg-1">Connect</button>
+    </div>
+    <hr>
+    <div class="row">
+        <section class="col-lg-7">
+            <h3>FMUX:</h3>
+            <div class="row">
+                {% for obj in btn_list %}
+                    <a class="btn btn-primary btn-lg col-lg-2 m-2 text-uppercase nowrap" href="{{ obj.value }}">{{ obj.label }}</a>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="col-lg-3 text-nowrap">
+            <h3>Commande Volant:</h3>
+        </section>
+    </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script src="{% static 'psa/js/webserial/serial-can.js' %}"></script>
+
+{% endblock %}
