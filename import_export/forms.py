@@ -12,7 +12,7 @@ FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
-        ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('ivi', 'IVI'), ('bsrf', 'BSRF'),
+        ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('ivi', 'IVI'), ('bsrf', 'BSRF'), ('fmux', 'FMUX'),
         ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('artiv', 'ARTIV'),
         ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('vmf', 'VMF'), ('dmtx', 'DMTX'),

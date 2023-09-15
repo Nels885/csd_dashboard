@@ -112,6 +112,9 @@ INTERIOR_DICT = {
         ('KL9_BSRF_NUMERO.IMEI', 'electronique_kl9'), ('ML9_BSRF_NUMERO.IMSI', 'electronique_ml9'),
         ('RL9_BSRF_NUMERO.ICCID', 'electronique_rl9'), ('YL9_BSRF_VEHICLE.APP', 'electronique_yl9')
     ]},
+    'fmux': {'label': 'FMUX', 'filter': {'electronique_19z__exact': ''}, 'data': [
+        ('19Z_FMUX_HARD', 'electronique_19z')
+    ]},
     'emf': {'label': 'DISPLAY', 'fitler': {'electronique_16l__exact': ''}, 'data': [
         ('Modèle Ecran Multi', 'prods__emf__name'), ('14L_EMF_HARD', 'electronique_14l'),
         ('44L_EMF_FOURN.NO.SERIE', 'electronique_44l'), ('54L_EMF_FOUN.DATE.FAB', 'electronique_54l'),

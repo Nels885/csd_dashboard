@@ -120,7 +120,12 @@
             <td>{{ object.electronique_xm2 }}</td>
         </tr>
     {% endif %}
-
+    {% if object.electronique_19z %}
+        <tr>
+            <td class="text-dark td-ihm">Ref. FMUX</td>
+            <td>{{ object.electronique_19z }}</td>
+        </tr>
+    {% endif %}
     </tbody>
 </table>
 
