@@ -13,7 +13,7 @@ from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm
-from .models import Corvet, Multimedia
+from .models import Corvet, Multimedia, CanRemote
 from .utils import COLLAPSE_LIST
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
@@ -36,6 +36,8 @@ def nac_tools(request):
 
 def can_tools(request):
     btn_list = [{'label': 'media', 'value': 'test'} for _ in range(10)]
+    fmux_list = CanRemote.objects.filter(type='FMUX')
+    vmf_list = CanRemote.objects.filter(type='VMF')
     context.update(locals())
     return render(request, 'psa/can_tools.html', context)
 

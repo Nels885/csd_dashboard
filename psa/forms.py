@@ -5,7 +5,7 @@ from bootstrap_modal_forms.forms import BSModalModelForm
 from utils.scraping import xml_parser
 from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
-from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia
+from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, CorvetChoices
 
 
 class NacLicenseForm(forms.Form):
@@ -132,3 +132,51 @@ class MultimediaAdminForm(forms.ModelForm):
         _supplier_list = list(suppliers.values_list('name', flat=True).distinct())
         super().__init__(*args, **kwargs)
         self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')
+
+
+class CanRemoteAdminForm(forms.ModelForm):
+    LABELS = ['CLIM', 'DRIVE', 'MEDIA', 'MENU', 'NAV', 'SETUP', 'SOURCE', 'TEL', 'WEB', 'VOL+', 'VOL-']
+    CMD_CHOICES = [('FMUX', 'FMUX'), ('VMF', 'Cmd Volant')]
+    PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
+
+    type = forms.ChoiceField(choices=CMD_CHOICES)
+    product = forms.ChoiceField(choices=PROD_CHOICES, required=False)
+
+    class Meta:
+        model = CanRemote
+        exclude = ['dlc', 'corvets']
+
+    def __init__(self, *args, **kwargs):
+        brands = CorvetChoices.objects.filter(column='DON_MAR_COMM')
+        vehicles = CorvetChoices.objects.filter(column='DON_LIN_PROD')
+        _brand_list = list(brands.values_list('value', flat=True).distinct())
+        _vehicle_list = list(vehicles.values_list('value', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['label'].widget = ListTextWidget(data_list=self.LABELS, name='label-list')
+        self.fields['brand'].widget = ListTextWidget(data_list=_brand_list, name='brand-list')
+        self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle-list')
+
+    def clean_can_id(self):
+        data = self.cleaned_data['can_id'].replace("0x", "")
+        if not data.isdigit():
+            try:
+                int(data, 16)
+            except ValueError:
+                self.add_error('can_id', "uniquement des nombres")
+        data = f"0x{data}"
+        return data
+
+    def clean_data(self):
+        data = []
+        data_list = self.cleaned_data['data'].split(',')
+        for value in data_list:
+            value = value.replace("0x", "")
+            if not value.isdigit():
+                try:
+                    int(value, 16)
+                except ValueError:
+                    self.add_error('data', "Erreur de format")
+                    data = []
+                    break
+            data.append(f"0x{value}")
+        return ",".join(data)

@@ -23,14 +23,19 @@
         <section class="col-lg-7">
             <h3>FMUX:</h3>
             <div class="row">
-                {% for obj in btn_list %}
+                {% for obj in fmux_list %}
                     <a class="btn btn-primary btn-lg col-lg-2 m-2 text-uppercase nowrap" href="{{ obj.value }}">{{ obj.label }}</a>
                 {% endfor %}
             </div>
         </section>
 
-        <section class="col-lg-3 text-nowrap">
+        <section class="col-lg-5 text-nowrap">
             <h3>Commande Volant:</h3>
+            <div class="row">
+                {% for obj in vmf_list %}
+                    <a class="btn btn-primary btn-lg col-lg-4 m-2 text-uppercase nowrap" href="{{ obj.value }}">{{ obj.label }}</a>
+                {% endfor %}
+            </div>
         </section>
     </div>
 

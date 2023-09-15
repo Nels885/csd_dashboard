@@ -419,7 +419,7 @@ class Multimedia(models.Model):
         ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
         ('IVI', 'In-Vehicle Infotainment')
     ]
-    LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
+    LVDS_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3'), (4, '4')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
     ANT_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
 
@@ -583,3 +583,28 @@ class DefaultCode(models.Model):
 
     def __str__(self):
         return f"{self.code} {self.type} {self.ecu_type}"
+
+
+class CanRemote(models.Model):
+    label = models.CharField('label', max_length=20)
+    location = models.IntegerField('position')
+    type = models.CharField('Type commande', max_length=10)
+    vehicle = models.CharField('véhicule', max_length=50, blank=True)
+    brand = models.CharField('fabriquant', max_length=50, blank=True)
+    product = models.CharField('produit', max_length=50, blank=True)
+    can_id = models.CharField('can_id', max_length=20)
+    dlc = models.IntegerField('DLC', default=0)
+    data = models.CharField('data', max_length=500)
+    corvets = models.ManyToManyField('psa.Corvet', blank=True)
+
+    def save(self, *args, **kwargs):
+        data_list = self.data.split(',')
+        self.dlc = len(data_list)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Télécommande CAN"
+        ordering = ['location']
+
+    def __str__(self):
+        return f"{self.label} {self.vehicle} {self.brand}"

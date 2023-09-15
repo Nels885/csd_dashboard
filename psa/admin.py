@@ -5,9 +5,9 @@ from django.contrib.admin import widgets
 
 from .models import (
     Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
-    DefaultCode, ProductChoice
+    DefaultCode, ProductChoice, CanRemote
 )
-from .forms import EcuAdminForm, MultimediaAdminForm
+from .forms import EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm
 
 
 class CorvetListFilter(admin.SimpleListFilter):
@@ -172,6 +172,14 @@ class ProductChoiceAdmin(admin.ModelAdmin):
     search_fields = ('name', 'short_name', 'cal_attribute')
 
 
+class CanRemoteAdmin(admin.ModelAdmin):
+    form = CanRemoteAdminForm
+    list_display = ('label', 'location', 'type', 'product', 'vehicle', 'brand', 'can_id', 'dlc', 'data')
+    list_filter = ('label', 'type', 'product', 'vehicle', 'brand')
+    ordering = ('label', 'type', 'product', 'vehicle', 'brand', 'can_id')
+    search_fields = ('label', 'product', 'vehicle', 'brand', 'can_id')
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(CorvetProduct, CorvetProductAdmin)
 admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
@@ -183,3 +191,4 @@ admin.site.register(Ecu, EcuAdmin)
 admin.site.register(SupplierCode)
 admin.site.register(DefaultCode, DefaultCodeAdmin)
 admin.site.register(ProductChoice, ProductChoiceAdmin)
+admin.site.register(CanRemote, CanRemoteAdmin)
