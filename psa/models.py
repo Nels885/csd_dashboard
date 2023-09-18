@@ -597,6 +597,9 @@ class CanRemote(models.Model):
     data = models.CharField('data', max_length=500)
     corvets = models.ManyToManyField('psa.Corvet', blank=True)
 
+    def getcan(self):
+        return f"WS+GETCAN={self.can_id},{self.data}"
+
     def save(self, *args, **kwargs):
         data_list = self.data.split(',')
         self.dlc = len(data_list)

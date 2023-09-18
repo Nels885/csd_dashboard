@@ -75,7 +75,7 @@ async function openClose() {
               // |reader| has been canceled.
               break;
             }
-            console.log(value);
+            // console.log(value);
           }
         } catch (error) {
           // TODO: Handle non-fatal read error.
@@ -107,5 +107,21 @@ async function openClose() {
       })();
     });
   }
+}
+
+async function sendString(value) {
+  console.log(value);
+
+  // Get a text encoder, pipe it to the SerialPort object, and get a writer
+  const textEncoder = new TextEncoderStream();
+  const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+  const writer = textEncoder.writable.getWriter();
+
+  // write the outString to the writer
+  await writer.write(value + "\r\n");
+
+  // close the writer since we're done sending for now
+  await writer.close();
+  await writableStreamClosed;
 }
 
