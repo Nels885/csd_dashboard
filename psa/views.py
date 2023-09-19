@@ -36,8 +36,10 @@ def nac_tools(request):
 
 def can_tools(request):
     btn_list = [{'label': 'media', 'value': 'test'} for _ in range(10)]
-    fmux_list = CanRemote.objects.filter(type='FMUX')
+    fmux_list = CanRemote.objects.filter(type='FMUX', product='RT6')
     vmf_list = CanRemote.objects.filter(type='VMF')
+    dsgn_list = CanRemote.objects.filter(type="DSGN")
+    test_list = CanRemote.objects.filter(type='TEST')
     context.update(locals())
     return render(request, 'psa/can_tools.html', context)
 

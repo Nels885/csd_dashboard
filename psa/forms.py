@@ -139,7 +139,7 @@ class MultimediaAdminForm(forms.ModelForm):
 class CanRemoteAdminForm(forms.ModelForm):
     LABELS = ['CLIM', 'DRIVE', 'MEDIA', 'MENU', 'NAV', 'SETUP', 'SOURCE', 'TEL', 'WEB', 'VOL+', 'VOL-']
     CAN_IDS = ['0x122', '0x21F']
-    CMD_CHOICES = [('FMUX', 'FMUX'), ('VMF', 'Cmd Volant')]
+    CMD_CHOICES = [('FMUX', 'FMUX'), ('VMF', 'Cmd Volant'), ('DSGN', 'Cmd Joystick'), ('TEST', 'TEST')]
     PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
 
     type = forms.ChoiceField(choices=CMD_CHOICES)

@@ -5,7 +5,10 @@ let port; // current SerialPort object
 let reader; // current port reader object so we can call .cancel() on it to interrupt port reading
 let openclosePort= document.getElementById("openclose_port");
 const usbVendorId = 0x0D28;
-
+let idCan = document.getElementById("idCan");
+let dlcCan = document.getElementById("dlcCan");
+let dataCan = document.getElementById("dataCan");
+let sendBtn = document.getElementById("sendBtn");
 
 // Do these things when the window is done loading
 window.onload = function () {
@@ -14,6 +17,7 @@ window.onload = function () {
     // The Web Serial API is supported.
     // Connect event listeners to DOM elements
     openclosePort.addEventListener("click", openClose);
+    sendBtn.addEventListener("click", sendDataCan);
 
   } else {
     // The Web Serial API is not supported.
@@ -59,6 +63,10 @@ async function openClose() {
         portOpen = true;
         openclosePort.innerText = "Disconnect";
         openclosePort.classList.replace("btn-secondary", "btn-success");
+        idCan.disabled = false;
+        dlcCan.disabled = false;
+        dataCan.disabled = false;
+        sendBtn.disabled = false;
 
         // NOT SUPPORTED BY ALL ENVIRONMENTS
         // Get port info and display it to the user in the port_info span
@@ -99,6 +107,10 @@ async function openClose() {
         portOpen = false;
         openclosePort.innerText = "Connect";
         openclosePort.classList.replace("btn-success", "btn-secondary");
+        idCan.disabled = true;
+        dlcCan.disabled = true;
+        dataCan.disabled = true;
+        sendBtn.disabled = true;
 
         console.log("port closed");
 
@@ -125,3 +137,31 @@ async function sendString(value) {
   await writableStreamClosed;
 }
 
+
+async function sendDataCan() {
+
+  if (dataCan.value.match(/^B[0-7].\d{2}$/))
+  {
+    let data = dataCan.value.split('.');
+    let data_list = [];
+    for (let i = 0; i < dlcCan.value; i++) {
+      if (i === parseInt(data[0][1])) {
+        data_list.push("0x" + data[1]);
+      } else data_list.push("0x00");
+    }
+    let outString = "WS+GETCAN=" + idCan.value + "," + data_list.join(',');
+    console.log(outString);
+
+    // Get a text encoder, pipe it to the SerialPort object, and get a writer
+    const textEncoder = new TextEncoderStream();
+    const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+    const writer = textEncoder.writable.getWriter();
+
+    // write the outString to the writer
+    await writer.write(outString + "\r\n");
+
+    // close the writer since we're done sending for now
+    await writer.close();
+    await writableStreamClosed;
+  } else alert("Mauvais format de donnée !");
+}
