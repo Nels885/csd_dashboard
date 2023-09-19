@@ -1,3 +1,5 @@
+import re
+
 from django.db import models, utils
 from django.db.models import Q
 
@@ -598,11 +600,18 @@ class CanRemote(models.Model):
     corvets = models.ManyToManyField('psa.Corvet', blank=True)
 
     def getcan(self):
-        return f"WS+GETCAN={self.can_id},{self.data}"
+        if ',' in self.data:
+            return f"WS+GETCAN={self.can_id},{self.data}"
+        if re.match(r'^B[0-7].\d{2}$', str(self.data)):
+            pos, value = self.data[1:].split('.')
+            data = ",".join(["0x00" if _ != int(pos) else f"0x{value}" for _ in range(self.dlc)])
+            return f"WS+GETCAN={self.can_id},{data}"
+        return ""
 
     def save(self, *args, **kwargs):
         data_list = self.data.split(',')
-        self.dlc = len(data_list)
+        if self.dlc == 0:
+            self.dlc = len(data_list)
         super().save(*args, **kwargs)
 
     class Meta:

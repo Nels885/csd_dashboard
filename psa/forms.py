@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.utils.translation import gettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm
@@ -136,6 +138,7 @@ class MultimediaAdminForm(forms.ModelForm):
 
 class CanRemoteAdminForm(forms.ModelForm):
     LABELS = ['CLIM', 'DRIVE', 'MEDIA', 'MENU', 'NAV', 'SETUP', 'SOURCE', 'TEL', 'WEB', 'VOL+', 'VOL-']
+    CAN_IDS = ['0x122', '0x21F']
     CMD_CHOICES = [('FMUX', 'FMUX'), ('VMF', 'Cmd Volant')]
     PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
 
@@ -144,7 +147,7 @@ class CanRemoteAdminForm(forms.ModelForm):
 
     class Meta:
         model = CanRemote
-        exclude = ['dlc', 'corvets']
+        exclude = ['corvets']
 
     def __init__(self, *args, **kwargs):
         brands = CorvetChoices.objects.filter(column='DON_MAR_COMM')
@@ -153,6 +156,7 @@ class CanRemoteAdminForm(forms.ModelForm):
         _vehicle_list = list(vehicles.values_list('value', flat=True).distinct())
         super().__init__(*args, **kwargs)
         self.fields['label'].widget = ListTextWidget(data_list=self.LABELS, name='label-list')
+        self.fields['can_id'].widget = ListTextWidget(data_list=self.CAN_IDS, name='canid-list')
         self.fields['brand'].widget = ListTextWidget(data_list=_brand_list, name='brand-list')
         self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle-list')
 
@@ -167,16 +171,18 @@ class CanRemoteAdminForm(forms.ModelForm):
         return data
 
     def clean_data(self):
-        data = []
-        data_list = self.cleaned_data['data'].split(',')
-        for value in data_list:
+        data = self.cleaned_data['data']
+        if re.match(r'^B[0-7].\d{2}$', str(data)):
+            return data
+        data_list = []
+        for value in data.split(','):
             value = value.replace("0x", "")
             if not value.isdigit():
                 try:
                     int(value, 16)
                 except ValueError:
                     self.add_error('data', "Erreur de format")
-                    data = []
+                    data_list = []
                     break
-            data.append(f"0x{value}")
-        return ",".join(data)
+            data_list.append(f"0x{value}")
+        return ",".join(data_list)

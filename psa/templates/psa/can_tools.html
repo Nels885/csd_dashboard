@@ -19,21 +19,29 @@
         <button id="openclose_port" type="button" class="btn btn-secondary ml-2 col-lg-1">Connect</button>
     </div>
     <hr>
-    <div class="row">
-        <section class="col-lg-7">
-            <h3>FMUX:</h3>
+    <div class="row" style="min-height: 60vh;">
+        <section class="col-lg-7 text-nowrap">
+            <h3 class="font-weight-bold">FMUX:</h3>
             <div class="row">
                 {% for obj in fmux_list %}
                     <a class="btn btn-primary btn-lg col-lg-2 m-2 text-uppercase nowrap" href="#" onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="w-100 d-flex align-items-center text-center" style="min-height: 400px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
                 {% endfor %}
             </div>
         </section>
 
         <section class="col-lg-5 text-nowrap">
-            <h3>Commande Volant:</h3>
+            <h3 class="font-weight-bold">Commande Volant:</h3>
             <div class="row">
                 {% for obj in vmf_list %}
                     <a class="btn btn-primary btn-lg col-lg-4 m-2 text-uppercase nowrap" href="#" onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="d-flex w-100 mh-100 align-items-center text-center">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
                 {% endfor %}
             </div>
         </section>
