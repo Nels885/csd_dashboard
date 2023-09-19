@@ -12,7 +12,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
-from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm
+from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, SelectCanRemoteForm
 from .models import Corvet, Multimedia, CanRemote
 from .utils import COLLAPSE_LIST
 from dashboard.models import WebLink
@@ -35,11 +35,16 @@ def nac_tools(request):
 
 
 def can_tools(request):
-    btn_list = [{'label': 'media', 'value': 'test'} for _ in range(10)]
-    fmux_list = CanRemote.objects.filter(type='FMUX', product='RT6')
+    product = vehicle = ""
+    form = SelectCanRemoteForm(request.POST or None)
+    if request.POST and form.is_valid():
+        product = form.cleaned_data['product']
+        vehicle = form.cleaned_data['vehicle']
+        messages.success(request, f'Télécommande {product} pour {vehicle} sélectionnée avec succès !')
+    queryset = CanRemote.objects.filter(product=product, vehicle__icontains=vehicle)
+    fmux_list = queryset.filter(type="FMUX")
+    dsgn_list = queryset.filter(type="DSGN")
     vmf_list = CanRemote.objects.filter(type='VMF')
-    dsgn_list = CanRemote.objects.filter(type="DSGN")
-    test_list = CanRemote.objects.filter(type='TEST')
     context.update(locals())
     return render(request, 'psa/can_tools.html', context)
 

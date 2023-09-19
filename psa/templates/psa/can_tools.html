@@ -16,6 +16,34 @@
 
 {% block detail_content %}
     <div class="row">
+        <form class="form-inline" method="post" action="">
+
+            {% csrf_token %}
+
+            <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+
+            {% for field in form %}
+                <div class="form-group mr-sm-3">
+                    <label class="mx-sm-3" for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                     {% render_field field class="form-control" %}
+                    <div class="{% if field.errors %} invalid{% endif %}">
+                        {% for error in field.errors %}
+                            <p class="help-block">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-success btn-icon-split mr-4">
+                <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+                <span class="text">{% trans "Select" %}</span>
+            </button>
+
+        </form>
         <button id="openclose_port" type="button" class="btn btn-secondary ml-2 col-lg-1">Connect</button>
     </div>
     <hr>

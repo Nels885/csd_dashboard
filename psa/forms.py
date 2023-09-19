@@ -9,6 +9,8 @@ from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
 from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, CorvetChoices
 
+PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
+
 
 class NacLicenseForm(forms.Form):
     software = forms.ModelChoiceField(
@@ -140,7 +142,6 @@ class CanRemoteAdminForm(forms.ModelForm):
     LABELS = ['CLIM', 'DRIVE', 'MEDIA', 'MENU', 'NAV', 'SETUP', 'SOURCE', 'TEL', 'WEB', 'VOL+', 'VOL-']
     CAN_IDS = ['0x122', '0x21F']
     CMD_CHOICES = [('FMUX', 'FMUX'), ('VMF', 'Cmd Volant'), ('DSGN', 'Cmd Joystick'), ('TEST', 'TEST')]
-    PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
 
     type = forms.ChoiceField(choices=CMD_CHOICES)
     product = forms.ChoiceField(choices=PROD_CHOICES, required=False)
@@ -186,3 +187,14 @@ class CanRemoteAdminForm(forms.ModelForm):
                     break
             data_list.append(f"0x{value}")
         return ",".join(data_list)
+
+
+class SelectCanRemoteForm(forms.Form):
+    product = forms.ChoiceField(label="Produit", choices=PROD_CHOICES, required=False)
+    vehicle = forms.CharField(label='Véhicule', max_length=200, required=True)
+
+    def __init__(self, *args, **kwargs):
+        remotes = CanRemote.objects.exclude(vehicle__exact='').order_by('vehicle')
+        _vehicle_list = list(remotes.values_list('vehicle', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle-list')
