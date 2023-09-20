@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import FileResponse
+from django.db.models import Q
 from django.views.generic import TemplateView
 from django.utils.translation import gettext as _
 from django.forms.models import model_to_dict
@@ -41,7 +42,7 @@ def can_tools(request):
         product = form.cleaned_data['product']
         vehicle = form.cleaned_data['vehicle']
         messages.success(request, f'Télécommande {product} pour {vehicle} sélectionnée avec succès !')
-    queryset = CanRemote.objects.filter(product=product, vehicle__icontains=vehicle)
+    queryset = CanRemote.objects.filter(product=product).filter(Q(vehicle__icontains=vehicle) | Q(vehicle=''))
     fmux_list = queryset.filter(type="FMUX")
     dsgn_list = queryset.filter(type="DSGN")
     vmf_list = CanRemote.objects.filter(type='VMF')

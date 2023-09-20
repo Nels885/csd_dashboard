@@ -176,7 +176,7 @@ class CanRemoteAdmin(admin.ModelAdmin):
     form = CanRemoteAdminForm
     list_display = ('label', 'location', 'type', 'product', 'vehicle', 'brand', 'can_id', 'dlc', 'data')
     list_filter = ('type', 'product', 'vehicle', 'brand')
-    ordering = ('label', 'type', 'product', 'vehicle', 'brand', 'can_id')
+    ordering = ('location',)
     search_fields = ('label', 'product', 'vehicle', 'brand', 'can_id')
 
 
