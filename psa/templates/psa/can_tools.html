@@ -85,6 +85,13 @@
                     <button id="sendBtn" class="btn btn-primary" disabled>Send</button>
                 </div>
             </div>
+            <div class="row mt-4 ml-1">
+                Les données peuvent être de B0.00 à B5.80, DLC correspond à la longeur de la trame.
+                <ul>
+                    <li>Bx => position en octet dans la trame</li>
+                    <li>xx => valeur de l'octet en Hexadécimal</li>
+                </ul>
+            </div>
         </section>
 
         <section class="col-lg-5 text-nowrap">
@@ -95,8 +102,7 @@
                        onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
                 {% empty %}
                     <div class="d-flex w-100 mh-100 align-items-center text-center">
-                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes
-                            disponible</h4>
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
                     </div>
                 {% endfor %}
             </div>
@@ -107,8 +113,7 @@
                        onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
                 {% empty %}
                     <div class="w-100 d-flex align-items-center text-center" style="min-height: 200px;">
-                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes
-                            disponible</h4>
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
                     </div>
                 {% endfor %}
             </div>

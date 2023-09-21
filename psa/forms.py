@@ -9,13 +9,7 @@ from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
 from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, CorvetChoices
 
-brands = CorvetChoices.objects.filter(column='DON_MAR_COMM')
-vehicles = CorvetChoices.objects.filter(column='DON_LIN_PROD')
-remotes = CanRemote.objects.exclude(vehicle__exact='').order_by('vehicle')
 PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
-VEHICLE_LIST = list(remotes.values_list('vehicle', flat=True).distinct())
-BRAND_LIST = list(brands.values_list('value', flat=True).distinct())
-VEHICLE_ALL_LIST = VEHICLE_LIST + list(vehicles.values_list('value', flat=True).distinct())
 
 
 class NacLicenseForm(forms.Form):
@@ -167,11 +161,17 @@ class CanRemoteAdminForm(forms.ModelForm):
         exclude = ['corvets']
 
     def __init__(self, *args, **kwargs):
+        brands = CorvetChoices.objects.filter(column='DON_MAR_COMM')
+        _brand_list = list(brands.values_list('value', flat=True).distinct())
+        vehicles = CorvetChoices.objects.filter(column='DON_LIN_PROD')
+        remotes = CanRemote.objects.exclude(vehicle__exact='').order_by('vehicle')
+        _vehicle_list = list(remotes.values_list('vehicle', flat=True).distinct())
+        _vehicle_all_list = _vehicle_list + list(vehicles.values_list('value', flat=True).distinct())
         super().__init__(*args, **kwargs)
         self.fields['label'].widget = ListTextWidget(data_list=self.LABELS, name='label-list')
         self.fields['can_id'].widget = ListTextWidget(data_list=self.CAN_IDS, name='canid-list')
-        self.fields['brand'].widget = ListTextWidget(data_list=BRAND_LIST, name='brand-list')
-        self.fields['vehicle'].widget = ListTextWidget(data_list=VEHICLE_ALL_LIST, name='vehicle-list')
+        self.fields['brand'].widget = ListTextWidget(data_list=_brand_list, name='brand-list')
+        self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_all_list, name='vehicle-list')
 
     def clean_can_id(self):
         data = self.cleaned_data['can_id'].replace("0x", "")
@@ -206,5 +206,7 @@ class SelectCanRemoteForm(forms.Form):
     vehicle = forms.CharField(label='Véhicule', max_length=200, required=True)
 
     def __init__(self, *args, **kwargs):
+        remotes = CanRemote.objects.exclude(vehicle__exact='').order_by('vehicle')
+        _vehicle_list = list(remotes.values_list('vehicle', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        self.fields['vehicle'].widget = ListTextWidget(data_list=VEHICLE_LIST, name='vehicle-list')
+        self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle-list')
