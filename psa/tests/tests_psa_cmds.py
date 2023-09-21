@@ -45,6 +45,13 @@ class PsaCommandTestCase(UnitTest):
             self.out.getvalue()
         )
 
+    def test_clear_psa_canremote_table(self):
+        call_command('clearpsa', '--canremote', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table CanRemote terminée!",
+            self.out.getvalue()
+        )
+
     def test_cmd_loadsqualaetp(self):
         # Test for files not found
         call_command('loadcorvet', '-f' 'test.xls', stdout=self.out)
