@@ -8,7 +8,7 @@ from psa.models import Corvet, CorvetAttribute
 from utils.conf import XLS_SQUALAETP_FILE, XLS_ATTRIBUTS_FILE
 from utils.django.models import defaults_dict
 
-from ._csv_squalaetp_corvet import CsvCorvet
+from ._csv_file import CsvCorvet
 from ._excel_psa import ExcelCorvet, ExcelCorvetAttribute
 
 logger = logging.getLogger('command')
