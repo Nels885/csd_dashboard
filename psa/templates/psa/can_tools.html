@@ -61,37 +61,39 @@
                     </div>
                 {% endfor %}
             </div>
-            <h3 class="font-weight-bold mt-4">Commande TEST :</h3>
-            <div class="form-group row">
-                <div class="col-2">
-                    <label for="idCan">Id CAN</label>
-                    <select type="text" class="form-control" id="idCan" disabled>
-                        <option selected>0x122</option>
-                        <option>0x21F</option>
-                    </select>
+            {% if perms.psa.add_canremote %}
+                <h3 class="font-weight-bold mt-4">Commande TEST :</h3>
+                <div class="form-group row">
+                    <div class="col-2">
+                        <label for="idCan">Id CAN</label>
+                        <select type="text" class="form-control" id="idCan" disabled>
+                            <option selected>0x122</option>
+                            <option>0x21F</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="dlcCan">DLC</label>
+                        <select type="number" class="form-control" id="dlcCan" disabled>
+                            <option>3</option>
+                            <option selected>8</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="dataCan">Data</label>
+                        <input type="text" class="form-control" id="dataCan" placeholder="Data CAN, ex: B0.10" disabled>
+                    </div>
+                    <div class="col-1 d-flex align-items-end">
+                        <button id="sendBtn" class="btn btn-primary" disabled>Send</button>
+                    </div>
                 </div>
-                <div class="col-2">
-                    <label for="dlcCan">DLC</label>
-                    <select type="number" class="form-control" id="dlcCan" disabled>
-                        <option>3</option>
-                        <option selected>8</option>
-                    </select>
+                <div class="row mt-4 ml-1">
+                    Les données peuvent être de B0.00 à B5.80, DLC correspond à la longeur de la trame.
+                    <ul>
+                        <li>Bx => position en octet dans la trame</li>
+                        <li>xx => valeur de l'octet en Hexadécimal</li>
+                    </ul>
                 </div>
-                <div class="col-4">
-                    <label for="dataCan">Data</label>
-                    <input type="text" class="form-control" id="dataCan" placeholder="Data CAN, ex: B0.10" disabled>
-                </div>
-                <div class="col-1 d-flex align-items-end">
-                    <button id="sendBtn" class="btn btn-primary" disabled>Send</button>
-                </div>
-            </div>
-            <div class="row mt-4 ml-1">
-                Les données peuvent être de B0.00 à B5.80, DLC correspond à la longeur de la trame.
-                <ul>
-                    <li>Bx => position en octet dans la trame</li>
-                    <li>xx => valeur de l'octet en Hexadécimal</li>
-                </ul>
-            </div>
+            {% endif %}
         </section>
 
         <section class="col-lg-5 text-nowrap">
