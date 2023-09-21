@@ -30,11 +30,6 @@
                 <div class="form-group mr-sm-3">
                     <label class="mx-sm-3" for="{{ field.id_for_label }}">{{ field.label }} :</label>
                      {% render_field field class="form-control" %}
-                    <div class="{% if field.errors %} invalid{% endif %}">
-                        {% for error in field.errors %}
-                            <p class="help-block">{{ error }}</p>
-                        {% endfor %}
-                    </div>
                 </div>
             {% endfor %}
 
@@ -127,5 +122,30 @@
 {% block extrascripts %}
 
     <script src="{% static 'psa/js/webserial/serial-can.js' %}"></script>
+
+    <script type="text/javascript">
+        $('#id_product').on("input propertychange", function () {
+            $("#id_vehicle").val('');
+            $("#list__vehicle").html('');
+            if ($(this).val() !== '') {
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'psa:ajax_remote' %}" + "?prod=" + $(this).val(),
+                    success: function (data) {
+                        let options = '';
+                        let vehicles = data.vehicles;
+                        for (let i = 0; i < vehicles.length; i++) {
+                            options += '<option value="' + vehicles[i] + '"></option>';
+                        }
+                        $("#list__vehicle").html(options);
+                    },
+                    error: function (error_data) {
+                        console.log("error");
+                        console.log(error_data);
+                    }
+                });
+            }
+        });
+    </script>
 
 {% endblock %}

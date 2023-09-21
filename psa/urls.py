@@ -16,6 +16,7 @@ urlpatterns = [
     path('nac/tools/update-id/license/', views.nac_update_id_license, name='nac_id_license'),
     path('nac/tools/update/', views.nac_update, name='nac_update'),
     path('can/tools/', views.can_tools, name='can_tools'),
+    path('can/tools/vehicle/async/', ajax.canremote_async, name='ajax_remote'),
     path('useful-links/', views.useful_links, name='useful_links'),
     path('corvet/', views.CorvetView.as_view(), name='corvet'),
     path('corvet/create/', views.CorvetCreateView.as_view(), name='create_corvet'),

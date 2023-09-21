@@ -209,4 +209,4 @@ class SelectCanRemoteForm(forms.Form):
         remotes = CanRemote.objects.exclude(vehicle__exact='').order_by('vehicle')
         _vehicle_list = list(remotes.values_list('vehicle', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle-list')
+        self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle')

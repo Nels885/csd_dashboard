@@ -5,7 +5,7 @@ from rest_framework import viewsets, permissions, status
 from utils.django.datatables import QueryTableByArgs
 
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST, DefaultCodeSerializer
-from .models import Corvet, DefaultCode
+from .models import Corvet, DefaultCode, CanRemote
 from .tasks import import_corvet_task
 
 from api.utils import TokenAuthSupportQueryString
@@ -59,3 +59,12 @@ class DefaultCodeViewSet(viewsets.ModelViewSet):
         if product:
             queryset = DefaultCode.objects.filter(ecu_type=product)
         return queryset
+
+
+def canremote_async(request):
+    product = request.GET.get('prod')
+    if product:
+        remotes = CanRemote.objects.exclude(vehicle='').filter(product=product).order_by('vehicle')
+        vehicles = list(remotes.values_list('vehicle').distinct())
+        return JsonResponse({"vehicles": vehicles})
+    return JsonResponse({"nothing to see": "this isn't happening"}, status=400)

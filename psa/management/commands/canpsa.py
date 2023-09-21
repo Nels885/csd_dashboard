@@ -92,4 +92,3 @@ class Command(BaseCommand):
                 )
             else:
                 self.stdout.write(f"[SPAREPART_FILE] {excel.ERROR}")
-
