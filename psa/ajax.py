@@ -64,7 +64,7 @@ class DefaultCodeViewSet(viewsets.ModelViewSet):
 def canremote_async(request):
     product = request.GET.get('prod')
     if product:
-        remotes = CanRemote.objects.exclude(vehicles__name='').filter(product=product).order_by('vehicles__name')
+        remotes = CanRemote.objects.filter(product=product).exclude(vehicles__name='').order_by('vehicles__name')
         vehicles = list(remotes.values_list('vehicles__name').distinct())
         return JsonResponse({"vehicles": vehicles})
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)

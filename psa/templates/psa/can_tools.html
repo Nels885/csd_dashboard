@@ -16,7 +16,7 @@
 
 {% block detail_content %}
     <div class="row">
-        <form class="form-inline" method="post" action="">
+        <form class="form-inline" autocomplete="off" method="post" action="">
 
             {% csrf_token %}
 
@@ -124,6 +124,7 @@
     <script src="{% static 'psa/js/webserial/serial-can.js' %}"></script>
 
     <script type="text/javascript">
+        $("#list__vehicle").html('');
         $('#id_product').on("input propertychange", function () {
             $("#id_vehicle").val('');
             $("#list__vehicle").html('');
