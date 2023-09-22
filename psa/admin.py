@@ -5,7 +5,7 @@ from django.contrib.admin import widgets
 
 from .models import (
     Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
-    DefaultCode, ProductChoice, CanRemote
+    DefaultCode, ProductChoice, CanRemote, Vehicle
 )
 from .forms import EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm
 
@@ -174,10 +174,18 @@ class ProductChoiceAdmin(admin.ModelAdmin):
 
 class CanRemoteAdmin(admin.ModelAdmin):
     form = CanRemoteAdminForm
-    list_display = ('label', 'location', 'type', 'product', 'vehicle', 'brand', 'can_id', 'dlc', 'data')
-    list_filter = ('type', 'product', 'vehicle', 'brand')
+    list_display = ('label', 'location', 'type', 'product', 'can_id', 'dlc', 'data')
+    list_filter = ('type', 'product',)
     ordering = ('location',)
-    search_fields = ('label', 'product', 'vehicle', 'brand', 'can_id')
+    search_fields = ('label', 'product', 'can_id')
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        vertical = False  # change to True if you prefer boxes to be stacked vertically
+        kwargs['widget'] = widgets.FilteredSelectMultiple(
+            db_field.verbose_name,
+            vertical,
+        )
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 admin.site.register(Corvet, CorvetAdmin)
@@ -192,3 +200,4 @@ admin.site.register(SupplierCode)
 admin.site.register(DefaultCode, DefaultCodeAdmin)
 admin.site.register(ProductChoice, ProductChoiceAdmin)
 admin.site.register(CanRemote, CanRemoteAdmin)
+admin.site.register(Vehicle)

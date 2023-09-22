@@ -587,17 +587,23 @@ class DefaultCode(models.Model):
         return f"{self.code} {self.type} {self.ecu_type}"
 
 
+class Vehicle(models.Model):
+    name = models.CharField('modèle', max_length=50, unique=True)
+    brand = models.CharField('fabriquant', max_length=50)
+
+    def __str__(self):
+        return f"{self.brand} {self.name}"
+
+
 class CanRemote(models.Model):
     label = models.CharField('label', max_length=20)
     location = models.IntegerField('position')
     type = models.CharField('Type commande', max_length=10)
-    vehicle = models.CharField('véhicule', max_length=50, blank=True)
-    brand = models.CharField('fabriquant', max_length=50, blank=True)
     product = models.CharField('produit', max_length=50, blank=True)
     can_id = models.CharField('can_id', max_length=20)
-    dlc = models.IntegerField('DLC', default=0)
+    dlc = models.IntegerField('DLC', default=8)
     data = models.CharField('data', max_length=500)
-    corvets = models.ManyToManyField('psa.Corvet', blank=True)
+    vehicles = models.ManyToManyField('psa.Vehicle', blank=True)
 
     def getcan(self):
         if ',' in self.data:
@@ -617,6 +623,9 @@ class CanRemote(models.Model):
     class Meta:
         verbose_name = "Télécommande CAN"
         ordering = ['location']
+        constraints = [
+            models.UniqueConstraint(fields=['label', 'type', 'can_id', 'data'], name="Can remote unique")
+        ]
 
     def __str__(self):
-        return f"{self.label} {self.vehicle} {self.brand}"
+        return f"{self.label} {self.type} {self.can_id} {self.data}"

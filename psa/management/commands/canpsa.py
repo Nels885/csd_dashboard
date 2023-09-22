@@ -39,7 +39,7 @@ class Command(BaseCommand):
         if options['export_remote']:
             self.stdout.write("[CANREMOTE_EXPORT] Waiting...")
 
-            filename = "canremote.csv"
+            filename = "canremote.xlsx"
             path = os.path.join(CSD_ROOT, "EXTS")
             header = [f.name for f in CanRemote._meta.local_fields if f.name != "id"]
             queryset = CanRemote.objects.all().order_by('type', 'location', 'product', 'vehicle')

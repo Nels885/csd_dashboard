@@ -42,7 +42,7 @@ def can_tools(request):
         product = form.cleaned_data['product']
         vehicle = form.cleaned_data['vehicle']
         messages.success(request, f'Télécommande {product} pour {vehicle} sélectionnée avec succès !')
-    queryset = CanRemote.objects.filter(product=product).filter(Q(vehicle__icontains=vehicle) | Q(vehicle=''))
+    queryset = CanRemote.objects.filter(Q(product=product) | Q(product='')).filter(vehicles__name__icontains=vehicle)
     fmux_list = queryset.filter(type="FMUX")
     dsgn_list = queryset.filter(type="DSGN")
     vmf_list = CanRemote.objects.filter(type='VMF')

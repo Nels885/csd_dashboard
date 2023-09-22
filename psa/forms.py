@@ -7,7 +7,7 @@ from bootstrap_modal_forms.forms import BSModalModelForm
 from utils.scraping import xml_parser
 from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
-from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, CorvetChoices
+from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote
 
 PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
 
@@ -161,17 +161,9 @@ class CanRemoteAdminForm(forms.ModelForm):
         exclude = ['corvets']
 
     def __init__(self, *args, **kwargs):
-        brands = CorvetChoices.objects.filter(column='DON_MAR_COMM')
-        _brand_list = list(brands.values_list('value', flat=True).distinct())
-        vehicles = CorvetChoices.objects.filter(column='DON_LIN_PROD')
-        remotes = CanRemote.objects.exclude(vehicle__exact='').order_by('vehicle')
-        _vehicle_list = list(remotes.values_list('vehicle', flat=True).distinct())
-        _vehicle_all_list = _vehicle_list + list(vehicles.values_list('value', flat=True).distinct())
         super().__init__(*args, **kwargs)
         self.fields['label'].widget = ListTextWidget(data_list=self.LABELS, name='label-list')
         self.fields['can_id'].widget = ListTextWidget(data_list=self.CAN_IDS, name='canid-list')
-        self.fields['brand'].widget = ListTextWidget(data_list=_brand_list, name='brand-list')
-        self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_all_list, name='vehicle-list')
 
     def clean_can_id(self):
         data = self.cleaned_data['can_id'].replace("0x", "")
@@ -206,7 +198,7 @@ class SelectCanRemoteForm(forms.Form):
     vehicle = forms.CharField(label='Véhicule', max_length=200, required=True)
 
     def __init__(self, *args, **kwargs):
-        remotes = CanRemote.objects.exclude(vehicle__exact='').order_by('vehicle')
-        _vehicle_list = list(remotes.values_list('vehicle', flat=True).distinct())
+        remotes = CanRemote.objects.exclude(vehicles__name__exact='').order_by('vehicles__name')
+        _vehicle_list = list(remotes.values_list('vehicles__name', flat=True).distinct())
         super().__init__(*args, **kwargs)
         self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle')
