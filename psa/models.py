@@ -624,7 +624,7 @@ class CanRemote(models.Model):
         verbose_name = "Télécommande CAN"
         ordering = ['location']
         constraints = [
-            models.UniqueConstraint(fields=['label', 'type', 'can_id', 'data'], name="Can remote unique")
+            models.UniqueConstraint(fields=['label', 'type', 'product', 'can_id', 'data'], name="Can remote unique")
         ]
 
     def __str__(self):
