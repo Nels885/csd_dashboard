@@ -102,7 +102,6 @@ async function openClose() {
           while (true) {
             const {value, done} = await reader.read();
             if (done) {
-              reader.releaseLock(); // release the lock on the reader so the owner port can be closed
               break;
             }
             termWindow.value += value; // write the incoming string to the term_window textarea
@@ -112,6 +111,8 @@ async function openClose() {
         } catch (error) {
           // TODO: Handle non-fatal read error.
           console.log(error);
+        } finally {
+          reader.releaseLock();
         }
 
         // If we've reached this point then we're closing the port
