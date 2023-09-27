@@ -89,6 +89,7 @@ def canremote_async(request):
             "msg": f'Télécommande {product} pour {vehicle} sélectionnée avec succès !',
             "htmlFmux": render_to_string('psa/format/fmux_rt6_remote.html', locals(), request),
             "htmlVmf": render_to_string('psa/format/vmf_remote.html', locals(), request),
-            "htmlDsgn": render_to_string('psa/format/dsgn_remote.html', locals(), request)
+            "htmlDsgn": render_to_string('psa/format/dsgn_remote.html', locals(), request),
+            "prodSelect": f"Produit {product} {vehicle}"
         })
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)

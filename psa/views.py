@@ -35,7 +35,6 @@ def nac_tools(request):
 
 
 def can_tools(request):
-    product = vehicle = ""
     form = SelectCanRemoteForm(request.POST or None)
     context.update(locals())
     return render(request, 'psa/can_tools.html', context)

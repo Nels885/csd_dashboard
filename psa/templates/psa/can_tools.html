@@ -43,14 +43,17 @@
     </div>
     <hr>
 
+    <h2 class="text-uppercase text-center"><span id="remoteTitle" class="ml-2">PRODUIT N/A</span></h2>
+
+    <hr>
     <div class="row">
         <section class="col-lg-7 text-nowrap">
             <h3 class="font-weight-bold">FMUX :</h3>
             <span id="fmux_id">
                 <div id="fmux_id" class="row m-1 border justify-content-center">
-                <div class="w-100 d-flex align-items-center text-center" style="min-height: 300px;">
-                    <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
-                </div>
+                    <div class="w-100 d-flex align-items-center text-center" style="min-height: 300px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
                 </div>
             </span>
 
@@ -92,14 +95,18 @@
         <section class="col-lg-5 text-nowrap">
             <h3 class="font-weight-bold">Commande Volant :</h3>
             <span id="vmf_id">
-                <div class="d-flex w-100 mh-100 align-items-center text-center" style="min-height: 200px;">
-                    <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                <div id="fmux_id" class="row m-1 border justify-content-center">
+                    <div class="d-flex w-100 mh-100 align-items-center text-center" style="min-height: 200px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
                 </div>
             </span>
             <h3 class="font-weight-bold mt-4">Commande Joystick :</h3>
             <span id="dsgn_id">
-                <div class="w-100 d-flex align-items-center text-center" style="min-height: 200px;">
-                    <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                <div id="fmux_id" class="row m-1 border justify-content-center">
+                    <div class="w-100 d-flex align-items-center text-center" style="min-height: 200px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
                 </div>
             </span>
         </section>
@@ -154,6 +161,8 @@
                     $("#fmux_id").html(data.htmlFmux);
                     $("#vmf_id").html(data.htmlVmf);
                     $("#dsgn_id").html(data.htmlDsgn);
+                    $("#remoteTitle").html(data.prodSelect);
+                    $("#id_vehicle").val('');
                 },
                 error: function (error_data) {
                     console.log("error");
