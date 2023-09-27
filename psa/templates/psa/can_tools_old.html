@@ -16,7 +16,7 @@
 
 {% block detail_content %}
     <div class="row">
-        <form id="remoteSelect" class="form-inline" autocomplete="off" method="post" action="{% url 'psa:ajax_remote' %}">
+        <form class="form-inline" autocomplete="off" method="post" action="">
 
             {% csrf_token %}
 
@@ -42,18 +42,20 @@
         <button id="openclose_port" type="button" class="btn btn-secondary ml-2 col-lg-1">Connect</button>
     </div>
     <hr>
-
     <div class="row">
         <section class="col-lg-7 text-nowrap">
             <h3 class="font-weight-bold">FMUX :</h3>
-            <span id="fmux_id">
-                <div id="fmux_id" class="row m-1 border justify-content-center">
-                <div class="w-100 d-flex align-items-center text-center" style="min-height: 300px;">
-                    <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
-                </div>
-                </div>
-            </span>
-
+            <div class="row m-1 border">
+                {% for obj in fmux_list %}
+                    <a class="btn btn-primary btn-lg col-lg-2 m-2 text-uppercase nowrap" href="#"
+                       onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="w-100 d-flex align-items-center text-center" style="min-height: 300px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes
+                            disponible</h4>
+                    </div>
+                {% endfor %}
+            </div>
             {% if perms.psa.add_canremote %}
                 <h3 class="font-weight-bold mt-4">Commande TEST :</h3>
                 <div class="form-group row">
@@ -91,17 +93,27 @@
 
         <section class="col-lg-5 text-nowrap">
             <h3 class="font-weight-bold">Commande Volant :</h3>
-            <span id="vmf_id">
-                <div class="d-flex w-100 mh-100 align-items-center text-center" style="min-height: 200px;">
-                    <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
-                </div>
-            </span>
+            <div class="row m-1 border">
+                {% for obj in vmf_list %}
+                    <a class="btn btn-primary btn-lg col-lg-4 m-2 text-uppercase nowrap" href="#"
+                       onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="d-flex w-100 mh-100 align-items-center text-center">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
+                {% endfor %}
+            </div>
             <h3 class="font-weight-bold mt-4">Commande Joystick :</h3>
-            <span id="dsgn_id">
-                <div class="w-100 d-flex align-items-center text-center" style="min-height: 200px;">
-                    <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
-                </div>
-            </span>
+            <div class="row m-1 border">
+                {% for obj in dsgn_list %}
+                    <a class="btn btn-primary btn-lg col-lg-3 m-2 text-uppercase nowrap" href="#"
+                       onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="w-100 d-flex align-items-center text-center" style="min-height: 200px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
+                {% endfor %}
+            </div>
         </section>
     </div>
 
@@ -109,8 +121,9 @@
 
 {% block extrascripts %}
 
+    <script src="{% static 'psa/js/webserial/serial-can.js' %}"></script>
+
     <script type="text/javascript">
-        let URL_AJAX = "{% url 'psa:ajax_remote' %}";
         $("#list__vehicle").html('');
         $('#id_product').on("input propertychange", function () {
             $("#id_vehicle").val('');
@@ -118,7 +131,7 @@
             if ($(this).val() !== '') {
                 $.ajax({
                     method: "GET",
-                    url: URL_AJAX + "?prod=" + $(this).val(),
+                    url: "{% url 'psa:ajax_remote' %}" + "?prod=" + $(this).val(),
                     success: function (data) {
                         let options = '';
                         let vehicles = data.vehicles;
@@ -134,37 +147,6 @@
                 });
             }
         });
-
-        $("form#remoteSelect").submit(function (e) {
-            e.preventDefault(); // <--
-
-            var csrftoken = jQuery('[name=csrfmiddlewaretoken]').val();
-            var form = $("#remoteSelect");
-
-            $.ajax({
-                method: form.attr("method"),
-                url: form.attr("action"),
-                data: {
-                    csrfmiddlewaretoken: csrftoken,
-                    form: form.serialize()
-                },
-                success: function (data) {
-                    console.log(data);
-                    addMessage(data.msg);
-                    $("#fmux_id").html(data.htmlFmux);
-                    $("#vmf_id").html(data.htmlVmf);
-                    $("#dsgn_id").html(data.htmlDsgn);
-                },
-                error: function (error_data) {
-                    console.log("error");
-                    console.log(error_data);
-                }
-            });
-        });
-
     </script>
-    <script src="{% static 'psa/js/webserial/serial-can.js' %}"></script>
-
-
 
 {% endblock %}
