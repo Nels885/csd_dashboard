@@ -118,6 +118,7 @@
 
     <script type="text/javascript">
         let URL_AJAX = "{% url 'psa:ajax_remote' %}";
+        let VOL_NB = 0;
         $("#list__vehicle").html('');
         $('#id_product').on("input propertychange", function () {
             $("#id_vehicle").val('');

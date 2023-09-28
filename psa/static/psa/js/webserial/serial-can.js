@@ -10,6 +10,10 @@ let dlcCan = document.getElementById("dlcCan");
 let dataCan = document.getElementById("dataCan");
 let sendBtn = document.getElementById("sendBtn");
 
+async function sleep(ms) {
+  return new Promise((resolve) =>setTimeout(resolve, ms));
+}
+
 // Do these things when the window is done loading
 window.onload = function () {
   // Check to make sure we can actually do serial stuff
@@ -135,6 +139,7 @@ async function sendString(value) {
   // close the writer since we're done sending for now
   await writer.close();
   await writableStreamClosed;
+  await sleep(10);
 }
 
 
@@ -147,6 +152,8 @@ async function sendDataCan() {
     for (let i = 0; i < dlcCan.value; i++) {
       if (i === parseInt(data[0][1])) {
         data_list.push("0x" + data[1]);
+      } else if (i === 6) {
+        data_list.push("0x" + VOL_NB.toString(16));
       } else data_list.push("0x00");
     }
     let outString = "WS+GETCAN=" + idCan.value + "," + data_list.join(',');
@@ -163,5 +170,6 @@ async function sendDataCan() {
     // close the writer since we're done sending for now
     await writer.close();
     await writableStreamClosed;
+    await sleep(10);
   } else alert("Mauvais format de donnée !");
 }
