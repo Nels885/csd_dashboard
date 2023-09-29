@@ -55,7 +55,7 @@
             <td class="text-dark td-ihm">N° série RAD</td>
             <td>{{ object.electronique_44f }}</td>
         </tr>
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur RAD" value=object.electronique_64f|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur RAD" value=object.electronique_64f|get_supplier_code %}
     {% endif %}
     {% if object.electronique_14x %}
         <tr>
@@ -73,7 +73,7 @@
             <td class="text-dark td-ihm">N° série NAV</td>
             <td>{{ object.electronique_44x }}</td>
         </tr>
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur NAV" value=object.electronique_64x|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur NAV" value=object.electronique_64x|get_supplier_code %}
     {% endif %}
     {% if object.electronique_1m2 %}
         <tr>
@@ -95,7 +95,7 @@
             <td class="text-dark td-ihm">Date Fab. IVI</td>
             <td>{{ object.electronique_5m2 }}</td>
         </tr>
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur IVI" value=object.electronique_6m2|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur IVI" value=object.electronique_6m2|get_supplier_code %}
         <tr>
             <td class="text-dark td-ihm">Ref. 8m2 ? IVI</td>
             <td>{{ object.electronique_8m2 }}</td>
@@ -139,25 +139,25 @@
             <td class="text-dark td-ihm">N° série ECU moteur</td>
             <td>{{ object.electronique_44a }}</td>
         </tr>
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur ECU moteur" value=object.electronique_64a|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur ECU moteur" value=object.electronique_64a|get_supplier_code %}
 
         <!-- BSM -->
-        {% include 'psa/format/corvet_tr_table.html' with label="Réf HW BSM" value=object.electronique_16b %}
-        {% include 'psa/format/corvet_tr_table.html' with label="CAL BSM" value=object.electronique_96b %}
-        {% include 'psa/format/corvet_tr_table.html' with label="N° série BSM" value=object.electronique_46b %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur BSM" value=object.electronique_66b|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW BSM" value=object.electronique_16b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL BSM" value=object.electronique_96b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série BSM" value=object.electronique_46b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BSM" value=object.electronique_66b|get_supplier_code %}
 
         <!-- DMTX - Dispositif Maintien Tension -->
-        {% include 'psa/format/corvet_tr_table.html' with label="Réf HW DMTX" value=object.electronique_11q %}
-        {% include 'psa/format/corvet_tr_table.html' with label="CAL DMTX" value=object.electronique_91q %}
-        {% include 'psa/format/corvet_tr_table.html' with label="N° série DMTX" value=object.electronique_41q %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur DMTX" value=object.electronique_61q|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW DMTX" value=object.electronique_11q %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL DMTX" value=object.electronique_91q %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série DMTX" value=object.electronique_41q %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur DMTX" value=object.electronique_61q|get_supplier_code %}
 
         <!-- BPGA - Boitier Protection Alimentation Reseau -->
-        {% include 'psa/format/corvet_tr_table.html' with label="Réf HW BPGA" value=object.electronique_11n %}
-        {% include 'psa/format/corvet_tr_table.html' with label="N° série BPGA" value=object.electronique_41n %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Date Fab. BPGA" value=object.electronique_51n %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur BPGA" value=object.electronique_61n|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW BPGA" value=object.electronique_11n %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série BPGA" value=object.electronique_41n %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Date Fab. BPGA" value=object.electronique_51n %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BPGA" value=object.electronique_61n|get_supplier_code %}
     </tbody>
 </table>
 
@@ -174,21 +174,15 @@
                 {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bsi id="bsi" %}
             </td>
         </tr>
-        <tr>
-            <td class="text-dark td-ihm">CAL BSI</td>
-            <td>{{ object.electronique_94b }}</td>
-        </tr>
-        <tr>
-            <td class="text-dark td-ihm">N° série BSI</td>
-            <td>{{ object.electronique_44b }}</td>
-        </tr>
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur BSI" value=object.electronique_64b|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL BSI" value=object.electronique_94b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série BSI" value=object.electronique_44b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BSI" value=object.electronique_64b|get_supplier_code %}
 
         <!-- VSM -->
-        {% include 'psa/format/corvet_tr_table.html' with label="Réf HW VSM" value=object.electronique_1k4 %}
-        {% include 'psa/format/corvet_tr_table.html' with label="CAL VSM" value=object.electronique_9K4 %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Dote VSM" value=object.electronique_8k4 %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur VSM" value=object.electronique_6k4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW VSM" value=object.electronique_1k4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL VSM" value=object.electronique_9K4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Dote VSM" value=object.electronique_8k4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur VSM" value=object.electronique_6k4 %}
 
         <!-- COM200x -->
         <tr>
@@ -198,11 +192,9 @@
                 {% include 'psa/format/tag_parts_format.html' with obj=object.prods.hdc id="hdc" %}
             </td>
         </tr>
-        <tr>
-            <td class="text-dark td-ihm">N° série COM200x</td>
-            <td>{{ object.electronique_46p }}</td>
-        </tr>
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur COM200x" value=object.electronique_66p|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série COM200x" value=object.electronique_46p %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur COM200x" value=object.electronique_66p|get_supplier_code %}
+
         <!-- VMF -->
         <tr>
             <td class="text-dark td-ihm">Réf HW VMF</td>
@@ -256,15 +248,15 @@
             <td>{{ object.electronique_92y }}</td>
         </tr>
         <!-- ARTIV -->
-        {% include 'psa/format/corvet_tr_table.html' with label="Réf HW ARTIV" value=object.electronique_19k %}
-        {% include 'psa/format/corvet_tr_table.html' with label="CAL ARTIV" value=object.electronique_99k %}
-        {% include 'psa/format/corvet_tr_table.html' with label="N° série ARTIV" value=object.electronique_49k %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur ARTIV" value=object.electronique_69k|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW ARTIV" value=object.electronique_19k %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL ARTIV" value=object.electronique_99k %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série ARTIV" value=object.electronique_49k %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur ARTIV" value=object.electronique_69k|get_supplier_code %}
         <!-- AVM -->
-        {% include 'psa/format/corvet_tr_table.html' with label="Réf HW AVM" value=object.electronique_12e %}
-        {% include 'psa/format/corvet_tr_table.html' with label="CAL AVM" value=object.electronique_92e %}
-        {% include 'psa/format/corvet_tr_table.html' with label="N° série AVM" value=object.electronique_42e %}
-        {% include 'psa/format/corvet_tr_table.html' with label="Fournisseur AVM" value=object.electronique_62e|get_supplier_code %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW AVM" value=object.electronique_12e %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL AVM" value=object.electronique_92e %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série AVM" value=object.electronique_42e %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur AVM" value=object.electronique_62e|get_supplier_code %}
         <!-- ABS/EPS -->
         {% with label="boitier ABS/ESP" %}
             <tr>

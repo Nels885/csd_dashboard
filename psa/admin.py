@@ -188,6 +188,12 @@ class CanRemoteAdmin(admin.ModelAdmin):
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
+class SupplierCodeAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name')
+    ordering = ('code',)
+    search_fields = ('code', 'name')
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(CorvetProduct, CorvetProductAdmin)
 admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
@@ -196,7 +202,7 @@ admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
 admin.site.register(Ecu, EcuAdmin)
-admin.site.register(SupplierCode)
+admin.site.register(SupplierCode, SupplierCodeAdmin)
 admin.site.register(DefaultCode, DefaultCodeAdmin)
 admin.site.register(ProductChoice, ProductChoiceAdmin)
 admin.site.register(CanRemote, CanRemoteAdmin)
