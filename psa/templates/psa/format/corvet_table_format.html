@@ -182,7 +182,7 @@
         {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW VSM" value=object.electronique_1k4 %}
         {% include 'psa/format/corvet_tr_hide.html' with label="CAL VSM" value=object.electronique_9K4 %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Dote VSM" value=object.electronique_8k4 %}
-        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur VSM" value=object.electronique_6k4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur VSM" value=object.electronique_6k4|get_supplier_code %}
 
         <!-- COM200x -->
         <tr>
