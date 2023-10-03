@@ -37,7 +37,7 @@ class Scraping(webdriver.Chrome):
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         options.add_argument("ignore-certificate-errors")
         if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-            options.add_argument(f'proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+            options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
         if kwargs.get('headless', True):
             options.add_argument('headless')
         # super().__init__(ChromeDriverManager().install(), options=options, seleniumwire_options=options_seleniumWire)
