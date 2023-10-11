@@ -29,7 +29,8 @@
                 <th class="col-1">Nom</th>
                 <th class="col-2">Commentaire</th>
                 <th class="col-1 text-nowrap">N° Xelon</th>
-                <th class="col-2">Status</th>
+                <th class="col-1">Status</th>
+                <th class="col-1 text-nowrap">Nb de prog</th>
                 <th class="col-1 text-nowrap">Hostname</th>
                 <th class="col-1">Logiciel</th>
                 <th class="col-1 text-nowrap">Type Produit</th>
@@ -65,6 +66,7 @@
                 <td>{{ obj.comment }}</td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-x"></td>
                 <td class="font-weight-bold text-nowrap" id="tool{{ obj.id }}">Hors ligne</td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-c"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-h"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-s"></td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-d"></td>
@@ -126,6 +128,7 @@
                         let href = data['href'];
                         let id = '#tool' + pk;
                         {#$(id+'-ip').html(data['ip_addr']);#}
+                        $(id+'-c').html(data['prog_count']);
                         $(id+'-h').html(data['hostname']);
                         $(id+'-s').html(data['soft']);
                         $(id+'-v').html(data['version']);
