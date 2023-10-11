@@ -21,6 +21,7 @@ INFO_DICT = {
     'data_extra': {'label': 'Info Véhicule', 'data': [
         ('LIGNE_DE_PRODUIT', 'donnee_ligne_de_produit'), ('SILHOUETTE', 'donnee_silhouette'),
         ('GENRE_DE_PRODUIT', 'donnee_genre_de_produit'), ('MOTEUR', 'donnee_moteur'),
+        ('TRANSMISSION', 'donnee_transmission')
     ]},
     'audio_cfg': {'label': 'Config Audio', 'data': [
         ('DHB_HAUT_PARLEUR', 'attribut_dhb'), ('DRC_RECEPTEUR_RADIO', 'attribut_drc'),
@@ -224,7 +225,8 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         'donnee_ligne_de_produit': 'DON_LIN_PROD', 'donnee_silhouette': 'DON_SIL',
         'donnee_genre_de_produit': 'DON_GEN_PROD', 'attribut_dhb': 'ATT_DHB',
         'attribut_dlx': 'ATT_DLX', 'attribut_drc': 'ATT_DRC', 'attribut_dun': 'ATT_DUN',
-        'attribut_dym': 'ATT_DYM', 'attribut_dyr': 'ATT_DYR', 'donnee_moteur': 'DON_MOT'
+        'attribut_dym': 'ATT_DYM', 'attribut_dyr': 'ATT_DYR', 'donnee_moteur': 'DON_MOT',
+        'donnee_transmission': 'DON_TRA'
     }
 
     def __init__(self, *args, **kwargs) -> None:
