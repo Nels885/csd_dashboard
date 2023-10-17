@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 
 from .serializers import (
     ProgSerializer, CalSerializer, ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer,
-    BgaTimeSerializer, BgaTimeCreateSerializer
+    BgaTimeSerializer, BgaTimeCreateSerializer, RaspiTimeSerializer, RaspiTimeCreateSerializer
 )
 from prog.serializers import (
     UnlockSerializer, UnlockUpdateSerializer, RaspeediSerializer, ToolStatusSerializer, ToolLogSerializer
@@ -23,7 +23,7 @@ from reman.serializers import (
 from prog.models import Raspeedi, UnlockProduct, ToolStatus, Log
 from squalaetp.models import Xelon
 from reman.models import Batch, EcuModel, Repair, EcuRefBase
-from tools.models import ThermalChamberMeasure, BgaTime
+from tools.models import ThermalChamberMeasure, BgaTime, RaspiTime
 from utils.django.validators import validate_barcode
 
 from .utils import TokenAuthSupportQueryString
@@ -245,17 +245,49 @@ class BgaTimeViewSet(viewsets.ModelViewSet):
 
     def create(self, *args, **kwargs):
         data = self.request.data
-        device = self.request.query_params.get("device", None)
-        status = self.request.query_params.get("status", None)
-        if device and status:
+        device = self.request.query_params.get("device", "")
+        status = self.request.query_params.get("status", "").upper()
+        if device and status and status in ['START', 'STOP']:
             data['name'] = device
             serializer = BgaTimeCreateSerializer(data=data)
             try:
                 bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
                 bga_is_active.save(status=status)
             except BgaTime.DoesNotExist:
-                pass
-            if status.upper() == "START" and serializer.is_valid():
+                status = "NOT STARTED"
+            if status == "START" and serializer.is_valid():
                 serializer.save()
-            return Response({"response": "OK", "device": device, "status": status.upper()})
+            return Response({"response": "OK", "device": device, "status": status})
+        return Response({"response": "ERROR"})
+
+
+class RaspiTimeViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = RaspiTime.objects.all()
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RaspiTimeCreateSerializer
+        else:
+            return RaspiTimeSerializer
+
+    def create(self, *args, **kwargs):
+        data = self.request.data
+        device = self.request.query_params.get('device', '')
+        status = self.request.query_params.get('status', '').upper()
+        type_device = self.request.query_params.get('type', '').upper()
+        if device and type_device and status and status in ['START', 'STOP']:
+            data.update({'name': device, 'type': type_device})
+            serializer = RaspiTimeCreateSerializer(data=data)
+            try:
+                bga_is_active = RaspiTime.objects.get(name=device, type=type_device, end_time__isnull=True)
+                bga_is_active.save(status=status)
+            except RaspiTime.DoesNotExist:
+                status = "NOT STARTED"
+            if status == "START" and serializer.is_valid():
+                serializer.save()
+            return Response({"response": "OK", "device": device, "status": status})
         return Response({"response": "ERROR"})

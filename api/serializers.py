@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from squalaetp.models import Xelon
-from tools.models import ThermalChamberMeasure, BgaTime
+from tools.models import ThermalChamberMeasure, BgaTime, RaspiTime
 
 
 class ProgSerializer(serializers.ModelSerializer):
@@ -75,3 +75,17 @@ class BgaTimeCreateSerializer(BgaTimeSerializer):
     class Meta:
         model = BgaTime
         fields = ('name',)
+
+
+class RaspiTimeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RaspiTime
+        fields = "__all__"
+
+
+class RaspiTimeCreateSerializer(RaspiTimeSerializer):
+
+    class Meta:
+        model = RaspiTime
+        fields = ('name', 'type')
