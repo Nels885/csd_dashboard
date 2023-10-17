@@ -254,7 +254,7 @@ class BgaTimeViewSet(viewsets.ModelViewSet):
                 bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
                 bga_is_active.save(status=status)
             except BgaTime.DoesNotExist:
-                status = "NOT STARTED"
+                pass
             if status == "START" and serializer.is_valid():
                 serializer.save()
             return Response({"response": "OK", "device": device, "status": status})
@@ -286,7 +286,7 @@ class RaspiTimeViewSet(viewsets.ModelViewSet):
                 bga_is_active = RaspiTime.objects.get(name=device, type=type_device, end_time__isnull=True)
                 bga_is_active.save(status=status)
             except RaspiTime.DoesNotExist:
-                status = "NOT STARTED"
+                pass
             if status == "START" and serializer.is_valid():
                 serializer.save()
             return Response({"response": "OK", "device": device, "status": status})
