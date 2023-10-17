@@ -333,6 +333,34 @@ class BgaTime(models.Model):
         return f"{self.name} {self.date} {self.start_time}"
 
 
+class RaspiTime(models.Model):
+    TYPE_CHOICES = [('RASPEEDI', 'RASPEEDI'), ('AET', 'AET'), ('CANPI', 'CANPI')]
+
+    name = models.CharField('Nom de la machine', max_length=100)
+    type = models.CharField('type', max_length=50, choices=TYPE_CHOICES)
+    date = models.DateField('date', auto_now_add=True)
+    start_time = models.TimeField('heure de START', auto_now_add=True)
+    end_time = models.TimeField('heure de FIN', null=True, blank=True)
+    duration = models.IntegerField('durée en secondes', null=True, blank=True)
+
+    class Meta:
+        verbose_name = ("RasPi Time")
+        ordering = ["id"]
+
+    def save(self, *args, **kwargs):
+        status = kwargs.pop('status', None)
+        if status:
+            if self.pk and status.upper() == "STOP":
+                self.end_time = timezone.localtime().time()
+            elif self.pk and status.upper() == "START":
+                date_time = timezone.datetime.combine(self.date, self.start_time)
+                self.end_time = (date_time + timezone.timedelta(minutes=5)).time()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} {self.date} {self.start_time}"
+
+
 class ConfigFile(models.Model):
     name = models.CharField("nom du logiciel", max_length=100, unique=True)
     path = models.CharField("chemin du fichier", max_length=500, unique=True)

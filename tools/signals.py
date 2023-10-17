@@ -4,12 +4,21 @@ from django.dispatch import receiver
 from constance import config
 
 from utils.django.decorators import disable_for_loaddata
-from .models import BgaTime, ThermalChamberMeasure
+from .models import BgaTime, ThermalChamberMeasure, RaspiTime
 
 
 @receiver(pre_save, sender=BgaTime)
 @disable_for_loaddata
 def pre_save_bga_time(sender, instance, **kwargs):
+    if instance.start_time and instance.end_time:
+        start = timezone.datetime.combine(instance.date, instance.start_time)
+        end = timezone.datetime.combine(instance.date, instance.end_time)
+        instance.duration = (end - start).seconds
+
+
+@receiver(pre_save, sender=RaspiTime)
+@disable_for_loaddata
+def pre_save_raspi_time(sender, instance, **kwargs):
     if instance.start_time and instance.end_time:
         start = timezone.datetime.combine(instance.date, instance.start_time)
         end = timezone.datetime.combine(instance.date, instance.end_time)

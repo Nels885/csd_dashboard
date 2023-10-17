@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
-    Message, SuptechFile, BgaTime, ConfigFile, Infotech, InfotechMailingList
+    Message, SuptechFile, BgaTime, RaspiTime, ConfigFile, Infotech, InfotechMailingList
 )
 
 ACTIVE_USERS = User.objects.filter(is_active=True).order_by('first_name')
@@ -207,6 +207,20 @@ class InfotechMailingListAdmin(admin.ModelAdmin):
     is_activated.short_description = _('Item activated')
 
 
+class BGATimeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'date', 'start_time', 'end_time', 'duration')
+    ordering = ('id',)
+    list_filter = ('name',)
+    search_fields = ('name', 'date')
+
+
+class RaspiTimeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'type', 'date', 'start_time', 'end_time', 'duration')
+    ordering = ('id',)
+    list_filter = ('name', 'type')
+    search_fields = ('name', 'type', 'date')
+
+
 admin.site.register(TagXelon, TagXelonAdmin)
 admin.site.register(CsdSoftware)
 admin.site.register(EtudeProject)
@@ -216,7 +230,8 @@ admin.site.register(SuptechCategory, SuptechCategoryAdmin)
 admin.site.register(SuptechItem, SuptechItemAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(SuptechFile, SuptechFileAdmin)
-admin.site.register(BgaTime)
+admin.site.register(BgaTime, BGATimeAdmin)
+admin.site.register(RaspiTime, RaspiTimeAdmin)
 admin.site.register(ThermalChamberMeasure, ThermalChamberMeasureAdmin)
 admin.site.register(ConfigFile)
 admin.site.register(Infotech, InfotechAdmin)
