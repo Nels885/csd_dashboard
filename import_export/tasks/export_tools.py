@@ -4,7 +4,7 @@ from django.db.models.functions import Concat, ExtractDay
 from django.db.models import Value, F
 
 from utils.file.export_task import ExportExcelTask
-from tools.models import Suptech, BgaTime
+from tools.models import Suptech, BgaTime, RaspiTime
 
 
 class ExportToolsIntoExcelTask(ExportExcelTask):
@@ -34,12 +34,19 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
         if datedelta and datedelta.isnumeric():
             last_months = timezone.datetime.today() + relativedelta(months=-int(datedelta))
         if model == "bga_time":
-            self.header = ['MACHINE', 'DATE', 'HEURE DEBUT', 'DUREE']
+            self.header = ['MACHINE', 'DATE', 'HEURE_DEBUT', 'HEURE_FIN', 'DUREE']
             if last_months:
                 queryset = BgaTime.objects.filter(date__gte=last_months)
             else:
                 queryset = BgaTime.objects.all()
-            self.fields = ('name', 'date', 'start_time', 'duration')
+            self.fields = ('name', 'date', 'start_time', 'end_time', 'duration')
+        if model == "raspi_time":
+            self.header = ['MACHINE', 'TYPE', 'DATE', 'HEURE_DEBUT', 'HEURE_FIN', 'DUREE']
+            if last_months:
+                queryset = RaspiTime.objects.filter(date__gte=last_months)
+            else:
+                queryset = RaspiTime.objects.all()
+            self.fields = ('name', 'type', 'date', 'start_time', 'end_time', 'duration')
         values_list = queryset.values_list(*self.fields).distinct()
         return values_list
 
