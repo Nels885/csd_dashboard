@@ -1,3 +1,5 @@
+from PIL import Image
+
 from django.db import models
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
@@ -5,10 +7,21 @@ from crum import get_current_user
 
 
 class UserProfile(models.Model):
+    IMAGE_MAX_SIZE = (150, 150)
+
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE, primary_key=True)
     job_title = models.CharField('intitulé de poste', max_length=500, blank=True)
     service = models.CharField('service', max_length=100, blank=True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
+
+    def resize_image(self):
+        image = Image.open(self.image)
+        image.thumbnail(self.IMAGE_MAX_SIZE)
+        image.save(self.image.path)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.resize_image()
 
     def __str__(self):
         return self.user.username

@@ -4,7 +4,7 @@ from django.db.utils import IntegrityError, DataError
 
 from squalaetp.models import ProductCode, SparePart
 from psa.models import Ecu, Multimedia
-from utils.conf import CSV_EXTRACTION_FILE
+from utils.conf import get_path
 
 from ._csv_extraction import CsvSparePart
 
@@ -28,42 +28,45 @@ class Command(BaseCommand):
         if options['filename'] is not None:
             extraction = CsvSparePart(options['filename'])
         else:
-            extraction = CsvSparePart(CSV_EXTRACTION_FILE)
+            extraction = CsvSparePart(get_path('CSV_EXTRACTION_FILE'))
 
         nb_part_before = ProductCode.objects.count()
         nb_part_update = 0
         SparePart.objects.exclude(cumul_dispo=0).update(cumul_dispo=0)
-        for row in extraction.read():
-            logger.info(row)
-            code_magasin = row.pop("code_magasin")
-            code_produit = row.pop("code_produit")
-            code_zone = row.pop("code_zone")
-            code_emplacement = row.pop("code_emplacement")
-            try:
-                part_obj, part_created = ProductCode.objects.get_or_create(name=code_produit)
-                obj, created = SparePart.objects.update_or_create(
-                    code_magasin=code_magasin, code_zone=code_zone,
-                    code_emplacement=code_emplacement, code_produit=part_obj, defaults=row
-                )
-                if not created:
-                    nb_part_update += 1
-            except IntegrityError as err:
-                logger.error(f"[SPAREPART_CMD] IntegrityError: {code_produit} - {err}")
-            except ProductCode.MultipleObjectsReturned as err:
-                logger.error(f"[PRODUCTCODE_CMD] MultipleObjectsReturned: {code_produit} - {err}")
-            except SparePart.MultipleObjectsReturned as err:
-                logger.error(f"[SPAREPART_CMD] MultipleObjectsReturned: {code_produit} - {err}")
-            except DataError as err:
-                logger.error(f"[SPAREPART_CMD] DataError: {code_produit} - {err}")
-        self._relation_update()
-        nb_part_after = ProductCode.objects.count()
-        self.stdout.write(
-            self.style.SUCCESS(
-                "[SPAREPART] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
-                    extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
+        if not extraction.ERROR:
+            for row in extraction.read():
+                logger.info(row)
+                code_magasin = row.pop("code_magasin")
+                code_produit = row.pop("code_produit")
+                code_zone = row.pop("code_zone")
+                code_emplacement = row.pop("code_emplacement")
+                try:
+                    part_obj, part_created = ProductCode.objects.get_or_create(name=code_produit)
+                    obj, created = SparePart.objects.update_or_create(
+                        code_magasin=code_magasin, code_zone=code_zone,
+                        code_emplacement=code_emplacement, code_produit=part_obj, defaults=row
+                    )
+                    if not created:
+                        nb_part_update += 1
+                except IntegrityError as err:
+                    logger.error(f"[SPAREPART_CMD] IntegrityError: {code_produit} - {err}")
+                except ProductCode.MultipleObjectsReturned as err:
+                    logger.error(f"[PRODUCTCODE_CMD] MultipleObjectsReturned: {code_produit} - {err}")
+                except SparePart.MultipleObjectsReturned as err:
+                    logger.error(f"[SPAREPART_CMD] MultipleObjectsReturned: {code_produit} - {err}")
+                except DataError as err:
+                    logger.error(f"[SPAREPART_CMD] DataError: {code_produit} - {err}")
+            self._relation_update()
+            nb_part_after = ProductCode.objects.count()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "[SPAREPART] Data update completed: CSV_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                        extraction.nrows, nb_part_after - nb_part_before, nb_part_update, nb_part_after
+                    )
                 )
             )
-        )
+        else:
+            self.stdout.write(f"[SPAREPART_FILE] {extraction.ERROR}")
 
     def _relation_update(self):
         self.stdout.write("[PRODUCTCODE] Waiting...")

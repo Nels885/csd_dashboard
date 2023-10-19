@@ -3,7 +3,11 @@ from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import widgets
 
-from .models import Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute
+from .models import (
+    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
+    DefaultCode, ProductChoice, CanRemote, Vehicle
+)
+from .forms import EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm
 
 
 class CorvetListFilter(admin.SimpleListFilter):
@@ -38,6 +42,7 @@ class CorvetAttributeAdmin(admin.ModelAdmin):
 
 
 class MultimediaAdmin(admin.ModelAdmin):
+    form = MultimediaAdminForm
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
         'media', 'firmware', 'relation_by_name'
@@ -102,6 +107,7 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 
 
 class EcuAdmin(admin.ModelAdmin):
+    form = EcuAdminForm
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe',
         'relation_by_name'
@@ -152,6 +158,42 @@ class CorvetProductAdmin(admin.ModelAdmin):
     )
 
 
+class DefaultCodeAdmin(admin.ModelAdmin):
+    list_display = ('code', 'description', 'type', 'characterization', 'ecu_type')
+    list_filter = ('ecu_type',)
+    ordering = ('code', 'description', 'ecu_type')
+    search_fields = ('code', 'description', 'type', 'ecu_type')
+
+
+class ProductChoiceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
+    list_filter = ('family', 'ecu_type', 'protocol')
+    ordering = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
+    search_fields = ('name', 'short_name', 'cal_attribute')
+
+
+class CanRemoteAdmin(admin.ModelAdmin):
+    form = CanRemoteAdminForm
+    list_display = ('label', 'location', 'type', 'product', 'can_id', 'dlc', 'data')
+    list_filter = ('type', 'product',)
+    ordering = ('location',)
+    search_fields = ('label', 'product', 'can_id')
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        vertical = False  # change to True if you prefer boxes to be stacked vertically
+        kwargs['widget'] = widgets.FilteredSelectMultiple(
+            db_field.verbose_name,
+            vertical,
+        )
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+
+class SupplierCodeAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name')
+    ordering = ('code',)
+    search_fields = ('code', 'name')
+
+
 admin.site.register(Corvet, CorvetAdmin)
 admin.site.register(CorvetProduct, CorvetProductAdmin)
 admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
@@ -160,3 +202,8 @@ admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
 admin.site.register(Ecu, EcuAdmin)
+admin.site.register(SupplierCode, SupplierCodeAdmin)
+admin.site.register(DefaultCode, DefaultCodeAdmin)
+admin.site.register(ProductChoice, ProductChoiceAdmin)
+admin.site.register(CanRemote, CanRemoteAdmin)
+admin.site.register(Vehicle)

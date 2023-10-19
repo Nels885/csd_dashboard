@@ -27,6 +27,9 @@
                         <a class="collapse-item"
                            href="{% url 'squalaetp:xelon' %}?filter=corvet-error">{% trans "CORVET Error files" %}</a>
                         <a class="collapse-item" href="{% url 'dashboard:products' %}?filter=late">{% trans "Late products" %}</a>
+                        {% if perms.squalaetp.add_xelontemporary %}
+                            <a class="collapse-item font-weight-bold text-warning" href="{% url 'squalaetp:temporary' %}">{% trans "Temporary files" %}</a>
+                        {% endif %}
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">{% trans "Informations" %} :</h6>
                         <a class="collapse-item" href="{% url 'squalaetp:xelon' %}">{% trans "Customer files" %}</a>
@@ -83,7 +86,7 @@
                             <a class="collapse-item" href="{% url 'psa:product' %}">{% trans "Products table" %}</a>
                         {% endif %}
 
-                        <a class="collapse-item" href="{% url 'psa:useful_links' %}">{% trans "Tools & Links" %}</a>
+                        <a class="collapse-item" href="{% url 'psa:useful_links' %}" target="_blank">{% trans "Tools & Links" %}</a>
 
                         {% if perms.psa.add_corvet %}
                             <div class="collapse-divider"></div>

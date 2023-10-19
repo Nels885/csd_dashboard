@@ -1,11 +1,17 @@
 {% autoescape off %}
 Qui: {{ email }}
 ==========================================================
+Date: {{ suptech.date }}
+==========================================================
+Traitement 48h: {% if suptech.is_48h %}OUI{% else %}NON{% endif %}
+==========================================================
+Catégorie: {{ suptech.category.name }}
+==========================================================
 N°XELON: {{ suptech.xelon }}
 ==========================================================
 Modèle produit: {{ suptech.product }}
 ==========================================================
-Item: {{ suptech.item }}
+Item: {{ suptech.item|safe|escape }}
 ==========================================================
 Temps={{ suptech.time }}
 ==========================================================
@@ -15,5 +21,5 @@ Temps={{ suptech.time }}
 ======================== E.O.Mail =========================
 
 Répondre :
-http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}
+http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}
 {% endautoescape %}

@@ -1,0 +1,152 @@
+{% extends 'format/detail_format.html' %}
+
+{% load static i18n widget_tweaks %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'psa/tab_select.html' with select='can-tools' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block detail_content %}
+    <div class="row">
+        <form class="form-inline" autocomplete="off" method="post" action="">
+
+            {% csrf_token %}
+
+            <div class="text-danger {% if form.non_field_errors %}invalid{% endif %} mb-2">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+
+            {% for field in form %}
+                <div class="form-group mr-sm-3">
+                    <label class="mx-sm-3" for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                     {% render_field field class="form-control" %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-success btn-icon-split mr-4">
+                <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+                <span class="text">{% trans "Select" %}</span>
+            </button>
+
+        </form>
+        <button id="openclose_port" type="button" class="btn btn-secondary ml-2 col-lg-1">Connect</button>
+    </div>
+    <hr>
+    <div class="row">
+        <section class="col-lg-7 text-nowrap">
+            <h3 class="font-weight-bold">FMUX :</h3>
+            <div class="row m-1 border">
+                {% for obj in fmux_list %}
+                    <a class="btn btn-primary btn-lg col-lg-2 m-2 text-uppercase nowrap" href="#"
+                       onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="w-100 d-flex align-items-center text-center" style="min-height: 300px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes
+                            disponible</h4>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if perms.psa.add_canremote %}
+                <h3 class="font-weight-bold mt-4">Commande TEST :</h3>
+                <div class="form-group row">
+                    <div class="col-2">
+                        <label for="idCan">Id CAN</label>
+                        <select type="text" class="form-control" id="idCan" disabled>
+                            <option selected>0x122</option>
+                            <option>0x21F</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="dlcCan">DLC</label>
+                        <select type="number" class="form-control" id="dlcCan" disabled>
+                            <option>3</option>
+                            <option selected>8</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="dataCan">Data</label>
+                        <input type="text" class="form-control" id="dataCan" placeholder="Data CAN, ex: B0.10" disabled>
+                    </div>
+                    <div class="col-1 d-flex align-items-end">
+                        <button id="sendBtn" class="btn btn-primary" disabled>Send</button>
+                    </div>
+                </div>
+                <div class="row mt-4 ml-1">
+                    Les données peuvent être de B0.00 à B5.80, DLC correspond à la longeur de la trame.
+                    <ul>
+                        <li>Bx => position en octet dans la trame</li>
+                        <li>xx => valeur de l'octet en Hexadécimal</li>
+                    </ul>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="col-lg-5 text-nowrap">
+            <h3 class="font-weight-bold">Commande Volant :</h3>
+            <div class="row m-1 border">
+                {% for obj in vmf_list %}
+                    <a class="btn btn-primary btn-lg col-lg-4 m-2 text-uppercase nowrap" href="#"
+                       onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="d-flex w-100 mh-100 align-items-center text-center">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
+                {% endfor %}
+            </div>
+            <h3 class="font-weight-bold mt-4">Commande Joystick :</h3>
+            <div class="row m-1 border">
+                {% for obj in dsgn_list %}
+                    <a class="btn btn-primary btn-lg col-lg-3 m-2 text-uppercase nowrap" href="#"
+                       onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</a>
+                {% empty %}
+                    <div class="w-100 d-flex align-items-center text-center" style="min-height: 200px;">
+                        <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script src="{% static 'psa/js/webserial/serial-can.js' %}"></script>
+
+    <script type="text/javascript">
+        $("#list__vehicle").html('');
+        $('#id_product').on("input propertychange", function () {
+            $("#id_vehicle").val('');
+            $("#list__vehicle").html('');
+            if ($(this).val() !== '') {
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'psa:ajax_remote' %}" + "?prod=" + $(this).val(),
+                    success: function (data) {
+                        let options = '';
+                        let vehicles = data.vehicles;
+                        for (let i = 0; i < vehicles.length; i++) {
+                            options += '<option value="' + vehicles[i] + '"></option>';
+                        }
+                        $("#list__vehicle").html(options);
+                    },
+                    error: function (error_data) {
+                        console.log("error");
+                        console.log(error_data);
+                    }
+                });
+            }
+        });
+    </script>
+
+{% endblock %}

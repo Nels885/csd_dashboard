@@ -3,20 +3,25 @@ from django.utils.translation import gettext as _
 
 from dashboard.tests.base import UnitTest
 
-from prog.models import Raspeedi, UnlockProduct
+from prog.models import Raspeedi, UnlockProduct, ToolStatus, AET, MbedFirmware
 from squalaetp.models import Xelon
 
 
-class RaspeediTestCase(UnitTest):
+class ProgTestCase(UnitTest):
 
     def setUp(self):
-        super(RaspeediTestCase, self).setUp()
+        super(ProgTestCase, self).setUp()
         self.form_data = {
             'ref_boitier': '1234567890', 'produit': 'RT4', 'facade': 'FF', 'type': 'NAV',
             'media': 'HDD', 'connecteur_ecran': '1',
         }
+        self.aet_data = {
+            'name': 'AET-test', 'raspi_url': '10.56.0.0', 'mbed_list': 'DIGITAL_IN;ANALOG_IN;DIGITAL_POT',
+        }
         self.add_perms_user(UnlockProduct, 'add_unlockproduct', 'view_unlockproduct')
         self.add_perms_user(Raspeedi, 'add_raspeedi', 'view_raspeedi', 'change_raspeedi')
+        self.add_perms_user(AET, 'add_aet', 'change_aet')
+        self.tools = ToolStatus.objects.create(name="test", url="http://test.test")
 
     def test_raspeedi_table_page(self):
         response = self.client.get(reverse('prog:table'))
@@ -101,4 +106,30 @@ class RaspeediTestCase(UnitTest):
         self.add_perms_user(UnlockProduct, 'view_unlockproduct')
         self.login()
         response = self.client.get(reverse('prog:unlock_table'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_tool_info_page(self):
+        url = reverse('prog:tool_info')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_ajax_tool_info_page(self):
+        for pk in [self.tools.pk, 999]:
+            url = reverse('prog:ajax_tool_info', kwargs={'pk': pk})
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertJSONEqual(
+                response.content, {'pk': pk, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404})
+
+    def test_ajax_tool_system_page(self):
+        for pk in [self.tools.pk, 999]:
+            url = reverse('prog:ajax_tool_system', kwargs={'pk': pk})
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertJSONEqual(
+                response.content, {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404})
+
+    def test_aet_info_page(self):
+        url = reverse('prog:AET_info')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)

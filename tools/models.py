@@ -79,9 +79,7 @@ class CsdSoftware(models.Model):
 
     def save(self, *args, **kwargs):
         user = get_current_user()
-        if user and not user.pk:
-            user = None
-        if not self.pk:
+        if user and user.pk and not self.pk:
             self.created_by = user
         super().save(*args, **kwargs)
 
@@ -163,7 +161,7 @@ class Suptech(models.Model):
     modified_at = models.DateTimeField('modifié le', null=True)
     modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
-    messages = GenericRelation('SuptechMessage')
+    messages = GenericRelation('Message')
 
     class Meta:
         verbose_name = "SupTech"
@@ -180,6 +178,8 @@ class Suptech(models.Model):
 class SuptechCategory(models.Model):
     name = models.CharField('nom', max_length=200)
     manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
+    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
+    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
 
     def __str__(self):
         return self.name
@@ -200,13 +200,82 @@ class SuptechItem(models.Model):
         verbose_name = "SupTech Item"
         ordering = ['name']
 
+    def to_list(self):
+        emails = list(self.to_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return self.mailing_list
+
+    def cc_list(self):
+        emails = list(self.cc_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return self.cc_mailing_list
+
     def __str__(self):
         return self.name
 
 
-class SuptechMessage(models.Model):
+class Infotech(models.Model):
+    STATUS_CHOICES = [
+        ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée')
+    ]
+
+    item = models.CharField('ITEM', max_length=200)
+    info = models.TextField('INFO', max_length=2000)
+    action = models.TextField('ACTION/RETOUR', max_length=2000, blank=True)
+    status = models.TextField('STATUT', max_length=50, default='En Cours', choices=STATUS_CHOICES)
+    to = models.TextField("TO", max_length=5000)
+    cc = models.TextField("CC", max_length=5000)
+    created_at = models.DateTimeField('ajouté le', auto_now_add=True)
+    created_by = models.ForeignKey(User, related_name="infotechs_created", editable=False, on_delete=models.SET_NULL,
+                                   null=True, blank=True)
+    modified_at = models.DateTimeField('modifié le', null=True)
+    modified_by = models.ForeignKey(User, related_name="infotechs_modified", on_delete=models.SET_NULL, null=True,
+                                    blank=True)
+    messages = GenericRelation('Message')
+
+    class Meta:
+        verbose_name = "InfoTech"
+        ordering = ['pk']
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('tools:infotech_detail', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return f"{self.pk} - {self.item}"
+
+
+class InfotechMailingList(models.Model):
+    name = models.CharField('Nom', max_length=100, unique=True)
+    is_active = models.BooleanField("Actif", default=True)
+    to_users = models.ManyToManyField(User, related_name="to_info_emails", blank=True)
+    cc_users = models.ManyToManyField(User, related_name="cc_info_emails", blank=True)
+
+    class Meta:
+        verbose_name = "InfoTech Mailing List"
+        ordering = ['name']
+
+    def to_list(self):
+        emails = list(self.to_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return ""
+
+    def cc_list(self):
+        emails = list(self.cc_users.values_list('email', flat=True).distinct())
+        if emails and isinstance(emails, list):
+            return "; ".join(emails)
+        return ""
+
+    def __str__(self):
+        return self.name
+
+
+class Message(models.Model):
     content = models.TextField()
-    added_at = models.DateTimeField('ajouté le', auto_now=True)
+    added_at = models.DateTimeField('ajouté le', null=True, blank=True)
     added_by = models.ForeignKey(User, related_name="message_added", on_delete=models.SET_NULL, null=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -221,8 +290,10 @@ class SuptechMessage(models.Model):
 
     def save(self, *args, **kwargs):
         user = get_current_user()
-        if user and user.pk:
+        if not self.added_by and user and user.pk:
             self.added_by = user
+        if not self.added_at:
+            self.added_at = timezone.now()
         super().save(*args, **kwargs)
 
 
@@ -246,6 +317,34 @@ class BgaTime(models.Model):
 
     class Meta:
         verbose_name = "BGA Time"
+        ordering = ["id"]
+
+    def save(self, *args, **kwargs):
+        status = kwargs.pop('status', None)
+        if status:
+            if self.pk and status.upper() == "STOP":
+                self.end_time = timezone.localtime().time()
+            elif self.pk and status.upper() == "START":
+                date_time = timezone.datetime.combine(self.date, self.start_time)
+                self.end_time = (date_time + timezone.timedelta(minutes=5)).time()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} {self.date} {self.start_time}"
+
+
+class RaspiTime(models.Model):
+    TYPE_CHOICES = [('RASPEEDI', 'RASPEEDI'), ('AET', 'AET'), ('CANPI', 'CANPI')]
+
+    name = models.CharField('Nom de la machine', max_length=100)
+    type = models.CharField('type', max_length=50, choices=TYPE_CHOICES)
+    date = models.DateField('date', auto_now_add=True)
+    start_time = models.TimeField('heure de START', auto_now_add=True)
+    end_time = models.TimeField('heure de FIN', null=True, blank=True)
+    duration = models.IntegerField('durée en secondes', null=True, blank=True)
+
+    class Meta:
+        verbose_name = ("RasPi Time")
         ordering = ["id"]
 
     def save(self, *args, **kwargs):

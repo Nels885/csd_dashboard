@@ -1,12 +1,17 @@
 from django.core.management import call_command
 from django.contrib.auth.models import ContentType
+from django.utils import timezone
+
+from constance.test import override_config
 
 from .base import UnitTest, User, Group, Permission
 from dashboard.models import Post, UserProfile, ShowCollapse, WebLink, Contract
+from squalaetp.models import Indicator, Xelon
 
 from io import StringIO
 
 
+@override_config(SYS_REPORT_TO_MAIL_LIST="")
 class DashboardCommandTestCase(UnitTest):
 
     def setUp(self):
@@ -15,6 +20,10 @@ class DashboardCommandTestCase(UnitTest):
         Post.objects.create(title='Test', overview='test', author=self.user)
         WebLink.objects.create(title='Test', url='https://test.com', type='PSA', description='test')
         Contract.objects.create(id=1, code='test')
+        xelon = Xelon.objects.create(numero_de_dossier='A123456789', date_retour=timezone.now())
+        indicator = Indicator.objects.create(
+            date=timezone.now(), products_to_repair=1, late_products=1, express_products=1, output_products=1)
+        indicator.xelons.add(xelon)
         self.out = StringIO()
 
     def test_clear_auth_Group_table(self):
@@ -88,6 +97,7 @@ class DashboardCommandTestCase(UnitTest):
         self.assertIn("Suppression des données des tables de Django terminée!", self.out.getvalue())
 
     def test_send_email(self):
+        # Sending emails without data in the database
         call_command(
             "sendemail", "--late_products", "--pending_products", "--vin_error", "--contract", "--vin_corvet",
             stdout=self.out)
@@ -96,6 +106,15 @@ class DashboardCommandTestCase(UnitTest):
         self.assertIn("Pas d'erreurs de VIN a envoyer !", self.out.getvalue())
         self.assertIn("Pas de contracts a envoyer !", self.out.getvalue())
         self.assertIn("Pas de VIN sans données CORVET à envoyer !", self.out.getvalue())
+
+        # Sending emails with data in the database
+        Contract.objects.update(is_active=True, renew_date=timezone.now())
+        Xelon.objects.filter(numero_de_dossier='A123456789').update(vin_error=True)
+        Xelon.objects.create(numero_de_dossier='A987654321', vin=self.vin, date_retour=timezone.now())
+        call_command("sendemail", "--vin_error", "--contract", "--vin_corvet", stdout=self.out)
+        self.assertIn("Envoi de l'email des erreurs de VIN terminée !", self.out.getvalue())
+        self.assertIn("Envoi de l'email des contrats terminée !", self.out.getvalue())
+        self.assertIn("Envoi de l'email des VINs sans données CORVET terminée !", self.out.getvalue())
 
     def test_update_auth(self):
         users = User.objects.all()
@@ -108,3 +127,12 @@ class DashboardCommandTestCase(UnitTest):
 
         call_command("loadcontract", "-f" "test.xlsx", stdout=self.out)
         self.assertIn("[CONTRACT] No excel file found", self.out.getvalue())
+
+    def test_importexcel_is_not_sys_report_email(self):
+        call_command("importexcel", "--tests", stdout=self.out)
+        self.assertIn("[IMPORT_EXCEL] Update completed.", self.out.getvalue())
+
+    @override_config(SYS_REPORT_TO_MAIL_LIST="test@test.com")
+    def test_importexcel_is_sys_report_email(self):
+        call_command("importexcel", "--tests", stdout=self.out)
+        self.assertIn("[IMPORT_EXCEL] Update completed.", self.out.getvalue())

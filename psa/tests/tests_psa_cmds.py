@@ -31,10 +31,24 @@ class PsaCommandTestCase(UnitTest):
             self.out.getvalue()
         )
 
+    def test_clear_psa_defaultcode_table(self):
+        call_command('clearpsa', '--dtc', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table DefaultCode terminée!",
+            self.out.getvalue()
+        )
+
     def test_clear_psa_corvet_attribute_table(self):
         call_command('clearpsa', '--corvet_attribute', stdout=self.out)
         self.assertIn(
             "Suppression des données de la table CorvetAttribute terminée!",
+            self.out.getvalue()
+        )
+
+    def test_clear_psa_canremote_table(self):
+        call_command('clearpsa', '--canremote', stdout=self.out)
+        self.assertIn(
+            "Suppression des données de la table CanRemote terminée!",
             self.out.getvalue()
         )
 

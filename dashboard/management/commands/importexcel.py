@@ -32,11 +32,12 @@ class Command(BaseCommand):
         self.stdout.write("[IMPORT_EXCEL] Waiting...")
         call_command("loadraspeedi", stdout=out)
         call_command("programing", stdout=out)
-        call_command("loadsqualaetp", "--xelon_update", stdout=out)
+        call_command("loadsqualaetp", stdout=out)
         call_command("importcorvet", "--squalaetp", stdout=out)
         call_command("exportsqualaetp")
         call_command("loadsqualaetp", "--relations")
         if "Error" in out.getvalue() or options['tests']:
+            self.stdout.write(self.style.WARNING("[IMPORT_EXCEL] Error report waiting..."))
             cleaned = re.sub(r"\[[\d;]+[a-z]", "", out.getvalue())
             subject = "[CSD_DASHBOARD] Rapport d'erreurs système"
             if options['tests']:
@@ -46,28 +47,32 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("[IMPORT_EXCEL] Update completed."))
 
     def _send_email(self, subject, data):
-        context = {
-            "network": self._dir_check(), "raspeedi": [], "squalaetp": [], "delay": [], "limit": [], "corvet": []
-        }
-        for line in data.split("\n"):
-            if "RASPEEDI_FILE" in line:
-                context["raspeedi"].append(line)
-            if "SQUALAETP_FILE" in line:
-                context["squalaetp"].append(line)
-            if "DELAY_FILE" in line:
-                context["delay"].append(line)
-            if "TIME_LIMIT_FILE" in line:
-                context["limit"].append(line)
-            if "CorvetError in" in line:
-                context["corvet"].append(line)
+        if config.SYS_REPORT_TO_MAIL_LIST:
+            context = {
+                "network": self._dir_check(), "raspeedi": [], "squalaetp": [], "delay": [], "limit": [], "corvet": []
+            }
+            for line in data.split("\n"):
+                if "RASPEEDI_FILE" in line:
+                    context["raspeedi"].append(line)
+                if "SQUALAETP_FILE" in line:
+                    context["squalaetp"].append(line)
+                if "DELAY_FILE" in line:
+                    context["delay"].append(line)
+                if "TIME_LIMIT_FILE" in line:
+                    context["limit"].append(line)
+                if "CorvetError in" in line:
+                    context["corvet"].append(line)
 
-        html_message = render_to_string('dashboard/email_format/check_commands.html', context)
-        plain_message = strip_tags(html_message)
-        send_mail(
-            subject, plain_message, None, string_to_list(config.SYS_REPORT_TO_MAIL_LIST),
-            html_message=html_message
-        )
-        self.stdout.write(self.style.SUCCESS("Envoi de l'email Erreur import Excel terminée !"))
+            html_message = render_to_string('dashboard/email_format/check_commands.html', context)
+            plain_message = strip_tags(html_message)
+            send_mail(
+                subject, plain_message, None, string_to_list(config.SYS_REPORT_TO_MAIL_LIST),
+                html_message=html_message
+            )
+            self.stdout.write(self.style.SUCCESS("[IMPORT_EXCEL] Sending email error Excel import completed !"))
+        else:
+            logger.error("[CONSTANCE_CONFIG] The SYS_REPORT_TO_MAIL_LIST is empty !")
+            self.stdout.write(self.style.ERROR("[IMPORT_EXCEL] The list of recipients to send the email is missing!"))
 
     @staticmethod
     def _dir_check():

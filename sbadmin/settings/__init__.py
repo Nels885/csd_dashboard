@@ -36,6 +36,7 @@ SITE_ID = 1
 
 INSTALLED_APPS = [
     # django apps
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +55,6 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'encrypted_fields',
-    'channels',
 
     # Django-wiki
     'django.contrib.sites.apps.SitesConfig',
@@ -124,7 +124,7 @@ TEMPLATES = [
 ]
 
 # WSGI_APPLICATION = 'sbadmin.wsgi.application'
-ASGI_APPLICATION = 'sbadmin.routing.application'
+ASGI_APPLICATION = 'sbadmin.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -334,11 +334,11 @@ CONSTANCE_CONFIG = OrderedDict({
     'SITE_DESCRIPTION': ('', 'Website description'),
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
     'WIKI_URL': ('127.0.0.1:8001', 'URL of the wiki web application'),
-    'SYS_REPORT_TO_MAIL_LIST': ('system1@test.com; system2@test.com', 'System report TO email list'),
+    'SYS_REPORT_TO_MAIL_LIST': ('', 'System report TO email list'),
     'CONTRACT_TO_EMAIL_LIST': ('contract1@test.com; contract2@test.com', 'Contracts TO email list'),
 
     # Network Options
-    'BASE_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
+    'CSD_DIR': ('~/Documents/CSD_DATABASE', 'Network drive path'),
     'NAS_DIR': ('', 'Network NAS drive path'),
     'XLS_RASPEEDI_FILE': ('PROG/RASPEEDI/table_boitier_PSA.xlsx', 'xls raspeedi file'),
     'XLS_SQUALAETP_FILE': ('EXTS/squalaetp.xls', 'xls squalaetp file'),
@@ -407,7 +407,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'collapse': True
     },
     '2. Network Options': {
-        'fields': ('BASE_DIR', 'NAS_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE',
+        'fields': ('CSD_DIR', 'NAS_DIR', 'XLS_RASPEEDI_FILE', 'XLS_SQUALAETP_FILE', 'XLS_ATTRIBUTS_FILE',
                    'CSV_EXTRACTION_FILE', 'XLS_DELAY_PATH', 'XLS_DELAY_FILES', 'XLS_TIME_LIMIT_FILE', 'XML_CORVET_PATH',
                    'TAG_XELON_PATH', 'TAG_XELON_LOG_PATH', 'TAG_XELON_TEL_PATH'),
         'collapse': False
@@ -438,6 +438,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
 # CELERY STUFF
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_EXTENDED = True
 CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
 CELERY_TASK_IGNORE_RESULT = False
 CELERY_TIME_ZONE = "Europe/Paris"

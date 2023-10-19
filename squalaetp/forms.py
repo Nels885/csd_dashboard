@@ -10,7 +10,7 @@ from utils.django.validators import validate_vin, vin_psa_isvalid
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet, Multimedia, Ecu
-from .models import Xelon, Action, Sivin, ProductCode, ProductCategory
+from .models import Xelon, Action, Sivin, ProductCode, ProductCategory, XelonTemporary
 from .tasks import send_email_task
 from utils.django.forms.fields import ListTextWidget
 from utils.django.models import defaults_dict
@@ -84,6 +84,7 @@ class VinCorvetModalForm(BSModalModelForm):
         ),
         required=False
     )
+    force_vin = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = Xelon
@@ -100,7 +101,7 @@ class VinCorvetModalForm(BSModalModelForm):
 
     def clean_vin(self):
         data = self.cleaned_data['vin']
-        message = validate_vin(data)
+        message = validate_vin(data, psa_type=False)
         if message:
             raise forms.ValidationError(_(message), code='invalid', params={'value': data})
         return data
@@ -130,11 +131,13 @@ class VinCorvetModalForm(BSModalModelForm):
         cleaned_data = super(VinCorvetModalForm, self).clean()
         vin = cleaned_data.get('vin')
         data = cleaned_data.get('xml_data')
-        if vin and isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
-            raise forms.ValidationError(_('VIN error !'))
-        elif vin != self.oldVin and vin_psa_isvalid(vin) and not isinstance(data, dict):
-            if not Corvet.objects.filter(vin=vin):
-                raise forms.ValidationError(_('New PSA VIN, please use the Import CORVET button !'))
+        print(cleaned_data.get('force_vin'), type(cleaned_data.get('force_vin')))
+        if not cleaned_data.get('force_vin'):
+            if vin and isinstance(data, dict) and not data.get('donnee_date_entree_montage'):
+                raise forms.ValidationError(_('VIN error !'))
+            elif vin != self.oldVin and vin_psa_isvalid(vin) and not isinstance(data, dict):
+                if not Corvet.objects.filter(vin=vin):
+                    raise forms.ValidationError(_('New PSA VIN, please use the Import CORVET button !'))
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -252,6 +255,36 @@ class XelonCloseModalForm(BSModalModelForm):
     class Meta:
         model = Xelon
         fields = ['type_de_cloture']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not self.request.is_ajax():
+            instance.type_de_cloture = "N/A"
+            instance.save()
+            Action.objects.create(content="Dossier en retard => FAIT", content_object=instance)
+        return instance
+
+
+class XelonTemporaryForm(forms.ModelForm):
+
+    class Meta:
+        model = XelonTemporary
+        exclude = ('created_by', 'corvet')
+
+    def __init__(self, *args, **kwargs):
+        products = ProductCategory.objects.exclude(product_model="").order_by('product_model')
+        vehicles = Xelon.objects.exclude(modele_vehicule="").order_by('modele_vehicule')
+        prod_list = list(products.values_list('product_model', flat=True).distinct())
+        vehicle_list = list(vehicles.values_list('modele_vehicule', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['modele_produit'].widget = ListTextWidget(data_list=prod_list, name='prod-list')
+        self.fields['modele_vehicule'].widget = ListTextWidget(data_list=vehicle_list, name='vehicle-list')
+
+
+class XelonTemporaryModalForm(XelonTemporaryForm, BSModalModelForm):
+
+    def __init_(self, *args, **kwargs):
+        super().__init(*args, **kwargs)
 
     def save(self, commit=True):
         instance = super().save(commit=False)

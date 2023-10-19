@@ -35,7 +35,7 @@ postgres=# CREATE USER nels885 WITH PASSWORD 'kikoulol';
 CREATE ROLE
 postgres=# ALTER ROLE nels885 SET client_encoding TO 'utf8';
 ALTER ROLE
-postgres=# ALTER ROLE nels885 SET default_transaction_isolation TO 'read commited';
+postgres=# ALTER ROLE nels885 SET default_transaction_isolation TO 'read committed';
 ALTER ROLE
 postgres=# ALTER ROLE nels885 SET timezone TO 'Europe/Paris';
 ALTER ROLE
@@ -50,7 +50,7 @@ Download the repository and create the virtual environment:
 $ git clone https://github.com/Nels885/csd_dashboard
 $ cd csd_dashboard
 $ pipenv --python 3 
-$ pipenv install --dev
+$ pipenv sync --dev
 ```
 
 ### Starting the server
@@ -79,3 +79,37 @@ $ pipenv run celery -A sbadmin purge
 $ pipenv run celery -A sbadmin worker --beat --scheduler django --loglevel=info
 ```
 
+### Email testing tool for developers
+
+To test emails during development, we use the MailHog tool, [Github link](https://github.com/mailhog/MailHog/releases).
+
+Installation on Linux:
+
+```bash
+$ wget <MailHog_linux_amd64 release link>
+$ chmod u+x MailHog_linux_amd64
+$ ./MailHog_linux_amd64
+2023/08/25 15:52:51 Using in-memory storage
+2023/08/25 15:52:51 [SMTP] Binding to address: 0.0.0.0:1025
+[HTTP] Binding to address: 0.0.0.0:8025
+2023/08/25 15:52:51 Serving under http://0.0.0.0:8025/
+Creating API v1 with WebPath:
+Creating API v2 with WebPath:
+```
+
+### Test application
+
+```bash
+$ sudo -i -u postgres psql
+psql (9.6.10)
+Type "help" for help.
+
+postgres=# ALTER USER nels885 CREATEDB;
+ALTER ROLE
+postgres=# \q 
+```
+
+```bash
+$ pipenv run coverage run --source="." manage.py test -v 2
+$ pipenv run coverage html
+````

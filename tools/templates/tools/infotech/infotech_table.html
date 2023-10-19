@@ -1,0 +1,69 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'tools/infotech/tab_select.html' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <div style="min-height: 100vh;">
+        <table class="table table-bordered table-sm display" id="infotechTable" style="width:100%;">
+            <thead>
+            <tr>
+                <th></th>
+                <th class="text-nowrap">N° Info</th>
+                <th>Date</th>
+                <th>Qui</th>
+                <th>Objet</th>
+                <th>Status</th>
+                <th>Infos</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for obj in objects %}
+
+                <tr>
+                    <td class="bg-white text-nowrap" style="width: 60px;">
+                        {% if perms.tools.change_infotech %}
+                            <a href="{% url 'tools:infotech_update' pk=obj.pk %}" title="Actions réalisées" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>
+                        {% else %}
+                            <i class="btn btn-dark btn-circle btn-sm fas fa-edit"></i>
+                        {% endif %}
+                        <a href="{% url 'tools:infotech_detail' pk=obj.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                    </td>
+                    <td>{{ obj.id }}</td>
+                    <td class="text-nowrap">{{ obj.created_at|date:"d/m/Y" }}</td>
+                    <td class="text-nowrap">{{ obj.created_by.last_name }} {{ obj.created_by.first_name }}</td>
+                    <td style="min-width: 15rem;">{{ obj.item }}</td>
+                    <td class="text-nowrap">{{ obj.status }}</td>
+                    <td style="min-width: 30rem; max-width: 30rem;">{{ obj.info }}</td>
+                    <td style="min-width: 30rem; max-width: 30rem;">{{ obj.action }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}
+
+{% block tablejs %}
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'tools/js/tools-tables.js' %}"></script>
+
+{% endblock %}

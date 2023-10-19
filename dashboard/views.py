@@ -1,4 +1,3 @@
-import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import gettext as _
@@ -22,7 +21,7 @@ from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, B
 from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
 from utils.django.tokens import account_activation_token
 from utils.django.urls import reverse, reverse_lazy, http_referer
-from utils.django.validators import vin_psa_isvalid
+from utils.django.validators import vin_psa_isvalid, immat_isvalid
 from squalaetp.models import Indicator, Sivin
 from squalaetp.tasks import save_sivin_to_models
 # from tools.models import EtudeProject
@@ -42,7 +41,8 @@ def index(request):
     """ View of index page """
     title = _("Home")
     posts = Post.objects.all().order_by('-timestamp')[:5]
-    suptechs = Suptech.objects.filter(status="En Attente")[:15]
+    sups_pending = Suptech.objects.filter(status="En Attente").order_by('date')
+    sups_progress = Suptech.objects.filter(status="En Cours").order_by('date')
     return render(request, 'dashboard/index.html', locals())
 
 
@@ -132,11 +132,11 @@ def search_ajax(request):
         query = form.cleaned_data['query']
         select = form.cleaned_data['select']
         if query and select:
-            if vin_psa_isvalid(query.upper()):
-                if not Corvet.search(query):
+            if vin_psa_isvalid(query):
+                if not Corvet.objects.filter(vin__iexact=query):
                     task = save_corvet_to_models.delay(query)
                     data['task_id'] = task.id
-            elif not re.match(r'^[9a-zA-Z]\d{9}$', str(query)) and (6 < len(query) < 11):
+            elif immat_isvalid(query):
                 if not Sivin.search(query):
                     task = save_sivin_to_models.delay(query)
                     data['task_id'] = task.id

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
@@ -175,6 +176,13 @@ class Repair(models.Model):
         if self.pk:
             return reverse_lazy('reman:edit_repair', args=[self.pk])
         return reverse_lazy('reman:repair_table', get={'filter': 'quality'})
+
+    @classmethod
+    def search(cls, value):
+        if isinstance(value, str):
+            return cls.objects.filter(
+                Q(identify_number__iexact=value.strip()) | Q(batch__batch_number__iexact=value.strip()))
+        return None
 
     def __str__(self):
         return self.identify_number

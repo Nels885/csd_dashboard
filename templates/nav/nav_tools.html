@@ -62,7 +62,32 @@
                     <a class="collapse-item" href="{% url 'tools:suptech_list' %}">{% trans "All" %}</a>
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">{% trans "Editing" %} :</h6>
-                    <a class="collapse-item create-suptech" href="#">{% trans "Add Suptech" %}</a>
+                    <a class="bs-large-modal collapse-item" href="#" data-form-url="{% url 'tools:suptech_add' %}">{% trans "Add Suptech" %}</a>
+
+                </div>
+            </div>
+        </li>
+    {% endwith %}
+
+    <!-- Nav Item - Infotech Settings Menu -->
+    {% with name="Infotech" icon="fa-info" %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse{{ name }}"
+               aria-expanded="true" aria-controls="collapse{{ name }}">
+                <i class="fas fa-fw {{ icon }}"></i>
+                <span>{{ name }}</span>
+            </a>
+            <div id="collapse{{ name }}" class="collapse" aria-labelledby="heading{{ name }}"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">{% trans "Tabs" %} :</h6>
+                    <a class="collapse-item"
+                       href="{% url 'tools:infotech_list' %}?filter=progress">{% trans "Progress" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:infotech_list' %}?filter=close">{% trans "Close" %}</a>
+                    <a class="collapse-item" href="{% url 'tools:infotech_list' %}">{% trans "All" %}</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">{% trans "Editing" %} :</h6>
+                    <a class="bs-large-modal collapse-item" href="#" data-form-url="{% url 'tools:infotech_add' %}">{% trans "Add Infotech" %}</a>
 
                 </div>
             </div>
@@ -122,7 +147,7 @@
     {% if perms.tools.add_tagxelon %}
         <!-- Nav Item - TAG Xelon Multi -->
         <li class="nav-item">
-            <a class="create-tag-xelon nav-link" href="#">
+            <a class="bs-modal nav-link" href="#" data-form-url="{% url 'tools:tag_xelon_add' %}">
                 <i class="fas fa-fw fa-tag"></i><span>TAG Xelon Multi</span>
             </a>
         </li>
@@ -144,27 +169,18 @@
         </li>
     {% endif %}
 
-    {% if perms.prog.view_raspeedi %}
-        <!-- Nav Item - Tool info -->
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'prog:tool_info' %}" target="_blank">
-                <i class="fas fa-fw fa-desktop"></i><span>Etat outils</span>
-            </a>
-        </li>
-    {% endif %}
+    <!-- Nav Item - Serial Devices -->
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'tools:serial_devices' %}" target="_blank">
+            <i class="fas fa-brands fa-usb"></i><span>Serial Devices</span>
+        </a>
+    </li>
 
     {% comment %}
     <!-- Nav Item - USB Devices -->
     <li class="nav-item">
         <a class="nav-link" href="{% url 'tools:usb_devices' %}">
             <i class="fas fa-fw fa-desktop"></i><span>USB Devices</span>
-        </a>
-    </li>
-
-    <!-- Nav Item - Partslink24 -->
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'tools:partslink24' %}" target="_blank">
-            <i class="fas fa-fw fa-link"></i><span>Partslink24</span>
         </a>
     </li>
     {% endcomment %}

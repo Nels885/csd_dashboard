@@ -1,3 +1,5 @@
+from io import StringIO
+
 from sbadmin import celery_app
 from django.core.management import call_command
 
@@ -15,4 +17,6 @@ def cmd_exportreman_task(*args):
         --check_out: Export REMAN REFERENCE for Check Out repair
         --scan_in_out: Export REMAN REFERENCE for Scan IN/OUT
     """
-    call_command("exportreman", *args)
+    out = StringIO()
+    call_command("exportreman", *args, stdout=out)
+    return out.getvalue()

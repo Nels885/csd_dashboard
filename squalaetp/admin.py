@@ -5,7 +5,7 @@ from django.contrib.admin import widgets
 from django.contrib.auth.models import User
 
 from .models import Xelon, XelonTemporary, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
-from .forms import ProductCodeAdminForm
+from .forms import ProductCodeAdminForm, XelonTemporaryForm
 
 
 class XelonAdmin(admin.ModelAdmin):
@@ -38,6 +38,7 @@ class XelonAdmin(admin.ModelAdmin):
 
 
 class XelonTemporaryAdmin(admin.ModelAdmin):
+    form = XelonTemporaryForm
     list_display = (
         'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'is_active'
     )

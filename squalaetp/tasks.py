@@ -17,7 +17,9 @@ def cmd_loadsqualaetp_task(*args):
     print(f"cmd : importexcel {' '.join(args)}")
     out = StringIO()
     call_command("importexcel", *args, stdout=out)
-    if "email Erreur" in out.getvalue():
+    if "--tests" in args:
+        return {"msg": "Importation Squalaetp terminée avec rapport de test."}
+    if "Error report" in out.getvalue():
         return {"msg": "Erreur d'importation Squalaetp, voir l'email du rapport !!", "tags": "warning"}
     return {"msg": "Importation Squalaetp terminée."}
 
@@ -54,11 +56,10 @@ def send_email_task(self, subject: str, body: str, from_email: str, to: list, cc
 
 @celery_app.task
 def save_sivin_to_models(immat, **kwargs):
-    test = kwargs.get("test", False)
     msg = "SIVIN not Found"
     if not immat.isnumeric() and (6 < len(immat) < 11):
         start_time = time.time()
-        sivin = ScrapingSivin(test=test)
+        sivin = ScrapingSivin(test=kwargs.get("test", False))
         data = xml_sivin_parser(sivin.result(immat))
         sivin.quit()
         if sivin.ERROR or "ERREUR COMMUNICATION SYSTEME SIVIN" in data:

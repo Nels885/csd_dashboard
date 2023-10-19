@@ -1,9 +1,10 @@
 from django import forms
 
-# from .utils import CORVET_DICT
+from .tasks.export_psa import ENGINE_DICT, INTERIOR_DICT, SECURITY_DICT
 from squalaetp.models import Xelon
 from reman.models import Batch
 from psa.models import CorvetOption, CorvetChoices
+from tools.models import SuptechCategory
 from utils.django.forms.fields import ListTextWidget
 
 FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
@@ -11,19 +12,17 @@ FORMAT_CHOICES = [('xlsx', 'XLSX'), ('xls', 'XLS'), ('csv', 'CSV')]
 
 class ExportCorvetForm(forms.Form):
     PRODUCTS = [
-        ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
+        ('corvet', '---'), ('btel', 'NAV'), ('rad', 'RADIO'), ('ivi', 'IVI'), ('bsrf', 'BSRF'), ('fmux', 'FMUX'),
+        ('emf', 'DISPLAY'), ('cmb', 'COMBINE'),
         ('ecu', 'ECU'), ('bsi', 'BSI'), ('com200x', 'COM200x'), ('bsm', 'BSM'), ('cvm', 'CVM'), ('artiv', 'ARTIV'),
-        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('vmf', 'VMF'),
+        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('vmf', 'VMF'), ('dmtx', 'DMTX'),
+        ('bpga', 'BPGA'),
         ('xelon', 'ALL Xelon')
     ]
-    # COLS = [(key, key.upper()) for key in CORVET_DICT.keys()]
-    COLS = [
-        ('data_extra', 'Info Véhicule'), ('audio_cfg', 'Config Audio'),
-        ('cmm', 'ECU'), ('cmm_extra', 'ECU Extra'), ('bsi', 'BSI'), ('bsi_extra', 'BSI Extra'), ('com200x', 'COM200x'),
-        ('bsm', 'BSM'), ('cvm', 'CVM'), ('cvm_extra', 'CVM Extra'), ('artiv', 'ARTIV'), ('artiv_extra', 'ARTIV Extra'),
-        ('dae', 'DAE'), ('abs_esp', 'ABS/ESP'), ('airbag', 'AIRBAG'), ('emf', 'DISPLAY'), ('vmf', 'VMF'),
-        ('cmb', 'COMBINE'), ('btel', 'NAV'), ('btel_extra', 'NAV Extra'), ('rad', 'RADIO'), ('rad_extra', 'RADIO Extra')
-    ]
+    INF_COLS = [('data_extra', 'Info Véhicule'), ('audio_cfg', 'Config Audio')]
+    ENG_COLS = [(key, value.get('label')) for key, value in ENGINE_DICT.items()]
+    INT_COLS = [(key, value.get('label')) for key, value in INTERIOR_DICT.items()]
+    SEC_COLS = [(key, value.get('label')) for key, value in SECURITY_DICT.items()]
 
     brand = forms.ChoiceField(label='Marque', required=False, choices=CorvetChoices.brands(), widget=forms.Select())
     vehicle = forms.ChoiceField(
@@ -33,8 +32,14 @@ class ExportCorvetForm(forms.Form):
     xelon_model = forms.CharField(label='Produit (XELON)', required=False, widget=forms.TextInput())
     xelon_vehicle = forms.CharField(label='Véhicule (XELON)', required=False, widget=forms.TextInput())
     vins = forms.CharField(label='Liste de V.I.N.', required=False, widget=forms.Textarea())
-    columns = forms.MultipleChoiceField(
-        label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
+    info_cols = forms.MultipleChoiceField(
+        label='Info véhicule', required=False, choices=INF_COLS, widget=forms.CheckboxSelectMultiple())
+    engine_cols = forms.MultipleChoiceField(
+        label='Comp. Moteur', required=False, choices=ENG_COLS, widget=forms.CheckboxSelectMultiple())
+    interior_cols = forms.MultipleChoiceField(
+        label='Habitacle', required=False, choices=INT_COLS, widget=forms.CheckboxSelectMultiple())
+    security_cols = forms.MultipleChoiceField(
+        label='Securité', required=False, choices=SEC_COLS, widget=forms.CheckboxSelectMultiple())
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     tag = forms.CharField(label="TAG Corvet", required=False, widget=forms.TextInput())
     start_date = forms.DateField(
@@ -70,6 +75,10 @@ class ExportRemanForm(forms.Form):
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
     columns = forms.MultipleChoiceField(
         label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
+    start_date = forms.DateField(
+        label='Date de début', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
+    end_date = forms.DateField(
+        label='Date de fin', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
 
     def __init__(self, *args, **kwargs):
         batchs = Batch.objects.exclude(customer="").order_by('customer')
@@ -92,8 +101,35 @@ class CorvetVinListForm(forms.Form):
         self.fields['corvet_tag'].widget = ListTextWidget(data_list=_tag_list, name='corvet-tag-list')
 
 
+class ExportSuptechForm(forms.Form):
+    CATEGORIES = [('', '---')]
+    IS_48H_CHOICES = [('', 'All'), (True, 'Oui'), (False, 'Non')]
+    MONTH_CHOICES = [('', 'All'), ('6', '6 derniers mois'), ('12', '12 derniers mois')]
+    COLS = [
+        ('time', 'TIME'), ('info', 'INFO'),
+        ('rmq', 'RMQ'), ('action', 'ACTION/RETOUR'), ('status', 'STATUS'), ('deadline', 'DATE_LIMIT'),
+        ('modified_at', 'ACTION_LE'), ('fullname', 'ACTION_PAR'), ('day_number', 'DELAIS_EN_JOURS')
+    ]
+
+    category = forms.ChoiceField(label='Catégorie', required=False, choices=CATEGORIES, widget=forms.Select())
+    is_48h = forms.ChoiceField(label='Traitement 48h', required=False, choices=IS_48H_CHOICES, widget=forms.Select())
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    columns = forms.MultipleChoiceField(
+        label='Sélect. col. Excel', required=False, choices=COLS, widget=forms.CheckboxSelectMultiple())
+    date_delta = forms.ChoiceField(label='Date', required=False, choices=MONTH_CHOICES, widget=forms.Select())
+    start_date = forms.DateField(
+        label='Date de début', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
+    end_date = forms.DateField(
+        label='Date de fin', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        choices = [(obj.id, obj.name) for obj in SuptechCategory.objects.all()]
+        self.fields['category'].choices = self.CATEGORIES + choices
+
+
 class ExportToolsForm(forms.Form):
-    TABLES = [('suptech', 'SUPTECH'), ('bga_time', 'UTILISATION BGA')]
+    TABLES = [('bga_time', 'UTILISATION BGA')]
     MONTH_CHOICES = [('', 'All'), ('6', '6 derniers mois'), ('12', '12 derniers mois')]
 
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())

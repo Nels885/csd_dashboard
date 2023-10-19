@@ -21,6 +21,7 @@ from django.views.generic.base import RedirectView
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.i18n import JavaScriptCatalog
 
+
 from dashboard.views import index
 from .views import get_progress_view, download_file_view
 

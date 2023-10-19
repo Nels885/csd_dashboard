@@ -1,10 +1,13 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
+from utils.django.forms.fields import ListTextWidget
 from django.utils.translation import gettext as _
+from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from crum import get_current_user
 
-from utils.django.validators import validate_xelon
-from .models import Raspeedi, UnlockProduct
+from utils.django.validators import validate_xelon, url_isvalid
+from .models import Raspeedi, UnlockProduct, ToolStatus, AET
 from squalaetp.models import Xelon
+from prog.models import MbedFirmware
 
 
 class RaspeediForm(ModelForm):
@@ -56,3 +59,54 @@ class UnlockForm(Form):
         if commit:
             instance.save()
         return instance
+
+
+class ToolStatusForm(BSModalModelForm):
+    class Meta:
+        model = ToolStatus
+        fields = '__all__'
+
+
+class AETModalForm(BSModalModelForm):
+    def clean_raspi_url(self):
+        data = self.cleaned_data['raspi_url']
+        if not url_isvalid(str(data)):
+            self.add_error('raspi_url', _("URL invalid"))
+        return data
+
+    class Meta:
+        model = AET
+        fields = '__all__'
+
+
+class AETAddSoftwareModalForm(BSModalModelForm):
+    class Meta:
+        model = MbedFirmware
+        fields = ['name', 'version', 'filepath']
+
+    def clean_filepath(self):
+        data = self.cleaned_data['filepath']
+        if ".bin" not in str(data):
+            self.add_error('filepath', _('Please upload bin file.'))
+        return data
+
+
+class AETSendSoftwareForm(BSModalForm):
+    select_target = CharField(label='Mbed à mettre à jour', max_length=500)
+    select_firmware = CharField(label='Nom du firmware Mbed', max_length=500)
+
+    def __init__(self, *args, **kwargs):
+        pk = kwargs.pop('pk', None)
+        if pk is not None:
+            aet = AET.objects.get(pk=pk)
+            _target_list = list(aet.mbed_list.split(","))
+        else:
+            _target_list = None
+        firmwares = MbedFirmware.objects.all()
+        _firmware_list = list(firmwares.values_list('name', flat=True).distinct())
+        super().__init__(*args, **kwargs)
+        self.fields['select_target'].widget = ListTextWidget(data_list=_target_list, name='target-list')
+        self.fields['select_firmware'].widget = ListTextWidget(data_list=_firmware_list, name='firmware-list')
+
+    class Meta:
+        fields = '__all__'

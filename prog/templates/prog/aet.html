@@ -1,0 +1,145 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static i18n widget_tweaks %}
+
+{% block card_header %}
+
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+
+            {% include 'prog/tab_select.html' with select='aet' %}
+
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block table_content %}
+
+    <button class="add-aet btn btn-sm btn-primary mb-3"
+            {% if not perms.prog.add_aet %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout AET
+    </button>
+
+    <button class="add-soft-aet btn btn-sm btn-primary mb-3"
+            {% if not perms.prog.add_aet %}disabled{% endif %}>
+        <i class="fas fa-plus-square text-white-50"></i> Ajout Soft Mbed
+    </button>
+
+    <div class="{% if form.select.errors %}invalid{% endif %} text-center bg-danger text-white text-uppercase font-weight-bold mb-2">
+        {% for error in form.select.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+
+    <table class="table table-striped" style="width: 100%;">
+        <thead class="thead-dark text-uppercase">
+            <tr>
+                <th></th>
+                <th class="col-2">Nom</th>
+                <th class="col-3 text-nowrap">URL Raspi</th>
+                <th class="col-2 text-nowrap">Liste Mbed</th>
+                <th class="col-2">Status</th>
+                <th class="col-auto"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in AET_list %}
+            <tr>
+                <td class="text-nowrap" style="width: 60px;">
+                    <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                    <button data-form-url="{% url 'prog:aet_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.delete_aet %}disabled{% endif %}>
+                            <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+                <td class="font-weight-bold">{{ obj.name }}</td>
+                <td class="font-weight-bold">{{ obj.raspi_url }}</td>
+                <td class="font-weight-bold">{{ obj.mbed_list }}</td>
+                <td class="font-weight-bold">
+                    <span class="text" id="aet{{ obj.id }}">Hors Ligne</span>
+                    <div class="progress" id="aet{{ obj.id }}-progress" style="display: none">
+                        <div id="aet{{ obj.id }}-progressbar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuemax="100" aria-valuemin="0"></div>
+                    </div>
+                </td>
+                <td class="font-weight-bold text-nowrap">
+                    <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2 {% if not perms.prog.change_aet %}disabled{% endif %}">
+                        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                        <span class="text">{% trans "Mettre à jour un Mbed" %}</span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <h3>Liste des Firmware</h3>
+    <table class="table table-striped" style="width: 100%;">
+        <thead class="thead-dark text-uppercase">
+            <tr>
+                <th></th>
+                <th class="col-2">Nom</th>
+                <th class="col-1">Version</th>
+                <th class="col-2 text-nowrap">Date de modification</th>
+                <th>Fichier</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in firmware_list %}
+            <tr>
+                <td class="text-nowrap" style="width: 60px;">
+                    <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                    <button data-form-url="{% url 'prog:firmware_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.change_aet %}disabled{% endif %}>
+                            <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+                <td class="font-weight-bold">{{ obj.name }}</td>
+                <td class="font-weight-bold">{{ obj.version }}</td>
+                <td class="font-weight-bold">{{ obj.modified_at|date:"d/m/Y H:i" }}</td>
+                <td class="font-weight-bold">{{ obj.filepath }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script type="text/javascript">
+        let obj_list = [
+            {% for obj in AET_list %}
+                "{{ obj.id }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        function getAetStatus() {
+            for (let i in obj_list) {
+                let pk = obj_list[i];
+                $.ajax({
+                    method: "get",
+                    url: "{% url 'prog:ajax_aet_status' pk=0 %}".replace('0', pk),
+                    success: function(data) {
+                        console.log(data)
+                        let id = '#aet' + pk;
+                        $(id).html(data['status']);
+                        if(data['percent'] === '0') {
+                            $(id + '-progress').hide()
+                        }
+                        else {
+                            $(id + '-progressbar').css({'width': data['percent'].toString() + '%'});
+                            $(id + '-progress').show()
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+        getAetStatus();
+        setInterval(getAetStatus, 10000);
+    </script>
+
+{% endblock %}

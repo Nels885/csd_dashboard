@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from squalaetp.models import Xelon, ProductCategory, Indicator
 from psa.models import Multimedia, Ecu
-from utils.conf import XLS_SQUALAETP_FILE, XLS_DELAY_FILES, XLS_TIME_LIMIT_FILE, string_to_list
+from utils.conf import string_to_list, get_path, XLS_DELAY_FILES
 from utils.django.models import defaults_dict
 from utils.django.validators import comp_ref_isvalid
 from utils.data.analysis import ProductAnalysis
@@ -65,34 +65,29 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        self.stdout.write("[SQUALAETP] Waiting...")
+        if options['squalaetp_file'] is not None:
+            squalaetp = ExcelSqualaetp(options['squalaetp_file'])
+        else:
+            squalaetp = ExcelSqualaetp(get_path('XLS_SQUALAETP_FILE'))
+        if options['delay_files']:
+            delay_files = string_to_list(options['delay_files'])
+        else:
+            delay_files = XLS_DELAY_FILES
 
-        if options['xelon_update']:
-            if options['squalaetp_file'] is not None:
-                squalaetp = ExcelSqualaetp(options['squalaetp_file'])
-            else:
-                squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
-            if options['delay_files']:
-                delay_files = string_to_list(options['delay_files'])
-            else:
-                delay_files = XLS_DELAY_FILES
+        if options['time_limit_file']:
+            time_limit = ExcelTimeLimitAnalysis(options['time_limit_file'])
+        else:
+            time_limit = ExcelTimeLimitAnalysis(get_path('XLS_TIME_LIMIT_FILE'))
+        self._squalaetp_file(Xelon, squalaetp)
+        self._delay_files(Xelon, squalaetp, delay_files)
+        self._time_limit_files(Xelon, squalaetp, time_limit)
+        self._indicator()
 
-            if options['time_limit_file']:
-                time_limit = ExcelTimeLimitAnalysis(options['time_limit_file'])
-            else:
-                time_limit = ExcelTimeLimitAnalysis(XLS_TIME_LIMIT_FILE)
-            self._squalaetp_file(Xelon, squalaetp)
-            self._delay_files(Xelon, squalaetp, delay_files)
-            self._time_limit_files(Xelon, squalaetp, time_limit)
-            self._indicator()
-
-        elif options['relations']:
+        if options['relations']:
             self._foreignkey_relation()
-
-        elif options['prod_category']:
+        if options['prod_category']:
             self._product_category()
-
-        elif options['xelon_name']:
+        if options['xelon_name']:
             self._xelon_name_update()
 
     def _foreignkey_relation(self):
@@ -113,7 +108,7 @@ class Command(BaseCommand):
         )
 
     def _squalaetp_file(self, model, excel):
-        self.stdout.write("[XELON] Waiting...")
+        self.stdout.write("[SQUALAETP] Waiting...")
         nb_prod_before, nb_prod_update = model.objects.count(), 0
         nb_category_change = 0
         if not excel.ERROR:
@@ -125,7 +120,7 @@ class Command(BaseCommand):
                 defaults = defaults_dict(model, row, "numero_de_dossier")
                 try:
                     if self._actions_check(xelon_number):
-                        self.stdout.write(f"[XELON] Xelon file {xelon_number} not modified")
+                        self.stdout.write(f"[SQUALAETP] Xelon file {xelon_number} not modified")
                         continue
                     obj, created = model.objects.update_or_create(numero_de_dossier=xelon_number, defaults=defaults)
                     if not created:
@@ -135,14 +130,14 @@ class Command(BaseCommand):
                         obj.product.save()
                         nb_category_change += 1
                 except Exception as err:
-                    logger.error(f"[XELON_CMD] {xelon_number} - {err}")
+                    logger.error(f"[SQUALAETP_CMD] {xelon_number} - {err}")
             model.objects.exclude(numero_de_dossier__in=excel.xelon_number_list()).update(is_active=False)
             nb_prod_after = model.objects.count()
-            self.stdout.write(f"[SQUALAETP_FILE] '{XLS_SQUALAETP_FILE}' => OK")
-            self.stdout.write(self.style.SUCCESS(f"[XELON] Product category changed: {nb_category_change}"))
+            self.stdout.write(f"[SQUALAETP_FILE] '{get_path('XLS_SQUALAETP_FILE')}' => OK")
+            self.stdout.write(self.style.SUCCESS(f"[SQUALAETP] Product category changed: {nb_category_change}"))
             self.stdout.write(
                 self.style.SUCCESS(
-                    "[XELON] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
+                    "[SQUALAETP] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(
                         excel.nrows, nb_prod_after - nb_prod_before, nb_prod_update, nb_prod_after
                     )
                 )
@@ -219,7 +214,7 @@ class Command(BaseCommand):
                 logger.error(f"[TIME_LIMIT_CMD] ValueError row: {', '.join(value_error_list)}")
 
             nb_prod_after = model.objects.count()
-            self.stdout.write(f"[TIME_LIMIT_FILE] '{XLS_TIME_LIMIT_FILE}' => OK")
+            self.stdout.write(f"[TIME_LIMIT_FILE] '{get_path('XLS_TIME_LIMIT_FILE')}' => OK")
             self.stdout.write(
                 self.style.SUCCESS(
                     "[TIME_LIMIT] data update completed: EXCEL_LINES = {} | ADD = {} | UPDATE = {} | TOTAL = {}".format(

@@ -1,7 +1,7 @@
 from django import template
 from django.core.exceptions import FieldDoesNotExist
 
-from psa.models import CorvetChoices, Corvet
+from psa.models import CorvetChoices, Corvet, SupplierCode
 
 register = template.Library()
 
@@ -35,3 +35,16 @@ def get_field_name(field_name):
         return Corvet._meta.get_field(field_name).verbose_name
     except FieldDoesNotExist:
         return "!!! FIELD NOT FOUND !!!"
+
+
+@register.filter(name='get_supplier_code')
+def get_supplier_code(value):
+    if value:
+        try:
+            value = value.replace('0', '')
+            value = "0"*(4 - len(value)) + value
+            data = SupplierCode.objects.get(code=value)
+            return data.name
+        except SupplierCode.DoesNotExist:
+            return f"* {value} *"
+    return ""

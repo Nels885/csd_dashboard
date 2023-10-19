@@ -1,3 +1,5 @@
+{% load corvet_tags %}
+
 <table class="table table-bordered table-striped table-sm">
 
     {% include 'format/collapse_thead.html' with id="collapseDisplay" expanded=collapse.display upper_title="affichage" %}
@@ -53,6 +55,7 @@
             <td class="text-dark td-ihm">N° série RAD</td>
             <td>{{ object.electronique_44f }}</td>
         </tr>
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur RAD" value=object.electronique_64f|get_supplier_code %}
     {% endif %}
     {% if object.electronique_14x %}
         <tr>
@@ -70,154 +73,204 @@
             <td class="text-dark td-ihm">N° série NAV</td>
             <td>{{ object.electronique_44x }}</td>
         </tr>
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur NAV" value=object.electronique_64x|get_supplier_code %}
+    {% endif %}
+    {% if object.electronique_1m2 %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW IVI</td>
+            <td>
+                {{ object.electronique_1m2 }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.ivi id="ivi" %}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL IVI</td>
+            <td>{{ object.electronique_3m2 }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série IVI</td>
+            <td>{{ object.electronique_4m2 }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Date Fab. IVI</td>
+            <td>{{ object.electronique_5m2 }}</td>
+        </tr>
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur IVI" value=object.electronique_6m2|get_supplier_code %}
+        <tr>
+            <td class="text-dark td-ihm">Ref. 8m2 ? IVI</td>
+            <td>{{ object.electronique_8m2 }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">Data Library IVI</td>
+            <td>{{ object.electronique_xm2 }}</td>
+        </tr>
+    {% endif %}
+    {% if object.electronique_19z %}
+        <tr>
+            <td class="text-dark td-ihm">Ref. FMUX</td>
+            <td>{{ object.electronique_19z }}</td>
+        </tr>
     {% endif %}
     </tbody>
 </table>
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseEcu" expanded=collapse.ecu upper_title="calculateur" %}
+    {% include 'format/collapse_thead.html' with id="collapseEngine" expanded=collapse.ecu upper_title="moteur" %}
 
-    <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseEcu">
-    <!-- ECU MOTOR -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW ECU moteur</td>
-        <td>
-            {{ object.electronique_14a }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmm id="cmm" %}
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL LIVRE ECU moteur</td>
-        <td>{{ object.electronique_34a }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL ECU moteur</td>
-        <td>{{ object.electronique_94a }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série ECU moteur</td>
-        <td>{{ object.electronique_44a }}</td>
-    </tr>
-    <!-- BSI -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW BSI</td>
-        <td>
-            {{ object.electronique_14b }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bsi id="bsi" %}
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL BSI</td>
-        <td>{{ object.electronique_94b }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série BSI</td>
-        <td>{{ object.electronique_44b }}</td>
-    </tr>
-    <!-- COM200x -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW COM200x</td>
-        <td>
-            {{ object.electronique_16p }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.hdc id="hdc" %}
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série COM200x</td>
-        <td>{{ object.electronique_46p }}</td>
-    </tr>
-    <!-- BSM -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW BSM</td>
-        <td>{{ object.electronique_16b }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL BSM</td>
-        <td>{{ object.electronique_96b }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série BSM</td>
-        <td>{{ object.electronique_46b }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">Réf HW VMF</td>
-        <td>{{ object.electronique_11m }}</td>
-    </tr>
+    <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseEngine">
+        <!-- ECU MOTOR -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW ECU moteur</td>
+            <td>
+                {{ object.electronique_14a }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmm id="cmm" %}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL LIVRE ECU moteur</td>
+            <td>{{ object.electronique_34a }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL ECU moteur</td>
+            <td>{{ object.electronique_94a }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série ECU moteur</td>
+            <td>{{ object.electronique_44a }}</td>
+        </tr>
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur ECU moteur" value=object.electronique_64a|get_supplier_code %}
+
+        <!-- BSM -->
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW BSM" value=object.electronique_16b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL BSM" value=object.electronique_96b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série BSM" value=object.electronique_46b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BSM" value=object.electronique_66b|get_supplier_code %}
+
+        <!-- DMTX - Dispositif Maintien Tension -->
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW DMTX" value=object.electronique_11q %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL DMTX" value=object.electronique_91q %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série DMTX" value=object.electronique_41q %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur DMTX" value=object.electronique_61q|get_supplier_code %}
+
+        <!-- BPGA - Boitier Protection Alimentation Reseau -->
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW BPGA" value=object.electronique_11n %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série BPGA" value=object.electronique_41n %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Date Fab. BPGA" value=object.electronique_51n %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BPGA" value=object.electronique_61n|get_supplier_code %}
     </tbody>
 </table>
 
 <table class="table table-bordered table-striped table-sm mt-4">
 
-    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.ecu upper_title="sécurité" %}
+    {% include 'format/collapse_thead.html' with id="collapseCockpit" expanded=collapse.cockpit upper_title="habitacle" %}
 
-    <tbody class="collapse {% if collapse.ecu %}show{% endif %}" id="collapseSecu">
-    <!-- ASS -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW boitier AAS</td>
-        <td>{{ object.electronique_14r }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL boitier AAS</td>
-        <td>{{ object.electronique_94r }}</td>
-    </tr>
-    <!-- AIR BAG -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW Boitier Air Bag</td>
-        <td>{{ object.electronique_14m }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL Boitier Air Bag</td>
-        <td>{{ object.electronique_94m }}</td>
-    </tr>
-    <!-- RAIN SENSOR -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW Capteur pluie</td>
-        <td>{{ object.electronique_16g }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL Capteur pluie</td>
-        <td>{{ object.electronique_96g }}</td>
-    </tr>
-    <!-- MULTIFUNCTION CAM -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW CVM 2</td>
-        <td>
-            {{ object.electronique_12y }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cvm2 id="cvm2" %}
-        </td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL CVM 2</td>
-        <td>{{ object.electronique_92y }}</td>
-    </tr>
-    <!-- ARTIV -->
-    <tr>
-        <td class="text-dark td-ihm">Réf HW ARTIV</td>
-        <td>{{ object.electronique_19k }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">CAL ARTIV</td>
-        <td>{{ object.electronique_99k }}</td>
-    </tr>
-    <tr>
-        <td class="text-dark td-ihm">N° série ARTIV</td>
-        <td>{{ object.electronique_49k }}</td>
-    </tr>
-    <!-- ABS/EPS -->
-    {% with label="boitier ABS/ESP" %}
+    <tbody class="collapse {% if collapse.cockpit %}show{% endif %}" id="collapseCockpit">
+        <!-- BSI -->
         <tr>
-            <td class="text-dark td-ihm">Réf HW {{ label }}</td>
-            <td>{{ object.electronique_14p }}</td>
+            <td class="text-dark td-ihm">Réf HW BSI</td>
+            <td>
+                {{ object.electronique_14b }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bsi id="bsi" %}
+            </td>
+        </tr>
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL BSI" value=object.electronique_94b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série BSI" value=object.electronique_44b %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BSI" value=object.electronique_64b|get_supplier_code %}
+
+        <!-- VSM -->
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW VSM" value=object.electronique_1k4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL VSM" value=object.electronique_9K4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Dote VSM" value=object.electronique_8k4 %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur VSM" value=object.electronique_6k4|get_supplier_code %}
+
+        <!-- COM200x -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW COM200x</td>
+            <td>
+                {{ object.electronique_16p }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.hdc id="hdc" %}
+            </td>
+        </tr>
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série COM200x" value=object.electronique_46p %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur COM200x" value=object.electronique_66p|get_supplier_code %}
+
+        <!-- VMF -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW VMF</td>
+            <td>{{ object.electronique_11m }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table table-bordered table-striped table-sm mt-4">
+
+    {% include 'format/collapse_thead.html' with id="collapseSecu" expanded=collapse.security upper_title="sécurité" %}
+
+    <tbody class="collapse {% if collapse.security %}show{% endif %}" id="collapseSecu">
+        <!-- ASS -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW boitier AAS</td>
+            <td>{{ object.electronique_14r }}</td>
         </tr>
         <tr>
-            <td class="text-dark td-ihm">CAL LIVRE {{ label }}</td>
-            <td>{{ object.electronique_34p }}</td>
+            <td class="text-dark td-ihm">CAL boitier AAS</td>
+            <td>{{ object.electronique_94r }}</td>
+        </tr>
+        <!-- AIR BAG -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW Boitier Air Bag</td>
+            <td>{{ object.electronique_14m }}</td>
         </tr>
         <tr>
-            <td class="text-dark td-ihm">CAL {{ label }}</td>
-            <td>{{ object.electronique_94p }}</td>
+            <td class="text-dark td-ihm">CAL Boitier Air Bag</td>
+            <td>{{ object.electronique_94m }}</td>
         </tr>
-    {% endwith %}
+        <!-- RAIN SENSOR -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW Capteur pluie</td>
+            <td>{{ object.electronique_16g }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL Capteur pluie</td>
+            <td>{{ object.electronique_96g }}</td>
+        </tr>
+        <!-- CVM 2 -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW CVM 2</td>
+            <td>
+                {{ object.electronique_12y }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cvm2 id="cvm2" %}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL CVM 2</td>
+            <td>{{ object.electronique_92y }}</td>
+        </tr>
+        <!-- ARTIV -->
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW ARTIV" value=object.electronique_19k %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL ARTIV" value=object.electronique_99k %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série ARTIV" value=object.electronique_49k %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur ARTIV" value=object.electronique_69k|get_supplier_code %}
+        <!-- AVM -->
+        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW AVM" value=object.electronique_12e %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="CAL AVM" value=object.electronique_92e %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="N° série AVM" value=object.electronique_42e %}
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur AVM" value=object.electronique_62e|get_supplier_code %}
+        <!-- ABS/EPS -->
+        {% with label="boitier ABS/ESP" %}
+            <tr>
+                <td class="text-dark td-ihm">Réf HW {{ label }}</td>
+                <td>{{ object.electronique_14p }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">CAL LIVRE {{ label }}</td>
+                <td>{{ object.electronique_34p }}</td>
+            </tr>
+            <tr>
+                <td class="text-dark td-ihm">CAL {{ label }}</td>
+                <td>{{ object.electronique_94p }}</td>
+            </tr>
+        {% endwith %}
     </tbody>
 </table>

@@ -17,12 +17,6 @@ class ApiTestCase(APITestCase):
         self.authError = {"detail": "Informations d'authentification non fournies."}
         self.token = Token.objects.get(user=admin)
 
-    def login(self, user='user'):
-        if user == 'admin':
-            self.client.login(username='admin', password='adminpassword')
-        else:
-            self.client.login(username='toto', password='totopassword')
-
     def api_view_list(self, url):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 401)

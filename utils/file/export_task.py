@@ -44,7 +44,8 @@ class ExportExcelTask(BaseTask):
         :return Destination path to file
         """
         path = self.copy_and_get_copied_path()
-        destination_path = os.path.join(path, f"{filename}_{timezone.now().strftime('%y-%m-%d_%H-%M')}.{excel_type}")
+        destination_path = os.path.join(
+            path, f"{filename.replace('/', '-')}_{timezone.now().strftime('%y-%m-%d_%H-%M')}.{excel_type}")
         if excel_type == "csv":
             self._create_csv(destination_path, values_list)
         elif excel_type == "xls":

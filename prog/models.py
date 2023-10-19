@@ -1,5 +1,8 @@
 from urllib.parse import urljoin
 from django.db import models
+from django.core.validators import RegexValidator
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from squalaetp.models import Xelon
 from dashboard.models import UserProfile, User
@@ -94,10 +97,12 @@ class UnlockProduct(models.Model):
 
 class ToolStatus(models.Model):
     name = models.CharField("Nom de l'outils", max_length=50)
+    type = models.TextField("Type", max_length=50, blank=True)
     comment = models.TextField("Commentaire", blank=True)
     url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
     api_path = models.CharField("Chemin API", max_length=500, blank=True)
+    logs = GenericRelation('Log')
 
     class Meta:
         verbose_name = "Statut Outil"
@@ -108,5 +113,50 @@ class ToolStatus(models.Model):
         setattr(self, 'status_url', urljoin(self.url, self.status_path))
         setattr(self, 'api_url', urljoin(self.url, self.api_path))
 
+    def get_url(self, mode):
+        if mode and mode == 'restart':
+            return urljoin(self.url, "api/restart/")
+        elif mode and mode == 'stop':
+            return urljoin(self.url, "api/stop/")
+        return ""
+
     def __str__(self):
         return f"{self.name} - {self.url}"
+
+
+class Log(models.Model):
+    content = models.TextField()
+    added_at = models.DateTimeField('ajouté le', editable=False, auto_now_add=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Log"
+        ordering = ['-added_at']
+
+    def __str__(self):
+        return self.content_object
+
+
+class AET(models.Model):
+    name = models.CharField("Nom de l'AET", max_length=100, unique=True)
+    raspi_url = models.CharField("URL Raspi", max_length=500)
+    mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
+
+    class Meta:
+        verbose_name = "Statut AET"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class MbedFirmware(models.Model):
+    name = models.CharField("Nom du soft mbed", max_length=100, unique=True)
+    version = models.CharField("Version du soft", max_length=10, validators=[RegexValidator(r'[0-9]{1,2}.[0-9]{2}$', "Please respect version format (ex : 1.23)")])
+    modified_at = models.DateTimeField('Modifié le', auto_now=True)
+    filepath = models.FileField(upload_to='firmware/')
+
+    def __str__(self):
+        return self.name

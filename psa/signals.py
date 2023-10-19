@@ -12,6 +12,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
     default = {}
     if instance.electronique_14x.isdigit():
         default.update({"btel": Multimedia.objects.filter(comp_ref__startswith=instance.electronique_14x).first()})
+    if instance.electronique_1m2.isdigit():
+        default.update({"ivi": Multimedia.objects.filter(comp_ref__startswith=instance.electronique_1m2).first()})
     if instance.electronique_14f.isdigit():
         default.update({"radio": Multimedia.objects.filter(comp_ref__startswith=instance.electronique_14f).first()})
     if instance.electronique_14b.isdigit():
@@ -34,6 +36,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
         default.update({"cvm2": Ecu.objects.filter(comp_ref__startswith=instance.electronique_12y, type='CVM2').first()})
     if instance.electronique_11m.isdigit():
         default.update({"vmf": Ecu.objects.filter(comp_ref__startswith=instance.electronique_11m, type='VMF').first()})
+    if instance.electronique_11q.isdigit():
+        default.update({"dmtx": Ecu.objects.filter(comp_ref__startswith=instance.electronique_11q, type='DMTX').first()})
     CorvetProduct.objects.update_or_create(corvet=instance, defaults=default)
     Xelon.objects.filter(vin=instance.vin).update(corvet=instance)
     Sivin.objects.filter(codif_vin=instance.vin).update(corvet=instance)
@@ -46,6 +50,7 @@ def post_save_corvet(sender, created, instance, **kwargs):
 def post_save_multimedia(sender, created, instance, **kwargs):
     CorvetProduct.objects.filter(corvet__electronique_14x__exact=instance.comp_ref).update(btel=instance.pk)
     CorvetProduct.objects.filter(corvet__electronique_14f__exact=instance.comp_ref).update(radio=instance.pk)
+    CorvetProduct.objects.filter(corvet__electronique_1m2__exact=instance.comp_ref).update(ivi=instance.pk)
 
 
 @receiver(post_save, sender=Ecu)
@@ -71,3 +76,5 @@ def post_save_ecu(sender, created, instance, **kwargs):
         CorvetProduct.objects.filter(corvet__electronique_12y__startswith=instance.comp_ref).update(cvm2=instance.pk)
     if instance.type == "VMF":
         CorvetProduct.objects.filter(corvet__electronique_11m__startswith=instance.comp_ref).update(vmf=instance.pk)
+    if instance.type == "DMTX":
+        CorvetProduct.objects.filter(corvet__electronique_11q__startswith=instance.comp_ref).update(dmtx=instance.pk)

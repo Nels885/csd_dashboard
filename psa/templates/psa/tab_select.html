@@ -5,8 +5,13 @@
         {% trans "Useful links" %}
     </a>
 </li>
-<li class="nav-item {% if select == 'tools' %}active{% endif %}">
-    <a class="nav-link {% if select == 'tools' %}active{% endif %}" href="{% url 'psa:nac_tools' %}">
+<li class="nav-item {% if select == 'nac-tools' %}active{% endif %}">
+    <a class="nav-link {% if select == 'nac-tools' %}active{% endif %}" href="{% url 'psa:nac_tools' %}">
         {% trans 'NAC tools' %}
+    </a>
+</li>
+<li class="nav-item {% if select == 'can-tools' %}active{% endif %}">
+    <a class="nav-link {% if select == 'can-tools' %}active{% endif %}" href="{% url 'psa:can_tools' %}">
+        {% trans 'CAN tools' %}
     </a>
 </li>

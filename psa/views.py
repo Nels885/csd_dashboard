@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http import FileResponse
 from django.views.generic import TemplateView
 from django.utils.translation import gettext as _
 from django.forms.models import model_to_dict
@@ -10,8 +11,10 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
 from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
-from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm
+from utils.file.pdf_generate import CorvetBarcode
+from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, SelectCanRemoteForm
 from .models import Corvet, Multimedia
+from .utils import COLLAPSE_LIST
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
 from prog.models import Programing
@@ -29,6 +32,12 @@ def nac_tools(request):
     web_links = WebLink.objects.filter(type="PSA")
     context.update(locals())
     return render(request, 'psa/nac_tools.html', context)
+
+
+def can_tools(request):
+    form = SelectCanRemoteForm(request.POST or None)
+    context.update(locals())
+    return render(request, 'psa/can_tools.html', context)
 
 
 def nac_license(request):
@@ -113,13 +122,10 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
 def corvet_detail(request, pk):
     """
     detailed view of Corvet data for a file
-    :param vin:
+    :param pk:
         VIN for Corvet data
     """
-    collapse = {
-        "media": True, "prog": True, "emf": True, "cmm": True, "display": True, "audio": True, "ecu": True, "bsi": True,
-        "cmb": True
-    }
+    collapse = {key: True for key in COLLAPSE_LIST}
     corvet = get_object_or_404(Corvet, vin=pk)
     if corvet.electronique_14x.isdigit():
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
@@ -132,6 +138,12 @@ def corvet_detail(request, pk):
     select = "prods"
     context.update(locals())
     return render(request, 'psa/detail/detail.html', context)
+
+
+def barcode_pdf_generate(request, pk):
+    query = get_object_or_404(Corvet, pk=pk)
+    buffer = CorvetBarcode(corvet=query).result()
+    return FileResponse(buffer, filename=f"corvet_{query.vin}.pdf")
 
 
 class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):

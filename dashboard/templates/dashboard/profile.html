@@ -22,7 +22,7 @@
                                 <tr>
                                     <td class="align-middle text-dark">{% trans "Profile picture" %} :</td>
                                     <td>
-                                        <img  class="rounded-circle" width="200" src="{{ user.profile.image.url }}" alt="" onerror="this.src='{% static 'img/avatar.png' %}';">
+                                        <img  class="rounded-circle" width="200" height="200" src="{{ user.profile.image.url }}" alt="" onerror="this.src='{% static 'img/avatar.png' %}';">
                                     </td>
                                     <td class="align-middle">
 
@@ -118,7 +118,7 @@
 
                             <hr>
                             <div class="text-center">
-                                <a class="logout-btn col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block" href="#">
+                                <a class="bs-modal col-sm-4 offset-sm-4 align-self-center btn btn-primary btn-user btn-block" href="#" data-form-url="{% url 'dashboard:logout' %}">
                                     {% trans "Logout" %}
                                 </a>
                             </div>

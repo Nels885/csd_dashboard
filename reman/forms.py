@@ -372,10 +372,17 @@ class CloseRepairForm(forms.ModelForm):
         }
 
     def clean_new_barcode(self):
-        data = self.cleaned_data["new_barcode"]
+        data = self.cleaned_data['new_barcode']
         if "#" in data or data == self.instance.barcode:
             self.add_error('new_barcode', _('barcode is invalid'))
         return data
+
+    def clean_quality_control(self):
+        quality_control = self.cleaned_data['quality_control']
+        status = self.cleaned_data['status']
+        if status == "Réparé" and not quality_control:
+            self.add_error('quality_control', _('quality control is required'))
+        return quality_control
 
     def save(self, commit=True):
         instance = super().save(commit=False)

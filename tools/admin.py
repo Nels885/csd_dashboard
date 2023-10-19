@@ -4,11 +4,24 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import User
 from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
-    SuptechMessage, SuptechFile, BgaTime, ConfigFile
+    Message, SuptechFile, BgaTime, RaspiTime, ConfigFile, Infotech, InfotechMailingList
 )
+
+ACTIVE_USERS = User.objects.filter(is_active=True).order_by('first_name')
+
+
+class UserMultipleChoiceField(forms.ModelMultipleChoiceField):
+    """
+    Custom multiple select Field with full name + username
+    """
+    def label_from_instance(self, obj):
+        if obj.first_name and obj.last_name:
+            return f"{obj.first_name} {obj.last_name} ({obj.username})"
+        return obj.username
 
 
 class TagXelonAdmin(admin.ModelAdmin):
@@ -69,16 +82,18 @@ class SuptechAdmin(admin.ModelAdmin):
     @admin.display(description="Delta")
     def days_late(self, obj):
         try:
-            return (obj.modified_at.date() - obj.date).days
+            if obj.modified_at:
+                return (obj.modified_at.date() - obj.date).days
+            return (timezone.now().date() - obj.date).days
         except Exception:
             return ""
 
 
 class SuptechItemAdminForm(forms.ModelForm):
-    to_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
-    cc_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    to_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    cc_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
 
     class Meta:
         model = SuptechItem
@@ -132,13 +147,78 @@ class SuptechCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'manager')
 
 
-class SuptechMessageAdmin(admin.ModelAdmin):
+class MessageAdmin(admin.ModelAdmin):
     list_display = ('content', 'added_at', 'added_by', 'content_object')
 
 
 class SuptechFileAdmin(admin.ModelAdmin):
     list_display = ('suptech', 'file')
     ordering = ('suptech',)
+
+
+class InfotechMailingListAdminForm(forms.ModelForm):
+    to_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    cc_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+
+    class Meta:
+        model = InfotechMailingList
+        fields = '__all__'
+
+
+class InfotechAdmin(admin.ModelAdmin):
+    list_display = ('id', 'item', 'info', 'created_by', 'created_at', 'status')
+    ordering = ('id',)
+    list_filter = ('status',)
+    search_fields = ('id', 'created_by', 'item')
+
+
+class InfotechMailingListAdmin(admin.ModelAdmin):
+    form = InfotechMailingListAdminForm
+    list_display = ('name', 'is_active')
+    ordering = ('name',)
+    list_filter = ('is_active',)
+    search_fields = ('name',)
+    actions = ('is_disabled', 'is_activated')
+
+    def _message_user_about_update(self, request, rows_updated, verb):
+        """Send message about action to user.
+        `verb` should shortly describe what have changed (e.g. 'enabled').
+        """
+        self.message_user(
+            request,
+            _('{0} item{1} {2} successfully {3}').format(
+                rows_updated,
+                pluralize(rows_updated),
+                pluralize(rows_updated, _('was,were')),
+                verb,
+            ),
+        )
+
+    def is_disabled(self, request, queryset):
+        rows_updated = queryset.update(is_active=False)
+        self._message_user_about_update(request, rows_updated, 'disabled')
+    is_disabled.short_description = _('Item disabled')
+
+    def is_activated(self, request, queryset):
+        rows_updated = queryset.update(is_active=True)
+        self._message_user_about_update(request, rows_updated, 'activated')
+    is_activated.short_description = _('Item activated')
+
+
+class BGATimeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'date', 'start_time', 'end_time', 'duration')
+    ordering = ('id',)
+    list_filter = ('name',)
+    search_fields = ('name', 'date')
+
+
+class RaspiTimeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'type', 'date', 'start_time', 'end_time', 'duration')
+    ordering = ('id',)
+    list_filter = ('name', 'type')
+    search_fields = ('name', 'type', 'date')
 
 
 admin.site.register(TagXelon, TagXelonAdmin)
@@ -148,8 +228,11 @@ admin.site.register(ThermalChamber, ThermalChamberAdmin)
 admin.site.register(Suptech, SuptechAdmin)
 admin.site.register(SuptechCategory, SuptechCategoryAdmin)
 admin.site.register(SuptechItem, SuptechItemAdmin)
-admin.site.register(SuptechMessage, SuptechMessageAdmin)
+admin.site.register(Message, MessageAdmin)
 admin.site.register(SuptechFile, SuptechFileAdmin)
-admin.site.register(BgaTime)
+admin.site.register(BgaTime, BGATimeAdmin)
+admin.site.register(RaspiTime, RaspiTimeAdmin)
 admin.site.register(ThermalChamberMeasure, ThermalChamberMeasureAdmin)
 admin.site.register(ConfigFile)
+admin.site.register(Infotech, InfotechAdmin)
+admin.site.register(InfotechMailingList, InfotechMailingListAdmin)

@@ -47,6 +47,18 @@
             </div>
         </div>
 
+        <div class="form-group row">
+            {% include 'format/label_form_group.html' with field=form.start_date %}
+            <div class="col-sm-2">
+                {% render_field form.start_date class="form-control" %}
+            </div>
+
+            {% include 'format/label_form_group.html' with field=form.end_date %}
+            <div class="col-sm-2">
+                {% render_field form.end_date class="form-control" %}
+            </div>
+        </div>
+
         <div class="form-group mt-4 mb-4 row">
             {% include 'format/label_form_group.html' with field=form.columns %}
             <div class="col-sm-10">

@@ -61,11 +61,11 @@ function resultTask(task_id=null) {
     let url = new URL(document.location.href);
     let params = new URLSearchParams(url.search);
     if (task_id === null && params.get('task_id')) {
-        console.log(url.toString());
+        //console.log(url.toString());
         task_id = params.get('task_id')
         params.delete('task_id');
         url.search = params;
-        console.log(url.toString());
+        //console.log(url.toString());
         window.history.pushState({}, null, url.toString())
     }
     if (task_id) {
@@ -76,7 +76,9 @@ function resultTask(task_id=null) {
         function customResult(resultElement, result) {
             // console.log(result)
             $(".bd-loading-modal-lg").modal("hide");
-            addMessage(result.msg, result.tags);
+            if (result.msg) {
+                addMessage(result.msg, result.tags);
+            }
         }
 
         CeleryProgressBar.initProgressBar(progressUrl, {
@@ -84,9 +86,8 @@ function resultTask(task_id=null) {
             progressBarMessageId: "search-progress-bar-message",
             onResult: customResult,
         })
-    } else {
-        $(".bd-loading-modal-lg").modal("hide");
     }
+    $(".bd-loading-modal-lg").modal("hide");
 }
 
 
@@ -185,7 +186,6 @@ $("#searchForm").submit(function (e) {
             // console.log(data);
             if (data.task_id) {
                 var progressUrl = "/celery-progress/?task_id=" + data.task_id;
-
                 // console.log(progressUrl);
 
                 function customResult(resultElement, result) {

@@ -4,15 +4,15 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from django.core.management import call_command
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-# from selenium.webdriver.firefox.options import Options
-from selenium.webdriver import ChromeOptions as Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+
+from constance.test import override_config
 
 MAX_WAIT = 10
 
@@ -52,8 +52,6 @@ class BaseTest:
         self.user.save()
         self.redirectUrl = reverse('index')
         self.nextLoginUrl = '/accounts/login/?next='
-        call_command('constance', 'set', 'CORVET_USER', '')
-        call_command('constance', 'set', 'CORVET_PWD', '')
 
     def add_group_user(self, *args):
         for group in args:
@@ -65,6 +63,9 @@ class BaseTest:
             self.user.user_permissions.add(Permission.objects.get(codename=codename, content_type=content_type))
 
 
+@override_config(CORVET_USER="")
+@override_config(CORVET_PWD="")
+@override_config(CSV_EXTRACTION_FILE="test.csv")
 class UnitTest(TestCase, BaseTest):
 
     def setUp(self):
@@ -78,6 +79,8 @@ class UnitTest(TestCase, BaseTest):
             self.client.login(username='toto', password='totopassword')
 
 
+@override_config(CORVET_USER="")
+@override_config(CORVET_PWD="")
 class FunctionalTest(StaticLiveServerTestCase, BaseTest):
 
     # Basic setUp & tearDown
@@ -89,7 +92,7 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # self.driver = webdriver.Firefox(firefox_profile=profile, firefox_options=options)
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
+        self.driver = webdriver.Chrome(service=Service(), options=options)
         self.driver.implicitly_wait(30)
         StaticLiveServerTestCase.setUp(self)
         BaseTest.__init__(self)
@@ -118,7 +121,7 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # Infinite loop
         while True:
             try:
-                body = self.driver.find_element_by_tag_name('body')
+                body = self.driver.find_element(By.TAG_NAME, 'body')
                 body_text = body.text
                 # Check that text is in body
                 if not not_in:
@@ -141,7 +144,7 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # Infinite loop
         while True:
             try:
-                modal = self.driver.find_element_by_id(modalID)
+                modal = self.driver.find_element(By.ID, modalID)
                 return modal
             except (AssertionError, WebDriverException) as e:
                 # Return exception if more than 10s pass
@@ -155,10 +158,10 @@ class FunctionalTest(StaticLiveServerTestCase, BaseTest):
         # Infinite loop
         while True:
             try:
-                table = self.driver.find_element_by_tag_name('table')
-                tbody = table.find_element_by_tag_name('tbody')
+                table = self.driver.find_element(By.TAG_NAME, 'table')
+                tbody = table.find_element(By.TAG_NAME, 'tbody')
                 # Slice removes tr in thead
-                trs = tbody.find_elements_by_tag_name('tr')
+                trs = tbody.find_elements(By.TAG_NAME, 'tr')
                 return trs
             except (AssertionError, WebDriverException) as e:
                 # Return exception if more than 10s pass

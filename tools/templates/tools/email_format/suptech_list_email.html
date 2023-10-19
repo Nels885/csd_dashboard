@@ -28,12 +28,12 @@
 
             <tr>
                 <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=waiting">{{ suptech.pk }}</a></td>
-                <td>{{ suptech.date }}</td>
+                <td>{{ suptech.date|date:"d/m/Y" }}</td>
                 <td>{{ suptech.user }}</td>
                 <td>{{ suptech.xelon }}</td>
                 <td>{{ suptech.item }}</td>
                 <td>{{ suptech.info|truncatechars:50 }}</td>
-                <td>{{ suptech.category.manager.first_name }} {{ suptech.category.manager.last_name }}</td>
+                <td>{{ suptech.category.name }}</td>
             </tr>
         {% endfor %}
 
@@ -64,12 +64,12 @@
 
                 <tr>
                     <td><a href="http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}?filter=progress">{{ suptech.pk }}</a></td>
-                    <td>{{ suptech.date }}</td>
+                    <td>{{ suptech.date|date:"d/m/Y" }}</td>
                     <td>{{ suptech.user }}</td>
                     <td>{{ suptech.xelon }}</td>
                     <td>{{ suptech.item }}</td>
                     <td>{{ suptech.info|truncatechars:50 }}</td>
-                    <td>{{ suptech.category.manager.first_name }} {{ suptech.category.manager.last_name }}</td>
+                    <td>{{ suptech.category.name }}</td>
                 </tr>
             {% endfor %}
 

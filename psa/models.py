@@ -1,3 +1,5 @@
+import re
+
 from django.db import models, utils
 from django.db.models import Q
 
@@ -217,6 +219,73 @@ class Corvet(models.Model):
     attribut_duo = models.CharField('AFFICHEUR COMPLEMENTAIRE', max_length=200, blank=True)
     attribut_duz = models.CharField('FREQUENCE RADIO', max_length=200, blank=True)
 
+    # Adding the 22/11/2021
+    electronique_11q = models.CharField('DMTX_HARD - DISPOSITIF MAINTIEN TENSION', max_length=200, blank=True)
+    electronique_41q = models.CharField('DMTX_FOURN.NO.SERIE - DISPOSITIF MAINTIEN TENSION', max_length=200, blank=True)
+    electronique_51q = models.CharField('DMTX_FOURN.DATE.FAB - DISPOSITIF MAINTIEN TENSION', max_length=200, blank=True)
+    electronique_61q = models.CharField('DMTX_FOURN.CODE - DISPOSITIF MAINTIEN TENSION', max_length=200, blank=True)
+    electronique_91q = models.CharField('DMTX_SOFT - DISPOSITIF MAINTIEN TENSION', max_length=200, blank=True)
+    electronique_14e = models.CharField('HARD - NAVIGATION Abandonne', max_length=200, blank=True)
+    electronique_1f4 = models.CharField('SDCM_HARD - BOITIER DE GESTION DES COMMUNICATIONS A COURTES DISTANCES', max_length=200, blank=True)
+    electronique_1j6 = models.CharField('HARD - DETECTION PRESENCE DES MAINS SUR LE VOLANT', max_length=200, blank=True)
+    electronique_1j8 = models.CharField('CAMERA FRONTALE MULTIFONCTIONS', max_length=200, blank=True)
+    electronique_1j9 = models.CharField('HARD - FRONT RADAR', max_length=200, blank=True)
+    electronique_1k4 = models.CharField('VSM_HARD - MODULE SUPERVISION VEHICULE', max_length=200, blank=True)
+    electronique_1k5 = models.CharField('HARD - VEHICLE COMPARTMENT CONTROL UNIT', max_length=200, blank=True)
+    electronique_1k9 = models.CharField('HARD - RECONFIGURABLE TOUCH SCREEN', max_length=200, blank=True)
+    electronique_1l9 = models.CharField('BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
+    electronique_1m2 = models.CharField('IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
+    electronique_34r = models.CharField('AAS SOFT LIVRE - Aide Au Stationnement', max_length=200, blank=True)
+    electronique_3f4 = models.CharField('SDCM_SOFT.LIVRE - BOITIER DE GESTION DES COMMUNICATIONS A COURTES DISTANCES', max_length=200, blank=True)
+    electronique_3j8 = models.CharField('CAMERA FRONTALE MULTIFONCTIONS', max_length=200, blank=True)
+    electronique_3j9 = models.CharField('DELIVERED SOFT. - FRONT RADAR', max_length=200, blank=True)
+    electronique_3k5 = models.CharField('DELIVERED SOFT. - VEHICLE COMPARTMENT CONTROL UNIT', max_length=200, blank=True)
+    electronique_3l9 = models.CharField('BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
+    electronique_3m2 = models.CharField('IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
+    electronique_44e = models.CharField('FOURN.NO.SERIE - NAVIGATION Abandonne', max_length=200, blank=True)
+    electronique_4j8 = models.CharField('CAMERA FRONTALE MULTIFONCTIONS', max_length=200, blank=True)
+    electronique_4l9 = models.CharField('BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
+    electronique_4m2 = models.CharField('IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
+    electronique_54e = models.CharField('FOURN.DATE.FAB - NAVIGATION Abandonne', max_length=200, blank=True)
+    electronique_5j6 = models.CharField('FOURN.DATE.FAB - DETECTION PRESENCE DES MAINS SUR LE VOLANT', max_length=200, blank=True)
+    electronique_5j8 = models.CharField('CAMERA FRONTALE MULTIFONCTIONS', max_length=200, blank=True)
+    electronique_5j9 = models.CharField('SUPPLIER DATE - FRONT RADAR', max_length=200, blank=True)
+    electronique_5m2 = models.CharField('IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
+    electronique_64e = models.CharField('FOURN.CODE - NAVIGATION Abandonne', max_length=200, blank=True)
+    electronique_6j6 = models.CharField('FOURN.CODE - DETECTION PRESENCE DES MAINS SUR LE VOLANT', max_length=200, blank=True)
+    electronique_6j8 = models.CharField('CAMERA FRONTALE MULTIFONCTIONS', max_length=200, blank=True)
+    electronique_6j9 = models.CharField('SUPPLIER CODE - FRONT RADAR', max_length=200, blank=True)
+    electronique_6k4 = models.CharField('VSM_FOURN.CODE - MODULE SUPERVISION VEHICULE', max_length=200, blank=True)
+    electronique_6k5 = models.CharField('SUPPLIER CODE - VEHICLE COMPARTMENT CONTROL UNIT', max_length=200, blank=True)
+    electronique_6k9 = models.CharField('SUPPLIER CODE - RECONFIGURABLE TOUCH SCREEN', max_length=200, blank=True)
+    electronique_6l9 = models.CharField('BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
+    electronique_6m2 = models.CharField('IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
+    electronique_8j8 = models.CharField('CAMERA FRONTALE MULTIFONCTIONS', max_length=200, blank=True)
+    electronique_8j9 = models.CharField('DOTE - FRONT RADAR', max_length=200, blank=True)
+    electronique_8k4 = models.CharField('VSM_DOTE - MODULE SUPERVISION VEHICULE', max_length=200, blank=True)
+    electronique_8l9 = models.CharField('BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
+    electronique_8m2 = models.CharField('IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
+    electronique_9f4 = models.CharField('SDCM_SOFT - BOITIER DE GESTION DES COMMUNICATIONS A COURTES DISTANCES', max_length=200, blank=True)
+    electronique_9j8 = models.CharField('CAMERA FRONTALE MULTIFONCTIONS', max_length=200, blank=True)
+    electronique_9j9 = models.CharField('SOFT. - FRONT RADAR', max_length=200, blank=True)
+    electronique_9k4 = models.CharField('VSM_SOFT - MODULE SUPERVISION VEHICULE', max_length=200, blank=True)
+    electronique_9k5 = models.CharField('SOFT. - VEHICLE COMPARTMENT CONTROL UNIT', max_length=200, blank=True)
+    electronique_9l9 = models.CharField('BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
+    electronique_kl9 = models.CharField('BSRF - NUMERO IMEI: INTERNATIONAL MOBILE EQUIPMENT IDENTITY', max_length=200, blank=True)
+    electronique_ml9 = models.CharField('BSRF - NUMERO IMSI: INTERNATIONAL MOBILE SUBSCRIBER IDENTITY', max_length=200, blank=True)
+    electronique_p4d = models.CharField('BVA EOBD - Boitier Arret et Démarrage Moteur (STOP & START)', max_length=200, blank=True)
+    electronique_rl9 = models.CharField('BSRF - NUMERO ICCID: INTEGRATED CICUIT CARD ID', max_length=200, blank=True)
+    electronique_tj8 = models.CharField('FRONT CAMERA PARAMETRES D APPRENTISSAGE', max_length=200, blank=True)
+    electronique_vj8 = models.CharField('FRONT CAMERA HAUTEUR SOUS BERCEAU', max_length=200, blank=True)
+    electronique_xm2 = models.CharField('DATA LIBRARY - IVI - IN-VEHICULE INFOTAINMENT', max_length=200, blank=True)
+    electronique_yl9 = models.CharField('VEHICLE APP - BSRF - BOITIER SERVITUDE RADIO FREQUENCE', max_length=200, blank=True)
+
+    # Adding the 31/08/2023
+    electronique_11n = models.CharField('BPGA HARD BOITIER PROTECTION ALIMENT RESEAU ELEC [FR]', max_length=200, blank=True)
+    electronique_41n = models.CharField('BPGA FOURN.NO.SERIE BOITIER PROTECT ALIMENT RESEAU ELEC[FR]', max_length=200, blank=True)
+    electronique_51n = models.CharField('BPGA FOURN.DATE.FAB- BOITIER PROTECT ALIMENT RESEAU ELEC[FR]', max_length=200, blank=True)
+    electronique_61n = models.CharField('BPGA FOURN.CODE - BOITIER PROTECTION ALIMENT RESEAU ELEC[FR]', max_length=200, blank=True)
+
     class Meta:
         verbose_name = "données CORVET"
         ordering = ['vin']
@@ -241,7 +310,8 @@ class Corvet(models.Model):
                 Q(electronique_19w__iexact=query) | Q(electronique_16t__iexact=query) |
                 Q(electronique_19t__iexact=query) | Q(electronique_14m__iexact=query) |
                 Q(electronique_18z__iexact=query) | Q(electronique_11m__iexact=query) |
-                Q(electronique_19k__iexact=query) | Q(electronique_12e__iexact=query))
+                Q(electronique_19k__iexact=query) | Q(electronique_12e__iexact=query) |
+                Q(electronique_11q__iexact=query))
         if all_data:
             return cls
         return None
@@ -267,8 +337,13 @@ class Corvet(models.Model):
 
 class CorvetProduct(models.Model):
     corvet = models.OneToOneField('psa.Corvet', related_name='prods', on_delete=models.CASCADE, primary_key=True)
+
+    # Multimedia
     radio = models.ForeignKey('Multimedia', related_name='corvet_radio', on_delete=models.SET_NULL, limit_choices_to={'type': 'RAD'}, null=True, blank=True)
     btel = models.ForeignKey('Multimedia', related_name='corvet_btel', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
+    ivi = models.ForeignKey('Multimedia', related_name='corvet_ivi', on_delete=models.SET_NULL, limit_choices_to={'type': 'NAV'}, null=True, blank=True)
+
+    # ECU
     bsi = models.ForeignKey('psa.Ecu', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
     emf = models.ForeignKey('psa.Ecu', related_name='corvet_emf', on_delete=models.SET_NULL, limit_choices_to={'type': 'EMF'}, null=True, blank=True)
     cmm = models.ForeignKey('psa.Ecu', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
@@ -279,6 +354,7 @@ class CorvetProduct(models.Model):
     mds = models.ForeignKey('psa.Ecu', related_name='corvet_mds', on_delete=models.SET_NULL, limit_choices_to={'type': 'MDS'}, null=True, blank=True)
     cvm2 = models.ForeignKey('psa.Ecu', related_name='corvet_cvm2', on_delete=models.SET_NULL, limit_choices_to={'type': 'CVM2'}, null=True, blank=True)
     vmf = models.ForeignKey('psa.Ecu', related_name='corvet_vmf', on_delete=models.SET_NULL, limit_choices_to={'type': 'VMF'}, null=True, blank=True)
+    dmtx = models.ForeignKey('psa.Ecu', related_name='corvet_dmtx', on_delete=models.SET_NULL, limit_choices_to={'type': 'DMTX'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"
@@ -315,6 +391,21 @@ class CorvetAttribute(models.Model):
         return f"{self.key_1}_{self.key_2} - {self.label}"
 
 
+class ProductChoice(models.Model):
+    MODEL_CHOICES = [('MULTIMEDIA', 'Multimédia'), ('ECU', 'Calculateur')]
+    PROTO_CHOICES = [('AEE2004', 'AEE2004'), ('AEE2010', 'AEE2010')]
+
+    name = models.CharField('Nom', max_length=200, unique=True)
+    family = models.CharField('Famille', max_length=50, choices=MODEL_CHOICES)
+    short_name = models.CharField('Nom court', max_length=20)
+    ecu_type = models.CharField('Type ECU', max_length=10)
+    cal_attribute = models.CharField('Attribut CAL', max_length=3, blank=True)
+    protocol = models.CharField('Protocole', max_length=100, choices=PROTO_CHOICES, blank=True)
+
+    def __str__(self):
+        return f"{self.name}_{self.protocol}"
+
+
 class Multimedia(models.Model):
     TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
@@ -328,14 +419,16 @@ class Multimedia(models.Model):
         ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
         ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
         ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
+        ('IVI', 'In-Vehicle Infotainment')
     ]
-    LVDS_CON_CHOICES = [(1, '1'), (2, '2')]
+    LVDS_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3'), (4, '4')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
     ANT_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
 
     comp_ref = models.BigIntegerField('réf. comp. matériel', primary_key=True)
     mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
+    product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
@@ -430,7 +523,8 @@ class Ecu(models.Model):
         ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
         ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
         ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
-        ('CVM2', 'Camera Video Multifonction V2'), ('VMF', 'Module Commutation Integre')
+        ('CVM2', 'Camera Video Multifonction V2'), ('VMF', 'Module Commutation Integre'),
+        ('DMTX', 'Dispositif Maintien Tension')
     ]
 
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)
@@ -438,7 +532,8 @@ class Ecu(models.Model):
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
-    type = models.CharField('type', max_length=7, choices=TYPE_CHOICES)
+    product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.CharField('type', max_length=10, choices=TYPE_CHOICES)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)
     hw = models.CharField('HW', max_length=10, blank=True)
@@ -458,3 +553,79 @@ class Ecu(models.Model):
 
     def __str__(self):
         return f"{self.comp_ref}_{self.name}"
+
+
+class SupplierCode(models.Model):
+    code = models.CharField('code', max_length=4, primary_key=True)
+    name = models.CharField('nom fournisseur', max_length=200)
+
+    class Meta:
+        verbose_name = "Code Fournisseur"
+        ordering = ['code']
+
+    def __str__(self):
+        return self.name
+
+
+class DefaultCode(models.Model):
+    code = models.CharField('code', max_length=5)
+    description = models.CharField('description', max_length=200)
+    type = models.CharField('type', max_length=2)
+    characterization = models.CharField('caractérisation', max_length=500, blank=True)
+    location = models.CharField('localisation', max_length=500, blank=True)
+    help = models.CharField('aide', max_length=500, blank=True)
+    ecu_type = models.CharField('type ECU', max_length=100)
+
+    class Meta:
+        verbose_name = "Code Defaut"
+        ordering = ['code']
+        constraints = [
+            models.UniqueConstraint(fields=['code', 'type', 'ecu_type'], name="Default code unique")
+        ]
+
+    def __str__(self):
+        return f"{self.code} {self.type} {self.ecu_type}"
+
+
+class Vehicle(models.Model):
+    name = models.CharField('modèle', max_length=50, unique=True)
+    brand = models.CharField('fabriquant', max_length=50)
+
+    def __str__(self):
+        return f"{self.brand} {self.name}"
+
+
+class CanRemote(models.Model):
+    label = models.CharField('label', max_length=20)
+    location = models.IntegerField('position')
+    type = models.CharField('Type commande', max_length=10)
+    product = models.CharField('produit', max_length=50, blank=True)
+    can_id = models.CharField('can_id', max_length=20)
+    dlc = models.IntegerField('DLC', default=8)
+    data = models.CharField('data', max_length=500)
+    vehicles = models.ManyToManyField('psa.Vehicle', blank=True)
+
+    def getcan(self):
+        if ',' in self.data:
+            return f"WS+GETCAN={self.can_id},{self.data}"
+        if re.match(r'^B[0-7].\d{2}$', str(self.data)):
+            pos, value = self.data[1:].split('.')
+            data = ",".join(["0x00" if _ != int(pos) else f"0x{value}" for _ in range(self.dlc)])
+            return f"WS+GETCAN={self.can_id},{data}"
+        return ""
+
+    def save(self, *args, **kwargs):
+        data_list = self.data.split(',')
+        if self.dlc == 0:
+            self.dlc = len(data_list)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Télécommande CAN"
+        ordering = ['location']
+        constraints = [
+            models.UniqueConstraint(fields=['label', 'type', 'product', 'can_id', 'data'], name="Can remote unique")
+        ]
+
+    def __str__(self):
+        return f"{self.label} {self.type} {self.can_id} {self.data}"

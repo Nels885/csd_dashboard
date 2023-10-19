@@ -1,0 +1,9 @@
+<div class="row m-1 border justify-content-center">
+    {% for obj in dsgn_list %}
+        <buttton class="btn btn-primary btn-lg col-lg-3 m-2 text-uppercase nowrap" onclick="sendString('{{ obj.getcan }}')">{{ obj.label }}</buttton>
+    {% empty %}
+        <div class="w-100 d-flex align-items-center text-center" style="min-height: 200px;">
+            <h4 class="col-12 font-weight-bold text-uppercase text-gray-500">Pas de commandes disponible</h4>
+        </div>
+    {% endfor %}
+</div>

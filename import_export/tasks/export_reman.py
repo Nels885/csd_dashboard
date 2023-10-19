@@ -77,6 +77,10 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
         rebutted = Count('repairs', filter=Q(repairs__status="Rebut"))
         packed = Count('repairs', filter=Q(repairs__checkout=True))
         queryset = Batch.objects.all().order_by('batch_number')
+        if kwargs.get('start_date', None):
+            queryset = queryset.filter(created_at__gte=kwargs.get('start_date'))
+        if kwargs.get('end_date', None):
+            queryset = queryset.filter(created_at__lte=kwargs.get('end_date'))
         queryset = queryset.annotate(repaired=repaired, packed=packed, rebutted=rebutted, total=Count('repairs'))
         self.header, self.fields = self.get_header_fields(data_list)
         return queryset.values_list(*self.fields).distinct()
@@ -101,6 +105,10 @@ class ExportRemanIntoExcelTask(ExportExcelTask):
             queryset = queryset.filter(batch__customer=kwargs.get('customer'))
         if kwargs.get('batch_number', None):
             queryset = queryset.filter(batch__batch_number=kwargs.get('batch_number'))
+        if kwargs.get('start_date', None):
+            queryset = queryset.filter(created_at__gte=kwargs.get('start_date'))
+        if kwargs.get('end_date', None):
+            queryset = queryset.filter(created_at__lte=kwargs.get('end_date'))
         self.header, self.fields = self.get_header_fields(data_list)
         values_list = queryset.values_list(*self.fields).distinct()
         if "repair_parts" in kwargs.get('columns', []):

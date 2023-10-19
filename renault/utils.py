@@ -2,7 +2,7 @@ def derive_precode(precode):
     """
     Source code: https://lucasg.github.io/2019/08/03/Compute-renault-radio-code/
     """
-    if not len(precode) == 4:
+    if precode is None or not len(precode) == 4:
         return {'result': 'ERROR', 'message': 'Could not compute the code with a empty precode !'}
 
     precode = precode.upper()

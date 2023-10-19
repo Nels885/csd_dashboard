@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<li class="nav-item {% if select == 'progress' %}active{% endif %}">
+    <a class="nav-link {% if select == 'progress' %}active{% endif %}" href="{% url 'tools:infotech_list' %}?filter=progress">
+        En cours
+    </a>
+</li>
+
+<li class="nav-item {% if select == 'close' %}active{% endif %}">
+    <a class="nav-link {% if select == 'close' %}active{% endif %}" href="{% url 'tools:infotech_list' %}?filter=close">
+        Cloturées
+    </a>
+</li>
+
+<li class="nav-item {% if select == 'all' %}active{% endif %}">
+    <a class="nav-link {% if select == 'all' %}active{% endif %}" href="{% url 'tools:infotech_list' %}">
+        Tous
+    </a>
+</li>
