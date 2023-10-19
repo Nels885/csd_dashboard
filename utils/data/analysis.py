@@ -204,7 +204,7 @@ class ToolsAnalysis:
         queryset = self._bga_annotate(self.bgaTimes)
         for query in queryset:
             data["bgaAreaLabels"].append(query['sum_date'].strftime("%d/%m/%Y"))
-            data["bgaTotalValue"].append(self._percent(query['sum_duration'], total))
+            data["bgaTotalValue"].append(self._percent(query['sum_duration'], total, 2))
             data["bgaOneValue"].append(self._percent(query['sum_one'], total))
             data["bgaTwoValue"].append(self._percent(query['sum_two'], total))
         return data
@@ -213,17 +213,21 @@ class ToolsAnalysis:
         total = self.TOTAL_HOURS
         data = {
             "raspiAreaLabels": [], "raspiTotalValue": [], "raspiOneValue": [], "raspiTwoValue": [],
-            "raspiThreeValue": [], "raspiFourValue": [], "raspiFiveValue": []
+            "raspiThreeValue": [], "raspiFourValue": [], "raspiFiveValue": [], "raspiSevenValue": [],
+            "raspiEightValue": [], "raspiNineValue": []
         }
         queryset = self._raspi_annotate(self.raspiTimes)
         for query in queryset:
             data["raspiAreaLabels"].append(query['sum_date'].strftime("%d/%m/%Y"))
-            data["raspiTotalValue"].append(self._percent(query['sum_duration'], total))
+            data["raspiTotalValue"].append(self._percent(query['sum_duration'], total, 8))
             data["raspiOneValue"].append(self._percent(query['sum_one'], total))
             data["raspiTwoValue"].append(self._percent(query['sum_two'], total))
             data["raspiThreeValue"].append(self._percent(query['sum_three'], total))
             data["raspiFourValue"].append(self._percent(query['sum_four'], total))
             data["raspiFiveValue"].append(self._percent(query['sum_five'], total))
+            data["raspiSevenValue"].append(self._percent(query['sum_seven'], total))
+            data["raspiEightValue"].append(self._percent(query['sum_eight'], total))
+            data["raspiNineValue"].append(self._percent(query['sum_nine'], total))
         return data
 
     def thermal_chamber_measure(self):
@@ -271,6 +275,12 @@ class ToolsAnalysis:
             sum_four=Sum(Case(When(name='Raspeedi4', then=F('duration')), output_field=IntegerField(), default=0)))
         queryset = queryset.annotate(
             sum_five=Sum(Case(When(name='Raspeedi5', then=F('duration')), output_field=IntegerField(), default=0)))
+        queryset = queryset.annotate(
+            sum_seven=Sum(Case(When(name='Raspeedi7', then=F('duration')), output_field=IntegerField(), default=0)))
+        queryset = queryset.annotate(
+            sum_eight=Sum(Case(When(name='Raspeedi8', then=F('duration')), output_field=IntegerField(), default=0)))
+        queryset = queryset.annotate(
+            sum_nine=Sum(Case(When(name='Raspeedi9', then=F('duration')), output_field=IntegerField(), default=0)))
         queryset = queryset.annotate(sum_duration=Sum('duration'))
         return queryset
 
