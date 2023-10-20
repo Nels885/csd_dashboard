@@ -199,10 +199,10 @@ def AET_info(request, pk=None):
     firmware_list = MbedFirmware.objects.all()
     for obj in AET_list:
         try:
-            response = requests.get(url="http://" + obj.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+            response = requests.get(url=f"http://{obj.raspi_url}/api/info/", timeout=(0.05, 0.5))
             if response.status_code >= 200 or response.status_code < 300:
                 data = response.json()
-                obj.mbed_list = str(data['mbed_list']).replace("'", "")[1:-1]
+                obj.mbed_list = ", ".join(data.get('mbed_list', []))
                 obj.save()
         except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
             pass
