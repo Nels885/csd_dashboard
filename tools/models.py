@@ -342,6 +342,7 @@ class RaspiTime(models.Model):
     start_time = models.TimeField('heure de START', auto_now_add=True)
     end_time = models.TimeField('heure de FIN', null=True, blank=True)
     duration = models.IntegerField('durée en secondes', null=True, blank=True)
+    xelon = models.CharField('n° Xelon', max_length=10, blank=True)
 
     class Meta:
         verbose_name = ("RasPi Time")
