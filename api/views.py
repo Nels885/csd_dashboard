@@ -3,6 +3,7 @@ import requests
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 from django.utils import timezone
+from django.http.request import QueryDict
 from django.db.utils import IntegrityError
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, serializers
@@ -275,19 +276,21 @@ class RaspiTimeViewSet(viewsets.ModelViewSet):
             return RaspiTimeSerializer
 
     def create(self, *args, **kwargs):
-        data = self.request.data
+        data = QueryDict('', mutable=True)
         device = self.request.query_params.get('device', '')
         status = self.request.query_params.get('status', '').upper()
         type_device = self.request.query_params.get('type', '').upper()
+        xelon = self.request.query_params.get('xelon', '').upper()
         if device and type_device and status and status in ['START', 'STOP']:
-            data.update({'name': device, 'type': type_device})
-            serializer = RaspiTimeCreateSerializer(data=data)
-            try:
-                bga_is_active = RaspiTime.objects.get(name=device, type=type_device, end_time__isnull=True)
-                bga_is_active.save(status=status)
-            except RaspiTime.DoesNotExist:
-                pass
-            if status == "START" and serializer.is_valid():
-                serializer.save()
+            queryset = RaspiTime.objects.filter(name=device, type=type_device, end_time__isnull=True)
+            if not queryset and status == "STOP":
+                return Response({"response": "OK", "device": device, "status": "NOT STARTED"})
+            for query in queryset:
+                query.save(status=status)
+            if status == "START":
+                data.update({'name': device, 'type': type_device, 'xelon': xelon})
+                serializer = RaspiTimeCreateSerializer(data=data)
+                if status == "START" and serializer.is_valid():
+                    serializer.save()
             return Response({"response": "OK", "device": device, "status": status})
         return Response({"response": "ERROR"})
