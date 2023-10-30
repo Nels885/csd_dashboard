@@ -20,7 +20,7 @@ def suptech_item_async(request):
             suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
             data = {
                 "extra": suptech_item.extra, "to_list": suptech_item.to_list(),
-                "cc_list": suptech_item.cc_list, "is_48h": suptech_item.is_48h
+                "cc_list": suptech_item.cc_list(), "is_48h": suptech_item.is_48h
             }
     except SuptechItem.DoesNotExist:
         pass
