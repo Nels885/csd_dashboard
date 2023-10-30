@@ -5,7 +5,8 @@ from . import views
 from . import ajax
 
 router = DefaultRouter()
-router.register(r'api/tagxelon', views.TagXelonViewSet, basename='api_tagxelon')
+router.register(r'api/tagxelon', ajax.TagXelonViewSet, basename='api_tagxelon')
+router.register(r'api/raspitime', ajax.RaspiTimeViewSet, basename='api_raspitime')
 
 app_name = 'tools'
 
@@ -34,6 +35,7 @@ urlpatterns = [
     path('infotech/<int:pk>/update/', views.InfotechActionView.as_view(), name="infotech_update"),
     path('infotech/mailing/ajax/', ajax.infotech_mailing_async, name='infotech_mailing_async'),
     path('bga/time/', ajax.bga_time_async, name='bga_time'),
+    path('raspi/time/table/', views.raspi_time_list, name="raspi_time_list"),
     path('usb-devices/', views.usb_devices, name='usb_devices'),
     path('serial-devices/', views.serial_devices, name='serial_devices'),
     path('config-files/', views.config_files, name='config_files'),

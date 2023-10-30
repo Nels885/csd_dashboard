@@ -1,7 +1,12 @@
 from django.contrib.auth.models import Group
 from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, status
 
-from .models import SuptechItem, BgaTime, InfotechMailingList
+from utils.django.datatables import QueryTableByArgs
+from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST, RaspiTimeSerializer, RASPI_TIME_COLUMN_LIST
+
+from .models import SuptechItem, BgaTime, InfotechMailingList, TagXelon, RaspiTime
 
 from utils.data.mqtt import MQTTClass
 
@@ -54,3 +59,43 @@ def infotech_mailing_async(request):
     except Group.DoesNotExist:
         pass
     return JsonResponse(data)
+
+
+class TagXelonViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = TagXelon.objects.all()
+    serializer_class = TagXelonSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            query = QueryTableByArgs(self.queryset,  TAG_XELON_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(query["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": query["draw"],
+                "recordsTotal": query["total"],
+                "recordsFiltered": query["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+
+class RaspiTimeViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = RaspiTime.objects.all()
+    serializer_class = RaspiTimeSerializer
+
+    def list(self, request, **kwargs):
+        try:
+            query = QueryTableByArgs(self.queryset,  RASPI_TIME_COLUMN_LIST, 1, **request.query_params).values()
+            serializer = self.serializer_class(query["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": query["draw"],
+                "recordsTotal": query["total"],
+                "recordsFiltered": query["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)

@@ -5,16 +5,11 @@ from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from django.views.generic.edit import FormMixin
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from utils.django.datatables import QueryTableByArgs
-from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
-
-from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, Message, ConfigFile, Infotech
+from .models import CsdSoftware, ThermalChamber, Suptech, Message, ConfigFile, Infotech
 from dashboard.forms import ParaErrorList
 from .forms import (
     TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
@@ -44,24 +39,12 @@ def tag_xelon_list(request):
     return render(request, 'tools/tag_xelon_table.html', locals())
 
 
-class TagXelonViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = TagXelon.objects.all()
-    serializer_class = TagXelonSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset,  TAG_XELON_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+@login_required
+def raspi_time_list(request):
+    """ View of Software list page """
+    title = _('Tools')
+    table_title = _('Raspi Time list')
+    return render(request, 'tools/raspi_time_table.html', locals())
 
 
 @permission_required('tools.add_csdsoftware')
