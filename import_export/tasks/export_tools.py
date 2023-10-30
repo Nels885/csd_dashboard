@@ -41,12 +41,12 @@ class ExportToolsIntoExcelTask(ExportExcelTask):
                 queryset = BgaTime.objects.all()
             self.fields = ('name', 'date', 'start_time', 'end_time', 'duration')
         if model == "raspi_time":
-            self.header = ['MACHINE', 'TYPE', 'DATE', 'HEURE_DEBUT', 'HEURE_FIN', 'DUREE']
+            self.header = ['MACHINE', 'TYPE', 'DATE', 'HEURE_DEBUT', 'HEURE_FIN', 'DUREE', 'N°_XELON']
             if last_months:
                 queryset = RaspiTime.objects.filter(date__gte=last_months)
             else:
                 queryset = RaspiTime.objects.all()
-            self.fields = ('name', 'type', 'date', 'start_time', 'end_time', 'duration')
+            self.fields = ('name', 'type', 'date', 'start_time', 'end_time', 'duration', 'xelon')
         values_list = queryset.values_list(*self.fields).distinct()
         return values_list
 
