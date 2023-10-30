@@ -102,10 +102,10 @@ class SuptechItemAdminForm(forms.ModelForm):
 
 class SuptechItemAdmin(admin.ModelAdmin):
     form = SuptechItemAdminForm
-    list_display = ('name', 'extra', 'category', 'is_48h', 'is_active', 'mailing_list', 'cc_mailing_list')
+    list_display = ('name', 'extra', 'category', 'is_48h', 'is_active', 'to_list', 'cc_list')
     ordering = ('name',)
     list_filter = ('category', 'is_48h', 'is_active')
-    search_fields = ('name', 'mailing_list', 'cc_mailing_list')
+    search_fields = ('name', 'mailing_list', 'cc_mailing_list', 'to_users__email', 'cc_users__email')
     actions = ('is_48h_disabled', 'is_48h_enabled', 'is_disabled', 'is_activated')
 
     def _message_user_about_update(self, request, rows_updated, verb):
@@ -142,6 +142,18 @@ class SuptechItemAdmin(admin.ModelAdmin):
         self._message_user_about_update(request, rows_updated, 'activated')
     is_activated.short_description = _('Item activated')
 
+    @staticmethod
+    def to_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.to_list()
+
+    @staticmethod
+    def cc_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.cc_list()
+
 
 class SuptechCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'manager')
@@ -176,7 +188,7 @@ class InfotechAdmin(admin.ModelAdmin):
 
 class InfotechMailingListAdmin(admin.ModelAdmin):
     form = InfotechMailingListAdminForm
-    list_display = ('name', 'is_active')
+    list_display = ('name', 'is_active', 'to_list', 'cc_list')
     ordering = ('name',)
     list_filter = ('is_active',)
     search_fields = ('name',)
@@ -205,6 +217,18 @@ class InfotechMailingListAdmin(admin.ModelAdmin):
         rows_updated = queryset.update(is_active=True)
         self._message_user_about_update(request, rows_updated, 'activated')
     is_activated.short_description = _('Item activated')
+
+    @staticmethod
+    def to_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.to_list()
+
+    @staticmethod
+    def cc_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.cc_list()
 
 
 class BGATimeAdmin(admin.ModelAdmin):
