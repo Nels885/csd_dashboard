@@ -14,14 +14,13 @@ def temp_async(request):
 
 
 def suptech_item_async(request):
-    data = {"extra": False, "mailing_list": "", "cc_mailing_list": ""}
+    data = {"extra": False, "to_list": "", "cc_list": "", "is_48h": False}
     try:
         if request.GET.get('pk', None):
             suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
             data = {
-                "extra": suptech_item.extra, "mailing_list": suptech_item.to_list(),
-                "cc_mailing_list": suptech_item.cc_mailing_list,
-                "is_48h": suptech_item.is_48h
+                "extra": suptech_item.extra, "to_list": suptech_item.to_list(),
+                "cc_list": suptech_item.cc_list, "is_48h": suptech_item.is_48h
             }
     except SuptechItem.DoesNotExist:
         pass

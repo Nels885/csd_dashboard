@@ -216,7 +216,7 @@ class BGATimeAdmin(admin.ModelAdmin):
 
 class RaspiTimeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'type', 'date', 'start_time', 'end_time', 'duration', 'xelon')
-    ordering = ('id',)
+    ordering = ('-id',)
     list_filter = ('name', 'type')
     search_fields = ('name', 'type', 'date', 'xelon')
 

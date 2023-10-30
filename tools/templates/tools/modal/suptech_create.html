@@ -173,8 +173,8 @@
                 } else {
                     $('#id_custom_item').attr({'readonly': true, 'required': false});
                 }
-                $('#id_to').val(data.mailing_list);
-                $('#id_cc').val(data.cc_mailing_list);
+                $('#id_to').val(data.to_list);
+                $('#id_cc').val(data.cc_list);
                 $('#id_is_48h').attr('checked', data.is_48h);
             },
             error: function (error_data) {
