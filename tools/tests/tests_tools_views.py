@@ -136,7 +136,7 @@ class ToolsTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     # def test_ajax_temp(self):
-    #     response = self.client.get(reverse('tools:ajax_temp'), format='json')
+    #     response = self.client.get(reverse('tools:temp_async'), format='json')
     #     self.assertEqual(response.status_code, 200)
     #     self.assertJSONEqual(response.content, {"temp": "Hors ligne"})
 

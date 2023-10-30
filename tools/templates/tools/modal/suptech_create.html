@@ -165,7 +165,7 @@
     $('#id_item').change(function () {
         $.ajax({
             method: "GET",
-            url: "{% url 'tools:suptech_item_ajax' %}" + "?pk=" + $(this).val(),
+            url: "{% url 'tools:suptech_item_async' %}" + "?pk=" + $(this).val(),
             success: function (data) {
                 console.log(data);
                 if (data.extra === true) {

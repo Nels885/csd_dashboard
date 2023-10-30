@@ -103,7 +103,7 @@
     $('#id_mailing').change(function () {
         $.ajax({
             method: "GET",
-            url: "{% url 'tools:infotech_mailing_ajax' %}" + "?pk=" + $(this).val(),
+            url: "{% url 'tools:infotech_mailing_async' %}" + "?pk=" + $(this).val(),
             success: function (data) {
                 console.log(data);
                 $('#id_to').val(data.to_list);

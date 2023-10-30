@@ -3,8 +3,6 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext as _
 from django.contrib import messages
-from django.contrib.auth.models import Group
-from django.http import JsonResponse
 from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from django.views.generic.edit import FormMixin
 from rest_framework.response import Response
@@ -16,10 +14,7 @@ from constance import config
 from utils.django.datatables import QueryTableByArgs
 from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
 
-from .models import (
-    CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, Message, ConfigFile, InfotechMailingList,
-    Infotech
-)
+from .models import CsdSoftware, ThermalChamber, TagXelon, Suptech, Message, ConfigFile, Infotech
 from dashboard.forms import ParaErrorList
 from .forms import (
     TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
@@ -120,11 +115,6 @@ def thermal_chamber(request):
     return render(request, 'tools/thermal_chamber.html', locals())
 
 
-def ajax_temp(request):
-    data = MQTT_CLIENT.result()
-    return JsonResponse(data)
-
-
 class ThermalFullScreenView(TemplateView):
     template_name = 'tools/thermal_chamber_fullscreen.html'
 
@@ -194,21 +184,6 @@ class SupTechCreateView(BSModalCreateView):
 
     def get_success_url(self):
         return http_referer(self.request)
-
-
-def suptech_item_ajax(request):
-    data = {"extra": False, "mailing_list": "", "cc_mailing_list": ""}
-    try:
-        if request.GET.get('pk', None):
-            suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
-            data = {
-                "extra": suptech_item.extra, "mailing_list": suptech_item.to_list(),
-                "cc_mailing_list": suptech_item.cc_mailing_list,
-                "is_48h": suptech_item.is_48h
-            }
-    except SuptechItem.DoesNotExist:
-        pass
-    return JsonResponse(data)
 
 
 @login_required
@@ -292,21 +267,6 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-def bga_time(request):
-    device = request.GET.get("device", None)
-    status = request.GET.get("status", None)
-    if device and status:
-        try:
-            bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
-            bga_is_active.save(status=status)
-        except BgaTime.DoesNotExist:
-            pass
-        if status.upper() == "START":
-            BgaTime.objects.create(name=device)
-        return JsonResponse({"response": "OK", "device": device, "status": status.upper()})
-    return JsonResponse({"response": "ERROR"})
-
-
 @login_required
 def usb_devices(request):
     title = "USB Devices"
@@ -356,20 +316,6 @@ class InfotechCreateView(BSModalCreateView):
 
     def get_success_url(self):
         return http_referer(self.request)
-
-
-def infotech_mailing_ajax(request):
-    data = {"to_list": "", "cc_list": ""}
-    try:
-        if request.GET.get('pk', None):
-            mailing = InfotechMailingList.objects.get(pk=request.GET.get('pk', None))
-            data = {
-                "to_list": mailing.to_list(),
-                "cc_list": mailing.cc_list()
-            }
-    except Group.DoesNotExist:
-        pass
-    return JsonResponse(data)
 
 
 @login_required

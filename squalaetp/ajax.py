@@ -105,7 +105,7 @@ class SivinViewSet(viewsets.ModelViewSet):
             return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 
-def xelon_prod_ajax(request):
+def xelon_prod_async(request):
     data = {"prod": ""}
     try:
         if request.GET.get('xelon', None):
