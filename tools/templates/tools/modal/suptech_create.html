@@ -95,6 +95,18 @@
         </div>
 
         <div class="form-group row">
+            {% include 'format/form_label.html' with field=form.category label='Catégorie' %}
+            <div class="col-sm-4 mb-3 mb-sm-0">
+                {% render_field form.category class="form-control" %}
+                <div class="{% if form.category.errors %} invalid{% endif %}">
+                    {% for error in form.category.errors %}
+                        <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
             {% include 'format/form_label.html' with field=form.to label='À' %}
             <div class="col-sm-10 mb-3 mb-sm-0">
                 {% render_field form.to class="form-control" %}
@@ -173,9 +185,10 @@
                 } else {
                     $('#id_custom_item').attr({'readonly': true, 'required': false});
                 }
-                $('#id_to').val(data.to_list);
-                $('#id_cc').val(data.cc_list);
-                $('#id_is_48h').attr('checked', data.is_48h);
+                $('#id_to').val(data['to_list']);
+                $('#id_cc').val(data['cc_list']);
+                $('#id_is_48h').attr('checked', data['is_48h']);
+                $('#id_category').val(data.category);
             },
             error: function (error_data) {
                 console.log("error");
@@ -191,7 +204,7 @@
             success: function (data) {
                 console.log(data);
                 if (data.prod !== "") {
-                    $('#id_product').val(data.prod);
+                    $('#id_product').val(data['prod']);
                     $('#id_product').attr({'readonly': true});
                 }
             },

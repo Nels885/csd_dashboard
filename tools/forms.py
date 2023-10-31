@@ -97,7 +97,8 @@ class SuptechModalForm(BSModalModelForm):
     class Meta:
         model = Suptech
         fields = [
-            'username', 'xelon', 'product', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach'
+            'username', 'xelon', 'product', 'item', 'custom_item', 'category', 'is_48h', 'time', 'to', 'cc', 'info',
+            'rmq', 'attach'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -143,11 +144,6 @@ class SuptechModalForm(BSModalModelForm):
         user = self.cleaned_data['username']
         suptech.date = timezone.now()
         suptech.user = f"{user.first_name} {user.last_name}"
-        try:
-            item = SuptechItem.objects.get(name=suptech.item)
-            suptech.category = item.category
-        except SuptechItem.DoesNotExist:
-            pass
         suptech.created_by = user
         suptech.created_at = timezone.now()
         if commit and not self.request.is_ajax():
