@@ -177,7 +177,7 @@
     $('#id_item').change(function () {
         $.ajax({
             method: "GET",
-            url: "{% url 'tools:suptech_item_async' %}" + "?pk=" + $(this).val(),
+            url: "{% url 'tools:suptech_mailing_async' %}" + "?item=" + $(this).val(),
             success: function (data) {
                 console.log(data);
                 if (data.extra === true) {
@@ -188,6 +188,25 @@
                 $('#id_to').val(data['to_list']);
                 $('#id_cc').val(data['cc_list']);
                 $('#id_is_48h').attr('checked', data['is_48h']);
+                $('#id_category').val(data.category);
+            },
+            error: function (error_data) {
+                console.log("error");
+                console.log(error_data);
+            }
+        });
+    });
+
+    $('#id_category').change(function () {
+        const item = $('#id_item').val();
+        console.log(item);
+        $.ajax({
+            method: "GET",
+            url: "{% url 'tools:suptech_mailing_async' %}" + "?item=" + item + "&cat=" + $(this).val(),
+            success: function (data) {
+                console.log(data);
+                $('#id_to').val(data['to_list']);
+                $('#id_cc').val(data['cc_list']);
                 $('#id_category').val(data.category);
             },
             error: function (error_data) {

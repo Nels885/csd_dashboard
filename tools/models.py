@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
@@ -12,6 +14,7 @@ from constance import config as conf
 
 from squalaetp.models import Xelon
 from utils.file.export import calibre, telecode
+from utils.conf import string_to_list
 
 
 class TagXelon(models.Model):
@@ -200,17 +203,27 @@ class SuptechItem(models.Model):
         verbose_name = "SupTech Item"
         ordering = ['name']
 
-    def to_list(self):
+    def to_list(self, category=None):
+        cat_mails = string_to_list(self.category.to)
+        if category:
+            cats = SuptechCategory.objects.filter(pk=category)
+            if cats:
+                cat_mails = string_to_list(cats.first().to)
+        mailings = string_to_list(self.mailing_list)
         emails = list(self.to_users.values_list('email', flat=True).distinct())
-        if emails and isinstance(emails, list):
-            return "; ".join(emails)
-        return self.mailing_list
+        results = OrderedDict.fromkeys(set(mailings + emails + cat_mails))
+        return "; ".join(results)
 
-    def cc_list(self):
+    def cc_list(self, category=None):
+        cat_mails = string_to_list(self.category.cc)
+        if category:
+            cats = SuptechCategory.objects.filter(pk=category)
+            if cats:
+                cat_mails = string_to_list(cats.first().cc)
+        mailings = string_to_list(self.cc_mailing_list)
         emails = list(self.cc_users.values_list('email', flat=True).distinct())
-        if emails and isinstance(emails, list):
-            return "; ".join(emails)
-        return self.cc_mailing_list
+        results = OrderedDict.fromkeys(set(mailings + emails + cat_mails))
+        return "; ".join(results)
 
     def __str__(self):
         return self.name

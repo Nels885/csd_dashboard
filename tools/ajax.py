@@ -18,15 +18,17 @@ def temp_async(request):
     return JsonResponse(data)
 
 
-def suptech_item_async(request):
+def suptech_mailing_async(request):
     data = {"extra": False, "to_list": "", "cc_list": "", "is_48h": False}
+    item = request.GET.get('item', None)
     try:
-        if request.GET.get('pk', None):
-            suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
+        if item:
+            suptech_item = SuptechItem.objects.get(pk=item)
+            category = request.GET.get('cat', suptech_item.category.id)
             data = {
-                "extra": suptech_item.extra, "to_list": suptech_item.to_list(),
-                "cc_list": suptech_item.cc_list(), "is_48h": suptech_item.is_48h,
-                "category": suptech_item.category.id
+                "extra": suptech_item.extra, "to_list": suptech_item.to_list(category),
+                "cc_list": suptech_item.cc_list(category), "is_48h": suptech_item.is_48h,
+                "category": category
             }
     except SuptechItem.DoesNotExist:
         pass
