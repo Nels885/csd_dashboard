@@ -6,7 +6,11 @@ Date: {{ instance.created_at|date:"d/m/Y" }}
 Item: {{ instance.item|safe|escape }}
 ==========================================================
 {{ instance.info }}
-======================== E.O.Mail =========================
+{% if instance.action %}
+==========================================================
+Action: {{ instance.action }}
+{% endif %}
+======================== E.O.Mail ========================
 
 Si vous souhaitez laisser un message:
 http://{{ domain }}{% url 'tools:infotech_detail' pk=instance.pk %}

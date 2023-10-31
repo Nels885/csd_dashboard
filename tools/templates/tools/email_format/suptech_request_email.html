@@ -18,7 +18,11 @@ Temps={{ suptech.time }}
 {{ suptech.info }}
 ==========================================================
 {{ suptech.rmq }}
-======================== E.O.Mail =========================
+{% if suptech.action %}
+==========================================================
+Action: {{ suptech.action }}
+{% endif %}
+======================== E.O.Mail ========================
 
 Répondre :
 http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}
