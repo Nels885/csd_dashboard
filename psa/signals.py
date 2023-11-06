@@ -38,6 +38,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
         default.update({"vmf": Ecu.objects.filter(comp_ref__startswith=instance.electronique_11m, type='VMF').first()})
     if instance.electronique_11q.isdigit():
         default.update({"dmtx": Ecu.objects.filter(comp_ref__startswith=instance.electronique_11q, type='DMTX').first()})
+    if instance.electronique_11n.isdigit():
+        default.update({"bpga": Ecu.objects.filter(comp_ref__startswith=instance.electronique_11n, type='BPGA').first()})
     CorvetProduct.objects.update_or_create(corvet=instance, defaults=default)
     Xelon.objects.filter(vin=instance.vin).update(corvet=instance)
     Sivin.objects.filter(codif_vin=instance.vin).update(corvet=instance)
@@ -78,3 +80,5 @@ def post_save_ecu(sender, created, instance, **kwargs):
         CorvetProduct.objects.filter(corvet__electronique_11m__startswith=instance.comp_ref).update(vmf=instance.pk)
     if instance.type == "DMTX":
         CorvetProduct.objects.filter(corvet__electronique_11q__startswith=instance.comp_ref).update(dmtx=instance.pk)
+    if instance.type == "BPGA":
+        CorvetProduct.objects.filter(corvet__electronique_11n__startswith=instance.comp_ref).update(bpga=instance.pk)

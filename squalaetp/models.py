@@ -83,7 +83,7 @@ class Xelon(models.Model):
                 Q(corvet__electronique_19t__iexact=query) | Q(corvet__electronique_14m__iexact=query) |
                 Q(corvet__electronique_18z__iexact=query) | Q(corvet__electronique_11m__iexact=query) |
                 Q(corvet__electronique_19k__iexact=query) | Q(corvet__electronique_12e__iexact=query) |
-                Q(corvet__electronique_11q__iexact=query)
+                Q(corvet__electronique_11q__iexact=query) | Q(corvet__electronique_11n__iexact=query)
             )
         return None
 

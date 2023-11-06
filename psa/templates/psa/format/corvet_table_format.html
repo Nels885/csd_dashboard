@@ -154,6 +154,13 @@
         {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur DMTX" value=object.electronique_61q|get_supplier_code %}
 
         <!-- BPGA - Boitier Protection Alimentation Reseau -->
+        <tr>
+            <td class="text-dark td-ihm">Réf HW BPGA</td>
+            <td>
+                {{ object.electronique_11n }}
+                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bpga id="bpga" %}
+            </td>
+        </tr>
         {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW BPGA" value=object.electronique_11n %}
         {% include 'psa/format/corvet_tr_hide.html' with label="N° série BPGA" value=object.electronique_41n %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Date Fab. BPGA" value=object.electronique_51n %}
