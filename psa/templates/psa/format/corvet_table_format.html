@@ -161,7 +161,6 @@
                 {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bpga id="bpga" %}
             </td>
         </tr>
-        {% include 'psa/format/corvet_tr_hide.html' with label="Réf HW BPGA" value=object.electronique_11n %}
         {% include 'psa/format/corvet_tr_hide.html' with label="N° série BPGA" value=object.electronique_41n %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Date Fab. BPGA" value=object.electronique_51n %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BPGA" value=object.electronique_61n|get_supplier_code %}
