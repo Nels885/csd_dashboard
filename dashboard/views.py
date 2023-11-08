@@ -8,7 +8,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth import login
 from django.contrib import messages
 from django.views.generic import TemplateView
-from django.http import JsonResponse, Http404
 
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -18,21 +17,14 @@ from django.utils.encoding import force_bytes, force_text
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalUpdateView, BSModalDeleteView, BSModalCreateView
 
-from utils.data.analysis import ProductAnalysis, IndicatorAnalysis, ToolsAnalysis
+from utils.data.analysis import ProductAnalysis
 from utils.django.tokens import account_activation_token
-from utils.django.urls import reverse, reverse_lazy, http_referer
-from utils.django.validators import vin_psa_isvalid, immat_isvalid
-from squalaetp.models import Indicator, Sivin
-from squalaetp.tasks import save_sivin_to_models
-# from tools.models import EtudeProject
-from psa.models import Corvet
-from psa.tasks import save_corvet_to_models
+from utils.django.urls import reverse_lazy, http_referer
 from .models import Post, UserProfile, WebLink
 from .forms import (
     UserProfileForm, CustomAuthenticationForm, SignUpForm, PostForm, ParaErrorList, WebLinkForm, ShowCollapseForm,
-    SearchForm, SuggestBoxModalForm
+    SuggestBoxModalForm
 )
-from .tasks import cmd_sendemail_task
 from .utils import global_search
 from tools.models import Suptech
 
@@ -57,23 +49,6 @@ def charts(request):
     prods = ProductAnalysis()
     # projects = EtudeProject.objects.all()
     return render(request, 'dashboard/charts.html', locals())
-
-
-def charts_ajax(request):
-    """
-    API endpoint that allows chart data to be viewed
-    """
-    prod = Indicator.count_prods()
-    data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
-    data.update(**IndicatorAnalysis().new_result(), **ToolsAnalysis().all())
-    return JsonResponse(data)
-
-
-def send_email_async(request):
-    if request.user.is_staff:
-        task = cmd_sendemail_task.delay("--late_products", "--pending_products", "--vin_error", "--vin_corvet")
-        return JsonResponse({"task_id": task.id})
-    raise Http404
 
 
 @login_required
@@ -123,25 +98,6 @@ def search(request):
         return redirect(result)
     messages.warning(request, _('Warning: The research was not successful.'))
     return redirect(http_referer(request))
-
-
-def search_ajax(request):
-    form = SearchForm(request.POST or None)
-    data = {'url': reverse('dashboard:search'), 'task_id': None}
-    if request.POST and form.is_valid():
-        query = form.cleaned_data['query']
-        select = form.cleaned_data['select']
-        if query and select:
-            if vin_psa_isvalid(query):
-                if not Corvet.objects.filter(vin__iexact=query):
-                    task = save_corvet_to_models.delay(query)
-                    data['task_id'] = task.id
-            elif immat_isvalid(query):
-                if not Sivin.search(query):
-                    task = save_sivin_to_models.delay(query)
-                    data['task_id'] = task.id
-            data['url'] = reverse('dashboard:search', get={'query': query, 'select': select})
-    return JsonResponse(data)
 
 
 def set_language(request, user_language):
