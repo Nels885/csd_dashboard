@@ -244,6 +244,12 @@ class ToolsAnalysis:
             **self.thermal_chamber_measure()
         )
 
+    def suptech(self):
+        return dict(**self.suptech_ce(), **self.suptech_co())
+
+    def use_tools(self):
+        return dict(**self.bga_time(), **self.raspi_time(), **self.thermal_chamber_measure())
+
     @staticmethod
     def _percent(value, total=None, total_multiplier=1):
         if isinstance(total, int) and total != 0 and isinstance(value, int) and value != 0:

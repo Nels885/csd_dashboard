@@ -213,7 +213,7 @@
     <!-- Content Row -->
     <div class="row">
 
-        <div id="dataCharts" data-url="{% url 'dashboard:charts_ajax' %}"></div>
+        <div></div>
         <!-- Area Chart -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
@@ -224,7 +224,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="dealAreaChart"></canvas>
+                        <canvas id="dealAreaChart" data-url="{% url 'dashboard:charts_ajax' %}?type=deal"></canvas>
                     </div>
                 </div>
             </div>
@@ -240,7 +240,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-pie">
-                        <canvas id="prodPieChart"></canvas>
+                        <canvas id="prodPieChart" data-url="{% url 'dashboard:charts_ajax' %}?type=prod"></canvas>
                     </div>
                 </div>
             </div>
@@ -260,7 +260,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="suptechCeChart"></canvas>
+                        <canvas id="suptechCeChart" data-url="{% url 'dashboard:charts_ajax' %}?type=suptech"></canvas>
                     </div>
                 </div>
             </div>
@@ -297,7 +297,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="bgaAreaChart"></canvas>
+                        <canvas id="bgaAreaChart" data-url="{% url 'dashboard:charts_ajax' %}"></canvas>
                     </div>
                 </div>
             </div>

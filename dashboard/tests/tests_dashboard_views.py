@@ -30,7 +30,7 @@ class DashboardTestCase(UnitTest):
         response = self.client.get(reverse('dashboard:charts_ajax'), format='json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertEqual(len(data), 35)
+        self.assertEqual(len(data), 16)
 
     def test_send_email_async(self):
         url = reverse('dashboard:email_ajax')

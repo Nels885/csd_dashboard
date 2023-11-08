@@ -15,9 +15,15 @@ def charts_async(request):
     """
     API endpoint that allows chart data to be viewed
     """
-    prod = Indicator.count_prods()
-    data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
-    data.update(**IndicatorAnalysis().new_result(), **ToolsAnalysis().all())
+    if request.GET.get('type') == 'prod':
+        prod = Indicator.count_prods()
+        data = {"prodLabels": list(prod.keys()), "prodDefault": list(prod.values())}
+    elif request.GET.get('type') == 'deal':
+        data = IndicatorAnalysis().new_result()
+    elif request.GET.get('type') == 'suptech':
+        data = ToolsAnalysis().suptech()
+    else:
+        data = ToolsAnalysis().use_tools()
     return JsonResponse(data)
 
 
