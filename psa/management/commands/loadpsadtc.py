@@ -1,7 +1,7 @@
 import logging
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, DataError
 
 from psa.models import DefaultCode
 from utils.django.models import defaults_dict
@@ -52,6 +52,8 @@ class Command(BaseCommand):
                     logger.error(f"[DEFAULT_CODE_CMD] IntegrityError: {code} {type} {ecu_type} - {err}")
                 except ValidationError as err:
                     logger.error(f"[DEFAULT_CODE_CMD] ValidationError: {code} {type} {ecu_type} - {err}")
+                except DataError as err:
+                    logger.error(f"[DEFAULT_CODE_CMD] DataError {code} {type} {ecu_type} - {err}")
             nb_prod_after = model.objects.count()
             self.stdout.write(
                 self.style.SUCCESS(

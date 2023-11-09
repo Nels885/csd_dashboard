@@ -570,7 +570,7 @@ class SupplierCode(models.Model):
 
 class DefaultCode(models.Model):
     code = models.CharField('code', max_length=5)
-    description = models.CharField('description', max_length=200)
+    description = models.CharField('description', max_length=500)
     type = models.CharField('type', max_length=2)
     characterization = models.CharField('caractérisation', max_length=500, blank=True)
     location = models.CharField('localisation', max_length=500, blank=True)
