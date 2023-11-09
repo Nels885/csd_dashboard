@@ -6,7 +6,7 @@ from rest_framework import viewsets, permissions, status
 from utils.django.datatables import QueryTableByArgs
 from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST, RaspiTimeSerializer, RASPI_TIME_COLUMN_LIST
 
-from .models import SuptechItem, BgaTime, InfotechMailingList, TagXelon, RaspiTime
+from .models import SuptechItem, BgaTime, InfotechMailingList, TagXelon, RaspiTime, Suptech
 
 from utils.data.mqtt import MQTTClass
 
@@ -21,6 +21,7 @@ def temp_async(request):
 def suptech_mailing_async(request):
     data = {"extra": False, "to_list": "", "cc_list": "", "is_48h": False}
     item = request.GET.get('item', None)
+    sup = request.GET.get('sup', None)
     try:
         if item:
             suptech_item = SuptechItem.objects.get(pk=item)
@@ -29,6 +30,12 @@ def suptech_mailing_async(request):
                 "extra": suptech_item.extra, "to_list": suptech_item.to_list(category),
                 "cc_list": suptech_item.cc_list(category), "is_48h": suptech_item.is_48h,
                 "category": category
+            }
+        if sup:
+            suptech = Suptech.objects.get(pk=sup)
+            category = request.GET.get('cat', None)
+            data = {
+                "to_list": suptech.to_list(category), "cc_list": suptech.cc_list(category)
             }
     except SuptechItem.DoesNotExist:
         pass

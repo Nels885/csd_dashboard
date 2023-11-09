@@ -163,6 +163,8 @@ class SuptechResponseForm(forms.ModelForm):
     STATUS_CHOICES = [
         ('', '---------'), ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée'), ('Annulée', 'Annulée')
     ]
+    to = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'rows': 2, 'readonly': ''}))
+    cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'rows': 2, 'readonly': ''}))
     action = forms.CharField(widget=forms.Textarea(), required=True)
     status = forms.CharField(widget=forms.Select(choices=STATUS_CHOICES), required=True)
     deadline = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=DatePicker(
@@ -171,7 +173,10 @@ class SuptechResponseForm(forms.ModelForm):
 
     class Meta:
         model = Suptech
-        fields = ['user', 'xelon', 'item', 'category', 'time', 'is_48h', 'info', 'rmq', 'action', 'status', 'deadline']
+        fields = [
+            'user', 'xelon', 'item', 'category', 'time', 'is_48h', 'to', 'cc', 'info', 'rmq', 'action', 'status',
+            'deadline'
+        ]
 
     def send_email(self, request):
         try:

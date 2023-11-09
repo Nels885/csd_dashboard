@@ -170,6 +170,18 @@ class Suptech(models.Model):
         verbose_name = "SupTech"
         ordering = ['pk']
 
+    def to_list(self, category=None):
+        cat_mails = SuptechCategory.get_to_mails(category)
+        mailings = string_to_list(self.to)
+        results = OrderedDict.fromkeys(set(mailings + cat_mails))
+        return "; ".join(results)
+
+    def cc_list(self, category=None):
+        cat_mails = SuptechCategory.get_cc_mails(category)
+        mailings = string_to_list(self.to)
+        results = OrderedDict.fromkeys(set(mailings + cat_mails))
+        return "; ".join(results)
+
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('tools:suptech_detail', kwargs={'pk': self.pk})
@@ -183,6 +195,20 @@ class SuptechCategory(models.Model):
     manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
     to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
     cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
+
+    @classmethod
+    def get_to_mails(cls, pk):
+        cats = cls.objects.filter(pk=pk)
+        if cats:
+            return string_to_list(cats.first().to)
+        return []
+
+    @classmethod
+    def get_cc_mails(cls, pk):
+        cats = cls.objects.filter(pk=pk)
+        if cats:
+            return string_to_list(cats.first().cc)
+        return []
 
     def __str__(self):
         return self.name
@@ -204,22 +230,18 @@ class SuptechItem(models.Model):
         ordering = ['name']
 
     def to_list(self, category=None):
-        cat_mails = string_to_list(self.category.to)
-        if category:
-            cats = SuptechCategory.objects.filter(pk=category)
-            if cats:
-                cat_mails = string_to_list(cats.first().to)
+        cat_mails = SuptechCategory.get_to_mails(category)
+        if not cat_mails:
+            cat_mails = string_to_list(self.category.to)
         mailings = string_to_list(self.mailing_list)
         emails = list(self.to_users.values_list('email', flat=True).distinct())
         results = OrderedDict.fromkeys(set(mailings + emails + cat_mails))
         return "; ".join(results)
 
     def cc_list(self, category=None):
-        cat_mails = string_to_list(self.category.cc)
-        if category:
-            cats = SuptechCategory.objects.filter(pk=category)
-            if cats:
-                cat_mails = string_to_list(cats.first().cc)
+        cat_mails = SuptechCategory.get_cc_mails(category)
+        if not cat_mails:
+            cat_mails = string_to_list(self.category.cc)
         mailings = string_to_list(self.cc_mailing_list)
         emails = list(self.cc_users.values_list('email', flat=True).distinct())
         results = OrderedDict.fromkeys(set(mailings + emails + cat_mails))
