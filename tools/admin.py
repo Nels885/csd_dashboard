@@ -155,7 +155,19 @@ class SuptechItemAdmin(admin.ModelAdmin):
         return obj.cc_list()
 
 
+class SuptechCategoryAdminForm(forms.ModelForm):
+    to_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    cc_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+
+    class Meta:
+        model = SuptechCategory
+        fields = '__all__'
+
+
 class SuptechCategoryAdmin(admin.ModelAdmin):
+    form = SuptechCategoryAdminForm
     list_display = ('name', 'manager')
 
 

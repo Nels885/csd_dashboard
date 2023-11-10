@@ -8,7 +8,7 @@ def string_to_list(string, separators=",|;"):
     """ format a character string into a list """
     if isinstance(string, list):
         return string
-    return [value.strip() for value in re.split(separators, string)]
+    return [value.strip() for value in re.split(separators, string) if len(string) != 0]
 
 
 def string_to_dict(string):

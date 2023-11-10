@@ -171,16 +171,20 @@ class Suptech(models.Model):
         ordering = ['pk']
 
     def to_list(self, category=None):
-        cat_mails = SuptechCategory.get_to_mails(category)
+        cat_to_mails = SuptechCategory.get_to_mails(category)
         mailings = string_to_list(self.to)
-        results = OrderedDict.fromkeys(set(mailings + cat_mails))
-        return "; ".join(results)
+        return list(OrderedDict.fromkeys(set(mailings + cat_to_mails)))
 
     def cc_list(self, category=None):
-        cat_mails = SuptechCategory.get_cc_mails(category)
-        mailings = string_to_list(self.to)
-        results = OrderedDict.fromkeys(set(mailings + cat_mails))
-        return "; ".join(results)
+        cat_cc_mails = SuptechCategory.get_cc_mails(category)
+        mailings = string_to_list(self.cc)
+        return list(OrderedDict.fromkeys(set(mailings + cat_cc_mails)))
+
+    def to_string(self, category=None):
+        return "; ".join(self.to_list(category))
+
+    def cc_string(self, category=None):
+        return "; ".join(self.cc_list(category))
 
     def get_absolute_url(self):
         from django.urls import reverse
@@ -193,22 +197,42 @@ class Suptech(models.Model):
 class SuptechCategory(models.Model):
     name = models.CharField('nom', max_length=200)
     manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
-    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
-    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
+    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST, blank=True)
+    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST, blank=True)
+    to_users = models.ManyToManyField(User, related_name="to_sup_cats", blank=True)
+    cc_users = models.ManyToManyField(User, related_name="cc_sup_cats", blank=True)
+
+    def to_list(self):
+        to_emails = string_to_list(self.to)
+        user_emails = list(self.to_users.values_list('email', flat=True).distinct())
+        return list(OrderedDict.fromkeys(set(to_emails + user_emails)))
+
+    def cc_list(self):
+        cc_emails = string_to_list(self.cc)
+        user_emails = list(self.cc_users.values_list('email', flat=True).distinct())
+        return list(OrderedDict.fromkeys(set(cc_emails + user_emails)))
+
+    def to_string(self):
+        return "; ".join(self.to_list())
+
+    def cc_string(self):
+        return "; ".join(self.cc_list())
+
+    @classmethod
+    def get_mails(cls, pk):
+        cats = cls.objects.filter(pk=pk)
+        if cats:
+            query = cats.first()
+            return query.to_list(), query.cc_list()
+        return [], []
 
     @classmethod
     def get_to_mails(cls, pk):
-        cats = cls.objects.filter(pk=pk)
-        if cats:
-            return string_to_list(cats.first().to)
-        return []
+        return cls.get_mails(pk)[0]
 
     @classmethod
     def get_cc_mails(cls, pk):
-        cats = cls.objects.filter(pk=pk)
-        if cats:
-            return string_to_list(cats.first().cc)
-        return []
+        return cls.get_mails(pk)[1]
 
     def __str__(self):
         return self.name
@@ -220,8 +244,8 @@ class SuptechItem(models.Model):
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
     is_48h = models.BooleanField("Traitement 48h", default=True)
     is_active = models.BooleanField("Actif", default=True)
-    mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
-    cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
+    mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST, blank=True)
+    cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST, blank=True)
     to_users = models.ManyToManyField(User, related_name="to_sup_items", blank=True)
     cc_users = models.ManyToManyField(User, related_name="cc_sup_items", blank=True)
 
@@ -230,22 +254,30 @@ class SuptechItem(models.Model):
         ordering = ['name']
 
     def to_list(self, category=None):
-        cat_mails = SuptechCategory.get_to_mails(category)
-        if not cat_mails:
-            cat_mails = string_to_list(self.category.to)
+        cat_to_mails = self._get_cat_emails(category)[0]
         mailings = string_to_list(self.mailing_list)
         emails = list(self.to_users.values_list('email', flat=True).distinct())
-        results = OrderedDict.fromkeys(set(mailings + emails + cat_mails))
-        return "; ".join(results)
+        return list(OrderedDict.fromkeys(set(mailings + emails + cat_to_mails)))
 
     def cc_list(self, category=None):
-        cat_mails = SuptechCategory.get_cc_mails(category)
-        if not cat_mails:
-            cat_mails = string_to_list(self.category.cc)
-        mailings = string_to_list(self.cc_mailing_list)
+        cat_cc_mails = self._get_cat_emails(category)[1]
+        cc_mailings = string_to_list(self.cc_mailing_list)
         emails = list(self.cc_users.values_list('email', flat=True).distinct())
-        results = OrderedDict.fromkeys(set(mailings + emails + cat_mails))
-        return "; ".join(results)
+        return list(OrderedDict.fromkeys(set(cc_mailings + emails + cat_cc_mails)))
+
+    def to_string(self, category=None):
+        return "; ".join(self.to_list(category))
+
+    def cc_string(self, category=None):
+        return "; ".join(self.cc_list(category))
+
+    def _get_cat_emails(self, category):
+        cat_to_mails, cat_cc_mails = SuptechCategory.get_mails(category)
+        if not cat_to_mails:
+            cat_to_mails = self.category.to_list()
+        if not cat_cc_mails:
+            cat_cc_mails = self.category.cc_list()
+        return cat_to_mails, cat_cc_mails
 
     def __str__(self):
         return self.name

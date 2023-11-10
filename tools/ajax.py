@@ -27,15 +27,15 @@ def suptech_mailing_async(request):
             suptech_item = SuptechItem.objects.get(pk=item)
             category = request.GET.get('cat', suptech_item.category.id)
             data = {
-                "extra": suptech_item.extra, "to_list": suptech_item.to_list(category),
-                "cc_list": suptech_item.cc_list(category), "is_48h": suptech_item.is_48h,
+                "extra": suptech_item.extra, "to_list": suptech_item.to_string(category),
+                "cc_list": suptech_item.cc_string(category), "is_48h": suptech_item.is_48h,
                 "category": category
             }
         if sup:
             suptech = Suptech.objects.get(pk=sup)
             category = request.GET.get('cat', None)
             data = {
-                "to_list": suptech.to_list(category), "cc_list": suptech.cc_list(category)
+                "to_list": suptech.to_string(category), "cc_list": suptech.cc_string(category)
             }
     except SuptechItem.DoesNotExist:
         pass
