@@ -184,10 +184,11 @@ class SuptechResponseForm(forms.ModelForm):
             subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
             context = {"user": request.user, "suptech": self.instance, 'domain': current_site.domain}
             message = render_to_string('tools/email_format/suptech_response_email.html', context)
-            cc_list = [request.user.email] + string_to_list(self.instance.to) + string_to_list(self.instance.cc)
+            to_list = [self.instance.created_by.email] + string_to_list(self.instance.to)
+            cc_list = string_to_list(self.instance.cc)
             cc_list = [email for email in list(set(cc_list)) if email != self.instance.created_by.email]
             send_email_task.delay(
-                subject=subject, body=message, from_email=request.user.email, to=self.instance.created_by.email,
+                subject=subject, body=message, from_email=request.user.email, to=to_list,
                 cc=cc_list
             )
             return True
