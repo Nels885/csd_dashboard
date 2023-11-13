@@ -4,11 +4,11 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from django.utils.timezone import make_aware
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-# from seleniumwire import webdriver
-# from seleniumwire.webdriver import ChromeOptions as Options
+from seleniumwire import webdriver
+from seleniumwire.webdriver import ChromeOptions as Options
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,30 +19,31 @@ from constance import config
 logger = logging.getLogger('command')
 
 
-options_seleniumWire = {
-    'proxy': {
-        'https': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
-    }
-}
-
-
 class Scraping(webdriver.Chrome):
     ERROR = False
     STATUS = "INIT"
 
     def __init__(self, **kwargs):
         """ Initialization """
+        options_seleniumwire = {
+            'proxy': {
+                'http': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
+                'https': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
+            }
+        }
         options = Options()
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-        options.add_argument("ignore-certificate-errors")
-        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-            options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
+        # options.add_argument("ignore-certificate-errors")
+        options.add_argument('--ignore-certificate-errors-spki-list')
+        options.add_argument('--ignore-ssl-errors')
+        # if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+        #     options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
         if kwargs.get('headless', True):
             options.add_argument('headless')
-        # super().__init__(ChromeDriverManager().install(), options=options, seleniumwire_options=options_seleniumWire)
+        super().__init__(service=Service(), options=options, seleniumwire_options=options_seleniumwire)
         # super().__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
-        super().__init__(service=Service(), options=options)
+        # super().__init__(service=Service(), options=options)
         self.set_page_load_timeout(30)
 
     def is_element_exist(self, by, value):
