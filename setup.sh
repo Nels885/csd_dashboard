@@ -89,14 +89,7 @@ function serviceStart() {
 }
 
 function checkPythonVersion() {
-  ret=`python -c 'import sys; print("%i" % (sys.hexversion<0x03000000))'`
-  if [ ! $ret -eq 0 ]
-  then
-    echo -e "${RED}we require python version > 3${NC}"
-    sudo rm /usr/bin/python
-    sudo ln -s /usr/bin/python3 /usr/bin/python
-  fi
-  python --version
+  python3 --version
 }
 
 
