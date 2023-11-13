@@ -50,19 +50,22 @@ function proxy() {
   export HTTPS_PROXY=$URL_PROXY
 }
 
+function aptInstall() {
+  echo -e "${RED}Installing needed programs...${NC}"
+  sudo http_proxy=$URL_PROXY apt install -y python3-pip python3-dev libpq-dev redis-server
+  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+}
+
 function aptUpgrade() {
   # Update raspbian and install programm utils
-  echo -e "${RED}Updating Raspberry Pi OS...${NC}"
+  echo -e "${RED}Updating linux system...${NC}"
   sudo http_proxy=$URL_PROXY apt update && sudo http_proxy=$URL_PROXY apt dist-upgrade -y
-  echo -e "${RED}Installing needed programs...${NC}"
-  sudo http_proxy=$URL_PROXY apt install -y python3-pip python3-numpy python3-venv tcl tmux supervisor nginx redis-server ntpdate wkhtmltopdf
-
-  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
 }
 
 function pipenvInstall() {
   echo -e "${RED}Install Pipenv Environment...${NC}"
   pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+  sudo pip3 install pipenv
   pipenv --python 3
   pipenv sync
 }
@@ -127,6 +130,11 @@ case $1 in
     ;;
   "stop")
     serviceStop
+    ;;
+  "install")
+    proxy
+    aptInstall
+    pipenvInstall
     ;;
   "update")
     proxy
