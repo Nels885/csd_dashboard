@@ -25,12 +25,12 @@ class Scraping(webdriver.Chrome):
 
     def __init__(self, **kwargs):
         """ Initialization """
-        options_seleniumwire = {
-            'proxy': {
+        options_seleniumwire = {}
+        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+            options_seleniumwire['proxy'] = {
                 'http': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
                 'https': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
             }
-        }
         options = Options()
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
