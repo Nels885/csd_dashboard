@@ -11,30 +11,28 @@ from utils.django.validators import vin_psa_isvalid
 
 @celery_app.task
 def save_corvet_to_models(vin, **kwargs):
-    msg = f"{vin} Not VIN PSA"
     if vin_psa_isvalid(vin):
         start_time = time.time()
         scrap = ScrapingCorvet(test=kwargs.get("test", False))
-        for attempt in reversed(range(2)):
+        for _ in range(2):
             row = xml_parser(scrap.result(vin))
             if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                 delay_time = time.time() - start_time
-                msg = f"{vin} error CORVET in {delay_time}"
-                break
+                scrap.quit()
+                return f"{vin} error CORVET in {delay_time}"
             elif isinstance(row, dict) and row.get('donnee_date_entree_montage'):
                 defaults = defaults_dict(Corvet, row, "vin")
                 obj, created = Corvet.objects.update_or_create(vin=row.get("vin"), defaults=defaults)
                 obj.opts.update = False
                 obj.opts.save()
                 delay_time = time.time() - start_time
-                msg = f"{vin} updated in {delay_time}"
-                break
-            if attempt == 0:
-                Corvet.objects.filter(vin=vin).delete()
-                delay_time = time.time() - start_time
-                msg = f"{vin} error VIN in {delay_time}"
+                scrap.quit()
+                return f"{vin} updated in {delay_time}"
+        Corvet.objects.filter(vin=vin).delete()
+        delay_time = time.time() - start_time
         scrap.quit()
-    return msg
+        return f"{vin} error VIN in {delay_time}"
+    return f"{vin} Not VIN PSA"
 
 
 @celery_app.task(bind=True)
