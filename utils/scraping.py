@@ -2,6 +2,7 @@ import time
 import logging
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from django.conf import settings
 from django.utils.timezone import make_aware
 
 from selenium.webdriver.chrome.service import Service
@@ -30,12 +31,12 @@ class Scraping(webdriver.Chrome):
                 'https': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
             }
         options = Options()
+        if not settings.DEBUG:
+            options.add_argument('-headless')
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         options.add_argument('--ignore-certificate-errors-spki-list')
         options.add_argument('--ignore-ssl-errors')
-        if kwargs.get('headless', True):
-            options.add_argument('headless')
         super().__init__(service=Service(), options=options, seleniumwire_options=options_seleniumwire)
         self.set_page_load_timeout(30)
 
