@@ -82,7 +82,7 @@ class Command(BaseCommand):
                 if squalaetp:
                     start_msg = f"{query.numero_de_dossier} - {start_msg}"
                 start_time = time.time()
-                for attempt in range(2):
+                for attempt in reversed(range(2)):
                     row = xml_parser(scrap.result(query.vin))
                     if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                         delay_time = time.time() - start_time
@@ -99,7 +99,7 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS(f"{start_msg} updated in {delay_time}"))
                         break
-                    elif attempt:
+                    elif attempt == 0:
                         if squalaetp:
                             query.vin_error = True
                         Corvet.objects.filter(vin=query.vin).delete()

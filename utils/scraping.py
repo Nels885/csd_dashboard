@@ -36,8 +36,8 @@ class Scraping(webdriver.Chrome):
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         options.add_argument('--ignore-certificate-errors-spki-list')
         options.add_argument('--ignore-ssl-errors')
-        # if kwargs.get('headless', True):
-        #     options.add_argument('headless')
+        if kwargs.get('headless', True):
+            options.add_argument('headless')
         super().__init__(service=Service(), options=options, seleniumwire_options=options_seleniumwire)
         self.set_page_load_timeout(30)
 
