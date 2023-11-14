@@ -34,16 +34,11 @@ class Scraping(webdriver.Chrome):
         options = Options()
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-        # options.add_argument("ignore-certificate-errors")
         options.add_argument('--ignore-certificate-errors-spki-list')
         options.add_argument('--ignore-ssl-errors')
-        # if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-        #     options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-        if kwargs.get('headless', True):
-            options.add_argument('headless')
+        # if kwargs.get('headless', True):
+        #     options.add_argument('headless')
         super().__init__(service=Service(), options=options, seleniumwire_options=options_seleniumwire)
-        # super().__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
-        # super().__init__(service=Service(), options=options)
         self.set_page_load_timeout(30)
 
     def is_element_exist(self, by, value):
@@ -59,6 +54,13 @@ class Scraping(webdriver.Chrome):
         except TimeoutException:
             return False
         return True
+
+    def get(self, *args, **kwargs):
+        try:
+            super().get(*args, **kwargs)
+        except Exception as err:
+            self._logger_error('get()', err)
+            self.quit(error=True)
 
     def close(self):
         try:
@@ -93,14 +95,13 @@ class ScrapingCorvet(Scraping):
         super(ScrapingCorvet, self).__init__(**kwargs)
         self.username = kwargs.get('username', config.CORVET_USER)
         self.password = kwargs.get('password', config.CORVET_PWD)
+        self.start(**kwargs)
+
+    def start(self, **kwargs):
         if not kwargs.get('test', False) and self.username and self.password:
-            try:
-                self.get(self.START_URLS)
-            except Exception as err:
-                self._logger_error('__init__()', err)
-                self.quit(error=True)
+            self.get(self.START_URLS)
         else:
-            self.ERROR = True
+            self.quit(error=True)
 
     def result(self, vin_value=None):
         """
