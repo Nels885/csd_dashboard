@@ -4,8 +4,6 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from django.utils.timezone import make_aware
 
-# from selenium import webdriver
-# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from seleniumwire import webdriver
 from seleniumwire.webdriver import ChromeOptions as Options
@@ -57,33 +55,34 @@ class Scraping(webdriver.Chrome):
 
     def get(self, *args, **kwargs):
         try:
+            self.ERROR = False
             super().get(*args, **kwargs)
         except Exception as err:
             self._logger_error('get()', err)
-            self.quit(error=True)
+            self.close()
 
-    def close(self):
+    def close(self, **kwargs):
         try:
             if self.STATUS not in ["QUIT", "CLOSE"]:
                 super().close()
                 self.STATUS = "CLOSE"
         except Exception as err:
             self._logger_error('close()', err)
+        finally:
+            self.ERROR = kwargs.get('error', self.ERROR)
 
-    def quit(self, **kwargs):
+    def quit(self):
         try:
             if self.STATUS != "QUIT":
                 super().quit()
                 self.STATUS = "QUIT"
         except Exception as err:
             self._logger_error('quit()', err)
-        finally:
-            self.ERROR = kwargs.get('error', self.ERROR)
 
-    @staticmethod
-    def _logger_error(message, err):
+    def _logger_error(self, message, err):
         exception_type = type(err).__name__
         logger.error(f"{exception_type} - {message}: {err}")
+        self.close(error=True)
 
 
 class ScrapingCorvet(Scraping):
@@ -92,7 +91,7 @@ class ScrapingCorvet(Scraping):
 
     def __init__(self, *args, **kwargs):
         """ Initialization """
-        super(ScrapingCorvet, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.username = kwargs.get('username', config.CORVET_USER)
         self.password = kwargs.get('password', config.CORVET_PWD)
         self.start(**kwargs)
@@ -101,7 +100,7 @@ class ScrapingCorvet(Scraping):
         if not kwargs.get('test', False) and self.username and self.password:
             self.get(self.START_URLS)
         else:
-            self.quit(error=True)
+            self._logger_error('start()', 'Not username and password')
 
     def result(self, vin_value=None):
         """
@@ -125,7 +124,6 @@ class ScrapingCorvet(Scraping):
             except Exception as err:
                 self._logger_error('CORVET result()', err)
                 data = "Exception or timeout error !"
-                self.ERROR = True
             self.logout()
         else:
             data = "Corvet login Error !!!"
@@ -146,7 +144,6 @@ class ScrapingCorvet(Scraping):
             login.click()
         except Exception as err:
             self._logger_error('login()', err)
-            self.quit(error=True)
             return False
         return True
 
@@ -159,7 +156,6 @@ class ScrapingCorvet(Scraping):
             WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'form:deconnect2'))).click()
         except Exception as err:
             self._logger_error('logout()', err)
-            self.quit(error=True)
             return False
         return True
 
@@ -191,7 +187,6 @@ class ScrapingSivin(ScrapingCorvet):
             except Exception as err:
                 self._logger_error('SIVIN result()', err)
                 data = "Exception or timeout error !"
-                self.ERROR = True
             self.logout()
             self.get(self.START_URLS)
         else:
