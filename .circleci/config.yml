@@ -20,6 +20,7 @@ jobs: # A basic unit of work in a run
       - browser-tools/install-chrome
       - run:
           name: Install dependencies
+          no_output_timeout: 30m
           command: pipenv sync --dev
       - run:
           command: |
