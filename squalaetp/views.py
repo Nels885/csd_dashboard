@@ -107,7 +107,7 @@ def stock_table(request):
 @login_required
 def detail(request, pk):
     """ Detailed view of the selected Xelon number """
-    query_param = request.GET.get('filter', '')
+    query_param = request.GET.get('filter', 'xelon')
     if query_param == "temp":
         xelon = get_object_or_404(XelonTemporary, pk=pk)
     else:
@@ -134,7 +134,11 @@ def detail(request, pk):
 
 
 def barcode_pdf_generate(request, pk):
-    xelon = get_object_or_404(Xelon, pk=pk)
+    query_param = request.GET.get('filter', 'xelon')
+    if query_param == "temp":
+        xelon = get_object_or_404(XelonTemporary, pk=pk)
+    else:
+        xelon = get_object_or_404(Xelon, pk=pk)
     data = {
         'xelon_number': xelon.numero_de_dossier, 'vin': xelon.vin, 'xelon_model': xelon.modele_produit,
         'xelon_vehicle': xelon.modele_vehicule, 'corvet': xelon.corvet,
