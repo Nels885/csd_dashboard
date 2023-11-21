@@ -1,6 +1,6 @@
 {% extends 'format/datatables_format.html' %}
 
-{% load static i18n %}
+{% load static i18n custom_tags %}
 
 {% block card_header %}
 
@@ -48,7 +48,7 @@
                 <td>{{ obj.vin }}</td>
                 <td>{{ obj.modele_produit }}</td>
                 <td>{{ obj.modele_vehicule }}</td>
-                <td>{{ obj.is_active }}</td>
+                <td>{{ obj.is_active|boolean }}</td>
                 <td>{{ obj.end_date }}</td>
                 <td>{{ obj.created_at }}</td>
                 <td>{{ obj.created_by }}</td>

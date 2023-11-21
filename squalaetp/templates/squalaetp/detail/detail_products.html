@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n custom_tags %}
 
 <div class="row">
     <section class="col-sm-6">
@@ -49,13 +49,13 @@
             <tr>
                 <td class="text-dark td-ihm-40">Option télécodage</td>
                 <td class="font-weight-bold {% if xelon.telecodage == '1' %}bg-danger text-white{% endif %}">
-                    {% if xelon.telecodage == '1' %}OUI{% else %}NON{% endif %}
+                    {{ xelon.telecodage|boolean|upper }}
                 </td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm-40">Option appairage</td>
                 <td class="font-weight-bold {% if xelon.appairage == '1' %}bg-danger text-white{% endif %}">
-                    {% if xelon.appairage == '1' %}OUI{% else %}NON{% endif %}
+                    {{ xelon.appairage|boolean|upper }}
                 </td>
             </tr>
             {% if xelon.product.animator %}
