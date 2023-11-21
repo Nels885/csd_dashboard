@@ -23,7 +23,7 @@ from tools.models import Suptech
 from utils.file import LogFile
 from utils.file.pdf_generate import CorvetBarcode
 from utils.conf import CSD_ROOT
-from utils.django.urls import reverse_lazy, http_referer
+from utils.django.urls import reverse_lazy, http_referer, reverse
 
 
 @login_required
@@ -319,6 +319,15 @@ class LogFileView(LoginRequiredMixin, TemplateView):
         # print(f"Info LOG : {xelon.modele_produit} - {xelon.numero_de_dossier}")
         context['text'] = text
         return context
+
+
+@login_required
+def change_redirect(request, pk):
+    query = get_object_or_404(Action, pk=pk)
+    obj = query.content_object
+    if isinstance(obj, XelonTemporary):
+        return redirect(reverse('squalaetp:detail', args=[obj.id], get={'filter': 'temp'}))
+    return redirect(reverse('squalaetp:detail', args=[obj.id]))
 
 
 @login_required

@@ -32,6 +32,7 @@ urlpatterns = [
     path('stock-parts/', views.stock_table, name='stock_parts'),
     path('log/<int:pk>/detail/', views.LogFileView.as_view(), name='log_detail'),
     path('change/', views.change_table, name='change_table'),
+    path('change/<int:pk>/redirect/', views.change_redirect, name='change_redirect'),
     path('sivin/', views.sivin_table, name='sivin_table'),
     path('sivin/<slug:immat>/detail/', views.sivin_detail, name='sivin_detail'),
     path('sivin/create/', views.SivinCreateView.as_view(), name='sivin_create'),
