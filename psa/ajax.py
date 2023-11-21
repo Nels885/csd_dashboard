@@ -1,10 +1,9 @@
 from django.http import JsonResponse, QueryDict
 from django.template.loader import render_to_string
 from django.db.models import Q
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions
 
-from utils.django.datatables import QueryTableByArgs
+from utils.django.datatables import ServerSideViewSet
 
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST, DefaultCodeSerializer
 from .models import Corvet, DefaultCode, CanRemote
@@ -14,25 +13,11 @@ from .tasks import import_corvet_task
 from api.utils import TokenAuthSupportQueryString
 
 
-class CorvetViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+class CorvetViewSet(ServerSideViewSet):
     queryset = Corvet.objects.all()
     serializer_class = CorvetSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            self._filter(request)
-            corvet = QueryTableByArgs(self.queryset, CORVET_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(corvet["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": corvet["draw"],
-                "recordsTotal": corvet["total"],
-                "recordsFiltered": corvet["count"]
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+    column_list = CORVET_COLUMN_LIST
+    column_start = 1
 
     def _filter(self, request):
         query = request.query_params.get('filter', None)

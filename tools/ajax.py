@@ -1,9 +1,7 @@
 from django.contrib.auth.models import Group
 from django.http import JsonResponse
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
 
-from utils.django.datatables import QueryTableByArgs
+from utils.django.datatables import ServerSideViewSet
 from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST, RaspiTimeSerializer, RASPI_TIME_COLUMN_LIST
 
 from .models import SuptechItem, BgaTime, InfotechMailingList, TagXelon, RaspiTime, Suptech
@@ -71,41 +69,15 @@ def infotech_mailing_async(request):
     return JsonResponse(data)
 
 
-class TagXelonViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+class TagXelonViewSet(ServerSideViewSet):
     queryset = TagXelon.objects.all()
     serializer_class = TagXelonSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset,  TAG_XELON_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+    column_list = TAG_XELON_COLUMN_LIST
+    column_start = 1
 
 
-class RaspiTimeViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+class RaspiTimeViewSet(ServerSideViewSet):
     queryset = RaspiTime.objects.all()
     serializer_class = RaspiTimeSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset,  RASPI_TIME_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+    column_list = RASPI_TIME_COLUMN_LIST
+    column_start = 1
