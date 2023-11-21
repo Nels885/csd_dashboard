@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 09:08+0100\n"
+"POT-Creation-Date: 2023-11-21 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,11 +33,11 @@ msgstr "Vérification activée"
 
 #: reman/forms.py:32 reman/forms.py:33
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 #: reman/forms.py:32 reman/forms.py:33
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #: reman/forms.py:100
 msgid "Unauthorized batch number!"
@@ -55,11 +55,17 @@ msgstr "La date n'est pas valide"
 msgid "barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/forms.py:516 reman/tests/tests_reman_views.py:141
+#: reman/forms.py:384
+#, fuzzy
+#| msgid "This field is required."
+msgid "quality control is required"
+msgstr "Un contrôle qualité est nécessaire"
+
+#: reman/forms.py:522 reman/tests/tests_reman_views.py:141
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/models.py:123
+#: reman/models.py:124
 msgid "Impossible formatting of the year!"
 msgstr "Formatage impossible de l'année !"
 
@@ -74,7 +80,7 @@ msgstr "Formatage impossible de l'année !"
 #: reman/templates/reman/modal/ref_reman_update.html:41
 #: reman/templates/reman/modal/repair_create.html:16
 #: reman/templates/reman/part/part_create_form.html:47
-#: reman/templates/reman/repair/repair_close.html:69
+#: reman/templates/reman/repair/repair_close.html:76
 #: reman/templates/reman/repair/repair_edit.html:84
 msgid "Cancel"
 msgstr "Annuler"
@@ -271,22 +277,22 @@ msgstr "Succès: le lot a été supprimé."
 msgid "Modification customer file"
 msgstr "Modification dossier client"
 
-#: reman/views/repair.py:41 reman/views/repair.py:89
+#: reman/views/repair.py:41 reman/views/repair.py:90
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views/repair.py:98
+#: reman/views/repair.py:99
 msgid "Detail customer file"
 msgstr "Dossier client détaillé"
 
-#: reman/views/repair.py:109
+#: reman/views/repair.py:110
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#: reman/views/repair.py:119
+#: reman/views/repair.py:120
 msgid "Repair REMAN"
 msgstr "Réparation REMAN"
 
-#: reman/views/repair.py:120
+#: reman/views/repair.py:121
 msgid "Open"
 msgstr "Ouvrir"

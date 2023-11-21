@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 09:08+0100\n"
+"POT-Creation-Date: 2023-11-21 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,66 +18,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: tools/admin.py:51
+#: tools/admin.py:64
 #, python-brace-format
 msgid "{0} product{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: tools/admin.py:54 tools/admin.py:98
+#: tools/admin.py:67 tools/admin.py:120 tools/admin.py:218
 msgid "was,were"
 msgstr "était, étaient"
 
-#: tools/admin.py:62 tools/admin.py:106
+#: tools/admin.py:75 tools/admin.py:128
 msgid "48h processing disabled"
 msgstr "Traitement 48h désactivé"
 
-#: tools/admin.py:67 tools/admin.py:111
+#: tools/admin.py:80 tools/admin.py:133
 msgid "48h processing enabled"
 msgstr "Traitement 48h activé"
 
-#: tools/admin.py:95
+#: tools/admin.py:117 tools/admin.py:215
 #, fuzzy, python-brace-format
 #| msgid "{0} product{1} {2} successfully {3}"
 msgid "{0} item{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: tools/admin.py:116
+#: tools/admin.py:138 tools/admin.py:226
 msgid "Item disabled"
 msgstr "Item désactivé"
 
-#: tools/admin.py:121
+#: tools/admin.py:143 tools/admin.py:231
 msgid "Item activated"
 msgstr "Item activé"
 
-#: tools/forms.py:113
+#: tools/forms.py:120 tools/forms.py:301
 msgid "Username not found."
 msgstr "Utilisateur non trouvé."
 
-#: tools/models.py:18
+#: tools/models.py:21
 msgid "CAL software"
 msgstr "Logiciel CAL"
 
-#: tools/models.py:19
+#: tools/models.py:22
 msgid "No"
 msgstr "Non"
 
-#: tools/models.py:19
+#: tools/models.py:22
 msgid "Yes"
 msgstr "Oui"
 
-#: tools/models.py:38
+#: tools/models.py:41
 msgid "CALIBRE file exists !"
 msgstr "Le fichier CALIBRE existe !"
 
-#: tools/models.py:40
+#: tools/models.py:43
 msgid "TELECODE file exists !"
 msgstr "Le fichier TELECODE existe !"
 
-#: tools/models.py:42
+#: tools/models.py:45
 msgid "TELECODE is required !"
 msgstr "TELECODE est requis !"
 
-#: tools/models.py:44
+#: tools/models.py:47
 msgid "CALIBRE or TELECODE ?"
 msgstr "CALIBRE ou TELECODE ?"
 
@@ -90,20 +90,38 @@ msgid "Add config file"
 msgstr ""
 
 #: tools/templates/tools/config_files.html:76
+#: tools/templates/tools/infotech/infotech_update.html:94
 #: tools/templates/tools/modal/config_file_create.html:74
-#: tools/templates/tools/modal/suptech_create.html:159
+#: tools/templates/tools/modal/infotech_create.html:97
+#: tools/templates/tools/modal/suptech_create.html:171
 #: tools/templates/tools/modal/tag_xelon.html:51
 #: tools/templates/tools/modal/thermal_delete.html:20
-#: tools/templates/tools/suptech/suptech_update.html:132
+#: tools/templates/tools/suptech/suptech_update.html:158
 msgid "Cancel"
 msgstr "Annuler"
 
 #: tools/templates/tools/config_files.html:79
 msgid "Save"
-msgstr ""
+msgstr "Sauvegarder"
+
+#: tools/templates/tools/infotech/infotech_detail.html:65
+#: tools/templates/tools/suptech/suptech_detail.html:133
+msgid "Respond to request"
+msgstr "Répondre à la demande"
+
+#: tools/templates/tools/infotech/infotech_detail.html:96
+#: tools/templates/tools/suptech/suptech_detail.html:164
+msgid "Send"
+msgstr "Envoyer"
+
+#: tools/templates/tools/infotech/infotech_update.html:95
+#: tools/templates/tools/suptech/suptech_update.html:159
+msgid "Update"
+msgstr "Mettre à jour"
 
 #: tools/templates/tools/modal/config_file_create.html:75
-#: tools/templates/tools/modal/suptech_create.html:160
+#: tools/templates/tools/modal/infotech_create.html:98
+#: tools/templates/tools/modal/suptech_create.html:172
 msgid "Create"
 msgstr "créé le"
 
@@ -130,7 +148,7 @@ msgstr "Supprimer"
 
 #: tools/templates/tools/partlink24.html:31
 msgid "Search"
-msgstr ""
+msgstr "Recherche"
 
 #: tools/templates/tools/soft_form.html:7
 msgid "JIG Name"
@@ -148,18 +166,6 @@ msgstr "Lien de téléchargement"
 msgid "Validation date"
 msgstr "Date de validation"
 
-#: tools/templates/tools/suptech/suptech_detail.html:112
-msgid "Respond to request"
-msgstr "Répondre à la demande"
-
-#: tools/templates/tools/suptech/suptech_detail.html:168
-msgid "Send"
-msgstr "Envoyer"
-
-#: tools/templates/tools/suptech/suptech_update.html:133
-msgid "Update"
-msgstr "Mettre à jour"
-
 #: tools/templates/tools/thermal_chamber.html:35
 msgid "Add"
 msgstr "Ajouter"
@@ -172,85 +178,102 @@ msgstr "Actualiser"
 msgid "Thermal Chamber Temperature"
 msgstr "Température Chambre Thermique"
 
-#: tools/tests/tests_tools_views.py:69 tools/views.py:115 tools/views.py:315
+#: tools/tests/tests_tools_views.py:96 tools/views.py:96
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: tools/views.py:36
+#: tools/views.py:29
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:44 tools/views.py:322
+#: tools/views.py:37 tools/views.py:45 tools/views.py:267
 msgid "Tools"
 msgstr "Outils"
 
-#: tools/views.py:45
+#: tools/views.py:38
 msgid "Tag Xelon list"
 msgstr "Liste Tag Xelon"
 
-#: tools/views.py:73
+#: tools/views.py:46
+msgid "Raspi Time list"
+msgstr "Liste Raspi Time"
+
+#: tools/views.py:54
 msgid "Software integration"
 msgstr "Intégration de logiciels"
 
-#: tools/views.py:80
+#: tools/views.py:61
 msgid "Added successfully!"
 msgstr "Ajouté avec succès!"
 
-#: tools/views.py:95
+#: tools/views.py:76
 #, python-brace-format
 msgid "Modification data Software for JIG: {jig}"
 msgstr "Logiciel de données de modification pour JIG : {jig}"
 
-#: tools/views.py:99 tools/views.py:113 tools/views.py:312
+#: tools/views.py:80 tools/views.py:94
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès!"
 
-#: tools/views.py:105 tools/views.py:136
+#: tools/views.py:86 tools/views.py:112
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: tools/views.py:106
+#: tools/views.py:87
 msgid "Use of the thermal chamber"
 msgstr "Utilisation de la chambre thermique"
 
-#: tools/views.py:137
+#: tools/views.py:113
 msgid "Thermal chamber list"
 msgstr "liste Chambre thermique"
 
-#: tools/views.py:177
+#: tools/views.py:153
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:189 tools/views.py:257 tools/views.py:277
+#: tools/views.py:165 tools/views.py:222 tools/views.py:247 tools/views.py:347
+#: tools/views.py:372
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: tools/views.py:214
+#: tools/views.py:175
 msgid "Support Tech list"
 msgstr "Liste Support Tech"
 
-#: tools/views.py:242
+#: tools/views.py:203
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Detail"
 msgstr "SUPTECH N°{self.object.pk} - Détail"
 
-#: tools/views.py:255
+#: tools/views.py:220 tools/views.py:345
 msgid "Success: The message has been added."
 msgstr "Succès: Le message a été ajouté."
 
-#: tools/views.py:259 tools/views.py:279
+#: tools/views.py:224 tools/views.py:249 tools/views.py:349 tools/views.py:374
 msgid "Warning: Data update but without sending the email"
 msgstr "Attention : mise à jour des données mais sans envoi de l'email"
 
-#: tools/views.py:272
+#: tools/views.py:237
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Response"
 msgstr "SUPTECH N°{self.object.pk} - Réponse"
 
-#: tools/views.py:323
+#: tools/views.py:268
 msgid "Config files"
-msgstr ""
+msgstr "Fichiers Config"
 
-#: tools/views.py:330
+#: tools/views.py:275
 msgid "Success: Editing the config file."
-msgstr ""
+msgstr "Succès: Modification du fichier de configuration."
+
+#: tools/views.py:307
+msgid "Info Tech list"
+msgstr "Liste Info Tech"
+
+#: tools/views.py:332
+msgid "INFOTECH N°{self.object.pk} - Detail"
+msgstr "INFOTECH N°{self.object.pk} - Détail"
+
+#: tools/views.py:362
+msgid "INFOTECH N°{self.object.pk} - Response"
+msgstr "INFOTECH N°{self.object.pk} - Réponse"

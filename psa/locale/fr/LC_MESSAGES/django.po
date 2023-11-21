@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 09:08+0100\n"
+"POT-Creation-Date: 2023-11-21 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,24 +18,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: psa/admin.py:64 psa/admin.py:128
+#: psa/admin.py:69 psa/admin.py:134
 #, python-brace-format
 msgid "{0} product{1} {2} successfully {3}"
 msgstr "{0} produit{1} {2} avec succès {3}"
 
-#: psa/admin.py:67 psa/admin.py:131
+#: psa/admin.py:72 psa/admin.py:137
 msgid "was,were"
 msgstr "était, étaient"
 
-#: psa/admin.py:72 psa/admin.py:136
+#: psa/admin.py:77 psa/admin.py:142
 msgid "Relation by name disabled"
 msgstr "Relation par nom désactivée"
 
-#: psa/admin.py:77 psa/admin.py:141
+#: psa/admin.py:82 psa/admin.py:147
 msgid "Relation by name enabled"
 msgstr "Relation par nom activée"
 
-#: psa/forms.py:49
+#: psa/forms.py:54
 msgid ""
 "Data in XML format available on the RepairNAV site during CORVET "
 "extraction..."
@@ -43,40 +43,44 @@ msgstr ""
 "Données au format XML disponibles sur le site RepairNAC pendant "
 "CORVETextraction..."
 
-#: psa/forms.py:57
+#: psa/forms.py:62
 msgid "Enter the VIN number"
 msgstr "Entrez le numéro VIN"
 
-#: psa/forms.py:85
+#: psa/forms.py:90
 msgid "XML data does not match VIN"
 msgstr "Les données XML ne correspondent pas au VIN"
 
-#: psa/forms.py:87
+#: psa/forms.py:92
 msgid "Invalid XML data"
 msgstr "Données XML non valides"
 
-#: psa/forms.py:94
+#: psa/forms.py:99
 msgid "VIN error !"
 msgstr "Erreur VIN !"
+
+#: psa/templates/psa/can_tools.html:38 psa/templates/psa/can_tools_old.html:38
+msgid "Select"
+msgstr ""
 
 #: psa/templates/psa/corvet_insert.html:40
 #: psa/templates/psa/modal/corvet_form.html:65
 msgid "Submit"
 msgstr "Soumettre"
 
-#: psa/templates/psa/detail/detail.html:27
+#: psa/templates/psa/detail/detail.html:23
 msgid "Raw Corvet data"
 msgstr "Données Corvet brute"
 
-#: psa/templates/psa/detail/detail.html:34
+#: psa/templates/psa/detail/detail.html:30
 msgid "Info NAC"
 msgstr "Info NAC"
 
-#: psa/templates/psa/detail/detail.html:42
+#: psa/templates/psa/detail/detail.html:38
 msgid "Info RCC"
 msgstr "Info RCC"
 
-#: psa/templates/psa/detail/detail.html:50
+#: psa/templates/psa/detail/detail.html:46
 msgid "VIN Barcode"
 msgstr "code barre VIN"
 
@@ -97,32 +101,36 @@ msgstr "Liens utiles"
 msgid "NAC tools"
 msgstr "Outils NAC"
 
+#: psa/templates/psa/tab_select.html:15
+msgid "CAN tools"
+msgstr "Outils CAN"
+
 #: psa/tests/tests_psa_views.py:35 psa/tests/tests_psa_views.py:50
 #: psa/tests/tests_psa_views.py:61
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: psa/views.py:107
+#: psa/views.py:116
 msgid "CORVET table"
 msgstr "Tableau CORVET"
 
-#: psa/views.py:128
+#: psa/views.py:134
 msgid "Detail Corvet data for the VIN: "
 msgstr "Détail des données Corvet pour le VIN : "
 
-#: psa/views.py:141 psa/views.py:160
+#: psa/views.py:153 psa/views.py:172
 msgid "Modification done successfully!"
 msgstr "Modification réussie !"
 
-#: psa/views.py:145
+#: psa/views.py:157
 msgid "CORVET integration"
 msgstr "Intégration CORVET"
 
-#: psa/views.py:164
+#: psa/views.py:176
 #, python-format
 msgid "CORVET update for %(vin)s"
 msgstr "Mise à jour CORVET pour %(vin)s"
 
-#: psa/views.py:180
+#: psa/views.py:192
 msgid "Products PSA table"
 msgstr "Tableau des produits PSA"
