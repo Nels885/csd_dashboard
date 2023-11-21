@@ -2,6 +2,8 @@ import operator
 from functools import reduce
 from model_utils import Choices
 from django.db.models import Q
+from rest_framework.response import Response
+from rest_framework import viewsets, status, permissions
 
 
 class QueryTableByArgs:
@@ -48,3 +50,23 @@ class QueryTableByArgs:
         return Choices(
             *[(str(i), elt, elt) for i, elt in enumerate(column_list, start=column_start)]
         )
+
+
+class ServerSideViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    column_list = []
+    column_start = 0
+
+    def list(self, request, **kwargs):
+        try:
+            query = QueryTableByArgs(self.queryset, self.column_list, self.column_start, **request.query_params).values()
+            serializer = self.serializer_class(query["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": query["draw"],
+                "recordsTotal": query["total"],
+                "recordsFiltered": query["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
