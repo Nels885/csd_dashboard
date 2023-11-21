@@ -8,12 +8,12 @@
 <div class="row">
     <section class="col-sm-3">
         <h6 class="font-weight-bold text-uppercase">VIN/CORVET :</h6>
-        <button class="log-btn btn btn-secondary btn-block" data-id="{% url 'squalaetp:log_detail' xelon.pk %}?filter{{ query_param }}">Info VIN Raspeedi</button>
+        <button class="log-btn btn btn-secondary btn-block" data-id="{% url 'squalaetp:log_detail' xelon.pk %}" {% if query_param == 'temp' %}disabled{% endif %}>Info VIN Raspeedi</button>
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_edit' xelon.pk %}?filter={{ query_param }}" {% if not perms.squalaetp.change_vin or query_param == 'temp' %}disabled{% endif %}>
             Modification
         </button>
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:vin_email' xelon.pk %}" {% if not perms.squalaetp.email_vin or query_param == 'temp' %}disabled{% endif %}>
-            <i class="fas fa-envelope pr-2"></i>Atelier<i class="fas fa-long-arrow-alt-right px-2"></i>Admin
+            <i class="fas fa-envelope pr-2"></i><span class="text-warning font-weight-bold">Atelier</span><i class="fas fa-long-arrow-alt-right px-2"></i>Admin
         </button>
         {#        <div class="dropdown no-arrow show">#}
         {#            <button class="btn btn-secondary btn-block mb-3 dropdown-toggle" id="emailVin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {% if not perms.squalaetp.email_vin %}disabled{% endif %}>#}
@@ -25,7 +25,7 @@
         {#            </div>#}
         {#        </div>#}
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:adm_email' xelon.pk %}" {% if not perms.squalaetp.email_admin or query_param == 'temp'  %}disabled{% endif %}>
-            <i class="fas fa-envelope pr-2"></i>Admin<i class="fas fa-long-arrow-alt-right px-2"></i>Atelier
+            <i class="fas fa-envelope pr-2"></i>Atelier<i class="fas fa-long-arrow-alt-left px-2"></i><span class="text-warning font-weight-bold">Admin</span>
         </button>
         <hr>
 
@@ -34,18 +34,20 @@
             Modification
         </button>
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:prod_email' xelon.pk %}" {% if not perms.squalaetp.email_product or query_param == 'temp'  %}disabled{% endif %}>
-            <i class="fas fa-envelope pr-2"></i>Atelier<i class="fas fa-long-arrow-alt-right px-2"></i>Admin
+            <i class="fas fa-envelope pr-2"></i><span class="text-warning font-weight-bold">Atelier</span><i class="fas fa-long-arrow-alt-right px-2"></i>Admin
         </button>
         <button class="bs-large-modal btn btn-secondary btn-block mb-3" data-form-url="{% url 'squalaetp:adm_email' xelon.pk %}?select=prod" {% if not perms.squalaetp.email_admin or query_param == 'temp' %}disabled{% endif %}>
-            <i class="fas fa-envelope pr-2"></i>Admin<i class="fas fa-long-arrow-alt-right px-2"></i>Atelier
+            <i class="fas fa-envelope pr-2"></i>Atelier<i class="fas fa-long-arrow-alt-left px-2"></i><span class="text-warning font-weight-bold">Admin</span>
         </button>
         <hr class="mb-5">
 
         <h6 class="font-weight-bold text-uppercase">Outils réparation :</h6>
-        {% if xelon.is_active %}
-            <a class="btn btn-secondary btn-block mb-3" href="#">Dossier Actif</a>
-        {% else %}
-            <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer Dossier</a>
+        {% if query_param == 'xelon' %}
+            {% if xelon.is_active %}
+                <a class="btn btn-secondary btn-block mb-3" href="#">Dossier Actif</a>
+            {% else %}
+                <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer Dossier</a>
+            {% endif %}
         {% endif %}
         <a class="btn btn-secondary btn-block mb-3" href="{% url 'squalaetp:barcode_pdf' pk=xelon.pk %}?filter={{ query_param }}" target="_blank">Générer code barre</a>
         <a class="btn btn-success btn-block" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
