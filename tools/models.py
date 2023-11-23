@@ -5,13 +5,16 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.template.loader import render_to_string
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
 
 from constance import config as conf
 
+from .tasks import send_email_task
 from squalaetp.models import Xelon
 from utils.file.export import calibre, telecode
 from utils.conf import string_to_list
@@ -185,6 +188,38 @@ class Suptech(models.Model):
 
     def cc_string(self, category=None):
         return "; ".join(self.cc_list(category))
+
+    def response_email(self, request):
+        return self._send_email(request, is_action=True)
+
+    def request_email(self, request):
+        return self._send_email(request)
+
+    def _send_email(self, request, is_action=False):
+        if self.id:
+            try:
+                from_email = request.user.email
+                to_list = string_to_list(self.to)
+                cc_list = ([from_email] + string_to_list(self.cc))
+                current_site = get_current_site(request)
+                subject = f"[SUPTECH_{self.id}] {self.item}"
+                if is_action:
+                    context = {"user": request.user, "suptech": self, 'domain': current_site.domain}
+                    message = render_to_string('tools/email_format/suptech_response_email.html', context)
+                    to_list = [self.created_by.email] + to_list
+                    cc_list = [email for email in list(set(cc_list)) if email != self.created_by.email]
+                else:
+                    context = {'email': from_email, 'suptech': self, 'domain': current_site.domain}
+                    message = render_to_string('tools/email_format/suptech_request_email.html', context)
+                files = self.suptechfile_set.filter(is_action=is_action)
+                files = [f.file.path for f in files]
+                send_email_task.delay(
+                    subject=subject, body=message, from_email=from_email, to=to_list, cc=cc_list, files=files
+                )
+                return True
+            except AttributeError:
+                pass
+        return False
 
     def get_absolute_url(self):
         from django.urls import reverse

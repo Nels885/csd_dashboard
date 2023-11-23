@@ -119,19 +119,6 @@ class SuptechModalForm(BSModalModelForm):
             self.add_error('username', _("Username not found."))
         return data
 
-    def send_email(self, files):
-        current_site = get_current_site(self.request)
-        from_email = self.cleaned_data["username"].email
-        subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
-        context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
-        message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        files = self.instance.suptechfile_set.filter(is_action=False)
-        files = [f.file.path for f in files]
-        send_email_task.delay(
-            subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
-            cc=([from_email] + string_to_list(self.instance.cc)), files=files
-        )
-
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
         user = self.cleaned_data['username']
@@ -148,7 +135,6 @@ class SuptechModalForm(BSModalModelForm):
             suptech.save()
             if files:
                 [SuptechFile.objects.create(file=f, suptech=suptech) for f in files]
-            self.send_email(files)
         return suptech
 
 
@@ -171,24 +157,6 @@ class SuptechResponseForm(forms.ModelForm):
             'user', 'xelon', 'item', 'category', 'time', 'is_48h', 'to', 'cc', 'info', 'rmq', 'action', 'status',
             'deadline', 'attach'
         ]
-
-    def send_email(self, request):
-        try:
-            current_site = get_current_site(request)
-            subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
-            context = {"user": request.user, "suptech": self.instance, 'domain': current_site.domain}
-            message = render_to_string('tools/email_format/suptech_response_email.html', context)
-            to_list = [self.instance.created_by.email] + string_to_list(self.instance.to)
-            cc_list = string_to_list(self.instance.cc)
-            cc_list = [email for email in list(set(cc_list)) if email != self.instance.created_by.email]
-            files = self.instance.suptechfile_set.filter(is_action=True)
-            files = [f.file.path for f in files]
-            send_email_task.delay(
-                subject=subject, body=message, from_email=request.user.email, to=to_list, cc=cc_list, files=files
-            )
-            return True
-        except AttributeError:
-            return False
 
     def save(self, commit=True):
         instance = super().save(commit=False)

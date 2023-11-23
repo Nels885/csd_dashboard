@@ -16,7 +16,7 @@ from .forms import (
     ConfigFileForm, SelectConfigForm, EditConfigForm, InfotechModalForm, InfotechActionForm
 )
 from utils.data.mqtt import MQTTClass
-from utils.django.urls import reverse_lazy, http_referer
+from utils.django.urls import reverse_lazy, http_referer, reverse
 from api.utils import thermal_chamber_use
 
 MQTT_CLIENT = MQTTClass()
@@ -160,12 +160,11 @@ class SupTechCreateView(BSModalCreateView):
     form_class = SuptechModalForm
     success_message = "Succès : Création d'un SupTech avec succès !"
 
-    def form_valid(self, form):
-        if not self.request.is_ajax():
-            messages.success(self.request, _('Success: The email has been sent.'))
-        return super().form_valid(form)
-
     def get_success_url(self):
+        if self.object.request_email(self.request):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
         return http_referer(self.request)
 
 
@@ -237,12 +236,13 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         context['card_title'] = _(f"SUPTECH N°{self.object.pk} - Response")
         return context
 
-    def form_valid(self, form):
-        if form.send_email(self.request):
+    def get_success_url(self):
+        messages.success(self.request, _('Success: SupTech update successfully!'))
+        if self.object.response_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:
             messages.warning(self.request, _('Warning: Data update but without sending the email'))
-        return super().form_valid(form)
+        return reverse('tools:suptech_detail', kwargs={'pk': self.object.pk})
 
 
 @login_required
