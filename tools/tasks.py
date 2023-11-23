@@ -43,5 +43,5 @@ def send_email_task(self, subject, body, from_email, to, cc, files=None):
         subject=subject, body=body, from_email=from_email, to=string_to_list(to), cc=string_to_list(cc)
     )
     if files:
-        [email.attach(f.name, f.read(), f.content_type) for f in files]
+        [email.attach_file(file) for file in files]
     email.send()

@@ -6,7 +6,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.urls import reverse
-from django.core.mail import EmailMessage
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 from tempus_dominus.widgets import DatePicker
@@ -126,18 +125,12 @@ class SuptechModalForm(BSModalModelForm):
         subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        # send_email_task(
-        #     subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
-        #     cc=([from_email] + string_to_list(self.instance.cc)), files=files
-        # )
-        email = EmailMessage(
-            subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
-            cc=([from_email] + string_to_list(self.instance.cc))
-        )
         files = self.instance.suptechfile_set.all()
-        if files:
-            [email.attach_file(f.file.path) for f in files]
-        email.send()
+        files = [f.file.path for f in files]
+        send_email_task.delay(
+            subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
+            cc=([from_email] + string_to_list(self.instance.cc)), files=files
+        )
 
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
@@ -170,12 +163,13 @@ class SuptechResponseForm(forms.ModelForm):
     deadline = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=DatePicker(
         attrs={'append': 'fa fa-calendar', 'icon_toggle': True}, options={'format': 'DD/MM/YYYY'},
     ))
+    attach = MultipleFileField(required=False)
 
     class Meta:
         model = Suptech
         fields = [
             'user', 'xelon', 'item', 'category', 'time', 'is_48h', 'to', 'cc', 'info', 'rmq', 'action', 'status',
-            'deadline'
+            'deadline', 'attach'
         ]
 
     def send_email(self, request):
@@ -187,9 +181,10 @@ class SuptechResponseForm(forms.ModelForm):
             to_list = [self.instance.created_by.email] + string_to_list(self.instance.to)
             cc_list = string_to_list(self.instance.cc)
             cc_list = [email for email in list(set(cc_list)) if email != self.instance.created_by.email]
+            files = self.instance.suptechfile_set.filter(is_action=True)
+            files = [f.file.path for f in files]
             send_email_task.delay(
-                subject=subject, body=message, from_email=request.user.email, to=to_list,
-                cc=cc_list
+                subject=subject, body=message, from_email=request.user.email, to=to_list, cc=cc_list, files=files
             )
             return True
         except AttributeError:
@@ -201,7 +196,11 @@ class SuptechResponseForm(forms.ModelForm):
         instance.modified_by = user
         instance.modified_at = timezone.now()
         if commit:
+            files = self.cleaned_data['attach']
+            del self.fields['attach']
             instance.save()
+            if files:
+                [SuptechFile.objects.create(file=f, suptech=instance, is_action=True) for f in files]
             # cmd_suptech_task.delay()
         return instance
 

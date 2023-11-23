@@ -5,7 +5,7 @@
 {% block form_content %}
 
     <div class="p-2">
-        <form method="post" action="">
+        <form method="post" action="" enctype="multipart/form-data">
 
             {% csrf_token %}
 
@@ -124,6 +124,18 @@
                     <div class="{% if form.action.errors %} invalid{% endif %}">
                         {% for error in form.action.errors %}
                             <p class="help-block text-danger">* {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                {% include 'format/form_label.html' with field=form.attach label='Joindre' %}
+                <div class="col-sm-10">
+                    {% render_field form.attach class="form-control-file" %}
+                    <div class="{% if form.attach.errors %} invalid{% endif %}">
+                        {% for error in form.attach.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
                         {% endfor %}
                     </div>
                 </div>

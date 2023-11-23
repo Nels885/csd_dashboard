@@ -366,6 +366,7 @@ class Message(models.Model):
 
 class SuptechFile(models.Model):
     file = models.FileField(upload_to="suptech/%Y/%m")
+    is_action = models.BooleanField("action", default=False)
     suptech = models.ForeignKey("Suptech", on_delete=models.CASCADE)
 
     class Meta:
