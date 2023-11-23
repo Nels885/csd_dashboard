@@ -12,8 +12,8 @@ from constance import config
 from .models import CsdSoftware, ThermalChamber, Suptech, Message, ConfigFile, Infotech
 from dashboard.forms import ParaErrorList
 from .forms import (
-    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
-    ConfigFileForm, SelectConfigForm, EditConfigForm, InfotechModalForm, InfotechMessageForm, InfotechActionForm
+    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, EmailMessageForm,
+    ConfigFileForm, SelectConfigForm, EditConfigForm, InfotechModalForm, InfotechActionForm
 )
 from utils.data.mqtt import MQTTClass
 from utils.django.urls import reverse_lazy, http_referer
@@ -191,7 +191,7 @@ def suptech_list(request):
 class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Suptech
     template_name = 'tools/suptech/suptech_detail.html'
-    form_class = SuptechMessageForm
+    form_class = EmailMessageForm
 
     def get_success_url(self):
         from django.urls import reverse
@@ -238,11 +238,6 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        object = self.get_object()
-        if object.action:
-            content = {"type": "action", "msg": object.action}
-            Message.objects.create(
-                content=content, added_at=object.modified_at, added_by=object.modified_by, content_object=object)
         if form.send_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:
@@ -320,7 +315,7 @@ def infotech_list(request):
 class InfotechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Infotech
     template_name = 'tools/infotech/infotech_detail.html'
-    form_class = InfotechMessageForm
+    form_class = EmailMessageForm
 
     def get_success_url(self):
         from django.urls import reverse
@@ -337,13 +332,12 @@ class InfotechDetailView(LoginRequiredMixin, FormMixin, DetailView):
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        return self.form_invalid(form)
 
     def form_valid(self, form):
         Message.objects.create(content=form.cleaned_data['content'], content_object=self.object)
         messages.success(self.request, _('Success: The message has been added.'))
-        if form.send_email(self.request, self.object):
+        if form.send_email(self.request, self.object, ):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:
             messages.warning(self.request, _('Warning: Data update but without sending the email'))
@@ -363,11 +357,6 @@ class InfotechActionView(PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        object = self.get_object()
-        if object.action:
-            content = {"type": "action", "msg": object.action}
-            Message.objects.create(
-                content=content, added_at=object.modified_at, added_by=object.modified_by, content_object=object)
         if form.send_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:

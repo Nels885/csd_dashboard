@@ -125,7 +125,7 @@ class SuptechModalForm(BSModalModelForm):
         subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
         context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
         message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        files = self.instance.suptechfile_set.all()
+        files = self.instance.suptechfile_set.filter(is_action=False)
         files = [f.file.path for f in files]
         send_email_task.delay(
             subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
@@ -199,26 +199,30 @@ class SuptechResponseForm(forms.ModelForm):
             files = self.cleaned_data['attach']
             del self.fields['attach']
             instance.save()
+            if instance.action:
+                content = {"type": "action", "msg": instance.action}
+                Message.objects.create(
+                    content=content, added_at=instance.modified_at, added_by=instance.modified_by,
+                    content_object=instance)
             if files:
                 [SuptechFile.objects.create(file=f, suptech=instance, is_action=True) for f in files]
             # cmd_suptech_task.delay()
         return instance
 
 
-class SuptechMessageForm(forms.ModelForm):
-
-    class Meta:
-        model = Message
-        fields = ['content']
+class EmailMessageForm(forms.Form):
+    content = forms.CharField(widget=forms.Textarea(), required=True)
 
     @staticmethod
     def send_email(request, instance):
         try:
+            name = instance._meta.verbose_name
+            redirect_url = reverse(f'tools:{name.lower()}_detail', args=[instance.id])
             current_site = get_current_site(request)
-            subject = f"[SUPTECH_{instance.id}] {instance.item}"
+            subject = f"[{name.upper()}_{instance.id}] {instance.item}"
             to_list = instance.to + "; " + instance.created_by.email
             cc_list = [request.user.email] + string_to_list(instance.cc)
-            context = {'url': current_site.domain + reverse('tools:suptech_detail', args=[instance.id])}
+            context = {'url': current_site.domain + redirect_url}
             message = render_to_string('tools/email_format/message_email.html', context)
             send_email_task.delay(
                 subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=cc_list
@@ -322,29 +326,6 @@ class InfotechModalForm(BSModalModelForm):
         return instance
 
 
-class InfotechMessageForm(forms.ModelForm):
-
-    class Meta:
-        model = Message
-        fields = ['content']
-
-    @staticmethod
-    def send_email(request, instance):
-        try:
-            current_site = get_current_site(request)
-            subject = f"[INFOTECH_{instance.id}] {instance.item}"
-            to_list = instance.to + "; " + instance.created_by.email
-            cc_list = [request.user.email] + string_to_list(instance.cc)
-            context = {'url': current_site.domain + reverse('tools:infotech_detail', args=[instance.id])}
-            message = render_to_string('tools/email_format/message_email.html', context)
-            send_email_task.delay(
-                subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=cc_list
-            )
-            return True
-        except AttributeError:
-            return False
-
-
 class InfotechActionForm(forms.ModelForm):
     STATUS_CHOICES = [
         ('', '---------'), ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée')
@@ -378,4 +359,9 @@ class InfotechActionForm(forms.ModelForm):
         instance.modified_at = timezone.now()
         if commit:
             instance.save()
+            if instance.action:
+                content = {"type": "action", "msg": instance.action}
+                Message.objects.create(
+                    content=content, added_at=instance.modified_at, added_by=instance.modified_by,
+                    content_object=instance)
         return instance

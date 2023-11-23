@@ -24,6 +24,9 @@ Action: {{ suptech.action }}
 {% endif %}
 ======================== E.O.Mail ========================
 
-Répondre :
+Détail de la demande :
 http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}
+
+Répondre :
+http://{{ domain }}{% url 'tools:suptech_update' pk=suptech.pk %}
 {% endautoescape %}
