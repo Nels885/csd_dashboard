@@ -198,16 +198,17 @@ class Suptech(models.Model):
     def _send_email(self, request, is_action=False):
         if self.id:
             try:
-                from_email = request.user.email
+                from_email = self.created_by.email
                 to_list = string_to_list(self.to)
                 cc_list = ([from_email] + string_to_list(self.cc))
                 current_site = get_current_site(request)
                 subject = f"[SUPTECH_{self.id}] {self.item}"
                 if is_action:
+                    from_email = self.modified_by.email
                     context = {"user": request.user, "suptech": self, 'domain': current_site.domain}
                     message = render_to_string('tools/email_format/suptech_response_email.html', context)
                     to_list = [self.created_by.email] + to_list
-                    cc_list = [email for email in list(set(cc_list)) if email != self.created_by.email]
+                    cc_list = ([from_email] + [email for email in list(set(cc_list)) if email != self.created_by.email])
                 else:
                     context = {'email': from_email, 'suptech': self, 'domain': current_site.domain}
                     message = render_to_string('tools/email_format/suptech_request_email.html', context)
