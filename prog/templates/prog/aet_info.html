@@ -62,7 +62,7 @@
                     </div>
                 </td>
                 <td class="font-weight-bold text-nowrap">
-                    <a href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2 {% if not perms.prog.change_aet %}disabled{% endif %}">
+                    <a id="aet{{ obj.id }}-s" href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2 disabled">
                         <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
                         <span class="text">{% trans "Update an Mbed" %}</span>
                     </a>
@@ -107,6 +107,7 @@
 
 {% block extrascripts %}
 
+    <script type="text/javascript" src="{% static 'prog/js/tools.js' %}"></script>
     <script type="text/javascript">
         let obj_list = [
             {% for obj in AET_list %}
@@ -121,23 +122,7 @@
                     method: "get",
                     url: "{% url 'prog:ajax_aet_status' pk=0 %}".replace('0', pk),
                     success: function(data) {
-                        console.log(data)
-                        let id = '#aet' + pk;
-                        $(id).html(data['status']);
-                        if(data['percent'] === '0') {
-                            $(id + '-progress').hide()
-                        }
-                        else {
-                            $(id + '-progressbar').css({'width': data['percent'].toString() + '%'});
-                            $(id + '-progress').show()
-                            if(data['percent'] === '100') {
-                                addMessage('Succès : Mise à jour du mbed avec succès !');
-                            }
-                        }
-                        if ('Pas besoin de MAJ' in data['status']) {
-                            addMessage('Pas besoin de MAJ, Mbed déjà à jour !', 'warning');
-                        }
-                        $(".bd-loading-modal-lg").modal("hide");
+                        aetChange(data, pk);
                     },
                     error: function(error) {
                         console.log(error);
