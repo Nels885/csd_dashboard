@@ -1,6 +1,6 @@
 {% extends 'format/datatables_format.html' %}
 
-{% load static i18n widget_tweaks %}
+{% load static i18n widget_tweaks custom_tags %}
 
 {% block card_header %}
 
@@ -95,7 +95,7 @@
                 <td class="font-weight-bold">{{ obj.name }}</td>
                 <td class="font-weight-bold">{{ obj.version }}</td>
                 <td class="font-weight-bold">{{ obj.modified_at|date:"d/m/Y H:i" }}</td>
-                <td class="font-weight-bold">{{ obj.filepath }}</td>
+                <td class="font-weight-bold">{{ obj.filepath|filename }}</td>
             </tr>
             {% endfor %}
         </tbody>

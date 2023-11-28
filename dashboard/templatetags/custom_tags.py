@@ -1,3 +1,4 @@
+import os
 from django import template
 from django.utils.translation import gettext as _
 
@@ -16,3 +17,11 @@ def boolean(value):
     if value.isdigit() and int(value) == 1:
         return _('Yes')
     return _('No')
+
+
+@register.filter
+def filename(value):
+    try:
+        return os.path.basename(value.name)
+    except AttributeError:
+        return value
