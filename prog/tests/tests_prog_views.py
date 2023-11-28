@@ -130,6 +130,6 @@ class ProgTestCase(UnitTest):
                 response.content, {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404})
 
     def test_aet_info_page(self):
-        url = reverse('prog:AET_info')
+        url = reverse('prog:aet_info')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)

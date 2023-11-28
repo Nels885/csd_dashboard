@@ -185,7 +185,7 @@ class ToolDeleteView(BSModalDeleteView):
         return http_referer(self.request)
 
 
-def AET_info(request, pk=None):
+def aet_info(request, pk=None):
     """
     View of the AET/MbedFirmware table page
     :param request:
@@ -207,7 +207,7 @@ def AET_info(request, pk=None):
         except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
             pass
     context.update(locals())
-    return render(request, 'prog/aet.html', context)
+    return render(request, 'prog/aet_info.html', context)
 
 
 def ajax_aet_status(request, pk):
@@ -231,7 +231,7 @@ def ajax_aet_status(request, pk):
     return JsonResponse(data)
 
 
-class AETCreateView(BSModalCreateView):
+class AetCreateView(BSModalCreateView):
     """
     View to create new AET
     :param BSModalCreateView:
@@ -258,7 +258,7 @@ class AetDeleteView(BSModalDeleteView):
         return http_referer(self.request)
 
 
-class AETUpdateView(BSModalUpdateView):
+class AetUpdateView(BSModalUpdateView):
     permission_required = 'prog.change_aet'
     model = AET
     template_name = 'prog/modal/aet_update.html'
@@ -269,7 +269,7 @@ class AETUpdateView(BSModalUpdateView):
         return http_referer(self.request)
 
 
-class AETAddSoftwareView(BSModalCreateView):
+class AetAddSoftwareView(BSModalCreateView):
     permission_required = 'prog.add_aet'
     model = MbedFirmware
     template_name = 'prog/modal/aet_add_software.html'
@@ -301,7 +301,7 @@ class MbedFirmwareUpdateView(BSModalUpdateView):
         return http_referer(self.request)
 
 
-class AETSendSoftwareView(BSModalFormView):
+class AetSendSoftwareView(BSModalFormView):
     permission_required = 'prog.change_aet'
     template_name = 'prog/modal/aet_send_software.html'
     form_class = AETSendSoftwareForm
@@ -325,5 +325,5 @@ class AETSendSoftwareView(BSModalFormView):
 
     def get_success_url(self):
         if not self.request.is_ajax():
-            return reverse_lazy('prog:AET_info', get={'task_id': self.task_id})
-        return reverse_lazy('prog:AET_info')
+            return reverse_lazy('prog:aet_info', get={'task_id': self.task_id})
+        return reverse_lazy('prog:aet_info')
