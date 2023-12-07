@@ -335,6 +335,8 @@ CONSTANCE_CONFIG = OrderedDict({
     'WEBSITE_DOMAIN': ('127.0.0.1:8000', 'Webside domain name'),
     'WIKI_URL': ('127.0.0.1:8001', 'URL of the wiki web application'),
     'SYS_REPORT_TO_MAIL_LIST': ('', 'System report TO email list'),
+    'LOG_EMAILS_PERIOD_LENGTH': (3600, 'Period length in seconds', int),
+    'LOG_MAX_EMAILS_IN_PERIOD': (1, 'Max emails in period', int),
     'CONTRACT_TO_EMAIL_LIST': ('contract1@test.com; contract2@test.com', 'Contracts TO email list'),
 
     # Network Options
@@ -394,16 +396,13 @@ CONSTANCE_CONFIG = OrderedDict({
     'PROXY_HOST_SCRAPING': ('', 'Proxy HOST for Scraping'),
     'PROXY_PORT_SCRAPING': ('', 'Proxy PORT for Scraping'),
     'CORVET_USER': ('', 'CORVET user for RepairLab'),
-    'CORVET_PWD': ('', 'CORVET password for RepairLab', 'pwd_field'),
-    'PL24_ACCOUNT': ('', 'Account for PartsLink24'),
-    'PL24_USER': ('', 'User for PartsLink24'),
-    'PL24_PWD': ('', 'Password for PartsLink24', 'pwd_field')
+    'CORVET_PWD': ('', 'CORVET password for RepairLab', 'pwd_field')
 })
 
 CONSTANCE_CONFIG_FIELDSETS = {
     '1. General Options': {
         'fields': ('SITE_NAME', 'SITE_DESCRIPTION', 'WEBSITE_DOMAIN', 'WIKI_URL', 'SYS_REPORT_TO_MAIL_LIST',
-                   'CONTRACT_TO_EMAIL_LIST'),
+                   'LOG_EMAILS_PERIOD_LENGTH', 'LOG_MAX_EMAILS_IN_PERIOD', 'CONTRACT_TO_EMAIL_LIST'),
         'collapse': True
     },
     '2. Network Options': {
@@ -425,7 +424,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
     },
     '5. Tools Options': {
         'fields': ('SUPTECH_TO_EMAIL_LIST', 'SUPTECH_CC_EMAIL_LIST', 'PRINTER_STREAM_URL', 'PROXY_HOST_SCRAPING',
-                   'PROXY_PORT_SCRAPING', 'CORVET_USER', 'CORVET_PWD', 'PL24_ACCOUNT', 'PL24_USER', 'PL24_PWD'),
+                   'PROXY_PORT_SCRAPING', 'CORVET_USER', 'CORVET_PWD'),
         'collapse': False
     },
     '6. MQTT Options': {

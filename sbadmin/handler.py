@@ -1,11 +1,12 @@
 from django.utils.log import AdminEmailHandler
 from django.core.cache import cache
+from constance import config
 
 
 class ThrottledAdminEmailHandler(AdminEmailHandler):
 
-    PERIOD_LENGTH_IN_SECONDS = 10
-    MAX_EMAILS_IN_PERIOD = 1
+    PERIOD_LENGTH_IN_SECONDS = config.LOG_EMAILS_PERIOD_LENGTH
+    MAX_EMAILS_IN_PERIOD = config.LOG_MAX_EMAILS_IN_PERIOD
     COUNTER_CACHE_KEY = "email_admins_counter"
 
     def increment_counter(self):
