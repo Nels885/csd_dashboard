@@ -245,7 +245,7 @@ LOGGING = {
         },
         'mail_admin': {
             'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
+            'class': 'sbadmin.handler.ThrottledAdminEmailHandler',
             'include_html': True,
         }
     },
