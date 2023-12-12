@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.translation import gettext as _
+from django.conf import settings
 from django.utils import translation
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
@@ -107,7 +108,7 @@ def set_language(request, user_language):
         Choice of the user's language
     """
     translation.activate(user_language)
-    request.session[translation.LANGUAGE_SESSION_KEY] = user_language
+    request.session[settings.LANGUAGE_COOKIE_NAME] = user_language
     return redirect(http_referer(request))
 
 

@@ -5,6 +5,7 @@ from django.utils.translation import gettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.scraping import xml_parser
+from utils.django import is_ajax
 from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
 from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote
@@ -107,7 +108,7 @@ class CorvetModalForm(CorvetForm, BSModalModelForm):
 
     def save(self, commit=True):
         instance = super(CorvetModalForm, self).save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
         return instance
 

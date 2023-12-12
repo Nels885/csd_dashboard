@@ -11,6 +11,7 @@ from crum import get_current_user
 from tempus_dominus.widgets import DatePicker
 
 from utils.conf import string_to_list
+from utils.django import is_ajax
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 from utils.django.forms import MultipleFileField
@@ -126,7 +127,7 @@ class SuptechModalForm(BSModalModelForm):
         suptech.user = f"{user.first_name} {user.last_name}"
         suptech.created_by = user
         suptech.created_at = timezone.now()
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             files = self.request.FILES.getlist('attach')
             for field in ['username', 'custom_item', 'attach']:
                 del self.fields[field]
@@ -286,7 +287,7 @@ class InfotechModalForm(BSModalModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.created_by = self.cleaned_data['username']
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             for field in ['username', 'mailing']:
                 del self.fields[field]
             instance.save()

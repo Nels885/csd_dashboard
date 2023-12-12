@@ -10,6 +10,7 @@ from django.conf import settings
 from bootstrap_modal_forms.forms import BSModalModelForm
 from .models import UserProfile, Post, WebLink, ShowCollapse, SuggestBox
 
+from utils.django import is_ajax
 from utils.django.forms.fields import ListTextWidget
 
 SERVICE_CHOICES = [('', '---'), ('CO', 'CO'), ('CE', 'CE'), ('ADM', 'ADM')]
@@ -169,6 +170,6 @@ class SuggestBoxModalForm(BSModalModelForm):
         instance = super().save(commit=False)
         user = self.cleaned_data['username']
         instance.created_by = user
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
         return instance

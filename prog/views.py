@@ -13,6 +13,7 @@ from .tasks import send_firmware_task
 from prog.models import MbedFirmware
 from .forms import RaspeediForm, UnlockForm, ToolStatusForm, AETModalForm, AETSendSoftwareForm, AETAddSoftwareModalForm
 from dashboard.forms import ParaErrorList
+from utils.django import is_ajax
 from utils.django.urls import reverse_lazy, http_referer
 
 context = {'title': 'Prog'}
@@ -307,7 +308,7 @@ class AetSendSoftwareView(BSModalFormView):
     form_class = AETSendSoftwareForm
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             pk = self.kwargs.get('pk')
             aet = AET.objects.get(pk=pk)
             task = send_firmware_task.delay(raspi_url=aet.raspi_url, fw_name=form.cleaned_data['select_firmware'],
@@ -324,6 +325,6 @@ class AetSendSoftwareView(BSModalFormView):
         return context
 
     def get_success_url(self):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             return reverse_lazy('prog:aet_info', get={'task_id': self.task_id})
         return reverse_lazy('prog:aet_info')

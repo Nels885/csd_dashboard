@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _
 from django.forms.models import model_to_dict
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 
+from utils.django import is_ajax
 from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
@@ -158,7 +159,7 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
         return context
 
     def get_success_url(self):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             return reverse_lazy('psa:corvet_detail', args=[self.object.pk])
         return http_referer(self.request)
 

@@ -11,6 +11,7 @@ from constance import config
 from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
+from utils.django import is_ajax
 from utils.django.forms.fields import ListTextWidget
 from utils.django.validators import validate_identify_number, validate_barcode
 
@@ -52,7 +53,7 @@ class BatchForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
             cmd_exportreman_task.delay('--batch', '--scan_in_out')
         return instance
@@ -124,7 +125,7 @@ class AddBatchForm(BSModalModelForm):
         batch_type = self.cleaned_data['type']
         del self.fields['type']
         batch = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             if batch_type == "REPAIR":
                 batch.year = "X"
             elif batch_type in ["REMAN_VOLVO", "ETUDE_VOLVO"]:
@@ -166,7 +167,7 @@ class RefRemanForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
         return instance
@@ -258,7 +259,7 @@ class AddRepairForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
             cmd_exportreman_task.delay('--repair')
         return instance
@@ -547,7 +548,7 @@ class EcuTypeForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
             cmd_exportreman_task.delay('--scan_in_out')
         return instance

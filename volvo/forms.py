@@ -2,6 +2,7 @@ from django import forms
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.forms.fields import ListTextWidget
+from utils.django import is_ajax
 
 from reman.models import EcuRefBase, EcuType
 
@@ -36,7 +37,7 @@ class RemanForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
         return instance
 
@@ -54,6 +55,6 @@ class SemTypeForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
         return instance
