@@ -109,6 +109,7 @@ class ScrapingCorvet(Scraping):
         :param vin_value: VIN number for the Corvet data
         :return: Corvet data
         """
+        timeout,  data = 10, "ERREUR COMMUNICATION SYSTEME CORVET"
         if not self.ERROR and self.login() and isinstance(vin_value, str):
             try:
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
@@ -116,12 +117,15 @@ class ScrapingCorvet(Scraping):
                 submit = self.find_element(By.ID, 'form:suite')
                 vin.send_keys(vin_value.upper())
                 submit.click()
-                time.sleep(1)
-                data = WebDriverWait(self, 10).until(
-                    EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
-                ).text
-                if data and len(data) == 0:
-                    data = "ERREUR COMMUNICATION SYSTEME CORVET"
+                while timeout != 0:
+                    time.sleep(1)
+                    result = WebDriverWait(self, 10).until(
+                        EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
+                    ).text
+                    if result and len(result) != 0:
+                        data = result
+                        break
+                    timeout -= 1
             except Exception as err:
                 self._logger_error('CORVET result()', err)
                 data = "Exception or timeout error !"
