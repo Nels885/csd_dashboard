@@ -37,7 +37,8 @@ class Scraping(webdriver.Chrome):
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
         options.add_argument('--ignore-certificate-errors-spki-list')
         options.add_argument('--ignore-ssl-errors')
-        super().__init__(service=Service(), options=options, seleniumwire_options=options_seleniumwire)
+        super().__init__(
+            service=Service('/usr/local/bin/chromedriver'), options=options, seleniumwire_options=options_seleniumwire)
         self.set_page_load_timeout(30)
 
     def is_element_exist(self, by, value):

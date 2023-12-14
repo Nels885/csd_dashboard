@@ -44,11 +44,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['vin']:
             vin = options['vin']
+            start_time = time.time()
             scrap = ScrapingCorvet(test=options['test'])
+            delay_time = time.time() - start_time
+            self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Webdriver connected in {delay_time}"))
             data = scrap.result(vin)
             data = str(xml_parser(data))
             self.stdout.write(data)
-            scrap.close()
+            scrap.quit()
         elif options['immat']:
             self._import_sivin(options['immat'], options['test'])
             self.stdout.write(self.style.SUCCESS("[IMPORT_SIVIN] Import completed!"))
@@ -76,7 +79,10 @@ class Command(BaseCommand):
     def _import_corvet(self, queryset, test, squalaetp=True, limit=False):
         nb_import = 0
         if queryset:
+            start_time = time.time()
             scrap = ScrapingCorvet(test=test)
+            delay_time = time.time() - start_time
+            self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Webdriver connected in {delay_time}"))
             for query in queryset:
                 start_msg = f"{query.vin}"
                 if squalaetp:
