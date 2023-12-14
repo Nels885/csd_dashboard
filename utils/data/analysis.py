@@ -168,7 +168,7 @@ class ToolsAnalysis:
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
 
     def suptech_co(self):
-        suptechs = self.suptechs.filter(category=3)
+        suptechs = self.suptechs.filter(category__name__icontains="operation")
         data = {
             "suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": [], "coExpRate": [],
             "coSupNumber": []
@@ -184,7 +184,7 @@ class ToolsAnalysis:
         return data
 
     def suptech_ce(self):
-        suptechs = self.suptechs.exclude(category=3)
+        suptechs = self.suptechs.filter(category__name__icontains="etude")
         data = {
             "suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": [], "expRate": [], "supNumber": []
         }
