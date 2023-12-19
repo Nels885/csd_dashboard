@@ -7,7 +7,7 @@ from prog.models import MbedFirmware
 
 @celery_app.task(bind=True)
 def send_firmware_task(self, raspi_url, fw_name, target):
-    ws_uri = "ws://" + raspi_url + ":8080/updateMbed"
+    ws_uri = "ws://" + raspi_url + ":8080/mbed-update/"
     msg = {"msg": "Succès : Connexion au raspberry avec succès !"}
     try:
         selected_firmware = MbedFirmware.objects.get(name=fw_name)
@@ -16,13 +16,9 @@ def send_firmware_task(self, raspi_url, fw_name, target):
             wsocket.send("filename:" + selected_firmware.name)
             wsocket.send("version:" + selected_firmware.version)
             with default_storage.open(str(selected_firmware.filepath), "rb") as f:
-                while True:
-                    file_data = f.read()
-                    if not file_data:
-                        wsocket.send("EOF")
-                        f.close()
-                        break
-                    wsocket.send(file_data)
+                file_data = f.read()
+                wsocket.send(file_data)
+            wsocket.send("EOF")
     except MbedFirmware.DoesNotExist:
         msg = {"msg": "Not found", "tags": "warning"}
     except TimeoutError:
