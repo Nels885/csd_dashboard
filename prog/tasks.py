@@ -1,3 +1,5 @@
+import json
+
 from websockets.sync.client import connect
 from sbadmin import celery_app
 from django.core.files.storage import default_storage
@@ -10,12 +12,15 @@ def send_firmware_task(self, raspi_url, fw_name, target):
     ws_uri = "ws://" + raspi_url + ":8080/mbed-update/"
     msg = {"msg": "Succès : Connexion au raspberry avec succès !"}
     try:
-        selected_firmware = MbedFirmware.objects.get(name=fw_name)
+        query = MbedFirmware.objects.get(name=fw_name)
+        data = {"target": target, "filename": query.name, "filesize": query.filepath.size, "version": query.version}
         with connect(str(ws_uri)) as wsocket:
-            wsocket.send("target:" + target)
-            wsocket.send("filename:" + selected_firmware.name)
-            wsocket.send("version:" + selected_firmware.version)
-            with default_storage.open(str(selected_firmware.filepath), "rb") as f:
+            wsocket.send(json.dumps(data))
+            # wsocket.send(f"target: {target}")
+            # wsocket.send(f"filename: {query.name}")
+            # wsocket.send(f"filesize: {query.filepath.size}")
+            # wsocket.send(f"version: {query.version}")
+            with default_storage.open(query.filepath.path, "rb") as f:
                 file_data = f.read()
                 wsocket.send(file_data)
             wsocket.send("EOF")
