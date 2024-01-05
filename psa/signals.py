@@ -18,6 +18,8 @@ def post_save_corvet(sender, created, instance, **kwargs):
         default.update({"radio": Multimedia.objects.filter(comp_ref__startswith=instance.electronique_14f).first()})
     if instance.electronique_14b.isdigit():
         default.update({"bsi": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14b, type='BSI').first()})
+    if instance.electronique_1k4.isdigit():
+        default.update({"vsm1": Ecu.objects.filter(comp_ref__startswith=instance.electronique_1k4, type='VSM1').first()})
     if instance.electronique_14l.isdigit():
         default.update({"emf": Ecu.objects.filter(comp_ref__startswith=instance.electronique_14l, type='EMF').first()})
     if instance.electronique_14a.isdigit():
@@ -60,6 +62,8 @@ def post_save_multimedia(sender, created, instance, **kwargs):
 def post_save_ecu(sender, created, instance, **kwargs):
     if instance.type == "BSI":
         CorvetProduct.objects.filter(corvet__electronique_14b__startswith=instance.comp_ref).update(bsi=instance.pk)
+    if instance.type == "VSM1":
+        CorvetProduct.objects.filter(corvet__electronique_1k4__startswith=instance.comp_ref).update(vsm1=instance.pk)
     if instance.type == "BSM":
         CorvetProduct.objects.filter(corvet__electronique_16b__startswith=instance.comp_ref).update(bsm=instance.pk)
     if instance.type == "CMB":

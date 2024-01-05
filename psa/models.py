@@ -345,6 +345,7 @@ class CorvetProduct(models.Model):
 
     # ECU
     bsi = models.ForeignKey('psa.Ecu', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
+    vsm1 = models.ForeignKey('psa.Ecu', related_name='corvet_vsm1', on_delete=models.SET_NULL, limit_choices_to={'type': 'VSM1'}, null=True, blank=True)
     emf = models.ForeignKey('psa.Ecu', related_name='corvet_emf', on_delete=models.SET_NULL, limit_choices_to={'type': 'EMF'}, null=True, blank=True)
     cmm = models.ForeignKey('psa.Ecu', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
     bsm = models.ForeignKey('psa.Ecu', related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
@@ -520,7 +521,8 @@ class Calibration(models.Model):
 
 class Ecu(models.Model):
     TYPE_CHOICES = [
-        ('BSI', 'Boitier Servitude Intelligent'), ('BSM', 'Boitier Servitude Moteur'),
+        ('BSI', 'Boitier Servitude Intelligent'), ('VSM1', 'Module Supervision Vehicule'),
+        ('BSM', 'Boitier Servitude Moteur'),
         ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
         ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
         ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
