@@ -105,6 +105,23 @@
             <td>{{ object.electronique_xm2 }}</td>
         </tr>
     {% endif %}
+    {% if object.electronique_1l9 %}
+        <tr>
+            <td class="text-dark td-ihm">Réf HW BSRF</td>
+            <td>
+                {{ object.electronique_1l9 }}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">CAL BSRF</td>
+            <td>{{ object.electronique_3l9 }}</td>
+        </tr>
+        <tr>
+            <td class="text-dark td-ihm">N° série BSRF</td>
+            <td>{{ object.electronique_4l9 }}</td>
+        </tr>
+        {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur BSRF" value=object.electronique_6l9|get_supplier_code %}
+    {% endif %}
     {% if object.electronique_19z %}
         <tr>
             <td class="text-dark td-ihm">Ref. FMUX</td>
