@@ -1,0 +1,11 @@
+{% if corvet.prods.btel %}
+    {% include 'psa/format/multimedia_table_format.html' with object=corvet.prods.btel %}
+{% elif corvet.prods.ivi %}
+    {% include 'psa/format/multimedia_table_format.html' with object=corvet.prods.ivi %}
+{% elif corvet.prods.radio %}
+    {% include 'psa/format/multimedia_table_format.html' with object=corvet.prods.radio %}
+{% endif %}
+
+{% include 'prog/format/prog_table_format.html' with object=prog %}
+
+{% include 'psa/format/prods_table_format.html' with prods=corvet.prods %}
