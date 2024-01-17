@@ -8,9 +8,8 @@ from utils.scraping import xml_parser
 from utils.django import is_ajax
 from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
-from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote
-
-PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
+from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, Calibration, ProductChoice
+from .choices import PROD_CHOICES, ECU_TYPE_CHOICES, BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, CAL_TYPE_CHOICES
 
 
 class NacLicenseForm(forms.Form):
@@ -113,7 +112,19 @@ class CorvetModalForm(CorvetForm, BSModalModelForm):
         return instance
 
 
+class ProductChoiceAdminForm(forms.ModelForm):
+    TYPE_CHOICES = [('', '---')] + BTEL_TYPE_CHOICES + ECU_TYPE_CHOICES
+
+    ecu_type = forms.ChoiceField(label='Type ECU', choices=TYPE_CHOICES)
+    cal_attribute = forms.ChoiceField(label='Attribut CAL', choices=CAL_TYPE_CHOICES)
+
+    class Meta:
+        model = ProductChoice
+        fields = '__all__'
+
+
 class EcuAdminForm(forms.ModelForm):
+    type = forms.ChoiceField(choices=[('', '---')] + ECU_TYPE_CHOICES)
 
     class Meta:
         model = Ecu
@@ -126,7 +137,35 @@ class EcuAdminForm(forms.ModelForm):
         self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')
 
 
+class CalibrationAdminForm(forms.ModelForm):
+    type = forms.ChoiceField(choices=CAL_TYPE_CHOICES)
+
+    class Meta:
+        model = Calibration
+        fields = '__all__'
+
+
+class FirmwareAdminForm(forms.ModelForm):
+    FW_TYPE_CHOICES = [
+        ('', '---'),
+        ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
+        ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
+        ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
+        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4'),
+        ('RCC_EU_W2', 'RCC_EU_W2'),
+        ('RCC_EU_W3_ECO', 'RCC_EU_W3_ECO')
+    ]
+
+    ecu_type = forms.ChoiceField(label='EcuType', choices=FW_TYPE_CHOICES)
+
+    class Meta:
+        model = Firmware
+        fields = '__all__'
+
+
 class MultimediaAdminForm(forms.ModelForm):
+    name = forms.ChoiceField(choices=[('', '---')] + BTEL_PRODUCT_CHOICES)
+    type = forms.ChoiceField(choices=[('', '---')] + BTEL_TYPE_CHOICES)
 
     class Meta:
         model = Multimedia

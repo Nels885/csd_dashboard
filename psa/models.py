@@ -410,19 +410,10 @@ class ProductChoice(models.Model):
 
 
 class Multimedia(models.Model):
-    TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
         ('N/A', 'Vide'),
         ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'), ('external SD', 'Carte SD Externe'),
         ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
-    ]
-    PRODUCT_CHOICES = [
-        ('RD3', 'RD3'), ('RD4', 'RD4'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
-        ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
-        ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
-        ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
-        ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
-        ('IVI', 'In-Vehicle Infotainment')
     ]
     LVDS_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3'), (4, '4')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
@@ -432,12 +423,12 @@ class Multimedia(models.Model):
     mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES, blank=True)
+    name = models.CharField('modèle', max_length=20, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     pr_reference = models.CharField("référence PR", max_length=10, blank=True)
-    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=3)
     level = models.CharField('niveau', max_length=100, blank=True)
     extra = models.CharField('supplément', max_length=100, blank=True)
     flash_nor = models.CharField('flashNOR', max_length=100, blank=True)
@@ -471,20 +462,11 @@ class Multimedia(models.Model):
 
 
 class Firmware(models.Model):
-    ECU_TYPE_CHOICES = [
-        ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
-        ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
-        ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
-        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4'),
-        ('RCC_EU_W2', 'RCC_EU_W2'),
-        ('RCC_EU_W3_ECO', 'RCC_EU_W3_ECO')
-    ]
-
     update_id = models.CharField('SWL(UpdateID)', max_length=18, unique=True)
     version = models.CharField('UpdateVersion', max_length=200)
     type = models.CharField('UpdateType', max_length=100, blank=True)
     version_date = models.DateField('MediaVersionDate', null=True, blank=True)
-    ecu_type = models.CharField('EcuType', max_length=50, choices=ECU_TYPE_CHOICES)
+    ecu_type = models.CharField('EcuType', max_length=50)
     url = models.URLField('lien de téléchargement', max_length=500, blank=True)
     is_active = models.BooleanField('actif', default=False)
 
@@ -497,18 +479,8 @@ class Firmware(models.Model):
 
 
 class Calibration(models.Model):
-    TYPE_CHOICES = [
-        ('94B', 'BSI SOFT - Boitier Servitude Intelligent'), ('94A', 'CMM SOFT - Calculateur Moteur Multifonction'),
-        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94K', 'CMB SOFT - Combine Planche de Bord'),
-        ('94L', 'EMF SOFT - Ecran Multifonctions'), ('94X', 'BTEL SOFT - Boitier Telematique'),
-        ('96B', 'BSM SOFT - Boitier Servitude Moteur'), ('99H', 'MDS SOFT - Module de service telematique'),
-        ('92Y', 'CVM2_2_ SOFT - CAMERA VIDEO MULTIFONCTION V2'),
-        ('99K', 'ARTIV SOFT - Boitier Aide au Respect du Temps Inter Vehicule'),
-        ('92E', 'AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE'), ('96L', 'DAE SOFT - Direction Assistee Electrique')
-    ]
-
     factory = models.CharField('version usine', max_length=10, unique=True)
-    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=3)
     current = models.CharField('version actuelle', max_length=10, blank=True)
     pr_reference = models.CharField('référence PR', max_length=10, blank=True)
 
@@ -521,23 +493,13 @@ class Calibration(models.Model):
 
 
 class Ecu(models.Model):
-    TYPE_CHOICES = [
-        ('BSI', 'Boitier Servitude Intelligent'), ('VSM1', 'Module Supervision Vehicule'),
-        ('BSM', 'Boitier Servitude Moteur'),
-        ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
-        ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
-        ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
-        ('CVM2', 'Camera Video Multifonction V2'), ('VMF', 'Module Commutation Integre'),
-        ('DMTX', 'Dispositif Maintien Tension'), ('BPGA', 'Boitier Protection Alimentation Reseau Elec')
-    ]
-
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)
     mat_ref = models.CharField("réf. matériel", max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.CharField('type', max_length=10, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=10)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)
     hw = models.CharField('HW', max_length=10, blank=True)

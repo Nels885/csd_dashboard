@@ -7,7 +7,10 @@ from .models import (
     Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
     DefaultCode, ProductChoice, CanRemote, Vehicle
 )
-from .forms import EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm
+from .forms import (
+    EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm, CalibrationAdminForm, FirmwareAdminForm,
+    ProductChoiceAdminForm
+)
 
 
 class CorvetListFilter(admin.SimpleListFilter):
@@ -86,6 +89,7 @@ class MultimediaAdmin(admin.ModelAdmin):
 
 
 class FirmwareAdmin(admin.ModelAdmin):
+    form = FirmwareAdminForm
     list_display = ('update_id', 'version', 'type', 'version_date', 'ecu_type', 'is_active')
     list_filter = ('type', 'ecu_type')
     ordering = ('-update_id',)
@@ -93,6 +97,7 @@ class FirmwareAdmin(admin.ModelAdmin):
 
 
 class CalibrationAdmin(admin.ModelAdmin):
+    form = CalibrationAdminForm
     list_display = ('factory', 'type', 'current', 'pr_reference')
     list_filter = ('type',)
     ordering = ('-factory',)
@@ -166,6 +171,7 @@ class DefaultCodeAdmin(admin.ModelAdmin):
 
 
 class ProductChoiceAdmin(admin.ModelAdmin):
+    form = ProductChoiceAdminForm
     list_display = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
     list_filter = ('family', 'ecu_type', 'protocol')
     ordering = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')

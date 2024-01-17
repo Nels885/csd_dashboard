@@ -10,7 +10,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from crum import get_current_user
 
-from psa.models import Corvet, Multimedia, Ecu
+from psa.models import Corvet, Multimedia
+from psa.choices import ECU_TYPE_CHOICES, BTEL_TYPE_CHOICES
 
 
 class Xelon(models.Model):
@@ -208,7 +209,7 @@ class ProductCategory(models.Model):
         ('PSA', 'Produits PSA'), ('AUTRE', 'Autres produits'), ('CLARION', 'Clarion'), ('ETUDE', 'Etude'),
         ('CALCULATEUR', 'Calculateurs'), ('DEFAUT', 'Defaut')
     ]
-    TYPES = Multimedia.TYPE_CHOICES + Ecu.TYPE_CHOICES
+    TYPES = BTEL_TYPE_CHOICES + ECU_TYPE_CHOICES
 
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
     category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)
