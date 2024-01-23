@@ -43,3 +43,8 @@ CAL_TYPE_CHOICES = [
     ('99K', 'ARTIV SOFT - Boitier Aide au Respect du Temps Inter Vehicule'),
     ('92E', 'AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE'), ('96L', 'DAE SOFT - Direction Assistee Electrique')
 ]
+
+
+def convert(tup, di):
+    di = dict(tup)
+    return di

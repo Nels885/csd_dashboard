@@ -3,6 +3,8 @@ import re
 from django.db import models, utils
 from django.db.models import Q
 
+from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
+
 
 class CorvetChoices(models.Model):
     COL_CHOICES = [
@@ -453,6 +455,14 @@ class Multimedia(models.Model):
         verbose_name = "Données Multimédia"
         ordering = ['comp_ref']
 
+    def get_type_display(self):
+        dict_type = dict(BTEL_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
+
+    def get_name_display(self):
+        dict_name = dict(BTEL_PRODUCT_CHOICES)
+        return dict_name.get(self.name, "")
+
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
@@ -488,6 +498,10 @@ class Calibration(models.Model):
         verbose_name = "Calibration"
         ordering = ['-factory']
 
+    def get_type_display(self):
+        dict_type = dict(CAL_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
+
     def __str__(self):
         return self.factory
 
@@ -512,6 +526,10 @@ class Ecu(models.Model):
     class Meta:
         verbose_name = "Données ECU"
         ordering = ['comp_ref']
+
+    def get_type_display(self):
+        dict_type = dict(ECU_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
 
     def __iter__(self):
         for field in self._meta.fields:
