@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
-from django.contrib.admin import widgets
+
+from utils.django.contrib import CustomModelAdmin
 
 from .models import (
     Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
@@ -44,7 +44,7 @@ class CorvetAttributeAdmin(admin.ModelAdmin):
     search_fields = ('key_1', 'key_2', 'label')
 
 
-class MultimediaAdmin(admin.ModelAdmin):
+class MultimediaAdmin(CustomModelAdmin):
     form = MultimediaAdminForm
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
@@ -55,37 +55,15 @@ class MultimediaAdmin(admin.ModelAdmin):
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference')
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        vertical = False  # change to True if you prefer boxes to be stacked vertically
-        kwargs['widget'] = widgets.FilteredSelectMultiple(
-            db_field.verbose_name,
-            vertical,
-        )
-        return super().formfield_for_manytomany(db_field, request, **kwargs)
-
-    def _message_user_about_update(self, request, rows_updated, verb):
-        """Send message about action to user.
-        `verb` should shortly describe what have changed (e.g. 'enabled').
-        """
-        self.message_user(
-            request,
-            _('{0} product{1} {2} successfully {3}').format(
-                rows_updated,
-                pluralize(rows_updated),
-                pluralize(rows_updated, _('was,were')),
-                verb,
-            ),
-        )
-
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
             rows_updated = queryset.update(relation_by_name=False)
-            self._message_user_about_update(request, rows_updated, 'disabled')
+            self._message_product_about_update(request, rows_updated, 'disabled')
 
     @admin.action(description=_('Relation by name enabled'))
     def relation_by_name_enabled(self, request, queryset):
             rows_updated = queryset.update(relation_by_name=True)
-            self._message_user_about_update(request, rows_updated, 'enabled')
+            self._message_product_about_update(request, rows_updated, 'enabled')
 
 
 class FirmwareAdmin(admin.ModelAdmin):
@@ -98,11 +76,16 @@ class FirmwareAdmin(admin.ModelAdmin):
 
 class CalibrationAdmin(admin.ModelAdmin):
     form = CalibrationAdminForm
-    list_display = ('factory', 'type', 'current', 'pr_reference')
+    list_display = ('factory', 'get_type', 'get_type_display', 'current', 'pr_reference')
     list_filter = ('type',)
     ordering = ('-factory',)
     search_fields = ('factory', 'type', 'current', 'pr_reference')
 
+    def get_type(self, obj):
+        return f"electronique_{obj.type}"
+
+    def get_type_display(self, obj):
+        return obj.get_type_display()
 
 class CorvetChoicesAdmin(admin.ModelAdmin):
     list_display = ('key', 'value', 'column')
@@ -111,7 +94,7 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
     search_fields = ('key', 'value', 'column')
 
 
-class EcuAdmin(admin.ModelAdmin):
+class EcuAdmin(CustomModelAdmin):
     form = EcuAdminForm
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe',
@@ -122,37 +105,15 @@ class EcuAdmin(admin.ModelAdmin):
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type')
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        vertical = False  # change to True if you prefer boxes to be stacked vertically
-        kwargs['widget'] = widgets.FilteredSelectMultiple(
-            db_field.verbose_name,
-            vertical,
-        )
-        return super().formfield_for_manytomany(db_field, request, **kwargs)
-
-    def _message_user_about_update(self, request, rows_updated, verb):
-        """Send message about action to user.
-        `verb` should shortly describe what have changed (e.g. 'enabled').
-        """
-        self.message_user(
-            request,
-            _('{0} product{1} {2} successfully {3}').format(
-                rows_updated,
-                pluralize(rows_updated),
-                pluralize(rows_updated, _('was,were')),
-                verb,
-            ),
-        )
-
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
             rows_updated = queryset.update(relation_by_name=False)
-            self._message_user_about_update(request, rows_updated, 'disabled')
+            self._message_product_about_update(request, rows_updated, 'disabled')
 
     @admin.action(description=_('Relation by name enabled'))
     def relation_by_name_enabled(self, request, queryset):
             rows_updated = queryset.update(relation_by_name=True)
-            self._message_user_about_update(request, rows_updated, 'enabled')
+            self._message_product_about_update(request, rows_updated, 'enabled')
 
 
 class CorvetProductAdmin(admin.ModelAdmin):
@@ -178,20 +139,13 @@ class ProductChoiceAdmin(admin.ModelAdmin):
     search_fields = ('name', 'short_name', 'cal_attribute')
 
 
-class CanRemoteAdmin(admin.ModelAdmin):
+class CanRemoteAdmin(CustomModelAdmin):
     form = CanRemoteAdminForm
     list_display = ('label', 'location', 'type', 'product', 'can_id', 'dlc', 'data')
     list_filter = ('type', 'product',)
     ordering = ('location',)
     search_fields = ('label', 'product', 'can_id')
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        vertical = False  # change to True if you prefer boxes to be stacked vertically
-        kwargs['widget'] = widgets.FilteredSelectMultiple(
-            db_field.verbose_name,
-            vertical,
-        )
-        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 class SupplierCodeAdmin(admin.ModelAdmin):
