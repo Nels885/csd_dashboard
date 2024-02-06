@@ -1,3 +1,4 @@
+import datetime
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 # import itertools
@@ -186,10 +187,12 @@ class ToolsAnalysis:
 
     def suptech_ce(self):
         # suptechs = self.suptechs.exclude(category=3)
-        suptechs = self.suptechs.filter(category__name__icontains="etude")
+        suptechs_old = self.suptechs.exclude(category=3).filter(date__lt=datetime.date(2024, 1, 1))
+        suptechs_new = self.suptechs.filter(category__name__icontains="etude", date__gte=datetime.date(2024, 1, 1))
         data = {
             "suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": [], "expRate": [], "supNumber": []
         }
+        suptechs = suptechs_old | suptechs_new
         queryset = self._suptech_annotate(suptechs)
         for query in queryset:
             data["suptechCeLabels"].append(query['month'].strftime("%m/%Y"))
