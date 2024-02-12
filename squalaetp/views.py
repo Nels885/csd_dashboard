@@ -167,11 +167,19 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         })
         return context
 
-    def get_success_message(self, cleaned_data):
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
         value = "V.I.N."
         if cleaned_data['vin'] and cleaned_data['xml_data']:
             value = "V.I.N. / CORVET"
-        return self.success_message % dict(cleaned_data, result=value)
+        self.success_message % dict(cleaned_data, result=value)
+        return super().form_valid(form)
+
+    # def get_success_message(self, cleaned_data):
+    #     value = "V.I.N."
+    #     if cleaned_data['vin'] and cleaned_data['xml_data']:
+    #         value = "V.I.N. / CORVET"
+    #     return self.success_message % dict(cleaned_data, result=value)
 
     def get_success_url(self):
         if not is_ajax(self.request):
@@ -381,6 +389,10 @@ class SivinCreateView(PermissionRequiredMixin, BSModalCreateView):
         context = super().get_context_data(**kwargs)
         context['modal_title'] = _('SIVIN integration')
         return context
+
+    def form_valid(self, form):
+        self.object = form.instance
+        return super().form_valid(form)
 
     def get_success_url(self):
         if not is_ajax(self.request):

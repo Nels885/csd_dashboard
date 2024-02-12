@@ -160,6 +160,10 @@ class SupTechCreateView(BSModalCreateView):
     form_class = SuptechModalForm
     success_message = "Succès : Création d'un SupTech avec succès !"
 
+    def form_valid(self, form):
+        self.object = form.instance
+        return super().form_valid(form)
+
     def get_success_url(self):
         if self.object.request_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))

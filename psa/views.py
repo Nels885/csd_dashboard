@@ -158,6 +158,10 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
         context['modal_title'] = _('CORVET integration')
         return context
 
+    def form_valid(self, form):
+        self.object = form.instance
+        return super().form_valid(form)
+
     def get_success_url(self):
         if not is_ajax(self.request):
             return reverse_lazy('psa:corvet_detail', args=[self.object.pk])

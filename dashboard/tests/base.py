@@ -44,7 +44,7 @@ class BaseTest:
             '<ns2:marqueCarros xmlns:ns2="http://aaa.asso.fr/sivin/xsd"></ns2:marqueCarros>'
             '</ns4:return ></ns4:WS_SiVin_Consulter_VehiculeResponse></soapenv:Body></soapenv:Envelope>'
         )
-        self.formUser = {'username': 'test', 'email': 'test@test.com'}
+        self.formUser = {'username': 'test', 'email': 'test@test.com', 'password1': '', 'password2': ''}
         admin = User.objects.create_user(username='admin', email='admin@admin.com', password='adminpassword')
         admin.is_staff = True
         admin.save()
