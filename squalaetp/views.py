@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.http import JsonResponse, Http404, FileResponse
 from django.views.generic import TemplateView
@@ -150,7 +151,7 @@ def barcode_pdf_generate(request, pk):
     # return redirect(http_referer(request))
 
 
-class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView, SuccessMessageMixin):
     """ Modal view for updating Corvet and VIN data """
     model = Xelon
     permission_required = ['squalaetp.change_vin']
@@ -167,19 +168,11 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         })
         return context
 
-    def form_valid(self, form):
-        cleaned_data = form.cleaned_data
+    def get_success_message(self, cleaned_data):
         value = "V.I.N."
         if cleaned_data['vin'] and cleaned_data['xml_data']:
             value = "V.I.N. / CORVET"
-        self.success_message % dict(cleaned_data, result=value)
-        return super().form_valid(form)
-
-    # def get_success_message(self, cleaned_data):
-    #     value = "V.I.N."
-    #     if cleaned_data['vin'] and cleaned_data['xml_data']:
-    #         value = "V.I.N. / CORVET"
-    #     return self.success_message % dict(cleaned_data, result=value)
+        return self.success_message % dict(cleaned_data, result=value)
 
     def get_success_url(self):
         if not is_ajax(self.request):
