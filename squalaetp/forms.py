@@ -12,6 +12,7 @@ from utils.conf import string_to_list
 from psa.models import Corvet, Multimedia, Ecu
 from .models import Xelon, Action, Sivin, ProductCode, ProductCategory, XelonTemporary
 from .tasks import send_email_task
+from utils.django import is_ajax
 from utils.django.forms.fields import ListTextWidget
 from utils.django.models import defaults_dict
 from utils.file import LogFile
@@ -117,7 +118,7 @@ class VinCorvetModalForm(BSModalModelForm):
             if isinstance(data, dict):
                 all_data.update(data)
                 if data.get('vin') == vin and data.get('donnee_date_entree_montage'):
-                    if self.request.is_ajax():
+                    if is_ajax(self.request):
                         xml_corvet_file(self.instance, xml_data, vin)
                 if data.get('vin') != vin:
                     self.add_error('xml_data', _('XML data does not match VIN'))
@@ -141,7 +142,7 @@ class VinCorvetModalForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             data = self.cleaned_data['xml_data']
             vin = self.cleaned_data['vin']
             if data and vin:
@@ -177,10 +178,10 @@ class ProductModalForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             product = self.cleaned_data['modele_produit']
             vehicle = self.cleaned_data['modele_vehicule']
-            if product and vehicle and not self.request.is_ajax():
+            if product and vehicle and not is_ajax(self.request):
                 if product != self.oldProduct:
                     content = "OLD_PROD: {}\nNEW_PROD: {}".format(self.oldProduct, product)
                     Action.objects.create(content=content, content_object=self.instance)
@@ -233,7 +234,7 @@ class SivinModalForm(BSModalModelForm):
     def save(self, commit=True):
         del self.fields['xml_data']
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.save()
         return instance
 
@@ -258,7 +259,7 @@ class XelonCloseModalForm(BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.type_de_cloture = "N/A"
             instance.save()
             Action.objects.create(content="Dossier en retard => FAIT", content_object=instance)
@@ -288,7 +289,7 @@ class XelonTemporaryModalForm(XelonTemporaryForm, BSModalModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             instance.type_de_cloture = "N/A"
             instance.save()
             Action.objects.create(content="Dossier en retard => FAIT", content_object=instance)

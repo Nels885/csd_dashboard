@@ -76,4 +76,26 @@ $(document).ready(function () {
             orderable: false,
         }],
     });
+
+    $('#raspiTimeTable').DataTable({
+        pagingType: "full_numbers",
+        lengthMenu: [[25, 50, 100], [25, 50, 100]],
+        processing: true,
+        serverSide: true,
+        scrollX: true,
+        order: [[3, 'desc']],
+        ajax: {
+            url: URL_AJAX,
+            type: "GET",
+        },
+        columns: [
+            {data: "name"},
+            {data: "type"},
+            {data: "date"},
+            {data: "start_time"},
+            {data: "end_time"},
+            {data: "duration"},
+            {data: "xelon"}
+        ],
+    });
 });

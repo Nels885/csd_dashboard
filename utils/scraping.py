@@ -2,13 +2,12 @@ import time
 import logging
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from django.conf import settings
 from django.utils.timezone import make_aware
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-# from seleniumwire import webdriver
-# from seleniumwire.webdriver import ChromeOptions as Options
+from seleniumwire import webdriver
+from seleniumwire.webdriver import ChromeOptions as Options
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,30 +18,27 @@ from constance import config
 logger = logging.getLogger('command')
 
 
-options_seleniumWire = {
-    'proxy': {
-        'https': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
-    }
-}
-
-
 class Scraping(webdriver.Chrome):
     ERROR = False
     STATUS = "INIT"
 
     def __init__(self, **kwargs):
         """ Initialization """
+        options_seleniumwire = {}
+        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+            options_seleniumwire['proxy'] = {
+                'http': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
+                'https': f'{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}',
+            }
         options = Options()
+        if not settings.DEBUG:
+            options.add_argument('-headless')
         options.add_argument("no-sandbox")  # bypass OS security model
         options.add_argument("disable-dev-shm-usage")  # overcome limited resource problems
-        options.add_argument("ignore-certificate-errors")
-        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-            options.add_argument(f'--proxy-server={config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}')
-        if kwargs.get('headless', True):
-            options.add_argument('headless')
-        # super().__init__(ChromeDriverManager().install(), options=options, seleniumwire_options=options_seleniumWire)
-        # super().__init__(service=ChromeService(ChromeDriverManager().install()), options=options)
-        super().__init__(service=Service(), options=options)
+        options.add_argument('--ignore-certificate-errors-spki-list')
+        options.add_argument('--ignore-ssl-errors')
+        super().__init__(
+            service=Service('/usr/local/bin/chromedriver'), options=options, seleniumwire_options=options_seleniumwire)
         self.set_page_load_timeout(30)
 
     def is_element_exist(self, by, value):
@@ -59,28 +55,36 @@ class Scraping(webdriver.Chrome):
             return False
         return True
 
-    def close(self):
+    def get(self, *args, **kwargs):
+        try:
+            self.ERROR = False
+            super().get(*args, **kwargs)
+        except Exception as err:
+            self._logger_error('get()', err)
+            self.close()
+
+    def close(self, **kwargs):
         try:
             if self.STATUS not in ["QUIT", "CLOSE"]:
                 super().close()
                 self.STATUS = "CLOSE"
         except Exception as err:
             self._logger_error('close()', err)
+        finally:
+            self.ERROR = kwargs.get('error', self.ERROR)
 
-    def quit(self, **kwargs):
+    def quit(self):
         try:
             if self.STATUS != "QUIT":
                 super().quit()
                 self.STATUS = "QUIT"
         except Exception as err:
             self._logger_error('quit()', err)
-        finally:
-            self.ERROR = kwargs.get('error', self.ERROR)
 
-    @staticmethod
-    def _logger_error(message, err):
+    def _logger_error(self, message, err):
         exception_type = type(err).__name__
         logger.error(f"{exception_type} - {message}: {err}")
+        self.close(error=True)
 
 
 class ScrapingCorvet(Scraping):
@@ -89,17 +93,16 @@ class ScrapingCorvet(Scraping):
 
     def __init__(self, *args, **kwargs):
         """ Initialization """
-        super(ScrapingCorvet, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.username = kwargs.get('username', config.CORVET_USER)
         self.password = kwargs.get('password', config.CORVET_PWD)
+        self.start(**kwargs)
+
+    def start(self, **kwargs):
         if not kwargs.get('test', False) and self.username and self.password:
-            try:
-                self.get(self.START_URLS)
-            except Exception as err:
-                self._logger_error('__init__()', err)
-                self.quit(error=True)
+            self.get(self.START_URLS)
         else:
-            self.ERROR = True
+            self._logger_error('start()', 'Not username and password')
 
     def result(self, vin_value=None):
         """
@@ -107,6 +110,7 @@ class ScrapingCorvet(Scraping):
         :param vin_value: VIN number for the Corvet data
         :return: Corvet data
         """
+        timeout,  data = 10, "ERREUR COMMUNICATION SYSTEME CORVET"
         if not self.ERROR and self.login() and isinstance(vin_value, str):
             try:
                 WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
@@ -114,16 +118,18 @@ class ScrapingCorvet(Scraping):
                 submit = self.find_element(By.ID, 'form:suite')
                 vin.send_keys(vin_value.upper())
                 submit.click()
-                time.sleep(1)
-                data = WebDriverWait(self, 10).until(
-                    EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
-                ).text
-                if data and len(data) == 0:
-                    data = "ERREUR COMMUNICATION SYSTEME CORVET"
+                while timeout != 0:
+                    time.sleep(1)
+                    result = WebDriverWait(self, 10).until(
+                        EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
+                    ).text
+                    if result and len(result) != 0:
+                        data = result
+                        break
+                    timeout -= 1
             except Exception as err:
                 self._logger_error('CORVET result()', err)
                 data = "Exception or timeout error !"
-                self.ERROR = True
             self.logout()
         else:
             data = "Corvet login Error !!!"
@@ -144,7 +150,6 @@ class ScrapingCorvet(Scraping):
             login.click()
         except Exception as err:
             self._logger_error('login()', err)
-            self.quit(error=True)
             return False
         return True
 
@@ -157,7 +162,6 @@ class ScrapingCorvet(Scraping):
             WebDriverWait(self, 10).until(EC.presence_of_element_located((By.ID, 'form:deconnect2'))).click()
         except Exception as err:
             self._logger_error('logout()', err)
-            self.quit(error=True)
             return False
         return True
 
@@ -189,7 +193,6 @@ class ScrapingSivin(ScrapingCorvet):
             except Exception as err:
                 self._logger_error('SIVIN result()', err)
                 data = "Exception or timeout error !"
-                self.ERROR = True
             self.logout()
             self.get(self.START_URLS)
         else:

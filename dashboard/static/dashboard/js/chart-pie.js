@@ -4,7 +4,7 @@ Chart.defaults.color = '#858796';
 
 $.ajax({
     method: "GET",
-    url: $("#dataCharts").attr("data-url"),
+    url: $("#prodPieChart").attr("data-url"),
     success: function (data) {
         // console.log(data);
 

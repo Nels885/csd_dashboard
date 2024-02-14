@@ -1,3 +1,4 @@
+import datetime
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 # import itertools
@@ -168,7 +169,8 @@ class ToolsAnalysis:
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
 
     def suptech_co(self):
-        suptechs = self.suptechs.filter(category=3)
+        # suptechs = self.suptechs.filter(category=3)
+        suptechs = self.suptechs.filter(category__name__icontains="operation")
         data = {
             "suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": [], "coExpRate": [],
             "coSupNumber": []
@@ -184,10 +186,13 @@ class ToolsAnalysis:
         return data
 
     def suptech_ce(self):
-        suptechs = self.suptechs.exclude(category=3)
+        # suptechs = self.suptechs.exclude(category=3)
+        suptechs_old = self.suptechs.exclude(category=3).filter(date__lt=datetime.date(2024, 1, 1))
+        suptechs_new = self.suptechs.filter(category__name__icontains="etude", date__gte=datetime.date(2024, 1, 1))
         data = {
             "suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": [], "expRate": [], "supNumber": []
         }
+        suptechs = suptechs_old | suptechs_new
         queryset = self._suptech_annotate(suptechs)
         for query in queryset:
             data["suptechCeLabels"].append(query['month'].strftime("%m/%Y"))
@@ -243,6 +248,12 @@ class ToolsAnalysis:
             **self.suptech_ce(), **self.suptech_co(), **self.bga_time(), **self.raspi_time(),
             **self.thermal_chamber_measure()
         )
+
+    def suptech(self):
+        return dict(**self.suptech_ce(), **self.suptech_co())
+
+    def use_tools(self):
+        return dict(**self.bga_time(), **self.raspi_time(), **self.thermal_chamber_measure())
 
     @staticmethod
     def _percent(value, total=None, total_multiplier=1):

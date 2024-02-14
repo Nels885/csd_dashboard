@@ -129,7 +129,7 @@ class ExportSuptechForm(forms.Form):
 
 
 class ExportToolsForm(forms.Form):
-    TABLES = [('bga_time', 'UTILISATION BGA')]
+    TABLES = [('bga_time', 'UTILISATION BGA'), ('raspi_time', 'UTILISATION RASPI')]
     MONTH_CHOICES = [('', 'All'), ('6', '6 derniers mois'), ('12', '12 derniers mois')]
 
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())

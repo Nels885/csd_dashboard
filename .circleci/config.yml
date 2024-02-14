@@ -1,29 +1,33 @@
 version: 2.1
 orbs:
   python: circleci/python@2.0.3
-  browser-tools: circleci/browser-tools@1.4.1
+  browser-tools: circleci/browser-tools@1.4.6
 jobs: # A basic unit of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
     # directory where steps are run
     working_directory: ~/circleci-csd-dashboard
     docker: # run the steps with Docker
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
-      - image: cimg/python:3.8.10
+      - image: cimg/python:3.10.12
       # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
       - image: cimg/postgres:9.6.24
         environment: # environment variables for the Postgres container.
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
-      - image: cimg/redis:5.0.14
+      - image: cimg/redis:6.0.16
+      - image: cimg/node:20.4.0-browsers
     steps: # steps that comprise the `build` job
       - checkout
       - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Install dependencies
+          no_output_timeout: 30m
           command: pipenv sync --dev
       - run:
           command: |
             google-chrome --version
+            chromedriver --version
           name: Check Google Chrome install
       - run:
           name: Run pipenv graph

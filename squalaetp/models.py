@@ -1,7 +1,6 @@
 import re
 
 from django.db import models
-from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -10,7 +9,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from crum import get_current_user
 
-from psa.models import Corvet, Multimedia, Ecu
+from psa.models import Corvet, Multimedia, CORVET_HW_FILTERS, CORVET_SN_FILTERS
+from psa.choices import ECU_TYPE_CHOICES, BTEL_TYPE_CHOICES
+
+
+XELON_FILTERS = [
+    'numero_de_dossier__iexact', 'vin__iexact', 'vin__iendswith', 'corvet__opts__tag__istartswith'
+]
+XELON_SN_FILTERS = [f'corvet__{field}' for field in CORVET_SN_FILTERS]
+XELON_HW_FILTERS = [f'corvet__{field}' for field in CORVET_HW_FILTERS]
 
 
 class Xelon(models.Model):
@@ -61,30 +68,10 @@ class Xelon(models.Model):
     def search(cls, value):
         if value is not None:
             query = value.strip()
-            return cls.objects.filter(
-                Q(numero_de_dossier__iexact=query) | Q(vin__iexact=query) | Q(vin__iendswith=query) |
-                Q(corvet__electronique_44l__icontains=query) | Q(corvet__electronique_44x__icontains=query) |
-                Q(corvet__electronique_44a__icontains=query) | Q(corvet__electronique_44b__iexact=query) |
-                Q(corvet__electronique_46p__iexact=query) | Q(corvet__opts__tag__istartswith=query)|
-
-                Q(corvet__electronique_14f__iexact=query) | Q(corvet__electronique_14j__iexact=query) |
-                Q(corvet__electronique_14k__iexact=query) | Q(corvet__electronique_14l__iexact=query) |
-                Q(corvet__electronique_14r__iexact=query) | Q(corvet__electronique_14x__iexact=query) |
-                Q(corvet__electronique_19z__iexact=query) | Q(corvet__electronique_19h__iexact=query) |
-                Q(corvet__electronique_14a__iexact=query) | Q(corvet__electronique_14b__iexact=query) |
-                Q(corvet__electronique_16p__iexact=query) | Q(corvet__electronique_16b__iexact=query) |
-                Q(corvet__electronique_16q__iexact=query) | Q(corvet__electronique_16v__iexact=query) |
-                Q(corvet__electronique_19f__iexact=query) | Q(corvet__electronique_19u__iexact=query) |
-                Q(corvet__electronique_14d__iexact=query) | Q(corvet__electronique_16g__iexact=query) |
-                Q(corvet__electronique_19v__iexact=query) | Q(corvet__electronique_12y__iexact=query) |
-                Q(corvet__electronique_16l__iexact=query) | Q(corvet__electronique_14y__iexact=query) |
-                Q(corvet__electronique_14z__iexact=query) | Q(corvet__electronique_14p__iexact=query) |
-                Q(corvet__electronique_19w__iexact=query) | Q(corvet__electronique_16t__iexact=query) |
-                Q(corvet__electronique_19t__iexact=query) | Q(corvet__electronique_14m__iexact=query) |
-                Q(corvet__electronique_18z__iexact=query) | Q(corvet__electronique_11m__iexact=query) |
-                Q(corvet__electronique_19k__iexact=query) | Q(corvet__electronique_12e__iexact=query) |
-                Q(corvet__electronique_11q__iexact=query)
-            )
+            filters = XELON_FILTERS + XELON_SN_FILTERS + XELON_HW_FILTERS
+            for field in filters:
+                    queryset = cls.objects.filter(**{field: query})
+                    if queryset: return queryset
         return None
 
     @property
@@ -207,7 +194,7 @@ class ProductCategory(models.Model):
         ('PSA', 'Produits PSA'), ('AUTRE', 'Autres produits'), ('CLARION', 'Clarion'), ('ETUDE', 'Etude'),
         ('CALCULATEUR', 'Calculateurs'), ('DEFAUT', 'Defaut')
     ]
-    TYPES = Multimedia.TYPE_CHOICES + Ecu.TYPE_CHOICES
+    TYPES = BTEL_TYPE_CHOICES + ECU_TYPE_CHOICES
 
     product_model = models.CharField('modèle produit', max_length=50, unique=True)
     category = models.CharField('catégorie', default="DEFAUT", max_length=50, choices=CHOICES)

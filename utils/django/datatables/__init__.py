@@ -2,6 +2,9 @@ import operator
 from functools import reduce
 from model_utils import Choices
 from django.db.models import Q
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from rest_framework.viewsets import ModelViewSet
 
 
 class QueryTableByArgs:
@@ -10,14 +13,14 @@ class QueryTableByArgs:
         self.queryset = queryset
         self.columns = column_list
         self.choices = self._choices(column_list, column_start)
-        self.draw = int(kwargs.get('draw', None)[0])
-        self.length = int(kwargs.get('length', None)[0])
-        self.start = int(kwargs.get('start', None)[0])
-        self.order_column = kwargs.get('order[0][column]', None)[0]
+        self.draw = int(kwargs.get('draw', '')[0])
+        self.length = int(kwargs.get('length', '')[0])
+        self.start = int(kwargs.get('start', '')[0])
+        self.order_column = kwargs.get('order[0][column]', '')[0]
         self.total = queryset.count()
 
-        search_value = kwargs.get('search[value]', None)[0]
-        order = kwargs.get('order[0][dir]', None)[0]
+        search_value = kwargs.get('search[value]', '')[0]
+        order = kwargs.get('order[0][dir]', '')[0]
 
         self._ordering(order)
         self._filter(search_value)
@@ -48,3 +51,27 @@ class QueryTableByArgs:
         return Choices(
             *[(str(i), elt, elt) for i, elt in enumerate(column_list, start=column_start)]
         )
+
+
+class ServerSideViewSet(ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    column_list = []
+    column_start = 0
+
+    def list(self, request, **kwargs):
+        try:
+            self._filter(request)
+            query = QueryTableByArgs(self.queryset, self.column_list, self.column_start, **request.query_params).values()
+            serializer = self.serializer_class(query["items"], many=True)
+            data = {
+                "data": serializer.data,
+                "draw": query["draw"],
+                "recordsTotal": query["total"],
+                "recordsFiltered": query["count"],
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+    def _filter(self, request):
+        pass

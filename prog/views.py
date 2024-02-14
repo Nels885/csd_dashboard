@@ -13,6 +13,7 @@ from .tasks import send_firmware_task
 from prog.models import MbedFirmware
 from .forms import RaspeediForm, UnlockForm, ToolStatusForm, AETModalForm, AETSendSoftwareForm, AETAddSoftwareModalForm
 from dashboard.forms import ParaErrorList
+from utils.django import is_ajax
 from utils.django.urls import reverse_lazy, http_referer
 
 context = {'title': 'Prog'}
@@ -185,7 +186,7 @@ class ToolDeleteView(BSModalDeleteView):
         return http_referer(self.request)
 
 
-def AET_info(request, pk=None):
+def aet_info(request, pk=None):
     """
     View of the AET/MbedFirmware table page
     :param request:
@@ -199,15 +200,15 @@ def AET_info(request, pk=None):
     firmware_list = MbedFirmware.objects.all()
     for obj in AET_list:
         try:
-            response = requests.get(url="http://" + obj.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+            response = requests.get(url=f"http://{obj.raspi_url}/api/info/", timeout=(0.05, 0.5))
             if response.status_code >= 200 or response.status_code < 300:
                 data = response.json()
-                obj.mbed_list = str(data['mbed_list']).replace("'", "")[1:-1]
+                obj.mbed_list = ", ".join(data.get('mbed_list', []))
                 obj.save()
         except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
             pass
     context.update(locals())
-    return render(request, 'prog/aet.html', context)
+    return render(request, 'prog/aet_info.html', context)
 
 
 def ajax_aet_status(request, pk):
@@ -231,7 +232,7 @@ def ajax_aet_status(request, pk):
     return JsonResponse(data)
 
 
-class AETCreateView(BSModalCreateView):
+class AetCreateView(BSModalCreateView):
     """
     View to create new AET
     :param BSModalCreateView:
@@ -258,7 +259,7 @@ class AetDeleteView(BSModalDeleteView):
         return http_referer(self.request)
 
 
-class AETUpdateView(BSModalUpdateView):
+class AetUpdateView(BSModalUpdateView):
     permission_required = 'prog.change_aet'
     model = AET
     template_name = 'prog/modal/aet_update.html'
@@ -269,7 +270,7 @@ class AETUpdateView(BSModalUpdateView):
         return http_referer(self.request)
 
 
-class AETAddSoftwareView(BSModalCreateView):
+class AetAddSoftwareView(BSModalCreateView):
     permission_required = 'prog.add_aet'
     model = MbedFirmware
     template_name = 'prog/modal/aet_add_software.html'
@@ -301,13 +302,13 @@ class MbedFirmwareUpdateView(BSModalUpdateView):
         return http_referer(self.request)
 
 
-class AETSendSoftwareView(BSModalFormView):
+class AetSendSoftwareView(BSModalFormView):
     permission_required = 'prog.change_aet'
     template_name = 'prog/modal/aet_send_software.html'
     form_class = AETSendSoftwareForm
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             pk = self.kwargs.get('pk')
             aet = AET.objects.get(pk=pk)
             task = send_firmware_task.delay(raspi_url=aet.raspi_url, fw_name=form.cleaned_data['select_firmware'],
@@ -324,6 +325,6 @@ class AETSendSoftwareView(BSModalFormView):
         return context
 
     def get_success_url(self):
-        if not self.request.is_ajax():
-            return reverse_lazy('prog:AET_info', get={'task_id': self.task_id})
-        return reverse_lazy('prog:AET_info')
+        if not is_ajax(self.request):
+            return reverse_lazy('prog:aet_info', get={'task_id': self.task_id})
+        return reverse_lazy('prog:aet_info')

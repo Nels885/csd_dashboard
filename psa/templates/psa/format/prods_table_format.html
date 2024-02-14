@@ -50,6 +50,19 @@
 
 {% endif %}
 
+<!-- VSM1 Info -->
+{% if prods.vsm1 %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseBsi" expanded=collapse.bsi upper_title="vsm1" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseBsi" show=collapse.bsi object=prods.vsm1 %}
+
+    </table>
+
+{% endif %}
+
 <!-- COM200x Info -->
 {% if prods.hdc %}
 
@@ -84,6 +97,19 @@
         {% include 'format/collapse_thead.html' with id="collapseDmtx" expanded=collapse.dmtx upper_title="dispositif maintien tension" %}
 
         {% include 'format/collapse_tbody_ecu.html' with id="collapseDmtx" show=collapse.dmtx object=prods.dmtx %}
+
+    </table>
+
+{% endif %}
+
+<!-- BPGA Info -->
+{% if prods.bpga %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseBpga" expanded=collapse.bpga upper_title="boitier protection ALIMENT RESEAU ELEC[FR]" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseBpga" show=collapse.bpga object=prods.bpga %}
 
     </table>
 

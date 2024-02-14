@@ -20,7 +20,7 @@
 
             <tr>
                 <td class="bg-white">
-                    <a href="{% url 'squalaetp:detail' pk=object.content_object.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
+                    <a href="{% url 'squalaetp:change_redirect' pk=object.pk %}" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>
                 </td>
                 <td>{{ object.content_object }}</td>
                 <td>{{ object.content|linebreaksbr }}</td>

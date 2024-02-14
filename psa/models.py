@@ -3,6 +3,30 @@ import re
 from django.db import models, utils
 from django.db.models import Q
 
+from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
+
+
+CORVET_FILTERS = [
+    'vin__iexact', 'vin__iendswith', 'opts__tag__istartswith'
+]
+
+CORVET_SN_FILTERS = [
+    'electronique_44l__icontains', 'electronique_44x__icontains','electronique_44a__icontains',
+    'electronique_44b__iexact', 'electronique_46p__iexact'
+]
+
+CORVET_HW_FILTERS = [
+    'electronique_14f__iexact', 'electronique_14j__iexact', 'electronique_14k__iexact', 'electronique_14l__iexact',
+    'electronique_14r__iexact', 'electronique_14x__iexact', 'electronique_19z__iexact', 'electronique_19h__iexact',
+    'electronique_14a__iexact', 'electronique_14b__iexact', 'electronique_16p__iexact', 'electronique_16b__iexact',
+    'electronique_16q__iexact', 'electronique_16v__iexact', 'electronique_19f__iexact', 'electronique_19u__iexact',
+    'electronique_14d__iexact', 'electronique_16g__iexact', 'electronique_19v__iexact', 'electronique_12y__iexact',
+    'electronique_16l__iexact', 'electronique_14y__iexact', 'electronique_14z__iexact', 'electronique_14p__iexact',
+    'electronique_19w__iexact', 'electronique_16t__iexact', 'electronique_19t__iexact', 'electronique_14m__iexact',
+    'electronique_18z__iexact', 'electronique_11m__iexact', 'electronique_19k__iexact', 'electronique_12e__iexact',
+    'electronique_11q__iexact', 'electronique_11n__iexact', 'electronique_1m2__iexact', 'electronique_1l9__iexact'
+]
+
 
 class CorvetChoices(models.Model):
     COL_CHOICES = [
@@ -294,24 +318,9 @@ class Corvet(models.Model):
     def hw_search(cls, value, all_data=True):
         if value is not None:
             query = value.strip()
-            return cls.objects.filter(
-                Q(electronique_14f__iexact=query) | Q(electronique_14j__iexact=query) |
-                Q(electronique_14k__iexact=query) | Q(electronique_14l__iexact=query) |
-                Q(electronique_14r__iexact=query) | Q(electronique_14x__iexact=query) |
-                Q(electronique_19z__iexact=query) | Q(electronique_19h__iexact=query) |
-                Q(electronique_14a__iexact=query) | Q(electronique_14b__iexact=query) |
-                Q(electronique_16p__iexact=query) | Q(electronique_16b__iexact=query) |
-                Q(electronique_16q__iexact=query) | Q(electronique_16v__iexact=query) |
-                Q(electronique_19f__iexact=query) | Q(electronique_19u__iexact=query) |
-                Q(electronique_14d__iexact=query) | Q(electronique_16g__iexact=query) |
-                Q(electronique_19v__iexact=query) | Q(electronique_12y__iexact=query) |
-                Q(electronique_16l__iexact=query) | Q(electronique_14y__iexact=query) |
-                Q(electronique_14z__iexact=query) | Q(electronique_14p__iexact=query) |
-                Q(electronique_19w__iexact=query) | Q(electronique_16t__iexact=query) |
-                Q(electronique_19t__iexact=query) | Q(electronique_14m__iexact=query) |
-                Q(electronique_18z__iexact=query) | Q(electronique_11m__iexact=query) |
-                Q(electronique_19k__iexact=query) | Q(electronique_12e__iexact=query) |
-                Q(electronique_11q__iexact=query))
+            for field in CORVET_HW_FILTERS:
+                    queryset = cls.objects.filter(**{field: query})
+                    if queryset: return queryset
         if all_data:
             return cls
         return None
@@ -320,15 +329,12 @@ class Corvet(models.Model):
     def search(cls, value):
         if value is not None:
             query = value.strip()
-            corvets = cls.hw_search(value, all_data=False)
-            if corvets:
-                return corvets
-            return cls.objects.filter(
-                Q(vin__iexact=query) | Q(vin__iendswith=query) | Q(electronique_44l__icontains=query) |
-                Q(electronique_44x__icontains=query) | Q(electronique_44a__icontains=query) |
-                Q(electronique_44b__iexact=query) | Q(electronique_46p__iexact=query) |
-                Q(opts__tag__istartswith=query)
-            )
+            queryset = cls.hw_search(value, all_data=False)
+            if queryset: return queryset
+            filters = CORVET_FILTERS + CORVET_SN_FILTERS
+            for field in filters:
+                queryset = cls.objects.filter(**{field: query})
+                if queryset: return queryset
         return None
 
     def __str__(self):
@@ -345,6 +351,7 @@ class CorvetProduct(models.Model):
 
     # ECU
     bsi = models.ForeignKey('psa.Ecu', related_name='corvet_bsi', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSI'}, null=True, blank=True)
+    vsm1 = models.ForeignKey('psa.Ecu', related_name='corvet_vsm1', on_delete=models.SET_NULL, limit_choices_to={'type': 'VSM1'}, null=True, blank=True)
     emf = models.ForeignKey('psa.Ecu', related_name='corvet_emf', on_delete=models.SET_NULL, limit_choices_to={'type': 'EMF'}, null=True, blank=True)
     cmm = models.ForeignKey('psa.Ecu', related_name='corvet_cmm', on_delete=models.SET_NULL, limit_choices_to={'type': 'CMM'}, null=True, blank=True)
     bsm = models.ForeignKey('psa.Ecu', related_name='corvet_bsm', on_delete=models.SET_NULL, limit_choices_to={'type': 'BSM'}, null=True, blank=True)
@@ -355,6 +362,7 @@ class CorvetProduct(models.Model):
     cvm2 = models.ForeignKey('psa.Ecu', related_name='corvet_cvm2', on_delete=models.SET_NULL, limit_choices_to={'type': 'CVM2'}, null=True, blank=True)
     vmf = models.ForeignKey('psa.Ecu', related_name='corvet_vmf', on_delete=models.SET_NULL, limit_choices_to={'type': 'VMF'}, null=True, blank=True)
     dmtx = models.ForeignKey('psa.Ecu', related_name='corvet_dmtx', on_delete=models.SET_NULL, limit_choices_to={'type': 'DMTX'}, null=True, blank=True)
+    bpga = models.ForeignKey('psa.Ecu', related_name='corvet_bpga', on_delete=models.SET_NULL, limit_choices_to={'type': 'BPGA'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"
@@ -407,19 +415,10 @@ class ProductChoice(models.Model):
 
 
 class Multimedia(models.Model):
-    TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]
     MEDIA_CHOICES = [
         ('N/A', 'Vide'),
         ('HDD', 'Disque Dur'), ('EMMC', 'eMMC'), ('external SD', 'Carte SD Externe'),
         ('8Go', 'Carte SD 8Go'), ('16Go', 'Carte SD 16Go'), ('8Go 16Go', 'Carte SD 8 ou 16 Go'),
-    ]
-    PRODUCT_CHOICES = [
-        ('RD3', 'RD3'), ('RD4', 'RD4'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
-        ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
-        ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
-        ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
-        ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
-        ('IVI', 'In-Vehicle Infotainment')
     ]
     LVDS_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3'), (4, '4')]
     USB_CON_CHOICES = [(1, '1'), (2, '2'), (3, '3')]
@@ -429,12 +428,12 @@ class Multimedia(models.Model):
     mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, null=True, blank=True)
-    name = models.CharField('modèle', max_length=20, choices=PRODUCT_CHOICES, blank=True)
+    name = models.CharField('modèle', max_length=20, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
     supplier_oe = models.CharField("fabriquant", max_length=50, blank=True)
     pr_reference = models.CharField("référence PR", max_length=10, blank=True)
-    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=3)
     level = models.CharField('niveau', max_length=100, blank=True)
     extra = models.CharField('supplément', max_length=100, blank=True)
     flash_nor = models.CharField('flashNOR', max_length=100, blank=True)
@@ -459,6 +458,14 @@ class Multimedia(models.Model):
         verbose_name = "Données Multimédia"
         ordering = ['comp_ref']
 
+    def get_type_display(self):
+        dict_type = dict(BTEL_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
+
+    def get_name_display(self):
+        dict_name = dict(BTEL_PRODUCT_CHOICES)
+        return dict_name.get(self.name, "")
+
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
@@ -468,20 +475,11 @@ class Multimedia(models.Model):
 
 
 class Firmware(models.Model):
-    ECU_TYPE_CHOICES = [
-        ('NAC_EUR_WAVE2', 'NAC_EUR_WAVE2'),
-        ('NAC_EUR_WAVE1', 'NAC_EUR_WAVE1'),
-        ('NAC_EUR_WAVE3', 'NAC_EUR_WAVE3'),
-        ('NAC_EUR_WAVE4', 'NAV_EUR_WAVE4'),
-        ('RCC_EU_W2', 'RCC_EU_W2'),
-        ('RCC_EU_W3_ECO', 'RCC_EU_W3_ECO')
-    ]
-
     update_id = models.CharField('SWL(UpdateID)', max_length=18, unique=True)
     version = models.CharField('UpdateVersion', max_length=200)
     type = models.CharField('UpdateType', max_length=100, blank=True)
     version_date = models.DateField('MediaVersionDate', null=True, blank=True)
-    ecu_type = models.CharField('EcuType', max_length=50, choices=ECU_TYPE_CHOICES)
+    ecu_type = models.CharField('EcuType', max_length=50)
     url = models.URLField('lien de téléchargement', max_length=500, blank=True)
     is_active = models.BooleanField('actif', default=False)
 
@@ -494,18 +492,8 @@ class Firmware(models.Model):
 
 
 class Calibration(models.Model):
-    TYPE_CHOICES = [
-        ('94B', 'BSI SOFT - Boitier Servitude Intelligent'), ('94A', 'CMM SOFT - Calculateur Moteur Multifonction'),
-        ('94F', 'RADIO SOFT - Recepteur Radio'), ('94K', 'CMB SOFT - Combine Planche de Bord'),
-        ('94L', 'EMF SOFT - Ecran Multifonctions'), ('94X', 'BTEL SOFT - Boitier Telematique'),
-        ('96B', 'BSM SOFT - Boitier Servitude Moteur'), ('99H', 'MDS SOFT - Module de service telematique'),
-        ('92Y', 'CVM2_2_ SOFT - CAMERA VIDEO MULTIFONCTION V2'),
-        ('99K', 'ARTIV SOFT - Boitier Aide au Respect du Temps Inter Vehicule'),
-        ('92E', 'AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE'), ('96L', 'DAE SOFT - Direction Assistee Electrique')
-    ]
-
     factory = models.CharField('version usine', max_length=10, unique=True)
-    type = models.CharField('type', max_length=3, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=3)
     current = models.CharField('version actuelle', max_length=10, blank=True)
     pr_reference = models.CharField('référence PR', max_length=10, blank=True)
 
@@ -513,27 +501,22 @@ class Calibration(models.Model):
         verbose_name = "Calibration"
         ordering = ['-factory']
 
+    def get_type_display(self):
+        dict_type = dict(CAL_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
+
     def __str__(self):
         return self.factory
 
 
 class Ecu(models.Model):
-    TYPE_CHOICES = [
-        ('BSI', 'Boitier Servitude Intelligent'), ('BSM', 'Boitier Servitude Moteur'),
-        ('CMB', 'Combine Planche de Bord'), ('CMM', 'Calculateur Moteur Multifonction'),
-        ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
-        ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
-        ('CVM2', 'Camera Video Multifonction V2'), ('VMF', 'Module Commutation Integre'),
-        ('DMTX', 'Dispositif Maintien Tension')
-    ]
-
     comp_ref = models.CharField("réf. comp. matériel", max_length=10, unique=True)
     mat_ref = models.CharField("réf. matériel", max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.CharField('type', max_length=10, choices=TYPE_CHOICES)
+    type = models.CharField('type', max_length=10)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)
     hw = models.CharField('HW', max_length=10, blank=True)
@@ -546,6 +529,10 @@ class Ecu(models.Model):
     class Meta:
         verbose_name = "Données ECU"
         ordering = ['comp_ref']
+
+    def get_type_display(self):
+        dict_type = dict(ECU_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
 
     def __iter__(self):
         for field in self._meta.fields:
@@ -569,7 +556,7 @@ class SupplierCode(models.Model):
 
 class DefaultCode(models.Model):
     code = models.CharField('code', max_length=5)
-    description = models.CharField('description', max_length=200)
+    description = models.CharField('description', max_length=500)
     type = models.CharField('type', max_length=2)
     characterization = models.CharField('caractérisation', max_length=500, blank=True)
     location = models.CharField('localisation', max_length=500, blank=True)

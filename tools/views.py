@@ -3,30 +3,20 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext as _
 from django.contrib import messages
-from django.contrib.auth.models import Group
-from django.http import JsonResponse
 from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from django.views.generic.edit import FormMixin
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalDeleteView
 from django.utils import timezone
 from constance import config
 
-from utils.django.datatables import QueryTableByArgs
-from .serializers import TagXelonSerializer, TAG_XELON_COLUMN_LIST
-
-from .models import (
-    CsdSoftware, ThermalChamber, TagXelon, Suptech, SuptechItem, BgaTime, Message, ConfigFile, InfotechMailingList,
-    Infotech
-)
+from .models import CsdSoftware, ThermalChamber, Suptech, Message, ConfigFile, Infotech
 from dashboard.forms import ParaErrorList
 from .forms import (
-    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, SuptechMessageForm,
-    ConfigFileForm, SelectConfigForm, EditConfigForm, InfotechModalForm, InfotechMessageForm, InfotechActionForm
+    TagXelonForm, SoftwareForm, ThermalFrom, SuptechModalForm, SuptechResponseForm, EmailMessageForm,
+    ConfigFileForm, SelectConfigForm, EditConfigForm, InfotechModalForm, InfotechActionForm
 )
 from utils.data.mqtt import MQTTClass
-from utils.django.urls import reverse_lazy, http_referer
+from utils.django.urls import reverse_lazy, http_referer, reverse
 from api.utils import thermal_chamber_use
 
 MQTT_CLIENT = MQTTClass()
@@ -49,24 +39,12 @@ def tag_xelon_list(request):
     return render(request, 'tools/tag_xelon_table.html', locals())
 
 
-class TagXelonViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = TagXelon.objects.all()
-    serializer_class = TagXelonSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            query = QueryTableByArgs(self.queryset,  TAG_XELON_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(query["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": query["draw"],
-                "recordsTotal": query["total"],
-                "recordsFiltered": query["count"],
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+@login_required
+def raspi_time_list(request):
+    """ View of Software list page """
+    title = _('Tools')
+    table_title = _('Raspi Time list')
+    return render(request, 'tools/raspi_time_table.html', locals())
 
 
 @permission_required('tools.add_csdsoftware')
@@ -118,11 +96,6 @@ def thermal_chamber(request):
             messages.warning(request, _('You do not have the required permissions'))
     errors = form.errors.items()
     return render(request, 'tools/thermal_chamber.html', locals())
-
-
-def ajax_temp(request):
-    data = MQTT_CLIENT.result()
-    return JsonResponse(data)
 
 
 class ThermalFullScreenView(TemplateView):
@@ -187,28 +160,12 @@ class SupTechCreateView(BSModalCreateView):
     form_class = SuptechModalForm
     success_message = "Succès : Création d'un SupTech avec succès !"
 
-    def form_valid(self, form):
-        if not self.request.is_ajax():
-            messages.success(self.request, _('Success: The email has been sent.'))
-        return super().form_valid(form)
-
     def get_success_url(self):
+        if self.object.request_email(self.request):
+            messages.success(self.request, _('Success: The email has been sent.'))
+        else:
+            messages.warning(self.request, _('Warning: Data update but without sending the email'))
         return http_referer(self.request)
-
-
-def suptech_item_ajax(request):
-    data = {"extra": False, "mailing_list": "", "cc_mailing_list": ""}
-    try:
-        if request.GET.get('pk', None):
-            suptech_item = SuptechItem.objects.get(pk=request.GET.get('pk', None))
-            data = {
-                "extra": suptech_item.extra, "mailing_list": suptech_item.to_list(),
-                "cc_mailing_list": suptech_item.cc_mailing_list,
-                "is_48h": suptech_item.is_48h
-            }
-    except SuptechItem.DoesNotExist:
-        pass
-    return JsonResponse(data)
 
 
 @login_required
@@ -233,7 +190,7 @@ def suptech_list(request):
 class SuptechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Suptech
     template_name = 'tools/suptech/suptech_detail.html'
-    form_class = SuptechMessageForm
+    form_class = EmailMessageForm
 
     def get_success_url(self):
         from django.urls import reverse
@@ -279,32 +236,13 @@ class SuptechResponseView(PermissionRequiredMixin, UpdateView):
         context['card_title'] = _(f"SUPTECH N°{self.object.pk} - Response")
         return context
 
-    def form_valid(self, form):
-        object = self.get_object()
-        if object.action:
-            content = {"type": "action", "msg": object.action}
-            Message.objects.create(
-                content=content, added_at=object.modified_at, added_by=object.modified_by, content_object=object)
-        if form.send_email(self.request):
+    def get_success_url(self):
+        messages.success(self.request, _('Success: SupTech update successfully!'))
+        if self.object.response_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:
             messages.warning(self.request, _('Warning: Data update but without sending the email'))
-        return super().form_valid(form)
-
-
-def bga_time(request):
-    device = request.GET.get("device", None)
-    status = request.GET.get("status", None)
-    if device and status:
-        try:
-            bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
-            bga_is_active.save(status=status)
-        except BgaTime.DoesNotExist:
-            pass
-        if status.upper() == "START":
-            BgaTime.objects.create(name=device)
-        return JsonResponse({"response": "OK", "device": device, "status": status.upper()})
-    return JsonResponse({"response": "ERROR"})
+        return reverse('tools:suptech_detail', kwargs={'pk': self.object.pk})
 
 
 @login_required
@@ -358,20 +296,6 @@ class InfotechCreateView(BSModalCreateView):
         return http_referer(self.request)
 
 
-def infotech_mailing_ajax(request):
-    data = {"to_list": "", "cc_list": ""}
-    try:
-        if request.GET.get('pk', None):
-            mailing = InfotechMailingList.objects.get(pk=request.GET.get('pk', None))
-            data = {
-                "to_list": mailing.to_list(),
-                "cc_list": mailing.cc_list()
-            }
-    except Group.DoesNotExist:
-        pass
-    return JsonResponse(data)
-
-
 @login_required
 def infotech_list(request):
     """ View of Infotech list page """
@@ -391,7 +315,7 @@ def infotech_list(request):
 class InfotechDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = Infotech
     template_name = 'tools/infotech/infotech_detail.html'
-    form_class = InfotechMessageForm
+    form_class = EmailMessageForm
 
     def get_success_url(self):
         from django.urls import reverse
@@ -408,13 +332,12 @@ class InfotechDetailView(LoginRequiredMixin, FormMixin, DetailView):
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        return self.form_invalid(form)
 
     def form_valid(self, form):
         Message.objects.create(content=form.cleaned_data['content'], content_object=self.object)
         messages.success(self.request, _('Success: The message has been added.'))
-        if form.send_email(self.request, self.object):
+        if form.send_email(self.request, self.object, ):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:
             messages.warning(self.request, _('Warning: Data update but without sending the email'))
@@ -434,11 +357,6 @@ class InfotechActionView(PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        object = self.get_object()
-        if object.action:
-            content = {"type": "action", "msg": object.action}
-            Message.objects.create(
-                content=content, added_at=object.modified_at, added_by=object.modified_by, content_object=object)
         if form.send_email(self.request):
             messages.success(self.request, _('Success: The email has been sent.'))
         else:

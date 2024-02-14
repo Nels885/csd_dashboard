@@ -136,7 +136,7 @@ class ToolsTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
 
     # def test_ajax_temp(self):
-    #     response = self.client.get(reverse('tools:ajax_temp'), format='json')
+    #     response = self.client.get(reverse('tools:temp_async'), format='json')
     #     self.assertEqual(response.status_code, 200)
     #     self.assertJSONEqual(response.content, {"temp": "Hors ligne"})
 
@@ -167,7 +167,8 @@ class ToolsTestCase(UnitTest):
         url = reverse('tools:suptech_update', kwargs={'pk': suptech.pk})
         url_detail = reverse('tools:suptech_detail', kwargs={'pk': suptech.pk})
         form_data = {
-            'user': self.user, 'xelon': 'A123456789', 'item': 'Hot Line Tech', 'time': '5', 'info': 'test',
+            'user': self.user, 'xelon': 'A123456789', 'item': 'Hot Line Tech', 'time': '5',
+            'to': 'test@test.com', 'cc': 'test@test.com', 'info': 'test',
             'rmq': 'test', 'action': 'test', 'status': 'Cloturée', 'deadline': ''
         }
         response = self.client.get(url)

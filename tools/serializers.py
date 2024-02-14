@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import TagXelon
+from .models import TagXelon, RaspiTime
+
 
 TAG_XELON_COLUMN_LIST = ['xelon', 'calibre', 'telecode', 'comments', 'created_at', 'created_by__username']
 
@@ -14,3 +15,17 @@ class TagXelonSerializer(serializers.ModelSerializer):
     class Meta:
         model = TagXelon
         fields = ('id', 'xelon', 'calibre', 'telecode', 'comments', 'created_at', 'created_by')
+
+
+RASPI_TIME_COLUMN_LIST = ['name', 'type', 'date', 'start_time', 'end_time', 'duration', 'xelon']
+
+
+class RaspiTimeSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(format='%Y-%m-%d')
+    start_time = serializers.TimeField(format='%H:%M:%S', read_only=True)
+    end_time = serializers.TimeField(format='%H:%M:%S', read_only=True)
+    duration = serializers.IntegerField(default="", read_only=True)
+
+    class Meta:
+        model = RaspiTime
+        fields = ('id', 'name', 'type', 'date', 'start_time', 'end_time', 'duration', 'xelon')

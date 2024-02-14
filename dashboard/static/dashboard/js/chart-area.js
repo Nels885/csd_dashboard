@@ -54,7 +54,7 @@ const suptechOptions = {
 
 $.ajax({
     method: "GET",
-    url: $("#dataCharts").attr("data-url"),
+    url: $("#dealAreaChart").attr("data-url"),
     success: function (data) {
         // console.log(data);
 
@@ -149,6 +149,20 @@ $.ajax({
             },
         });
 
+    },
+    error: function (error_data) {
+        console.log("error");
+        console.log(error_data)
+    }
+});
+
+
+$.ajax({
+    method: "GET",
+    url: $("#suptechCeChart").attr("data-url"),
+    success: function (data) {
+        // console.log(data);
+
         // Suptech CE Area Chart
         var ctx2 = document.getElementById("suptechCeChart");
         var suptechCeChart = new Chart(ctx2, {
@@ -209,6 +223,78 @@ $.ajax({
             options: suptechOptions,
             plugins: [ChartDataLabels]
         });
+
+        // Suptech Area Chart
+        var ctx5 = document.getElementById("suptechCoChart");
+        var suptechCoChart = new Chart(ctx5, {
+            data: {
+                labels: data['suptechCoLabels'],
+                datasets: [
+                    {
+                        type: 'line',
+                        data: data['coTwoDays'],
+                        label: "1 à 2 jours (%)",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(0, 143, 136, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(0, 143, 136, 1)",
+                        pointBorderColor: "rgba(0, 143, 136, 1)",
+                    },
+                    {
+                        type: 'line',
+                        data: data['coTwoToSixDays'],
+                        label: "3 à 6 jours (%)",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(240, 132, 40, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(240, 132, 40, 1)",
+                        pointBorderColor: "rgba(240, 132, 40, 1)",
+                    },
+                    {
+                        type: 'line',
+                        data: data['coSixDays'],
+                        label: "7 jours et plus (%)",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(214, 54, 33, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(214, 54, 33, 1)",
+                        pointBorderColor: "rgba(214, 54, 33, 1)",
+                    },
+                    {
+                        type: 'bar',
+                        data: data['coSupNumber'],
+                        label: "Total Suptech",
+                        backgroundColor: "rgba(78, 115, 223, 0.2)",
+                        borderWidth: 1,
+                        datalabels: {
+                            align: 'end',
+                            anchor: 'end',
+                            display: true,
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                ],
+            },
+            options: suptechOptions,
+            plugins: [ChartDataLabels]
+        });
+    },
+    error: function (error_data) {
+        console.log("error");
+        console.log(error_data)
+    }
+});
+
+$.ajax({
+    method: "GET",
+    url: $("#bgaAreaChart").attr("data-url"),
+    success: function (data) {
+        // console.log(data);
 
         // BGA Duration Area Chart
         var ctx3 = document.getElementById("bgaAreaChart");
@@ -362,66 +448,6 @@ $.ajax({
             },
         });
 
-        // Suptech Area Chart
-        var ctx5 = document.getElementById("suptechCoChart");
-        var suptechCoChart = new Chart(ctx5, {
-            data: {
-                labels: data['suptechCoLabels'],
-                datasets: [
-                    {
-                        type: 'line',
-                        data: data['coTwoDays'],
-                        label: "1 à 2 jours (%)",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(0, 143, 136, 1)",
-                        pointRadius: 2,
-                        pointBackgroundColor: "rgba(0, 143, 136, 1)",
-                        pointBorderColor: "rgba(0, 143, 136, 1)",
-                    },
-                    {
-                        type: 'line',
-                        data: data['coTwoToSixDays'],
-                        label: "3 à 6 jours (%)",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(240, 132, 40, 1)",
-                        pointRadius: 2,
-                        pointBackgroundColor: "rgba(240, 132, 40, 1)",
-                        pointBorderColor: "rgba(240, 132, 40, 1)",
-                    },
-                    {
-                        type: 'line',
-                        data: data['coSixDays'],
-                        label: "7 jours et plus (%)",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(214, 54, 33, 1)",
-                        pointRadius: 2,
-                        pointBackgroundColor: "rgba(214, 54, 33, 1)",
-                        pointBorderColor: "rgba(214, 54, 33, 1)",
-                    },
-                    {
-                        type: 'bar',
-                        data: data['coSupNumber'],
-                        label: "Total Suptech",
-                        backgroundColor: "rgba(78, 115, 223, 0.2)",
-                        borderWidth: 1,
-                        datalabels: {
-                            align: 'end',
-                            anchor: 'end',
-                            display: true,
-                            font: {
-                                weight: 'bold'
-                            }
-                        }
-                    },
-                ],
-            },
-            options: suptechOptions,
-            plugins: [ChartDataLabels]
-        });
-
         // Raspi Duration Area Chart
         var ctx6 = document.getElementById("raspiAreaChart");
         var raspiLineChart = new Chart(ctx6, {
@@ -567,7 +593,6 @@ $.ajax({
                 }
             },
         });
-
     },
     error: function (error_data) {
         console.log("error");

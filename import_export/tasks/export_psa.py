@@ -63,8 +63,12 @@ ENGINE_DICT = {
         ('Réf. Setplate DMTX', 'prods__dmtx__label_ref'),
     ]},
     'bpga': {'label': 'BPGA', 'filter': {'electronique_11n__exact': ''}, 'data': [
-        ('11N_BPGA_HARD', 'electronique_11n'), ('41N_BPGA_FOURN.NO.SERIE', 'electronique_41n'),
-        ('51N_BPGA_FOURN.DATE.FAB', 'electronique_51n'), ('61N_BPGA_FOURN.CODE', 'electronique_61n'),
+        ('Modèle BPGA', 'prods__bpga__name'), ('Marque BPGA', 'prods__bpga__supplier_oe'),
+        ('11N_BPGA_HARD', 'electronique_11n'),
+    ]},
+    'bpga_extra': {'label': 'BPGA Extra', 'data': [
+        ('41N_BPGA_FOURN.NO.SERIE', 'electronique_41n'), ('51N_BPGA_FOURN.DATE.FAB', 'electronique_51n'),
+        ('61N_BPGA_FOURN.CODE', 'electronique_61n'),
     ]},
 }
 

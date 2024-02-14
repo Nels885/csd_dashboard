@@ -23,7 +23,8 @@ from tools.models import Suptech
 from utils.file import LogFile
 from utils.file.pdf_generate import CorvetBarcode
 from utils.conf import CSD_ROOT
-from utils.django.urls import reverse_lazy, http_referer
+from utils.django import is_ajax
+from utils.django.urls import reverse_lazy, http_referer, reverse
 
 
 @login_required
@@ -107,7 +108,7 @@ def stock_table(request):
 @login_required
 def detail(request, pk):
     """ Detailed view of the selected Xelon number """
-    query_param = request.GET.get('filter', '')
+    query_param = request.GET.get('filter', 'xelon')
     if query_param == "temp":
         xelon = get_object_or_404(XelonTemporary, pk=pk)
     else:
@@ -134,7 +135,11 @@ def detail(request, pk):
 
 
 def barcode_pdf_generate(request, pk):
-    xelon = get_object_or_404(Xelon, pk=pk)
+    query_param = request.GET.get('filter', 'xelon')
+    if query_param == "temp":
+        xelon = get_object_or_404(XelonTemporary, pk=pk)
+    else:
+        xelon = get_object_or_404(Xelon, pk=pk)
     data = {
         'xelon_number': xelon.numero_de_dossier, 'vin': xelon.vin, 'xelon_model': xelon.modele_produit,
         'xelon_vehicle': xelon.modele_vehicule, 'corvet': xelon.corvet,
@@ -169,7 +174,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return self.success_message % dict(cleaned_data, result=value)
 
     def get_success_url(self):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             task = cmd_exportsqualaetp_task.delay()
             print(task.id)
             return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
@@ -193,7 +198,7 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         return context
 
     def get_success_url(self):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             task = cmd_exportsqualaetp_task.delay()
             return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
         return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
@@ -231,7 +236,7 @@ class VinEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return initial
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             form.send_email()
             xelon = Xelon.objects.get(pk=self.kwargs['pk'])
             content = "Envoi Email de modification VIN effectué."
@@ -258,7 +263,7 @@ class ProdEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return initial
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             form.send_email()
             xelon = Xelon.objects.get(pk=self.kwargs['pk'])
             content = "Envoi Email de modification modèle Produit effectué."
@@ -288,7 +293,7 @@ class AdmEmailFormView(PermissionRequiredMixin, BSModalFormView):
         return initial
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             form.send_email()
             xelon = Xelon.objects.get(pk=self.kwargs['pk'])
             if self.request.GET.get('select') == "prod":
@@ -315,6 +320,15 @@ class LogFileView(LoginRequiredMixin, TemplateView):
         # print(f"Info LOG : {xelon.modele_produit} - {xelon.numero_de_dossier}")
         context['text'] = text
         return context
+
+
+@login_required
+def change_redirect(request, pk):
+    query = get_object_or_404(Action, pk=pk)
+    obj = query.content_object
+    if isinstance(obj, XelonTemporary):
+        return redirect(reverse('squalaetp:detail', args=[obj.id], get={'filter': 'temp'}))
+    return redirect(reverse('squalaetp:detail', args=[obj.id]))
 
 
 @login_required
@@ -369,6 +383,6 @@ class SivinCreateView(PermissionRequiredMixin, BSModalCreateView):
         return context
 
     def get_success_url(self):
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             return reverse_lazy('squalaetp:sivin_detail', args=[self.object.pk])
         return http_referer(self.request)

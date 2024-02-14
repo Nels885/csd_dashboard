@@ -1,17 +1,23 @@
+from collections import OrderedDict
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.template.loader import render_to_string
 from django.core.validators import MaxValueValidator, MinValueValidator
 from crum import get_current_user
 
 from constance import config as conf
 
+from .tasks import send_email_task
 from squalaetp.models import Xelon
 from utils.file.export import calibre, telecode
+from utils.conf import string_to_list
 
 
 class TagXelon(models.Model):
@@ -167,6 +173,55 @@ class Suptech(models.Model):
         verbose_name = "SupTech"
         ordering = ['pk']
 
+    def to_list(self, category=None):
+        cat_to_mails = SuptechCategory.get_to_mails(category)
+        mailings = string_to_list(self.to)
+        return list(OrderedDict.fromkeys(set(mailings + cat_to_mails)))
+
+    def cc_list(self, category=None):
+        cat_cc_mails = SuptechCategory.get_cc_mails(category)
+        mailings = string_to_list(self.cc)
+        return list(OrderedDict.fromkeys(set(mailings + cat_cc_mails)))
+
+    def to_string(self, category=None):
+        return "; ".join(self.to_list(category))
+
+    def cc_string(self, category=None):
+        return "; ".join(self.cc_list(category))
+
+    def response_email(self, request):
+        return self._send_email(request, is_action=True)
+
+    def request_email(self, request):
+        return self._send_email(request)
+
+    def _send_email(self, request, is_action=False):
+        if self.id:
+            try:
+                from_email = self.created_by.email
+                to_list = string_to_list(self.to)
+                cc_list = ([from_email] + string_to_list(self.cc))
+                current_site = get_current_site(request)
+                subject = f"[SUPTECH_{self.id}] {self.item}"
+                if is_action:
+                    from_email = self.modified_by.email
+                    context = {"user": request.user, "suptech": self, 'domain': current_site.domain}
+                    message = render_to_string('tools/email_format/suptech_response_email.html', context)
+                    to_list = [self.created_by.email] + to_list
+                    cc_list = ([from_email] + [email for email in list(set(cc_list)) if email != self.created_by.email])
+                else:
+                    context = {'email': from_email, 'suptech': self, 'domain': current_site.domain}
+                    message = render_to_string('tools/email_format/suptech_request_email.html', context)
+                files = self.suptechfile_set.filter(is_action=is_action)
+                files = [f.file.path for f in files]
+                send_email_task.delay(
+                    subject=subject, body=message, from_email=from_email, to=to_list, cc=cc_list, files=files
+                )
+                return True
+            except AttributeError:
+                pass
+        return False
+
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('tools:suptech_detail', kwargs={'pk': self.pk})
@@ -178,8 +233,42 @@ class Suptech(models.Model):
 class SuptechCategory(models.Model):
     name = models.CharField('nom', max_length=200)
     manager = models.ForeignKey(User, related_name="suptechs_manager", on_delete=models.SET_NULL, null=True, blank=True)
-    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
-    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
+    to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST, blank=True)
+    cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST, blank=True)
+    to_users = models.ManyToManyField(User, related_name="to_sup_cats", blank=True)
+    cc_users = models.ManyToManyField(User, related_name="cc_sup_cats", blank=True)
+
+    def to_list(self):
+        to_emails = string_to_list(self.to)
+        user_emails = list(self.to_users.values_list('email', flat=True).distinct())
+        return list(OrderedDict.fromkeys(set(to_emails + user_emails)))
+
+    def cc_list(self):
+        cc_emails = string_to_list(self.cc)
+        user_emails = list(self.cc_users.values_list('email', flat=True).distinct())
+        return list(OrderedDict.fromkeys(set(cc_emails + user_emails)))
+
+    def to_string(self):
+        return "; ".join(self.to_list())
+
+    def cc_string(self):
+        return "; ".join(self.cc_list())
+
+    @classmethod
+    def get_mails(cls, pk):
+        cats = cls.objects.filter(pk=pk)
+        if cats:
+            query = cats.first()
+            return query.to_list(), query.cc_list()
+        return [], []
+
+    @classmethod
+    def get_to_mails(cls, pk):
+        return cls.get_mails(pk)[0]
+
+    @classmethod
+    def get_cc_mails(cls, pk):
+        return cls.get_mails(pk)[1]
 
     def __str__(self):
         return self.name
@@ -191,8 +280,8 @@ class SuptechItem(models.Model):
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
     is_48h = models.BooleanField("Traitement 48h", default=True)
     is_active = models.BooleanField("Actif", default=True)
-    mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
-    cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
+    mailing_list = models.TextField("Liste d'email", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST, blank=True)
+    cc_mailing_list = models.TextField("liste d'email CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST, blank=True)
     to_users = models.ManyToManyField(User, related_name="to_sup_items", blank=True)
     cc_users = models.ManyToManyField(User, related_name="cc_sup_items", blank=True)
 
@@ -200,17 +289,31 @@ class SuptechItem(models.Model):
         verbose_name = "SupTech Item"
         ordering = ['name']
 
-    def to_list(self):
+    def to_list(self, category=None):
+        cat_to_mails = self._get_cat_emails(category)[0]
+        mailings = string_to_list(self.mailing_list)
         emails = list(self.to_users.values_list('email', flat=True).distinct())
-        if emails and isinstance(emails, list):
-            return "; ".join(emails)
-        return self.mailing_list
+        return list(OrderedDict.fromkeys(set(mailings + emails + cat_to_mails)))
 
-    def cc_list(self):
+    def cc_list(self, category=None):
+        cat_cc_mails = self._get_cat_emails(category)[1]
+        cc_mailings = string_to_list(self.cc_mailing_list)
         emails = list(self.cc_users.values_list('email', flat=True).distinct())
-        if emails and isinstance(emails, list):
-            return "; ".join(emails)
-        return self.cc_mailing_list
+        return list(OrderedDict.fromkeys(set(cc_mailings + emails + cat_cc_mails)))
+
+    def to_string(self, category=None):
+        return "; ".join(self.to_list(category))
+
+    def cc_string(self, category=None):
+        return "; ".join(self.cc_list(category))
+
+    def _get_cat_emails(self, category):
+        cat_to_mails, cat_cc_mails = SuptechCategory.get_mails(category)
+        if not cat_to_mails:
+            cat_to_mails = self.category.to_list()
+        if not cat_cc_mails:
+            cat_cc_mails = self.category.cc_list()
+        return cat_to_mails, cat_cc_mails
 
     def __str__(self):
         return self.name
@@ -299,6 +402,7 @@ class Message(models.Model):
 
 class SuptechFile(models.Model):
     file = models.FileField(upload_to="suptech/%Y/%m")
+    is_action = models.BooleanField("action", default=False)
     suptech = models.ForeignKey("Suptech", on_delete=models.CASCADE)
 
     class Meta:
@@ -342,6 +446,7 @@ class RaspiTime(models.Model):
     start_time = models.TimeField('heure de START', auto_now_add=True)
     end_time = models.TimeField('heure de FIN', null=True, blank=True)
     duration = models.IntegerField('durée en secondes', null=True, blank=True)
+    xelon = models.CharField('n° Xelon', max_length=10, blank=True)
 
     class Meta:
         verbose_name = ("RasPi Time")

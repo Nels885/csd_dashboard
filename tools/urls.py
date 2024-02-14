@@ -2,9 +2,11 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from . import views
+from . import ajax
 
 router = DefaultRouter()
-router.register(r'api/tagxelon', views.TagXelonViewSet, basename='api_tagxelon')
+router.register(r'api/tagxelon', ajax.TagXelonViewSet, basename='api_tagxelon')
+router.register(r'api/raspitime', ajax.RaspiTimeViewSet, basename='api_raspitime')
 
 app_name = 'tools'
 
@@ -18,7 +20,7 @@ urlpatterns = [
     path('thermal/', views.thermal_chamber, name="thermal"),
     path('thermal/table/', views.ThermalChamberList.as_view(), name="thermal_list"),
     path('thermal/full/', views.ThermalFullScreenView.as_view(), name="thermal_full"),
-    path('thermal/ajax/', views.ajax_temp, name="ajax_temp"),
+    path('thermal/ajax/', ajax.temp_async, name="temp_async"),
     path('thermal/<int:pk>/disable/', views.thermal_disable, name="thermal_disable"),
     path('thermal/<int:pk>/delete/', views.ThermalDeleteView.as_view(), name="thermal_delete"),
     path('3d-printer/ultimaker/stream/', views.UltimakerStreamView.as_view(), name="ultimaker_stream"),
@@ -26,13 +28,14 @@ urlpatterns = [
     path('suptech/add/', views.SupTechCreateView.as_view(), name="suptech_add"),
     path('suptech/<int:pk>/detail/', views.SuptechDetailView.as_view(), name="suptech_detail"),
     path('suptech/<int:pk>/update/', views.SuptechResponseView.as_view(), name="suptech_update"),
-    path('suptech/item/ajax/', views.suptech_item_ajax, name='suptech_item_ajax'),
+    path('suptech/mailing/ajax/', ajax.suptech_mailing_async, name='suptech_mailing_async'),
     path('infotech/', views.infotech_list, name='infotech_list'),
     path('infotech/add/', views.InfotechCreateView.as_view(), name="infotech_add"),
     path('infotech/<int:pk>/detail/', views.InfotechDetailView.as_view(), name="infotech_detail"),
     path('infotech/<int:pk>/update/', views.InfotechActionView.as_view(), name="infotech_update"),
-    path('infotech/mailing/ajax/', views.infotech_mailing_ajax, name='infotech_mailing_ajax'),
-    path('bga/time/', views.bga_time, name='bga_time'),
+    path('infotech/mailing/ajax/', ajax.infotech_mailing_async, name='infotech_mailing_async'),
+    path('bga/time/', ajax.bga_time_async, name='bga_time'),
+    path('raspi/time/table/', views.raspi_time_list, name="raspi_time_list"),
     path('usb-devices/', views.usb_devices, name='usb_devices'),
     path('serial-devices/', views.serial_devices, name='serial_devices'),
     path('config-files/', views.config_files, name='config_files'),

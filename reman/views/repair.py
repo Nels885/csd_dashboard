@@ -6,13 +6,11 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.http import JsonResponse
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
 
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalFormView
 from utils.django.urls import reverse, reverse_lazy
 
-from utils.django.datatables import QueryTableByArgs
+from utils.django.datatables import ServerSideViewSet
 from reman.models import Repair, RepairPart
 from reman.serializers import RemanRepairSerializer, RemanRepairPartSerializer, REPAIR_COLUMN_LIST
 from reman.forms import AddRepairForm, EditRepairForm, CloseRepairForm, RepairPartForm, RepairForm, SelectRepairForm
@@ -145,25 +143,11 @@ def repair_table(request):
     return render(request, 'reman/repair/ajax_repair_table.html', context)
 
 
-class RepairViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+class RepairViewSet(ServerSideViewSet):
     queryset = Repair.objects.all()
     serializer_class = RemanRepairSerializer
-
-    def list(self, request, **kwargs):
-        try:
-            self._filter(request)
-            repair = QueryTableByArgs(self.queryset, REPAIR_COLUMN_LIST, 1, **request.query_params).values()
-            serializer = self.serializer_class(repair["items"], many=True)
-            data = {
-                "data": serializer.data,
-                "draw": repair["draw"],
-                "recordsTotal": repair["total"],
-                "recordsFiltered": repair["count"]
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as err:
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+    column_list = REPAIR_COLUMN_LIST
+    column_start = 1
 
     def _filter(self, request):
         query = request.query_params.get('filter', None)

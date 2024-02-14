@@ -88,4 +88,4 @@ class RaspiTimeCreateSerializer(RaspiTimeSerializer):
 
     class Meta:
         model = RaspiTime
-        fields = ('name', 'type')
+        fields = ('name', 'type', 'xelon')

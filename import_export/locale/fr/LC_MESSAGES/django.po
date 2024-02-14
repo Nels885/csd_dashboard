@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 09:08+0100\n"
+"POT-Creation-Date: 2023-11-21 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,24 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: import_export/templates/import_export/detail_csd.html:100
-#: import_export/templates/import_export/detail_reman.html:69
-#: import_export/templates/import_export/detail_tools.html:48
+#: import_export/templates/import_export/detail_csd.html:129
+#: import_export/templates/import_export/detail_reman.html:81
+#: import_export/templates/import_export/detail_tools.html:74
+#: import_export/templates/import_export/detail_tools.html:113
 msgid "Data Export"
 msgstr "Exportation de données"
 
-#: import_export/templates/import_export/detail_csd.html:134
+#: import_export/templates/import_export/detail_csd.html:163
 msgid "Data Import"
 msgstr "Importation de données"
 
-#: import_export/templates/import_export/detail_reman.html:99
+#: import_export/templates/import_export/detail_reman.html:111
 msgid "Csv Import"
 msgstr "Importation CSV"
 
-#: import_export/templates/import_export/detail_reman.html:124
+#: import_export/templates/import_export/detail_reman.html:136
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/views.py:72 import_export/views.py:95
+#: import_export/views.py:78 import_export/views.py:101
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"

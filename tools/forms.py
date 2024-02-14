@@ -6,12 +6,12 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.urls import reverse
-from django.core.mail import EmailMessage
 from bootstrap_modal_forms.forms import BSModalModelForm
 from crum import get_current_user
 from tempus_dominus.widgets import DatePicker
 
 from utils.conf import string_to_list
+from utils.django import is_ajax
 from utils.django.validators import validate_xelon
 from utils.django.forms.fields import ListTextWidget
 from utils.django.forms import MultipleFileField
@@ -97,7 +97,8 @@ class SuptechModalForm(BSModalModelForm):
     class Meta:
         model = Suptech
         fields = [
-            'username', 'xelon', 'product', 'item', 'custom_item', 'is_48h', 'time', 'to', 'cc', 'info', 'rmq', 'attach'
+            'username', 'xelon', 'product', 'item', 'custom_item', 'category', 'is_48h', 'time', 'to', 'cc', 'info',
+            'rmq', 'attach'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -119,38 +120,14 @@ class SuptechModalForm(BSModalModelForm):
             self.add_error('username', _("Username not found."))
         return data
 
-    def send_email(self, files):
-        current_site = get_current_site(self.request)
-        from_email = self.cleaned_data["username"].email
-        subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
-        context = {'email': from_email, 'suptech': self.instance, 'domain': current_site.domain}
-        message = render_to_string('tools/email_format/suptech_request_email.html', context)
-        # send_email_task(
-        #     subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
-        #     cc=([from_email] + string_to_list(self.instance.cc)), files=files
-        # )
-        email = EmailMessage(
-            subject=subject, body=message, from_email=from_email, to=string_to_list(self.instance.to),
-            cc=([from_email] + string_to_list(self.instance.cc))
-        )
-        files = self.instance.suptechfile_set.all()
-        if files:
-            [email.attach_file(f.file.path) for f in files]
-        email.send()
-
     def save(self, commit=True):
         suptech = super(SuptechModalForm, self).save(commit=False)
         user = self.cleaned_data['username']
         suptech.date = timezone.now()
         suptech.user = f"{user.first_name} {user.last_name}"
-        try:
-            item = SuptechItem.objects.get(name=suptech.item)
-            suptech.category = item.category
-        except SuptechItem.DoesNotExist:
-            pass
         suptech.created_by = user
         suptech.created_at = timezone.now()
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             files = self.request.FILES.getlist('attach')
             for field in ['username', 'custom_item', 'attach']:
                 del self.fields[field]
@@ -159,7 +136,6 @@ class SuptechModalForm(BSModalModelForm):
             suptech.save()
             if files:
                 [SuptechFile.objects.create(file=f, suptech=suptech) for f in files]
-            self.send_email(files)
         return suptech
 
 
@@ -167,31 +143,21 @@ class SuptechResponseForm(forms.ModelForm):
     STATUS_CHOICES = [
         ('', '---------'), ('En Cours', 'En Cours'), ('Cloturée', 'Cloturée'), ('Annulée', 'Annulée')
     ]
+    to = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'rows': 2, 'readonly': ''}))
+    cc = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'rows': 2, 'readonly': ''}))
     action = forms.CharField(widget=forms.Textarea(), required=True)
     status = forms.CharField(widget=forms.Select(choices=STATUS_CHOICES), required=True)
     deadline = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=DatePicker(
         attrs={'append': 'fa fa-calendar', 'icon_toggle': True}, options={'format': 'DD/MM/YYYY'},
     ))
+    attach = MultipleFileField(required=False)
 
     class Meta:
         model = Suptech
-        fields = ['user', 'xelon', 'item', 'category', 'time', 'is_48h', 'info', 'rmq', 'action', 'status', 'deadline']
-
-    def send_email(self, request):
-        try:
-            current_site = get_current_site(request)
-            subject = f"[SUPTECH_{self.instance.id}] {self.instance.item}"
-            context = {"user": request.user, "suptech": self.instance, 'domain': current_site.domain}
-            message = render_to_string('tools/email_format/suptech_response_email.html', context)
-            cc_list = [request.user.email] + string_to_list(self.instance.to) + string_to_list(self.instance.cc)
-            cc_list = [email for email in list(set(cc_list)) if email != self.instance.created_by.email]
-            send_email_task.delay(
-                subject=subject, body=message, from_email=request.user.email, to=self.instance.created_by.email,
-                cc=cc_list
-            )
-            return True
-        except AttributeError:
-            return False
+        fields = [
+            'user', 'xelon', 'item', 'category', 'time', 'is_48h', 'to', 'cc', 'info', 'rmq', 'action', 'status',
+            'deadline', 'attach'
+        ]
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -199,25 +165,33 @@ class SuptechResponseForm(forms.ModelForm):
         instance.modified_by = user
         instance.modified_at = timezone.now()
         if commit:
+            files = self.cleaned_data['attach']
+            del self.fields['attach']
             instance.save()
+            if instance.action:
+                content = {"type": "action", "msg": instance.action}
+                Message.objects.create(
+                    content=content, added_at=instance.modified_at, added_by=instance.modified_by,
+                    content_object=instance)
+            if files:
+                [SuptechFile.objects.create(file=f, suptech=instance, is_action=True) for f in files]
             # cmd_suptech_task.delay()
         return instance
 
 
-class SuptechMessageForm(forms.ModelForm):
-
-    class Meta:
-        model = Message
-        fields = ['content']
+class EmailMessageForm(forms.Form):
+    content = forms.CharField(widget=forms.Textarea(), required=True)
 
     @staticmethod
     def send_email(request, instance):
         try:
+            name = instance._meta.verbose_name
+            redirect_url = reverse(f'tools:{name.lower()}_detail', args=[instance.id])
             current_site = get_current_site(request)
-            subject = f"[SUPTECH_{instance.id}] {instance.item}"
+            subject = f"[{name.upper()}_{instance.id}] {instance.item}"
             to_list = instance.to + "; " + instance.created_by.email
             cc_list = [request.user.email] + string_to_list(instance.cc)
-            context = {'url': current_site.domain + reverse('tools:suptech_detail', args=[instance.id])}
+            context = {'url': current_site.domain + redirect_url}
             message = render_to_string('tools/email_format/message_email.html', context)
             send_email_task.delay(
                 subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=cc_list
@@ -313,35 +287,12 @@ class InfotechModalForm(BSModalModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.created_by = self.cleaned_data['username']
-        if commit and not self.request.is_ajax():
+        if commit and not is_ajax(self.request):
             for field in ['username', 'mailing']:
                 del self.fields[field]
             instance.save()
             self.send_email()
         return instance
-
-
-class InfotechMessageForm(forms.ModelForm):
-
-    class Meta:
-        model = Message
-        fields = ['content']
-
-    @staticmethod
-    def send_email(request, instance):
-        try:
-            current_site = get_current_site(request)
-            subject = f"[INFOTECH_{instance.id}] {instance.item}"
-            to_list = instance.to + "; " + instance.created_by.email
-            cc_list = [request.user.email] + string_to_list(instance.cc)
-            context = {'url': current_site.domain + reverse('tools:infotech_detail', args=[instance.id])}
-            message = render_to_string('tools/email_format/message_email.html', context)
-            send_email_task.delay(
-                subject=subject, body=message, from_email=settings.EMAIL_HOST_USER, to=to_list, cc=cc_list
-            )
-            return True
-        except AttributeError:
-            return False
 
 
 class InfotechActionForm(forms.ModelForm):
@@ -377,4 +328,9 @@ class InfotechActionForm(forms.ModelForm):
         instance.modified_at = timezone.now()
         if commit:
             instance.save()
+            if instance.action:
+                content = {"type": "action", "msg": instance.action}
+                Message.objects.create(
+                    content=content, added_at=instance.modified_at, added_by=instance.modified_by,
+                    content_object=instance)
         return instance

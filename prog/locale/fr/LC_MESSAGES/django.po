@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 09:08+0100\n"
+"POT-Creation-Date: 2023-11-21 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: prog/forms.py:49
+#: prog/forms.py:52
 msgid "This Xelon number is already present for unlocking"
 msgstr "Ce numéro Xelon est déjà présent pour le déverrouillage"
+
+#: prog/forms.py:74
+msgid "URL invalid"
+msgstr "URL invalide"
+
+#: prog/forms.py:90
+msgid "Please upload bin file."
+msgstr "Veuillez télécharger le fichier bin."
+
+#: prog/templates/prog/aet.html:67
+msgid "Update an Mbed"
+msgstr "Mettre à jour un Mbed"
 
 #: prog/templates/prog/form.html:7
 msgid "Case reference"
@@ -70,6 +82,85 @@ msgstr "Référence MM"
 msgid "Submit"
 msgstr "Soumettre"
 
+#: prog/templates/prog/modal/aet_add_software.html:9
+#: prog/templates/prog/modal/aet_create.html:16
+#: prog/templates/prog/modal/aet_delete.html:19
+#: prog/templates/prog/modal/aet_send_software.html:57
+#: prog/templates/prog/modal/aet_update.html:16
+#: prog/templates/prog/modal/firmware_delete.html:20
+#: prog/templates/prog/modal/firmware_update.html:16
+#: prog/templates/prog/modal/tool_create.html:16
+#: prog/templates/prog/modal/tool_update.html:16
+#: prog/templates/prog/modal/unlock_delete.html:20
+msgid "Cancel"
+msgstr "Annuler"
+
+#: prog/templates/prog/modal/aet_add_software.html:10
+#: prog/templates/prog/modal/aet_create.html:17
+#: prog/templates/prog/modal/aet_update.html:17
+#: prog/templates/prog/modal/firmware_update.html:17
+#: prog/templates/prog/modal/tool_create.html:17
+msgid "Create"
+msgstr "créer"
+
+#: prog/templates/prog/modal/aet_create.html:7
+#: prog/templates/prog/modal/aet_update.html:7
+msgid "Add AET"
+msgstr "Ajout AET"
+
+#: prog/templates/prog/modal/aet_delete.html:7
+msgid "Delete AET"
+msgstr "Supprimer AET"
+
+#: prog/templates/prog/modal/aet_delete.html:14
+#, fuzzy
+#| msgid "Are you sure you want to delete input"
+msgid "Are you sure you want to delete AET"
+msgstr "Etes-vous sûr de vouloir supprimer AET"
+
+#: prog/templates/prog/modal/aet_delete.html:20
+#: prog/templates/prog/modal/firmware_delete.html:21
+#: prog/templates/prog/modal/unlock_delete.html:21
+msgid "Delete"
+msgstr "Supprimer"
+
+#: prog/templates/prog/modal/aet_send_software.html:6
+msgid "Update Mbed"
+msgstr "Mise à jour Mbed"
+
+#: prog/templates/prog/modal/aet_send_software.html:58
+msgid "Send"
+msgstr "Envoyer"
+
+#: prog/templates/prog/modal/firmware_delete.html:7
+msgid "Delete firmware"
+msgstr "Supprimer firmware"
+
+#: prog/templates/prog/modal/firmware_delete.html:14
+msgid "Are you sure you want to delete firmware"
+msgstr "Etes-vous sûr de vouloir supprimer le firmware"
+
+#: prog/templates/prog/modal/firmware_delete.html:15
+#: prog/templates/prog/modal/unlock_delete.html:15
+msgid "created at"
+msgstr "créé le"
+
+#: prog/templates/prog/modal/firmware_update.html:7
+msgid "Update Firmware"
+msgstr "Mise à jour Firmware"
+
+#: prog/templates/prog/modal/tool_create.html:7
+msgid "Add Tool"
+msgstr "Ajout Outil"
+
+#: prog/templates/prog/modal/tool_update.html:7
+msgid "Update Tool"
+msgstr "Mise à jour Outil"
+
+#: prog/templates/prog/modal/tool_update.html:17
+msgid "Update"
+msgstr "Mise à jour"
+
 #: prog/templates/prog/modal/unlock_delete.html:7
 msgid "Delete unlock product input"
 msgstr "Supprimer l'entrée de produit de déverrouillage"
@@ -77,18 +168,6 @@ msgstr "Supprimer l'entrée de produit de déverrouillage"
 #: prog/templates/prog/modal/unlock_delete.html:14
 msgid "Are you sure you want to delete input"
 msgstr "Êtes-vous sûr de vouloir supprimer l'entrée"
-
-#: prog/templates/prog/modal/unlock_delete.html:15
-msgid "created at"
-msgstr "créé le"
-
-#: prog/templates/prog/modal/unlock_delete.html:20
-msgid "Cancel"
-msgstr "Annuler"
-
-#: prog/templates/prog/modal/unlock_delete.html:21
-msgid "Delete"
-msgstr "Supprimer"
 
 #: prog/templates/prog/unlock_prods.html:22
 msgid "Add"
@@ -98,47 +177,63 @@ msgstr "Ajouter"
 msgid "Refresh"
 msgstr "Actualiser"
 
-#: prog/views.py:25
+#: prog/views.py:30
 msgid "Table Products Telematics PSA"
 msgstr "Table produits télématique PSA"
 
-#: prog/views.py:39
+#: prog/views.py:44
 msgid "Detail raspeedi data for the ref case of Product: "
 msgstr "Détail des données raspeedi pour le cas de référence du produit: "
 
-#: prog/views.py:47
+#: prog/views.py:52
 msgid "Unlocking product for programming"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: prog/views.py:53
+#: prog/views.py:58
 #, python-format
 msgid "Adding the Xelon number %(xelon)s successfully"
 msgstr "Ajout du dossier Xelon %(xelon)s avec succès"
 
-#: prog/views.py:56
+#: prog/views.py:61
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: prog/views.py:71
+#: prog/views.py:76
 msgid "Unlock product table"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: prog/views.py:79
+#: prog/views.py:84
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: prog/views.py:86
+#: prog/views.py:91
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: prog/views.py:95
+#: prog/views.py:100
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "
 
-#: prog/views.py:100
+#: prog/views.py:105
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: prog/views.py:110
+#: prog/views.py:115
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
+
+#: prog/views.py:177
+msgid "Success: tools info was deleted."
+msgstr "Succès: les infos sur les outils ont été supprimées."
+
+#: prog/views.py:181
+msgid "Delete Tool info"
+msgstr "Supprimer les infos sur l'outil"
+
+#: prog/views.py:255
+msgid "Success: AET was deleted."
+msgstr "Succès: l'AET a été supprimée."
+
+#: prog/views.py:287
+msgid "Success: Firmware was deleted."
+msgstr "Succès: le Firmware a été supprimée."

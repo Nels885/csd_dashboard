@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-04 09:08+0100\n"
+"POT-Creation-Date: 2023-11-21 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: api/views.py:202
+#: api/views.py:230
 msgid "Time between 2 requests too short"
 msgstr "Délai entre 2 requêtes trop court"
 
@@ -84,54 +84,60 @@ msgstr ""
 msgid "New user"
 msgstr "Nouveau utilisateur"
 
-#: templates/base/top_bar.html:133
-msgid "Import Squalaetp"
-msgstr "Import Squalaetp"
-
-#: templates/base/top_bar.html:141
-msgid "send emails"
-msgstr "Envoi des emails"
-
-#: templates/base/top_bar.html:146
+#: templates/base/top_bar.html:132
 msgid "API Documentation"
 msgstr "Documentation API"
 
-#: templates/base/top_bar.html:150
+#: templates/base/top_bar.html:136
 msgid "Activity Log"
 msgstr "log d'activité"
 
-#: templates/base/top_bar.html:155 templates/nav/nav_interface.html:39
+#: templates/base/top_bar.html:142
+msgid "Generate Squalaetp"
+msgstr "Générer Squalaetp"
+
+#: templates/base/top_bar.html:147
+msgid "Import Squalaetp"
+msgstr "Import Squalaetp"
+
+#: templates/base/top_bar.html:154
+msgid "send emails"
+msgstr "Envoi des emails"
+
+#: templates/base/top_bar.html:160 templates/nav/nav_interface.html:39
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: templates/base/top_bar.html:160
+#: templates/base/top_bar.html:165
 msgid "Guest"
 msgstr "Invité"
 
 #: templates/format/modal_custom_form.html:39
+#: templates/format/modal_delete.html:20
 msgid "Cancel"
 msgstr "Annuler"
 
-#: templates/format/modal_delete.html:14
+#: templates/format/modal_delete.html:15
 msgid "Are you sure you want to delete ?"
 msgstr "Etes-vous sûr que vous voulez supprimer ?"
 
-#: templates/format/modal_delete.html:18
+#: templates/format/modal_delete.html:21
 msgid "Delete"
 msgstr "Supprimer"
 
-#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:31
-#: templates/nav/nav_csd_atelier.html:51 templates/nav/nav_csd_atelier.html:76
-#: templates/nav/nav_csd_atelier.html:109
-#: templates/nav/nav_csd_atelier.html:127
-#: templates/nav/nav_csd_atelier.html:145 templates/nav/nav_tools.html:28
-#: templates/nav/nav_tools.html:86
+#: templates/nav/nav_csd_admin.html:21 templates/nav/nav_csd_atelier.html:34
+#: templates/nav/nav_csd_atelier.html:54 templates/nav/nav_csd_atelier.html:79
+#: templates/nav/nav_csd_atelier.html:112
+#: templates/nav/nav_csd_atelier.html:130
+#: templates/nav/nav_csd_atelier.html:148 templates/nav/nav_tools.html:28
+#: templates/nav/nav_tools.html:111
 msgid "Informations"
 msgstr ""
 
-#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:57
-#: templates/nav/nav_csd_atelier.html:90 templates/nav/nav_tools.html:34
-#: templates/nav/nav_tools.html:64 templates/nav/nav_tools.html:91
+#: templates/nav/nav_csd_admin.html:24 templates/nav/nav_csd_atelier.html:60
+#: templates/nav/nav_csd_atelier.html:93 templates/nav/nav_tools.html:34
+#: templates/nav/nav_tools.html:64 templates/nav/nav_tools.html:89
+#: templates/nav/nav_tools.html:116
 msgid "Editing"
 msgstr "Edition"
 
@@ -156,49 +162,53 @@ msgstr "Dossiers erreur CORVET"
 msgid "Late products"
 msgstr "produits en retard"
 
-#: templates/nav/nav_csd_atelier.html:32 templates/nav/nav_reman.html:100
+#: templates/nav/nav_csd_atelier.html:31
+msgid "Temporary files"
+msgstr ""
+
+#: templates/nav/nav_csd_atelier.html:35 templates/nav/nav_reman.html:100
 msgid "Customer files"
 msgstr "Dossiers clients"
 
-#: templates/nav/nav_csd_atelier.html:33
+#: templates/nav/nav_csd_atelier.html:36
 msgid "Stock Parts"
 msgstr "Pièces détachées"
 
-#: templates/nav/nav_csd_atelier.html:34
+#: templates/nav/nav_csd_atelier.html:37
 msgid "Change history"
 msgstr "Historique modifications"
 
-#: templates/nav/nav_csd_atelier.html:53
+#: templates/nav/nav_csd_atelier.html:56
 msgid "SIVIN table"
 msgstr "Tableau SIVIN"
 
-#: templates/nav/nav_csd_atelier.html:58
+#: templates/nav/nav_csd_atelier.html:61
 msgid "Add SIVIN"
 msgstr "Ajout SIVIN"
 
-#: templates/nav/nav_csd_atelier.html:79
+#: templates/nav/nav_csd_atelier.html:82
 msgid "Corvet table"
 msgstr "Tableau Corvet"
 
-#: templates/nav/nav_csd_atelier.html:83 templates/nav/nav_tools.html:29
+#: templates/nav/nav_csd_atelier.html:86 templates/nav/nav_tools.html:29
 msgid "Products table"
 msgstr "Tableau produits"
 
-#: templates/nav/nav_csd_atelier.html:86 templates/nav/nav_csd_atelier.html:110
-#: templates/nav/nav_csd_atelier.html:128
-#: templates/nav/nav_csd_atelier.html:146
+#: templates/nav/nav_csd_atelier.html:89 templates/nav/nav_csd_atelier.html:113
+#: templates/nav/nav_csd_atelier.html:131
+#: templates/nav/nav_csd_atelier.html:149
 msgid "Tools & Links"
 msgstr "Outils & Liens"
 
-#: templates/nav/nav_csd_atelier.html:91
+#: templates/nav/nav_csd_atelier.html:94
 msgid "Add Corvet"
 msgstr "Ajout Corvet"
 
-#: templates/nav/nav_csd_atelier.html:154
+#: templates/nav/nav_csd_atelier.html:157
 msgid "supplier links"
 msgstr "Liens fournisseurs"
 
-#: templates/nav/nav_csd_atelier.html:164 templates/nav/nav_tools.html:24
+#: templates/nav/nav_csd_atelier.html:167 templates/nav/nav_tools.html:24
 msgid "Unlock VIN"
 msgstr "Déverrouiller VIN"
 
@@ -206,15 +216,11 @@ msgstr "Déverrouiller VIN"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: templates/nav/nav_general.html:14
-msgid "Generate Squalaetp"
-msgstr "Générer Squalaetp"
-
-#: templates/nav/nav_general.html:22 templates/nav/nav_tools.html:112
+#: templates/nav/nav_general.html:13 templates/nav/nav_tools.html:137
 msgid "Thermal chamber"
 msgstr "Chambre thermique"
 
-#: templates/nav/nav_general.html:30
+#: templates/nav/nav_general.html:28
 msgid "Other links"
 msgstr "Autres liens"
 
@@ -302,7 +308,7 @@ msgstr "Outils"
 msgid "Add product"
 msgstr "Ajout produit"
 
-#: templates/nav/nav_tools.html:56
+#: templates/nav/nav_tools.html:56 templates/nav/nav_tools.html:83
 msgid "Tabs"
 msgstr "Onglets"
 
@@ -310,15 +316,15 @@ msgstr "Onglets"
 msgid "Waiting"
 msgstr "En attente"
 
-#: templates/nav/nav_tools.html:60
+#: templates/nav/nav_tools.html:60 templates/nav/nav_tools.html:85
 msgid "Progress"
 msgstr "En cours"
 
-#: templates/nav/nav_tools.html:61
+#: templates/nav/nav_tools.html:61 templates/nav/nav_tools.html:86
 msgid "Close"
 msgstr "Cloturées"
 
-#: templates/nav/nav_tools.html:62
+#: templates/nav/nav_tools.html:62 templates/nav/nav_tools.html:87
 msgid "All"
 msgstr "Tous"
 
@@ -326,21 +332,31 @@ msgstr "Tous"
 msgid "Add Suptech"
 msgstr "Ajout Suptech"
 
-#: templates/nav/nav_tools.html:88
+#: templates/nav/nav_tools.html:90
+#, fuzzy
+#| msgid "Add Suptech"
+msgid "Add Infotech"
+msgstr "Ajout Suptech"
+
+#: templates/nav/nav_tools.html:113
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: templates/nav/nav_tools.html:93
+#: templates/nav/nav_tools.html:118
 msgid "Software Add"
 msgstr "Ajout logiciel"
 
-#: templates/nav/nav_tools.html:114
+#: templates/nav/nav_tools.html:139
 msgid "Unlock table"
 msgstr "Tableau dever. VIN"
 
-#: templates/nav/nav_tools.html:116
+#: templates/nav/nav_tools.html:141
 msgid "tag Xelon table"
 msgstr "Tableau tag Xelon"
+
+#: templates/nav/nav_tools.html:142
+msgid "Raspi Time table"
+msgstr ""
 
 #: templates/registration/login.html:20
 msgid "Welcome to CSD Dashboard"
@@ -438,18 +454,18 @@ msgstr "Accueil"
 msgid "About"
 msgstr "A propos"
 
-#: utils/django/validators.py:37
+#: utils/django/validators.py:68
 msgid ""
 "The V.I.N. is invalid, it should be 17 characters and be part of PSA vehicles"
 msgstr ""
 "Le V.I.N. n'est pas valide, il doit comporter 17 caractères et faire partie "
 "des véhicules PSA"
 
-#: utils/django/validators.py:39
+#: utils/django/validators.py:70
 msgid "The V.I.N. is invalid, it should be 17 characters"
 msgstr "Le V.I.N. n'est pas valide, il doit contenir 17 caractères"
 
-#: utils/django/validators.py:60
+#: utils/django/validators.py:91
 msgid ""
 "The V.I.N. or UIN is invalid, it should be 17 or 18 characters and be part "
 "of PSA vehicles"
@@ -457,7 +473,7 @@ msgstr ""
 "Le V.I.N. ou l'UIN n'est pas valide, il doit comporter 17 ou 18 caractères "
 "et faire partie des véhicules PSA"
 
-#: utils/django/validators.py:120
+#: utils/django/validators.py:153
 msgid ""
 "The number is not correct, it must consist of an uppercase letter and 9 "
 "digits"
@@ -465,14 +481,14 @@ msgstr ""
 "Le numéro n'est pas correct, il doit être composé d'une lettre majuscule et "
 "de 9 chiffres"
 
-#: utils/django/validators.py:122
+#: utils/django/validators.py:155
 msgid "This number is not authorized"
 msgstr "Ce numéro n'est pas autorisé"
 
-#: utils/django/validators.py:124
+#: utils/django/validators.py:157
 msgid "The batch does not exist"
 msgstr "Le lot n'existe pas"
 
-#: utils/django/validators.py:126
+#: utils/django/validators.py:159
 msgid "This number exists"
 msgstr "Ce numéro existe"

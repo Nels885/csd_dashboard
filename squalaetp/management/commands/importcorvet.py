@@ -44,11 +44,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['vin']:
             vin = options['vin']
+            start_time = time.time()
             scrap = ScrapingCorvet(test=options['test'])
+            delay_time = time.time() - start_time
+            self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Webdriver connected in {delay_time}"))
             data = scrap.result(vin)
             data = str(xml_parser(data))
             self.stdout.write(data)
-            scrap.close()
+            scrap.quit()
         elif options['immat']:
             self._import_sivin(options['immat'], options['test'])
             self.stdout.write(self.style.SUCCESS("[IMPORT_SIVIN] Import completed!"))
@@ -76,13 +79,16 @@ class Command(BaseCommand):
     def _import_corvet(self, queryset, test, squalaetp=True, limit=False):
         nb_import = 0
         if queryset:
+            start_time = time.time()
             scrap = ScrapingCorvet(test=test)
+            delay_time = time.time() - start_time
+            self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Webdriver connected in {delay_time}"))
             for query in queryset:
                 start_msg = f"{query.vin}"
                 if squalaetp:
                     start_msg = f"{query.numero_de_dossier} - {start_msg}"
                 start_time = time.time()
-                for attempt in range(2):
+                for attempt in reversed(range(2)):
                     row = xml_parser(scrap.result(query.vin))
                     if scrap.ERROR or "ERREUR COMMUNICATION SYSTEME CORVET" in row:
                         delay_time = time.time() - start_time
@@ -99,7 +105,7 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS(f"{start_msg} updated in {delay_time}"))
                         break
-                    elif attempt:
+                    elif attempt == 0:
                         if squalaetp:
                             query.vin_error = True
                         Corvet.objects.filter(vin=query.vin).delete()

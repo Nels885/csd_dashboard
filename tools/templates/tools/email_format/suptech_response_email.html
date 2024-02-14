@@ -1,14 +1,14 @@
 {% autoescape off %}
 Bonjour,
 
-Lien page détail Suptech :
-http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}
-
 Action(s) réalisée(s) :
 {{ suptech.action }}
 
 Statut : {{ suptech.status }}
 Date limite : {{ suptech.deadline|default:"---" }}
+
+Détail de la demande :
+http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}
 
 Si l'action n'a pas résolu le problème, cliquez sur le lien ci-dessous et ajoutez un message :
 http://{{ domain }}{% url 'tools:suptech_detail' pk=suptech.pk %}?resolved=false

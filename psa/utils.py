@@ -2,7 +2,7 @@ from .models import Ecu, Multimedia
 
 
 COLLAPSE_LIST = [
-    "media", "prog", "cmb", "emf", "cmm", "bsi", "hdc", "cvm", 'vmf',
+    "media", "prog", "cmb", "emf", "cmm", "bsi", "hdc", "cvm", "vmf", "bpga"
     "display", "audio", "ecu", "cockpit", "security"
 ]
 
@@ -26,6 +26,8 @@ def collapse_select(xelon_name):
         # Motor collapse
         elif ecu_type == "CMM":
             collapse.update({"cmm": True, "ecu": True})
+        elif ecu_type == "BPGA":
+            collapse.update({"bpga": True, "ecu": True})
         # Cockpit collapse
         elif ecu_type == "BSI":
             collapse.update({"bsi": True, "cockpit": True})

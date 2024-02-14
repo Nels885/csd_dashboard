@@ -2,9 +2,10 @@ from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import User
-from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+
+from utils.django.contrib import CustomModelAdmin
 
 from .models import (
     TagXelon, CsdSoftware, EtudeProject, ThermalChamber, ThermalChamberMeasure, Suptech, SuptechCategory, SuptechItem,
@@ -45,7 +46,7 @@ class SuptechFileline(admin.TabularInline):
     model = SuptechFile
 
 
-class SuptechAdmin(admin.ModelAdmin):
+class SuptechAdmin(CustomModelAdmin):
     list_display = (
         'id', 'date', 'days_late', 'user', 'modified_by', 'status', 'xelon', 'product', 'item', 'category', 'is_48h',
         'action')
@@ -55,28 +56,14 @@ class SuptechAdmin(admin.ModelAdmin):
     actions = ('is_48h_disabled', 'is_48h_enabled')
     inlines = (SuptechFileline, )
 
-    def _message_user_about_update(self, request, rows_updated, verb):
-        """Send message about action to user.
-        `verb` should shortly describe what have changed (e.g. 'enabled').
-        """
-        self.message_user(
-            request,
-            _('{0} product{1} {2} successfully {3}').format(
-                rows_updated,
-                pluralize(rows_updated),
-                pluralize(rows_updated, _('was,were')),
-                verb,
-            ),
-        )
-
     def is_48h_disabled(self, request, queryset):
         rows_updated = queryset.update(is_48h=False)
-        self._message_user_about_update(request, rows_updated, 'disabled')
+        self._message_product_about_update(request, rows_updated, 'disabled')
     is_48h_disabled.short_description = _('48h processing disabled')
 
     def is_48h_enabled(self, request, queryset):
         rows_updated = queryset.update(is_48h=True)
-        self._message_user_about_update(request, rows_updated, 'enabled')
+        self._message_product_about_update(request, rows_updated, 'enabled')
     is_48h_enabled.short_description = _('48h processing enabled')
 
     @admin.display(description="Delta")
@@ -100,50 +87,60 @@ class SuptechItemAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
-class SuptechItemAdmin(admin.ModelAdmin):
+class SuptechItemAdmin(CustomModelAdmin):
     form = SuptechItemAdminForm
-    list_display = ('name', 'extra', 'category', 'is_48h', 'is_active', 'mailing_list', 'cc_mailing_list')
+    list_display = ('name', 'extra', 'category', 'is_48h', 'is_active', 'to_list', 'cc_list')
     ordering = ('name',)
     list_filter = ('category', 'is_48h', 'is_active')
-    search_fields = ('name', 'mailing_list', 'cc_mailing_list')
+    search_fields = ('name', 'mailing_list', 'cc_mailing_list', 'to_users__email', 'cc_users__email')
     actions = ('is_48h_disabled', 'is_48h_enabled', 'is_disabled', 'is_activated')
-
-    def _message_user_about_update(self, request, rows_updated, verb):
-        """Send message about action to user.
-        `verb` should shortly describe what have changed (e.g. 'enabled').
-        """
-        self.message_user(
-            request,
-            _('{0} item{1} {2} successfully {3}').format(
-                rows_updated,
-                pluralize(rows_updated),
-                pluralize(rows_updated, _('was,were')),
-                verb,
-            ),
-        )
 
     def is_48h_disabled(self, request, queryset):
         rows_updated = queryset.update(is_48h=False)
-        self._message_user_about_update(request, rows_updated, 'disabled')
+        self._message_item_about_update(request, rows_updated, 'disabled')
     is_48h_disabled.short_description = _('48h processing disabled')
 
     def is_48h_enabled(self, request, queryset):
         rows_updated = queryset.update(is_48h=True)
-        self._message_user_about_update(request, rows_updated, 'enabled')
+        self._message_item_about_update(request, rows_updated, 'enabled')
     is_48h_enabled.short_description = _('48h processing enabled')
 
     def is_disabled(self, request, queryset):
         rows_updated = queryset.update(is_active=False)
-        self._message_user_about_update(request, rows_updated, 'disabled')
+        self._message_item_about_update(request, rows_updated, 'disabled')
     is_disabled.short_description = _('Item disabled')
 
     def is_activated(self, request, queryset):
         rows_updated = queryset.update(is_active=True)
-        self._message_user_about_update(request, rows_updated, 'activated')
+        self._message_item_about_update(request, rows_updated, 'activated')
     is_activated.short_description = _('Item activated')
+
+    @staticmethod
+    def to_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.to_list()
+
+    @staticmethod
+    def cc_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.cc_list()
+
+
+class SuptechCategoryAdminForm(forms.ModelForm):
+    to_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+    cc_users = UserMultipleChoiceField(
+        queryset=ACTIVE_USERS, widget=FilteredSelectMultiple("User", is_stacked=False), required=False)
+
+    class Meta:
+        model = SuptechCategory
+        fields = '__all__'
 
 
 class SuptechCategoryAdmin(admin.ModelAdmin):
+    form = SuptechCategoryAdminForm
     list_display = ('name', 'manager')
 
 
@@ -174,37 +171,35 @@ class InfotechAdmin(admin.ModelAdmin):
     search_fields = ('id', 'created_by', 'item')
 
 
-class InfotechMailingListAdmin(admin.ModelAdmin):
+class InfotechMailingListAdmin(CustomModelAdmin):
     form = InfotechMailingListAdminForm
-    list_display = ('name', 'is_active')
+    list_display = ('name', 'is_active', 'to_list', 'cc_list')
     ordering = ('name',)
     list_filter = ('is_active',)
     search_fields = ('name',)
     actions = ('is_disabled', 'is_activated')
 
-    def _message_user_about_update(self, request, rows_updated, verb):
-        """Send message about action to user.
-        `verb` should shortly describe what have changed (e.g. 'enabled').
-        """
-        self.message_user(
-            request,
-            _('{0} item{1} {2} successfully {3}').format(
-                rows_updated,
-                pluralize(rows_updated),
-                pluralize(rows_updated, _('was,were')),
-                verb,
-            ),
-        )
-
     def is_disabled(self, request, queryset):
         rows_updated = queryset.update(is_active=False)
-        self._message_user_about_update(request, rows_updated, 'disabled')
+        self._message_item_about_update(request, rows_updated, 'disabled')
     is_disabled.short_description = _('Item disabled')
 
     def is_activated(self, request, queryset):
         rows_updated = queryset.update(is_active=True)
-        self._message_user_about_update(request, rows_updated, 'activated')
+        self._message_item_about_update(request, rows_updated, 'activated')
     is_activated.short_description = _('Item activated')
+
+    @staticmethod
+    def to_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.to_list()
+
+    @staticmethod
+    def cc_list(obj):
+        """Special method for looking up and returning the user's registration key
+        """
+        return obj.cc_list()
 
 
 class BGATimeAdmin(admin.ModelAdmin):
@@ -215,10 +210,10 @@ class BGATimeAdmin(admin.ModelAdmin):
 
 
 class RaspiTimeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'type', 'date', 'start_time', 'end_time', 'duration')
-    ordering = ('id',)
+    list_display = ('id', 'name', 'type', 'date', 'start_time', 'end_time', 'duration', 'xelon')
+    ordering = ('-id',)
     list_filter = ('name', 'type')
-    search_fields = ('name', 'type', 'date')
+    search_fields = ('name', 'type', 'date', 'xelon')
 
 
 admin.site.register(TagXelon, TagXelonAdmin)
