@@ -25,5 +25,6 @@ urlpatterns = [
     path('corvet/<slug:pk>/pdf/', views.barcode_pdf_generate, name='barcode_pdf'),
     path('corvet/import/async/', ajax.import_corvet_async, name='import_corvet'),
     path('product/', views.product_table, name='product'),
+    path('dtc/', views.dtc_table, name='dtc_table'),
     path('majestic-web/', views.majestic_web, name='majestic_web')
 ]

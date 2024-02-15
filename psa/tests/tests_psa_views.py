@@ -125,3 +125,7 @@ class PsaTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertNotEqual(data.get('task_id', None), None)
+
+    def test_dtc_table_page(self):
+        response = self.client.get(reverse('psa:dtc_table'))
+        self.assertEqual(response.status_code, 200)
