@@ -32,7 +32,12 @@ class ProgramingAdmin(admin.ModelAdmin):
     get_type.short_description = "type"
 
 
+class ToolStatusAdmin(admin.ModelAdmin):
+    list_display = ('name', 'type', 'url', 'last_boot', 'firmware')
+    search_fields = ('name', 'type')
+
+
 admin.site.register(Raspeedi, RaspeediAdmin)
 admin.site.register(UnlockProduct, UnlockProductAdmin)
 admin.site.register(Programing, ProgramingAdmin)
-admin.site.register(ToolStatus)
+admin.site.register(ToolStatus, ToolStatusAdmin)

@@ -102,6 +102,8 @@ class ToolStatus(models.Model):
     url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
     api_path = models.CharField("Chemin API", max_length=500, blank=True)
+    last_boot = models.DateTimeField("Dernier démarrage", null=True, blank=True)
+    firmware = models.CharField("Firmware", max_length=20, blank=True)
     logs = GenericRelation('Log')
 
     class Meta:
