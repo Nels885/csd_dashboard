@@ -14,7 +14,7 @@ from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, SelectCanRemoteForm
-from .models import Corvet, Multimedia
+from .models import Corvet, Multimedia, Ecu
 from .utils import COLLAPSE_LIST
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
@@ -194,7 +194,10 @@ def product_table(request):
     :return:
         Product table page
     """
-    table_title = _('Products PSA table')
-    products = Multimedia.objects.all()
+    select = request.GET.get('filter', 'media')
+    if select == 'media':
+        products = Multimedia.objects.all()
+    else:
+        products = Ecu.objects.all()
     context.update(locals())
     return render(request, 'psa/product_table.html', context)

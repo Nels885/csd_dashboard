@@ -111,6 +111,8 @@ class PsaTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('psa:product'))
         self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('psa:product', get={'filter': 'ecu'}))
+        self.assertEqual(response.status_code, 200)
 
     def test_import_corvet_async(self):
         response = self.client.get(reverse('psa:import_corvet'))
