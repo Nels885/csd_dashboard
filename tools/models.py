@@ -158,7 +158,7 @@ class Suptech(models.Model):
     status = models.TextField('STATUT', max_length=50, default='En Attente', choices=STATUS_CHOICES)
     deadline = models.DateField('DATE LIMITE', null=True, blank=True)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
-    is_48h = models.BooleanField("Traitement 48h", default=True)
+    is_48h = models.BooleanField("Traitement 48h", default=False)
     to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
     cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
     created_at = models.DateTimeField('ajouté le', editable=False, null=True)
