@@ -14,7 +14,7 @@ class ToolsCommandTestCase(UnitTest):
             SuptechCategory.objects.create(name=name, manager=self.user)
         Suptech.objects.create(
             date="1970-01-01", user='test', xelon='A123456789', item='Hot Line Tech', time='5', info='test',
-            rmq='test', created_by=self.user, category=SuptechCategory.objects.first()
+            rmq='test', created_by=self.user, category=SuptechCategory.objects.first(), is_48h=True
         )
         self.out = StringIO()
 
