@@ -4,10 +4,9 @@ from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 
 from utils.file.export_task import ExportExcelTask
-from psa.models import Multimedia
-from psa.templatetags.corvet_tags import get_corvet
-
 from psa.models import Corvet
+from psa.templatetags.corvet_tags import get_corvet
+from psa.choices import BTEL_PRODUCT_CHOICES
 
 
 INFO_DICT = {
@@ -249,7 +248,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
     def get_multimedia_display(self, data_list):
         if 'prods__btel__name' in self.fields:
             position = self.fields.index('prods__btel__name')
-            for prod in Multimedia.PRODUCT_CHOICES:
+            for prod in BTEL_PRODUCT_CHOICES:
                 if prod[0] == data_list[position]:
                     data_list[position] = prod[1]
                     break
