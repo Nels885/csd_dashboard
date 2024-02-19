@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   python: circleci/python@2.0.3
-  browser-tools: circleci/browser-tools@1.4.6
+  browser-tools: circleci/browser-tools@1.4.7
 jobs: # A basic unit of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
     # directory where steps are run
