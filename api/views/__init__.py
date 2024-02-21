@@ -8,8 +8,10 @@ from rest_framework.views import APIView
 
 from ..serializers import ProgSerializer, CalSerializer
 from prog.serializers import UnlockSerializer, UnlockUpdateSerializer, RaspeediSerializer
+from psa.serializers import DefaultCodeSerializer
 from prog.models import Raspeedi, UnlockProduct
 from squalaetp.models import Xelon
+from psa.models import DefaultCode
 
 from ..utils import TokenAuthSupportQueryString
 
@@ -98,3 +100,19 @@ class NacLicenseView(APIView):
             if response.status_code == 200:
                 return redirect(response.url)
         return Response({"error": "Request failed"}, status=404)
+
+
+class DefaultCodeViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = DefaultCode.objects.all()
+    serializer_class = DefaultCodeSerializer
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        product = self.request.query_params.get('prod', None)
+        queryset = self.queryset
+        if product:
+            queryset = DefaultCode.objects.filter(ecu_type=product)
+        return queryset
