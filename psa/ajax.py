@@ -1,16 +1,13 @@
 from django.http import JsonResponse, QueryDict
 from django.template.loader import render_to_string
 from django.db.models import Q
-from rest_framework import viewsets, permissions
 
 from utils.django.datatables import ServerSideViewSet
 
-from .serializers import CorvetSerializer, CORVET_COLUMN_LIST, DefaultCodeSerializer
+from .serializers import CorvetSerializer, CORVET_COLUMN_LIST, DTCServerSideSerializer, DTC_COLUMN_LIST
 from .models import Corvet, DefaultCode, CanRemote
 from .forms import SelectCanRemoteForm
 from .tasks import import_corvet_task
-
-from api.utils import TokenAuthSupportQueryString
 
 
 class CorvetViewSet(ServerSideViewSet):
@@ -33,20 +30,11 @@ def import_corvet_async(request):
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
 
 
-class DefaultCodeViewSet(viewsets.ModelViewSet):
-    """ API endpoint that allows groups to be viewed or edited. """
-    authentication_classes = (TokenAuthSupportQueryString,)
-    permission_classes = (permissions.IsAuthenticated,)
+class DTCServerSodeViewSet(ServerSideViewSet):
     queryset = DefaultCode.objects.all()
-    serializer_class = DefaultCodeSerializer
-    http_method_names = ['get']
-
-    def get_queryset(self):
-        product = self.request.query_params.get('prod', None)
-        queryset = self.queryset
-        if product:
-            queryset = DefaultCode.objects.filter(ecu_type=product)
-        return queryset
+    serializer_class = DTCServerSideSerializer
+    column_list = DTC_COLUMN_LIST
+    column_start = 1
 
 
 def canremote_async(request):

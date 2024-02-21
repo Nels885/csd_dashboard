@@ -14,7 +14,7 @@ from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, SelectCanRemoteForm
-from .models import Corvet, Multimedia, Ecu, DefaultCode
+from .models import Corvet, Multimedia, Ecu
 from .utils import COLLAPSE_LIST
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
@@ -212,6 +212,5 @@ def dtc_table(request):
         Product table page
     """
     table_title = _('DTC PSA list')
-    queryset = DefaultCode.objects.all()
     context.update(locals())
     return render(request, 'psa/dtc_table.html', context)

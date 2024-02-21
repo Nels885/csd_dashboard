@@ -9,6 +9,10 @@ CORVET_COLUMN_LIST = [
     'electronique_94b', 'prods__bsi__xelon_name'
 ]
 
+DTC_COLUMN_LIST = [
+    'code', 'type', 'description', 'characterization', 'location', 'ecu_type'
+]
+
 
 class CorvetSerializer(DynamicFieldsModelSerializer):
     """
@@ -38,3 +42,10 @@ class DefaultCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DefaultCode
         fields = ('code', 'type', 'description', 'characterization', 'ecu_type')
+
+
+class DTCServerSideSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DefaultCode
+        fields = ('code', 'type', 'description', 'characterization', 'location', 'ecu_type')
