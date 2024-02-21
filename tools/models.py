@@ -167,6 +167,7 @@ class Suptech(models.Model):
     modified_at = models.DateTimeField('modifié le', null=True)
     modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
+    days_late = models.IntegerField("jours de retard", null=True, blank=True)
     messages = GenericRelation('Message')
 
     class Meta:
@@ -424,7 +425,7 @@ class BgaTime(models.Model):
         ordering = ["id"]
 
     def save(self, *args, **kwargs):
-        status = kwargs.pop('status', None)
+        status = kwargs.pop('status', '')
         if status:
             if self.pk and status.upper() == "STOP":
                 self.end_time = timezone.localtime().time()
@@ -453,7 +454,7 @@ class RaspiTime(models.Model):
         ordering = ["id"]
 
     def save(self, *args, **kwargs):
-        status = kwargs.pop('status', None)
+        status = kwargs.pop('status', '')
         if status:
             if self.pk and status.upper() == "STOP":
                 self.end_time = timezone.localtime().time()
