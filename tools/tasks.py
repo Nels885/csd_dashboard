@@ -53,7 +53,7 @@ def send_email_task(self, subject, body, from_email, to, cc, files=None):
 def suptech_days_late_task(*args, **kwargs):
     from .models import Suptech
     queryset = Suptech.objects.exclude(status__in=['Cloturée', 'Annulée'])
-    queryset = queryset.filter(is_48h=True, date__gte=datetime.date(2024, 1, 1))
+    queryset = queryset.filter(date__gte=datetime.date(2024, 1, 1))
     for query in queryset:
         if query.created_at:
             start_date = query.created_at.strftime("%Y-%m-%d")
