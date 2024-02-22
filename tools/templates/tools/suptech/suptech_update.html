@@ -117,6 +117,14 @@
 
             <h4 class="font-weight-bold text-uppercase">repondre a la demande :</h4>
 
+            {% if object.status == "Cloturée" %}
+                <div class="form-row">
+                    <div class="help-block col-sm-12 text-center">
+                        <h5 class="bg-danger text-white font-weight-bold">La demande à déjà été cloturée !!!</h5>
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="form-group row">
                 <label for="{{ form.action.id_for_label }}" class="col-form-label col-sm-2">Action *</label>
                 <div class="col-sm-10">
@@ -168,7 +176,9 @@
             <div class="float-right">
                 <a type="button" href="{% url 'tools:suptech_detail' object.pk %}"
                    class="btn btn-secondary">{% trans "Cancel" %}</a>
-                <button type="submit" class="btn btn-primary ml-3">{% trans 'Update' %}</button>
+                <button type="submit" class="btn btn-primary ml-3" {% if object.status == "Cloturée" %}disabled{% endif %}>
+                    {% trans 'Update' %}
+                </button>
             </div>
 
         </form>

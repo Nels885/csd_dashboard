@@ -130,7 +130,11 @@
 
             <div class="mt-5 row">
                 <div class="col text-center">
-                    <a type="button" href="{% url 'tools:suptech_update' pk=object.pk %}" class="text-justify btn btn-primary">{% trans 'Respond to request' %}</a>
+                    {% if object.status != "Cloturée" %}
+                        <a type="button" href="{% url 'tools:suptech_update' pk=object.pk %}" class="text-justify btn btn-primary">{% trans 'Respond to request' %}</a>
+                    {% else %}
+                        <button class="text-justify btn btn-primary" disabled>{% trans 'Respond to request' %}</button>
+                    {% endif %}
                 </div>
             </div>
 
