@@ -170,11 +170,15 @@ class ToolsAnalysis:
 
     def suptech_co(self):
         suptechs = self.suptechs.filter(category__name__icontains="operation")
+        suptechs_old = suptechs.filter(date__lt=datetime.date(2024, 1, 1))
+        suptechs_old = self._suptech_old_annotate(suptechs_old)
+        suptechs_new = suptechs.filter(date__gte=datetime.date(2024, 1, 1))
+        suptechs_new = self._suptech_annotate(suptechs_new)
         data = {
             "suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": [], "coExpRate": [],
             "coSupNumber": []
         }
-        queryset = self._suptech_annotate(suptechs)
+        queryset = suptechs_old | suptechs_new
         for query in queryset:
             data["suptechCoLabels"].append(query['month'].strftime("%m/%Y"))
             data["coTwoDays"].append(self._percent(query['two_days'], query['total_48h']))
