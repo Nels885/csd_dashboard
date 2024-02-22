@@ -40,7 +40,7 @@ def pre_save_thermal_chamber_measure(sender, instance, **kwargs):
 def pre_save_suptech(sender, instance, **kwargs):
     # if instance.status == 'En Cours':
     #     instance.is_48h = False
-    if instance.status == "Cloturée":
+    if instance.created_at and instance.modified_at and instance.status == "Cloturée":
         start_date = instance.created_at.strftime("%Y-%m-%d")
         end_date = instance.modified_at.strftime("%Y-%m-%d")
         instance.days_late = np.busday_count(start_date, end_date)
