@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from utils.django.api_rest.serializers import DynamicFieldsModelSerializer
-from .models import Corvet, DefaultCode
+from .models import Corvet, DefaultCode, Multimedia, Ecu
 
 CORVET_COLUMN_LIST = [
     'vin', 'electronique_14f', 'electronique_94f', 'prods__radio__xelon_name', 'electronique_14x', 'electronique_94x',
@@ -49,3 +49,18 @@ class DTCServerSideSerializer(serializers.ModelSerializer):
     class Meta:
         model = DefaultCode
         fields = ('code', 'type', 'description', 'characterization', 'location', 'ecu_type')
+
+
+class MultimediaSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='get_name_display', read_only=True)
+
+    class Meta:
+        model = Multimedia
+        fields = ('comp_ref', 'label_ref', 'name')
+
+
+class EcuSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Ecu
+        fields = ('comp_ref', 'label_ref', 'name')

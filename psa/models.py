@@ -319,8 +319,9 @@ class Corvet(models.Model):
         if value is not None:
             query = value.strip()
             for field in CORVET_HW_FILTERS:
-                    queryset = cls.objects.filter(**{field: query})
-                    if queryset: return queryset
+                queryset = cls.objects.filter(**{field: query})
+                if queryset:
+                    return queryset
         if all_data:
             return cls
         return None
@@ -330,11 +331,13 @@ class Corvet(models.Model):
         if value is not None:
             query = value.strip()
             queryset = cls.hw_search(value, all_data=False)
-            if queryset: return queryset
+            if queryset:
+                return queryset
             filters = CORVET_FILTERS + CORVET_SN_FILTERS
             for field in filters:
                 queryset = cls.objects.filter(**{field: query})
-                if queryset: return queryset
+                if queryset:
+                    return queryset
         return None
 
     def __str__(self):
