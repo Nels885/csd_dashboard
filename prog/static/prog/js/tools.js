@@ -46,7 +46,6 @@ function toolChange(data, pk) {
     let id = '#tool' + pk;
     // $(id+'-ip').html(data['ip_addr']);
     $(id+'-c').html(data['prog_count']);
-    $(id+'-h').html(data['hostname']);
     $(id+'-s').html(data['soft']);
     $(id+'-v').html(data['version']);
     $(id+'-d').html(data['device']);

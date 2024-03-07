@@ -124,6 +124,13 @@ def tool_info(request):
     return render(request, 'prog/tool_info.html', context)
 
 
+def tool_info_it(request):
+    table_title = "Info Outils IT"
+    object_list = ToolStatus.objects.all()
+    context.update(locals())
+    return render(request, 'prog/tool_info_it.html', context)
+
+
 def ajax_tool_info(request, pk):
     data = {'pk': pk, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404}
     try:
