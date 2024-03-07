@@ -1,6 +1,7 @@
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.http.request import QueryDict
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -9,7 +10,7 @@ from ..serializers import (
     ThermalChamberMeasureSerializer, ThermalChamberMeasureCreateSerializer, BgaTimeSerializer,
     BgaTimeCreateSerializer, RaspiTimeSerializer, RaspiTimeCreateSerializer
 )
-from prog.serializers import ToolStatusSerializer, ToolLogSerializer
+from prog.serializers import ToolStatusSerializer, ToolStatusUpdateSerializer, ToolLogSerializer
 from prog.models import ToolStatus, Log
 from tools.models import ThermalChamberMeasure, BgaTime, RaspiTime
 
@@ -24,7 +25,24 @@ class ToolStatusViewSet(viewsets.ModelViewSet):
     serializer_class = ToolStatusSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['name']
-    http_method_names = ['get']
+    http_method_names = ['get', 'put']
+
+    def get_object(self):
+        queryset = self.get_queryset()             # Get the base queryset
+        queryset = self.filter_queryset(queryset)  # Apply any filter backends
+        pk = self.kwargs.get('pk')
+        if pk and pk.isdigit():
+            obj = get_object_or_404(queryset, pk=pk)  # Lookup the object
+        else:
+            obj = get_object_or_404(queryset, hostname=pk)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return ToolStatusUpdateSerializer
+        else:
+            return ToolStatusSerializer
 
 
 class ToolLogViewSet(viewsets.ModelViewSet):
