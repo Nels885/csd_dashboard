@@ -97,13 +97,17 @@ class UnlockProduct(models.Model):
 
 class ToolStatus(models.Model):
     name = models.CharField("Nom de l'outils", max_length=50)
+    url = models.CharField("Lien web", max_length=500)
     type = models.TextField("Type", max_length=50, blank=True)
     comment = models.TextField("Commentaire", blank=True)
-    url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
     api_path = models.CharField("Chemin API", max_length=500, blank=True)
     last_boot = models.DateTimeField("Dernier démarrage", null=True, blank=True)
     firmware = models.CharField("Firmware", max_length=20, blank=True)
+    hostname = models.CharField("Hostname", max_length=50, blank=True)
+    ip_addr = models.CharField("ip address", max_length=50, blank=True)
+    mac_addr = models.CharField("mac address", max_length=20, blank=True)
+    hw_revision = models.CharField('Hardware revision', max_length=500, blank=True)
     logs = GenericRelation('Log')
 
     class Meta:

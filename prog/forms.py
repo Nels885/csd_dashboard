@@ -62,9 +62,15 @@ class UnlockForm(Form):
 
 
 class ToolStatusForm(BSModalModelForm):
+
     class Meta:
         model = ToolStatus
-        fields = '__all__'
+        fields = ('name', 'hostname', 'type', 'comment', 'url', 'status_path', 'api_path')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['hostname'].required = True
+        self.fields['api_path'].required = True
 
 
 class AETModalForm(BSModalModelForm):

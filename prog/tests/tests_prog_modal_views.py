@@ -41,6 +41,7 @@ class MixinsTest(UnitTest):
             reverse('prog:tool_add'),
             data={
                 'name': '',
+                'hostname': '',
                 'comment': '',
                 'url': '',
                 'status_path': '',
@@ -62,10 +63,11 @@ class MixinsTest(UnitTest):
             reverse('prog:tool_add'),
             data={
                 'name': 'test',
+                'hostname': 'test',
                 'comment': '',
                 'url': 'http//test.com/',
                 'status_path': '',
-                'api_path': '',
+                'api_path': 'api/',
             },
         )
 
@@ -88,10 +90,11 @@ class MixinsTest(UnitTest):
             reverse('prog:tool_update', kwargs={'pk': old_tool.pk}),
             data={
                 'name': 'new_test',
+                'hostname': 'test',
                 'comment': '',
                 'url': 'http//test.com/',
                 'status_path': '',
-                'api_path': '',
+                'api_path': 'api/',
             },
         )
         # redirection
