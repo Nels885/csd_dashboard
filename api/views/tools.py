@@ -30,11 +30,11 @@ class ToolStatusViewSet(viewsets.ModelViewSet):
     def get_object(self):
         queryset = self.get_queryset()             # Get the base queryset
         queryset = self.filter_queryset(queryset)  # Apply any filter backends
-        pk = self.kwargs.get('pk')
+        pk = self.kwargs.get('pk', '')
         if pk and pk.isdigit():
             obj = get_object_or_404(queryset, pk=pk)  # Lookup the object
         else:
-            obj = get_object_or_404(queryset, hostname=pk)
+            obj = get_object_or_404(queryset, hostname__iexact=pk)
         self.check_object_permissions(self.request, obj)
         return obj
 
