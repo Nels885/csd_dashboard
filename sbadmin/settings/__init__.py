@@ -307,6 +307,7 @@ CKEDITOR_CONFIGS = {
         ],
     }
 }
+SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]
 
 # Configuration Tempus Dominus
 TEMPUS_DOMINUS_LOCALIZE = True

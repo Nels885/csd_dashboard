@@ -108,14 +108,14 @@ class ProgTestCase(UnitTest):
         response = self.client.get(reverse('prog:unlock_table'))
         self.assertEqual(response.status_code, 200)
 
-    def test_tool_info_page(self):
-        url = reverse('prog:tool_info')
+    def test_tool_status_page(self):
+        url = reverse('prog:tool_status')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_ajax_tool_info_page(self):
+    def test_ajax_tool_status_page(self):
         for pk in [self.tools.pk, 999]:
-            url = reverse('prog:ajax_tool_info', kwargs={'pk': pk})
+            url = reverse('prog:ajax_tool_status', kwargs={'pk': pk})
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
@@ -128,6 +128,17 @@ class ProgTestCase(UnitTest):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 response.content, {'pk': pk, 'msg': 'No response', 'status': 'off', 'status_code': 404})
+
+    def test_tool_info_page(self):
+        url = reverse('prog:tool_info')
+        response = self.client.get(url)
+        self.assertRedirects(response, self.nextLoginUrl + url, status_code=302)
+
+        # Test if connected with permissions
+        self.add_perms_user(ToolStatus, 'view_info_tools')
+        self.login()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
     def test_aet_info_page(self):
         url = reverse('prog:aet_info')

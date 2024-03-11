@@ -117,6 +117,14 @@ class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     success_url = reverse_lazy('prog:unlock_prods')
 
 
+def tool_status(request):
+    table_title = "Statut Outils"
+    object_list = ToolStatus.objects.all()
+    context.update(locals())
+    return render(request, 'prog/tool_status.html', context)
+
+
+@permission_required('prog.view_info_tools')
 def tool_info(request):
     table_title = "Info Outils"
     object_list = ToolStatus.objects.all()
@@ -124,14 +132,7 @@ def tool_info(request):
     return render(request, 'prog/tool_info.html', context)
 
 
-def tool_info_it(request):
-    table_title = "Info Outils IT"
-    object_list = ToolStatus.objects.all()
-    context.update(locals())
-    return render(request, 'prog/tool_info_it.html', context)
-
-
-def ajax_tool_info(request, pk):
+def ajax_tool_status(request, pk):
     data = {'pk': pk, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404}
     try:
         tool = ToolStatus.objects.get(pk=pk)

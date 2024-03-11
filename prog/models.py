@@ -113,6 +113,7 @@ class ToolStatus(models.Model):
     class Meta:
         verbose_name = "Statut Outil"
         ordering = ['name']
+        permissions = [("view_info_tools", "Can view info tools")]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
