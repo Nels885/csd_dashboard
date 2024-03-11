@@ -17,6 +17,7 @@ from .forms import (
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.forms import CorvetForm
 from psa.utils import collapse_select
+from psa.models import Multimedia, Ecu
 from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
@@ -65,6 +66,9 @@ def xelon_table(request):
     title = 'Xelon'
     form = CorvetForm()
     query_param = request.GET.get('filter', '')
+    if query_param and query_param.isdigit():
+        media = Multimedia.objects.filter(comp_ref__exact=query_param).first()
+        prod = Ecu.objects.filter(comp_ref__exact=query_param).first()
     return render(request, 'squalaetp/xelon_table.html', locals())
 
 
