@@ -17,7 +17,7 @@
 {% block table_content %}
 
     {% if media %}
-        {% include 'psa/format/prod_search.html' with object=prod %}
+        {% include 'psa/format/prod_search.html' with object=media %}
     {% elif prod %}
         {% include 'psa/format/prod_search.html' with object=prod %}
     {% endif %}
