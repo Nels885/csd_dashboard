@@ -340,6 +340,19 @@ class Corvet(models.Model):
                     return queryset
         return None
 
+    @classmethod
+    def get_vehicles(cls, hardware):
+        corvets = cls.hw_search(hardware)
+        vehicles = []
+        data = list(set([query.donnee_ligne_de_produit for query in corvets]))
+        for key in data:
+            try:
+                value = CorvetChoices.objects.get(key=key, column='DON_LIN_PROD').value
+            except CorvetChoices.DoesNotExist:
+                value = key
+            vehicles.append(value)
+        return vehicles
+
     def __str__(self):
         return self.vin
 

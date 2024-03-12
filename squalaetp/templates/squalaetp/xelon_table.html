@@ -17,67 +17,9 @@
 {% block table_content %}
 
     {% if media %}
-        <table class="table table-secondary table-sm">
-            <thead>
-            <tr>
-                {% if media.type %}
-                    <th colspan="2" class="text-primary">Info {{ media.get_type_display }} :</th>
-                {% else %}
-                    <th colspan="2" class="text-primary">Info Nav/Radio :</th>
-                {% endif %}
-            </tr>
-            </thead>
-            <tbody class="table-borderless">
-                <tr>
-                    <td class="text-dark td-ihm-40">Réf. matériel comp.</td>
-                    <td id="xelon">{{ media.comp_ref }}</td>
-                </tr>
-                <tr>
-                    <td class="text-dark td-ihm-40">Modèle produit</td>
-                    <td>{{ media.get_name_display|default:'???' }}</td>
-                </tr>
-                <tr>
-                    <td class="text-dark td-ihm-40">Modèle produit (XELON)</td>
-                    <td>{{ media.xelon_name|default:'???' }}</td>
-                </tr>
-                <tr>
-                    <td class="text-dark td-ihm-40">Fabriquant</td>
-                    <td>{{ media.supplier_oe }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <hr>
+        {% include 'psa/format/prod_search.html' with object=prod %}
     {% elif prod %}
-        <table class="table table-secondary table-sm">
-            <thead>
-            <tr>
-                {% if prod.type %}
-                    <th colspan="2" class="text-primary">Info {{ prod.get_type_display }} :</th>
-                {% else %}
-                    <th colspan="2" class="text-primary">Info produit :</th>
-                {% endif %}
-            </tr>
-            </thead>
-            <tbody class="table-borderless">
-                <tr>
-                    <td class="text-dark td-ihm-40">Réf. matériel comp.</td>
-                    <td id="xelon">{{ prod.comp_ref }}</td>
-                </tr>
-                <tr>
-                    <td class="text-dark td-ihm-40">Modèle produit</td>
-                    <td>{{ prod.get_name_display|default:'???' }}</td>
-                </tr>
-                <tr>
-                    <td class="text-dark td-ihm-40">Modèle produit (XELON)</td>
-                    <td>{{ prod.xelon_name|default:'???' }}</td>
-                </tr>
-                <tr>
-                    <td class="text-dark td-ihm-40">Fabriquant</td>
-                    <td>{{ prod.supplier_oe }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <hr>
+        {% include 'psa/format/prod_search.html' with object=prod %}
     {% endif %}
 
     <table class="table table-bordered table-sm text-nowrap display" id="xelonTable" style="width: 100%;">

@@ -1,0 +1,100 @@
+{% if object %}
+    <div class="row">
+        <section class="col-sm-6">
+            <table class="table table-secondary table-sm">
+                <thead>
+                <tr>
+                    <th colspan="2" class="text-primary">Info produit :</th>
+                </tr>
+                </thead>
+                <tbody class="table-borderless">
+                    <tr>
+                        <td class="text-dark font-weight-bold td-ihm-40">Type du produit</td>
+                        <td>{{ object.get_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-dark font-weight-bold td-ihm-40">Réf. matériel comp.</td>
+                        <td id>{{ object.comp_ref }}</td>
+                    </tr>
+                    {% if object.label_ref and object.label_ref != object.comp_ref|stringformat:"s" %}
+                        <tr>
+                            <td class="text-dark td-ihm-40">Réf. étiquette</td>
+                            <td>{{ object.label_ref }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td class="text-dark font-weight-bold td-ihm-40">Modèle produit</td>
+                        <td>{{ object.get_name_display|default:'???' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-dark font-weight-bold td-ihm-40">Modèle produit (XELON)</td>
+                        <td>{{ object.xelon_name|default:'???' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-dark font-weight-bold td-ihm-40">Fabriquant</td>
+                        <td>{{ object.supplier_oe|default:'???' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class="col-sm-6">
+            <table class="table table-secondary table-sm">
+                <thead>
+                <tr>
+                    <th colspan="2" class="text-primary">Info Supplémentaire :</th>
+                </tr>
+                </thead>
+                <tbody class="table-borderless">
+                    <tr>
+                        <td class="text-dark font-weight-bold td-ihm-40">Liste des véhicules</td>
+                        <td>{{ vehicles|join:", " }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-dark font-weight-bold td-ihm-40">Liste des cal.</td>
+                        <td>???</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+{% endif %}
+
+{% if parts.all %}
+    <div class="row">
+        <section class="col-sm-12">
+            <table class="table table-bordered table-striped table-sm">
+
+                <thead class="table-primary">
+                <tr>
+                    <th colspan="5" class="text-primary text-uppercase">
+                        <i class="fas fa-cog mr-2"></i><span>Liste des pièces disponibles</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th style="width: 40%;">Code Produit</th>
+                    <th style="width: 15%;">Code Zone</th>
+                    <th style="width: 15%;">Code Emplacement</th>
+                    <th style="width: 15%;">Cumul Dispo</th>
+                    <th style="width: 15%;">Code Magasin</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for part in parts.all %}
+                    {% for spare in part.sparepart_set.all %}
+                        <tr>
+                            <td>{{ part.name }}</td>
+                            <td>{{ spare.code_zone }}</td>
+                            <td>{{ spare.code_emplacement }}</td>
+                            <td>{{ spare.cumul_dispo }}</td>
+                            <td>{{ spare.code_magasin }}
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+{% endif %}
+
+{% if object or parts.all %}<hr>{%  endif %}
