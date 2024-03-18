@@ -550,6 +550,9 @@ class Ecu(models.Model):
         dict_type = dict(ECU_TYPE_CHOICES)
         return dict_type.get(self.type, "")
 
+    def get_name_display(self):
+        return self.name
+
     def __iter__(self):
         for field in self._meta.fields:
             yield field.verbose_name.capitalize(), field.value_to_string(self)
