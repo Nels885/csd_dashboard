@@ -97,7 +97,7 @@ class UnlockProduct(models.Model):
 
 class ToolStatus(models.Model):
     name = models.CharField("Nom de l'outils", max_length=50)
-    url = models.CharField("Lien web", max_length=500)
+    url = models.CharField("Lien web", max_length=500, blank=True)
     type = models.TextField("Type", max_length=50, blank=True)
     comment = models.TextField("Commentaire", blank=True)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
@@ -117,14 +117,21 @@ class ToolStatus(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        setattr(self, 'status_url', urljoin(self.url, self.status_path))
-        setattr(self, 'api_url', urljoin(self.url, self.api_path))
+        setattr(self, 'status_url', self.get_url('status'))
+        setattr(self, 'api_url', self.get_url('api'))
 
     def get_url(self, mode):
+        url = self.url
+        if not url and self.ip_addr:
+            url = f"http://{self.ip_addr}/"
         if mode and mode == 'restart':
-            return urljoin(self.url, "api/restart/")
+            return urljoin(url, "api/restart/")
         elif mode and mode == 'stop':
-            return urljoin(self.url, "api/stop/")
+            return urljoin(url, "api/stop/")
+        elif mode and mode == "api":
+            return urljoin(url, self.api_path)
+        elif mode and mode == 'status':
+            return urljoin(url, self.status_path)
         return ""
 
     def __str__(self):
