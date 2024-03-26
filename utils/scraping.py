@@ -8,7 +8,7 @@ from django.utils.timezone import make_aware
 from selenium.webdriver.chrome.service import Service
 from seleniumwire import webdriver
 from seleniumwire.webdriver import ChromeOptions as Options
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -113,16 +113,18 @@ class ScrapingCorvet(Scraping):
         timeout,  data = 10, "ERREUR COMMUNICATION SYSTEME CORVET"
         if not self.ERROR and self.login() and isinstance(vin_value, str):
             try:
-                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
+                wait = WebDriverWait(self, 10)
+                wait.until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
                 vin = self.find_element(By.NAME, 'form:input_vin')
                 submit = self.find_element(By.ID, 'form:suite')
                 vin.send_keys(vin_value.upper())
                 submit.click()
                 while timeout != 0:
                     time.sleep(1)
-                    result = WebDriverWait(self, 10).until(
-                        EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))
-                    ).text
+                    try:
+                        result = wait.until(EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))).text
+                    except StaleElementReferenceException:
+                        result = None
                     if result and len(result) != 0:
                         data = result
                         break
@@ -176,20 +178,26 @@ class ScrapingSivin(ScrapingCorvet):
         :param immat_value: Immat number for the SIVIN data
         :return: SIVIN data
         """
+        timeout, data = 10, "ERREUR COMMUNICATION SYSTEME SIVIN"
         if not self.ERROR and self.login() and isinstance(immat_value, str):
             try:
+                wait = WebDriverWait(self, 10)
                 self.get(self.SIVIN_URLS)
-                WebDriverWait(self, 10).until(EC.presence_of_element_located((By.NAME, 'form:input_immat'))).clear()
+                wait.until(EC.presence_of_element_located((By.NAME, 'form:input_immat'))).clear()
                 immat = self.find_element(By.NAME, 'form:input_immat')
                 submit = self.find_element(By.ID, 'form:suite')
                 immat.send_keys(immat_value.upper())
                 submit.click()
-                time.sleep(1)
-                data = WebDriverWait(self, 10).until(
-                    EC.presence_of_element_located((By.NAME, 'form:resultat_SIVIN'))
-                ).text
-                if data and len(data) == 0:
-                    data = "ERREUR COMMUNICATION SYSTEME SIVIN"
+                while timeout != 0:
+                    time.sleep(1)
+                    try:
+                        result = wait.until(EC.presence_of_element_located((By.NAME, 'form:resultat_SIVIN'))).text
+                    except StaleElementReferenceException:
+                        result = None
+                    if result and len(result) != 0:
+                        data = result
+                        break
+                    timeout -= 1
             except Exception as err:
                 self._logger_error('SIVIN result()', err)
                 data = "Exception or timeout error !"
