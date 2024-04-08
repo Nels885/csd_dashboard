@@ -620,6 +620,17 @@ class CanRemote(models.Model):
             return f"WS+GETCAN={self.can_id},{data}"
         return ""
 
+    @classmethod
+    def get_volume(cls, product, vehicle):
+        queryset = cls.objects.filter(product=product, vehicles__name__icontains=vehicle).distinct()
+        vol_list = []
+        for label in ['VOL+', 'VOL-']:
+            try:
+                vol_list.append(queryset.get(label=label))
+            except cls.DoesNotExist:
+                vol_list.append(None)
+        return vol_list
+
     def save(self, *args, **kwargs):
         data_list = self.data.split(',')
         if self.dlc == 0:

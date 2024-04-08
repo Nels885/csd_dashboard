@@ -56,6 +56,7 @@ def canremote_async(request):
                 url = 'psa/format/fmux_rt6_remote.html'
         queryset = CanRemote.objects.filter(
             Q(product=product)).filter(vehicles__name__icontains=vehicle).distinct()
+        vol_up, vol_down = CanRemote.get_volume(product, vehicle)
         nav_list = queryset.filter(type="FMUX", label__in=['VOL+', 'VOL-', 'UP', 'DOWN', 'SEEK-UP', 'SEEK-DWN'])
         fmux_list = queryset.filter(type="FMUX").exclude(
             label__in=['VOL+', 'VOL-', 'UP', 'DOWN', 'SEEK-UP', 'SEEK-DWN'])
