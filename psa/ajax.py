@@ -39,7 +39,7 @@ class DTCServerSodeViewSet(ServerSideViewSet):
 
 def canremote_async(request):
     product = request.GET.get('prod')
-    url = 'psa/format/fmux_rt6_remote.html'
+    url = 'psa/format/fmux_default_remote.html'
     if product:
         remotes = CanRemote.objects.filter(product=product).exclude(vehicles__name='').order_by('vehicles__name')
         vehicles = list(remotes.values_list('vehicles__name').distinct())
@@ -52,20 +52,22 @@ def canremote_async(request):
             name = form.cleaned_data.get('name', None)
             product = form.cleaned_data.get('product')
             vehicle = form.cleaned_data.get('vehicle')
-            if product == "NAC":
-                url = 'psa/format/fmux_nac_remote.html'
+            if product == "RT6":
+                url = 'psa/format/fmux_rt6_remote.html'
         queryset = CanRemote.objects.filter(
-            Q(product=product) | Q(product='')).filter(vehicles__name__icontains=vehicle).distinct()
+            Q(product=product)).filter(vehicles__name__icontains=vehicle).distinct()
         nav_list = queryset.filter(type="FMUX", label__in=['VOL+', 'VOL-', 'UP', 'DOWN', 'SEEK-UP', 'SEEK-DWN'])
         fmux_list = queryset.filter(type="FMUX").exclude(
             label__in=['VOL+', 'VOL-', 'UP', 'DOWN', 'SEEK-UP', 'SEEK-DWN'])
         dsgn_list = queryset.filter(type="DSGN")
-        vmf_list = CanRemote.objects.filter(type='VMF')
-        return JsonResponse({
-            "msg": f'Télécommande {product} pour {vehicle} sélectionnée avec succès !',
+        data = {
+            "msg": f"Télécommande {product} pour {vehicle} sélectionnée avec succès !",
             "htmlFmux": render_to_string(url, locals(), request),
-            "htmlVmf": render_to_string('psa/format/vmf_remote.html', locals(), request),
-            "htmlDsgn": render_to_string('psa/format/dsgn_remote.html', locals(), request),
+            "htmlDsgn": render_to_string("psa/format/dsgn_remote.html", locals(), request),
             "prodSelect": f"Produit {product} {vehicle}"
-        })
+        }
+        if product != "IVI":
+            context = {"vmf_list": CanRemote.objects.filter(type='VMF')}
+            data["htmlVmf"] = render_to_string('psa/format/vmf_remote.html', context, request)
+        return JsonResponse(data)
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)

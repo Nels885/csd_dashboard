@@ -159,8 +159,10 @@
                 success: function (data) {
                     console.log(data);
                     addMessage(data.msg);
+                    if (data.htmlVmf) {
+                        $("#vmf_id").html(data.htmlVmf);
+                    }
                     $("#fmux_id").html(data.htmlFmux);
-                    $("#vmf_id").html(data.htmlVmf);
                     $("#dsgn_id").html(data.htmlDsgn);
                     $("#remoteTitle").html(data.prodSelect);
                     $("#id_vehicle").val('');

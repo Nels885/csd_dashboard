@@ -1,7 +1,7 @@
 ######################
 # CanRemote Model
 
-PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
+PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC'), ('IVI', 'IVI')]
 
 ######################
 # Ecu Model
