@@ -141,11 +141,13 @@ class ProductChoiceAdmin(admin.ModelAdmin):
 
 class CanRemoteAdmin(CustomModelAdmin):
     form = CanRemoteAdminForm
-    list_display = ('label', 'location', 'type', 'product', 'can_id', 'dlc', 'data')
+    list_display = ('label', 'location', 'type', 'product', 'get_vehicle', 'can_id', 'dlc', 'data')
     list_filter = ('type', 'product',)
     ordering = ('location',)
-    search_fields = ('label', 'product', 'can_id')
+    search_fields = ('label', 'product', 'can_id', 'vehicles__name')
 
+    def get_vehicle(self, obj):
+        return ", ".join(query.name for query in obj.vehicles.all())
 
 
 class SupplierCodeAdmin(admin.ModelAdmin):
