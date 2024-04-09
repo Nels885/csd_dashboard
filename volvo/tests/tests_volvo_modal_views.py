@@ -9,7 +9,7 @@ class MixinsTest(UnitTest):
 
     def setUp(self):
         super(MixinsTest, self).setUp()
-        sem_type = EcuType.objects.create(hw_reference='9876543210', technical_data='test')
+        sem_type = EcuType.objects.create(hw_reference='9876543210', hw_type='NAV', technical_data='test')
         ref_base = EcuRefBase.objects.create(reman_reference='1234567890', ecu_type=sem_type)
         sem = EcuModel.objects.create(barcode='PF987654AA', oe_reference='PI987654AA', ecu_type=sem_type)
         self.ecuId = sem.id
@@ -97,7 +97,8 @@ class MixinsTest(UnitTest):
                 reverse('volvo:reman_ref_create'),
                 data={
                     'reman_reference': reman_ref,
-                    'asm_reference': hw_ref
+                    'asm_reference': hw_ref,
+                    'brand': 'test',
                 },
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest'
             )
@@ -115,7 +116,8 @@ class MixinsTest(UnitTest):
             reverse('volvo:reman_ref_create'),
             data={
                 'reman_reference': '1234567891',
-                'hw_reference': '9876543210'
+                'hw_reference': '9876543210',
+                'brand': 'test'
             },
         )
 

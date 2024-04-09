@@ -145,10 +145,10 @@ class RefRemanForm(BSModalModelForm):
         exclude = ['ecu_type']
 
     def __init__(self, *args, **kwargs):
-        ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
-        _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
+        self.ecus = EcuType.objects.exclude(Q(hw_reference="") | Q(hw_type="NAV")).order_by('hw_reference')
+        _data_list = list(self.ecus.values_list('hw_reference', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        instance = kwargs.get('instance', None)
+        instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['reman_reference'].widget.attrs['readonly'] = True
             self.fields['hw_reference'].initial = instance.ecu_type.hw_reference
@@ -157,7 +157,7 @@ class RefRemanForm(BSModalModelForm):
     def clean_hw_reference(self):
         data = self.cleaned_data['hw_reference']
         try:
-            ecu = EcuType.objects.get(hw_reference__exact=data)
+            ecu = self.ecus.get(hw_reference__exact=data)
             if not self.errors:
                 reman = super().save(commit=False)
                 reman.ecu_type = ecu
