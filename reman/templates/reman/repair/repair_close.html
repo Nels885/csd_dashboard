@@ -90,10 +90,17 @@
 
     <script type="text/javascript">
         $("#description").focus(function () {
-            t = $(this);
-            t.css('min-height', t.height() + 10);
+            $(this).css('min-height', $(this).height() + 10);
         }).blur(function () {
             $(this).css('min-height', '');
+        });
+
+        $('#id_status').change(function () {
+            if ($(this).val() === 'Rebut') {
+                $('#id_quality_control').prop({'disabled': true, 'checked': false, 'required': false});
+            } else {
+                $('#id_quality_control').prop({'disabled': false, 'required': true});
+            }
         });
     </script>
 
