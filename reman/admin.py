@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from utils.django.contrib import CustomModelAdmin
 
-from .models import Batch, EcuModel, Repair, SparePart, Default, EcuRefBase, EcuType
+from .models import Batch, EcuModel, Repair, RepairCloseReason, SparePart, Default, EcuRefBase, EcuType
 
 
 class BatchAdmin(admin.ModelAdmin):
@@ -58,6 +58,12 @@ class RepairAdmin(CustomModelAdmin):
     get_hw_reference.short_description = "hw reference"
 
 
+class RepairCloseReasonAdmin(admin.ModelAdmin):
+    list_display = ('name', 'extra', 'is_active')
+    ordering = ('name', 'extra', 'is_active')
+    search_fields = ('name',)
+
+
 class SparePartAdmin(admin.ModelAdmin):
     list_display = ('code_produit', 'code_zone', 'code_emplacement', 'cumul_dispo')
     ordering = ('code_produit',)
@@ -93,5 +99,6 @@ admin.site.register(EcuRefBase, EcuRefBaseAdmin)
 admin.site.register(EcuType, EcuTypeAdmin)
 admin.site.register(EcuModel, EcuModelAdmin)
 admin.site.register(Repair, RepairAdmin)
+admin.site.register(RepairCloseReason, RepairCloseReasonAdmin)
 admin.site.register(SparePart, SparePartAdmin)
 admin.site.register(Default)
