@@ -8,7 +8,9 @@ from tempus_dominus.widgets import DatePicker
 
 from constance import config
 
-from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
+from .models import (
+    Batch, Repair, RepairCloseReason, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
+)
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django import is_ajax
@@ -353,15 +355,28 @@ class RepairPartForm(forms.ModelForm):
 
 class CloseRepairForm(forms.ModelForm):
     new_barcode = forms.CharField(label='Nouveau code barre', max_length=100, required=True, widget=forms.TextInput())
+    reason = forms.ModelChoiceField(
+        label='Motif irréparable', queryset=RepairCloseReason.objects.filter(is_active=True),
+        widget=forms.Select(attrs={'disabled': ''}), required=False)
+    extra = forms.CharField(widget=forms.TextInput(attrs={'disabled': ''}), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         selected_choices = ["En cours"]
         self.fields['status'].choices = [(k, v) for k, v in STATUS_CHOICES if k not in selected_choices]
         instance = getattr(self, 'instance', None)
+        if instance and instance.closing_reason:
+            name = instance.closing_reason.split(' | ')[0]
+            try:
+                self.fields['reason'].initial = RepairCloseReason.objects.get(name=name)
+            except RepairCloseReason.DoesNotExist:
+                pass
         if instance and instance.checkout:
-            self.fields['status'].widget.attrs['disabled'] = 'disabled'
-            self.fields['quality_control'].widget.attrs['disabled'] = 'disabled'
+            self.fields['status'].widget.attrs['disabled'] = ''
+            self.fields['quality_control'].widget.attrs['disabled'] = ''
+        if instance and instance.status == "Rebut":
+            self.fields['reason'].widget.attrs.pop('disabled', '')
+            self.fields['quality_control'].widget.attrs['disabled'] = ''
         if instance and not instance.batch.is_barcode:
             self.fields['new_barcode'].required = False
 
@@ -388,6 +403,14 @@ class CloseRepairForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit:
+            reason = self.cleaned_data['reason']
+            extra = self.cleaned_data['extra']
+            if reason and extra:
+                instance.closing_reason = f"{reason.name} - {extra}"
+            elif reason:
+                instance.closing_reason = reason.name
+            else:
+                instance.closing_reason = ""
             instance.save()
         return instance
 
