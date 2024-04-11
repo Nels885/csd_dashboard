@@ -132,7 +132,7 @@ class SuptechModalForm(BSModalModelForm):
             for field in ['username', 'custom_item', 'attach']:
                 del self.fields[field]
             if self.cleaned_data['custom_item']:
-                instance.item = f"{self.cleaned_data['item']} | {self.cleaned_data['custom_item']}"
+                instance.item = f"{self.cleaned_data['item']} - {self.cleaned_data['custom_item']}"
             instance.save()
             if files:
                 [SuptechFile.objects.create(file=f, suptech=instance) for f in files]

@@ -366,9 +366,11 @@ class CloseRepairForm(forms.ModelForm):
         self.fields['status'].choices = [(k, v) for k, v in STATUS_CHOICES if k not in selected_choices]
         instance = getattr(self, 'instance', None)
         if instance and instance.closing_reason:
-            name = instance.closing_reason.split(' | ')[0]
+            data = instance.closing_reason.split(' | ')
             try:
-                self.fields['reason'].initial = RepairCloseReason.objects.get(name=name)
+                self.fields['reason'].initial = RepairCloseReason.objects.get(name=data[0])
+                if data and len(data) > 1:
+                    self.fields['extra'].initial = data[1]
             except RepairCloseReason.DoesNotExist:
                 pass
         if instance and instance.checkout:
@@ -406,7 +408,7 @@ class CloseRepairForm(forms.ModelForm):
             reason = self.cleaned_data['reason']
             extra = self.cleaned_data['extra']
             if reason and extra:
-                instance.closing_reason = f"{reason.name} - {extra}"
+                instance.closing_reason = f"{reason.name} | {extra}"
             elif reason:
                 instance.closing_reason = reason.name
             else:
