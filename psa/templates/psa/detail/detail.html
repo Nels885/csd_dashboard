@@ -81,7 +81,7 @@
         <!-- Detail Corvet -->
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
-            {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
+            {% include 'psa/format/corvet_brut_table.html' with obj=dict_corvet %}
 
         </div>
 
@@ -95,7 +95,7 @@
         <!-- Info NAC -->
         <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
 
-            {% include 'psa/format/nac_info_format.html' with firmware=corvet.prods.btel.firmware uin=corvet.electronique_44x %}
+            {% include 'psa/format/nac_info.html' with firmware=corvet.prods.btel.firmware uin=corvet.electronique_44x %}
 
         </div>
 

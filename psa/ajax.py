@@ -1,3 +1,6 @@
+import requests
+
+from json import JSONDecodeError
 from django.http import JsonResponse, QueryDict
 from django.template.loader import render_to_string
 from django.db.models import Q
@@ -72,3 +75,23 @@ def canremote_async(request):
             data["htmlVmf"] = render_to_string('psa/format/vmf_remote.html', context, request)
         return JsonResponse(data)
     return JsonResponse({"nothing to see": "this isn't happening"}, status=400)
+
+
+def majestic_web_async(request):
+    type = request.GET.get('type')
+    update_id = request.GET.get('updateId')
+    uin = request.GET.get('uin')
+    if type == 'license':
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
+        payload = {"mediaVersion": update_id, "uin": uin}
+        response = requests.get(url, params=payload, allow_redirects=True)
+        if response.status_code == 200:
+            try:
+                return JsonResponse({"data": response.json(), "msg": "License not found !!!"}, status=200)
+            except JSONDecodeError:
+                return JsonResponse({"url": response.url}, status=200)
+    elif type == 'fw':
+        url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=fw"
+        uin = "00000000000000000000"
+        return JsonResponse({"url": url.format(uin=uin, update=update_id)}, status=200)
+    return JsonResponse({"msg": "Majestic-web not response !!!"}, status=400)

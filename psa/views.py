@@ -44,16 +44,6 @@ def can_tools(request):
 def nac_license(request):
     form = NacLicenseForm(request.POST or None)
     if request.POST and form.is_valid():
-        # url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
-        # payload = {
-        #     "mediaVersion": form.cleaned_data['software'].update_id,
-        #     "uin": form.cleaned_data['uin']
-        # }
-        # response = requests.get(url, params=payload, allow_redirects=True)
-        # print(response.url)
-        # if response.status_code == 200:
-        #     return redirect(response.url)
-        # messages.warning(request, 'Fichier non trouvé !')
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion={update}&uin={uin}"
         soft = form.cleaned_data['software']
         uin = form.cleaned_data['uin']
