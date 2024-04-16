@@ -151,10 +151,14 @@ def signup(request):
     form = SignUpForm(request.POST or None)
     if request.POST and form.is_valid():
         password = User.objects.make_random_password()
-        user = form.save(commit=False)
-        user.set_password(password)
-        user.is_active = False
-        form.save()
+        user = User.objects.create_user(
+            username=form.cleaned_data['username'],
+            first_name=form.cleaned_data['first_name'],
+            last_name=form.cleaned_data['last_name'],
+            email=form.cleaned_data['email'],
+            password=password,
+            is_active=False
+        )
         if form.cleaned_data['group']:
             for group in form.cleaned_data['group']:
                 user.groups.add(group)

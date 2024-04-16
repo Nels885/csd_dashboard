@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import gettext as _
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.files.images import get_image_dimensions
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 
@@ -96,11 +96,13 @@ class CustomAuthenticationForm(AuthenticationForm):
         fields = ['username', 'password']
 
 
-class SignUpForm(UserCreationForm):
+class SignUpForm(forms.Form):
+    username = forms.CharField(label="Nom d'utilisateur", max_length=150, widget=forms.TextInput())
+    first_name = forms.CharField(label="Nom", max_length=150, widget=forms.TextInput(), required=False)
+    last_name = forms.CharField(label="Prénom", max_length=150, widget=forms.TextInput(), required=False)
+    email = forms.EmailField(label="Adresse électronique", max_length=254, widget=forms.EmailInput(), required=True)
     group = forms.ModelMultipleChoiceField(
         queryset=Group.objects.all(), widget=FilteredSelectMultiple("Group", is_stacked=False), required=False)
-    password1 = None
-    password2 = None
 
     class Media:
         css = {
@@ -109,20 +111,12 @@ class SignUpForm(UserCreationForm):
         extra = '' if settings.DEBUG else '.min'
         js = ('/jsi18n/',)
 
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'group']
-        widgets = {
-            'email': forms.EmailInput(attrs={'required': True})
-        }
-
-    def save(self, commit=True):
-        user = super(UserCreationForm, self).save(commit=False)
-        clean_email = self.cleaned_data["email"]
-        user.email = clean_email
-        if commit:
-            user.save()
-        return user
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        users = User.objects.filter(username=data)
+        if users:
+            self.add_error('username', _("A user with this name already exists."))
+        return data
 
 
 class WebLinkForm(BSModalModelForm):
