@@ -6,8 +6,37 @@
             <a class="btn btn-secondary mr-5 col-sm-2" href="#">Téléchargement License</a>
             <a class="btn btn-secondary col-sm-2" href="#">Téléchargement MAJ</a>
         {% else %}
-            <a class="btn btn-primary mr-5 col-sm-2" href="{% url 'psa:majestic_web' %}?type=license&uin={{ uin }}&updateId={{ update_id }}">Téléchargement license</a>
-            <a class="btn btn-primary col-sm-2" href="{% url 'psa:majestic_web' %}?type=fw&updateId={{ update_id }}">Téléchargement MAJ</a>
+{#            <a class="btn btn-primary mr-5 col-sm-2" href="{% url 'psa:majestic_web' %}?type=license&uin={{ uin }}&updateId={{ update_id }}">Téléchargement license</a>#}
+{#            <a class="btn btn-primary col-sm-2" href="{% url 'psa:majestic_web' %}?type=fw&updateId={{ update_id }}">Téléchargement MAJ</a>#}
+            <button class="btn btn-primary mr-5 col-sm-2" onclick="majestic()">Téléchargement license</button>
+            <button class="btn btn-primary col-sm-2" onclick="majestic(false)">Téléchargement MAJ</button>
+            <script>
+                function majestic(license=true) {
+                    $(".bd-loading-modal-lg").modal("show");
+                    let url = "{% url 'psa:ajax_majestic_web' %}?type=license&uin={{ uin }}&updateId={{ update_id }}";
+                    if (license === false) {
+                        url = "{% url 'psa:ajax_majestic_web' %}?type=fw&updateId={{ update_id }}";
+                    }
+                    console.log(url);
+                    $.ajax({
+                        method: "GET",
+                        url: url,
+                        success: function (data) {
+                            console.log(data);
+                            $(".bd-loading-modal-lg").modal("hide");
+                            if (data.url) {
+                                window.open(data.url);
+                            } else {
+                                addMessage(data.msg, "warning", true);
+                            }
+                        },
+                        error: function (error_data) {
+                            console.log("error");
+                            console.log(error_data);
+                        }
+                    });
+                }
+            </script>
         {% endif %}
         <p class="text-center font-italic mt-2">{{ firmware|default:"-----" }}</p>
     </div>

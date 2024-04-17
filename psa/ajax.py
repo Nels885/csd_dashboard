@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.db.models import Q
 
 from utils.django.datatables import ServerSideViewSet
+from constance import config
 
 from .serializers import CorvetSerializer, CORVET_COLUMN_LIST, DTCServerSideSerializer, DTC_COLUMN_LIST
 from .models import Corvet, DefaultCode, CanRemote
@@ -84,7 +85,11 @@ def majestic_web_async(request):
     if type == 'license':
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
         payload = {"mediaVersion": update_id, "uin": uin}
-        response = requests.get(url, params=payload, allow_redirects=True)
+        session = requests.Session()
+        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+            proxy = f"{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}"
+            session.proxies = {'http': proxy, 'https': proxy}
+        response = session.get(url, params=payload, allow_redirects=True)
         if response.status_code == 200:
             try:
                 return JsonResponse({"data": response.json(), "msg": "License not found !!!"}, status=200)
