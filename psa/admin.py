@@ -22,7 +22,9 @@ class CorvetListFilter(admin.SimpleListFilter):
         return CorvetChoices.objects.filter(column='DON_MAR_COMM').values_list('key', 'value').distinct()
 
     def queryset(self, request, queryset):
-        return queryset.filter(donnee_marque_commerciale=self.value())
+        if self.value():
+            return queryset.filter(donnee_marque_commerciale=self.value())
+        return queryset
 
 
 class CorvetAdmin(admin.ModelAdmin):
