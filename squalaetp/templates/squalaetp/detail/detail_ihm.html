@@ -61,11 +61,7 @@
 
         {% include 'squalaetp/format/input_ihm.html' with label="Modèle véhicule (XELON)" value=xelon.modele_vehicule %}
 
-        {% if corvet.donnee_marque_commerciale == "0P" %}
-            {% include 'squalaetp/format/input_ihm.html' with label="Modèle véhicule (CORVET)" value=corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" %}
-        {% else %}
-            {% include 'squalaetp/format/input_ihm.html' with label="Modèle véhicule (CORVET)" value=corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" %}
-        {% endif %}
+        {% include 'squalaetp/format/input_ihm.html' with label="Modèle véhicule (CORVET)" value=corvet.get_vehicle_display %}
 
         {% if collapse.cmm %}
 

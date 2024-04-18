@@ -26,14 +26,8 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm-40">Marque/Véhicule</td>
-                <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
-                    <span class="ml-2">
-                        {% if corvet.donnee_marque_commerciale == "0P" %}
-                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
-                        {% else %}
-                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
-                        {% endif %}
-                    </span>
+                <td>{{ corvet.get_brand_display }}
+                    <span class="ml-2">{{ corvet.get_vehicle_display }}</span>
                 </td>
             </tr>
             <tr>

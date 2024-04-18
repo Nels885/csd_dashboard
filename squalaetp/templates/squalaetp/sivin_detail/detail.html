@@ -6,7 +6,7 @@
 
     {{ sivin.immat_siv }} - {{ sivin.codif_vin }}
     {% if sivin.corvet %}
-        - {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
+        - {{ corvet.get_brand_display }} {{ corvet.get_vehicle_display }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
     {% endif %}
 
 {% endblock %}
@@ -91,11 +91,7 @@
                 </div>
                 <div class="modal-body text-center">
                     <div>
-                        {% if corvet.donnee_marque_commerciale == "0P" %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
-                        {% else %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
-                        {% endif %}
+                        {{ corvet.get_brand_display }} {{ corvet.get_vehicle_display }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
                     </div>
                     <img id="barcode" src="" alt="{{ corvet.vin }}"/>
                 </div>

@@ -1,4 +1,5 @@
 import re
+import ast
 
 from django.db import models, utils
 from django.db.models import Q
@@ -352,6 +353,25 @@ class Corvet(models.Model):
                 value = key
             vehicles.append(value)
         return vehicles
+
+    def get_brand_display(self):
+        try:
+            value = CorvetChoices.objects.get(key=self.donnee_marque_commerciale, column='DON_MAR_COMM').value
+        except CorvetChoices.DoesNotExist:
+            value = self.donnee_marque_commerciale
+        return value
+
+    def get_vehicle_display(self):
+        value = self.donnee_ligne_de_produit
+        try:
+            brand = CorvetChoices.objects.get(key=self.donnee_marque_commerciale, column='DON_MAR_COMM').value
+            value = CorvetChoices.objects.get(key=self.donnee_ligne_de_produit, column='DON_LIN_PROD').value
+            data = eval(value)
+            if isinstance(data, dict):
+                value = data.get(brand, f"{brand}_{self.donnee_ligne_de_produit}")
+        except Exception:
+            pass
+        return value
 
     def __str__(self):
         return self.vin
