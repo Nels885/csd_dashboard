@@ -7,7 +7,7 @@ from .serializers import (
 from .models import Xelon, XelonTemporary, SparePart, Sivin
 
 from utils.django.datatables import ServerSideViewSet
-from utils.django.validators import VIN_OLD_PSA_REGEX
+from utils.django.validators import VIN_STELLANTIS_REGEX
 
 
 class XelonViewSet(ServerSideViewSet):
@@ -24,7 +24,7 @@ class XelonViewSet(ServerSideViewSet):
             self.queryset = self.queryset.filter(vin_error=True).order_by('-date_retour')
         elif query and query == "corvet-error":
             self.queryset = self.queryset.filter(
-                vin__regex=VIN_OLD_PSA_REGEX, vin_error=False, corvet__isnull=True).order_by('-date_retour')
+                vin__regex=VIN_STELLANTIS_REGEX, vin_error=False, corvet__isnull=True).order_by('-date_retour')
         elif query:
             self.queryset = Xelon.search(query)
 
