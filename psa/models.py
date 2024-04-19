@@ -358,11 +358,7 @@ class Corvet(models.Model):
         vehicles = []
         data = list(set([query.donnee_ligne_de_produit for query in corvets]))
         for key in data:
-            try:
-                value = CorvetChoices.objects.get(key=key, column='DON_LIN_PROD').value
-            except CorvetChoices.DoesNotExist:
-                value = key
-            vehicles.append(value)
+            vehicles.append(dict(CorvetChoices.vehicles(True)).get(key, key))
         return vehicles
 
     def get_brand_display(self):
@@ -373,7 +369,7 @@ class Corvet(models.Model):
         value = self.donnee_ligne_de_produit
         try:
             value = dict(CorvetChoices.vehicles()).get(value, value)
-            data = eval(value)
+            data = literal_eval(value)
             if isinstance(data, dict):
                 brand = self.get_brand_display()
                 value = data.get(brand, f"{brand}_{self.donnee_ligne_de_produit}")
