@@ -26,7 +26,7 @@ class ExportCorvetForm(forms.Form):
 
     brand = forms.ChoiceField(label='Marque', required=False, choices=CorvetChoices.brands(), widget=forms.Select())
     vehicle = forms.ChoiceField(
-        label='Véhicule (CORVET)', required=False, choices=CorvetChoices.vehicles(), widget=forms.Select())
+        label='Véhicule (CORVET)', required=False, choices=CorvetChoices.vehicles(True), widget=forms.Select())
     product = forms.ChoiceField(label='Type produit', required=False, choices=PRODUCTS, widget=forms.Select())
     hw_reference = forms.CharField(label="Réf. HW (CORVET)", required=False, widget=forms.TextInput())
     xelon_model = forms.CharField(label='Produit (XELON)', required=False, widget=forms.TextInput())

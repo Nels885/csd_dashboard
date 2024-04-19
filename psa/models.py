@@ -1,4 +1,5 @@
 import re
+from ast import literal_eval
 
 from django.db import models, utils
 from django.db.models import Q
@@ -72,8 +73,19 @@ class CorvetChoices(models.Model):
             return []
 
     @classmethod
-    def vehicles(cls):
+    def vehicles(cls, form=False):
         try:
+            if form:
+                data = [('', '---')]
+                for key, value in list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value')):
+                    try:
+                        value_dict = literal_eval(value)
+                        if isinstance(value_dict, dict):
+                            value = ' | '.join([value for value in value_dict.values()])
+                    except Exception:
+                        pass
+                    data.append((key, value))
+                return data
             return [('', '---')] + list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value'))
         except utils.ProgrammingError:
             return []
