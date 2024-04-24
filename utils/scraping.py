@@ -101,7 +101,8 @@ class ScrapingCorvet(Scraping):
     def start(self, **kwargs):
         if not kwargs.get('test', False) and self.username and self.password:
             self.get(self.START_URLS)
-        else:
+            self.login()
+        elif not self.username and not self.password:
             self._logger_error('start()', 'Not username and password')
 
     def result(self, vin_value=None):
@@ -111,7 +112,7 @@ class ScrapingCorvet(Scraping):
         :return: Corvet data
         """
         timeout,  data = 10, "ERREUR COMMUNICATION SYSTEME CORVET"
-        if not self.ERROR and self.login() and isinstance(vin_value, str):
+        if not self.ERROR and isinstance(vin_value, str):
             try:
                 wait = WebDriverWait(self, 10)
                 wait.until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
@@ -125,14 +126,14 @@ class ScrapingCorvet(Scraping):
                         result = wait.until(EC.presence_of_element_located((By.NAME, 'form:resultat_CORVET'))).text
                     except StaleElementReferenceException:
                         result = None
-                    if result and len(result) != 0:
+                    if result and len(result) != 0 and vin_value.upper()[-8:] in result:
                         data = result
                         break
                     timeout -= 1
             except Exception as err:
                 self._logger_error('CORVET result()', err)
                 data = "Exception or timeout error !"
-            self.logout()
+            # self.logout()
         else:
             data = "Corvet login Error !!!"
         return data
