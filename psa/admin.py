@@ -27,17 +27,23 @@ class CorvetListFilter(admin.SimpleListFilter):
         return queryset
 
 
-class CorvetAdmin(admin.ModelAdmin):
+class CorvetAdmin(CustomModelAdmin):
     list_display = (
         'vin', 'donnee_marque_commerciale', 'electronique_14f', 'electronique_94f', 'electronique_14x',
-        'electronique_94x', 'electronique_14a', 'electronique_94a',
+        'electronique_94x', 'electronique_14a', 'electronique_94a', 'get_update'
     )
-    list_filter = (CorvetListFilter,)
+    list_filter = (CorvetListFilter, 'opts__update')
     ordering = ('vin',)
     search_fields = (
         'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
         'electronique_94a',
     )
+
+    @admin.display(description=_('Update'))
+    def get_update(self, obj):
+        if obj.opts.update:
+            return _('Yes')
+        return _('No')
 
 
 class CorvetAttributeAdmin(admin.ModelAdmin):
@@ -50,7 +56,7 @@ class MultimediaAdmin(CustomModelAdmin):
     form = MultimediaAdminForm
     list_display = (
         'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
-        'media', 'firmware', 'relation_by_name'
+        'media', 'emmc', 'firmware', 'relation_by_name'
     )
     list_filter = ('name', 'type', 'media', 'xelon_name', 'relation_by_name')
     ordering = ('comp_ref',)
@@ -59,13 +65,13 @@ class MultimediaAdmin(CustomModelAdmin):
 
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=False)
-            self._message_product_about_update(request, rows_updated, 'disabled')
+        rows_updated = queryset.update(relation_by_name=False)
+        self._message_product_about_update(request, rows_updated, 'disabled')
 
     @admin.action(description=_('Relation by name enabled'))
     def relation_by_name_enabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=True)
-            self._message_product_about_update(request, rows_updated, 'enabled')
+        rows_updated = queryset.update(relation_by_name=True)
+        self._message_product_about_update(request, rows_updated, 'enabled')
 
 
 class FirmwareAdmin(admin.ModelAdmin):
@@ -109,13 +115,13 @@ class EcuAdmin(CustomModelAdmin):
 
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=False)
-            self._message_product_about_update(request, rows_updated, 'disabled')
+        rows_updated = queryset.update(relation_by_name=False)
+        self._message_product_about_update(request, rows_updated, 'disabled')
 
     @admin.action(description=_('Relation by name enabled'))
     def relation_by_name_enabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=True)
-            self._message_product_about_update(request, rows_updated, 'enabled')
+        rows_updated = queryset.update(relation_by_name=True)
+        self._message_product_about_update(request, rows_updated, 'enabled')
 
 
 class CorvetProductAdmin(admin.ModelAdmin):
