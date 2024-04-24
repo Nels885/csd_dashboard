@@ -172,10 +172,17 @@ class MultimediaAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        suppliers = SupplierCode.objects.all()
-        _supplier_list = list(suppliers.values_list('name', flat=True).distinct())
+        _supplier_list = self._data_list(SupplierCode, 'name')
+        _nand_list = self._data_list(Multimedia, 'flash_nand')
+        _emmc_list = self._data_list(Multimedia, 'emmc')
         super().__init__(*args, **kwargs)
         self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')
+        self.fields['emmc'].widget = ListTextWidget(data_list=_emmc_list, name='emmc-list')
+        self.fields['flash_nand'].widget = ListTextWidget(data_list=_nand_list, name='nand-list')
+
+    def _data_list(self, model, field):
+        queryset = model.objects.all()
+        return list(queryset.exclude(**{field: ''}).order_by(field).values_list(field, flat=True).distinct())
 
 
 class CanRemoteAdminForm(forms.ModelForm):
