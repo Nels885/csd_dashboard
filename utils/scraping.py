@@ -41,16 +41,16 @@ class Scraping(webdriver.Chrome):
             service=Service('/usr/local/bin/chromedriver'), options=options, seleniumwire_options=options_seleniumwire)
         self.set_page_load_timeout(30)
 
-    def is_element_exist(self, by, value):
+    def is_element_exist(self, by, value, timeout=2):
         try:
-            WebDriverWait(self, 2).until(EC.presence_of_element_located((by, value)))
+            WebDriverWait(self, timeout).until(EC.presence_of_element_located((by, value)))
         except TimeoutException:
             return False
         return True
 
-    def is_element_clicked(self, by, value):
+    def is_element_clicked(self, by, value, timeout=2):
         try:
-            WebDriverWait(self, 2).until(EC.element_to_be_clickable((by, value))).click()
+            WebDriverWait(self, timeout).until(EC.element_to_be_clickable((by, value))).click()
         except TimeoutException:
             return False
         return True
@@ -112,7 +112,7 @@ class ScrapingCorvet(Scraping):
         :return: Corvet data
         """
         timeout,  data = 10, "ERREUR COMMUNICATION SYSTEME CORVET"
-        if not self.ERROR and isinstance(vin_value, str):
+        if not self.ERROR and isinstance(vin_value, str) and len(vin_value) == 17:
             try:
                 wait = WebDriverWait(self, 10)
                 wait.until(EC.presence_of_element_located((By.NAME, 'form:input_vin'))).clear()
@@ -134,6 +134,8 @@ class ScrapingCorvet(Scraping):
                 self._logger_error('CORVET result()', err)
                 data = "Exception or timeout error !"
             # self.logout()
+        elif isinstance(vin_value, str) and len(vin_value) != 17:
+            data = "VIN is not valid !!!"
         else:
             data = "Corvet login Error !!!"
         return data
@@ -180,7 +182,7 @@ class ScrapingSivin(ScrapingCorvet):
         :return: SIVIN data
         """
         timeout, data = 10, "ERREUR COMMUNICATION SYSTEME SIVIN"
-        if not self.ERROR and self.login() and isinstance(immat_value, str):
+        if not self.ERROR and isinstance(immat_value, str):
             try:
                 wait = WebDriverWait(self, 10)
                 self.get(self.SIVIN_URLS)
@@ -202,7 +204,7 @@ class ScrapingSivin(ScrapingCorvet):
             except Exception as err:
                 self._logger_error('SIVIN result()', err)
                 data = "Exception or timeout error !"
-            self.logout()
+            # self.logout()
             self.get(self.START_URLS)
         else:
             data = "Corvet login Error !!!"
