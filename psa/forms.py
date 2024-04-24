@@ -202,6 +202,7 @@ class CanRemoteAdminForm(forms.ModelForm):
 
     type = forms.ChoiceField(choices=CMD_CHOICES)
     product = forms.ChoiceField(choices=PROD_CHOICES, required=False)
+    location = forms.IntegerField(required=False)
 
     class Meta:
         model = CanRemote
@@ -209,8 +210,15 @@ class CanRemoteAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['label'].widget = ListTextWidget(data_list=self.LABELS, name='label-list')
+        self.fields['label'].widget = ListTextWidget(data_list=self.NEW_LABELS, name='label-list')
         self.fields['can_id'].widget = ListTextWidget(data_list=self.CAN_IDS, name='canid-list')
+
+    def clean_location(self):
+        data = self.cleaned_data['location']
+        if not data:
+            labels_dict = dict((key, value) for value, key in enumerate(self.NEW_LABELS, 1))
+            return labels_dict.get(self.cleaned_data['label'], 0)
+        return data
 
     def clean_can_id(self):
         data = self.cleaned_data['can_id'].replace("0x", "")
