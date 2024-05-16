@@ -141,7 +141,7 @@ class DefaultCodeAdmin(admin.ModelAdmin):
 
 class ProductChoiceAdmin(admin.ModelAdmin):
     form = ProductChoiceAdminForm
-    list_display = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
+    list_display = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol', 'uce_code', 'unlock_key', 'supplier')
     list_filter = ('family', 'ecu_type', 'protocol')
     ordering = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
     search_fields = ('name', 'short_name', 'cal_attribute')
