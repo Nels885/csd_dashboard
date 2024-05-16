@@ -53,14 +53,22 @@ class DTCServerSideSerializer(serializers.ModelSerializer):
 
 class MultimediaSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='get_name_display', read_only=True)
+    uce_code = serializers.CharField(source='product.uce_code', read_only=True, default='')
+    unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
+    supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
+    supplier_name = serializers.CharField(source='product.supplier.name', read_only=True, default='')
 
     class Meta:
         model = Multimedia
-        fields = ('comp_ref', 'label_ref', 'name')
+        fields = ('comp_ref', 'label_ref', 'name', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name')
 
 
 class EcuSerializer(serializers.ModelSerializer):
+    uce_code = serializers.CharField(source='product.uce_code', read_only=True, default='')
+    unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
+    supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
+    supplier_name = serializers.CharField(source='product.supplier.name', read_only=True, default='')
 
     class Meta:
         model = Ecu
-        fields = ('comp_ref', 'label_ref', 'name')
+        fields = ('comp_ref', 'label_ref', 'name', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name')

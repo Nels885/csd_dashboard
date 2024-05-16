@@ -449,9 +449,24 @@ class ProductChoice(models.Model):
     ecu_type = models.CharField('Type ECU', max_length=10)
     cal_attribute = models.CharField('Attribut CAL', max_length=3, blank=True)
     protocol = models.CharField('Protocole', max_length=100, choices=PROTO_CHOICES, blank=True)
+    uce_code = models.CharField('UCE Code', max_length=2, blank=True)
+    unlock_key = models.CharField('Unlock Key', max_length=4, blank=True)
+    supplier = models.ForeignKey('psa.SupplierCode', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Choix produit"
+        ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'uce_code', 'unlock_key', 'supplier'], name="Product choice unique")
+        ]
 
     def __str__(self):
-        return f"{self.name}_{self.protocol}"
+        value = f"{self.name}"
+        if self.protocol is not None:
+            value = value + f"_{self.protocol}"
+        if self.supplier is not None:
+            value = value + f"_{self.supplier}"
+        return value
 
 
 class Multimedia(models.Model):
