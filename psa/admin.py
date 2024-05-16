@@ -55,10 +55,10 @@ class CorvetAttributeAdmin(admin.ModelAdmin):
 class MultimediaAdmin(CustomModelAdmin):
     form = MultimediaAdminForm
     list_display = (
-        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
-        'media', 'emmc', 'firmware', 'relation_by_name'
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'product', 'xelon_name', 'level', 'type', 'dab',
+        'cam', 'media', 'emmc', 'firmware', 'relation_by_name'
     )
-    list_filter = ('name', 'type', 'media', 'xelon_name', 'relation_by_name')
+    list_filter = ('name', 'product', 'type', 'media', 'xelon_name', 'relation_by_name')
     ordering = ('comp_ref',)
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference')
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
@@ -105,10 +105,10 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 class EcuAdmin(CustomModelAdmin):
     form = EcuAdminForm
     list_display = (
-        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe',
-        'relation_by_name'
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'product', 'xelon_name', 'type', 'hw', 'sw',
+        'supplier_oe', 'relation_by_name'
     )
-    list_filter = ('type', 'supplier_oe', 'xelon_name', 'relation_by_name')
+    list_filter = ('type', 'product','supplier_oe', 'relation_by_name')
     ordering = ('comp_ref',)
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type')
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')

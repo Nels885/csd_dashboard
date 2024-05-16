@@ -462,11 +462,11 @@ class ProductChoice(models.Model):
 
     def __str__(self):
         value = f"{self.name}"
-        if self.protocol is not None:
+        if self.protocol:
             value = value + f"_{self.protocol}"
-        if self.supplier is not None:
+        if self.supplier:
             value = value + f"_{self.supplier}"
-        return value
+        return value.replace(' ', '_')
 
 
 class Multimedia(models.Model):
@@ -482,7 +482,7 @@ class Multimedia(models.Model):
     comp_ref = models.BigIntegerField('réf. comp. matériel', primary_key=True)
     mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
-    product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, limit_choices_to={'family': 'MULTIMEDIA'}, null=True, blank=True)
     name = models.CharField('modèle', max_length=20, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
@@ -570,7 +570,7 @@ class Ecu(models.Model):
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
-    product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, limit_choices_to={'family': 'ECU'}, null=True, blank=True)
     type = models.CharField('type', max_length=10)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)

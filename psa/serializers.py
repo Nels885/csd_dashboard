@@ -52,7 +52,7 @@ class DTCServerSideSerializer(serializers.ModelSerializer):
 
 
 class MultimediaSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source='get_name_display', read_only=True)
+    name = serializers.CharField(source='product.name', read_only=True, default='')
     uce_code = serializers.CharField(source='product.uce_code', read_only=True, default='')
     unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
     supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
@@ -64,6 +64,7 @@ class MultimediaSerializer(serializers.ModelSerializer):
 
 
 class EcuSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='product.name', read_only=True, default='')
     uce_code = serializers.CharField(source='product.uce_code', read_only=True, default='')
     unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
     supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
