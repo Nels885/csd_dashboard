@@ -1,5 +1,6 @@
 import re
 
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
@@ -73,7 +74,7 @@ def xelon_table(request):
         parts = ProductCode.objects.filter(name__icontains=query_param)
         if not query_param[-2:].isdigit():
             query_param = query_param[:-2] + '77'
-        media = Multimedia.objects.filter(comp_ref__exact=query_param).first()
+        media = Multimedia.objects.filter(Q(comp_ref__exact=query_param) | Q(label_ref__exact=query_param)).first()
         prod = Ecu.objects.filter(comp_ref__exact=query_param).first()
         vehicles = Corvet.get_vehicles(query_param)
     return render(request, 'squalaetp/xelon_table.html', locals())
