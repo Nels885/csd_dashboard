@@ -6,7 +6,7 @@ from ._excel_squalaetp import ExcelSqualaetp
 from squalaetp.models import Xelon, Sivin, ProductCategory
 from psa.models import Corvet
 from utils.scraping import ScrapingCorvet, ScrapingSivin, xml_parser, xml_sivin_parser
-from utils.django.validators import VIN_PSA_REGEX
+from utils.regex import VIN_PSA_REGEX
 from utils.django.models import defaults_dict
 from utils.conf import XLS_SQUALAETP_FILE
 

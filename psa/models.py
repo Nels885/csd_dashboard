@@ -2,7 +2,6 @@ import re
 from ast import literal_eval
 
 from django.db import models, utils
-from django.db.models import Q
 
 from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
 
@@ -16,17 +15,21 @@ CORVET_SN_FILTERS = [
     'electronique_44b__iexact', 'electronique_46p__iexact'
 ]
 
-CORVET_HW_FILTERS = [
-    'electronique_14f__iexact', 'electronique_14j__iexact', 'electronique_14k__iexact', 'electronique_14l__iexact',
-    'electronique_14r__iexact', 'electronique_14x__iexact', 'electronique_19z__iexact', 'electronique_19h__iexact',
-    'electronique_14a__iexact', 'electronique_14b__iexact', 'electronique_16p__iexact', 'electronique_16b__iexact',
-    'electronique_16q__iexact', 'electronique_16v__iexact', 'electronique_19f__iexact', 'electronique_19u__iexact',
-    'electronique_14d__iexact', 'electronique_16g__iexact', 'electronique_19v__iexact', 'electronique_12y__iexact',
-    'electronique_16l__iexact', 'electronique_14y__iexact', 'electronique_14z__iexact', 'electronique_14p__iexact',
-    'electronique_19w__iexact', 'electronique_16t__iexact', 'electronique_19t__iexact', 'electronique_14m__iexact',
-    'electronique_18z__iexact', 'electronique_11m__iexact', 'electronique_19k__iexact', 'electronique_12e__iexact',
-    'electronique_11q__iexact', 'electronique_11n__iexact', 'electronique_1m2__iexact', 'electronique_1l9__iexact'
-]
+CORVET_HW_FILTERS = [f'{value}__iexact' for value in [
+    'electronique_14f', 'electronique_14j', 'electronique_14k', 'electronique_14l', 'electronique_14r',
+    'electronique_14x', 'electronique_19z', 'electronique_19h', 'electronique_14a', 'electronique_14b',
+    'electronique_16p', 'electronique_16b', 'electronique_16q', 'electronique_16v', 'electronique_19f',
+    'electronique_19u', 'electronique_14d', 'electronique_16g', 'electronique_19v', 'electronique_12y',
+    'electronique_16l', 'electronique_14y', 'electronique_14z', 'electronique_14p', 'electronique_19w',
+    'electronique_16t', 'electronique_19t', 'electronique_14m', 'electronique_18z', 'electronique_11m',
+    'electronique_19k', 'electronique_12e', 'electronique_11q', 'electronique_11n', 'electronique_1m2',
+    'electronique_1l9'
+]]
+
+CORVET_SW_FILTERS = [f'{value}__iexact' for value in [
+    'electronique_94f', 'electronique_94l', 'electronique_94x', 'electronique_99h', 'electronique_34a',
+    'electronique_94a', 'electronique_94b', 'electronique_96b', 'electronique_94r', 'electronique_96q'
+]]
 
 
 class CorvetChoices(models.Model):
@@ -328,10 +331,12 @@ class Corvet(models.Model):
 
     @classmethod
     def hw_search(cls, value, all_data=True):
-        if value is not None:
-            query = value.strip()
+        if len(value) == 10 and value is not None:
+            value = value.strip()
+            if not value[-2:].isdigit():
+                value = value[:-2] + '77'
             for field in CORVET_HW_FILTERS:
-                queryset = cls.objects.filter(**{field: query})
+                queryset = cls.objects.filter(**{field: value})
                 if queryset:
                     return queryset
         if all_data:

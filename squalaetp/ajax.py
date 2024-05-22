@@ -7,7 +7,7 @@ from .serializers import (
 from .models import Xelon, XelonTemporary, SparePart, Sivin
 
 from utils.django.datatables import ServerSideViewSet
-from utils.django.validators import VIN_STELLANTIS_REGEX
+from utils.regex import VIN_STELLANTIS_REGEX
 
 
 class XelonViewSet(ServerSideViewSet):

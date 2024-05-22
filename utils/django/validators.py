@@ -2,17 +2,11 @@ import re
 
 from django.utils.translation import gettext as _
 
+from utils.regex import VIN_STELLANTIS_REGEX, COMP_REF_REGEX, XELON_REGEX, REF_PSA_REGEX, URL_REGEX
+
 from squalaetp.models import Xelon
 from psa.models import Corvet
 
-VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137])|(X[A-Z]))\w{14}$'
-VIN_STELLANTIS_REGEX = r'^[VWYZ]((0[LV])|(A[R])|(F[37])|(R[137])|X[A-Z])\w{14}$'
-VIN_OPEL_REGEX = r'^[VW]((O[LV])|(XK))\w{14}$'
-VIN_TOYOTA_REGEX = r'^YAR\w{14}$'
-# VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
-COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
-XELON_REGEX = r'^[9a-zA-Z]\d{9}$'
-URL_REGEX = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$'
 URL_DNS = "cuc.fr.corp"
 
 
@@ -32,7 +26,7 @@ def vin_psa_isvalid(value: str) -> bool:
 
 def immat_isvalid(value: str) -> bool:
     if isinstance(value, str):
-        if not re.match(XELON_REGEX, value) and (6 < len(value) < 11):
+        if not re.match(XELON_REGEX, value) and not re.match(REF_PSA_REGEX, value) and (6 < len(value) < 11):
             return True
     return False
 

@@ -12,7 +12,7 @@ from dashboard.models import Contract
 from squalaetp.models import Xelon, Indicator
 from utils.conf import string_to_list
 from utils.data.analysis import ProductAnalysis
-from utils.django.validators import VIN_PSA_REGEX
+from utils.regex import VIN_PSA_REGEX
 from ._excel_contract import ExportExcelContract
 
 

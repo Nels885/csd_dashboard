@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
@@ -21,6 +23,7 @@ from psa.models import Multimedia, Ecu, Corvet
 from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
+from utils.regex import REF_PSA_REGEX
 from utils.file import LogFile
 from utils.file.pdf_generate import CorvetBarcode
 from utils.conf import CSD_ROOT
@@ -66,10 +69,12 @@ def xelon_table(request):
     title = 'Xelon'
     form = CorvetForm()
     query_param = request.GET.get('filter', '')
-    if query_param and query_param.isdigit():
+    if query_param and re.match(REF_PSA_REGEX, query_param):
+        parts = ProductCode.objects.filter(name__icontains=query_param)
+        if not query_param[-2:].isdigit():
+            query_param = query_param[:-2] + '77'
         media = Multimedia.objects.filter(comp_ref__exact=query_param).first()
         prod = Ecu.objects.filter(comp_ref__exact=query_param).first()
-        parts = ProductCode.objects.filter(name__icontains=query_param)
         vehicles = Corvet.get_vehicles(query_param)
     return render(request, 'squalaetp/xelon_table.html', locals())
 

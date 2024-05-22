@@ -9,6 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from crum import get_current_user
 
+from utils.regex import REF_PSA_REGEX
+
 from psa.models import Corvet, Multimedia, CORVET_HW_FILTERS, CORVET_SN_FILTERS
 from psa.choices import ECU_TYPE_CHOICES, BTEL_TYPE_CHOICES
 
@@ -67,10 +69,12 @@ class Xelon(models.Model):
     @classmethod
     def search(cls, value):
         if value is not None:
-            query = value.strip()
+            value = value.strip()
+            if re.match(REF_PSA_REGEX, str(value)) and not value[-2:].isdigit():
+                value = value[:-2] + '77'
             filters = XELON_FILTERS + XELON_SN_FILTERS + XELON_HW_FILTERS
             for field in filters:
-                    queryset = cls.objects.filter(**{field: query})
+                    queryset = cls.objects.filter(**{field: value})
                     if queryset: return queryset
         return None
 
