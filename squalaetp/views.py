@@ -1,6 +1,3 @@
-import re
-
-from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
@@ -12,19 +9,16 @@ from bootstrap_modal_forms.generic import BSModalUpdateView, BSModalFormView, BS
 from django.forms.models import model_to_dict
 from constance import config
 
-from .models import Xelon, Action, Sivin, XelonTemporary, ProductCode
+from .models import Xelon, Action, Sivin, XelonTemporary
 from .forms import (
     VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm,
     XelonTemporaryModalForm
 )
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
-from psa.forms import CorvetForm
 from psa.utils import collapse_select
-from psa.models import Multimedia, Ecu, Corvet
 from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
-from utils.regex import REF_PSA_REGEX
 from utils.file import LogFile
 from utils.file.pdf_generate import CorvetBarcode
 from utils.conf import CSD_ROOT
@@ -68,15 +62,9 @@ def excel_import_async(request):
 def xelon_table(request):
     """ View of Xelon table page """
     title = 'Xelon'
-    form = CorvetForm()
+    # form = CorvetForm()
     query_param = request.GET.get('filter', '')
-    if query_param and re.match(REF_PSA_REGEX, query_param):
-        parts = ProductCode.objects.filter(name__icontains=query_param)
-        if not query_param[-2:].isdigit():
-            query_param = query_param[:-2] + '77'
-        media = Multimedia.objects.filter(Q(comp_ref__exact=query_param) | Q(label_ref__exact=query_param)).first()
-        prod = Ecu.objects.filter(comp_ref__exact=query_param).first()
-        vehicles = Corvet.get_vehicles(query_param)
+    parts, media, prod, vehicles = Xelon.prod_search(query_param)
     return render(request, 'squalaetp/xelon_table.html', locals())
 
 

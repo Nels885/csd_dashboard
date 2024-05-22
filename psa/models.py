@@ -17,9 +17,10 @@ CORVET_SN_FILTERS = [
 
 CORVET_HW_FILTERS = [f'{value}__iexact' for value in [
     'electronique_14f', 'electronique_14j', 'electronique_14k', 'electronique_14l', 'electronique_14r',
-    'electronique_14x', 'prods__btel__label_ref', 'electronique_19z', 'electronique_19h', 'electronique_14a', 'electronique_14b',
-    'electronique_16p', 'electronique_16b', 'electronique_16q', 'electronique_16v', 'electronique_19f',
-    'electronique_19u', 'electronique_14d', 'electronique_16g', 'electronique_19v', 'electronique_12y',
+    'electronique_14x', 'prods__btel__label_ref', 'electronique_19z', 'electronique_19h', 'electronique_14a',
+    'electronique_14b', 'electronique_16p', 'electronique_16b', 'electronique_16q', 'electronique_16v',
+    'electronique_19f', 'electronique_19u', 'electronique_14d', 'electronique_16g', 'electronique_19v',
+    'electronique_12y', 'prods__cvm2__label_ref',
     'electronique_16l', 'electronique_14y', 'electronique_14z', 'electronique_14p', 'electronique_19w',
     'electronique_16t', 'electronique_19t', 'electronique_14m', 'electronique_18z', 'electronique_11m',
     'electronique_19k', 'electronique_12e', 'electronique_11q', 'electronique_11n', 'electronique_1m2',
