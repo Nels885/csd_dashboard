@@ -332,7 +332,7 @@ class Corvet(models.Model):
 
     @classmethod
     def hw_search(cls, value, all_data=True):
-        if len(value) == 10 and value is not None:
+        if value is not None and len(value) == 10:
             value = value.strip()
             if not value[-2:].isdigit():
                 value = value[:-2] + '77'
@@ -346,7 +346,7 @@ class Corvet(models.Model):
                 if queryset:
                     return queryset
         if all_data:
-            return cls
+            return cls.objects
         return None
 
     @classmethod
