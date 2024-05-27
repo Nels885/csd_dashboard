@@ -15,7 +15,7 @@ from .forms import (
     XelonTemporaryModalForm
 )
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
-from psa.utils import collapse_select
+from psa.utils import collapse_select, prod_search
 from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
@@ -64,7 +64,7 @@ def xelon_table(request):
     title = 'Xelon'
     # form = CorvetForm()
     query_param = request.GET.get('filter', '')
-    parts, media, prod, vehicles = Xelon.prod_search(query_param)
+    parts, media, prod, vehicles = prod_search(query_param)
     return render(request, 'squalaetp/xelon_table.html', locals())
 
 

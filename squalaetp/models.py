@@ -1,7 +1,6 @@
 import re
 
 from django.db import models
-from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -66,18 +65,6 @@ class Xelon(models.Model):
             ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
             ("email_admin", "Can send email admin"), ("active_xelon", "Can active xelon")
         ]
-
-    @staticmethod
-    def prod_search(value):
-        if value and re.match(REF_PSA_REGEX, value):
-            parts = ProductCode.objects.filter(name__icontains=value)
-            if not value[-2:].isdigit():
-                value = value[:-2] + '77'
-            media = Multimedia.objects.filter(Q(comp_ref__exact=value) | Q(label_ref__exact=value)).first()
-            prod = Ecu.objects.filter(Q(comp_ref__exact=value) | Q(label_ref__exact=value)).first()
-            vehicles = Corvet.get_vehicles(value)
-            return parts, media, prod, vehicles
-        return tuple(None for _ in range(4))
 
     @classmethod
     def search(cls, value):

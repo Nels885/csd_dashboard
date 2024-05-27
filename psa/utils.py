@@ -1,4 +1,9 @@
-from .models import Ecu, Multimedia
+import re
+from django.db.models import Q
+
+from utils.regex import REF_PSA_REGEX
+from .models import Corvet, Ecu, Multimedia
+from squalaetp.models import ProductCode
 
 
 COLLAPSE_LIST = [
@@ -43,3 +48,15 @@ def collapse_select(xelon_name):
     else:
         collapse.update({key: True for key in ["display", "audio", "ecu", "cockpit", "security"]})
     return collapse
+
+
+def prod_search(value):
+    if value and re.match(REF_PSA_REGEX, value):
+        parts = ProductCode.objects.filter(name__icontains=value)
+        if not value[-2:].isdigit():
+            value = value[:-2] + '77'
+        media = Multimedia.objects.filter(Q(comp_ref__exact=value) | Q(label_ref__exact=value)).first()
+        prod = Ecu.objects.filter(Q(comp_ref__exact=value) | Q(label_ref__exact=value)).first()
+        vehicles = Corvet.get_vehicles(value)
+        return parts, media, prod, vehicles
+    return tuple(None for _ in range(4))

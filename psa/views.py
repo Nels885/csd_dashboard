@@ -15,7 +15,7 @@ from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, SelectCanRemoteForm
 from .models import Corvet, Multimedia, Ecu
-from .utils import COLLAPSE_LIST
+from .utils import COLLAPSE_LIST, prod_search
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
 from prog.models import Programing
@@ -102,10 +102,12 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
     permission_required = 'psa.view_corvet'
 
     def get_context_data(self, **kwargs):
-        context = super(CorvetView, self).get_context_data(**kwargs)
-        context['title'] = 'Info PSA'
-        context['table_title'] = _('CORVET table')
-        context['query_param'] = self.request.GET.get('filter', '')
+        title = 'Info PSA'
+        table_title = _('CORVET table')
+        query_param = self.request.GET.get('filter', '')
+        parts, media, prod, vehicles = prod_search(query_param)
+        context = locals()
+        context.update(super(CorvetView, self).get_context_data(**kwargs))
         return context
 
 
