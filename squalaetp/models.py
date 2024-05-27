@@ -11,7 +11,7 @@ from crum import get_current_user
 
 from utils.regex import REF_PSA_REGEX
 
-from psa.models import Corvet, Multimedia, Ecu, CORVET_HW_FILTERS, CORVET_SN_FILTERS
+from psa.models import Corvet, Multimedia, Ecu, CORVET_HW_FILTERS, CORVET_SW_FILTERS, CORVET_SN_FILTERS
 from psa.choices import ECU_TYPE_CHOICES, BTEL_TYPE_CHOICES
 
 
@@ -20,6 +20,7 @@ XELON_FILTERS = [
 ]
 XELON_SN_FILTERS = [f'corvet__{field}' for field in CORVET_SN_FILTERS]
 XELON_HW_FILTERS = [f'corvet__{field}' for field in CORVET_HW_FILTERS]
+XELON_SW_FILTERS = [f'corvet__{field}' for field in CORVET_SW_FILTERS]
 
 
 class Xelon(models.Model):
@@ -72,7 +73,7 @@ class Xelon(models.Model):
             value = value.strip()
             if re.match(REF_PSA_REGEX, str(value)) and not value[-2:].isdigit():
                 value = value[:-2] + '77'
-            filters = XELON_FILTERS + XELON_SN_FILTERS + XELON_HW_FILTERS
+            filters = XELON_FILTERS + XELON_SN_FILTERS + XELON_HW_FILTERS + XELON_SW_FILTERS
             for field in filters:
                     queryset = cls.objects.filter(**{field: value})
                     if queryset: return queryset

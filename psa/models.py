@@ -346,8 +346,8 @@ class Corvet(models.Model):
                 if queryset:
                     return queryset
         if all_data:
-            return cls.objects
-        return None
+            return cls.objects.all()
+        return cls.objects.none()
 
     @classmethod
     def search(cls, value):
@@ -361,15 +361,16 @@ class Corvet(models.Model):
                 queryset = cls.objects.filter(**{field: query})
                 if queryset:
                     return queryset
-        return None
+        return cls.objects.none()
 
     @classmethod
-    def get_vehicles(cls, hardware):
-        corvets = cls.hw_search(hardware)
+    def get_vehicles(cls, hardware: str) -> list:
+        queryset = cls.hw_search(hardware, all_data=False)
         vehicles = []
-        data = list(set([query.donnee_ligne_de_produit for query in corvets]))
-        for key in data:
-            vehicles.append(dict(CorvetChoices.vehicles(True)).get(key, key))
+        if queryset:
+            data = list(set([query.donnee_ligne_de_produit for query in queryset]))
+            for key in data:
+                vehicles.append(dict(CorvetChoices.vehicles(True)).get(key, key))
         return vehicles
 
     def get_brand_display(self):

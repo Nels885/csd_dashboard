@@ -340,7 +340,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         if PROD_DICT.get(kwargs.get('product')):
             self.queryset = corvet.exclude(**PROD_DICT.get(kwargs.get('product')).get('filter', {}))
         else:
-            self.queryset = corvet.all()
+            self.queryset = corvet
 
     @staticmethod
     def _xelon_filter(queryset, **kwargs):
