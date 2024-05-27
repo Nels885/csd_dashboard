@@ -5,6 +5,19 @@ from django.db import models, utils
 
 from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
 
+CORVET_LIST = [
+    ('electronique_14a', 'electronique_94a', 'electronique_34a'), ('electronique_14b', 'electronique_94b'),
+    ('electronique_16b', 'electronique_96b'), ('electronique_14d', 'electronique_94d'),
+    ('electronique_12e', 'electronique_92e'), ('electronique_14f', 'electronique_94f'),
+    ('electronique_16g', 'electronique_96g'), ('electronique_14j', 'electronique_94j'),
+    ('electronique_14k', 'electronique_94k'), ('electronique_14l', 'electronique_94l'),
+    ('electronique_16l', 'electronique_96l'), ('electronique_11m',), ('electronique_14m', 'electronique_94m'),
+    ('electronique_11n',), ('electronique_14p', 'electronique_94p', 'electronique_34p'), ('electronique_16p',),
+    ('electronique_11q', 'electronique_91q'), ('electronique_16q', 'electronique_96q'),
+    ('electronique_14r', 'electronique_94r', 'electronique_34r'), ('electronique_19u',), ('electronique_16v',),
+    ('electronique_19v',), ('electronique_19w',), ('electronique_14x', 'electronique_94x'),
+    ('electronique_12y', 'electronique_92y'), ('electronique_14y',)
+]
 
 CORVET_FILTERS = [
     'vin__iexact', 'vin__iendswith', 'opts__tag__istartswith'
@@ -28,8 +41,11 @@ CORVET_HW_FILTERS = [f'{value}__iexact' for value in [
 ]]
 
 CORVET_SW_FILTERS = [f'{value}__iexact' for value in [
-    'electronique_94f', 'electronique_94l', 'electronique_94x', 'electronique_99h', 'electronique_34a',
-    'electronique_94a', 'electronique_94b', 'electronique_96b', 'electronique_94r', 'electronique_96q'
+    'electronique_94f', 'electronique_94j', 'electronique_94l', 'electronique_94x', 'electronique_99h',
+    'electronique_34a', 'electronique_94a', 'electronique_94b', 'electronique_96b', 'electronique_94r',
+    'electronique_96q', 'electronique_94d', 'electronique_96g', 'electronique_94j', 'electronique_94k',
+    'electronique_92y', 'electronique_96l', 'electronique_94p', 'electronique_34p', 'electronique_94m',
+    'electronique_99k', 'electronique_92e', 'electronique_91q', 'electronique_34r'
 ]]
 
 
@@ -337,11 +353,6 @@ class Corvet(models.Model):
             if not value[-2:].isdigit():
                 value = value[:-2] + '77'
             for field in CORVET_HW_FILTERS:
-                # if field  == 'electronique_14x':
-                #     try:
-                #         value = Multimedia.objects.get(label_ref__iexact=value).comp_ref
-                #     except Multimedia.DoesNotExist:
-                #         pass
                 queryset = cls.objects.filter(**{field: value})
                 if queryset:
                     return queryset
@@ -368,7 +379,9 @@ class Corvet(models.Model):
         queryset = cls.hw_search(hardware, all_data=False)
         vehicles = []
         if queryset:
-            data = list(set([query.donnee_ligne_de_produit for query in queryset]))
+            queryset = queryset.order_by('donnee_ligne_de_produit')
+            data = list(queryset.values_list('donnee_ligne_de_produit', flat=True).distinct())
+            # data = list(set([query.donnee_ligne_de_produit for query in queryset]))
             for key in data:
                 vehicles.append(dict(CorvetChoices.vehicles(True)).get(key, key))
         return vehicles
