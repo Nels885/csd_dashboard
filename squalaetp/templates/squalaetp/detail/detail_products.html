@@ -37,11 +37,13 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm-40">Date d'expédition attendue</td>
+
                 {% if xelon.date_expedition_attendue %}
-                    <td class="font-weight-bold {% if xelon.delai_expedition_attendue > 0 %}bg-danger text-white{% endif %}">
-                        {{ xelon.date_expedition_attendue|date:"d/m/Y" }}
-                        <span class="ml-4">J {{ xelon.delai_expedition_attendue }}</span>
-                    </td>
+                    {% with delay=xelon.delai_expedition_attendue %}
+                        <td class="font-weight-bold {% if delay > 0 %}text-white bg-danger{% elif delay > -1 %}bg-warning{% else %}text-white bg-success{% endif %}">
+                            {{ xelon.date_expedition_attendue |date:"d/m/Y" }}<span class="ml-4">J {{ delay }}</span>
+                        </td>
+                    {% endwith %}
                 {% else %}
                     <td>???</td>
                 {% endif %}
