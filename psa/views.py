@@ -122,7 +122,7 @@ def corvet_detail(request, pk):
     corvet = get_object_or_404(Corvet, vin=pk)
     if corvet.electronique_14x.isdigit():
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-    btel_cal = ", ".join(Calibration.get_cal_file(corvet.electronique_94x))
+    cals = Calibration.get_cal_file(corvet.electronique_94x)
     # if corvet.electronique_14a.isdigit():
     #     cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin

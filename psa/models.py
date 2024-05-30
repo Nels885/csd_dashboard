@@ -585,10 +585,14 @@ class Calibration(models.Model):
 
     @classmethod
     def get_cal_file(cls, value):
+        data = dict()
         queryset = cls.objects.exclude(is_available=False).filter(Q(factory=value) | Q(current=value))
         if queryset:
-            return list(queryset.order_by('current').values_list('current', flat=True).distinct())
-        return []
+            types = list(queryset.order_by('type').values_list('type', flat=True).distinct())
+            for value in types:
+                currents = queryset.filter(type=value).order_by('current')
+                data[value.lower()] = list(currents.values_list('current', flat=True).distinct())
+        return data
 
     class Meta:
         verbose_name = "Calibration"
