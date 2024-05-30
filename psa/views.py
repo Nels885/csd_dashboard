@@ -14,12 +14,12 @@ from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, SelectCanRemoteForm
-from .models import Corvet, Multimedia, Ecu
+from .models import Corvet, Multimedia, Ecu, Calibration
 from .utils import COLLAPSE_LIST, prod_search
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
 from prog.models import Programing
-from reman.models import EcuType
+# from reman.models import EcuType
 
 context = {
     'title': 'Info PSA'
@@ -122,8 +122,9 @@ def corvet_detail(request, pk):
     corvet = get_object_or_404(Corvet, vin=pk)
     if corvet.electronique_14x.isdigit():
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-    if corvet.electronique_14a.isdigit():
-        cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
+    btel_cal = ", ".join(Calibration.get_cal_file(corvet.electronique_94x))
+    # if corvet.electronique_14a.isdigit():
+    #     cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)
     if Sivin.objects.filter(codif_vin=pk):

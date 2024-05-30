@@ -16,6 +16,7 @@ from .forms import (
 )
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.utils import collapse_select, prod_search
+from psa.models import Calibration
 from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
@@ -121,8 +122,9 @@ def detail(request, pk):
     if corvet:
         if corvet.electronique_14x.isdigit():
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-        if corvet.electronique_14a.isdigit():
-            cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
+        btel_cal = ", ".join(Calibration.get_cal_file(corvet.electronique_94x))
+        # if corvet.electronique_14a.isdigit():
+        #     cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
         if corvet.prods.btel:
             btel_model = f"{corvet.prods.btel.get_name_display()}  {corvet.prods.btel.level} - {corvet.prods.btel.type}"

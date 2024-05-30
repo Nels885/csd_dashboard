@@ -2,6 +2,7 @@ import re
 from ast import literal_eval
 
 from django.db import models, utils
+from django.db.models import Q
 
 from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
 
@@ -576,14 +577,22 @@ class Calibration(models.Model):
     type = models.CharField('type', max_length=3)
     current = models.CharField('version actuelle', max_length=10, blank=True)
     pr_reference = models.CharField('référence PR', max_length=10, blank=True)
-
-    class Meta:
-        verbose_name = "Calibration"
-        ordering = ['-factory']
+    is_available = models.BooleanField('disponible', default=False)
 
     def get_type_display(self):
         dict_type = dict(CAL_TYPE_CHOICES)
         return dict_type.get(self.type, "")
+
+    @classmethod
+    def get_cal_file(cls, value):
+        queryset = cls.objects.exclude(is_available=False).filter(Q(factory=value) | Q(current=value))
+        if queryset:
+            return list(queryset.order_by('current').values_list('current', flat=True).distinct())
+        return []
+
+    class Meta:
+        verbose_name = "Calibration"
+        ordering = ['-factory']
 
     def __str__(self):
         return self.factory

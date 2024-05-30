@@ -1,4 +1,7 @@
+import csv
+
 from django.contrib import admin
+from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from utils.django.contrib import CustomModelAdmin
@@ -84,16 +87,33 @@ class FirmwareAdmin(admin.ModelAdmin):
 
 class CalibrationAdmin(admin.ModelAdmin):
     form = CalibrationAdminForm
-    list_display = ('factory', 'get_type', 'get_type_display', 'current', 'pr_reference')
-    list_filter = ('type',)
+    list_display = ('factory', 'get_type', 'get_type_display', 'current', 'pr_reference', 'is_available')
+    list_filter = ('type', 'is_available')
     ordering = ('-factory',)
     search_fields = ('factory', 'type', 'current', 'pr_reference')
+    actions = ['export_csv']
 
     def get_type(self, obj):
         return f"electronique_{obj.type}"
 
     def get_type_display(self, obj):
         return obj.get_type_display()
+
+    @admin.action(description=_('Exporter en CSV'))
+    def export_csv(self, request, queryset):
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="calibration.csv"'},
+        )
+        writer = csv.writer(response)
+        writer.writerow(["ID", "FACTORY", "GET_TYPE_DISPLAY", "CURRENT", "PR_REFERENCE", "IS_AVAILABLE"])
+        for query in queryset:
+            writer.writerow([
+                query.id, query.factory, query.get_type_display(), query.current, query.pr_reference,
+                query.is_available
+            ])
+        return response
+
 
 class CorvetChoicesAdmin(admin.ModelAdmin):
     list_display = ('key', 'value', 'column')
