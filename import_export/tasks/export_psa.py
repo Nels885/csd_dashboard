@@ -223,6 +223,12 @@ PRODS_XELON_LIST = [
     ('Ref HW BSM', 'electronique_16b'),
 ]
 
+CAL_DICT = [
+    ('OLD', 'electronique_94x'), ('VEHICLE', 'donnee_ligne_de_produit'), ('BRAND', 'donnee_marque_commerciale'),
+    ('SILHOUETTE', 'donnee_silhouette'), ('HP', 'attribut_dhb'), ('AMPLI_EQUAL', 'attribut_dun'),
+    ('TYPE',  'prods__btel__name')
+]
+
 
 class ExportCorvetIntoExcelTask(ExportExcelTask):
     COL_CORVET = {
@@ -366,3 +372,34 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
                     else:
                         data_list = data_list + value.get(col, [])
             self.header, self.fields = self.get_header_fields(data_list)
+
+
+class ExportCalIntoExcelTask(ExportCorvetIntoExcelTask):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields = []
+        self.queryset = None
+
+    def run(self, *args, **kwargs):
+        excel_type = kwargs.pop('excel_type', 'xlsx')
+        btel_type = kwargs.pop('btel_type', 'NAC')
+        filename = f"CAN_{btel_type}"
+        values_list = self.extract(btel_type)
+        destination_path = self.file(filename, excel_type, values_list)
+        return {
+            "detail": "Successfully export CORVET",
+            "data": {
+                "outfile": destination_path
+            }
+        }
+
+    def extract(self, btel_type=None):
+        """
+        Export ECU data to excel format
+        """
+        queryset = Corvet.objects.exclude(electronique_94x="").order_by('electronique_94x')
+        corvets = queryset.filter(prods__btel__name__icontains=btel_type)
+        self.header, self.fields = self.get_header_fields(CAL_DICT)
+        values_list = corvets.values_list(*self.fields).distinct()
+        return values_list

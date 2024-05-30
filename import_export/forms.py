@@ -135,3 +135,10 @@ class ExportToolsForm(forms.Form):
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
     date_delta = forms.ChoiceField(label='Date', required=False, choices=MONTH_CHOICES, widget=forms.Select())
+
+
+class ExportCalForm(forms.Form):
+    BTELS = [('NAC', 'NAC')]
+
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    btel_type = forms.ChoiceField(label='Btel type', required=False, choices=BTELS, widget=forms.Select())

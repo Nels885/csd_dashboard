@@ -8,10 +8,12 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.management import call_command
 from django.http import JsonResponse, Http404
 
-from .forms import ExportCorvetForm, ExportRemanForm, CorvetVinListForm, ExportToolsForm, ExportSuptechForm
+from .forms import (
+    ExportCorvetForm, ExportRemanForm, CorvetVinListForm, ExportToolsForm, ExportSuptechForm, ExportCalForm
+)
 from utils.file import handle_uploaded_file
 from pandas.errors import ParserError
-from .tasks import export_corvet_task, export_reman_task, export_tools_task, export_suptech_task
+from .tasks import export_corvet_task, export_cal_task, export_reman_task, export_tools_task, export_suptech_task
 from psa.tasks import import_corvet_list_task
 
 context = {
@@ -44,12 +46,15 @@ def export_reman_async(request):
 def export_tools_async(request):
     form = ExportToolsForm(request.POST or None)
     form_suptech = ExportSuptechForm(request.POST or None)
+    form_cal = ExportCalForm(request.POST or None)
     if request.POST:
         if "table" in request.POST and form.is_valid():
             task = export_tools_task.delay(**form.cleaned_data)
             return JsonResponse({"task_id": task.id})
+        elif "btel_type" in request.POST and form_cal.is_valid():
+            task = export_cal_task.delay(**form_cal.cleaned_data)
+            return JsonResponse({"task_id": task.id})
         elif form_suptech.is_valid():
-            print(form_suptech.cleaned_data)
             task = export_suptech_task.delay(**form_suptech.cleaned_data)
             return JsonResponse({"task_id": task.id})
     context.update(locals())
