@@ -8,10 +8,10 @@ from utils.django.contrib import CustomModelAdmin
 
 from .models import (
     Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
-    DefaultCode, ProductChoice, CanRemote, Vehicle
+    DefaultCode, ProductChoice, CanRemote, Vehicle, CalCurrent, CalHistory
 )
 from .forms import (
-    EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm, CalibrationAdminForm, FirmwareAdminForm,
+    EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm, CalibrationAdminForm, CalCurrentAdminForm, FirmwareAdminForm,
     ProductChoiceAdminForm
 )
 
@@ -114,6 +114,22 @@ class CalibrationAdmin(admin.ModelAdmin):
             ])
         return response
 
+class CalCurrentAdmin(admin.ModelAdmin):
+    form = CalCurrentAdminForm
+    list_display = ('name', 'get_cal_name', 'get_type', 'get_type_display', 'pr_reference', 'is_available')
+    list_filter = ('type', 'is_available')
+    ordering = ('-name',)
+    search_fields = ('name', 'type', 'pr_reference', 'olds__name')
+
+    def get_type(self, obj):
+        return f"electronique_{obj.type}"
+
+    def get_type_display(self, obj):
+        return obj.get_type_display()
+
+    def get_cal_name(self, obj):
+        return ", ".join(obj.get_cal_list())
+
 
 class CorvetChoicesAdmin(admin.ModelAdmin):
     list_display = ('key', 'value', 'column')
@@ -190,6 +206,8 @@ admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
 admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
+admin.site.register(CalCurrent, CalCurrentAdmin)
+admin.site.register(CalHistory)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
 admin.site.register(Ecu, EcuAdmin)
 admin.site.register(SupplierCode, SupplierCodeAdmin)

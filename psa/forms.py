@@ -8,7 +8,9 @@ from utils.scraping import xml_parser
 from utils.django import is_ajax
 from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
-from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, Calibration, ProductChoice
+from .models import (
+    Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, Calibration, CalCurrent, ProductChoice
+)
 from .choices import PROD_CHOICES, ECU_TYPE_CHOICES, BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, CAL_TYPE_CHOICES
 
 
@@ -142,6 +144,14 @@ class CalibrationAdminForm(forms.ModelForm):
 
     class Meta:
         model = Calibration
+        fields = '__all__'
+
+
+class CalCurrentAdminForm(forms.ModelForm):
+    type = forms.ChoiceField(choices=CAL_TYPE_CHOICES)
+
+    class Meta:
+        model = CalCurrent
         fields = '__all__'
 
 

@@ -3,6 +3,8 @@ from ast import literal_eval
 
 from django.db import models, utils
 from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
 
@@ -600,6 +602,44 @@ class Calibration(models.Model):
 
     def __str__(self):
         return self.factory
+
+
+class CalCurrent(models.Model):
+    name = models.CharField('version actuelle', max_length=10, unique=True)
+    type = models.CharField('type', max_length=3)
+    pr_reference = models.CharField('référence PR', max_length=10, blank=True)
+    is_available = models.BooleanField('disponible', default=False)
+    olds = GenericRelation('CalHistory')
+
+    def get_type_display(self):
+        dict_type = dict(CAL_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
+
+    def get_cal_list(self):
+        return [query.name for query in self.olds.all()]
+
+    class Meta:
+        verbose_name = "Cal. actuelle"
+        ordering = ['-name']
+
+    def __str__(self):
+        return self.name
+
+
+class CalHistory(models.Model):
+    name = models.CharField('version actuelle', max_length=10, unique=True)
+    pr_reference = models.CharField('référence PR', max_length=10, blank=True)
+    is_available = models.BooleanField('disponible', default=False)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Cal. historique"
+        ordering = ['-name']
+
+    def __str__(self):
+        return f"{self.name} associé à {self.content_object}"
 
 
 class Ecu(models.Model):
