@@ -31,6 +31,12 @@
                 <td class="text-dark td-ihm-40">Modèle produit</td>
                 <td>{{ xelon.modele_produit }}</td>
             </tr>
+            {% if xelon.new_sn %}
+                <tr>
+                    <td class="text-dark td-ihm-40">Nouveau S/N</td>
+                    <td class="font-weight-bold text-white bg-warning">{{ xelon.new_sn }}</td>
+                </tr>
+            {% endif %}
             <tr>
                 <td class="text-dark td-ihm-40">Modèle véhicule</td>
                 <td>{{ xelon.modele_vehicule }}</td>

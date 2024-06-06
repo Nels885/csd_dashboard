@@ -12,7 +12,7 @@ from constance import config
 from .models import Xelon, Action, Sivin, XelonTemporary
 from .forms import (
     VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm,
-    XelonTemporaryModalForm
+    XelonTemporaryModalForm, NewSerialNumberModalForm
 )
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
 from psa.utils import collapse_select, prod_search
@@ -212,6 +212,26 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         if not is_ajax(self.request):
             task = cmd_exportsqualaetp_task.delay()
             return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
+
+
+class NewSerialNumberUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for product update """
+    model = Xelon
+    permission_required = ['squalaetp.change_sn']
+    template_name = 'squalaetp/modal/serial_number_update.html'
+    form_class = NewSerialNumberModalForm
+    success_message = _('Success: Serial Number was updated.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'modal_title': _('Serial Number update for %(file)s' % {'file': self.object.numero_de_dossier}),
+            'corvet': self.object.corvet
+        })
+        return context
+
+    def get_success_url(self):
         return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 

@@ -192,6 +192,21 @@ class ProductModalForm(BSModalModelForm):
         return instance
 
 
+class NewSerialNumberModalForm(BSModalModelForm):
+    class Meta:
+        model = Xelon
+        fields = ['new_sn']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit and not is_ajax(self.request):
+            new_sr = self.cleaned_data['new_sn']
+            content = f"NEW_SN: {new_sr}"
+            instance.actions.create(content=content)
+            instance.save()
+        return instance
+
+
 class SivinModalForm(BSModalModelForm):
     immat_siv = forms.CharField(
         widget=forms.TextInput(

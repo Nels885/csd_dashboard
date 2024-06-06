@@ -52,6 +52,7 @@ class Xelon(models.Model):
     pays = models.CharField('Pays', max_length=100, blank=True)
     telecodage = models.CharField('TELECODAGE', max_length=50, blank=True)
     appairage = models.CharField('APPAIRAGE', max_length=50, blank=True)
+    new_sn = models.CharField('Nouveau S/N', max_length=100, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
@@ -64,7 +65,8 @@ class Xelon(models.Model):
         permissions = [
             ("change_product", "Can change product"), ("email_product", "Can send email product"),
             ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
-            ("email_admin", "Can send email admin"), ("active_xelon", "Can active xelon")
+            ("email_admin", "Can send email admin"), ("active_xelon", "Can active xelon"),
+            ("change_sn", "Can change Serial Number")
         ]
 
     @classmethod

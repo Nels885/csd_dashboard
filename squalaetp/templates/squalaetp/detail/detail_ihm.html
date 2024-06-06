@@ -48,6 +48,9 @@
             {% else %}
                 <a class="btn btn-primary btn-block mb-3" href="{% url 'squalaetp:prog_activate' xelon.pk %}">Activer Dossier</a>
             {% endif %}
+            <button class="bs-large-modal btn btn-warning btn-block mb-3 text-dark" data-form-url="{% url 'squalaetp:sn_edit' xelon.pk %}" {% if not perms.squalaetp.change_sn or query_param == 'temp' %}disabled{% endif %}>
+                Nouveau S/N
+            </button>
         {% endif %}
         <a class="btn btn-secondary btn-block mb-3" href="{% url 'squalaetp:barcode_pdf' pk=xelon.pk %}?filter={{ query_param }}" target="_blank">Générer code barre</a>
         <a class="btn btn-success btn-block" href="{% url 'squalaetp:generate' %}">Générer Squalaetp</a>
