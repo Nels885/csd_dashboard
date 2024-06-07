@@ -121,7 +121,18 @@
 
             {% include 'squalaetp/format/input_ihm.html' with label="electronique_44x"|get_field_name value=corvet.electronique_44x %}
 
-        {% elif corvet.electronique_14 %}
+            {% if corvet.opts.new_44x %}
+                <div class="form-group">
+                    <div class="form-group row">
+                        <label for="id_{{ corvet.opts.new_44x }}" class="col-sm-7 col-form-label">BTEL FOURN.NO.SERIE (SWAP)</label>
+                        <div class="col-sm-5">
+                            <input type="text" name="" value="{{ corvet.opts.new_44x }}" maxlength="200" readonly class="form-control bg-warning" id="id_{{ corvet.opts.new_44x }}">
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% elif corvet.electronique_14f %}
 
             <!-- RADIO Info -->
 
