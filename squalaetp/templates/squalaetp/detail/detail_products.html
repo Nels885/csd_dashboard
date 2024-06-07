@@ -1,7 +1,7 @@
 {% load i18n custom_tags %}
 
 <div class="row">
-    <section class="col-sm-6">
+    <section class="col-lg-6">
         {% if corvet %}
             <a class="btn btn-primary btn-icon-split mb-3" href="{% url 'psa:can_tools' %}" target="_blank">
                 <span class="icon text-white-50"><i class="fas fa-gamepad"></i></span>
@@ -9,7 +9,7 @@
             </a>
         {% endif %}
 
-        <table class="table table-secondary table-sm">
+        <table class="table table-secondary table-responsive table-sm w-100 d-block d-md-table">
             <thead>
             <tr>
                 <th colspan="2" class="text-primary">Info XELON :</th>
@@ -18,14 +18,20 @@
             <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm-40">Numéro de dossier</td>
-                <td id="xelon">{{ xelon.numero_de_dossier }}<a href="#" title="copie"
-                                                               onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i
-                        class="fas fa-copy ml-2"></i></a></td>
+                <td id="xelon">
+                    {{ xelon.numero_de_dossier }}
+                    <a href="#" title="Code barre" data-toggle="modal" data-target="#xelonModal"><i class="fas fa-barcode ml-2"></i></a>
+                    <a href="#" title="Copie" onclick="textCopy('{{ xelon.numero_de_dossier }}')"><i class="fas fa-copy ml-1"></i></a>
+                </td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm-40">V.I.N.</td>
-                <td>{{ xelon.vin }}<a href="#" title="copie" onclick="textCopy('{{ xelon.vin }}')"><i
-                        class="fas fa-copy ml-2"></i></a></td>
+                <td>
+                    {{ xelon.vin }}
+                    <a href="#" title="Code barre" data-toggle="modal" data-target="#vinModal"><i class="fas fa-barcode ml-2"></i></a>
+                    <a href="#" title="Copie" onclick="textCopy('{{ xelon.vin }}')"><i class="fas fa-copy ml-1"></i></a>
+
+                </td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm-40">Modèle produit</td>
@@ -83,7 +89,7 @@
         {% include 'psa/format/prods_detail.html' %}
 
     </section>
-    <section class="col-sm-6">
+    <section class="col-lg-6">
         <h3 class="text-gray-800">Données CORVET :</h3>
 
         {% include 'psa/format/corvet_table.html' with object=corvet %}
