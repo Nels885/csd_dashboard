@@ -3,8 +3,10 @@ from ast import literal_eval
 
 from django.db import models, utils
 from django.db.models import Q
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from crum import get_current_user
 
 from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
 
@@ -443,6 +445,8 @@ class CorvetProduct(models.Model):
 class CorvetOption(models.Model):
     corvet = models.OneToOneField('psa.Corvet', related_name='opts', on_delete=models.CASCADE, primary_key=True)
     tag = models.CharField('tag', max_length=100, blank=True)
+    new_44x = models.CharField('new_44x', max_length=200, blank=True)
+    new_44f = models.CharField('new_44f', max_length=200, blank=True)
     update = models.BooleanField(default=False)
 
     class Meta:

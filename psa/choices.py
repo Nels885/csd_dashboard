@@ -44,6 +44,11 @@ CAL_TYPE_CHOICES = [
     ('92E', 'AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE'), ('96L', 'DAE SOFT - Direction Assistee Electrique')
 ]
 
+SN_CHOICES = [
+    ('', '---'),
+    ('44X', 'Numéro série NAV'), ('44F', 'Numéro série RADIO')
+]
+
 
 def convert(tup, di):
     di = dict(tup)

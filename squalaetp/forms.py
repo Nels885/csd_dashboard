@@ -10,6 +10,7 @@ from utils.django.validators import validate_vin, vin_psa_isvalid
 from utils.file.export import xml_corvet_file
 from utils.conf import string_to_list
 from psa.models import Corvet, Multimedia, Ecu
+from psa.choices import SN_CHOICES
 from .models import Xelon, Action, Sivin, ProductCode, ProductCategory, XelonTemporary
 from .tasks import send_email_task
 from utils.django import is_ajax
@@ -197,12 +198,36 @@ class NewSerialNumberModalForm(BSModalModelForm):
         model = Xelon
         fields = ['new_sn']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.corvet:
+            self.fields['choice'] = forms.ChoiceField(choices=SN_CHOICES, required=True)
+        self.fields['new_sn'].required = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_sn = cleaned_data.get('new_sn')
+        choice = cleaned_data.get('choice')
+        corvet = self.instance.corvet
+        if choice and corvet:
+            if choice == "44X" and new_sn == corvet.electronique_44x:
+                raise forms.ValidationError(_('Serial number does not change!'))
+            elif choice == "44F" and new_sn == corvet.electronique_44f:
+                raise forms.ValidationError(_('Serial number does not change!'))
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit and not is_ajax(self.request):
             new_sr = self.cleaned_data['new_sn']
+            choice = self.cleaned_data['choice']
             content = f"NEW_SN: {new_sr}"
             instance.actions.create(content=content)
+            if instance.corvet and choice == '44X':
+                instance.corvet.opts.new_44x = new_sr
+                instance.corvet.opts.save()
+            elif instance.corvet and choice == '44F':
+                instance.corvet.opts.new_44f = new_sr
+                instance.corvet.opts.save()
             instance.save()
         return instance
 

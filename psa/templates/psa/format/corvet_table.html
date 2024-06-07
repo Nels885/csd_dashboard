@@ -55,6 +55,12 @@
             <td class="text-dark td-ihm">N° série RAD</td>
             <td>{{ object.electronique_44f }}</td>
         </tr>
+        {% if object.opts.new_44f %}
+            <tr>
+                <td class="text-dark td-ihm">N° série RAD (SWAP)</td>
+                <td class="font-weight-bold text-white bg-warning">{{ object.opts.new_44f }}</td>
+            </tr>
+        {% endif %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur RAD" value=object.electronique_64f|get_supplier_code %}
     {% endif %}
     {% if object.electronique_14x %}
@@ -73,6 +79,12 @@
             <td class="text-dark td-ihm">N° série NAV</td>
             <td>{{ object.electronique_44x }}</td>
         </tr>
+        {% if object.opts.new_44x %}
+            <tr>
+                <td class="text-dark td-ihm">N° série NAV (SWAP)</td>
+                <td class="font-weight-bold text-white bg-warning">{{ object.opts.new_44x }}</td>
+            </tr>
+        {% endif %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur NAV" value=object.electronique_64x|get_supplier_code %}
     {% endif %}
     {% if object.electronique_1m2 %}
