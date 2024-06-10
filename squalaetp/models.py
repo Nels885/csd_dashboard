@@ -11,7 +11,7 @@ from crum import get_current_user
 
 from utils.regex import REF_PSA_REGEX
 
-from psa.models import Corvet, Multimedia, Ecu, CORVET_HW_FILTERS, CORVET_SW_FILTERS, CORVET_SN_FILTERS
+from psa.models import Corvet, Multimedia, Ecu, CORVET_HW_FILTERS, CORVET_SW_FILTERS, CORVET_SN_FILTERS, Calibration
 from psa.choices import ECU_TYPE_CHOICES, BTEL_TYPE_CHOICES
 
 
@@ -80,6 +80,13 @@ class Xelon(models.Model):
                     queryset = cls.objects.filter(**{field: value})
                     if queryset: return queryset
         return None
+
+    def get_btel_last_cal(self):
+        if self.corvet:
+            cals = Calibration.objects.filter(factory=self.corvet.electronique_94x, is_available=True)
+            if cals:
+                return cals.order_by('current').first().current
+        return ''
 
     @property
     def option(self):

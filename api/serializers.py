@@ -12,7 +12,9 @@ class ProgSerializer(serializers.ModelSerializer):
     xelon_model = serializers.CharField(source='modele_produit', read_only=True)
     xelon_vehicle = serializers.CharField(source='modele_vehicule', read_only=True)
     hw_ref = serializers.CharField(source='corvet.electronique_14x', read_only=True)
+    uin_sn = serializers.CharField(source='corvet.electronique_44x', read_only=True)
     cal = serializers.CharField(source='corvet.electronique_94x', read_only=True)
+    cal_new = serializers.ReadOnlyField(source='get_btel_last_cal')
     product = serializers.CharField(source='corvet.prods.btel.name', read_only=True)
     level = serializers.CharField(source='corvet.prods.btel.level', read_only=True)
     type = serializers.CharField(source='corvet.prods.btel.type', read_only=True)
@@ -20,7 +22,8 @@ class ProgSerializer(serializers.ModelSerializer):
     class Meta:
         model = Xelon
         fields = (
-            'xelon', 'vin', 'xelon_model', 'xelon_vehicle', 'hw_ref', 'cal', 'product', 'level', 'type'
+            'xelon', 'vin', 'xelon_model', 'xelon_vehicle', 'hw_ref', 'uin_sn', 'cal', 'cal_new', 'product', 'level',
+            'type'
         )
 
 
