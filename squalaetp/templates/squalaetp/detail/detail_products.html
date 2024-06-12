@@ -40,7 +40,10 @@
             {% if xelon.new_sn %}
                 <tr>
                     <td class="text-dark td-ihm-40">N° série produit (SWAP)</td>
-                    <td class="font-weight-bold text-white bg-warning">{{ xelon.new_sn }}</td>
+                    <td class="font-weight-bold text-white bg-warning">
+                        {{ xelon.new_sn }}
+                        <a href="#" title="Copie pour Xelon" onclick="textCopy('UIN: {{ xelon.new_sn }}')"><i class="fas fa-copy ml-1"></i></a>
+                    </td>
                 </tr>
             {% endif %}
             <tr>
