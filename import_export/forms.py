@@ -46,6 +46,7 @@ class ExportCorvetForm(forms.Form):
         label='Début date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
     end_date = forms.DateField(
         label='Fin date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
+    is_row = forms.BooleanField(label='CORVET brutes', required=False, widget=forms.CheckboxInput())
 
     def __init__(self, *args, **kwargs):
         xelons = Xelon.objects.exclude(modele_produit="").order_by('modele_produit')

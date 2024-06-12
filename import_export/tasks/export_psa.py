@@ -243,6 +243,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         super().__init__(*args, **kwargs)
         self.fields = []
         self.queryset = None
+        self.row = False
 
     def _query_format(self, query):
         data_list = [value for value in query]
@@ -266,7 +267,9 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
                         data = data.get(brand)
                 except Exception:
                     pass
-            data_list[position] = f"{data} | {product}"
+            data_list[position] = data
+            if self.row:
+                data_list[position] = f"{data} | {product}"
         return data_list
 
     def get_multimedia_display(self, data_list):
@@ -279,13 +282,16 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         for field, arg in self.COL_CORVET.items():
             if field in self.fields:
                 position = self.fields.index(field)
-                if data_list[position]:
+                if data_list[position] and self.row:
                     data_list[position] = f"{get_corvet(data_list[position], arg)} | {data_list[position]}"
+                elif data_list[position]:
+                    data_list[position] = f"{get_corvet(data_list[position], arg)}"
         return data_list
 
     def run(self, *args, **kwargs):
         excel_type = kwargs.pop('excel_type', 'xlsx')
         vin_list = kwargs.pop('vin_list', None)
+        self.row = kwargs.pop('is_row', False)
         if vin_list is None:
             if kwargs.get('xelon_model', None):
                 filename = f"{kwargs.get('xelon_model')}"
