@@ -19,18 +19,21 @@ def product_update(instance):
         }
         for corvet_type, comp_ref in ecu_dict.items():
             if product.corvet_type == corvet_type and comp_ref_isvalid(comp_ref):
-                if product.corvet_type in ["NAV", "RAD"]:
-                    obj, created = Multimedia.objects.get_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type})
-                else:
-                    obj, created = Ecu.objects.get_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type}
-                    )
-                if not created:
-                    obj.xelon_name = instance.modele_produit
-                    obj.save()
+                try:
+                    if product.corvet_type in ["NAV", "RAD"]:
+                        obj, created = Multimedia.objects.get_or_create(
+                                comp_ref=comp_ref,
+                                defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type})
+                    else:
+                        obj, created = Ecu.objects.get_or_create(
+                            comp_ref=comp_ref,
+                            defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type}
+                        )
+                    if not created:
+                        obj.xelon_name = instance.modele_produit
+                        obj.save()
+                except ValueError:
+                    pass
                 break
 
 

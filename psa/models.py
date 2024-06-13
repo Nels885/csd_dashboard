@@ -3,6 +3,8 @@ from ast import literal_eval
 
 from django.db import models, utils
 from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -541,10 +543,6 @@ class Multimedia(models.Model):
     relation_by_name = models.BooleanField('relation par nom', default=False)
     firmware = models.ForeignKey('Firmware', on_delete=models.SET_NULL, limit_choices_to={'is_active': True}, null=True, blank=True)
 
-    class Meta:
-        verbose_name = "Données Multimédia"
-        ordering = ['comp_ref']
-
     def get_type_display(self):
         dict_type = dict(BTEL_TYPE_CHOICES)
         return dict_type.get(self.type, "")
@@ -552,6 +550,21 @@ class Multimedia(models.Model):
     def get_name_display(self):
         dict_name = dict(BTEL_PRODUCT_CHOICES)
         return dict_name.get(self.name, "")
+
+    def clean(self):
+        queryset = Ecu.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValidationError(_("This entry already exists in the Ecu model."))
+
+    def save(self, *args, **kwargs):
+        queryset = Ecu.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValueError(_("This entry already exists in the Ecu model."))
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Données Multimédia"
+        ordering = ['comp_ref']
 
     def __iter__(self):
         for field in self._meta.fields:
@@ -663,16 +676,27 @@ class Ecu(models.Model):
     extra = models.CharField('supplément', max_length=100, blank=True)
     relation_by_name = models.BooleanField('relation par nom', default=False)
 
-    class Meta:
-        verbose_name = "Données ECU"
-        ordering = ['comp_ref']
-
     def get_type_display(self):
         dict_type = dict(ECU_TYPE_CHOICES)
         return dict_type.get(self.type, "")
 
     def get_name_display(self):
         return self.name
+
+    def clean(self):
+        queryset = Multimedia.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValidationError(_("This entry already exists in the Multimedia model."))
+
+    def save(self, *args, **kwargs):
+        queryset = Multimedia.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValueError(_("This entry already exists in the Multimedia model."))
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Données ECU"
+        ordering = ['comp_ref']
 
     def __iter__(self):
         for field in self._meta.fields:
