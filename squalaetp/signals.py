@@ -29,7 +29,7 @@ def product_update(instance):
                             comp_ref=comp_ref,
                             defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type}
                         )
-                    if not created:
+                    if not created and not obj.xelon_name:
                         obj.xelon_name = instance.modele_produit
                         obj.save()
                 except ValueError:
