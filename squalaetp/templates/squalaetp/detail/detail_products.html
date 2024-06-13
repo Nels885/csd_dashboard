@@ -37,12 +37,21 @@
                 <td class="text-dark td-ihm-40">Modèle produit</td>
                 <td>{{ xelon.modele_produit }}</td>
             </tr>
-            {% if xelon.new_sn %}
+            {% if xelon.swap_sn %}
                 <tr>
                     <td class="text-dark td-ihm-40">N° série produit (SWAP)</td>
                     <td class="font-weight-bold text-white bg-warning">
-                        {{ xelon.new_sn }}
-                        <a href="#" title="Copie pour Xelon" onclick="textCopy('UIN: {{ xelon.new_sn }}')"><i class="fas fa-copy ml-1"></i></a>
+                        {{ xelon.swap_sn }}
+                        <a href="#" title="Copie pour Xelon" onclick="textCopy('UIN: {{ xelon.swap_sn }}')"><i class="fas fa-copy ml-1"></i></a>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if xelon.swap_prod %}
+                <tr>
+                    <td class="text-dark td-ihm-40">Réf. produit (SWAP)</td>
+                    <td class="font-weight-bold text-white bg-warning">
+                        {{ xelon.swap_prod }}
+                        <a href="#" title="Copie pour Xelon" onclick="textCopy('{{ xelon.swap_prod }}')"><i class="fas fa-copy ml-1"></i></a>
                     </td>
                 </tr>
             {% endif %}

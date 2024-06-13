@@ -196,37 +196,37 @@ class ProductModalForm(BSModalModelForm):
 class NewSerialNumberModalForm(BSModalModelForm):
     class Meta:
         model = Xelon
-        fields = ['new_sn']
+        fields = ['swap_sn']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.corvet:
             self.fields['choice'] = forms.ChoiceField(choices=SN_CHOICES, required=True)
-        self.fields['new_sn'].required = True
+        self.fields['swap_sn'].required = True
 
     def clean(self):
         cleaned_data = super().clean()
-        new_sn = cleaned_data.get('new_sn')
+        swap_sn = cleaned_data.get('swap_sn')
         choice = cleaned_data.get('choice')
         corvet = self.instance.corvet
         if choice and corvet:
-            if choice == "44X" and new_sn == corvet.electronique_44x:
+            if choice == "44X" and swap_sn == corvet.electronique_44x:
                 raise forms.ValidationError(_('Serial number does not change!'))
-            elif choice == "44F" and new_sn == corvet.electronique_44f:
+            elif choice == "44F" and swap_sn == corvet.electronique_44f:
                 raise forms.ValidationError(_('Serial number does not change!'))
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit and not is_ajax(self.request):
-            new_sr = self.cleaned_data['new_sn']
+            swap_sn = self.cleaned_data['swap_sn']
             choice = self.cleaned_data['choice']
-            content = f"NEW_SN: {new_sr}"
+            content = f"NEW_SN: {swap_sn}"
             instance.actions.create(content=content)
             if instance.corvet and choice == '44X':
-                instance.corvet.opts.new_44x = new_sr
+                instance.corvet.opts.new_44x = swap_sn
                 instance.corvet.opts.save()
             elif instance.corvet and choice == '44F':
-                instance.corvet.opts.new_44f = new_sr
+                instance.corvet.opts.new_44f = swap_sn
                 instance.corvet.opts.save()
             instance.save()
         return instance
