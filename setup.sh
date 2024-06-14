@@ -46,14 +46,13 @@ URL_PROXY=""
 function proxy() {
   read -p "Url proxy (if empty no proxy): " URL_PROXY
   echo "Use proxy: $URL_PROXY"
-  export HTTP_PROXY=$URL_PROXY
-  export HTTPS_PROXY=$URL_PROXY
+  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+  pip3 config set global.proxy $URL_PROXY
 }
 
 function aptInstall() {
   echo -e "${RED}Installing needed programs...${NC}"
   sudo http_proxy=$URL_PROXY apt install -y python3-pip python3-dev libpq-dev redis-server
-  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
 }
 
 function aptUpgrade() {
@@ -64,7 +63,6 @@ function aptUpgrade() {
 
 function pipenvInstall() {
   echo -e "${RED}Install Pipenv Environment...${NC}"
-  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
   sudo pip3 install pipenv
   pipenv --python 3
   pipenv sync
@@ -72,7 +70,6 @@ function pipenvInstall() {
 
 function pipenvUpdate() {
   echo -e "${RED}Updating Pipenv Environment...${NC}"
-  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
   pipenv sync
 }
 
