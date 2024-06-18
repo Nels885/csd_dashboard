@@ -2,7 +2,7 @@ import requests
 
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.views import APIView
 
@@ -10,7 +10,7 @@ from ..serializers import ProgSerializer, CalSerializer
 from prog.serializers import UnlockSerializer, UnlockUpdateSerializer, RaspeediSerializer
 from psa.serializers import DefaultCodeSerializer
 from prog.models import Raspeedi, UnlockProduct
-from squalaetp.models import Xelon
+from squalaetp.models import Xelon, ProductCode
 from psa.models import DefaultCode
 
 from ..utils import TokenAuthSupportQueryString
@@ -31,7 +31,7 @@ class ProgViewSet(viewsets.ModelViewSet):
     serializer_class = ProgSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['numero_de_dossier', 'vin', 'modele_produit']
-    http_method_names = ['get']
+    http_method_names = ['get', 'put']
 
     def get_queryset(self):
         """
@@ -51,6 +51,28 @@ class ProgViewSet(viewsets.ModelViewSet):
             if querystring.get('ref') != 'all':
                 queryset = queryset.filter(ref_boitier=querystring.get('ref'))
         return queryset
+
+    def put(self, request, *args, **kwargs):
+        qstring = self.request.query_params
+        suin = qstring.get('suin')
+        shw = qstring.get('shw')
+        data = {'status': status.HTTP_400_BAD_REQUEST, 'result': {'suin': suin, 'shw': shw}}
+        try:
+            instance = Xelon.objects.get(numero_de_dossier=qstring.get('search'))
+            if instance and instance.corvet:
+                if suin and instance.corvet.electronique_44x != suin:
+                    instance.corvet.opts.new_44x = suin
+                    instance.corvet.opts.save()
+                    instance.swap_sn = suin
+                if shw:
+                    prods = ProductCode.objects.filter(medias__comp_ref=shw)
+                    if prods and len(prods) == 1:
+                        instance.swap_prod = prods.first()
+                instance.save()
+                data['status'] = status.HTTP_200_OK
+        except Xelon.DoesNotExist:
+            pass
+        return Response(data)
 
 
 class CalViewSet(viewsets.ModelViewSet):
