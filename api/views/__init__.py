@@ -64,12 +64,12 @@ class ProgViewSet(viewsets.ModelViewSet):
                     instance.corvet.opts.new_44x = suin
                     instance.corvet.opts.save()
                     instance.swap_sn = suin
-                if shw:
-                    prods = ProductCode.objects.filter(medias__comp_ref=shw)
-                    if prods and len(prods) == 1:
-                        instance.swap_prod = prods.first()
-                instance.save()
-                data['status'] = status.HTTP_200_OK
+                    if shw:
+                        prods = ProductCode.objects.filter(medias__comp_ref=shw)
+                        if prods and len(prods) == 1:
+                            instance.swap_prod = prods.first()
+                    instance.save()
+                    data['status'] = status.HTTP_200_OK
         except Xelon.DoesNotExist:
             pass
         return Response(data)
