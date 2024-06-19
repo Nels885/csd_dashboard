@@ -8,12 +8,15 @@
         {% else %}
 {#            <a class="btn btn-primary mr-5 col-sm-2" href="{% url 'psa:majestic_web' %}?type=license&uin={{ uin }}&updateId={{ update_id }}">Téléchargement license</a>#}
 {#            <a class="btn btn-primary col-sm-2" href="{% url 'psa:majestic_web' %}?type=fw&updateId={{ update_id }}">Téléchargement MAJ</a>#}
-            <button class="btn btn-primary mr-5 col-sm-2" onclick="majestic()">Téléchargement license</button>
-            <button class="btn btn-primary col-sm-2" onclick="majestic(false)">Téléchargement MAJ</button>
+            <button class="btn btn-primary mr-5 col-sm-2" onclick="majestic('{{ sn }}')">Téléchargement license</button>
+            {% if new_sn %}
+                <button class="btn btn-warning mr-5 col-sm-3" onclick="majestic('{{ new_sn }}')">Téléchargement license SWAP</button>
+            {% endif %}
+            <button class="btn btn-primary col-sm-2" onclick="majestic('{{ sn }}', false)">Téléchargement MAJ</button>
             <script>
-                function majestic(license=true) {
+                function majestic(uin, license=true) {
                     $(".bd-loading-modal-lg").modal("show");
-                    let url = "{% url 'psa:ajax_majestic_web' %}?type=license&uin={{ uin }}&updateId={{ update_id }}";
+                    let url = "{% url 'psa:ajax_majestic_web' %}?type=license&uin=" + uin + "&updateId={{ update_id }}";
                     if (license === false) {
                         url = "{% url 'psa:ajax_majestic_web' %}?type=fw&updateId={{ update_id }}";
                     }
