@@ -7,10 +7,11 @@ from django.contrib.auth.models import User
 from utils.django.contrib import CustomModelAdmin
 
 from .models import Xelon, XelonTemporary, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
-from .forms import ProductCodeAdminForm, XelonTemporaryForm
+from .forms import ProductCodeAdminForm, XelonTemporaryForm, XelonAdminForm
 
 
 class XelonAdmin(CustomModelAdmin):
+    form = XelonAdminForm
     list_display = (
         'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture', 'vin_error', 'is_active'
     )

@@ -20,6 +20,13 @@ from utils.file import LogFile
 from utils.conf import CSD_ROOT
 
 
+class XelonAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = Xelon
+        exclude = ['corvet', 'product', 'actions']
+
+
 class IhmEmailModalForm(BSModalForm):
     to = forms.CharField(label='À', required=True, widget=forms.TextInput())
     cc = forms.CharField(label='Cc', widget=forms.TextInput())
