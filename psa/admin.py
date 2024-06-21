@@ -7,8 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from utils.django.contrib import CustomModelAdmin
 
 from .models import (
-    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
-    DefaultCode, ProductChoice, CanRemote, Vehicle, CalCurrent, CalHistory
+    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, CorvetOption,
+    SupplierCode, DefaultCode, ProductChoice, CanRemote, Vehicle, CalCurrent, CalHistory
 )
 from .forms import (
     EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm, CalibrationAdminForm, CalCurrentAdminForm, FirmwareAdminForm,
@@ -30,7 +30,12 @@ class CorvetListFilter(admin.SimpleListFilter):
         return queryset
 
 
+class CorvetInline(admin.StackedInline):
+    model = CorvetOption
+
+
 class CorvetAdmin(CustomModelAdmin):
+    inlines = (CorvetInline,)
     list_display = (
         'vin', 'donnee_marque_commerciale', 'electronique_14f', 'electronique_94f', 'electronique_14x',
         'electronique_94x', 'electronique_14a', 'electronique_94a', 'get_update'
@@ -113,6 +118,7 @@ class CalibrationAdmin(admin.ModelAdmin):
                 query.is_available
             ])
         return response
+
 
 class CalCurrentAdmin(admin.ModelAdmin):
     form = CalCurrentAdminForm
