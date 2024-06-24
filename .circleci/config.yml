@@ -3,7 +3,7 @@ orbs:
   python: circleci/python@2.0.3
   browser-tools: circleci/browser-tools@1.4.7
 jobs: # A basic unit of work in a run
-  build-and-test: # runs not using Workflows must have a `build` job as entry point
+  build: # runs not using Workflows must have a `build` job as entry point
     # directory where steps are run
     working_directory: ~/circleci-csd-dashboard
     docker: # run the steps with Docker
