@@ -8,7 +8,7 @@ jobs: # A basic unit of work in a run
     working_directory: ~/circleci-csd-dashboard
     docker: # run the steps with Docker
       # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
-      - image: cimg/python:3.10.14-browsers
+      - image: cimg/python:3.10.12-browsers
       # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
       - image: cimg/postgres:9.6.24
         environment: # environment variables for the Postgres container.
@@ -23,7 +23,6 @@ jobs: # A basic unit of work in a run
           name: Install dependencies
           no_output_timeout: 30m
           command: |
-            pip install --upgrade pipenv
             pipenv --version
             pipenv sync --dev
       - run:
