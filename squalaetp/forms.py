@@ -208,8 +208,14 @@ class NewSerialNumberModalForm(BSModalModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.corvet:
-            self.fields['choice'] = forms.ChoiceField(choices=SN_CHOICES, required=True)
+            self.fields['choice'] = forms.ChoiceField(choices=SN_CHOICES, required=False)
         self.fields['swap_sn'].required = True
+
+    def clean_swap_sn(self):
+        data = self.cleaned_data['swap_sn']
+        if data == self.instance.swap_sn:
+            self.add_error('swap_sn', _('The value is the same as the previous one'))
+        return data
 
     def clean(self):
         cleaned_data = super().clean()
