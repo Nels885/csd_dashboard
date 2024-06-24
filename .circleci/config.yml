@@ -22,7 +22,9 @@ jobs: # A basic unit of work in a run
       - run:
           name: Install dependencies
           no_output_timeout: 30m
-          command: pipenv sync --dev
+          command: |
+            pipenv --version
+            pipenv sync --dev
       - run:
           command: |
             google-chrome --version
