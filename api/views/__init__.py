@@ -56,7 +56,7 @@ class ProgViewSet(viewsets.ModelViewSet):
         qstring = self.request.query_params
         suin = qstring.get('suin')
         shw = qstring.get('shw')
-        data = {'status': status.HTTP_400_BAD_REQUEST, 'result': {'suin': suin, 'shw': shw}}
+        data = {'status_code': status.HTTP_400_BAD_REQUEST, 'result': {'suin': suin, 'shw': shw}}
         try:
             instance = Xelon.objects.get(numero_de_dossier=qstring.get('search'))
             if instance and instance.corvet:
@@ -69,7 +69,7 @@ class ProgViewSet(viewsets.ModelViewSet):
                         if prods and len(prods) == 1:
                             instance.swap_prod = prods.first()
                     instance.save()
-                    data['status'] = status.HTTP_200_OK
+                    data['status_code'] = status.HTTP_200_OK
         except Xelon.DoesNotExist:
             pass
         return Response(data)
