@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
-from xlwt import Workbook
-import io
-from xlrd import XLRDError
+# from xlwt import Workbook
+# import io
+# from xlrd import XLRDError
 import pandas as pd
 import unicodedata
 import re
@@ -87,10 +87,10 @@ class ExcelFormat(BaseFormat):
         """
         self._check_file_date(file, datedelta, kwargs.get('offdays', []))
         self.basename = os.path.basename(file[:file.find('.')])
-        try:
-            df = pd.read_excel(file, sheet_name=sheet_name, skiprows=skiprows, dtype=dtype, usecols=usecols)
-        except XLRDError:
-            df = self._excel_decode(file, sheet_name, skiprows, dtype, usecols)
+        # try:
+        df = pd.read_excel(file, sheet_name=sheet_name, skiprows=skiprows, dtype=dtype, usecols=usecols)
+        # except XLRDError:
+        #     df = self._excel_decode(file, skiprows, dtype, usecols)
         super(ExcelFormat, self).__init__(df, columns)
 
     def read_all(self):
@@ -108,44 +108,44 @@ class ExcelFormat(BaseFormat):
             self.sheet.row_values()
         return data
 
-    def _excel_decode(self, file, sheet_name, skiprows, dtype, usecols):
-        """
-        Fix badly formatted excel files
-        :param filename:
-            Excel file path
-        :param skip_rows:
-            Rows to skip at the beginning (0-indexed)
-        :return:
-            Temporary Excel file in the 'tmp' directory
-        """
-        try:
-            file1 = io.open(file, 'r', encoding='latin-1')
-            data = file1.readlines()
+    # def _excel_decode(self, file, skiprows, dtype, usecols):
+    #     """
+    #     Fix badly formatted excel files
+    #     :param filename:
+    #         Excel file path
+    #     :param skip_rows:
+    #         Rows to skip at the beginning (0-indexed)
+    #     :return:
+    #         Temporary Excel file in the 'tmp' directory
+    #     """
+    #     try:
+    #         file1 = io.open(file, 'r', encoding='latin-1')
+    #         data = file1.readlines()
+    #         print(data)
+    #         # Creating a workbook object
+    #         xldoc = Workbook()
+    #           # Adding a sheet to the workbook object
+    #         sheet = xldoc.add_sheet('Sheet1', cell_overwrite_ok=True)
+    #         # Iterating and saving the data to sheet
+    #         for i, row in enumerate(data):
+    #             # Two things are done here
+    #             # Removeing the '\n' which comes while reading the file using io.open
+    #             # Getting the values after splitting using '\t'
+    #             for j, val in enumerate(row.replace('\n', '').split('\t')):
+    #                 sheet.write(i, j, val)
 
-            # Creating a workbook object
-            xldoc = Workbook()
-            # Adding a sheet to the workbook object
-            sheet = xldoc.add_sheet("Sheet1", cell_overwrite_ok=True)
-            # Iterating and saving the data to sheet
-            for i, row in enumerate(data):
-                # Two things are done here
-                # Removeing the '\n' which comes while reading the file using io.open
-                # Getting the values after splitting using '\t'
-                for j, val in enumerate(row.replace('\n', '').split('\t')):
-                    sheet.write(i, j, val)
-
-            # Saving the file as an excel file
-            xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
-            df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
-                               dtype=dtype, usecols=usecols)
-            if df.get('N° de dossier'):
-                df = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
-            df.reset_index(drop=True, inplace=True)
-            # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
-            return df
-        except UnicodeDecodeError as err:
-            print(f"UnicodeDecodeError: {err} - file : {file}")
-            return pd.DataFrame()
+    #         # Saving the file as an excel file
+    #         xldoc.save('/tmp/{}_reformat.xls'.format(self.basename))
+    #         df = pd.read_excel("/tmp/{}_reformat.xls".format(self.basename), sheet_name="Sheet1", skiprows=skiprows,
+    #                            dtype=dtype, usecols=usecols)
+    #         if df.get('N° de dossier'):
+    #             df = df.drop(df[(df['N° de dossier'].isnull()) | (df['N° de dossier'] == 'N° de dossier')].index)
+    #         df.reset_index(drop=True, inplace=True)
+    #         # print("File : {}.xls - Row number : {}".format(self.basename, dataframe.shape[0]))
+    #         return df
+    #     except UnicodeDecodeError as err:
+    #         print(f"UnicodeDecodeError: {err} - file : {file}")
+    #         return pd.DataFrame()
 
     def _check_file_date(self, file, datedelta, offdays):
         now = datetime.now()
