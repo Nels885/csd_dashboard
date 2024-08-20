@@ -108,6 +108,7 @@ class ToolStatus(models.Model):
     ip_addr = models.CharField("ip address", max_length=50, blank=True)
     mac_addr = models.CharField("mac address", max_length=20, blank=True)
     hw_revision = models.CharField('Hardware revision', max_length=500, blank=True)
+    mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
     logs = GenericRelation('Log')
 
     class Meta:

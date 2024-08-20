@@ -204,15 +204,17 @@ def aet_info(request, pk=None):
     :return:
         AET/MbedFirmware table page
     """
-    AET_list = AET.objects.all()
+    AET_list = ToolStatus.objects.filter(firmware="RaspiAET")
     firmware_list = MbedFirmware.objects.all()
     for obj in AET_list:
         try:
-            response = requests.get(url=f"http://{obj.raspi_url}/api/info/", timeout=(0.05, 0.5))
+            response = requests.get(url=f"http://{obj.ip_addr}/api/info/", timeout=(0.05, 0.5))
             if response.status_code >= 200 or response.status_code < 300:
                 data = response.json()
-                obj.mbed_list = ", ".join(data.get('mbed_list', []))
-                obj.save()
+                mbed_list = data.get('mbed_list', [])
+                if mbed_list:
+                    obj.mbed_list = ", ".join(data.get('mbed_list', []))
+                    obj.save()
         except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
             pass
     context.update(locals())
@@ -231,8 +233,8 @@ def ajax_aet_status(request, pk):
     """
     data = {'pk': pk, 'msg': 'No response', 'status': 'Hors Ligne', 'percent': '0', 'status_code': 404}
     try:
-        aet = AET.objects.get(pk=pk)
-        response = requests.get(url="http://" + aet.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+        query = ToolStatus.objects.get(pk=pk)
+        response = requests.get(url=f"http://{query.ip_addr}/api/info/", timeout=(0.05, 0.5))
         if response.status_code >= 200 or response.status_code < 300:
             data = response.json()
     except (requests.exceptions.RequestException, AET.DoesNotExist):
@@ -318,8 +320,8 @@ class AetSendSoftwareView(BSModalFormView):
     def form_valid(self, form):
         if not is_ajax(self.request):
             pk = self.kwargs.get('pk')
-            aet = AET.objects.get(pk=pk)
-            task = send_firmware_task.delay(raspi_url=aet.raspi_url, fw_name=form.cleaned_data['select_firmware'],
+            query = ToolStatus.objects.get(pk=pk)
+            task = send_firmware_task.delay(raspi_url=query.ip_addr, fw_name=form.cleaned_data['select_firmware'],
                                             target=form.cleaned_data['select_target'])
             self.task_id = task.id
         return super().form_valid(form)
@@ -329,7 +331,7 @@ class AetSendSoftwareView(BSModalFormView):
         pk = self.kwargs.get('pk')
         context['form'] = AETSendSoftwareForm(pk=pk)
         context['pk'] = pk
-        context["modal_title"] = AET.objects.filter(pk=pk).first().name
+        context["modal_title"] = ToolStatus.objects.filter(pk=pk).first().name
         return context
 
     def get_success_url(self):

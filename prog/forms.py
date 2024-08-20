@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField
+from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField, Textarea
 from utils.django.forms.fields import ListTextWidget
 from django.utils.translation import gettext as _
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
@@ -65,7 +65,12 @@ class ToolStatusForm(BSModalModelForm):
 
     class Meta:
         model = ToolStatus
-        fields = ('name', 'hostname', 'type', 'comment', 'url', 'status_path', 'api_path')
+        fields = ('name', 'hostname', 'type', 'comment', 'url', 'status_path', 'api_path', 'mbed_list')
+        widgets = {
+            'type': Textarea(attrs={'rows': 4}),
+            'comment': Textarea(attrs={'rows': 4}),
+            'mbed_list': Textarea(attrs={'rows': 3}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -104,7 +109,7 @@ class AETSendSoftwareForm(BSModalForm):
     def __init__(self, *args, **kwargs):
         pk = kwargs.pop('pk', None)
         if pk is not None:
-            aet = AET.objects.get(pk=pk)
+            aet = ToolStatus.objects.get(pk=pk)
             _target_list = list(aet.mbed_list.split(","))
         else:
             _target_list = None
