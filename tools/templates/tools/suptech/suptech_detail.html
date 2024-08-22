@@ -8,7 +8,9 @@
         <div class="form-group row">
             <label for="id_user" class="col-form-label col-sm-2">Qui</label>
             <div class="col-sm-4">
-                <input type="text" value="{{ object.created_by }}" maxlength="50" disabled class="form-control" id="id_user">
+                {% with user=object.created_by %}
+                    <input type="text" value="{{ user.first_name }} {{ user.last_name }} - {{ user }}" maxlength="50" disabled class="form-control" id="id_user">
+                {% endwith %}
             </div>
             <label for="id_created_at" class="col-form-label col-sm-3">Date de la demande</label>
             <div class="col-sm-3 mb-3 mb-sm-0">
@@ -94,7 +96,9 @@
         <div class="form-group row">
             <label for="id_modified_by" class="col-form-label col-sm-2">Traité par</label>
             <div class="col-sm-4">
-                <input type="text" value="{{ object.modified_by|default:'' }}" maxlength="200" disabled class="form-control" id="id_modified_by">
+                {% with user=object.modified_by %}
+                        <input type="text" value="{% if user %}{{ user.last_name }} {{ user.first_name }} - {{ user }}{% endif %}" maxlength="200" disabled class="form-control" id="id_modified_by">
+                {% endwith %}
             </div>
             <label for="id_modified_at" class="col-form-label col-sm-3">Date du traitement</label>
             <div class="col-sm-3">
