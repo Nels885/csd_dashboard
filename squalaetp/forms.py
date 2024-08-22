@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
@@ -75,7 +75,7 @@ class IhmEmailModalForm(BSModalForm):
     def adm_message(model, request):
         domain = config.WEBSITE_DOMAIN
         if request.GET.get("select") == "prod":
-            select = "modèle produit"
+            select = _("Product model")
         else:
             select = "V.I.N."
         message = render_to_string('squalaetp/email_format/adm_email.html', locals())
@@ -337,8 +337,8 @@ class XelonTemporaryForm(forms.ModelForm):
 
 class XelonTemporaryModalForm(XelonTemporaryForm, BSModalModelForm):
 
-    def __init_(self, *args, **kwargs):
-        super().__init(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def save(self, commit=True):
         instance = super().save(commit=False)

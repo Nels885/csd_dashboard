@@ -1,7 +1,5 @@
 from django.contrib import admin
-from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
-from django.contrib.admin import widgets
 from django.contrib.auth.models import User
 
 from utils.django.contrib import CustomModelAdmin
@@ -42,7 +40,7 @@ class SparePartAdmin(admin.ModelAdmin):
 
     def get_code_produit(self, obj):
         return obj.code_produit.name
-    get_code_produit.short_description = 'Code Produit'
+    get_code_produit.short_description = _('Product code')
 
 
 class IndicatorAdmin(admin.ModelAdmin):

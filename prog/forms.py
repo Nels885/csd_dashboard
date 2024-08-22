@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, Select, CheckboxInput, Form, CharField, Textarea
 from utils.django.forms.fields import ListTextWidget
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from crum import get_current_user
 

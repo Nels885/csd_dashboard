@@ -15,7 +15,7 @@ class BatchAdmin(admin.ModelAdmin):
     def batch_number(self, obj):
         return obj
 
-    batch_number.short_description = "Numéro de lot"
+    batch_number.short_description = _("Batch number")
 
 
 class EcuRefBaseAdmin(CustomModelAdmin):
@@ -53,9 +53,9 @@ class RepairAdmin(CustomModelAdmin):
     def get_hw_reference(self, obj):
         return obj.batch.ecu_ref_base.ecu_type.hw_reference
 
-    get_batch_number.short_description = "batch number"
-    get_customer.short_description = "customer"
-    get_hw_reference.short_description = "hw reference"
+    get_batch_number.short_description = _("Batch number")
+    get_customer.short_description = _("Customer")
+    get_hw_reference.short_description = _("HW reference")
 
 
 class RepairCloseReasonAdmin(admin.ModelAdmin):
@@ -79,7 +79,7 @@ class EcuModelAdmin(admin.ModelAdmin):
     def get_ecu_type(self, obj):
         return obj.ecu_type
 
-    get_ecu_type.short_description = "TYPE ECU"
+    get_ecu_type.short_description = _("ECU TYPE")
 
 
 class EcuTypeAdmin(admin.ModelAdmin):
@@ -91,7 +91,7 @@ class EcuTypeAdmin(admin.ModelAdmin):
     def get_spare_part(self, obj):
         return obj.spare_part
 
-    get_spare_part.short_description = "XELON- Code produit"
+    get_spare_part.short_description = _("XELON - Product code")
 
 
 admin.site.register(Batch, BatchAdmin)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-21 11:19+0100\n"
+"POT-Creation-Date: 2024-08-22 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,85 +18,70 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: tools/admin.py:64
-#, python-brace-format
-msgid "{0} product{1} {2} successfully {3}"
-msgstr "{0} produit{1} {2} avec succès {3}"
-
-#: tools/admin.py:67 tools/admin.py:120 tools/admin.py:218
-msgid "was,were"
-msgstr "était, étaient"
-
-#: tools/admin.py:75 tools/admin.py:128
+#: tools/admin.py:62 tools/admin.py:101
 msgid "48h processing disabled"
 msgstr "Traitement 48h désactivé"
 
-#: tools/admin.py:80 tools/admin.py:133
+#: tools/admin.py:67 tools/admin.py:106
 msgid "48h processing enabled"
 msgstr "Traitement 48h activé"
 
-#: tools/admin.py:117 tools/admin.py:215
-#, fuzzy, python-brace-format
-#| msgid "{0} product{1} {2} successfully {3}"
-msgid "{0} item{1} {2} successfully {3}"
-msgstr "{0} produit{1} {2} avec succès {3}"
-
-#: tools/admin.py:138 tools/admin.py:226
+#: tools/admin.py:111 tools/admin.py:185
 msgid "Item disabled"
 msgstr "Item désactivé"
 
-#: tools/admin.py:143 tools/admin.py:231
+#: tools/admin.py:116 tools/admin.py:190
 msgid "Item activated"
 msgstr "Item activé"
 
-#: tools/forms.py:120 tools/forms.py:301
+#: tools/forms.py:120 tools/forms.py:273
 msgid "Username not found."
 msgstr "Utilisateur non trouvé."
 
-#: tools/models.py:21
+#: tools/models.py:24
 msgid "CAL software"
 msgstr "Logiciel CAL"
 
-#: tools/models.py:22
+#: tools/models.py:25
 msgid "No"
 msgstr "Non"
 
-#: tools/models.py:22
+#: tools/models.py:25
 msgid "Yes"
 msgstr "Oui"
 
-#: tools/models.py:41
+#: tools/models.py:44
 msgid "CALIBRE file exists !"
 msgstr "Le fichier CALIBRE existe !"
 
-#: tools/models.py:43
+#: tools/models.py:46
 msgid "TELECODE file exists !"
 msgstr "Le fichier TELECODE existe !"
 
-#: tools/models.py:45
+#: tools/models.py:48
 msgid "TELECODE is required !"
 msgstr "TELECODE est requis !"
 
-#: tools/models.py:47
+#: tools/models.py:50
 msgid "CALIBRE or TELECODE ?"
 msgstr "CALIBRE ou TELECODE ?"
 
 #: tools/templates/tools/config_files.html:26
 msgid "Select"
-msgstr ""
+msgstr "Sélectionner"
 
 #: tools/templates/tools/config_files.html:32
 msgid "Add config file"
-msgstr ""
+msgstr "Ajouter un fichier de configuration"
 
 #: tools/templates/tools/config_files.html:76
 #: tools/templates/tools/infotech/infotech_update.html:94
 #: tools/templates/tools/modal/config_file_create.html:74
 #: tools/templates/tools/modal/infotech_create.html:97
-#: tools/templates/tools/modal/suptech_create.html:171
+#: tools/templates/tools/modal/suptech_create.html:177
 #: tools/templates/tools/modal/tag_xelon.html:51
 #: tools/templates/tools/modal/thermal_delete.html:20
-#: tools/templates/tools/suptech/suptech_update.html:158
+#: tools/templates/tools/suptech/suptech_update.html:178
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -105,23 +90,24 @@ msgid "Save"
 msgstr "Sauvegarder"
 
 #: tools/templates/tools/infotech/infotech_detail.html:65
-#: tools/templates/tools/suptech/suptech_detail.html:133
+#: tools/templates/tools/suptech/suptech_detail.html:134
+#: tools/templates/tools/suptech/suptech_detail.html:136
 msgid "Respond to request"
 msgstr "Répondre à la demande"
 
 #: tools/templates/tools/infotech/infotech_detail.html:96
-#: tools/templates/tools/suptech/suptech_detail.html:164
+#: tools/templates/tools/suptech/suptech_detail.html:168
 msgid "Send"
 msgstr "Envoyer"
 
 #: tools/templates/tools/infotech/infotech_update.html:95
-#: tools/templates/tools/suptech/suptech_update.html:159
+#: tools/templates/tools/suptech/suptech_update.html:180
 msgid "Update"
 msgstr "Mettre à jour"
 
 #: tools/templates/tools/modal/config_file_create.html:75
 #: tools/templates/tools/modal/infotech_create.html:98
-#: tools/templates/tools/modal/suptech_create.html:172
+#: tools/templates/tools/modal/suptech_create.html:178
 msgid "Create"
 msgstr "créé le"
 
@@ -186,7 +172,7 @@ msgstr "Vous ne disposez pas des autorisations requises"
 msgid "Software list"
 msgstr "Liste logiciel"
 
-#: tools/views.py:37 tools/views.py:45 tools/views.py:267
+#: tools/views.py:37 tools/views.py:45 tools/views.py:266
 msgid "Tools"
 msgstr "Outils"
 
@@ -231,49 +217,56 @@ msgstr "liste Chambre thermique"
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: tools/views.py:165 tools/views.py:222 tools/views.py:247 tools/views.py:347
-#: tools/views.py:372
+#: tools/views.py:169 tools/views.py:225 tools/views.py:246 tools/views.py:345
+#: tools/views.py:365
 msgid "Success: The email has been sent."
 msgstr "Succès: L'email a été envoyé."
 
-#: tools/views.py:175
+#: tools/views.py:171 tools/views.py:227 tools/views.py:248 tools/views.py:347
+#: tools/views.py:367
+msgid "Warning: Data update but without sending the email"
+msgstr "Attention : mise à jour des données mais sans envoi de l'email"
+
+#: tools/views.py:178
 msgid "Support Tech list"
 msgstr "Liste Support Tech"
 
-#: tools/views.py:203
+#: tools/views.py:206
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Detail"
 msgstr "SUPTECH N°{self.object.pk} - Détail"
 
-#: tools/views.py:220 tools/views.py:345
+#: tools/views.py:223 tools/views.py:343
 msgid "Success: The message has been added."
 msgstr "Succès: Le message a été ajouté."
 
-#: tools/views.py:224 tools/views.py:249 tools/views.py:349 tools/views.py:374
-msgid "Warning: Data update but without sending the email"
-msgstr "Attention : mise à jour des données mais sans envoi de l'email"
-
-#: tools/views.py:237
+#: tools/views.py:240
 #, python-brace-format
 msgid "SUPTECH N°{self.object.pk} - Response"
 msgstr "SUPTECH N°{self.object.pk} - Réponse"
 
-#: tools/views.py:268
+#: tools/views.py:244
+msgid "Success: SupTech update successfully!"
+msgstr ""
+
+#: tools/views.py:267
 msgid "Config files"
 msgstr "Fichiers Config"
 
-#: tools/views.py:275
+#: tools/views.py:274
 msgid "Success: Editing the config file."
 msgstr "Succès: Modification du fichier de configuration."
 
-#: tools/views.py:307
+#: tools/views.py:306
 msgid "Info Tech list"
 msgstr "Liste Info Tech"
 
-#: tools/views.py:332
+#: tools/views.py:331
+#, python-brace-format
 msgid "INFOTECH N°{self.object.pk} - Detail"
 msgstr "INFOTECH N°{self.object.pk} - Détail"
 
-#: tools/views.py:362
+#: tools/views.py:360
+#, python-brace-format
 msgid "INFOTECH N°{self.object.pk} - Response"
 msgstr "INFOTECH N°{self.object.pk} - Réponse"

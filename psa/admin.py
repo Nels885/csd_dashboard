@@ -104,7 +104,7 @@ class CalibrationAdmin(admin.ModelAdmin):
     def get_type_display(self, obj):
         return obj.get_type_display()
 
-    @admin.action(description=_('Exporter en CSV'))
+    @admin.action(description=_('Export to CSV'))
     def export_csv(self, request, queryset):
         response = HttpResponse(
             content_type='text/csv',

@@ -45,29 +45,33 @@
         </thead>
         <tbody>
             {% for obj in AET_list %}
-            <tr>
-                <td class="text-nowrap" style="width: 60px;">
-                    <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
-                    <button data-form-url="{% url 'prog:aet_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.delete_aet %}disabled{% endif %}>
-                            <i class="fas fa-trash-alt"></i>
-                    </button>
-                </td>
-                <td class="font-weight-bold">{{ obj.name }}</td>
-                <td class="font-weight-bold">{{ obj.ip_addr }}</td>
-                <td class="font-weight-bold">{{ obj.mbed_list }}</td>
-                <td class="font-weight-bold">
-                    <span class="text" id="aet{{ obj.id }}">Hors Ligne</span>
-                    <div class="progress" id="aet{{ obj.id }}-progress" style="display: none">
-                        <div id="aet{{ obj.id }}-progressbar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuemax="100" aria-valuemin="0"></div>
-                    </div>
-                </td>
-                <td class="font-weight-bold text-nowrap">
-                    <a id="aet{{ obj.id }}-s" href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2 disabled">
-                        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
-                        <span class="text">{% trans "Update an Mbed" %}</span>
-                    </a>
-                </td>
-            </tr>
+                <tr>
+                    <td class="text-nowrap" style="width: 60px;">
+                        <a href="#" title="Modif. info AET" data-form-url="{% url 'prog:aet_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                        <button data-form-url="{% url 'prog:aet_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.delete_aet %}disabled{% endif %}>
+                                <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                    <td class="font-weight-bold">{{ obj.name }}</td>
+                    <td class="font-weight-bold">{{ obj.ip_addr }}</td>
+                    <td class="font-weight-bold">{{ obj.mbed_list }}</td>
+                    <td class="font-weight-bold">
+                        <span class="text" id="aet{{ obj.id }}">Hors Ligne</span>
+                        <div class="progress" id="aet{{ obj.id }}-progress" style="display: none">
+                            <div id="aet{{ obj.id }}-progressbar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuemax="100" aria-valuemin="0"></div>
+                        </div>
+                    </td>
+                    <td class="font-weight-bold text-nowrap">
+                        <a id="aet{{ obj.id }}-s" href="#" data-form-url="{% url 'prog:aet_send_software' obj.pk %}" class="bs-large-modal btn btn-primary btn-icon-split mb-2 disabled">
+                            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+                            <span class="text">{% translate "Update an Mbed" %}</span>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="font-weight-bold text-center">** {% translate 'AET tools not found' %} **</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -85,18 +89,18 @@
         </thead>
         <tbody>
             {% for obj in firmware_list %}
-            <tr>
-                <td class="text-nowrap" style="width: 60px;">
-                    <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
-                    <button data-form-url="{% url 'prog:firmware_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.change_aet %}disabled{% endif %}>
-                            <i class="fas fa-trash-alt"></i>
-                    </button>
-                </td>
-                <td class="font-weight-bold">{{ obj.name }}</td>
-                <td class="font-weight-bold">{{ obj.version }}</td>
-                <td class="font-weight-bold">{{ obj.modified_at|date:"d/m/Y H:i" }}</td>
-                <td class="font-weight-bold">{{ obj.filepath|filename }}</td>
-            </tr>
+                <tr>
+                    <td class="text-nowrap" style="width: 60px;">
+                        <a href="#" title="Modif. firmware" data-form-url="{% url 'prog:firmware_update' obj.pk %}" class="bs-large-modal btn btn-success btn-circle btn-sm {% if not perms.prog.change_aet %}disabled{% endif %}"><i class="fas fa-edit"></i></a>
+                        <button data-form-url="{% url 'prog:firmware_delete' obj.pk %}" title="Suppression" class="bs-modal btn btn-danger btn-circle btn-sm" {% if not perms.prog.change_aet %}disabled{% endif %}>
+                                <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                    <td class="font-weight-bold">{{ obj.name }}</td>
+                    <td class="font-weight-bold">{{ obj.version }}</td>
+                    <td class="font-weight-bold">{{ obj.modified_at|date:"d/m/Y H:i" }}</td>
+                    <td class="font-weight-bold">{{ obj.filepath|filename }}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
