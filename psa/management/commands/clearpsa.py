@@ -47,7 +47,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
+        message = "Deleting data from table {0} completed !"
         if options['multimedia']:
             Multimedia.objects.all().delete()
 
@@ -55,7 +55,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données de la table Multimedia terminée!"))
+            self.stdout.write(self.style.WARNING(message.format('Multimedia')))
         if options['ecu']:
             Ecu.objects.all().delete()
 
@@ -63,7 +63,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données de la table Ecu terminée!"))
+            self.stdout.write(self.style.WARNING(message.format('Ecu')))
         if options['corvet']:
             Corvet.objects.all().delete()
 
@@ -71,7 +71,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données de la table Corvet terminée!"))
+            self.stdout.write(self.style.WARNING(message.format('Corvet')))
         if options['dtc']:
             DefaultCode.objects.all().delete()
 
@@ -79,7 +79,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données de la table DefaultCode terminée!"))
+            self.stdout.write(self.style.WARNING(message.format('DefaultCode')))
         if options['corvet_attribute']:
             CorvetAttribute.objects.all().delete()
 
@@ -87,7 +87,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données de la table CorvetAttribute terminée!"))
+            self.stdout.write(self.style.WARNING(message.format('CorvetAttribute')))
         if options['canremote']:
             CanRemote.objects.all().delete()
 
@@ -95,4 +95,4 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données de la table CanRemote terminée!"))
+            self.stdout.write(self.style.WARNING(message.format('CanRemote')))
