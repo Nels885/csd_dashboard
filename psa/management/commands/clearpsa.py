@@ -6,7 +6,7 @@ from psa.models import Multimedia, Ecu, Corvet, CorvetAttribute, DefaultCode, Ca
 
 
 class Command(BaseCommand):
-    help = 'Clear Squalaetp tables'
+    help = 'Clear Psa tables'
 
     def add_arguments(self, parser):
         parser.add_argument(

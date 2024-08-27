@@ -46,7 +46,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
+        message = "Deleting data from table {0} completed !"
         if options['post']:
             Post.objects.all().delete()
 
@@ -54,7 +54,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table Post terminée!"))
+            self.stdout.write(self.style.SUCCESS(message.format('Post')))
 
         if options['showcollapse']:
             ShowCollapse.objects.all().delete()
@@ -63,7 +63,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table ShowCollapse terminée!"))
+            self.stdout.write(self.style.SUCCESS(message.format('ShowCollapse')))
 
         if options['userprofile']:
             UserProfile.objects.all().delete()
@@ -72,7 +72,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table UserProfile terminée!"))
+            self.stdout.write(self.style.SUCCESS(message.format('UserProfile')))
 
         if options['weblink']:
             WebLink.objects.all().delete()
@@ -81,7 +81,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table WebLink terminée!"))
+            self.stdout.write(self.style.SUCCESS(message.format('WebLink')))
 
         if options['contract']:
             Contract.objects.all().delete()
@@ -90,7 +90,7 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données de la table Contract terminée!"))
+            self.stdout.write(self.style.SUCCESS(message.format('Contract')))
 
         if options['all']:
             Post.objects.all().delete()
@@ -104,4 +104,4 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données des tables de Dashboard terminée!"))
+            self.stdout.write(self.style.SUCCESS("Deleting data from Dashboard tables completed !"))

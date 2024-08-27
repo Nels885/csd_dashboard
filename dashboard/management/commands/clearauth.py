@@ -28,6 +28,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        message = "Deleting data from table {0} completed !"
         if options['group']:
             Group.objects.all().delete()
             Group.permissions.through.objects.all().delete()
@@ -37,7 +38,7 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             for table in ["Group"]:
-                self.stdout.write(self.style.SUCCESS("Suppression des données de la table {} terminée!".format(table)))
+                self.stdout.write(self.style.SUCCESS(message.format(table)))
         if options['permission']:
             Permission.objects.all().delete()
 
@@ -46,7 +47,7 @@ class Command(BaseCommand):
                 for sql in sequence_sql:
                     cursor.execute(sql)
             for table in ["Permission"]:
-                self.stdout.write(self.style.SUCCESS("Suppression des données de la table {} terminée!".format(table)))
+                self.stdout.write(self.style.SUCCESS(message.format(table)))
         if options['all']:
             Group.objects.all().delete()
             Group.permissions.through.objects.all().delete()
@@ -60,4 +61,4 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données des tables de Auth terminée!"))
+            self.stdout.write(self.style.SUCCESS("Deleting data from Auth tables completed !"))

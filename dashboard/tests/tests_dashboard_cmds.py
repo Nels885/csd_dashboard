@@ -25,13 +25,14 @@ class DashboardCommandTestCase(UnitTest):
             date=timezone.now(), products_to_repair=1, late_products=1, express_products=1, output_products=1)
         indicator.xelons.add(xelon)
         self.out = StringIO()
+        self.delMsg = "Deleting data from table {0} completed !"
 
     def test_clear_auth_Group_table(self):
         groups_old = Group.objects.count()
         call_command('clearauth', '--group', stdout=self.out)
         groups_new = Group.objects.count()
         self.assertEqual(groups_old, groups_new + 1)
-        self.assertIn("Suppression des données de la table Group terminée!", self.out.getvalue())
+        self.assertIn(self.delMsg.format('Group'), self.out.getvalue())
 
     def test_clear_auth_Permission_table(self):
         permissions_old = Permission.objects.count()
@@ -39,62 +40,62 @@ class DashboardCommandTestCase(UnitTest):
         permissions_new = Permission.objects.count()
         self.assertNotEqual(permissions_old, 0)
         self.assertEqual(permissions_new, 0)
-        self.assertIn("Suppression des données de la table Permission terminée!", self.out.getvalue())
+        self.assertIn(self.delMsg.format('Permission'), self.out.getvalue())
 
     def test_clear_auth_all_table(self):
         users_old = User.objects.count()
         call_command('clearauth', '--all', stdout=self.out)
         user_news = User.objects.count()
         self.assertEqual(users_old, user_news + 2)
-        self.assertIn("Suppression des données des tables de Auth terminée!", self.out.getvalue())
+        self.assertIn("Deleting data from Auth tables completed !", self.out.getvalue())
 
     def test_clear_dashboard_post_table(self):
         posts_old = Post.objects.count()
         call_command('cleardashboard', '--post', stdout=self.out)
         posts_new = Post.objects.count()
         self.assertEqual(posts_old, posts_new + 1)
-        self.assertIn("Suppression des données de la table Post terminée!", self.out.getvalue())
+        self.assertIn(self.delMsg.format('Post'), self.out.getvalue())
 
     def test_clear_dashboard_showcollapse_table(self):
         collapses_old = ShowCollapse.objects.count()
         call_command('cleardashboard', '--showcollapse', stdout=self.out)
         collapses_new = ShowCollapse.objects.count()
         self.assertEqual(collapses_old, collapses_new + 2)
-        self.assertIn("Suppression des données de la table ShowCollapse terminée!", self.out.getvalue())
+        self.assertIn(self.delMsg.format('ShowCollapse'), self.out.getvalue())
 
     def test_clear_dashboard_userprofile_table(self):
         profiles_old = UserProfile.objects.count()
         call_command('cleardashboard', '--userprofile', stdout=self.out)
         profiles_new = UserProfile.objects.count()
         self.assertEqual(profiles_old, profiles_new + 2)
-        self.assertIn("Suppression des données de la table UserProfile terminée!", self.out.getvalue())
+        self.assertIn(self.delMsg.format('UserProfile'), self.out.getvalue())
 
     def test_clear_dashboard_weblink_table(self):
         weblinks_old = WebLink.objects.count()
         call_command('cleardashboard', '--weblink', stdout=self.out)
         weblinks_new = WebLink.objects.count()
         self.assertEqual(weblinks_old, weblinks_new + 1)
-        self.assertIn("Suppression des données de la table WebLink terminée!", self.out.getvalue())
+        self.assertIn(self.delMsg.format('WebLink'), self.out.getvalue())
 
     def test_clear_dashboard_contract_table(self):
         contracts_old = Contract.objects.count()
         call_command('cleardashboard', '--contract', stdout=self.out)
         contracts_new = Contract.objects.count()
         self.assertEqual(contracts_old, contracts_new + 1)
-        self.assertIn("Suppression des données de la table Contract terminée!", self.out.getvalue())
+        self.assertIn(self.delMsg.format('Contract'), self.out.getvalue())
 
     def test_clear_dashboard_all_table(self):
         call_command('cleardashboard', '--all', stdout=self.out)
         for obj_nb in [Post.objects.count(), ShowCollapse.objects.count(), UserProfile.objects.count(),
                        WebLink.objects.count()]:
             self.assertEqual(obj_nb, 0)
-        self.assertIn("Suppression des données des tables de Dashboard terminée!", self.out.getvalue())
+        self.assertIn("Deleting data from Dashboard tables completed !", self.out.getvalue())
 
     def test_clear_django_all_table(self):
         call_command('cleardjango', '--all', stdout=self.out)
         obj_nb = ContentType.objects.count()
         self.assertEqual(obj_nb, 0)
-        self.assertIn("Suppression des données des tables de Django terminée!", self.out.getvalue())
+        self.assertIn("Completed deleting data from Django tables !", self.out.getvalue())
 
     def test_send_email(self):
         # Sending emails without data in the database
