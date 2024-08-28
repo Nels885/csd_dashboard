@@ -223,6 +223,12 @@ class Suptech(models.Model):
                 pass
         return False
 
+    def get_vin(self):
+        try:
+            return Xelon.objects.get(numero_de_dossier=self.xelon).vin
+        except Xelon.DoesNotExist:
+            return ""
+
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('tools:suptech_detail', kwargs={'pk': self.pk})

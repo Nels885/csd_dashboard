@@ -38,6 +38,8 @@ def table(request):
 def detail(request, ref_case):
     """
     detailed view of Raspeedi data for a product
+    :param request:
+        Parameters of the request
     :param ref_case:
         Ref case of product
     """

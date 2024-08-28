@@ -34,6 +34,10 @@
             <div class="col-sm-4">
                 <input type="text" value="{{ object.product }}" maxlength="10" disabled class="form-control" id="id_product">
             </div>
+            <label for="id_vin" class="col-form-label col-sm-3">V.I.N.</label>
+            <div class="col-sm-3 mb-3 mb-sm-0">
+                <input type="text" value="{{ object.get_vin }}" maxlength="10" disabled class="form-control" id="id_vin">
+            </div>
         </div>
 
         <div class="form-group row">
