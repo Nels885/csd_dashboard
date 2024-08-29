@@ -27,5 +27,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='token_auth'),
     path('doc/', views.documentation, name='doc'),
-    path('nac-license/', views.NacLicenseView.as_view(), name='nac_license')
+    path('psa/nac-license/', psa.NacLicenseView.as_view(), name='psa_nac_license')
 ]

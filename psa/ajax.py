@@ -86,16 +86,9 @@ def majestic_web_async(request):
     update_id = request.GET.get('updateId')
     uin = request.GET.get('uin')
     if type_dl == 'license':
-        url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
-        payload = {"mediaVersion": update_id, "uin": uin}
-        session = requests.Session()
-        if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
-            proxy = f"{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}"
-            session.proxies = {'http': proxy, 'https': proxy}
-        response = session.get(url, params=payload, allow_redirects=True, stream=True)
+        response = download_nac_license_file(update_id, uin)
         if response.status_code == 200:
             try:
-                download_license_file(response)
                 return JsonResponse({"data": response.json(), "msg": "License not found !!!"}, status=200)
             except JSONDecodeError:
                 return JsonResponse({"url": response.url}, status=200)
@@ -106,11 +99,19 @@ def majestic_web_async(request):
     return JsonResponse({"msg": "Majestic-web not response !!!"}, status=400)
 
 
-def download_license_file(response):
+def download_nac_license_file(update_id, uin):
+    url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
+    payload = {"mediaVersion": update_id, "uin": uin}
+    session = requests.Session()
+    if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
+        proxy = f"{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}"
+        session.proxies = {'http': proxy, 'https': proxy}
+    response = session.get(url, params=payload, allow_redirects=True, stream=True)
     if response.status_code == 200:
-        filename = response.headers.get('Content-Disposition').split('filename=')[-1]
+        filename = response.headers.get('Content-Disposition', '').split('filename=')[-1]
         if filename and (".key" in filename or ".rar" in filename):
             output_file = Path(settings.MEDIA_ROOT, "PSA/nac_license/", filename)
             output_file.parent.mkdir(exist_ok=True, parents=True)
             with open(output_file, "wb") as f:
                 shutil.copyfileobj(response.raw, f)
+    return response

@@ -86,12 +86,12 @@ class ApiTestCase(APITestCase):
         self.api_view_list(reverse('api:reman_ecurefbase-list'))
 
     def test_nac_license_view(self):
-        response = self.client.get(reverse('api:nac_license'), format='json')
+        response = self.client.get(reverse('api:psa_nac_license'), format='json')
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data, self.authError)
 
         # Identification with Token
-        response = self.client.get(f'/api/nac-license/?auth_token={self.token}', format='json')
+        response = self.client.get(f'/api/psa/nac-license/?auth_token={self.token}', format='json')
         self.assertEqual(response.status_code, 404)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data, {"error": "Request failed"})
