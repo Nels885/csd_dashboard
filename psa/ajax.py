@@ -1,9 +1,12 @@
 import requests
+import shutil
 
+from pathlib import Path
 from json import JSONDecodeError
 from django.http import JsonResponse, QueryDict
 from django.template.loader import render_to_string
 from django.db.models import Q
+from django.conf import settings
 
 from utils.django.datatables import ServerSideViewSet
 from constance import config
@@ -79,24 +82,35 @@ def canremote_async(request):
 
 
 def majestic_web_async(request):
-    type = request.GET.get('type')
+    type_dl = request.GET.get('type')
     update_id = request.GET.get('updateId')
     uin = request.GET.get('uin')
-    if type == 'license':
+    if type_dl == 'license':
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
         payload = {"mediaVersion": update_id, "uin": uin}
         session = requests.Session()
         if config.PROXY_HOST_SCRAPING and config.PROXY_PORT_SCRAPING:
             proxy = f"{config.PROXY_HOST_SCRAPING}:{config.PROXY_PORT_SCRAPING}"
             session.proxies = {'http': proxy, 'https': proxy}
-        response = session.get(url, params=payload, allow_redirects=True)
+        response = session.get(url, params=payload, allow_redirects=True, stream=True)
         if response.status_code == 200:
             try:
+                download_license_file(response)
                 return JsonResponse({"data": response.json(), "msg": "License not found !!!"}, status=200)
             except JSONDecodeError:
                 return JsonResponse({"url": response.url}, status=200)
-    elif type == 'fw':
+    elif type_dl == 'fw':
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/UpdateDownload?uin={uin}&updateId={update}&type=fw"
         uin = "00000000000000000000"
         return JsonResponse({"url": url.format(uin=uin, update=update_id)}, status=200)
     return JsonResponse({"msg": "Majestic-web not response !!!"}, status=400)
+
+
+def download_license_file(response):
+    if response.status_code == 200:
+        filename = response.headers.get('Content-Disposition').split('filename=')[-1]
+        if filename and (".key" in filename or ".rar" in filename):
+            output_file = Path(settings.MEDIA_ROOT, "PSA/nac_license/", filename)
+            output_file.parent.mkdir(exist_ok=True, parents=True)
+            with open(output_file, "wb") as f:
+                shutil.copyfileobj(response.raw, f)
