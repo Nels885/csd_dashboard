@@ -57,10 +57,14 @@ class MultimediaSerializer(serializers.ModelSerializer):
     unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
     supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
     supplier_name = serializers.CharField(source='product.supplier.name', read_only=True, default='')
+    update_id = serializers.CharField(source='firmware.update_id', read_only=True, default='')
 
     class Meta:
         model = Multimedia
-        fields = ('comp_ref', 'label_ref', 'name', 'level', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name')
+        fields = (
+            'comp_ref', 'label_ref', 'name', 'level', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name',
+            'update_id'
+        )
 
 
 class EcuSerializer(serializers.ModelSerializer):
@@ -70,7 +74,11 @@ class EcuSerializer(serializers.ModelSerializer):
     unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
     supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
     supplier_name = serializers.CharField(source='product.supplier.name', read_only=True, default='')
+    update_id = serializers.CharField(default='')
 
     class Meta:
         model = Ecu
-        fields = ('comp_ref', 'label_ref', 'name', 'level', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name')
+        fields = (
+            'comp_ref', 'label_ref', 'name', 'level', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name',
+            'update_id'
+        )
