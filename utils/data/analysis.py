@@ -181,7 +181,7 @@ class ToolsAnalysis:
         queryset = suptechs_old | suptechs_new
         for query in queryset:
             data["suptechCoLabels"].append(query['month'].strftime("%m/%Y"))
-            data["coTwoDays"].append(self._percent(query['two_days'], query['total_48h']))
+            data["coTwoDays"].append(self._percent(query['two_days'], query['total_48h'], default=100))
             data["coTwoToSixDays"].append(self._percent(query['two_to_six_days'], query['total_48h']))
             data["coSixDays"].append(self._percent(query['six_days'], query['total_48h']))
             data["coExpRate"].append(self._percent(query['total_48h'], query['total']))
@@ -199,7 +199,7 @@ class ToolsAnalysis:
         queryset = suptechs_old | suptechs_new
         for query in queryset:
             data["suptechCeLabels"].append(query['month'].strftime("%m/%Y"))
-            data["twoDays"].append(self._percent(query['two_days'], query['total_48h']))
+            data["twoDays"].append(self._percent(query['two_days'], query['total_48h'], default=100))
             data["twoToSixDays"].append(self._percent(query['two_to_six_days'], query['total_48h']))
             data["sixDays"].append(self._percent(query['six_days'], query['total_48h']))
             data["expRate"].append(self._percent(query['total_48h'], query['total']))
@@ -259,12 +259,12 @@ class ToolsAnalysis:
         return dict(**self.bga_time(), **self.raspi_time(), **self.thermal_chamber_measure())
 
     @staticmethod
-    def _percent(value, total=None, total_multiplier=1):
+    def _percent(value, total=None, total_multiplier=1, default=0):
         if isinstance(total, int) and total != 0 and isinstance(value, int) and value != 0:
             result = round(100 * value / (total * total_multiplier), 1)
             if result <= 100:
                 return result
-        return 0
+        return default
 
     @staticmethod
     def _bga_annotate(queryset):
