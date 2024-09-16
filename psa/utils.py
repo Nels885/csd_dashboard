@@ -7,7 +7,7 @@ from squalaetp.models import ProductCode
 
 
 COLLAPSE_LIST = [
-    "media", "prog", "cmb", "emf", "cmm", "bsi", "hdc", "cvm", "vmf", "bpga"
+    "media", "prog", "cmb", "emf", "cmm", "bsi", "hdc", "cvm", "vmf", "bpga", "aas",
     "display", "audio", "ecu", "cockpit", "security"
 ]
 

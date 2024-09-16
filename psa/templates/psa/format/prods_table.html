@@ -114,3 +114,16 @@
     </table>
 
 {% endif %}
+
+<!-- AAS Info -->
+{% if prods.aas %}
+
+    <table class="table table-bordered table-striped table-sm mt-4">
+
+        {% include 'format/collapse_thead.html' with id="collapseAas" expanded=collapse.aas upper_title="Aide Au Stationnement" %}
+
+        {% include 'format/collapse_tbody_ecu.html' with id="collapseAas" show=collapse.aas object=prods.aas %}
+
+    </table>
+
+{% endif %}

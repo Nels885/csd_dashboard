@@ -435,6 +435,7 @@ class CorvetProduct(models.Model):
     vmf = models.ForeignKey('psa.Ecu', related_name='corvet_vmf', on_delete=models.SET_NULL, limit_choices_to={'type': 'VMF'}, null=True, blank=True)
     dmtx = models.ForeignKey('psa.Ecu', related_name='corvet_dmtx', on_delete=models.SET_NULL, limit_choices_to={'type': 'DMTX'}, null=True, blank=True)
     bpga = models.ForeignKey('psa.Ecu', related_name='corvet_bpga', on_delete=models.SET_NULL, limit_choices_to={'type': 'BPGA'}, null=True, blank=True)
+    aas = models.ForeignKey('psa.Ecu', related_name='corvet_aas', on_delete=models.SET_NULL, limit_choices_to={'type': 'AAS'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"

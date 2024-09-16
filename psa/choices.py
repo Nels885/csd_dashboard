@@ -13,7 +13,8 @@ ECU_TYPE_CHOICES = [
     ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
     ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
     ('CVM2', 'Camera Video Multifonction V2'), ('VMF', 'Module Commutation Integre'),
-    ('DMTX', 'Dispositif Maintien Tension'), ('BPGA', 'Boitier Protection Alimentation Reseau Elec')
+    ('DMTX', 'Dispositif Maintien Tension'), ('BPGA', 'Boitier Protection Alimentation Reseau Elec'),
+    ('AAS', 'Aide Au Stationnement')
 ]
 
 #####################
