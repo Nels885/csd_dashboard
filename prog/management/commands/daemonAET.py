@@ -8,21 +8,21 @@ from polls.models import Question as Poll
 class Command(BaseCommand):
     help = 'Scrap the AET log files'
 
-	def xelonFromFilename(filename):
+	def xelonFromFilename(self, filename):
 		#print(filename)
 		filename2 = filename.split("\\")[-1]
 		filename2 = filename2.split("_")[0]
 		#print(filename.split("_")[0])
 		return filename2
 
-	def matRefFromFilename(filename):
+	def matRefFromFilename(self, filename):
 		#print(filename)
 		filename2 = filename.split("\\")[-1]
 		filename2 = filename2.split("_")[1]
 		#print(filename.split("_")[0])
 		return filename2
 
-	def compFromFilename(filename):
+	def compFromFilename(self, filename):
 	#print(filename)
 		filename2 = filename.split("\\")[-1]
 		filename2 = filename2.split("_")[2]
@@ -41,26 +41,25 @@ class Command(BaseCommand):
 			return False
 		return True
 
-	def d2dict(d, filename, ref):
+	def d2dict(self, d, filename, ref):
 		dictt = {}
 		list_dictt = []
 		for line in d:
 			try:
-				if '' in line:
-					continue
-				#print(line)
-				dictt["REF"] = ref
-				dictt["AET"] = d[0][2]
-				dictt["XELON"] = xelonFromFilename(filename)
-				dictt["MAT_REF"] = matRefFromFilename(filename)
-				dictt["COMP_REF"] = compFromFilename(filename)
-				dictt["DATE"] = os.stat(filename).st_mtime
-				dictt["MEASURE_NAME"] = line[1]
-				dictt["VALUE"] = line[2].replace(",",".")
-				dictt["LOWER_BOND"] = line[4].replace(",",".")
-				dictt["UPPER_BOND"] = line[5].replace(",",".")
-				#print(dictt)
-				list_dictt.append(dictt.copy())
+				if not '' in line:
+					#print(line)
+					dictt["REF"] = ref
+					dictt["AET"] = d[0][2]
+					dictt["XELON"] = xelonFromFilename(filename)
+					dictt["MAT_REF"] = matRefFromFilename(filename)
+					dictt["COMP_REF"] = compFromFilename(filename)
+					dictt["DATE"] = os.stat(filename).st_mtime
+					dictt["MEASURE_NAME"] = line[1]
+					dictt["VALUE"] = line[2].replace(",",".")
+					dictt["LOWER_BOND"] = line[4].replace(",",".")
+					dictt["UPPER_BOND"] = line[5].replace(",",".")
+					#print(dictt)
+					list_dictt.append(dictt.copy())
 			except:
 				pass
 		#print(list_dictt)
