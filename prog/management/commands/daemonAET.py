@@ -46,7 +46,7 @@ class Command(BaseCommand):
 		list_dictt = []
 		for line in d:
 			try:
-				if not '' in line:
+				if '' not in line:
 					#print(line)
 					dictt["REF"] = ref
 					dictt["AET"] = d[0][2]
