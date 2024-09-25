@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from django.utils.timezone import make_aware
 from django.core.management.base import BaseCommand
-from django.db.utils import IntegrityError, DataError
+from django.db.utils import DataError
 
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
