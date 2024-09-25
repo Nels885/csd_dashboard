@@ -191,7 +191,7 @@ class AETLog(models.Model):
         ordering = ['xelon']
 
     def __str__(self):
-        return f"{self.xelon}_{self.aet_name}"
+        return "_".join([self.xelon, self.aet_name])
 
 
 class AETMeasure(models.Model):
