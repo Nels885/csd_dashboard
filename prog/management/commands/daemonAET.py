@@ -12,8 +12,19 @@ from constance import config
 class Command(BaseCommand):
     help = 'Scrap the AET log files'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--all',
+            action='store_true',
+            dest='all',
+            help='All data',
+        )
+
     def handle(self, *args, **options):
-        last_24_hours = (timezone.datetime.today() - relativedelta(hours=24)).strftime('_%Y-%m-%d_')
+        self.stdout.write("[DAEMON_AET] Waiting...")
+        last_24_hours = ""
+        if not options['all']:
+            last_24_hours = (timezone.datetime.today() - relativedelta(hours=24)).strftime('_%Y-%m-%d_')
 
         prod_ref = ["DCM3.5", "DCM6.2A", "DCM6.2C", "E98", "EDC15C2", "EDC16C34", "EDC17C60", "EDC17C84", "ME17.9.52", "VD46.1"]
         new_files = []
