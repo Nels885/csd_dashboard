@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from django.utils.timezone import make_aware
 from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError, DataError
 
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
@@ -121,10 +122,15 @@ class Command(BaseCommand):
                 log_keys = ['xelon', 'comp_ref', 'manu_ref', 'prod_name', 'aet_name', 'date']
                 log_values = defaults_dict(AETLog, {key: row.pop(key, '') for key in log_keys})
                 measure_values = defaults_dict(AETMeasure, row)
-                obj, created = AETLog.objects.get_or_create(**log_values)
-                if not created:
-                    nb_update += 1
-                obj.measures.get_or_create(**measure_values)
+                try:
+                    obj, created = AETLog.objects.get_or_create(**log_values)
+                    if not created:
+                        nb_update += 1
+                    obj.measures.get_or_create(**measure_values)
+                except DataError as err:
+                    self.stdout.write(
+                        self.style.SUCCESS(f"[DAEMON_AET_CMD] DataError: {log_values} - {err}'")
+                    )
         nb_after = AETLog.objects.count()
         self.stdout.write(
             self.style.SUCCESS(
