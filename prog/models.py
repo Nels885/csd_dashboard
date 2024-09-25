@@ -195,7 +195,7 @@ class AETLog(models.Model):
 
 
 class AETMeasure(models.Model):
-    measure_name = models.CharField("nom mesure", max_length=100)
+    measure_name = models.CharField("nom mesure", max_length=1000)
     measured_value = models.CharField("valeur mesurée", max_length=100)
     min_value = models.CharField("valeur min.", max_length=100)
     max_value = models.CharField("valeur max.", max_length=100)

@@ -129,7 +129,7 @@ class Command(BaseCommand):
                     obj.measures.get_or_create(**measure_values)
                 except DataError as err:
                     self.stdout.write(
-                        self.style.SUCCESS(f"[DAEMON_AET_CMD] DataError: {log_values} - {err}'")
+                        self.style.SUCCESS(f"[DAEMON_AET_CMD] DataError: {row} - {err}'")
                     )
         nb_after = AETLog.objects.count()
         self.stdout.write(
