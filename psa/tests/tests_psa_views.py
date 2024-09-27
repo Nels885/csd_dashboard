@@ -111,6 +111,8 @@ class PsaTestCase(UnitTest):
         self.login()
         response = self.client.get(reverse('psa:product'))
         self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('psa:product', get={'filter': 'ecu'}))
+        self.assertEqual(response.status_code, 200)
 
     def test_import_corvet_async(self):
         response = self.client.get(reverse('psa:import_corvet'))
@@ -123,3 +125,7 @@ class PsaTestCase(UnitTest):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertNotEqual(data.get('task_id', None), None)
+
+    def test_dtc_table_page(self):
+        response = self.client.get(reverse('psa:dtc_table'))
+        self.assertEqual(response.status_code, 200)

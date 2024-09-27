@@ -1,7 +1,7 @@
 ######################
 # CanRemote Model
 
-PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC')]
+PROD_CHOICES = [('', '---'), ('RT6', 'RT6'), ('SMEG', 'SMEG'), ('NAC', 'NAC'), ('IVI', 'IVI')]
 
 ######################
 # Ecu Model
@@ -13,14 +13,15 @@ ECU_TYPE_CHOICES = [
     ('EMF', 'Ecran Multifonctions'), ('FMUX', 'Façade Multiplexée'),
     ('HDC', 'Haut de Colonne de Direction (COM200x)'), ('MDS', 'Module de service telematique'),
     ('CVM2', 'Camera Video Multifonction V2'), ('VMF', 'Module Commutation Integre'),
-    ('DMTX', 'Dispositif Maintien Tension'), ('BPGA', 'Boitier Protection Alimentation Reseau Elec')
+    ('DMTX', 'Dispositif Maintien Tension'), ('BPGA', 'Boitier Protection Alimentation Reseau Elec'),
+    ('AAS', 'Aide Au Stationnement')
 ]
 
 #####################
 # Multimedia Model
 
 BTEL_PRODUCT_CHOICES = [
-    ('RD3', 'RD3'), ('RD4', 'RD4'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RDE', 'RDE'),
+    ('RD3', 'RD3'), ('RD4', 'RD4'), ('RD45', 'RD45'), ('RD5', 'RD5'), ('RD6', 'RD6'), ('RDE', 'RDE'),
     ('RT3', 'RT3'), ('RT4', 'RT4'), ('RT5', 'RT5'), ('RT6', 'RT6 / RNEG2'), ('RT6v2', 'RT6v2 / RNEG2'),
     ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
     ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
@@ -42,6 +43,11 @@ CAL_TYPE_CHOICES = [
     ('92Y', 'CVM2_2_ SOFT - CAMERA VIDEO MULTIFONCTION V2'),
     ('99K', 'ARTIV SOFT - Boitier Aide au Respect du Temps Inter Vehicule'),
     ('92E', 'AVM - SOFT - AIDE VISUELLE A LA MANŒUVRE'), ('96L', 'DAE SOFT - Direction Assistee Electrique')
+]
+
+SN_CHOICES = [
+    ('', '---'),
+    ('44X', 'Numéro série NAV'), ('44F', 'Numéro série RADIO')
 ]
 
 

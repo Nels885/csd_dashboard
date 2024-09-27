@@ -169,16 +169,19 @@ class ToolsAnalysis:
         self.tcMeasure = ThermalChamberMeasure.objects.filter(datetime__isnull=False).order_by('datetime')
 
     def suptech_co(self):
-        # suptechs = self.suptechs.filter(category=3)
         suptechs = self.suptechs.filter(category__name__icontains="operation")
+        suptechs_old = suptechs.filter(date__lt=datetime.date(2024, 1, 1))
+        suptechs_old = self._suptech_old_annotate(suptechs_old)
+        suptechs_new = suptechs.filter(date__gte=datetime.date(2024, 1, 1))
+        suptechs_new = self._suptech_annotate(suptechs_new)
         data = {
             "suptechCoLabels": [], "coTwoDays": [], "coTwoToSixDays": [], "coSixDays": [], "coExpRate": [],
             "coSupNumber": []
         }
-        queryset = self._suptech_annotate(suptechs)
+        queryset = suptechs_old | suptechs_new
         for query in queryset:
             data["suptechCoLabels"].append(query['month'].strftime("%m/%Y"))
-            data["coTwoDays"].append(self._percent(query['two_days'], query['total_48h']))
+            data["coTwoDays"].append(self._percent(query['two_days'], query['total_48h'], default=100))
             data["coTwoToSixDays"].append(self._percent(query['two_to_six_days'], query['total_48h']))
             data["coSixDays"].append(self._percent(query['six_days'], query['total_48h']))
             data["coExpRate"].append(self._percent(query['total_48h'], query['total']))
@@ -186,17 +189,17 @@ class ToolsAnalysis:
         return data
 
     def suptech_ce(self):
-        # suptechs = self.suptechs.exclude(category=3)
         suptechs_old = self.suptechs.exclude(category=3).filter(date__lt=datetime.date(2024, 1, 1))
+        suptechs_old = self._suptech_old_annotate(suptechs_old)
         suptechs_new = self.suptechs.filter(category__name__icontains="etude", date__gte=datetime.date(2024, 1, 1))
+        suptechs_new = self._suptech_annotate(suptechs_new)
         data = {
             "suptechCeLabels": [], "twoDays": [], "twoToSixDays": [], "sixDays": [], "expRate": [], "supNumber": []
         }
-        suptechs = suptechs_old | suptechs_new
-        queryset = self._suptech_annotate(suptechs)
+        queryset = suptechs_old | suptechs_new
         for query in queryset:
             data["suptechCeLabels"].append(query['month'].strftime("%m/%Y"))
-            data["twoDays"].append(self._percent(query['two_days'], query['total_48h']))
+            data["twoDays"].append(self._percent(query['two_days'], query['total_48h'], default=100))
             data["twoToSixDays"].append(self._percent(query['two_to_six_days'], query['total_48h']))
             data["sixDays"].append(self._percent(query['six_days'], query['total_48h']))
             data["expRate"].append(self._percent(query['total_48h'], query['total']))
@@ -256,12 +259,12 @@ class ToolsAnalysis:
         return dict(**self.bga_time(), **self.raspi_time(), **self.thermal_chamber_measure())
 
     @staticmethod
-    def _percent(value, total=None, total_multiplier=1):
+    def _percent(value, total=None, total_multiplier=1, default=0):
         if isinstance(total, int) and total != 0 and isinstance(value, int) and value != 0:
             result = round(100 * value / (total * total_multiplier), 1)
             if result <= 100:
                 return result
-        return 0
+        return default
 
     @staticmethod
     def _bga_annotate(queryset):
@@ -296,7 +299,7 @@ class ToolsAnalysis:
         return queryset
 
     @staticmethod
-    def _suptech_annotate(queryset):
+    def _suptech_old_annotate(queryset):
         queryset = queryset.annotate(month=TruncMonth("created_at")).values("month").order_by("month")
         queryset = queryset.annotate(total=Count("month"))
         queryset = queryset.annotate(total_48h=Count("month", filter=Q(is_48h=True)))
@@ -304,4 +307,15 @@ class ToolsAnalysis:
         queryset = queryset.annotate(
             two_to_six_days=Count("month", filter=Q(day_number__gt=2, day_number__lte=6, is_48h=True)))
         queryset = queryset.annotate(six_days=Count("month", filter=Q(day_number__gt=6, is_48h=True)))
+        return queryset
+
+    @staticmethod
+    def _suptech_annotate(queryset):
+        queryset = queryset.annotate(month=TruncMonth("created_at")).values("month").order_by("month")
+        queryset = queryset.annotate(total=Count("month"))
+        queryset = queryset.annotate(total_48h=Count("month", filter=Q(is_48h=True)))
+        queryset = queryset.annotate(two_days=Count("month", filter=Q(days_late__lte=2, is_48h=True)))
+        queryset = queryset.annotate(
+            two_to_six_days=Count("month", filter=Q(day_number__gt=2, days_late__lte=6, is_48h=True)))
+        queryset = queryset.annotate(six_days=Count("month", filter=Q(days_late__gt=6, is_48h=True)))
         return queryset

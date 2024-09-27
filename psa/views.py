@@ -14,12 +14,12 @@ from utils.django.forms import ParaErrorList
 from utils.django.urls import reverse_lazy, http_referer
 from utils.file.pdf_generate import CorvetBarcode
 from .forms import NacLicenseForm, NacUpdateIdLicenseForm, NacUpdateForm, CorvetModalForm, SelectCanRemoteForm
-from .models import Corvet, Multimedia
-from .utils import COLLAPSE_LIST
+from .models import Corvet, Multimedia, Ecu, Calibration
+from .utils import COLLAPSE_LIST, prod_search
 from dashboard.models import WebLink
 from squalaetp.models import Sivin
 from prog.models import Programing
-from reman.models import EcuType
+# from reman.models import EcuType
 
 context = {
     'title': 'Info PSA'
@@ -44,16 +44,6 @@ def can_tools(request):
 def nac_license(request):
     form = NacLicenseForm(request.POST or None)
     if request.POST and form.is_valid():
-        # url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload"
-        # payload = {
-        #     "mediaVersion": form.cleaned_data['software'].update_id,
-        #     "uin": form.cleaned_data['uin']
-        # }
-        # response = requests.get(url, params=payload, allow_redirects=True)
-        # print(response.url)
-        # if response.status_code == 200:
-        #     return redirect(response.url)
-        # messages.warning(request, 'Fichier non trouvé !')
         url = "https://majestic-web.mpsa.com/mjf00-web/rest/LicenseDownload?mediaVersion={update}&uin={uin}"
         soft = form.cleaned_data['software']
         uin = form.cleaned_data['uin']
@@ -112,10 +102,12 @@ class CorvetView(PermissionRequiredMixin, TemplateView):
     permission_required = 'psa.view_corvet'
 
     def get_context_data(self, **kwargs):
-        context = super(CorvetView, self).get_context_data(**kwargs)
-        context['title'] = 'Info PSA'
-        context['table_title'] = _('CORVET table')
-        context['query_param'] = self.request.GET.get('filter', '')
+        title = 'Info PSA'
+        table_title = _('CORVET table')
+        query_param = self.request.GET.get('filter', '')
+        parts, media, prod, vehicles = prod_search(query_param)
+        context = locals()
+        context.update(super(CorvetView, self).get_context_data(**kwargs))
         return context
 
 
@@ -130,8 +122,9 @@ def corvet_detail(request, pk):
     corvet = get_object_or_404(Corvet, vin=pk)
     if corvet.electronique_14x.isdigit():
         prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-    if corvet.electronique_14a.isdigit():
-        cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
+    cals = Calibration.get_cal_file(corvet.electronique_94x)
+    # if corvet.electronique_14a.isdigit():
+    #     cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
     card_title = _('Detail Corvet data for the VIN: ') + corvet.vin
     dict_corvet = model_to_dict(corvet)
     if Sivin.objects.filter(codif_vin=pk):
@@ -157,6 +150,10 @@ class CorvetCreateView(PermissionRequiredMixin, BSModalCreateView):
         context = super(CorvetCreateView, self).get_context_data(**kwargs)
         context['modal_title'] = _('CORVET integration')
         return context
+
+    def form_valid(self, form):
+        self.object = form.instance
+        return super().form_valid(form)
 
     def get_success_url(self):
         if not is_ajax(self.request):
@@ -190,7 +187,23 @@ def product_table(request):
     :return:
         Product table page
     """
-    table_title = _('Products PSA table')
-    products = Multimedia.objects.all()
+    select = request.GET.get('filter', 'media')
+    if select == 'media':
+        products = Multimedia.objects.all()
+    else:
+        products = Ecu.objects.all()
     context.update(locals())
     return render(request, 'psa/product_table.html', context)
+
+
+def dtc_table(request):
+    """
+    View of the product table page
+    :param request:
+        Parameters of the request
+    :return:
+        Product table page
+    """
+    table_title = _('DTC PSA list')
+    context.update(locals())
+    return render(request, 'psa/dtc_table.html', context)

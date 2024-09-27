@@ -26,7 +26,7 @@ class ExportCorvetForm(forms.Form):
 
     brand = forms.ChoiceField(label='Marque', required=False, choices=CorvetChoices.brands(), widget=forms.Select())
     vehicle = forms.ChoiceField(
-        label='Véhicule (CORVET)', required=False, choices=CorvetChoices.vehicles(), widget=forms.Select())
+        label='Véhicule (CORVET)', required=False, choices=CorvetChoices.vehicles(True), widget=forms.Select())
     product = forms.ChoiceField(label='Type produit', required=False, choices=PRODUCTS, widget=forms.Select())
     hw_reference = forms.CharField(label="Réf. HW (CORVET)", required=False, widget=forms.TextInput())
     xelon_model = forms.CharField(label='Produit (XELON)', required=False, widget=forms.TextInput())
@@ -46,6 +46,7 @@ class ExportCorvetForm(forms.Form):
         label='Début date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
     end_date = forms.DateField(
         label='Fin date garantie', required=False, widget=forms.DateTimeInput(attrs={'placeholder': 'dd/mm/yyyy'}))
+    is_row = forms.BooleanField(label='CORVET brutes', required=False, widget=forms.CheckboxInput())
 
     def __init__(self, *args, **kwargs):
         xelons = Xelon.objects.exclude(modele_produit="").order_by('modele_produit')
@@ -135,3 +136,10 @@ class ExportToolsForm(forms.Form):
     excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
     table = forms.ChoiceField(label='Tableaux', required=False, choices=TABLES, widget=forms.Select())
     date_delta = forms.ChoiceField(label='Date', required=False, choices=MONTH_CHOICES, widget=forms.Select())
+
+
+class ExportCalForm(forms.Form):
+    BTELS = [('NAC', 'NAC')]
+
+    excel_type = forms.ChoiceField(label='Format', required=False, choices=FORMAT_CHOICES, widget=forms.Select())
+    btel_type = forms.ChoiceField(label='Btel type', required=False, choices=BTELS, widget=forms.Select())

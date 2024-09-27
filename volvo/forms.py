@@ -1,39 +1,30 @@
 from django import forms
+from django.db.models import Q
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.django.forms.fields import ListTextWidget
 from utils.django import is_ajax
 
 from reman.models import EcuRefBase, EcuType
+from reman.forms import RefRemanForm
 
 
-class RemanForm(BSModalModelForm):
+class RemanForm(RefRemanForm):
     hw_reference = forms.CharField(label="ASM", widget=forms.TextInput(), max_length=20)
+    brand = forms.CharField(label="Brand", widget=forms.TextInput(), max_length=10)
 
     class Meta:
         model = EcuRefBase
         fields = ['reman_reference', 'hw_reference', 'brand', 'map_data', 'pf_code', 'product_part']
 
     def __init__(self, *args, **kwargs):
-        ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
-        _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            self.fields['reman_reference'].widget.attrs['readonly'] = True
-            self.fields['hw_reference'].initial = instance.ecu_type.hw_reference
-        self.fields['hw_reference'].widget = ListTextWidget(data_list=_data_list, name='value-list')
-
-    def clean_hw_reference(self):
-        data = self.cleaned_data['hw_reference']
-        try:
-            ecu = EcuType.objects.get(hw_reference__exact=data)
-            if not self.errors:
-                reman = super().save(commit=False)
-                reman.ecu_type = ecu
-        except EcuType.DoesNotExist:
-            self.add_error('hw_reference', "réf. HW n'existe pas.")
-        return data
+        self.ecus = EcuType.objects.exclude(Q(hw_reference="") | Q(hw_type="ECU")).order_by('hw_reference')
+        _hw_list = list(self.ecus.values_list('hw_reference', flat=True).distinct())
+        ecu_ref_base = EcuRefBase.objects.exclude(brand="").order_by('brand')
+        _brand_list = list(ecu_ref_base.values_list('brand', flat=True).distinct())
+        self.fields['hw_reference'].widget = ListTextWidget(data_list=_hw_list, name='hw-list')
+        self.fields['brand'].widget = ListTextWidget(data_list=_brand_list, name='brand-list')
 
     def save(self, commit=True):
         instance = super().save(commit=False)

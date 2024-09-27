@@ -3,10 +3,10 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 
 from ._excel_squalaetp import ExcelSqualaetp
-from squalaetp.models import Xelon, Sivin
+from squalaetp.models import Xelon, Sivin, ProductCategory
 from psa.models import Corvet
 from utils.scraping import ScrapingCorvet, ScrapingSivin, xml_parser, xml_sivin_parser
-from utils.django.validators import VIN_PSA_REGEX
+from utils.regex import VIN_PSA_REGEX
 from utils.django.models import defaults_dict
 from utils.conf import XLS_SQUALAETP_FILE
 
@@ -59,8 +59,9 @@ class Command(BaseCommand):
             self.stdout.write("[IMPORT_CORVET] Waiting...")
             squalaetp = ExcelSqualaetp(XLS_SQUALAETP_FILE)
             xelon_list = squalaetp.xelon_number_list()
-            xelons = Xelon.objects.filter(
-                numero_de_dossier__in=xelon_list, vin__regex=VIN_PSA_REGEX, corvet__isnull=True)
+            prod_list = list(ProductCategory.objects.filter(category='PSA').values_list('product_model', flat=True))
+            xelons = Xelon.objects.filter(numero_de_dossier__in=xelon_list, corvet__isnull=True).filter(
+                Q(vin__regex=VIN_PSA_REGEX) | Q(modele_produit__in=prod_list))
             self.stdout.write(f"[IMPORT_CORVET] Xelon number = {xelons.count()}")
             nb_file = self._import_corvet(xelons, options['test'])
             self.stdout.write(self.style.SUCCESS(f"[IMPORT_CORVET] Import completed: NB_CORVET = {nb_file}"))

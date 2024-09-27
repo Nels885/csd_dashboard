@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Raspeedi, UnlockProduct, Programing, ToolStatus
+from .models import Raspeedi, UnlockProduct, Programing, ToolStatus, AETLog, AETMeasure
 
 
 class RaspeediAdmin(admin.ModelAdmin):
@@ -32,7 +32,33 @@ class ProgramingAdmin(admin.ModelAdmin):
     get_type.short_description = "type"
 
 
+class ToolStatusAdmin(admin.ModelAdmin):
+    list_display = ('name', 'type', 'url', 'last_boot', 'firmware')
+    search_fields = ('name', 'type')
+
+
+class AETLogAdmin(admin.ModelAdmin):
+    list_display = ('xelon', 'comp_ref', 'manu_ref', 'aet_name', 'prod_name', 'date')
+    search_fields = ('xelon', 'comp_ref', 'manu_ref', 'aet_name', 'prod_name', 'date')
+    list_filter = ('aet_name', 'prod_name')
+    ordering = ('xelon', 'comp_ref', 'manu_ref', 'aet_name', 'prod_name', 'date')
+
+
+class AETMeasureAdmin(admin.ModelAdmin):
+    list_display = ('get_xelon', 'get_aet_name', 'measure_name', 'measured_value', 'min_value', 'max_value')
+    search_fields = ('measure_name',)
+    list_filter = ('measure_name',)
+
+    def get_xelon(self, obj):
+        return obj.content_object.xelon
+
+    def get_aet_name(self, obj):
+        return obj.content_object.aet_name
+
+
 admin.site.register(Raspeedi, RaspeediAdmin)
 admin.site.register(UnlockProduct, UnlockProductAdmin)
 admin.site.register(Programing, ProgramingAdmin)
-admin.site.register(ToolStatus)
+admin.site.register(ToolStatus, ToolStatusAdmin)
+admin.site.register(AETLog, AETLogAdmin)
+admin.site.register(AETMeasure, AETMeasureAdmin)

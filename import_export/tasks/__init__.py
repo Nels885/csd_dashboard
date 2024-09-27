@@ -1,7 +1,7 @@
 from sbadmin import celery_app
 
 from .export_reman import ExportRemanIntoExcelTask
-from .export_psa import ExportCorvetIntoExcelTask
+from .export_psa import ExportCorvetIntoExcelTask, ExportCalIntoExcelTask
 from .export_tools import ExportToolsIntoExcelTask, ExportSuptechIntoExcelTask
 
 
@@ -10,6 +10,11 @@ from .export_tools import ExportToolsIntoExcelTask, ExportSuptechIntoExcelTask
 
 @celery_app.task(bind=True, base=ExportCorvetIntoExcelTask)
 def export_corvet_task(self, *args, **kwargs):
+    return super(type(self), self).run(*args, **kwargs)
+
+
+@celery_app.task(bind=True, base=ExportCalIntoExcelTask)
+def export_cal_task(self, *args, **kwargs):
     return super(type(self), self).run(*args, **kwargs)
 
 

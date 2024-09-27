@@ -80,7 +80,10 @@
                                 </tr>
                                 <tr>
                                     <td class="text-dark">auth_token :</td>
-                                    <td class="font-weight-bold" colspan="2">{{ user.auth_token.key }}</td>
+                                    <td class="font-weight-bold" colspan="2">
+                                        {{ user.auth_token.key }}
+                                        <a href="#" title="Copie" onclick="textCopy('{{ user.auth_token.key }}')"><i class="fas fa-copy ml-1"></i></a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

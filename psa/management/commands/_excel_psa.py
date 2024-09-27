@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 from utils.microsoft_format import ExcelFormat, pd
 
 from psa.models import CorvetAttribute
@@ -149,7 +150,7 @@ class ExcelDefaultCode(ExcelFormat):
         """
         Extracting data for the DefaultCode table form the Database
         :return:
-            list of dictionnaries that represents the data for DefaultCode table
+            list of dictionaries that represents the data for DefaultCode table
         """
         data = []
         if not self.ERROR:
@@ -157,3 +158,50 @@ class ExcelDefaultCode(ExcelFormat):
                 row = self.sheet.loc[line]  # get the data in the ith row
                 data.append(dict(row.dropna()))
         return data
+
+
+class ExcelNacCalibration(ExcelFormat):
+    """## Read data in Excel file for CAL_NAC.xlsx ##"""
+    ERROR = False
+    COLS = {"A": "factory", "B": "current"}
+    TYPE = "94X"
+    CAL_REGEX = r'^9[68]\d{6}80$'
+
+    def __init__(self, file, sheet_name=0, columns=None, skiprows=None):
+        """
+        Initialize ExcelDefaultCode class
+        :param file:
+            excel file to process
+        :param sheet_name:
+            Sheet index to be processed from excel file
+        :param columns:
+            Number of the last column to be processed
+        """
+        try:
+            cols = ",".join(self.COLS.keys())
+            super().__init__(file, sheet_name, columns, skiprows, dtype=str, usecols=cols)
+            self.sheet.dropna(axis='columns', how='all', inplace=True)
+            self._columns_rename(self.COLS)
+            self.sheet.replace({"": None, "#": None}, inplace=True)
+        except FileNotFoundError as err:
+            logger.error(f'FileNotFoundError: {err}')
+            self.ERROR = True
+
+    def read(self):
+        """
+        Extracting data for the DefaultCode table form the Database
+        :return:
+            list of dictionaries that represents the data for DefaultCode table
+        """
+        data = []
+        filter_df = self.check_value()
+        self.nrows = filter_df.shape[0]
+        if not self.ERROR:
+            for line in range(self.nrows):
+                row = filter_df.iloc[line]  # get the data in the ith row
+                data.append(dict(row.dropna(), type=self.TYPE, is_available=True))
+        return data
+
+    def check_value(self):
+        return self.sheet[np.logical_and(self.sheet['factory'].str.contains(r'^9[68]\d{6}80$'),
+                                         self.sheet['current'].str.contains(r'^9[68]\d{6}80$', na=False))]

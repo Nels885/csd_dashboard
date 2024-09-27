@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-21 11:19+0100\n"
+"POT-Creation-Date: 2024-08-22 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,17 +22,21 @@ msgstr ""
 msgid "This Xelon number is already present for unlocking"
 msgstr "Ce numéro Xelon est déjà présent pour le déverrouillage"
 
-#: prog/forms.py:74
+#: prog/forms.py:85
 msgid "URL invalid"
 msgstr "URL invalide"
 
-#: prog/forms.py:90
+#: prog/forms.py:101
 msgid "Please upload bin file."
 msgstr "Veuillez télécharger le fichier bin."
 
-#: prog/templates/prog/aet.html:67
+#: prog/templates/prog/aet_info.html:67
 msgid "Update an Mbed"
 msgstr "Mettre à jour un Mbed"
+
+#: prog/templates/prog/aet_info.html:73
+msgid "AET tools not found"
+msgstr "Outils AET non trouvés"
 
 #: prog/templates/prog/form.html:7
 msgid "Case reference"
@@ -177,63 +181,63 @@ msgstr "Ajouter"
 msgid "Refresh"
 msgstr "Actualiser"
 
-#: prog/views.py:30
+#: prog/views.py:31
 msgid "Table Products Telematics PSA"
 msgstr "Table produits télématique PSA"
 
-#: prog/views.py:44
+#: prog/views.py:45
 msgid "Detail raspeedi data for the ref case of Product: "
 msgstr "Détail des données raspeedi pour le cas de référence du produit: "
 
-#: prog/views.py:52
+#: prog/views.py:53
 msgid "Unlocking product for programming"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: prog/views.py:58
+#: prog/views.py:59
 #, python-format
 msgid "Adding the Xelon number %(xelon)s successfully"
 msgstr "Ajout du dossier Xelon %(xelon)s avec succès"
 
-#: prog/views.py:61
+#: prog/views.py:62
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"
 
-#: prog/views.py:76
+#: prog/views.py:77
 msgid "Unlock product table"
 msgstr "Déverrouillage produit pour la programmation"
 
-#: prog/views.py:84
+#: prog/views.py:85
 msgid "RASPEEDI integration"
 msgstr "Intégration données RASPEEDI"
 
-#: prog/views.py:91
+#: prog/views.py:92
 msgid "Added successfully!"
 msgstr "Ajout réalisé avec succès !"
 
-#: prog/views.py:100
+#: prog/views.py:101
 msgid "Modification data RASPEEDI for ref case: "
 msgstr "Modification des données RASPEEDI pour la réf. Boîtier : "
 
-#: prog/views.py:105
+#: prog/views.py:106
 msgid "Modification done successfully!"
 msgstr "Modification effectuée avec succès !"
 
-#: prog/views.py:115
+#: prog/views.py:116
 msgid "Success: Input was deleted."
 msgstr "Succès: l'entrée a été supprimée."
 
-#: prog/views.py:177
+#: prog/views.py:186
 msgid "Success: tools info was deleted."
 msgstr "Succès: les infos sur les outils ont été supprimées."
 
-#: prog/views.py:181
+#: prog/views.py:190
 msgid "Delete Tool info"
 msgstr "Supprimer les infos sur l'outil"
 
-#: prog/views.py:255
+#: prog/views.py:266
 msgid "Success: AET was deleted."
 msgstr "Succès: l'AET a été supprimée."
 
-#: prog/views.py:287
+#: prog/views.py:298
 msgid "Success: Firmware was deleted."
 msgstr "Succès: le Firmware a été supprimée."

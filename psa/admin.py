@@ -1,14 +1,17 @@
+import csv
+
 from django.contrib import admin
+from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from utils.django.contrib import CustomModelAdmin
 
 from .models import (
-    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, SupplierCode,
-    DefaultCode, ProductChoice, CanRemote, Vehicle
+    Corvet, Multimedia, Firmware, Calibration, CorvetChoices, Ecu, CorvetProduct, CorvetAttribute, CorvetOption,
+    SupplierCode, DefaultCode, ProductChoice, CanRemote, Vehicle, CalCurrent, CalHistory
 )
 from .forms import (
-    EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm, CalibrationAdminForm, FirmwareAdminForm,
+    EcuAdminForm, MultimediaAdminForm, CanRemoteAdminForm, CalibrationAdminForm, CalCurrentAdminForm, FirmwareAdminForm,
     ProductChoiceAdminForm
 )
 
@@ -22,20 +25,33 @@ class CorvetListFilter(admin.SimpleListFilter):
         return CorvetChoices.objects.filter(column='DON_MAR_COMM').values_list('key', 'value').distinct()
 
     def queryset(self, request, queryset):
-        return queryset.filter(donnee_marque_commerciale=self.value())
+        if self.value():
+            return queryset.filter(donnee_marque_commerciale=self.value())
+        return queryset
 
 
-class CorvetAdmin(admin.ModelAdmin):
+class CorvetInline(admin.StackedInline):
+    model = CorvetOption
+
+
+class CorvetAdmin(CustomModelAdmin):
+    inlines = (CorvetInline,)
     list_display = (
         'vin', 'donnee_marque_commerciale', 'electronique_14f', 'electronique_94f', 'electronique_14x',
-        'electronique_94x', 'electronique_14a', 'electronique_94a',
+        'electronique_94x', 'electronique_14a', 'electronique_94a', 'get_update'
     )
-    list_filter = (CorvetListFilter,)
+    list_filter = (CorvetListFilter, 'opts__update')
     ordering = ('vin',)
     search_fields = (
         'vin', 'electronique_14f', 'electronique_94f', 'electronique_14x', 'electronique_94x', 'electronique_14a',
         'electronique_94a',
     )
+
+    @admin.display(description=_('Update'))
+    def get_update(self, obj):
+        if obj.opts.update:
+            return _('Yes')
+        return _('No')
 
 
 class CorvetAttributeAdmin(admin.ModelAdmin):
@@ -47,23 +63,23 @@ class CorvetAttributeAdmin(admin.ModelAdmin):
 class MultimediaAdmin(CustomModelAdmin):
     form = MultimediaAdminForm
     list_display = (
-        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'level', 'type', 'dab', 'cam',
-        'media', 'firmware', 'relation_by_name'
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'product', 'xelon_name', 'level', 'type', 'dab',
+        'cam', 'media', 'emmc', 'firmware', 'relation_by_name'
     )
-    list_filter = ('name', 'type', 'media', 'xelon_name', 'relation_by_name')
+    list_filter = ('name', 'product', 'type', 'media', 'xelon_name', 'relation_by_name')
     ordering = ('comp_ref',)
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference')
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
 
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=False)
-            self._message_product_about_update(request, rows_updated, 'disabled')
+        rows_updated = queryset.update(relation_by_name=False)
+        self._message_product_about_update(request, rows_updated, 'disabled')
 
     @admin.action(description=_('Relation by name enabled'))
     def relation_by_name_enabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=True)
-            self._message_product_about_update(request, rows_updated, 'enabled')
+        rows_updated = queryset.update(relation_by_name=True)
+        self._message_product_about_update(request, rows_updated, 'enabled')
 
 
 class FirmwareAdmin(admin.ModelAdmin):
@@ -76,16 +92,50 @@ class FirmwareAdmin(admin.ModelAdmin):
 
 class CalibrationAdmin(admin.ModelAdmin):
     form = CalibrationAdminForm
-    list_display = ('factory', 'get_type', 'get_type_display', 'current', 'pr_reference')
-    list_filter = ('type',)
+    list_display = ('factory', 'get_type', 'get_type_display', 'current', 'pr_reference', 'is_available')
+    list_filter = ('type', 'is_available')
     ordering = ('-factory',)
     search_fields = ('factory', 'type', 'current', 'pr_reference')
+    actions = ['export_csv']
 
     def get_type(self, obj):
         return f"electronique_{obj.type}"
 
     def get_type_display(self, obj):
         return obj.get_type_display()
+
+    @admin.action(description=_('Export to CSV'))
+    def export_csv(self, request, queryset):
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="calibration.csv"'},
+        )
+        writer = csv.writer(response)
+        writer.writerow(["ID", "FACTORY", "GET_TYPE_DISPLAY", "CURRENT", "PR_REFERENCE", "IS_AVAILABLE"])
+        for query in queryset:
+            writer.writerow([
+                query.id, query.factory, query.get_type_display(), query.current, query.pr_reference,
+                query.is_available
+            ])
+        return response
+
+
+class CalCurrentAdmin(admin.ModelAdmin):
+    form = CalCurrentAdminForm
+    list_display = ('name', 'get_cal_name', 'get_type', 'get_type_display', 'pr_reference', 'is_available')
+    list_filter = ('type', 'is_available')
+    ordering = ('-name',)
+    search_fields = ('name', 'type', 'pr_reference', 'olds__name')
+
+    def get_type(self, obj):
+        return f"electronique_{obj.type}"
+
+    def get_type_display(self, obj):
+        return obj.get_type_display()
+
+    def get_cal_name(self, obj):
+        return ", ".join(obj.get_cal_list())
+
 
 class CorvetChoicesAdmin(admin.ModelAdmin):
     list_display = ('key', 'value', 'column')
@@ -97,23 +147,23 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 class EcuAdmin(CustomModelAdmin):
     form = EcuAdminForm
     list_display = (
-        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'hw', 'sw', 'supplier_oe',
-        'relation_by_name'
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'product', 'xelon_name', 'type', 'hw', 'sw',
+        'supplier_oe', 'relation_by_name'
     )
-    list_filter = ('type', 'supplier_oe', 'xelon_name', 'relation_by_name')
+    list_filter = ('type', 'product','supplier_oe', 'relation_by_name')
     ordering = ('comp_ref',)
     search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type')
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
 
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=False)
-            self._message_product_about_update(request, rows_updated, 'disabled')
+        rows_updated = queryset.update(relation_by_name=False)
+        self._message_product_about_update(request, rows_updated, 'disabled')
 
     @admin.action(description=_('Relation by name enabled'))
     def relation_by_name_enabled(self, request, queryset):
-            rows_updated = queryset.update(relation_by_name=True)
-            self._message_product_about_update(request, rows_updated, 'enabled')
+        rows_updated = queryset.update(relation_by_name=True)
+        self._message_product_about_update(request, rows_updated, 'enabled')
 
 
 class CorvetProductAdmin(admin.ModelAdmin):
@@ -133,7 +183,7 @@ class DefaultCodeAdmin(admin.ModelAdmin):
 
 class ProductChoiceAdmin(admin.ModelAdmin):
     form = ProductChoiceAdminForm
-    list_display = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
+    list_display = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol', 'uce_code', 'unlock_key', 'supplier')
     list_filter = ('family', 'ecu_type', 'protocol')
     ordering = ('name', 'family', 'short_name', 'ecu_type', 'cal_attribute', 'protocol')
     search_fields = ('name', 'short_name', 'cal_attribute')
@@ -141,11 +191,13 @@ class ProductChoiceAdmin(admin.ModelAdmin):
 
 class CanRemoteAdmin(CustomModelAdmin):
     form = CanRemoteAdminForm
-    list_display = ('label', 'location', 'type', 'product', 'can_id', 'dlc', 'data')
+    list_display = ('label', 'location', 'type', 'product', 'get_vehicle', 'can_id', 'dlc', 'data')
     list_filter = ('type', 'product',)
     ordering = ('location',)
-    search_fields = ('label', 'product', 'can_id')
+    search_fields = ('label', 'product', 'can_id', 'vehicles__name')
 
+    def get_vehicle(self, obj):
+        return ", ".join(query.name for query in obj.vehicles.all())
 
 
 class SupplierCodeAdmin(admin.ModelAdmin):
@@ -160,6 +212,8 @@ admin.site.register(CorvetAttribute, CorvetAttributeAdmin)
 admin.site.register(Multimedia, MultimediaAdmin)
 admin.site.register(Firmware, FirmwareAdmin)
 admin.site.register(Calibration, CalibrationAdmin)
+admin.site.register(CalCurrent, CalCurrentAdmin)
+admin.site.register(CalHistory)
 admin.site.register(CorvetChoices, CorvetChoicesAdmin)
 admin.site.register(Ecu, EcuAdmin)
 admin.site.register(SupplierCode, SupplierCodeAdmin)

@@ -1,8 +1,6 @@
 import logging
 from django.core.management.base import BaseCommand
-from django.core.management.color import no_style
 from django.db.utils import IntegrityError, DataError
-from django.db import connection
 
 from prog.models import Programing
 from psa.models import Multimedia
@@ -24,33 +22,17 @@ class Command(BaseCommand):
             dest='filename',
             help='Specify import Excel file',
         )
-        parser.add_argument(
-            '--delete',
-            action='store_true',
-            dest='delete',
-            help='Delete all data in Programing table',
-        )
 
     def handle(self, *args, **options):
         self.stdout.write("[PROGRAMING] Waiting ...")
 
-        if options['delete']:
-            Programing.objects.all().delete()
-
-            sequence_sql = connection.ops.sequence_reset_sql(no_style(), [Programing])
-            with connection.cursor() as cursor:
-                for sql in sequence_sql:
-                    cursor.execute(sql)
-            self.stdout.write(self.style.WARNING("Suppression des données des tables Raspeedi terminée!"))
-
+        if options['filename'] is not None:
+            path_file = options['filename']
+            excel = ExcelPrograming(path_file)
         else:
-            if options['filename'] is not None:
-                path_file = options['filename']
-                excel = ExcelPrograming(path_file)
-            else:
-                path_file = get_path('XLS_RASPEEDI_FILE')
-                excel = ExcelPrograming(path_file)
-            self._programing(excel)
+            path_file = get_path('XLS_RASPEEDI_FILE')
+            excel = ExcelPrograming(path_file)
+        self._programing(excel)
 
     def _programing(self, excel):
         nb_before = Programing.objects.count()

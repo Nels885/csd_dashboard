@@ -1,12 +1,16 @@
 from rest_framework import serializers
 
 from utils.django.api_rest.serializers import DynamicFieldsModelSerializer
-from .models import Corvet, DefaultCode
+from .models import Corvet, DefaultCode, Multimedia, Ecu
 
 CORVET_COLUMN_LIST = [
     'vin', 'electronique_14f', 'electronique_94f', 'prods__radio__xelon_name', 'electronique_14x', 'electronique_94x',
     'prods__btel__xelon_name', 'electronique_14a', 'electronique_94a', 'prods__cmm__xelon_name', 'electronique_14b',
     'electronique_94b', 'prods__bsi__xelon_name'
+]
+
+DTC_COLUMN_LIST = [
+    'code', 'type', 'description', 'characterization', 'location', 'ecu_type'
 ]
 
 
@@ -38,3 +42,43 @@ class DefaultCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DefaultCode
         fields = ('code', 'type', 'description', 'characterization', 'ecu_type')
+
+
+class DTCServerSideSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DefaultCode
+        fields = ('code', 'type', 'description', 'characterization', 'location', 'ecu_type')
+
+
+class MultimediaSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='product.name', read_only=True, default='')
+    uce_code = serializers.CharField(source='product.uce_code', read_only=True, default='')
+    unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
+    supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
+    supplier_name = serializers.CharField(source='product.supplier.name', read_only=True, default='')
+    update_id = serializers.CharField(source='firmware.update_id', read_only=True, default='')
+
+    class Meta:
+        model = Multimedia
+        fields = (
+            'comp_ref', 'label_ref', 'name', 'level', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name',
+            'update_id'
+        )
+
+
+class EcuSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='product.name', read_only=True, default='')
+    level = serializers.CharField(default='')
+    uce_code = serializers.CharField(source='product.uce_code', read_only=True, default='')
+    unlock_key = serializers.CharField(source='product.unlock_key', read_only=True, default='')
+    supplier_code = serializers.CharField(source='product.supplier.code', read_only=True, default='')
+    supplier_name = serializers.CharField(source='product.supplier.name', read_only=True, default='')
+    update_id = serializers.CharField(default='')
+
+    class Meta:
+        model = Ecu
+        fields = (
+            'comp_ref', 'label_ref', 'name', 'level', 'uce_code', 'unlock_key', 'supplier_code', 'supplier_name',
+            'update_id'
+        )

@@ -9,48 +9,31 @@ class PsaCommandTestCase(UnitTest):
     def setUp(self):
         super(type(self), self).setUp()
         self.out = StringIO()
+        self.delMsg = "Deleting data from table {0} completed !"
 
     def test_clear_psa_multimedia_table(self):
         call_command('clearpsa', '--multimedia', stdout=self.out)
-        self.assertIn(
-            "Suppression des données de la table Multimedia terminée!",
-            self.out.getvalue()
-        )
+        self.assertIn(self.delMsg.format('Multimedia'), self.out.getvalue())
 
     def test_clear_psa_ecu_table(self):
         call_command('clearpsa', '--ecu', stdout=self.out)
-        self.assertIn(
-            "Suppression des données de la table Ecu terminée!",
-            self.out.getvalue()
-        )
+        self.assertIn(self.delMsg.format('Ecu'), self.out.getvalue())
 
     def test_clear_psa_corvet_table(self):
         call_command('clearpsa', '--corvet', stdout=self.out)
-        self.assertIn(
-            "Suppression des données de la table Corvet terminée!",
-            self.out.getvalue()
-        )
+        self.assertIn(self.delMsg.format('Corvet'), self.out.getvalue())
 
     def test_clear_psa_defaultcode_table(self):
         call_command('clearpsa', '--dtc', stdout=self.out)
-        self.assertIn(
-            "Suppression des données de la table DefaultCode terminée!",
-            self.out.getvalue()
-        )
+        self.assertIn(self.delMsg.format('DefaultCode'), self.out.getvalue())
 
     def test_clear_psa_corvet_attribute_table(self):
         call_command('clearpsa', '--corvet_attribute', stdout=self.out)
-        self.assertIn(
-            "Suppression des données de la table CorvetAttribute terminée!",
-            self.out.getvalue()
-        )
+        self.assertIn(self.delMsg.format('CorvetAttribute'), self.out.getvalue())
 
     def test_clear_psa_canremote_table(self):
         call_command('clearpsa', '--canremote', stdout=self.out)
-        self.assertIn(
-            "Suppression des données de la table CanRemote terminée!",
-            self.out.getvalue()
-        )
+        self.assertIn(self.delMsg.format('CanRemote'), self.out.getvalue())
 
     def test_cmd_loadsqualaetp(self):
         # Test for files not found

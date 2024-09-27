@@ -114,14 +114,14 @@
         <!-- Info NAC -->
         <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
 
-            {% include 'psa/format/nac_info_format.html' with firmware=corvet.prods.btel.firmware uin=corvet.electronique_44x %}
+            {% include 'psa/format/nac_info.html' with firmware=corvet.prods.btel.firmware sn=corvet.electronique_44x new_sn=corvet.opts.new_44x %}
 
         </div>
 
         <!-- Detail Corvet -->
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
-            {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
+            {% include 'psa/format/corvet_brut_table.html' with obj=dict_corvet %}
 
         </div>
 
@@ -166,16 +166,26 @@
                 </div>
                 <div class="modal-body text-center">
                     <div>
-                        {% if corvet.donnee_marque_commerciale == "0P" %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
-                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
-                            {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
-                        {% else %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
-                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
-                            {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
-                        {% endif %}                    </div>
-                    <img id="barcode" src="" alt="{{ xelon.vin }}"/>
+                        {{ corvet.get_brand_display }} {{ corvet.get_vehicle_display }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
+                    </div>
+                    <img id="vinBarcode" src="" alt="{{ xelon.vin }}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="xelonModal" tabindex="-1" role="dialog" aria-labelledby="xelonModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="xelonModalLabel">Code barre dossier Xelon</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="xelonBarcode" src="" alt="{{ xelon.numero_de_dossier }}"/>
                 </div>
             </div>
         </div>
@@ -188,7 +198,11 @@
     <script type="text/javascript" src="{% static 'js/JsBarcode/JsBarcode.all.min.js' %}"></script>
     <script type="text/javascript">
         // Barcode generator
-        JsBarcode("#barcode", "{{ xelon.vin }}", {
+        JsBarcode("#vinBarcode", "{{ xelon.vin }}", {
+            width: 2.2,
+            height: 100,
+        });
+        JsBarcode("#xelonBarcode", "{{ xelon.numero_de_dossier }}", {
             width: 2.2,
             height: 100,
         });

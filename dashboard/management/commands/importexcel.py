@@ -30,8 +30,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         out = StringIO()
         self.stdout.write("[IMPORT_EXCEL] Waiting...")
-        call_command("loadraspeedi", stdout=out)
-        call_command("programing", stdout=out)
+        # call_command("loadraspeedi", stdout=out)
+        # call_command("programing", stdout=out)
         call_command("loadsqualaetp", stdout=out)
         call_command("importcorvet", "--squalaetp", stdout=out)
         call_command("exportsqualaetp")

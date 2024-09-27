@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-21 11:19+0100\n"
+"POT-Creation-Date: 2024-08-22 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: import_export/templates/import_export/detail_csd.html:129
+#: import_export/templates/import_export/detail_csd.html:137
 #: import_export/templates/import_export/detail_reman.html:81
 #: import_export/templates/import_export/detail_tools.html:74
 #: import_export/templates/import_export/detail_tools.html:113
+#: import_export/templates/import_export/detail_tools.html:144
 msgid "Data Export"
 msgstr "Exportation de données"
 
-#: import_export/templates/import_export/detail_csd.html:163
+#: import_export/templates/import_export/detail_csd.html:171
 msgid "Data Import"
 msgstr "Importation de données"
 
@@ -37,6 +38,6 @@ msgstr "Importation CSV"
 msgid "Excel Import"
 msgstr "Importation Excel"
 
-#: import_export/views.py:78 import_export/views.py:101
+#: import_export/views.py:83 import_export/views.py:106
 msgid "You do not have the required permissions"
 msgstr "Vous ne disposez pas des autorisations requises"

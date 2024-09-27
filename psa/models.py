@@ -1,10 +1,30 @@
 import re
+from ast import literal_eval
 
 from django.db import models, utils
 from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from crum import get_current_user
 
 from .choices import BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, ECU_TYPE_CHOICES, CAL_TYPE_CHOICES
 
+CORVET_LIST = [
+    ('electronique_14a', 'electronique_94a', 'electronique_34a'), ('electronique_14b', 'electronique_94b'),
+    ('electronique_16b', 'electronique_96b'), ('electronique_14d', 'electronique_94d'),
+    ('electronique_12e', 'electronique_92e'), ('electronique_14f', 'electronique_94f'),
+    ('electronique_16g', 'electronique_96g'), ('electronique_14j', 'electronique_94j'),
+    ('electronique_14k', 'electronique_94k'), ('electronique_14l', 'electronique_94l'),
+    ('electronique_16l', 'electronique_96l'), ('electronique_11m',), ('electronique_14m', 'electronique_94m'),
+    ('electronique_11n',), ('electronique_14p', 'electronique_94p', 'electronique_34p'), ('electronique_16p',),
+    ('electronique_11q', 'electronique_91q'), ('electronique_16q', 'electronique_96q'),
+    ('electronique_14r', 'electronique_94r', 'electronique_34r'), ('electronique_19u',), ('electronique_16v',),
+    ('electronique_19v',), ('electronique_19w',), ('electronique_14x', 'electronique_94x'),
+    ('electronique_12y', 'electronique_92y'), ('electronique_14y',)
+]
 
 CORVET_FILTERS = [
     'vin__iexact', 'vin__iendswith', 'opts__tag__istartswith'
@@ -15,17 +35,25 @@ CORVET_SN_FILTERS = [
     'electronique_44b__iexact', 'electronique_46p__iexact'
 ]
 
-CORVET_HW_FILTERS = [
-    'electronique_14f__iexact', 'electronique_14j__iexact', 'electronique_14k__iexact', 'electronique_14l__iexact',
-    'electronique_14r__iexact', 'electronique_14x__iexact', 'electronique_19z__iexact', 'electronique_19h__iexact',
-    'electronique_14a__iexact', 'electronique_14b__iexact', 'electronique_16p__iexact', 'electronique_16b__iexact',
-    'electronique_16q__iexact', 'electronique_16v__iexact', 'electronique_19f__iexact', 'electronique_19u__iexact',
-    'electronique_14d__iexact', 'electronique_16g__iexact', 'electronique_19v__iexact', 'electronique_12y__iexact',
-    'electronique_16l__iexact', 'electronique_14y__iexact', 'electronique_14z__iexact', 'electronique_14p__iexact',
-    'electronique_19w__iexact', 'electronique_16t__iexact', 'electronique_19t__iexact', 'electronique_14m__iexact',
-    'electronique_18z__iexact', 'electronique_11m__iexact', 'electronique_19k__iexact', 'electronique_12e__iexact',
-    'electronique_11q__iexact', 'electronique_11n__iexact', 'electronique_1m2__iexact', 'electronique_1l9__iexact'
-]
+CORVET_HW_FILTERS = [f'{value}__iexact' for value in [
+    'electronique_14f', 'electronique_14j', 'electronique_14k', 'electronique_14l', 'electronique_14r',
+    'electronique_14x', 'prods__btel__label_ref', 'electronique_19z', 'electronique_19h', 'electronique_14a',
+    'electronique_14b', 'electronique_16p', 'electronique_16b', 'electronique_16q', 'electronique_16v',
+    'electronique_19f', 'electronique_19u', 'electronique_14d', 'electronique_16g', 'electronique_19v',
+    'electronique_12y', 'prods__cvm2__label_ref',
+    'electronique_16l', 'electronique_14y', 'electronique_14z', 'electronique_14p', 'electronique_19w',
+    'electronique_16t', 'electronique_19t', 'electronique_14m', 'electronique_18z', 'electronique_11m',
+    'electronique_19k', 'electronique_12e', 'electronique_11q', 'electronique_11n', 'electronique_1m2',
+    'electronique_1l9'
+]]
+
+CORVET_SW_FILTERS = [f'{value}__iexact' for value in [
+    'electronique_94f', 'electronique_94j', 'electronique_94l', 'electronique_94x', 'electronique_99h',
+    'electronique_34a', 'electronique_94a', 'electronique_94b', 'electronique_96b', 'electronique_94r',
+    'electronique_96q', 'electronique_94d', 'electronique_96g', 'electronique_94j', 'electronique_94k',
+    'electronique_92y', 'electronique_96l', 'electronique_94p', 'electronique_34p', 'electronique_94m',
+    'electronique_99k', 'electronique_92e', 'electronique_91q', 'electronique_34r'
+]]
 
 
 class CorvetChoices(models.Model):
@@ -72,8 +100,19 @@ class CorvetChoices(models.Model):
             return []
 
     @classmethod
-    def vehicles(cls):
+    def vehicles(cls, form=False):
         try:
+            if form:
+                data = [('', '---')]
+                for key, value in list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value')):
+                    try:
+                        value_dict = literal_eval(value)
+                        if isinstance(value_dict, dict):
+                            value = ' | '.join([value for value in value_dict.values()])
+                    except Exception:
+                        pass
+                    data.append((key, value))
+                return data
             return [('', '---')] + list(cls.objects.filter(column='DON_LIN_PROD').values_list('key', 'value'))
         except utils.ProgrammingError:
             return []
@@ -316,26 +355,59 @@ class Corvet(models.Model):
 
     @classmethod
     def hw_search(cls, value, all_data=True):
-        if value is not None:
-            query = value.strip()
+        if value is not None and len(value) == 10:
+            value = value.strip()
+            if not value[-2:].isdigit():
+                value = value[:-2] + '77'
             for field in CORVET_HW_FILTERS:
-                    queryset = cls.objects.filter(**{field: query})
-                    if queryset: return queryset
+                queryset = cls.objects.filter(**{field: value})
+                if queryset:
+                    return queryset
         if all_data:
-            return cls
-        return None
+            return cls.objects.all()
+        return cls.objects.none()
 
     @classmethod
     def search(cls, value):
         if value is not None:
             query = value.strip()
             queryset = cls.hw_search(value, all_data=False)
-            if queryset: return queryset
+            if queryset:
+                return queryset
             filters = CORVET_FILTERS + CORVET_SN_FILTERS
             for field in filters:
                 queryset = cls.objects.filter(**{field: query})
-                if queryset: return queryset
-        return None
+                if queryset:
+                    return queryset
+        return cls.objects.none()
+
+    @classmethod
+    def get_vehicles(cls, hardware: str) -> list:
+        queryset = cls.hw_search(hardware, all_data=False)
+        vehicles = []
+        if queryset:
+            queryset = queryset.order_by('donnee_ligne_de_produit')
+            data = list(queryset.values_list('donnee_ligne_de_produit', flat=True).distinct())
+            # data = list(set([query.donnee_ligne_de_produit for query in queryset]))
+            for key in data:
+                vehicles.append(dict(CorvetChoices.vehicles(True)).get(key, key))
+        return vehicles
+
+    def get_brand_display(self):
+        value = self.donnee_marque_commerciale
+        return dict(CorvetChoices.brands()).get(value, value)
+
+    def get_vehicle_display(self):
+        value = self.donnee_ligne_de_produit
+        try:
+            value = dict(CorvetChoices.vehicles()).get(value, value)
+            data = literal_eval(value)
+            if isinstance(data, dict):
+                brand = self.get_brand_display()
+                value = data.get(brand, f"{brand}_{self.donnee_ligne_de_produit}")
+        except Exception:
+            pass
+        return value
 
     def __str__(self):
         return self.vin
@@ -363,6 +435,7 @@ class CorvetProduct(models.Model):
     vmf = models.ForeignKey('psa.Ecu', related_name='corvet_vmf', on_delete=models.SET_NULL, limit_choices_to={'type': 'VMF'}, null=True, blank=True)
     dmtx = models.ForeignKey('psa.Ecu', related_name='corvet_dmtx', on_delete=models.SET_NULL, limit_choices_to={'type': 'DMTX'}, null=True, blank=True)
     bpga = models.ForeignKey('psa.Ecu', related_name='corvet_bpga', on_delete=models.SET_NULL, limit_choices_to={'type': 'BPGA'}, null=True, blank=True)
+    aas = models.ForeignKey('psa.Ecu', related_name='corvet_aas', on_delete=models.SET_NULL, limit_choices_to={'type': 'AAS'}, null=True, blank=True)
 
     class Meta:
         verbose_name = "produits CORVET"
@@ -375,6 +448,8 @@ class CorvetProduct(models.Model):
 class CorvetOption(models.Model):
     corvet = models.OneToOneField('psa.Corvet', related_name='opts', on_delete=models.CASCADE, primary_key=True)
     tag = models.CharField('tag', max_length=100, blank=True)
+    new_44x = models.CharField('new_44x', max_length=200, blank=True)
+    new_44f = models.CharField('new_44f', max_length=200, blank=True)
     update = models.BooleanField(default=False)
 
     class Meta:
@@ -409,9 +484,24 @@ class ProductChoice(models.Model):
     ecu_type = models.CharField('Type ECU', max_length=10)
     cal_attribute = models.CharField('Attribut CAL', max_length=3, blank=True)
     protocol = models.CharField('Protocole', max_length=100, choices=PROTO_CHOICES, blank=True)
+    uce_code = models.CharField('UCE Code', max_length=2, blank=True)
+    unlock_key = models.CharField('Unlock Key', max_length=4, blank=True)
+    supplier = models.ForeignKey('psa.SupplierCode', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Choix produit"
+        ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'uce_code', 'unlock_key', 'supplier'], name="Product choice unique")
+        ]
 
     def __str__(self):
-        return f"{self.name}_{self.protocol}"
+        value = f"{self.name}"
+        if self.protocol:
+            value = value + f"_{self.protocol}"
+        if self.supplier:
+            value = value + f"_{self.supplier}"
+        return value.replace(' ', '_')
 
 
 class Multimedia(models.Model):
@@ -427,7 +517,7 @@ class Multimedia(models.Model):
     comp_ref = models.BigIntegerField('réf. comp. matériel', primary_key=True)
     mat_ref = models.CharField('réf. matériel', max_length=10, blank=True)
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
-    product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey('psa.ProductChoice', related_name='medias', on_delete=models.SET_NULL, limit_choices_to={'family': 'MULTIMEDIA'}, null=True, blank=True)
     name = models.CharField('modèle', max_length=20, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
     oe_reference = models.CharField('référence OEM', max_length=200, blank=True)
@@ -454,10 +544,6 @@ class Multimedia(models.Model):
     relation_by_name = models.BooleanField('relation par nom', default=False)
     firmware = models.ForeignKey('Firmware', on_delete=models.SET_NULL, limit_choices_to={'is_active': True}, null=True, blank=True)
 
-    class Meta:
-        verbose_name = "Données Multimédia"
-        ordering = ['comp_ref']
-
     def get_type_display(self):
         dict_type = dict(BTEL_TYPE_CHOICES)
         return dict_type.get(self.type, "")
@@ -465,6 +551,21 @@ class Multimedia(models.Model):
     def get_name_display(self):
         dict_name = dict(BTEL_PRODUCT_CHOICES)
         return dict_name.get(self.name, "")
+
+    def clean(self):
+        queryset = Ecu.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValidationError(_("This entry already exists in the Ecu model."))
+
+    def save(self, *args, **kwargs):
+        queryset = Ecu.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValueError(_("This entry already exists in the Ecu model."))
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Données Multimédia"
+        ordering = ['comp_ref']
 
     def __iter__(self):
         for field in self._meta.fields:
@@ -496,17 +597,67 @@ class Calibration(models.Model):
     type = models.CharField('type', max_length=3)
     current = models.CharField('version actuelle', max_length=10, blank=True)
     pr_reference = models.CharField('référence PR', max_length=10, blank=True)
-
-    class Meta:
-        verbose_name = "Calibration"
-        ordering = ['-factory']
+    is_available = models.BooleanField('disponible', default=False)
 
     def get_type_display(self):
         dict_type = dict(CAL_TYPE_CHOICES)
         return dict_type.get(self.type, "")
 
+    @classmethod
+    def get_cal_file(cls, value):
+        data = dict()
+        queryset = cls.objects.exclude(is_available=False).filter(Q(factory=value) | Q(current=value))
+        if queryset:
+            types = list(queryset.order_by('type').values_list('type', flat=True).distinct())
+            for value in types:
+                currents = queryset.filter(type=value).order_by('current')
+                data[value.lower()] = list(currents.values_list('current', flat=True).distinct())
+        return data
+
+    class Meta:
+        verbose_name = "Calibration"
+        ordering = ['-factory']
+
     def __str__(self):
         return self.factory
+
+
+class CalCurrent(models.Model):
+    name = models.CharField('version actuelle', max_length=10, unique=True)
+    type = models.CharField('type', max_length=3)
+    pr_reference = models.CharField('référence PR', max_length=10, blank=True)
+    is_available = models.BooleanField('disponible', default=False)
+    olds = GenericRelation('CalHistory')
+
+    def get_type_display(self):
+        dict_type = dict(CAL_TYPE_CHOICES)
+        return dict_type.get(self.type, "")
+
+    def get_cal_list(self):
+        return [query.name for query in self.olds.all()]
+
+    class Meta:
+        verbose_name = "Cal. actuelle"
+        ordering = ['-name']
+
+    def __str__(self):
+        return self.name
+
+
+class CalHistory(models.Model):
+    name = models.CharField('version actuelle', max_length=10, unique=True)
+    pr_reference = models.CharField('référence PR', max_length=10, blank=True)
+    is_available = models.BooleanField('disponible', default=False)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Cal. historique"
+        ordering = ['-name']
+
+    def __str__(self):
+        return f"{self.name} associé à {self.content_object}"
 
 
 class Ecu(models.Model):
@@ -515,7 +666,7 @@ class Ecu(models.Model):
     label_ref = models.CharField('réf. étiquette', max_length=10, blank=True)
     name = models.CharField("nom du modèle", max_length=50, blank=True)
     xelon_name = models.CharField('modèle Xelon', max_length=100, blank=True)
-    product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey('psa.ProductChoice', related_name='ecus', on_delete=models.SET_NULL, limit_choices_to={'family': 'ECU'}, null=True, blank=True)
     type = models.CharField('type', max_length=10)
     first_barcode = models.CharField('premier code-barres', max_length=200, blank=True)
     second_barcode = models.CharField('deuxième code-barres', max_length=200, blank=True)
@@ -526,13 +677,27 @@ class Ecu(models.Model):
     extra = models.CharField('supplément', max_length=100, blank=True)
     relation_by_name = models.BooleanField('relation par nom', default=False)
 
-    class Meta:
-        verbose_name = "Données ECU"
-        ordering = ['comp_ref']
-
     def get_type_display(self):
         dict_type = dict(ECU_TYPE_CHOICES)
         return dict_type.get(self.type, "")
+
+    def get_name_display(self):
+        return self.name
+
+    def clean(self):
+        queryset = Multimedia.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValidationError(_("This entry already exists in the Multimedia model."))
+
+    def save(self, *args, **kwargs):
+        queryset = Multimedia.objects.filter(comp_ref=self.comp_ref).exclude(name='').first()
+        if queryset:
+            raise ValueError(_("This entry already exists in the Multimedia model."))
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Données ECU"
+        ordering = ['comp_ref']
 
     def __iter__(self):
         for field in self._meta.fields:
@@ -600,6 +765,17 @@ class CanRemote(models.Model):
             data = ",".join(["0x00" if _ != int(pos) else f"0x{value}" for _ in range(self.dlc)])
             return f"WS+GETCAN={self.can_id},{data}"
         return ""
+
+    @classmethod
+    def get_volume(cls, product, vehicle):
+        queryset = cls.objects.filter(product=product, vehicles__name__icontains=vehicle).distinct()
+        vol_list = []
+        for label in ['VOL+', 'VOL-']:
+            try:
+                vol_list.append(queryset.get(label=label))
+            except cls.DoesNotExist:
+                vol_list.append(None)
+        return vol_list
 
     def save(self, *args, **kwargs):
         data_list = self.data.split(',')

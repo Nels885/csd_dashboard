@@ -2,33 +2,31 @@ import re
 
 from django.utils.translation import gettext as _
 
+from utils.regex import VIN_STELLANTIS_REGEX, COMP_REF_REGEX, XELON_REGEX, REF_PSA_REGEX, URL_REGEX
+
 from squalaetp.models import Xelon
 from psa.models import Corvet
 
-VIN_PSA_REGEX = r'^[VWZ]((0[LV])|(F[37])|(R[137])|X[A-Z])\w*$'
-VIN_OLD_PSA_REGEX = r'^[VZ]((F[37])|(R[137]))\w*$'
-# VIN_PSA_REGEX = r'^V((F[37])|(R[137]))\w{14}$'
-COMP_REF_REGEX = r'^[19][468]\d{6}[78][70]$'
-XELON_REGEX = r'^[9a-zA-Z]\d{9}$'
-URL_REGEX = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$'
 URL_DNS = "cuc.fr.corp"
 
 
-def comp_ref_isvalid(value):
+def comp_ref_isvalid(value) -> bool:
     if re.match(COMP_REF_REGEX, str(value)):
         return True
     return False
 
 
 def vin_psa_isvalid(value: str) -> bool:
-    if isinstance(value, str) and re.match(VIN_PSA_REGEX, value.upper()):
+    # if isinstance(value, str) and re.match(VIN_PSA_REGEX, value.upper()):
+    #     return True
+    if isinstance(value, str) and re.match(VIN_STELLANTIS_REGEX, value.upper()):
         return True
     return False
 
 
 def immat_isvalid(value: str) -> bool:
     if isinstance(value, str):
-        if not re.match(XELON_REGEX, value) and (6 < len(value) < 11):
+        if not re.match(XELON_REGEX, value) and not re.match(REF_PSA_REGEX, value) and (6 < len(value) < 11):
             return True
     return False
 

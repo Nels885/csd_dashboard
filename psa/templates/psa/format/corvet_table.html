@@ -9,7 +9,7 @@
         <td class="text-dark td-ihm">Réf HW TDB</td>
         <td>
             {{ object.electronique_14k }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmb id="cmb" %}
+            {% include 'psa/format/tag_parts.html' with obj=object.prods.cmb id="cmb" %}
         </td>
     </tr>
     <tr>
@@ -20,7 +20,7 @@
         <td class="text-dark td-ihm">Réf HW EMF</td>
         <td>
             {{ object.electronique_14l }}
-            {% include 'psa/format/tag_parts_format.html' with obj=object.prods.emf id="emf" %}
+            {% include 'psa/format/tag_parts.html' with obj=object.prods.emf id="emf" %}
         </td>
     </tr>
     <tr>
@@ -44,7 +44,7 @@
             <td class="text-dark td-ihm">Réf HW RAD</td>
             <td>
                 {{ object.electronique_14f }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.radio id="radio" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.radio id="radio" %}
             </td>
         </tr>
         <tr>
@@ -55,6 +55,12 @@
             <td class="text-dark td-ihm">N° série RAD</td>
             <td>{{ object.electronique_44f }}</td>
         </tr>
+        {% if object.opts.new_44f %}
+            <tr>
+                <td class="text-dark td-ihm">N° série RAD (SWAP)</td>
+                <td class="font-weight-bold text-white bg-warning">{{ object.opts.new_44f }}</td>
+            </tr>
+        {% endif %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur RAD" value=object.electronique_64f|get_supplier_code %}
     {% endif %}
     {% if object.electronique_14x %}
@@ -62,7 +68,7 @@
             <td class="text-dark td-ihm">Réf HW NAV</td>
             <td>
                 {{ object.electronique_14x }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.btel id="btel" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.btel id="btel" %}
             </td>
         </tr>
         <tr>
@@ -73,6 +79,12 @@
             <td class="text-dark td-ihm">N° série NAV</td>
             <td>{{ object.electronique_44x }}</td>
         </tr>
+        {% if object.opts.new_44x %}
+            <tr>
+                <td class="text-dark td-ihm">N° série NAV (SWAP)</td>
+                <td class="font-weight-bold text-white bg-warning">{{ object.opts.new_44x }}</td>
+            </tr>
+        {% endif %}
         {% include 'psa/format/corvet_tr_hide.html' with label="Fournisseur NAV" value=object.electronique_64x|get_supplier_code %}
     {% endif %}
     {% if object.electronique_1m2 %}
@@ -80,7 +92,7 @@
             <td class="text-dark td-ihm">Réf HW IVI</td>
             <td>
                 {{ object.electronique_1m2 }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.ivi id="ivi" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.ivi id="ivi" %}
             </td>
         </tr>
         <tr>
@@ -141,7 +153,7 @@
             <td class="text-dark td-ihm">Réf HW ECU moteur</td>
             <td>
                 {{ object.electronique_14a }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cmm id="cmm" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.cmm id="cmm" %}
             </td>
         </tr>
         <tr>
@@ -175,7 +187,7 @@
             <td class="text-dark td-ihm">Réf HW BPGA</td>
             <td>
                 {{ object.electronique_11n }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bpga id="bpga" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.bpga id="bpga" %}
             </td>
         </tr>
         {% include 'psa/format/corvet_tr_hide.html' with label="N° série BPGA" value=object.electronique_41n %}
@@ -194,7 +206,7 @@
             <td class="text-dark td-ihm">Réf HW BSI</td>
             <td>
                 {{ object.electronique_14b }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.bsi id="bsi" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.bsi id="bsi" %}
             </td>
         </tr>
         {% include 'psa/format/corvet_tr_hide.html' with label="CAL BSI" value=object.electronique_94b %}
@@ -212,7 +224,7 @@
             <td class="text-dark td-ihm">Réf HW COM200x</td>
             <td>
                 {{ object.electronique_16p }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.hdc id="hdc" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.hdc id="hdc" %}
             </td>
         </tr>
         {% include 'psa/format/corvet_tr_hide.html' with label="N° série COM200x" value=object.electronique_46p %}
@@ -263,7 +275,7 @@
             <td class="text-dark td-ihm">Réf HW CVM 2</td>
             <td>
                 {{ object.electronique_12y }}
-                {% include 'psa/format/tag_parts_format.html' with obj=object.prods.cvm2 id="cvm2" %}
+                {% include 'psa/format/tag_parts.html' with obj=object.prods.cvm2 id="cvm2" %}
             </td>
         </tr>
         <tr>

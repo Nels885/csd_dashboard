@@ -97,27 +97,42 @@ class UnlockProduct(models.Model):
 
 class ToolStatus(models.Model):
     name = models.CharField("Nom de l'outils", max_length=50)
+    url = models.CharField("Lien web", max_length=500, blank=True)
     type = models.TextField("Type", max_length=50, blank=True)
     comment = models.TextField("Commentaire", blank=True)
-    url = models.CharField("Lien web", max_length=500)
     status_path = models.CharField("Chemin page statut", max_length=500, blank=True)
     api_path = models.CharField("Chemin API", max_length=500, blank=True)
+    last_boot = models.DateTimeField("Dernier démarrage", null=True, blank=True)
+    firmware = models.CharField("Firmware", max_length=20, blank=True)
+    hostname = models.CharField("Hostname", max_length=50, blank=True)
+    ip_addr = models.CharField("ip address", max_length=50, blank=True)
+    mac_addr = models.CharField("mac address", max_length=20, blank=True)
+    hw_revision = models.CharField('Hardware revision', max_length=500, blank=True)
+    mbed_list = models.TextField("Liste mbed de l'AET", max_length=500, blank=True)
     logs = GenericRelation('Log')
 
     class Meta:
         verbose_name = "Statut Outil"
         ordering = ['name']
+        permissions = [("view_info_tools", "Can view info tools")]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        setattr(self, 'status_url', urljoin(self.url, self.status_path))
-        setattr(self, 'api_url', urljoin(self.url, self.api_path))
+        setattr(self, 'status_url', self.get_url('status'))
+        setattr(self, 'api_url', self.get_url('api'))
 
     def get_url(self, mode):
+        url = self.url
+        if not url and self.ip_addr:
+            url = f"http://{self.ip_addr}/"
         if mode and mode == 'restart':
-            return urljoin(self.url, "api/restart/")
+            return urljoin(url, "api/restart/")
         elif mode and mode == 'stop':
-            return urljoin(self.url, "api/stop/")
+            return urljoin(url, "api/stop/")
+        elif mode and mode == "api":
+            return urljoin(url, self.api_path)
+        elif mode and mode == 'status':
+            return urljoin(url, self.status_path)
         return ""
 
     def __str__(self):
@@ -160,3 +175,36 @@ class MbedFirmware(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AETLog(models.Model):
+    xelon = models.CharField('numéro Xelon', max_length=10)
+    comp_ref = models.CharField('réf. comp. matériel', max_length=10)
+    manu_ref = models.CharField('réf. fabriquant', max_length=100)
+    aet_name = models.CharField("nom de l'AET", max_length=100)
+    prod_name = models.CharField("nom du produit", max_length=100)
+    date = models.DateTimeField('date')
+    measures = GenericRelation('AETMeasure')
+
+    class Meta:
+        verbose_name = "Log AET"
+        ordering = ['xelon']
+
+    def __str__(self):
+        return "_".join([self.xelon, self.aet_name])
+
+
+class AETMeasure(models.Model):
+    measure_name = models.CharField("nom mesure", max_length=1000)
+    measured_value = models.CharField("valeur mesurée", max_length=100)
+    min_value = models.CharField("valeur min.", max_length=100)
+    max_value = models.CharField("valeur max.", max_length=100)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        verbose_name = "Mesures AET"
+
+    def __str__(self):
+        return self.content_object

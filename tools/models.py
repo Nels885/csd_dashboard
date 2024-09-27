@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
@@ -158,7 +158,7 @@ class Suptech(models.Model):
     status = models.TextField('STATUT', max_length=50, default='En Attente', choices=STATUS_CHOICES)
     deadline = models.DateField('DATE LIMITE', null=True, blank=True)
     category = models.ForeignKey("SuptechCategory", on_delete=models.SET_NULL, null=True, blank=True)
-    is_48h = models.BooleanField("Traitement 48h", default=True)
+    is_48h = models.BooleanField("Traitement 48h", default=False)
     to = models.TextField("TO", max_length=5000, default=conf.SUPTECH_TO_EMAIL_LIST)
     cc = models.TextField("CC", max_length=5000, default=conf.SUPTECH_CC_EMAIL_LIST)
     created_at = models.DateTimeField('ajouté le', editable=False, null=True)
@@ -167,6 +167,7 @@ class Suptech(models.Model):
     modified_at = models.DateTimeField('modifié le', null=True)
     modified_by = models.ForeignKey(User, related_name="suptechs_modified", on_delete=models.SET_NULL, null=True,
                                     blank=True)
+    days_late = models.IntegerField("jours de retard", null=True, blank=True)
     messages = GenericRelation('Message')
 
     class Meta:
@@ -221,6 +222,12 @@ class Suptech(models.Model):
             except AttributeError:
                 pass
         return False
+
+    def get_vin(self):
+        try:
+            return Xelon.objects.get(numero_de_dossier=self.xelon).vin
+        except Xelon.DoesNotExist:
+            return ""
 
     def get_absolute_url(self):
         from django.urls import reverse
@@ -424,7 +431,7 @@ class BgaTime(models.Model):
         ordering = ["id"]
 
     def save(self, *args, **kwargs):
-        status = kwargs.pop('status', None)
+        status = kwargs.pop('status', '')
         if status:
             if self.pk and status.upper() == "STOP":
                 self.end_time = timezone.localtime().time()
@@ -453,7 +460,7 @@ class RaspiTime(models.Model):
         ordering = ["id"]
 
     def save(self, *args, **kwargs):
-        status = kwargs.pop('status', None)
+        status = kwargs.pop('status', '')
         if status:
             if self.pk and status.upper() == "STOP":
                 self.end_time = timezone.localtime().time()

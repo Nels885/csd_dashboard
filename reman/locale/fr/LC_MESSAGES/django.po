@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-21 11:19+0100\n"
+"POT-Creation-Date: 2024-08-22 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,50 +18,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reman/admin.py:47
-#, python-brace-format
-msgid "{0} product{1} {2} successfully {3}"
-msgstr "{0} produit{1} {2} avec succès {3}"
+#: reman/admin.py:18 reman/admin.py:56
+msgid "Batch number"
+msgstr "Numéro de lot"
 
-#: reman/admin.py:50
-msgid "was,were"
-msgstr "était, étaient"
-
-#: reman/admin.py:58
+#: reman/admin.py:45
 msgid "Checkout enabled"
 msgstr "Vérification activée"
 
-#: reman/forms.py:32 reman/forms.py:33
+#: reman/admin.py:57
+msgid "Customer"
+msgstr "Client"
+
+#: reman/admin.py:58
+msgid "HW reference"
+msgstr "Réf. Hardware"
+
+#: reman/admin.py:82
+msgid "ECU TYPE"
+msgstr "TYPE ECU"
+
+#: reman/admin.py:94
+msgid "XELON - Product code"
+msgstr "XELON - Code produit"
+
+#: reman/forms.py:35 reman/forms.py:36
 msgid "No"
 msgstr "Non"
 
-#: reman/forms.py:32 reman/forms.py:33
+#: reman/forms.py:35 reman/forms.py:36
 msgid "Yes"
 msgstr "Oui"
 
-#: reman/forms.py:100
+#: reman/forms.py:103
 msgid "Unauthorized batch number!"
 msgstr "Numéro de lot non autorisé !"
 
-#: reman/forms.py:102
+#: reman/forms.py:105
 msgid "The batch already exists!"
 msgstr "Le lot existe déjà !"
 
-#: reman/forms.py:109
+#: reman/forms.py:112
 msgid "Date is not valid"
 msgstr "La date n'est pas valide"
 
-#: reman/forms.py:246 reman/forms.py:377
+#: reman/forms.py:249 reman/forms.py:395
 msgid "barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
-#: reman/forms.py:384
-#, fuzzy
-#| msgid "This field is required."
+#: reman/forms.py:402
 msgid "quality control is required"
 msgstr "Un contrôle qualité est nécessaire"
 
-#: reman/forms.py:522 reman/tests/tests_reman_views.py:141
+#: reman/forms.py:548 reman/tests/tests_reman_views.py:141
 msgid "The barcode is invalid"
 msgstr "Le code-barre n'est pas valide"
 
@@ -80,7 +89,7 @@ msgstr "Formatage impossible de l'année !"
 #: reman/templates/reman/modal/ref_reman_update.html:41
 #: reman/templates/reman/modal/repair_create.html:16
 #: reman/templates/reman/part/part_create_form.html:47
-#: reman/templates/reman/repair/repair_close.html:76
+#: reman/templates/reman/repair/repair_close.html:96
 #: reman/templates/reman/repair/repair_edit.html:84
 msgid "Cancel"
 msgstr "Annuler"
@@ -273,26 +282,26 @@ msgstr "Succès: le lot a été mis à jour."
 msgid "Success: Batch was deleted."
 msgstr "Succès: le lot a été supprimé."
 
-#: reman/views/repair.py:32 reman/views/repair.py:84
+#: reman/views/repair.py:30 reman/views/repair.py:82
 msgid "Modification customer file"
 msgstr "Modification dossier client"
 
-#: reman/views/repair.py:41 reman/views/repair.py:90
+#: reman/views/repair.py:39 reman/views/repair.py:88
 msgid "Modification done successfully!"
 msgstr "Modification réalisée avec succès !"
 
-#: reman/views/repair.py:99
+#: reman/views/repair.py:98
 msgid "Detail customer file"
 msgstr "Dossier client détaillé"
 
-#: reman/views/repair.py:110
+#: reman/views/repair.py:109
 msgid "Success: Repair was created."
 msgstr "Succès: le dossier a été créé."
 
-#: reman/views/repair.py:120
+#: reman/views/repair.py:126
 msgid "Repair REMAN"
 msgstr "Réparation REMAN"
 
-#: reman/views/repair.py:121
+#: reman/views/repair.py:127
 msgid "Open"
 msgstr "Ouvrir"

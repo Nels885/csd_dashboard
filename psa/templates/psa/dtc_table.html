@@ -1,0 +1,67 @@
+{% extends 'format/datatables_format.html' %}
+
+{% load static %}
+
+{% block table_content %}
+
+    <table class="table table-bordered table-sm" id="dtcTable" style="width:100%">
+        <thead>
+        <tr class="text-nowrap">
+            <th></th>
+            <th class="all">Code</th>
+            <th class="all col-6">Déscription</th>
+            <th>Type</th>
+            <th class="col-2">Caractérisation</th>
+            <th>Localisation</th>
+            <th>type ECU</th>
+        </tr>
+        </thead>
+{#        <tbody>#}
+{##}
+{#        {% for query in queryset %}#}
+{##}
+{#            <tr>#}
+{#                <td class="bg-white text-nowrap" style="width: 60px;">#}
+{#                    <a href="#" title="Modification" class="btn btn-success btn-circle btn-sm"><i class="fas fa-edit"></i></a>#}
+{#                    <a href="#" title="Détail" class="btn btn-info btn-circle btn-sm"><i class="fas fa-info-circle"></i></a>#}
+{#                </td>#}
+{#                <td>{{ query.code }}</td>#}
+{#                <td>{{ query.description }}</td>#}
+{#                <td>{{ query.type }}</td>#}
+{#                <td>{{ query.characterization }}</td>#}
+{#                <td>{{ query.location }}</td>#}
+{#                <td>{{ query.ecu_type }}</td>#}
+{#            </tr>#}
+{##}
+{#        {% endfor %}#}
+{##}
+{#        </tbody>#}
+    </table>
+
+{% endblock %}
+
+
+{% block tablecss %}
+
+    <!-- SearchPanes css -->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/SearchPanes/css/searchPanes.dataTables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Select/css/select.bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/Buttons/css/buttons.dataTables.min.css' %}"/>
+
+{% endblock %}
+
+
+{% block tablejs %}
+
+    <!-- SearchPanes scripts -->
+    <script type="text/javascript" src="{% static 'vendor/datatables/SearchPanes/js/dataTables.searchPanes.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/datatables/Select/js/dataTables.select.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/datatables/Buttons/js/dataTables.buttons.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script type="text/javascript">
+        const URL_AJAX = "{% url 'psa:api_dtc-list' %}";
+    </script>
+    <script type="text/javascript" src="{% static 'psa/js/psa-tables.js' %}"></script>
+
+{% endblock %}

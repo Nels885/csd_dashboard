@@ -41,11 +41,7 @@
                 <div class="form-group row">
                     <label for="id_real_product" class="col-sm-5 col-form-label">Modèle véhicule (CORVET)</label>
                     <div class="col-sm-7">
-                        {% if corvet.donnee_marque_commerciale == "0P" %}
-                            <input type="text" value="{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}" class="form-control form-control-user" id="id_real_product" readonly>
-                        {% else %}
-                            <input type="text" value="{{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}" class="form-control form-control-user" id="id_real_product" readonly>
-                        {% endif %}
+                        <input type="text" value="{{ corvet.get_vehicle_display }}" class="form-control form-control-user" id="id_real_product" readonly>
                     </div>
                 </div>
             </div>

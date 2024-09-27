@@ -1,16 +1,15 @@
 from django.contrib import admin
-from django.template.defaultfilters import pluralize
 from django.utils.translation import gettext_lazy as _
-from django.contrib.admin import widgets
 from django.contrib.auth.models import User
 
 from utils.django.contrib import CustomModelAdmin
 
 from .models import Xelon, XelonTemporary, SparePart, ProductCode, Indicator, Action, ProductCategory, Sivin
-from .forms import ProductCodeAdminForm, XelonTemporaryForm
+from .forms import ProductCodeAdminForm, XelonTemporaryForm, XelonAdminForm
 
 
 class XelonAdmin(CustomModelAdmin):
+    form = XelonAdminForm
     list_display = (
         'numero_de_dossier', 'vin', 'modele_produit', 'modele_vehicule', 'date_retour', 'type_de_cloture', 'vin_error', 'is_active'
     )
@@ -41,7 +40,7 @@ class SparePartAdmin(admin.ModelAdmin):
 
     def get_code_produit(self, obj):
         return obj.code_produit.name
-    get_code_produit.short_description = 'Code Produit'
+    get_code_produit.short_description = _('Product code')
 
 
 class IndicatorAdmin(admin.ModelAdmin):

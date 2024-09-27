@@ -3,13 +3,15 @@ import re
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from crum import get_current_user
 
-from psa.models import Corvet, Multimedia, CORVET_HW_FILTERS, CORVET_SN_FILTERS
+from utils.regex import REF_PSA_REGEX
+
+from psa.models import Corvet, Multimedia, Ecu, CORVET_HW_FILTERS, CORVET_SW_FILTERS, CORVET_SN_FILTERS, Calibration
 from psa.choices import ECU_TYPE_CHOICES, BTEL_TYPE_CHOICES
 
 
@@ -18,37 +20,40 @@ XELON_FILTERS = [
 ]
 XELON_SN_FILTERS = [f'corvet__{field}' for field in CORVET_SN_FILTERS]
 XELON_HW_FILTERS = [f'corvet__{field}' for field in CORVET_HW_FILTERS]
+XELON_SW_FILTERS = [f'corvet__{field}' for field in CORVET_SW_FILTERS]
 
 
 class Xelon(models.Model):
     numero_de_dossier = models.CharField('numéro de dossier', max_length=10, unique=True)
     vin = models.CharField('V.I.N.', max_length=17, blank=True)
-    modele_produit = models.CharField('modèle produit', max_length=50, blank=True)
-    modele_vehicule = models.CharField('modèle véhicule', max_length=50, blank=True)
+    modele_produit = models.CharField('modèle produit', max_length=200, blank=True)
+    modele_vehicule = models.CharField('modèle véhicule', max_length=200, blank=True)
     famille_client = models.CharField('famille Client', max_length=5000, blank=True)
-    famille_produit = models.CharField('famille produit', max_length=100, blank=True)
+    famille_produit = models.CharField('famille produit', max_length=200, blank=True)
     date_retour = models.DateField('date retour', null=True, blank=True)
     delai_au_en_jours_ouvres = models.IntegerField('délai en jours ouvrés', null=True, blank=True)
     delai_au_en_jours_calendaires = models.IntegerField('délai en jours calendaires', null=True, blank=True)
     date_de_cloture = models.DateTimeField('date de clôture', null=True, blank=True)
-    type_de_cloture = models.CharField('type de clôture', max_length=50, blank=True)
-    lieu_de_stockage = models.CharField('lieu de stockage', max_length=50, blank=True)
-    code_magasin = models.CharField('Code Magasin', max_length=50, blank=True)
-    code_zone = models.CharField('Code Zone', max_length=50, blank=True)
-    nom_technicien = models.CharField('nom technicien', max_length=50, blank=True)
+    type_de_cloture = models.CharField('type de clôture', max_length=200, blank=True)
+    lieu_de_stockage = models.CharField('lieu de stockage', max_length=200, blank=True)
+    code_magasin = models.CharField('Code Magasin', max_length=200, blank=True)
+    code_zone = models.CharField('Code Zone', max_length=200, blank=True)
+    nom_technicien = models.CharField('nom technicien', max_length=200, blank=True)
     commentaire_sav_admin = models.CharField('commentaire SAV Admin', max_length=5000, blank=True)
     commentaire_de_la_fr = models.CharField('commentaire de la FR', max_length=5000, blank=True)
     commentaire_action = models.CharField('commentaire action', max_length=5000, blank=True)
     libelle_de_la_fiche_cas = models.CharField('libellé de la fiche cas', max_length=5000, blank=True)
     dossier_vip = models.BooleanField('dossier VIP', default=False)
     express = models.BooleanField('express', default=False)
-    ilot = models.CharField('ilot', max_length=100, blank=True)
+    ilot = models.CharField('ilot', max_length=200, blank=True)
     date_expedition_attendue = models.DateField('date expédition attendue', null=True, blank=True)
     delai_expedition_attendue = models.IntegerField('délai expédition attendue', null=True, blank=True)
     rm = models.CharField('RM', max_length=50, blank=True)
     pays = models.CharField('Pays', max_length=100, blank=True)
     telecodage = models.CharField('TELECODAGE', max_length=50, blank=True)
     appairage = models.CharField('APPAIRAGE', max_length=50, blank=True)
+    swap_sn = models.CharField('Nouveau S/N', max_length=100, blank=True)
+    swap_prod = models.ForeignKey('squalaetp.ProductCode', on_delete=models.SET_NULL, null=True, blank=True)
     vin_error = models.BooleanField('Erreur VIN', default=False)
     is_active = models.BooleanField('Actif', default=False)
     corvet = models.ForeignKey('psa.Corvet', on_delete=models.SET_NULL, null=True, blank=True)
@@ -61,18 +66,28 @@ class Xelon(models.Model):
         permissions = [
             ("change_product", "Can change product"), ("email_product", "Can send email product"),
             ("change_vin", "Can change vin"), ("email_vin", "Can send email vin"),
-            ("email_admin", "Can send email admin"), ("active_xelon", "Can active xelon")
+            ("email_admin", "Can send email admin"), ("active_xelon", "Can active xelon"),
+            ("change_sn", "Can change Serial Number")
         ]
 
     @classmethod
     def search(cls, value):
         if value is not None:
-            query = value.strip()
-            filters = XELON_FILTERS + XELON_SN_FILTERS + XELON_HW_FILTERS
+            value = value.strip()
+            if re.match(REF_PSA_REGEX, str(value)) and not value[-2:].isdigit():
+                value = value[:-2] + '77'
+            filters = XELON_FILTERS + XELON_SN_FILTERS + XELON_HW_FILTERS + XELON_SW_FILTERS
             for field in filters:
-                    queryset = cls.objects.filter(**{field: query})
+                    queryset = cls.objects.filter(**{field: value})
                     if queryset: return queryset
         return None
+
+    def get_btel_last_cal(self):
+        if self.corvet:
+            cals = Calibration.objects.filter(factory=self.corvet.electronique_94x, is_available=True)
+            if cals:
+                return cals.order_by('current').first().current
+        return ''
 
     @property
     def option(self):

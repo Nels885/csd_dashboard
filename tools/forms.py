@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
@@ -121,22 +121,22 @@ class SuptechModalForm(BSModalModelForm):
         return data
 
     def save(self, commit=True):
-        suptech = super(SuptechModalForm, self).save(commit=False)
+        instance = super().save(commit=False)
         user = self.cleaned_data['username']
-        suptech.date = timezone.now()
-        suptech.user = f"{user.first_name} {user.last_name}"
-        suptech.created_by = user
-        suptech.created_at = timezone.now()
+        instance.date = timezone.now()
+        instance.user = f"{user.first_name} {user.last_name}"
+        instance.created_by = user
+        instance.created_at = timezone.now()
         if commit and not is_ajax(self.request):
             files = self.request.FILES.getlist('attach')
             for field in ['username', 'custom_item', 'attach']:
                 del self.fields[field]
             if self.cleaned_data['custom_item']:
-                suptech.item = f"{self.cleaned_data['item']} - {self.cleaned_data['custom_item']}"
-            suptech.save()
+                instance.item = f"{self.cleaned_data['item']} - {self.cleaned_data['custom_item']}"
+            instance.save()
             if files:
-                [SuptechFile.objects.create(file=f, suptech=suptech) for f in files]
-        return suptech
+                [SuptechFile.objects.create(file=f, suptech=instance) for f in files]
+        return instance
 
 
 class SuptechResponseForm(forms.ModelForm):

@@ -12,11 +12,11 @@ from constance import config
 from .models import Xelon, Action, Sivin, XelonTemporary
 from .forms import (
     VinCorvetModalForm, ProductModalForm, IhmEmailModalForm, SivinModalForm, XelonCloseModalForm,
-    XelonTemporaryModalForm
+    XelonTemporaryModalForm, NewSerialNumberModalForm
 )
 from .tasks import cmd_loadsqualaetp_task, cmd_exportsqualaetp_task
-from psa.forms import CorvetForm
-from psa.utils import collapse_select
+from psa.utils import collapse_select, prod_search
+from psa.models import Calibration
 from prog.models import Programing
 from reman.models import EcuType
 from tools.models import Suptech
@@ -63,8 +63,9 @@ def excel_import_async(request):
 def xelon_table(request):
     """ View of Xelon table page """
     title = 'Xelon'
-    form = CorvetForm()
+    # form = CorvetForm()
     query_param = request.GET.get('filter', '')
+    parts, media, prod, vehicles = prod_search(query_param)
     return render(request, 'squalaetp/xelon_table.html', locals())
 
 
@@ -121,8 +122,9 @@ def detail(request, pk):
     if corvet:
         if corvet.electronique_14x.isdigit():
             prog = Programing.objects.filter(psa_barcode=corvet.electronique_14x).first()
-        if corvet.electronique_14a.isdigit():
-            cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
+        cals = Calibration.get_cal_file(corvet.electronique_94x)
+        # if corvet.electronique_14a.isdigit():
+        #     cmm = EcuType.objects.filter(hw_reference=corvet.electronique_14a).first()
         dict_corvet = model_to_dict(corvet)
         if corvet.prods.btel:
             btel_model = f"{corvet.prods.btel.get_name_display()}  {corvet.prods.btel.level} - {corvet.prods.btel.type}"
@@ -156,7 +158,7 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
     permission_required = ['squalaetp.change_vin']
     template_name = 'squalaetp/modal/vin_corvet_update.html'
     form_class = VinCorvetModalForm
-    success_message = _('Success: %(result)s was updated.')
+    # success_message = _('Success: %(result)s was updated.')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -167,11 +169,20 @@ class VinCorvetUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         })
         return context
 
-    def get_success_message(self, cleaned_data):
-        value = "V.I.N."
-        if cleaned_data['vin'] and cleaned_data['xml_data']:
-            value = "V.I.N. / CORVET"
-        return self.success_message % dict(cleaned_data, result=value)
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        if not is_ajax(self.request):
+            value = "V.I.N."
+            if cleaned_data['vin'] and cleaned_data['xml_data']:
+                value = "V.I.N. / CORVET"
+            messages.success(self.request, _('Success: %(result)s was updated.') % {'result': value})
+        return super().form_valid(form)
+
+    # def get_success_message(self, cleaned_data):
+    #     value = "V.I.N."
+    #     if cleaned_data['vin'] and cleaned_data['xml_data']:
+    #         value = "V.I.N. / CORVET"
+    #     return self.success_message % dict(cleaned_data, result=value)
 
     def get_success_url(self):
         if not is_ajax(self.request):
@@ -201,6 +212,26 @@ class ProductUpdateView(PermissionRequiredMixin, BSModalUpdateView):
         if not is_ajax(self.request):
             task = cmd_exportsqualaetp_task.delay()
             return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'task_id': task.id, 'select': 'ihm'})
+        return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
+
+
+class NewSerialNumberUpdateView(PermissionRequiredMixin, BSModalUpdateView):
+    """ Modal view for product update """
+    model = Xelon
+    permission_required = ['squalaetp.change_sn']
+    template_name = 'squalaetp/modal/serial_number_update.html'
+    form_class = NewSerialNumberModalForm
+    success_message = _('Success: Serial Number was updated.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'modal_title': _('Serial Number update for %(file)s' % {'file': self.object.numero_de_dossier}),
+            'corvet': self.object.corvet
+        })
+        return context
+
+    def get_success_url(self):
         return reverse_lazy('squalaetp:detail', args=[self.object.id], get={'select': 'ihm'})
 
 
@@ -381,6 +412,10 @@ class SivinCreateView(PermissionRequiredMixin, BSModalCreateView):
         context = super().get_context_data(**kwargs)
         context['modal_title'] = _('SIVIN integration')
         return context
+
+    def form_valid(self, form):
+        self.object = form.instance
+        return super().form_valid(form)
 
     def get_success_url(self):
         if not is_ajax(self.request):

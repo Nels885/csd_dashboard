@@ -11,13 +11,7 @@
             <tbody class="table-borderless">
             <tr>
                 <td class="text-dark td-ihm">Ligne de produit</td>
-                <td>
-                    {% if corvet.donnee_marque_commerciale == "0P" %}
-                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
-                    {% else %}
-                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
-                    {% endif %}
-                </td>
+                <td>{{ corvet.get_vehicle_display }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">Date de Début de Garantie</td>
@@ -46,17 +40,11 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm">MARQUE COMMERCIALE, TYPE ORGANE</td>
-                <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}</td>
+                <td>{{ corvet.get_brand_display }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">LIGNE DE PRODUIT</td>
-                <td>
-                    {% if corvet.donnee_marque_commerciale == "0P" %}
-                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
-                    {% else %}
-                        {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
-                    {% endif %}
-                </td>
+                <td>{{ corvet.get_vehicle_display }}</td>
             </tr>
             <tr>
                 <td class="text-dark td-ihm">SILHOUETTE</td>

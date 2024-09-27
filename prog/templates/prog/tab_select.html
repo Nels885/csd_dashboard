@@ -1,8 +1,8 @@
 {% load i18n %}
 
-<li class="nav-item {% if select == 'tools' %}active{% endif %}">
-    <a class="nav-link {% if select == 'tools' %}active{% endif %}" href="{% url 'prog:tool_info' %}">
-        Info Outils
+<li class="nav-item {% if select == 'tools-status' %}active{% endif %}">
+    <a class="nav-link {% if select == 'tools-status' %}active{% endif %}" href="{% url 'prog:tool_status' %}">
+        Statut Outils
     </a>
 </li>
 
@@ -11,3 +11,11 @@
         Mise à jour AET
     </a>
 </li>
+
+{% if perms.prog.view_info_tools %}
+    <li class="nav-item {% if select == 'tools-info' %}active{% endif %}">
+        <a class="nav-link {% if select == 'tools-info' %}active{% endif %}" href="{% url 'prog:tool_info' %}">
+            Info Outils
+        </a>
+    </li>
+{% endif %}

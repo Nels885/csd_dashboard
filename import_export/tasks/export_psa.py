@@ -1,13 +1,12 @@
-import re
+from ast import literal_eval
 
 from django.db.models.functions import Cast, TruncSecond
 from django.db.models import DateTimeField, CharField
 
 from utils.file.export_task import ExportExcelTask
-from psa.models import Multimedia
+from psa.models import Corvet, CorvetChoices
 from psa.templatetags.corvet_tags import get_corvet
-
-from psa.models import Corvet
+from psa.choices import BTEL_PRODUCT_CHOICES
 
 
 INFO_DICT = {
@@ -19,6 +18,7 @@ INFO_DICT = {
         ('V.I.N.', 'vin'), ('DATE_DEBUT_GARANTIE', 'date_debut_garantie')
     ]},
     'data_extra': {'label': 'Info Véhicule', 'data': [
+        ('MARQUE_COMMERCIALE', 'donnee_marque_commerciale'),
         ('LIGNE_DE_PRODUIT', 'donnee_ligne_de_produit'), ('SILHOUETTE', 'donnee_silhouette'),
         ('GENRE_DE_PRODUIT', 'donnee_genre_de_produit'), ('MOTEUR', 'donnee_moteur'),
         ('TRANSMISSION', 'donnee_transmission')
@@ -223,10 +223,16 @@ PRODS_XELON_LIST = [
     ('Ref HW BSM', 'electronique_16b'),
 ]
 
+CAL_DICT = [
+    ('OLD', 'electronique_94x'), ('VEHICLE', 'donnee_ligne_de_produit'), ('BRAND', 'donnee_marque_commerciale'),
+    ('SILHOUETTE', 'donnee_silhouette'), ('HP', 'attribut_dhb'), ('AMPLI_EQUAL', 'attribut_dun'),
+    ('TYPE',  'prods__btel__name')
+]
+
 
 class ExportCorvetIntoExcelTask(ExportExcelTask):
     COL_CORVET = {
-        'donnee_ligne_de_produit': 'DON_LIN_PROD', 'donnee_silhouette': 'DON_SIL',
+        'donnee_marque_commerciale': 'DON_MAR_COMM', 'donnee_silhouette': 'DON_SIL',
         'donnee_genre_de_produit': 'DON_GEN_PROD', 'attribut_dhb': 'ATT_DHB',
         'attribut_dlx': 'ATT_DLX', 'attribut_drc': 'ATT_DRC', 'attribut_dun': 'ATT_DUN',
         'attribut_dym': 'ATT_DYM', 'attribut_dyr': 'ATT_DYR', 'donnee_moteur': 'DON_MOT',
@@ -237,40 +243,55 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         super().__init__(*args, **kwargs)
         self.fields = []
         self.queryset = None
+        self.row = False
 
     def _query_format(self, query):
         data_list = [value for value in query]
+        data_list = self.get_vehicle_display(data_list)
         data_list = self.get_multimedia_display(data_list)
         query = self.get_corvet_display(data_list)
         query = tuple([self._timestamp_to_string(_) for _ in query])
         query = tuple([self.noValue if not value else value for value in query])
         return query
 
+    def get_vehicle_display(self, data_list):
+        if 'donnee_ligne_de_produit' in self.fields:
+            position = self.fields.index('donnee_ligne_de_produit')
+            product = data_list[position]
+            data = dict(CorvetChoices.vehicles()).get(product, product)
+            if 'donnee_marque_commerciale' in self.fields:
+                brand = dict(CorvetChoices.brands()).get(data_list[self.fields.index('donnee_marque_commerciale')])
+                try:
+                    data = literal_eval(data)
+                    if brand and isinstance(data, dict):
+                        data = data.get(brand)
+                except Exception:
+                    pass
+            data_list[position] = data
+            if self.row:
+                data_list[position] = f"{data} | {product}"
+        return data_list
+
     def get_multimedia_display(self, data_list):
         if 'prods__btel__name' in self.fields:
             position = self.fields.index('prods__btel__name')
-            for prod in Multimedia.PRODUCT_CHOICES:
-                if prod[0] == data_list[position]:
-                    data_list[position] = prod[1]
-                    break
+            data_list[position] = dict(BTEL_PRODUCT_CHOICES).get(data_list[position], data_list[position])
         return data_list
 
     def get_corvet_display(self, data_list):
         for field, arg in self.COL_CORVET.items():
             if field in self.fields:
                 position = self.fields.index(field)
-                if data_list[position]:
-                    if 'vin' in self.fields and arg == 'DON_LIN_PROD':
-                        if re.match(r'^[V][FR]7\w{14}$', str(data_list[self.fields.index('vin')])):
-                            arg = 'DON_LIN_PROD 1'
-                        else:
-                            arg = 'DON_LIN_PROD 0'
+                if data_list[position] and self.row:
                     data_list[position] = f"{get_corvet(data_list[position], arg)} | {data_list[position]}"
+                elif data_list[position]:
+                    data_list[position] = f"{get_corvet(data_list[position], arg)}"
         return data_list
 
     def run(self, *args, **kwargs):
         excel_type = kwargs.pop('excel_type', 'xlsx')
         vin_list = kwargs.pop('vin_list', None)
+        self.row = kwargs.pop('is_row', False)
         if vin_list is None:
             if kwargs.get('xelon_model', None):
                 filename = f"{kwargs.get('xelon_model')}"
@@ -331,7 +352,7 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
         if PROD_DICT.get(kwargs.get('product')):
             self.queryset = corvet.exclude(**PROD_DICT.get(kwargs.get('product')).get('filter', {}))
         else:
-            self.queryset = corvet.all()
+            self.queryset = corvet
 
     @staticmethod
     def _xelon_filter(queryset, **kwargs):
@@ -357,3 +378,34 @@ class ExportCorvetIntoExcelTask(ExportExcelTask):
                     else:
                         data_list = data_list + value.get(col, [])
             self.header, self.fields = self.get_header_fields(data_list)
+
+
+class ExportCalIntoExcelTask(ExportCorvetIntoExcelTask):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields = []
+        self.queryset = None
+
+    def run(self, *args, **kwargs):
+        excel_type = kwargs.pop('excel_type', 'xlsx')
+        btel_type = kwargs.pop('btel_type', 'NAC')
+        filename = f"CAN_{btel_type}"
+        values_list = self.extract(btel_type)
+        destination_path = self.file(filename, excel_type, values_list)
+        return {
+            "detail": "Successfully export CORVET",
+            "data": {
+                "outfile": destination_path
+            }
+        }
+
+    def extract(self, btel_type=None):
+        """
+        Export ECU data to excel format
+        """
+        queryset = Corvet.objects.exclude(electronique_94x="").order_by('electronique_94x')
+        corvets = queryset.filter(prods__btel__name__icontains=btel_type)
+        self.header, self.fields = self.get_header_fields(CAL_DICT)
+        values_list = corvets.values_list(*self.fields).distinct()
+        return values_list

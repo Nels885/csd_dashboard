@@ -23,4 +23,4 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 for sql in sequence_sql:
                     cursor.execute(sql)
-            self.stdout.write(self.style.SUCCESS("Suppression des données des tables de Django terminée!"))
+            self.stdout.write(self.style.SUCCESS("Completed deleting data from Django tables !"))

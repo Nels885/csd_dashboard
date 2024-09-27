@@ -1,14 +1,16 @@
 import re
 
 from django import forms
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from bootstrap_modal_forms.forms import BSModalModelForm
 
 from utils.scraping import xml_parser
 from utils.django import is_ajax
 from utils.django.validators import validate_vin, validate_nac
 from utils.django.forms.fields import ListTextWidget
-from .models import Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, Calibration, ProductChoice
+from .models import (
+    Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, Calibration, CalCurrent, ProductChoice
+)
 from .choices import PROD_CHOICES, ECU_TYPE_CHOICES, BTEL_PRODUCT_CHOICES, BTEL_TYPE_CHOICES, CAL_TYPE_CHOICES
 
 
@@ -145,6 +147,14 @@ class CalibrationAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
+class CalCurrentAdminForm(forms.ModelForm):
+    type = forms.ChoiceField(choices=CAL_TYPE_CHOICES)
+
+    class Meta:
+        model = CalCurrent
+        fields = '__all__'
+
+
 class FirmwareAdminForm(forms.ModelForm):
     FW_TYPE_CHOICES = [
         ('', '---'),
@@ -172,10 +182,17 @@ class MultimediaAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        suppliers = SupplierCode.objects.all()
-        _supplier_list = list(suppliers.values_list('name', flat=True).distinct())
+        _supplier_list = self._data_list(SupplierCode, 'name')
+        _nand_list = self._data_list(Multimedia, 'flash_nand')
+        _emmc_list = self._data_list(Multimedia, 'emmc')
         super().__init__(*args, **kwargs)
         self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')
+        self.fields['emmc'].widget = ListTextWidget(data_list=_emmc_list, name='emmc-list')
+        self.fields['flash_nand'].widget = ListTextWidget(data_list=_nand_list, name='nand-list')
+
+    def _data_list(self, model, field):
+        queryset = model.objects.all()
+        return list(queryset.exclude(**{field: ''}).order_by(field).values_list(field, flat=True).distinct())
 
 
 class CanRemoteAdminForm(forms.ModelForm):
@@ -195,6 +212,7 @@ class CanRemoteAdminForm(forms.ModelForm):
 
     type = forms.ChoiceField(choices=CMD_CHOICES)
     product = forms.ChoiceField(choices=PROD_CHOICES, required=False)
+    location = forms.IntegerField(required=False)
 
     class Meta:
         model = CanRemote
@@ -202,8 +220,15 @@ class CanRemoteAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['label'].widget = ListTextWidget(data_list=self.LABELS, name='label-list')
+        self.fields['label'].widget = ListTextWidget(data_list=self.NEW_LABELS, name='label-list')
         self.fields['can_id'].widget = ListTextWidget(data_list=self.CAN_IDS, name='canid-list')
+
+    def clean_location(self):
+        data = self.cleaned_data['location']
+        if not data:
+            labels_dict = dict((key, value) for value, key in enumerate(self.NEW_LABELS, 1))
+            return labels_dict.get(self.cleaned_data['label'], 0)
+        return data
 
     def clean_can_id(self):
         data = self.cleaned_data['can_id'].replace("0x", "")

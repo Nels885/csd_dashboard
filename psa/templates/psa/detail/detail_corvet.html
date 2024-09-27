@@ -3,9 +3,14 @@
 <div class="row">
     <section class="col-sm-6">
 
-        <button class="bs-large-modal btn btn-primary mb-3" data-form-url="{% url 'psa:update_corvet' corvet.pk %}">
+        <button class="bs-large-modal btn btn-primary mb-3 mr-2" data-form-url="{% url 'psa:update_corvet' corvet.pk %}">
             Mise à jour CORVET
         </button>
+
+        <a class="btn btn-primary btn-icon-split mb-3" href="{% url 'psa:can_tools' %}" target="_blank">
+            <span class="icon text-white-50"><i class="fas fa-gamepad"></i></span>
+            <span class="text">{% trans "Remote" %}</span>
+        </a>
 
         <table class="table table-secondary table-sm">
             <thead>
@@ -21,14 +26,8 @@
             </tr>
             <tr>
                 <td class="text-dark td-ihm-40">Marque/Véhicule</td>
-                <td>{{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }}
-                    <span class="ml-2">
-                        {% if corvet.donnee_marque_commerciale == "0P" %}
-                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }}
-                        {% else %}
-                            {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }}
-                        {% endif %}
-                    </span>
+                <td>{{ corvet.get_brand_display }}
+                    <span class="ml-2">{{ corvet.get_vehicle_display }}</span>
                 </td>
             </tr>
             <tr>
@@ -53,7 +52,7 @@
     <section class="col-sm-6">
         <h3 class="text-gray-800">CORVET :</h3>
 
-        {% include 'psa/format/corvet_table_format.html' with object=corvet %}
+        {% include 'psa/format/corvet_table.html' with object=corvet %}
 
     </section>
 </div>

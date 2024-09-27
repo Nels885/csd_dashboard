@@ -129,4 +129,32 @@ $(function () {
             },
         });
     });
+
+     $("#export-cals").on("submit", (e) => {
+        e.preventDefault();
+        let formData = new FormData($("#export-cals")[0]);
+        // formData.append("csrfmiddlewaretoken", "{% csrf_token %}");
+        console.log(formData);
+        $.ajax({
+            type: "POST",
+            url: TOOLS_URL,
+            data: formData,
+            contentType: false,
+            processData: false,
+            cache: false,
+            async: true,
+            success: function (res) {
+                console.log(res);
+                getProgress(
+                    res.task_id,
+                    progressBarId = "export-cals-progress-bar",
+                    progressBarMessageId = "export-cals-progress-message",
+                    isDownloadFile = true
+                )
+            },
+            error: function (err) {
+                console.log(err);
+            },
+        });
+    });
 });

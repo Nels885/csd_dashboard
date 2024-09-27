@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.db.models import Q, Count, Max
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
@@ -8,7 +8,9 @@ from tempus_dominus.widgets import DatePicker
 
 from constance import config
 
-from .models import Batch, Repair, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
+from .models import (
+    Batch, Repair, RepairCloseReason, RepairPart, SparePart, Default, EcuRefBase, EcuType, EcuModel, STATUS_CHOICES
+)
 from .tasks import cmd_exportreman_task
 from utils.conf import DICT_YEAR
 from utils.django import is_ajax
@@ -145,10 +147,10 @@ class RefRemanForm(BSModalModelForm):
         exclude = ['ecu_type']
 
     def __init__(self, *args, **kwargs):
-        ecus = EcuType.objects.exclude(hw_reference="").order_by('hw_reference')
-        _data_list = list(ecus.values_list('hw_reference', flat=True).distinct())
+        self.ecus = EcuType.objects.exclude(Q(hw_reference="") | Q(hw_type="NAV")).order_by('hw_reference')
+        _data_list = list(self.ecus.values_list('hw_reference', flat=True).distinct())
         super().__init__(*args, **kwargs)
-        instance = kwargs.get('instance', None)
+        instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['reman_reference'].widget.attrs['readonly'] = True
             self.fields['hw_reference'].initial = instance.ecu_type.hw_reference
@@ -157,7 +159,7 @@ class RefRemanForm(BSModalModelForm):
     def clean_hw_reference(self):
         data = self.cleaned_data['hw_reference']
         try:
-            ecu = EcuType.objects.get(hw_reference__exact=data)
+            ecu = self.ecus.get(hw_reference__exact=data)
             if not self.errors:
                 reman = super().save(commit=False)
                 reman.ecu_type = ecu
@@ -353,15 +355,30 @@ class RepairPartForm(forms.ModelForm):
 
 class CloseRepairForm(forms.ModelForm):
     new_barcode = forms.CharField(label='Nouveau code barre', max_length=100, required=True, widget=forms.TextInput())
+    reason = forms.ModelChoiceField(
+        label='Motif irréparable', queryset=RepairCloseReason.objects.filter(is_active=True),
+        widget=forms.Select(attrs={'disabled': ''}), required=False)
+    extra = forms.CharField(widget=forms.TextInput(attrs={'disabled': ''}), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         selected_choices = ["En cours"]
         self.fields['status'].choices = [(k, v) for k, v in STATUS_CHOICES if k not in selected_choices]
         instance = getattr(self, 'instance', None)
+        if instance and instance.closing_reason:
+            data = instance.closing_reason.split(' | ')
+            try:
+                self.fields['reason'].initial = RepairCloseReason.objects.get(name=data[0])
+                if data and len(data) > 1:
+                    self.fields['extra'].initial = data[1]
+            except RepairCloseReason.DoesNotExist:
+                pass
         if instance and instance.checkout:
-            self.fields['status'].widget.attrs['disabled'] = 'disabled'
-            self.fields['quality_control'].widget.attrs['disabled'] = 'disabled'
+            self.fields['status'].widget.attrs['disabled'] = ''
+            self.fields['quality_control'].widget.attrs['disabled'] = ''
+        if instance and instance.status == "Rebut":
+            self.fields['reason'].widget.attrs.pop('disabled', '')
+            self.fields['quality_control'].widget.attrs['disabled'] = ''
         if instance and not instance.batch.is_barcode:
             self.fields['new_barcode'].required = False
 
@@ -388,6 +405,14 @@ class CloseRepairForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit:
+            reason = self.cleaned_data['reason']
+            extra = self.cleaned_data['extra']
+            if reason and extra:
+                instance.closing_reason = f"{reason.name} | {extra}"
+            elif reason:
+                instance.closing_reason = reason.name
+            else:
+                instance.closing_reason = ""
             instance.save()
         return instance
 

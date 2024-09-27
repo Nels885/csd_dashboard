@@ -3,7 +3,7 @@
 {% load static i18n corvet_tags %}
 
 {% block header_title %}
-    {{ corvet.vin }} - {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
+    {{ corvet.vin }} - {{ corvet.get_brand_display }} {{ corvet.get_vehicle_display }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
     <a href="{% url 'psa:barcode_pdf' corvet.pk %}" class="ml-2" target="_blank" title="Impression code barre">
         <i class="fas fa-print"></i>
     </a>
@@ -81,7 +81,7 @@
         <!-- Detail Corvet -->
         <div class="tab-pane" id="corvet" role="tabpanel" aria-labelledby="corvet-tab">
 
-            {% include 'psa/format/corvet_brut_table_format.html' with obj=dict_corvet %}
+            {% include 'psa/format/corvet_brut_table.html' with obj=dict_corvet %}
 
         </div>
 
@@ -95,7 +95,7 @@
         <!-- Info NAC -->
         <div class="tab-pane" id="nac" role="tabpanel" aria-labelledby="nac-tab">
 
-            {% include 'psa/format/nac_info_format.html' with firmware=corvet.prods.btel.firmware uin=corvet.electronique_44x %}
+            {% include 'psa/format/nac_info.html' with firmware=corvet.prods.btel.firmware sn=corvet.electronique_44x new_sn=corvet.opts.new_44x %}
 
         </div>
 
@@ -119,11 +119,7 @@
                 </div>
                 <div class="modal-body text-center">
                     <div>
-                        {% if corvet.donnee_marque_commerciale == "0P" %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 0" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
-                        {% else %}
-                            {{ corvet.donnee_marque_commerciale|get_corvet:"DON_MAR_COMM" }} {{ corvet.donnee_ligne_de_produit|get_corvet:"DON_LIN_PROD 1" }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
-                        {% endif %}
+                        {{ corvet.get_brand_display }} {{ corvet.get_vehicle_display }} {{ corvet.donnee_silhouette|get_corvet:"DON_SIL" }}
                     </div>
                     <img id="barcode" src="" alt="{{ corvet.vin }}"/>
                 </div>

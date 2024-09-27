@@ -8,7 +8,9 @@
         <div class="form-group row">
             <label for="id_user" class="col-form-label col-sm-2">Qui</label>
             <div class="col-sm-4">
-                <input type="text" value="{{ object.created_by }}" maxlength="50" disabled class="form-control" id="id_user">
+                {% with user=object.created_by %}
+                    <input type="text" value="{{ user.first_name }} {{ user.last_name }} - {{ user }}" maxlength="50" disabled class="form-control" id="id_user">
+                {% endwith %}
             </div>
             <label for="id_created_at" class="col-form-label col-sm-3">Date de la demande</label>
             <div class="col-sm-3 mb-3 mb-sm-0">
@@ -31,6 +33,10 @@
             <label for="id_product" class="col-form-label col-sm-2">Modèle produit</label>
             <div class="col-sm-4">
                 <input type="text" value="{{ object.product }}" maxlength="10" disabled class="form-control" id="id_product">
+            </div>
+            <label for="id_vin" class="col-form-label col-sm-3">V.I.N.</label>
+            <div class="col-sm-3 mb-3 mb-sm-0">
+                <input type="text" value="{{ object.get_vin }}" maxlength="10" disabled class="form-control" id="id_vin">
             </div>
         </div>
 
@@ -94,7 +100,9 @@
         <div class="form-group row">
             <label for="id_modified_by" class="col-form-label col-sm-2">Traité par</label>
             <div class="col-sm-4">
-                <input type="text" value="{{ object.modified_by|default:'' }}" maxlength="200" disabled class="form-control" id="id_modified_by">
+                {% with user=object.modified_by %}
+                        <input type="text" value="{% if user %}{{ user.last_name }} {{ user.first_name }} - {{ user }}{% endif %}" maxlength="200" disabled class="form-control" id="id_modified_by">
+                {% endwith %}
             </div>
             <label for="id_modified_at" class="col-form-label col-sm-3">Date du traitement</label>
             <div class="col-sm-3">
@@ -130,7 +138,11 @@
 
             <div class="mt-5 row">
                 <div class="col text-center">
-                    <a type="button" href="{% url 'tools:suptech_update' pk=object.pk %}" class="text-justify btn btn-primary">{% trans 'Respond to request' %}</a>
+                    {% if object.status != "Cloturée" %}
+                        <a type="button" href="{% url 'tools:suptech_update' pk=object.pk %}" class="text-justify btn btn-primary">{% trans 'Respond to request' %}</a>
+                    {% else %}
+                        <button class="text-justify btn btn-primary" disabled>{% trans 'Respond to request' %}</button>
+                    {% endif %}
                 </div>
             </div>
 

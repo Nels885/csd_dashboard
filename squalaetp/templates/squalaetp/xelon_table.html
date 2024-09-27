@@ -16,6 +16,12 @@
 
 {% block table_content %}
 
+    {% if media %}
+        {% include 'psa/format/prod_search.html' with object=media %}
+    {% elif prod %}
+        {% include 'psa/format/prod_search.html' with object=prod %}
+    {% endif %}
+
     <table class="table table-bordered table-sm text-nowrap display" id="xelonTable" style="width: 100%;">
         <thead>
         <tr>

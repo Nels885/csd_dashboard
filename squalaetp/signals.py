@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from .models import Sivin, Xelon, XelonTemporary, ProductCategory
 from psa.models import Corvet, Ecu, Multimedia
-from utils.django.validators import comp_ref_isvalid, VIN_PSA_REGEX
+from utils.django.validators import comp_ref_isvalid, VIN_STELLANTIS_REGEX
 from utils.django.decorators import disable_for_loaddata
 
 
@@ -19,18 +19,21 @@ def product_update(instance):
         }
         for corvet_type, comp_ref in ecu_dict.items():
             if product.corvet_type == corvet_type and comp_ref_isvalid(comp_ref):
-                if product.corvet_type in ["NAV", "RAD"]:
-                    obj, created = Multimedia.objects.get_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type})
-                else:
-                    obj, created = Ecu.objects.get_or_create(
-                        comp_ref=comp_ref,
-                        defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type}
-                    )
-                if not created:
-                    obj.xelon_name = instance.modele_produit
-                    obj.save()
+                try:
+                    if product.corvet_type in ["NAV", "RAD"]:
+                        obj, created = Multimedia.objects.get_or_create(
+                                comp_ref=comp_ref,
+                                defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type})
+                    else:
+                        obj, created = Ecu.objects.get_or_create(
+                            comp_ref=comp_ref,
+                            defaults={'xelon_name': instance.modele_produit, 'type': product.corvet_type}
+                        )
+                    if not created and not obj.xelon_name:
+                        obj.xelon_name = instance.modele_produit
+                        obj.save()
+                except ValueError:
+                    pass
                 break
 
 
@@ -38,7 +41,7 @@ def product_update(instance):
 @disable_for_loaddata
 def pre_save_sivin(sender, instance, **kwargs):
     try:
-        if not instance.corvet and re.match(VIN_PSA_REGEX, str(instance.codif_vin)):
+        if not instance.corvet and re.match(VIN_STELLANTIS_REGEX, str(instance.codif_vin)):
             instance.corvet = Corvet.objects.get(vin=instance.codif_vin)
     except Corvet.DoesNotExist:
         instance.corvet = None
@@ -48,7 +51,7 @@ def pre_save_sivin(sender, instance, **kwargs):
 @disable_for_loaddata
 def pre_save_xelon(sender, instance, **kwargs):
     try:
-        if re.match(VIN_PSA_REGEX, str(instance.vin)):
+        if re.match(VIN_STELLANTIS_REGEX, str(instance.vin)):
             instance.corvet = Corvet.objects.get(vin=instance.vin)
             instance.vin_error = False
     except Corvet.DoesNotExist:
@@ -68,7 +71,7 @@ def pre_save_xelon(sender, instance, **kwargs):
 @disable_for_loaddata
 def pre_save_xelon_temporary(sender, instance, **kwargs):
     try:
-        if re.match(VIN_PSA_REGEX, str(instance.vin)):
+        if re.match(VIN_STELLANTIS_REGEX, str(instance.vin)):
             instance.corvet = Corvet.objects.get(vin=instance.vin)
     except Corvet.DoesNotExist:
         instance.corvet = None

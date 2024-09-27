@@ -1,3 +1,5 @@
+import datetime
+import numpy as np
 from io import StringIO
 from sbadmin import celery_app
 from django.core.management import call_command
@@ -45,3 +47,19 @@ def send_email_task(self, subject, body, from_email, to, cc, files=None):
     if files:
         [email.attach_file(file) for file in files]
     email.send()
+
+
+@celery_app.task
+def suptech_days_late_task(*args, **kwargs):
+    from .models import Suptech
+    queryset = Suptech.objects.exclude(status__in=['Cloturée', 'Annulée'])
+    queryset = queryset.filter(date__gte=datetime.date(2024, 1, 1))
+    for query in queryset:
+        if query.created_at:
+            start_date = query.created_at.strftime("%Y-%m-%d")
+            if query.modified_at:
+                end_date = query.modified_at.strftime("%Y-%m-%d")
+            else:
+                end_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            query.days_late = np.busday_count(start_date, end_date)
+            query.save()

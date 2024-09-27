@@ -113,6 +113,14 @@
         <hr class="col-8">
 
         <div class="form-group row mt-4">
+            {% include 'format/label_form_group.html' with field=form.is_row %}
+{#            <label class="form-check-label" for="{{ form.is_row.id_for_label}}">{{ form.is_row.label }}</label>#}
+            <div class="col-sm-2">
+                {% render_field form.is_row class="form-control" %}
+            </div>
+        </div>
+
+        <div class="form-group row mt-4">
             {% include 'format/label_form_group.html' with field=form.excel_type %}
             <div class="col-sm-2">
                 {% render_field form.excel_type class="custom-select form-control" %}

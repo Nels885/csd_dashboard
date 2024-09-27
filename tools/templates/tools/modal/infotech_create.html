@@ -106,8 +106,8 @@
             url: "{% url 'tools:infotech_mailing_async' %}" + "?pk=" + $(this).val(),
             success: function (data) {
                 console.log(data);
-                $('#id_to').val(data.to_list);
-                $('#id_cc').val(data.cc_list);
+                $('#id_to').prop('value', data.to_list);
+                $('#id_cc').prop('value', data.cc_list);
             },
             error: function (error_data) {
                 console.log("error");

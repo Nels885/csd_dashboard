@@ -20,6 +20,7 @@ urlpatterns = [
     path('<int:pk>/vin/email/', views.VinEmailFormView.as_view(), name='vin_email'),
     path('<int:pk>/prod/edit/', views.ProductUpdateView.as_view(), name='prod_edit'),
     path('<int:pk>/prod/email/', views.ProdEmailFormView.as_view(), name='prod_email'),
+    path('<int:pk>/sn/edit/', views.NewSerialNumberUpdateView.as_view(), name='sn_edit'),
     path('<int:pk>/prog/active/', views.prog_activate, name='prog_activate'),
     path('<int:pk>/adm/email/', views.AdmEmailFormView.as_view(), name='adm_email'),
     path('generate/', views.generate, name='generate'),

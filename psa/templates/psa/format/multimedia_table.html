@@ -14,6 +14,12 @@
         </tr>
     {% endif %}
     <tr>
+            <td class="text-dark td-ihm-40">Fichier Cal.</td>
+            <td class="text-white {% if cals.94x %}bg-success{% else %}bg-danger{% endif %}">
+                {{ cals.94x|join:', '|default:"N/A" }}
+            </td>
+    </tr>
+    <tr>
         <td class="text-dark td-ihm-40">Modèle</td>
         <td>{{ object.get_name_display|default:"???" }}</td>
     </tr>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-21 11:19+0100\n"
+"POT-Creation-Date: 2024-08-22 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,11 +63,15 @@ msgstr "Utilisateur désactivé"
 msgid "User activated"
 msgstr "Utilisateur activé"
 
-#: dashboard/forms.py:142
+#: dashboard/forms.py:118
+msgid "A user with this name already exists."
+msgstr "Un utilisateur portant ce nom existe déjà."
+
+#: dashboard/forms.py:137
 msgid "Search Xelon, VIN or SN..."
 msgstr "Recherche Xelon, VIN ou SN..."
 
-#: dashboard/forms.py:165
+#: dashboard/forms.py:160
 msgid "Username not found."
 msgstr "Nom d'utilisateur introuvable."
 
@@ -101,13 +105,13 @@ msgid "Do you want to send a test report ?"
 msgstr "Voulez-vous envoyer un rapport de test ?"
 
 #: dashboard/templates/dashboard/modal/import_squalaetp.html:13
-#: dashboard/templatetags/custom_tags.py:18
+#: dashboard/templatetags/custom_tags.py:19
 msgid "No"
 msgstr "Non"
 
 #: dashboard/templates/dashboard/modal/import_squalaetp.html:14
-#: dashboard/templatetags/custom_tags.py:15
-#: dashboard/templatetags/custom_tags.py:17
+#: dashboard/templatetags/custom_tags.py:16
+#: dashboard/templatetags/custom_tags.py:18
 msgid "Yes"
 msgstr "Oui"
 
@@ -146,7 +150,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: dashboard/templates/dashboard/modal/logout.html:14
-#: dashboard/templates/dashboard/profile.html:122
+#: dashboard/templates/dashboard/profile.html:125
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -170,7 +174,7 @@ msgstr "Mettre à jour le Post"
 
 #: dashboard/templates/dashboard/modal/post_update.html:54
 #: dashboard/templates/dashboard/modal/weblink_update.html:38
-#: dashboard/templates/dashboard/profile.html:113
+#: dashboard/templates/dashboard/profile.html:116
 msgid "Update"
 msgstr "Mise à jour"
 
@@ -200,22 +204,22 @@ msgid "Update web link"
 msgstr "Mettre à jour le lien Web"
 
 #: dashboard/templates/dashboard/products/tab_select.html:5
-#: dashboard/tests/tests_dashboard_views.py:61 dashboard/views.py:62
+#: dashboard/tests/tests_dashboard_views.py:61 dashboard/views.py:63
 msgid "Pending Products"
 msgstr "Produits en cours"
 
 #: dashboard/templates/dashboard/products/tab_select.html:11
-#: dashboard/tests/tests_dashboard_views.py:52 dashboard/views.py:60
+#: dashboard/tests/tests_dashboard_views.py:52 dashboard/views.py:61
 msgid "Late Products"
 msgstr "Produits en retard"
 
 #: dashboard/templates/dashboard/products/tab_select.html:17
-#: dashboard/tests/tests_dashboard_views.py:79 dashboard/views.py:84
+#: dashboard/tests/tests_dashboard_views.py:79 dashboard/views.py:85
 msgid "VIP Products"
 msgstr "Produits VIP"
 
 #: dashboard/templates/dashboard/products/tab_select.html:23
-#: dashboard/tests/tests_dashboard_views.py:88 dashboard/views.py:75
+#: dashboard/tests/tests_dashboard_views.py:88 dashboard/views.py:76
 msgid "Admin Products"
 msgstr "Produits en Admin"
 
@@ -263,85 +267,85 @@ msgstr "Ajouter un lien Web"
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
-#: dashboard/views.py:34
+#: dashboard/views.py:35
 msgid "Home"
 msgstr "Accueil"
 
-#: dashboard/views.py:48 dashboard/views.py:117
+#: dashboard/views.py:49 dashboard/views.py:118
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: dashboard/views.py:97
+#: dashboard/views.py:98
 #, python-brace-format
 msgid "Success: The reseach for {query} was successful."
 msgstr "Succès: la recherche pour {query} a été couronnée de succès."
 
-#: dashboard/views.py:99
+#: dashboard/views.py:100
 msgid "Warning: The research was not successful."
 msgstr "Avertissement: la recherche n'a pas réussi."
 
-#: dashboard/views.py:118
+#: dashboard/views.py:119
 msgid "Activity log"
 msgstr "Journal d'activité"
 
-#: dashboard/views.py:126
+#: dashboard/views.py:127
 msgid "User Profile"
 msgstr "Mon Profil"
 
-#: dashboard/views.py:133
+#: dashboard/views.py:134
 msgid "Success: Update profile picture!"
 msgstr "Succès: mise à jour de la photo de profil !"
 
-#: dashboard/views.py:138
+#: dashboard/views.py:139
 msgid "Success: Update display configuration!"
 msgstr "Succès: mise à jour de la configuration de l'affichage !"
 
-#: dashboard/views.py:148
+#: dashboard/views.py:149
 msgid "SignUp"
 msgstr "S'inscrire"
 
-#: dashboard/views.py:149
+#: dashboard/views.py:150
 msgid "Create an Account!"
 msgstr "Création d'un compte !"
 
-#: dashboard/views.py:174
+#: dashboard/views.py:179
 msgid "Success: Sign up succeeded. You can now Log in."
 msgstr "Succès: l'inscription a réussi. Vous pouvez maintenant vous connecter."
 
-#: dashboard/views.py:190
+#: dashboard/views.py:195
 msgid "Thank you for your email confirmation. Now you can login your account."
 msgstr ""
 "Merci pour votre e-mail de confirmation. Vous pouvez maintenant vous "
 "connecter à votre compte."
 
-#: dashboard/views.py:193
+#: dashboard/views.py:198
 msgid "Activation link is invalid!"
 msgstr "Le lien d'activation n'est pas valide !"
 
-#: dashboard/views.py:201
+#: dashboard/views.py:206
 msgid "Success: You are logged in."
 msgstr "Succès: vous êtes connecté."
 
-#: dashboard/views.py:215
+#: dashboard/views.py:220
 msgid "Success: Post was created."
 msgstr "Succès: Le message a été créé."
 
-#: dashboard/views.py:225
+#: dashboard/views.py:230
 msgid "Success: Post was updated."
 msgstr "Succès: Le message a été mis à jour."
 
-#: dashboard/views.py:234
+#: dashboard/views.py:239
 msgid "Success: Post was deleted."
 msgstr "Succès: Le message a été supprimé."
 
-#: dashboard/views.py:242
+#: dashboard/views.py:247
 msgid "Success: Web link was created"
 msgstr "Succès: Le lien Web a été créé."
 
-#: dashboard/views.py:253
+#: dashboard/views.py:258
 msgid "Success: Web link was updated"
 msgstr "Succès: Le lien Web a été mis à jour."
 
-#: dashboard/views.py:264
+#: dashboard/views.py:269
 msgid "Success: Web link was deleted."
 msgstr "Succès: Le lien Web a été supprimé."

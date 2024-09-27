@@ -58,6 +58,26 @@
             </div>
 
             <div class="form-group row">
+                {% include 'format/label_form_group.html' with field=form.reason %}
+                <div class="col-sm-4">
+                    {% render_field form.reason class="custom-select form-control" %}
+                    <div class="{% if form.reason.errors %} invalid{% endif %}">
+                        {% for error in form.reason.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    {% render_field form.extra class="form-control" %}
+                    <div class="{% if form.extra.errors %} invalid{% endif %}">
+                        {% for error in form.extra.errors %}
+                            <p class="help-block font-weight-bold text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 {% include 'format/label_form_group.html' with field=form.quality_control %}
                 <div class="col-sm-2">
                     {% render_field form.quality_control class="form-control" %}
@@ -90,10 +110,45 @@
 
     <script type="text/javascript">
         $("#description").focus(function () {
-            t = $(this);
-            t.css('min-height', t.height() + 10);
+            $(this).css('min-height', $(this).height() + 10);
         }).blur(function () {
             $(this).css('min-height', '');
+        });
+        
+        function statusChange() {
+            if ($('#id_status').val() === 'Rebut') {
+                $('#id_quality_control').prop({'disabled': true, 'checked': false});
+                $('#id_reason').prop({'disabled': false});
+            } else {
+                $('#id_quality_control').prop({'disabled': false});
+                $('#id_reason').prop({'disabled': true, 'value': ''});
+                $('#id_extra').prop({'disabled': true, 'value': ''});
+            }
+        }
+        
+        statusChange();
+        
+        $('#id_status').change(function () {
+            statusChange();
+        });
+
+        $('#id_reason').change(function () {
+            $.ajax({
+                method: "GET",
+                url: "{% url 'reman:repair_close_async' %}" + "?reason=" + $(this).val(),
+                success: function (data) {
+                    console.log(data);
+                    if (data.extra) {
+                        $('#id_extra').prop({'disabled': false, 'required': true});
+                    } else {
+                        $('#id_extra').prop({'disabled': true, 'value': '', 'required': false});
+                    }
+                },
+                error: function (error_data) {
+                    console.log("error");
+                    console.log(error_data);
+                }
+            });
         });
     </script>
 

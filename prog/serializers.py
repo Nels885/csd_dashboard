@@ -35,7 +35,14 @@ class ToolStatusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ToolStatus
-        fields = ('id', 'name', 'comment', 'url')
+        fields = ('id', 'name', 'hostname', 'comment', 'url')
+
+
+class ToolStatusUpdateSerializer(ToolStatusSerializer):
+
+    class Meta:
+        model = ToolStatus
+        fields = ('last_boot', 'ip_addr', 'mac_addr', 'hw_revision', 'firmware')
 
 
 class ToolLogSerializer(serializers.ModelSerializer):

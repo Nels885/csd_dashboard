@@ -38,6 +38,8 @@ def table(request):
 def detail(request, ref_case):
     """
     detailed view of Raspeedi data for a product
+    :param request:
+        Parameters of the request
     :param ref_case:
         Ref case of product
     """
@@ -117,6 +119,14 @@ class UnlockProductDeleteView(PermissionRequiredMixin, BSModalDeleteView):
     success_url = reverse_lazy('prog:unlock_prods')
 
 
+def tool_status(request):
+    table_title = "Statut Outils"
+    object_list = ToolStatus.objects.all()
+    context.update(locals())
+    return render(request, 'prog/tool_status.html', context)
+
+
+@permission_required('prog.view_info_tools')
 def tool_info(request):
     table_title = "Info Outils"
     object_list = ToolStatus.objects.all()
@@ -124,7 +134,7 @@ def tool_info(request):
     return render(request, 'prog/tool_info.html', context)
 
 
-def ajax_tool_info(request, pk):
+def ajax_tool_status(request, pk):
     data = {'pk': pk, 'xelon': '', 'status': 'Hors ligne', 'version': '', 'status_code': 404}
     try:
         tool = ToolStatus.objects.get(pk=pk)
@@ -196,15 +206,17 @@ def aet_info(request, pk=None):
     :return:
         AET/MbedFirmware table page
     """
-    AET_list = AET.objects.all()
+    AET_list = ToolStatus.objects.filter(firmware="RaspiAET")
     firmware_list = MbedFirmware.objects.all()
     for obj in AET_list:
         try:
-            response = requests.get(url=f"http://{obj.raspi_url}/api/info/", timeout=(0.05, 0.5))
+            response = requests.get(url=f"http://{obj.ip_addr}/api/info/", timeout=(0.05, 0.5))
             if response.status_code >= 200 or response.status_code < 300:
                 data = response.json()
-                obj.mbed_list = ", ".join(data.get('mbed_list', []))
-                obj.save()
+                mbed_list = data.get('mbed_list', [])
+                if mbed_list:
+                    obj.mbed_list = ", ".join(data.get('mbed_list', []))
+                    obj.save()
         except (requests.exceptions.RequestException, ToolStatus.DoesNotExist):
             pass
     context.update(locals())
@@ -223,8 +235,8 @@ def ajax_aet_status(request, pk):
     """
     data = {'pk': pk, 'msg': 'No response', 'status': 'Hors Ligne', 'percent': '0', 'status_code': 404}
     try:
-        aet = AET.objects.get(pk=pk)
-        response = requests.get(url="http://" + aet.raspi_url + "/api/info/", timeout=(0.05, 0.5))
+        query = ToolStatus.objects.get(pk=pk)
+        response = requests.get(url=f"http://{query.ip_addr}/api/info/", timeout=(0.05, 0.5))
         if response.status_code >= 200 or response.status_code < 300:
             data = response.json()
     except (requests.exceptions.RequestException, AET.DoesNotExist):
@@ -310,8 +322,8 @@ class AetSendSoftwareView(BSModalFormView):
     def form_valid(self, form):
         if not is_ajax(self.request):
             pk = self.kwargs.get('pk')
-            aet = AET.objects.get(pk=pk)
-            task = send_firmware_task.delay(raspi_url=aet.raspi_url, fw_name=form.cleaned_data['select_firmware'],
+            query = ToolStatus.objects.get(pk=pk)
+            task = send_firmware_task.delay(raspi_url=query.ip_addr, fw_name=form.cleaned_data['select_firmware'],
                                             target=form.cleaned_data['select_target'])
             self.task_id = task.id
         return super().form_valid(form)
@@ -321,7 +333,7 @@ class AetSendSoftwareView(BSModalFormView):
         pk = self.kwargs.get('pk')
         context['form'] = AETSendSoftwareForm(pk=pk)
         context['pk'] = pk
-        context["modal_title"] = AET.objects.filter(pk=pk).first().name
+        context["modal_title"] = ToolStatus.objects.filter(pk=pk).first().name
         return context
 
     def get_success_url(self):

@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -152,6 +152,7 @@ class Repair(models.Model):
     locating_pin = models.BooleanField("Boulon arrière", default=False)
     spring_locking = models.BooleanField("verrouillage à ressort", default=False)
     status = models.CharField("status", max_length=50, default='En cours', choices=STATUS_CHOICES)
+    closing_reason = models.CharField("motif de clôture", max_length=200, blank=True)
     quality_control = models.BooleanField("contrôle qualité", default=False)
     checkout = models.BooleanField("contrôle de sortie", default=False)
     closing_date = models.DateTimeField("date de cloture", null=True, blank=True)
@@ -188,18 +189,6 @@ class Repair(models.Model):
         return self.identify_number
 
 
-class SparePart(models.Model):
-    code_produit = models.CharField('code Produit', max_length=100)
-    code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
-    code_zone = models.CharField('code Zone', max_length=50, blank=True)
-    code_site = models.IntegerField('code Site', null=True, blank=True)
-    code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
-    cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
-
-    def __str__(self):
-        return self.code_produit
-
-
 class RepairPart(models.Model):
     product_code = models.CharField('code produit', max_length=100)
     quantity = models.CharField('n° de pièce', max_length=100)
@@ -213,3 +202,27 @@ class RepairPart(models.Model):
 
     def __str__(self):
         return f"Pièces sur {self.content_object}"
+
+
+class RepairCloseReason(models.Model):
+    name = models.CharField('Nom', max_length=100, unique=True)
+    extra = models.BooleanField(default=False)
+    is_active = models.BooleanField("Actif", default=True)
+    class Meta:
+        verbose_name = "Repair Close Reason"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class SparePart(models.Model):
+    code_produit = models.CharField('code Produit', max_length=100)
+    code_magasin = models.CharField('code Magasin', max_length=50, blank=True)
+    code_zone = models.CharField('code Zone', max_length=50, blank=True)
+    code_site = models.IntegerField('code Site', null=True, blank=True)
+    code_emplacement = models.CharField('code Emplacement', max_length=50, blank=True)
+    cumul_dispo = models.IntegerField('cumul Dispo', null=True, blank=True)
+
+    def __str__(self):
+        return self.code_produit

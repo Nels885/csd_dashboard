@@ -5,7 +5,7 @@ from . import ajax
 
 router = DefaultRouter()
 router.register(r'api/corvet', ajax.CorvetViewSet, basename='api_corvet')
-router.register(r'api/dtc', ajax.DefaultCodeViewSet, basename='api_psa_dtc')
+router.register(r'api/dtc', ajax.DTCServerSodeViewSet, basename='api_dtc')
 
 app_name = 'psa'
 
@@ -25,5 +25,7 @@ urlpatterns = [
     path('corvet/<slug:pk>/pdf/', views.barcode_pdf_generate, name='barcode_pdf'),
     path('corvet/import/async/', ajax.import_corvet_async, name='import_corvet'),
     path('product/', views.product_table, name='product'),
-    path('majestic-web/', views.majestic_web, name='majestic_web')
+    path('dtc/', views.dtc_table, name='dtc_table'),
+    path('majestic-web/', views.majestic_web, name='majestic_web'),
+    path('majestic-web/async/', ajax.majestic_web_async, name='ajax_majestic_web'),
 ]

@@ -40,6 +40,12 @@
             </div>
         </div>
 
+        <div class="form-row">
+            <div class="col-sm-12 text-center">
+                <h5 class="help-block bg-danger text-white">S'il s'agit d'un produit en cours, veuillez cocher la case <span class="font-weight-bold">Traitement 48h</span></h5>
+            </div>
+        </div>
+
         <div class="form-group row">
             {% include 'format/form_label.html' with field=form.xelon label='N° DOSSIER' %}
             <div class="col-sm-4">
@@ -185,10 +191,10 @@
                 } else {
                     $('#id_custom_item').attr({'readonly': true, 'required': false});
                 }
-                $('#id_to').val(data['to_list']);
-                $('#id_cc').val(data['cc_list']);
-                $('#id_is_48h').attr('checked', data['is_48h']);
-                $('#id_category').val(data.category);
+                $('#id_to').prop('value', data['to_list']);
+                $('#id_cc').prop('value', data['cc_list']);
+                $('#id_is_48h').prop('checked', data['is_48h']);
+                $('#id_category').prop('value', data.category);
             },
             error: function (error_data) {
                 console.log("error");
@@ -205,9 +211,9 @@
             url: "{% url 'tools:suptech_mailing_async' %}" + "?item=" + item + "&cat=" + $(this).val(),
             success: function (data) {
                 console.log(data);
-                $('#id_to').val(data['to_list']);
-                $('#id_cc').val(data['cc_list']);
-                $('#id_category').val(data.category);
+                $('#id_to').prop('value', data['to_list']);
+                $('#id_cc').prop('value', data['cc_list']);
+                $('#id_category').prop('value', data.category);
             },
             error: function (error_data) {
                 console.log("error");
@@ -223,8 +229,8 @@
             success: function (data) {
                 console.log(data);
                 if (data.prod !== "") {
-                    $('#id_product').val(data['prod']);
-                    $('#id_product').attr({'readonly': true});
+                    $('#id_product').prop('value', data['prod']);
+                    $('#id_product').prop('readonly', true);
                 }
             },
             error: function (error_data) {
