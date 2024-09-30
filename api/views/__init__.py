@@ -4,9 +4,9 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 from ..serializers import ProgSerializer, CalSerializer
-from prog.serializers import UnlockSerializer, UnlockUpdateSerializer, RaspeediSerializer
+from prog.serializers import UnlockSerializer, UnlockUpdateSerializer, RaspeediSerializer, AETMeasureSerializer
 from psa.serializers import DefaultCodeSerializer
-from prog.models import Raspeedi, UnlockProduct
+from prog.models import Raspeedi, UnlockProduct, AETMeasure
 from squalaetp.models import Xelon, ProductCode
 from psa.models import DefaultCode
 
@@ -118,3 +118,12 @@ class DefaultCodeViewSet(viewsets.ModelViewSet):
         if product:
             queryset = DefaultCode.objects.filter(ecu_type=product)
         return queryset
+
+
+class AETLogViewSet(viewsets.ModelViewSet):
+    """ API endpoint that allows groups to be viewed or edited. """
+    authentication_classes = (TokenAuthSupportQueryString,)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = AETMeasure.objects.all()
+    serializer_class = AETMeasureSerializer
+    http_method_names = ['get']

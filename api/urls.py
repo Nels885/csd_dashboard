@@ -6,6 +6,7 @@ from api.views import reman, tools, psa
 
 router = DefaultRouter()
 router.register(r'prog', views.ProgViewSet, basename='prog')
+router.register(r'log/aet', views.AETLogViewSet, basename='aet_log')
 router.register(r'cal', views.CalViewSet, basename='cal')
 router.register(r'unlock', views.UnlockViewSet, basename='unlock')
 router.register(r'dtc', views.DefaultCodeViewSet, basename='dtc')
