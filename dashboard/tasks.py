@@ -9,6 +9,13 @@ from django.core.management import call_command
 from utils.conf import CSD_ROOT
 
 
+@celery_app.task()
+def call_command_task(*args):
+    out = StringIO()
+    call_command(*args, stdout=out)
+    return out.getvalue()
+
+
 @celery_app.task
 def cmd_sendemail_all_task():
     call_command('sendemail', '--late_products', '--pending_products', '--vin_error', '--vin_corvet', '--reman')
