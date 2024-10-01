@@ -1,17 +1,25 @@
 import os
+import io
 import re
+import json
 from glob import glob
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from django.utils.timezone import make_aware
 from django.core.management.base import BaseCommand
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.utils import DataError
 
 from utils.conf import CSD_ROOT
 from utils.django.models import defaults_dict
 
 from prog.models import AETLog, AETMeasure
+
+try:
+    to_unicode = unicode
+except NameError:
+    to_unicode = str
 
 
 class Command(BaseCommand):
@@ -24,32 +32,47 @@ class Command(BaseCommand):
             dest='all',
             help='All data',
         )
+        parser.add_argument(
+            '--export',
+            action='store_true',
+            dest='export',
+            help='Export the AET log data',
+        )
 
     def handle(self, *args, **options):
         self.stdout.write("[DAEMON_AET] Waiting...")
         last_24_hours = ""
-        if not options['all']:
-            last_24_hours = (timezone.datetime.today() - relativedelta(hours=24)).strftime('_%Y-%m-%d_')
+        if options['export']:
+            queryset = AETLog.objects.all().values(
+                'xelon', 'comp_ref', 'manu_ref', 'aet_name', 'prod_name', 'date', 'measures__measure_name',
+                'measures__measured_value', 'measures__min_value', 'measures__max_value')
+            json_data = json.dumps(list(queryset), cls=DjangoJSONEncoder, indent=4, ensure_ascii=False, sort_keys=True)
 
-        prod_ref = ["DCM3.5", "DCM6.2A", "DCM6.2C", "E98", "EDC15C2", "EDC16C34", "EDC17C60", "EDC17C84", "ME17.9.52", "VD46.1"]
-        new_files = []
-        for ref in prod_ref:
-            path = os.path.join(CSD_ROOT, f'LOGS/LOG_AET/{ref}/*/*{last_24_hours}*.csv')
-            for file in glob(path, recursive=True):
-                new_files.append((file, ref))
+            with io.open('data.json', 'w', encoding='utf8') as outfile:
+                outfile.write(to_unicode(json_data))
+        else:
+            if not options['all']:
+                last_24_hours = (timezone.datetime.today() - relativedelta(hours=24)).strftime('_%Y-%m-%d_')
 
-        all_products_list_dictt = []
-        for new_file, ref in new_files:
-            with open(new_file, "r") as file:
-                rows = file.read().splitlines()
-                data2 = []
-                if not re.search(r'[a-zA-Z]123456789', new_file):
-                    for row in rows:
-                        data2.append(row.split(";"))
-                    if self.aet_check(data2):
-                        list_dictt = self.data2dict(data2, new_file, ref)
-                        all_products_list_dictt.append(list_dictt)
-        self._import_data(all_products_list_dictt)
+            prod_ref = ["DCM3.5", "DCM6.2A", "DCM6.2C", "E98", "EDC15C2", "EDC16C34", "EDC17C60", "EDC17C84", "ME17.9.52", "VD46.1"]
+            new_files = []
+            for ref in prod_ref:
+                path = os.path.join(CSD_ROOT, f'LOGS/LOG_AET/{ref}/*/*{last_24_hours}*.csv')
+                for file in glob(path, recursive=True):
+                    new_files.append((file, ref))
+
+            all_products_list_dictt = []
+            for new_file, ref in new_files:
+                with open(new_file, "r") as file:
+                    rows = file.read().splitlines()
+                    data2 = []
+                    if not re.search(r'[a-zA-Z]123456789', new_file):
+                        for row in rows:
+                            data2.append(row.split(";"))
+                        if self.aet_check(data2):
+                            list_dictt = self.data2dict(data2, new_file, ref)
+                            all_products_list_dictt.append(list_dictt)
+            self._import_data(all_products_list_dictt)
 
     @staticmethod
     def get_value(name, value):
