@@ -33,8 +33,9 @@ RED='\033[31m'
 NC='\033[0m' # No Color
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRIPTS_DIR="$DIR/scripts"
 
-COREVERSION="1.0.0"
+COREVERSION="1.0.1"
 
 echo "setup.sh version $COREVERSION"
 
@@ -42,50 +43,6 @@ echo "setup.sh version $COREVERSION"
 URL_PROXY=""
 
 # Functions
-
-function proxy() {
-  read -p "Url proxy (if empty no proxy): " URL_PROXY
-  echo "Use proxy: $URL_PROXY"
-}
-
-function aptInstall() {
-  echo -e "${RED}Installing needed programs...${NC}"
-  sudo http_proxy=$URL_PROXY apt install -y python3-pip python3-dev libpq-dev redis-server
-}
-
-function aptUpgrade() {
-  # Update raspbian and install programm utils
-  echo -e "${RED}Updating linux system...${NC}"
-  sudo http_proxy=$URL_PROXY apt update && sudo http_proxy=$URL_PROXY apt dist-upgrade -y
-}
-
-function pipenvInstall() {
-  echo -e "${RED}Install Pipenv Environment...${NC}"
-  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
-  pip3 config set global.proxy $URL_PROXY
-  sudo pip3 install pipenv
-  pipenv --python 3
-  pipenv sync
-}
-
-function pipenvUpdate() {
-  echo -e "${RED}Updating Pipenv Environment...${NC}"
-  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
-  pip3 config set global.proxy $URL_PROXY
-  pipenv sync
-}
-
-function serviceStop() {
-  echo -e "${RED}Stop services...${NC}"
-  sudo supervisorctl stop all
-  wait
-}
-
-function serviceStart() {
-  echo -e "${RED}Start services...${NC}"
-  sudo supervisorctl start all
-  wait
-}
 
 function checkPythonVersion() {
   python3 --version
@@ -114,24 +71,19 @@ checkPythonVersion
 
 case $1 in
   "start")
-    serviceStart
+    $SCRIPTS_DIR/run.sh start
     ;;
   "restart")
-    serviceStop
-    serviceStart
+    $SCRIPTS_DIR/run.sh restart
     ;;
   "stop")
-    serviceStop
+    $SCRIPTS_DIR/run.sh stop
     ;;
   "install")
-    proxy
-    aptInstall
-    pipenvInstall
+    $SCRIPTS_DIR/run.sh install
     ;;
   "update")
-    proxy
-    aptUpgrade
-    pipenvUpdate
+    $SCRIPTS_DIR/run.sh update
     ;;
   "help")
     listCommands
