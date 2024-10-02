@@ -63,8 +63,8 @@ echo -e "${RED}Settings of Django for production...${NC}"
 read -p "Secret Key for Django: " SECRET_KEY
 echo "Database Port: $SECRET_KEY"
 
-read -p "Database name (default: csdatelier): " DB_NAME
-[[ "$DB_NAME" == "" ]] && DB_NAME="csdatelier"
+read -p "Database name (default: csd_atelier): " DB_NAME
+[[ "$DB_NAME" == "" ]] && DB_NAME="csd_atelier"
 echo "Database Name: $DB_NAME"
 
 read -p "Database user (default: csdadmin): " DB_USER

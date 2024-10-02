@@ -10,16 +10,25 @@ NC='\033[0m' # No Color
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 SCRIPTS_DIR="$DIR/scripts"
 URL_PROXY=""
+PROD_ENV=0
 
 # Take the user
 read -p "Enter the User Linux (default): " USER
 [[ "$USER" == "" ]] && USER=$(whoami)
 echo "User Linux: $USER"
 
+read -p "Put into production [y/N]: " CHOICE
+if [[ "$CHOICE" == [Yy]* ]]
+then
+  PROD_ENV=1
+  $SCRIPTS_DIR/generate_files.sh $USER
+fi
+
+
 USER_DIR="/home/$USER"
 
 
-echo -e "${CYAN}DIR=$DIR - USER=$USER ${NC}"
+echo -e "${CYAN}DIR=$DIR - USER=$USER  - PROD_ENV=$PROD_ENV ${NC}"
 
 
 # Functions
@@ -60,7 +69,6 @@ function pipenvUpdate() {
 }
 
 function supervisorUpdate() {
-  $SCRIPTS_DIR/generate_files.sh $USER
   echo -e "${RED}Supervisor configuration update...${NC}"
   sudo mv -v /tmp/csddashboard-daphne.conf /etc/supervisor/conf.d/
   sudo mv -v /tmp/celery.conf /etc/supervisor/conf.d/
@@ -80,28 +88,22 @@ function serviceStart() {
   wait
 }
 
-function envConfiguration() {
-  read -p "Put into production [y/N]: " CHOICE
-  if [[ "$CHOICE" == [Yy]* ]]
-  then
-    $SCRIPTS_DIR/generate_files.sh $USER
-    pipenvInstall
-    echo -e "${RED}Installing needed programs for production...${NC}"
-    sudo http_proxy=$URL_PROXY apt install -y supervisor nginx
-
-    pipenv run ./manage.py collectstatic --clear --noinput
-    supervisorUpdate
-  else
-    echo -e "${RED}Installing needed programs for development...${NC}"
-    sudo http_proxy=$URL_PROXY apt install -y postgresql postgresql-contrib
-  fi
-}
-
 function install() {
   setProxy
   aptInstall
   pipenvInstall
-  envConfiguration
+  if [ PROD_ENV ]
+  then
+    echo -e "${RED}Installing needed programs for production...${NC}"
+    sudo http_proxy=$URL_PROXY apt install -y supervisor nginx
+
+    # Generate static files and add permissions
+    pipenv run ./manage.py collectstatic --clear --noinput
+    sudo gpasswd -a www-data csdadmin
+  else
+    echo -e "${RED}Installing needed programs for development...${NC}"
+    sudo http_proxy=$URL_PROXY apt install -y postgresql postgresql-contrib
+  fi
 }
 
 # Commands
