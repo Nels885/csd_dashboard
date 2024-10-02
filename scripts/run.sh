@@ -13,11 +13,7 @@ URL_PROXY=""
 
 # Take the user
 read -p "Enter the User Linux (default): " USER
-
-if [ $USER == ""]
-then
-  USER=$(whoami)
-fi
+[[ "$USER" == "" ]] && USER=$(whoami)
 echo "User Linux: $USER"
 
 USER_DIR="/home/$USER"
@@ -85,16 +81,18 @@ function serviceStart() {
 }
 
 function envConfiguration() {
-  # Take the user
   read -p "Put into production [y/N]: " CHOICE
-
   if [[ "$CHOICE" == [Yy]* ]]
+  then
+    $SCRIPTS_DIR/generate_files.sh $USER
+    pipenvInstall
     echo -e "${RED}Installing needed programs for production...${NC}"
     sudo http_proxy=$URL_PROXY apt install -y supervisor nginx
 
+    pipenv run ./manage.py collectstatic --clear --noinput
     supervisorUpdate
-  then
-    echo -e "${RED}Installing needed programs for production...${NC}"
+  else
+    echo -e "${RED}Installing needed programs for development...${NC}"
     sudo http_proxy=$URL_PROXY apt install -y postgresql postgresql-contrib
   fi
 }
