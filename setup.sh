@@ -46,8 +46,6 @@ URL_PROXY=""
 function proxy() {
   read -p "Url proxy (if empty no proxy): " URL_PROXY
   echo "Use proxy: $URL_PROXY"
-  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
-  pip3 config set global.proxy $URL_PROXY
 }
 
 function aptInstall() {
@@ -63,6 +61,8 @@ function aptUpgrade() {
 
 function pipenvInstall() {
   echo -e "${RED}Install Pipenv Environment...${NC}"
+  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+  pip3 config set global.proxy $URL_PROXY
   sudo pip3 install pipenv
   pipenv --python 3
   pipenv sync
@@ -70,6 +70,8 @@ function pipenvInstall() {
 
 function pipenvUpdate() {
   echo -e "${RED}Updating Pipenv Environment...${NC}"
+  pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
+  pip3 config set global.proxy $URL_PROXY
   pipenv sync
 }
 
