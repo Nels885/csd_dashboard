@@ -18,12 +18,7 @@ read -p "Enter the User Linux (default): " USER
 echo "User Linux: $USER"
 
 read -p "Put into production [y/N]: " CHOICE
-if [[ "$CHOICE" == [Yy]* ]]
-then
-  PROD_ENV=1
-  $SCRIPTS_DIR/generate_files.sh $USER
-fi
-
+[[ "$CHOICE" == [Yy]* ]] && PROD_ENV=1
 
 USER_DIR="/home/$USER"
 
@@ -65,7 +60,12 @@ function pipenvUpdate() {
   echo -e "${RED}Updating Pipenv Environment...${NC}"
   pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
   pip3 config set global.proxy "$URL_PROXY"
-  pipenv sync
+  if [ PROD_ENV ]
+  then
+    pipenv sync
+  else
+    pipenv sync --dev
+  fi
 }
 
 function supervisorUpdate() {
@@ -89,6 +89,7 @@ function serviceStart() {
 }
 
 function install() {
+  [ PROD_ENV ] && $SCRIPTS_DIR/generate_files.sh $USER
   setProxy
   aptInstall
   pipenvInstall
@@ -104,6 +105,12 @@ function install() {
     echo -e "${RED}Installing needed programs for development...${NC}"
     sudo http_proxy=$URL_PROXY apt install -y postgresql postgresql-contrib
   fi
+}
+
+function update() {
+  setProxy
+  aptUpgrade
+  pipenvUpdate
 }
 
 # Commands
@@ -123,9 +130,7 @@ case $1 in
     install
     ;;
   "update")
-    setProxy
-    aptUpgrade
-    pipenvUpdate
+    update
     ;;
   "help")
     listCommands
