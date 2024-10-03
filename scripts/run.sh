@@ -46,7 +46,7 @@ function aptUpgrade() {
 }
 
 function pipenvInstall() {
-  echo -e "${RED}Install Pipenv Environment...${NC}"
+  echo -e "${RED}Pip configuration...${NC}"
   pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
   pip3 config set global.proxy "$URL_PROXY"
   pip3 install pipenv --user
@@ -60,10 +60,12 @@ function pipenvUpdate() {
   echo -e "${RED}Updating Pipenv Environment...${NC}"
   pip3 config set global.trusted-host "pypi.org files.pythonhosted.org pypi.python.org"
   pip3 config set global.proxy "$URL_PROXY"
-  if [ PROD_ENV ]
+  if [ $PROD_ENV == 1 ]
   then
+    echo -e "${RED}Updating Pipenv Env production...${NC}"
     pipenv sync
   else
+    echo -e "${RED}Updating Pipenv Env development...${NC}"
     pipenv sync --dev
   fi
 }
@@ -89,11 +91,11 @@ function serviceStart() {
 }
 
 function install() {
-  [ PROD_ENV ] && $SCRIPTS_DIR/generate_files.sh $USER
+  [ $PROD_ENV == 1 ] && $SCRIPTS_DIR/generate_files.sh $USER
   setProxy
   aptInstall
   pipenvInstall
-  if [ PROD_ENV ]
+  if [ $PROD_ENV == 1]
   then
     echo -e "${RED}Installing needed programs for production...${NC}"
     sudo http_proxy=$URL_PROXY apt install -y supervisor nginx
