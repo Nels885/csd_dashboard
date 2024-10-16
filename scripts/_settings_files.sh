@@ -48,9 +48,9 @@ read -p "Database port (default: 5432): " DB_PORT
 [[ "$DB_PORT" == "" ]] && DB_PORT="5432"
 echo "Database Port: $DB_PORT"
 
-read -p "Database port (default: <prog_dir>/media/): " MEDIA_ROOT
+read -p "Media Root (default: <prog_dir>/media/): " MEDIA_ROOT
 [[ "$MEDIA_ROOT" == "" ]] && MEDIA_ROOT="%PROG_DIR/media/"
-echo "Database Port: $MEDIA_ROOT"
+echo "Media Root: $MEDIA_ROOT"
 
 cat << EOF > $PROG_DIR/sbadmin/settings/production.py
 from . import *
@@ -60,7 +60,6 @@ SECRET_KEY = '$SECRET_KEY'
 DEBUG = False
 
 ALLOWED_HOSTS = []
-
 
 DATABASES = {
     'default': {
@@ -72,6 +71,8 @@ DATABASES = {
         'PORT': '$DB_PORT',
     }
 }
+
+ADMINS = []
 
 # CELERY STUFF
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'

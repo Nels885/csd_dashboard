@@ -105,7 +105,7 @@ function install() {
   aptInstall
   pipenvInstall
   supervisorUpdate
-  if [ $PROD_ENV == 1]
+  if [ $PROD_ENV == 1 ]
   then
     echo -e "${RED}Installing needed programs for production...${NC}"
     sudo http_proxy=$URL_PROXY apt install -y supervisor nginx
