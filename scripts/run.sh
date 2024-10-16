@@ -69,10 +69,13 @@ function pipenvUpdate() {
   then
     echo -e "${RED}Updating Pipenv Env production...${NC}"
     pipenv sync
+    # Generate static files and add permissions
+    pipenv run ./manage.py collectstatic --clear --noinput
   else
     echo -e "${RED}Updating Pipenv Env development...${NC}"
     pipenv sync --dev
   fi
+  pipenv run ./manage.py migrate
 }
 
 function supervisorUpdate() {
@@ -80,10 +83,12 @@ function supervisorUpdate() {
   then
     echo -e "${RED}Supervisor configuration update...${NC}"
     $SCRIPTS_DIR/_supervisor_files.sh $USER $DIR
+    serviceStop
     sudo mv -v /tmp/csddashboard-daphne.conf /etc/supervisor/conf.d/
     sudo mv -v /tmp/celery.conf /etc/supervisor/conf.d/
     sudo supervisorctl reread
     sudo supervisorctl update
+    serviceStart
   fi
 }
 
@@ -103,20 +108,18 @@ function install() {
   [ $PROD_ENV == 1 ] && $SCRIPTS_DIR/_settings_files.sh $USER $DIR
   setProxy
   aptInstall
-  pipenvInstall
-  supervisorUpdate
   if [ $PROD_ENV == 1 ]
   then
     echo -e "${RED}Installing needed programs for production...${NC}"
     sudo http_proxy=$URL_PROXY apt install -y supervisor nginx
 
-    # Generate static files and add permissions
-    pipenv run ./manage.py collectstatic --clear --noinput
     sudo gpasswd -a www-data csdadmin
   else
     echo -e "${RED}Installing needed programs for development...${NC}"
     sudo http_proxy=$URL_PROXY apt install -y postgresql postgresql-contrib
   fi
+  pipenvInstall
+  supervisorUpdate
 }
 
 function update() {
