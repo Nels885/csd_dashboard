@@ -100,7 +100,7 @@ function serviceStart() {
 }
 
 function install() {
-  [ $PROD_ENV == 1 ] && $SCRIPTS_DIR/_settings_files.sh
+  [ $PROD_ENV == 1 ] && $SCRIPTS_DIR/_settings_files.sh $USER $DIR
   setProxy
   aptInstall
   pipenvInstall

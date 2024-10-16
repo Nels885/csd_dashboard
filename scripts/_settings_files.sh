@@ -6,6 +6,19 @@ CYAN='\033[0;36m'
 RED='\033[31m'
 NC='\033[0m' # No Color
 
+USER=$(whoami)
+if [ $# -gt 0 ]
+then
+    USER=$1
+fi
+USER_DIR="/home/$USER"
+
+PROG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+if [ $# -gt 1 ]
+then
+    PROG_DIR=$2
+fi
+
 cat << EOF > $PROG_DIR/.env
 DJANGO_SETTINGS_MODULE=sbadmin.settings.production
 EOF
