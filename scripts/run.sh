@@ -8,6 +8,11 @@ RED='\033[31m'
 NC='\033[0m' # No Color
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+if [ $# -gt 1 ]
+then
+    DIR=$2
+fi
+
 SCRIPTS_DIR="$DIR/scripts"
 URL_PROXY=""
 PROD_ENV=0
@@ -71,11 +76,15 @@ function pipenvUpdate() {
 }
 
 function supervisorUpdate() {
-  echo -e "${RED}Supervisor configuration update...${NC}"
-  sudo mv -v /tmp/csddashboard-daphne.conf /etc/supervisor/conf.d/
-  sudo mv -v /tmp/celery.conf /etc/supervisor/conf.d/
-  sudo supervisorctl reread
-  sudo supervisorctl update
+  if [ $PROD_ENV == 1 ]
+  then
+    echo -e "${RED}Supervisor configuration update...${NC}"
+    $SCRIPTS_DIR/_supervisor_files.sh $USER $DIR
+    sudo mv -v /tmp/csddashboard-daphne.conf /etc/supervisor/conf.d/
+    sudo mv -v /tmp/celery.conf /etc/supervisor/conf.d/
+    sudo supervisorctl reread
+    sudo supervisorctl update
+  fi
 }
 
 function serviceStop() {
@@ -91,10 +100,11 @@ function serviceStart() {
 }
 
 function install() {
-  [ $PROD_ENV == 1 ] && $SCRIPTS_DIR/generate_files.sh $USER
+  [ $PROD_ENV == 1 ] && $SCRIPTS_DIR/_settings_files.sh
   setProxy
   aptInstall
   pipenvInstall
+  supervisorUpdate
   if [ $PROD_ENV == 1]
   then
     echo -e "${RED}Installing needed programs for production...${NC}"
@@ -113,6 +123,7 @@ function update() {
   setProxy
   aptUpgrade
   pipenvUpdate
+  supervisorUpdate
 }
 
 # Commands

@@ -71,19 +71,19 @@ checkPythonVersion
 
 case $1 in
   "start")
-    $SCRIPTS_DIR/run.sh start
+    $SCRIPTS_DIR/run.sh start $DIR
     ;;
   "restart")
-    $SCRIPTS_DIR/run.sh restart
+    $SCRIPTS_DIR/run.sh restart $DIR
     ;;
   "stop")
-    $SCRIPTS_DIR/run.sh stop
+    $SCRIPTS_DIR/run.sh stop $DIR
     ;;
   "install")
-    $SCRIPTS_DIR/run.sh install
+    $SCRIPTS_DIR/run.sh install $DIR
     ;;
   "update")
-    $SCRIPTS_DIR/run.sh update
+    $SCRIPTS_DIR/run.sh update $DIR
     ;;
   "help")
     listCommands
