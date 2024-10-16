@@ -25,7 +25,7 @@ def get_path(filename=None, path=None) -> str:
             path = conf.CSD_DIR
     if isinstance(filename, str):
         try:
-            return os.path.join(path, conf.__getattr__(filename))
+            return os.path.join(path, str(conf.__getattr__(filename)))
         except AttributeError:
             pass
     return path
