@@ -1,4 +1,5 @@
 import re
+import datetime
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -60,7 +61,7 @@ def pre_save_xelon(sender, instance, **kwargs):
         if instance.modele_produit:
             instance.product, created = ProductCategory.objects.get_or_create(product_model=instance.modele_produit)
             product_update(instance)
-        if instance.date_expedition_attendue and isinstance(instance.date_expedition_attendue, timezone.datetime):
+        if instance.date_expedition_attendue and isinstance(instance.date_expedition_attendue, datetime.date):
             try:
                 instance.delai_expedition_attendue = (timezone.now().date() - instance.date_expedition_attendue).days
             except TypeError:
