@@ -191,20 +191,28 @@ class ToolsTestCase(UnitTest):
         response = self.client.get(url)
         self.assertJSONEqual(response.content, {"response": "ERROR"})
 
-        response = self.client.get(url, {"device": "test", "status": "start"})
-        self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "START"})
-        self.assertEqual(BgaTime.objects.count(), 1)
-        self.assertEqual(BgaTime.objects.first().end_time, None)
+        for test in range(2):
+            response = self.client.get(url, {"device": "test", "status": "start"})
+            self.assertEqual(BgaTime.objects.count(), 1)
+            if test == 0:
+                self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "START"})
+                self.assertEqual(BgaTime.objects.first().end_time, None)
+            else:
+                self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "STOP"})
+                self.assertNotEqual(BgaTime.objects.first().duration, None)
+                self.assertNotEqual(BgaTime.objects.first().end_time, None)
 
-        response = self.client.get(url, {"device": "test", "status": "start"})
-        self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "START"})
+        response = self.client.get(url, {"device": "test1", "status": "start"})
+        self.assertJSONEqual(response.content, {"response": "OK", "device": "test1", "status": "START"})
         self.assertEqual(BgaTime.objects.count(), 2)
-        self.assertEqual(BgaTime.objects.first().duration, 300)
-        self.assertEqual(BgaTime.objects.last().end_time, None)
+        self.assertEqual(BgaTime.objects.get(name="test1").end_time, None)
 
-        response = self.client.get(url, {"device": "test", "status": "stop"})
-        self.assertJSONEqual(response.content, {"response": "OK", "device": "test", "status": "STOP"})
+        response = self.client.get(url, {"device": "test1", "status": "stop"})
+        self.assertJSONEqual(response.content, {"response": "OK", "device": "test1", "status": "STOP"})
         self.assertEqual(BgaTime.objects.count(), 2)
+        self.assertNotEqual(BgaTime.objects.first().duration, None)
+        self.assertNotEqual(BgaTime.objects.first().end_time, None)
+        self.assertNotEqual(BgaTime.objects.last().duration, None)
         self.assertNotEqual(BgaTime.objects.last().end_time, None)
 
     def test_usb_device_page(self):
