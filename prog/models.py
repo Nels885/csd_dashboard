@@ -104,6 +104,7 @@ class ToolStatus(models.Model):
     api_path = models.CharField("Chemin API", max_length=500, blank=True)
     last_boot = models.DateTimeField("Dernier démarrage", null=True, blank=True)
     firmware = models.CharField("Firmware", max_length=20, blank=True)
+    fw_version = models.CharField("Firmware version", max_length=20, blank=True)
     hostname = models.CharField("Hostname", max_length=50, blank=True)
     ip_addr = models.CharField("ip address", max_length=50, blank=True)
     mac_addr = models.CharField("mac address", max_length=20, blank=True)

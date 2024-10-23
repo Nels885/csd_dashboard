@@ -70,7 +70,7 @@
                 <td class="font-weight-bold">{{ obj.hostname|upper }}</td>
                 <td class="font-weight-bold">{{ obj.firmware }}</td>
                 <td class="font-weight-bold" id="tool{{ obj.id }}-d"></td>
-                <td class="font-weight-bold" id="tool{{ obj.id }}-v"></td>
+                <td class="font-weight-bold" id="tool{{ obj.id }}-v">{{ obj.fw_version }}</td>
                 <td id="tool{{ obj.id }}-btn">
                     <button class="btn btn-block btn-secondary" disabled>Webapp</button>
                 </td>

@@ -33,7 +33,7 @@ class ProgramingAdmin(admin.ModelAdmin):
 
 
 class ToolStatusAdmin(admin.ModelAdmin):
-    list_display = ('name', 'type', 'url', 'last_boot', 'firmware')
+    list_display = ('name', 'type', 'url', 'last_boot', 'firmware', 'fw_version')
     search_fields = ('name', 'type')
 
 

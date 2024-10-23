@@ -42,7 +42,7 @@ class ToolStatusUpdateSerializer(ToolStatusSerializer):
 
     class Meta:
         model = ToolStatus
-        fields = ('last_boot', 'ip_addr', 'mac_addr', 'hw_revision', 'firmware')
+        fields = ('last_boot', 'ip_addr', 'mac_addr', 'hw_revision', 'firmware', 'fw_version')
 
 
 class ToolLogSerializer(serializers.ModelSerializer):
