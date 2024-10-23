@@ -48,8 +48,8 @@ def bga_time_async(request):
             bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
             bga_is_active.save(status=status)
         except BgaTime.DoesNotExist:
-            pass
-        if status.upper() == "START":
+            bga_is_active = None
+        if status.upper() == "START" and not bga_is_active:
             BgaTime.objects.create(name=device)
         return JsonResponse({"response": "OK", "device": device, "status": status.upper()})
     return JsonResponse({"response": "ERROR"})

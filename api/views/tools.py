@@ -104,8 +104,8 @@ class BgaTimeViewSet(viewsets.ModelViewSet):
                 bga_is_active = BgaTime.objects.get(name=device, end_time__isnull=True)
                 bga_is_active.save(status=status)
             except BgaTime.DoesNotExist:
-                pass
-            if status == "START" and serializer.is_valid():
+                bga_is_active = None
+            if status == "START" and serializer.is_valid() and not bga_is_active:
                 serializer.save()
             return Response({"response": "OK", "device": device, "status": status})
         return Response({"response": "ERROR"})
