@@ -204,14 +204,12 @@ class InfotechMailingListAdmin(CustomModelAdmin):
 
 class BGATimeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'date', 'start_time', 'end_time', 'duration')
-    ordering = ('id',)
     list_filter = ('name',)
     search_fields = ('name', 'date')
 
 
 class RaspiTimeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'type', 'date', 'start_time', 'end_time', 'duration', 'xelon')
-    ordering = ('-id',)
     list_filter = ('name', 'type')
     search_fields = ('name', 'type', 'date', 'xelon')
 

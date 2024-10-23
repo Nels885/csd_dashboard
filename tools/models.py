@@ -428,7 +428,10 @@ class BgaTime(models.Model):
 
     class Meta:
         verbose_name = "BGA Time"
-        ordering = ["id"]
+        ordering = ["-id"]
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'date', 'start_time'], name="unique_bga_time")
+        ]
 
     def save(self, *args, **kwargs):
         status = kwargs.pop('status', '')
@@ -456,8 +459,11 @@ class RaspiTime(models.Model):
     xelon = models.CharField('n° Xelon', max_length=10, blank=True)
 
     class Meta:
-        verbose_name = ("RasPi Time")
-        ordering = ["id"]
+        verbose_name = "RasPi Time"
+        ordering = ["-id"]
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'date', 'start_time'], name="unique_raspi_time")
+        ]
 
     def save(self, *args, **kwargs):
         status = kwargs.pop('status', '')
