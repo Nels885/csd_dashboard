@@ -133,9 +133,10 @@ class EcuAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        suppliers = SupplierCode.objects.all()
-        _supplier_list = list(suppliers.values_list('name', flat=True).distinct())
+        _name_list = get_data_list(Ecu, 'name')
+        _supplier_list = get_data_list(SupplierCode, 'name')
         super().__init__(*args, **kwargs)
+        self.fields['name'].widget = ListTextWidget(data_list=_name_list, name='name-list')
         self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')
 
 
@@ -190,10 +191,14 @@ class MultimediaAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         _supplier_list = get_data_list(SupplierCode, 'name')
+        _level_list = get_data_list(Multimedia, 'level')
+        _extra_list = get_data_list(Multimedia, 'extra')
         _nand_list = get_data_list(Multimedia, 'flash_nand')
         _emmc_list = get_data_list(Multimedia, 'emmc')
         super().__init__(*args, **kwargs)
         self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')
+        self.fields['level'].widget = ListTextWidget(data_list=_level_list, name='level-list')
+        self.fields['extra'].widget = ListTextWidget(data_list=_extra_list, name='extra-list')
         self.fields['emmc'].widget = ListTextWidget(data_list=_emmc_list, name='emmc-list')
         self.fields['flash_nand'].widget = ListTextWidget(data_list=_nand_list, name='nand-list')
 
