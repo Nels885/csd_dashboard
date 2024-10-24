@@ -7,7 +7,7 @@ from bootstrap_modal_forms.forms import BSModalModelForm
 from utils.scraping import xml_parser
 from utils.django import is_ajax
 from utils.django.validators import validate_vin, validate_nac
-from utils.django.forms.fields import ListTextWidget
+from utils.django.forms.fields import ListTextWidget, get_data_list
 from .models import (
     Corvet, Firmware, Ecu, SupplierCode, Multimedia, CanRemote, Calibration, CalCurrent, ProductChoice
 )
@@ -172,9 +172,16 @@ class FirmwareAdminForm(forms.ModelForm):
         model = Firmware
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        _url_list = get_data_list(Firmware, 'url')
+        _type_list = get_data_list(Firmware, 'type')
+        super().__init__(*args, **kwargs)
+        self.fields['url'].widget = ListTextWidget(data_list=_url_list, name='url-list')
+        self.fields['type'].widget = ListTextWidget(data_list=_type_list, name='type-list')
+
 
 class MultimediaAdminForm(forms.ModelForm):
-    name = forms.ChoiceField(choices=[('', '---')] + BTEL_PRODUCT_CHOICES)
+    name = forms.ChoiceField(choices=[('', '---')] + BTEL_PRODUCT_CHOICES, required=False)
     type = forms.ChoiceField(choices=[('', '---')] + BTEL_TYPE_CHOICES)
 
     class Meta:
@@ -182,17 +189,13 @@ class MultimediaAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        _supplier_list = self._data_list(SupplierCode, 'name')
-        _nand_list = self._data_list(Multimedia, 'flash_nand')
-        _emmc_list = self._data_list(Multimedia, 'emmc')
+        _supplier_list = get_data_list(SupplierCode, 'name')
+        _nand_list = get_data_list(Multimedia, 'flash_nand')
+        _emmc_list = get_data_list(Multimedia, 'emmc')
         super().__init__(*args, **kwargs)
         self.fields['supplier_oe'].widget = ListTextWidget(data_list=_supplier_list, name='supplier-list')
         self.fields['emmc'].widget = ListTextWidget(data_list=_emmc_list, name='emmc-list')
         self.fields['flash_nand'].widget = ListTextWidget(data_list=_nand_list, name='nand-list')
-
-    def _data_list(self, model, field):
-        queryset = model.objects.all()
-        return list(queryset.exclude(**{field: ''}).order_by(field).values_list(field, flat=True).distinct())
 
 
 class CanRemoteAdminForm(forms.ModelForm):
@@ -263,7 +266,8 @@ class SelectCanRemoteForm(forms.Form):
     vehicle = forms.CharField(label='Véhicule', max_length=200, required=True)
 
     def __init__(self, *args, **kwargs):
-        remotes = CanRemote.objects.exclude(vehicles__name__exact='').order_by('vehicles__name')
-        _vehicle_list = list(remotes.values_list('vehicles__name', flat=True).distinct())
+        # remotes = CanRemote.objects.exclude(vehicles__name__exact='').order_by('vehicles__name')
+        # _vehicle_list = list(remotes.values_list('vehicles__name', flat=True).distinct())
+        _vehicle_list = get_data_list(CanRemote, 'vehicles__name')
         super().__init__(*args, **kwargs)
         self.fields['vehicle'].widget = ListTextWidget(data_list=_vehicle_list, name='vehicle')

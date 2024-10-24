@@ -16,3 +16,8 @@ class ListTextWidget(forms.TextInput):
         data_list += '</datalist>'
 
         return text_html + data_list
+
+
+def get_data_list(model, field):
+    queryset = model.objects.all()
+    return list(queryset.exclude(**{field: ''}).order_by(field).values_list(field, flat=True).distinct())

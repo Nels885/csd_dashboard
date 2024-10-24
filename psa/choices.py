@@ -26,7 +26,7 @@ BTEL_PRODUCT_CHOICES = [
     ('SMEG', 'SMEG'), ('SMEGP', 'SMEG+ / SMEG+ IV1'), ('SMEGP2', 'SMEG+ IV2'),
     ('NG4', 'NG4'), ('RNEG', 'RNEG'), ('RCC', 'RCC'),
     ('NAC1', 'NAC wave1'), ('NAC2', 'NAC wave2'), ('NAC3', 'NAC wave3'), ('NAC4', 'NAC wave4'),
-    ('IVI', 'In-Vehicle Infotainment')
+    ('IVI', 'In-Vehicle Infotainment'), ('LC7F', 'BYOM2 LC7F')
 ]
 
 BTEL_TYPE_CHOICES = [('RAD', 'Radio'), ('NAV', 'Navigation')]

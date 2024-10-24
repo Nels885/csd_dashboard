@@ -63,13 +63,28 @@ class CorvetAttributeAdmin(admin.ModelAdmin):
 class MultimediaAdmin(CustomModelAdmin):
     form = MultimediaAdminForm
     list_display = (
-        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'product', 'xelon_name', 'level', 'type', 'dab',
-        'cam', 'media', 'emmc', 'firmware', 'relation_by_name'
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'get_product', 'get_protocol', 'xelon_name',
+        'level', 'type', 'dab', 'cam', 'media', 'emmc', 'firmware', 'relation_by_name'
     )
     list_filter = ('name', 'product', 'type', 'media', 'xelon_name', 'relation_by_name')
     ordering = ('comp_ref',)
-    search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference')
+    search_fields = (
+        'comp_ref', 'mat_ref', 'label_ref', 'name', 'xelon_name', 'type', 'pr_reference', 'product__name',
+        'product__protocol'
+    )
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
+
+    def get_product(self, obj):
+        if obj.product:
+            return obj.product.name
+        return ''
+    get_product.short_description = _('Product')
+
+    def get_protocol(self, obj):
+        if obj.product:
+            return obj.product.protocol
+        return ''
+    get_protocol.short_description = _('Protocol')
 
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
@@ -100,9 +115,11 @@ class CalibrationAdmin(admin.ModelAdmin):
 
     def get_type(self, obj):
         return f"electronique_{obj.type}"
+    get_type.short_description = _('Type')
 
     def get_type_display(self, obj):
         return obj.get_type_display()
+    get_type_display.short_description = _('Type display')
 
     @admin.action(description=_('Export to CSV'))
     def export_csv(self, request, queryset):
@@ -129,12 +146,15 @@ class CalCurrentAdmin(admin.ModelAdmin):
 
     def get_type(self, obj):
         return f"electronique_{obj.type}"
+    get_type.short_description = _('Type')
 
     def get_type_display(self, obj):
         return obj.get_type_display()
+    get_type_display.short_description = _('Type display')
 
     def get_cal_name(self, obj):
         return ", ".join(obj.get_cal_list())
+    get_cal_name.short_description = _('CAL Name')
 
 
 class CorvetChoicesAdmin(admin.ModelAdmin):
@@ -147,13 +167,28 @@ class CorvetChoicesAdmin(admin.ModelAdmin):
 class EcuAdmin(CustomModelAdmin):
     form = EcuAdminForm
     list_display = (
-        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'product', 'xelon_name', 'type', 'hw', 'sw',
-        'supplier_oe', 'relation_by_name'
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'get_product', 'get_protocol', 'xelon_name',
+        'type', 'hw', 'sw', 'supplier_oe', 'relation_by_name'
     )
     list_filter = ('type', 'product','supplier_oe', 'relation_by_name')
     ordering = ('comp_ref',)
-    search_fields = ('comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type')
+    search_fields = (
+        'comp_ref', 'mat_ref', 'label_ref', 'pr_reference', 'name', 'xelon_name', 'type', 'product__name',
+        'product__protocol'
+    )
     actions = ('relation_by_name_disabled', 'relation_by_name_enabled')
+
+    def get_product(self, obj):
+        if obj.product:
+            return obj.product.name
+        return ''
+    get_product.short_description = _('Product')
+
+    def get_protocol(self, obj):
+        if obj.product:
+            return obj.product.protocol
+        return ''
+    get_protocol.short_description = _('Protocol')
 
     @admin.action(description=_('Relation by name disabled'))
     def relation_by_name_disabled(self, request, queryset):
@@ -198,6 +233,7 @@ class CanRemoteAdmin(CustomModelAdmin):
 
     def get_vehicle(self, obj):
         return ", ".join(query.name for query in obj.vehicles.all())
+    get_vehicle.short_description = _('Vehicle')
 
 
 class SupplierCodeAdmin(admin.ModelAdmin):

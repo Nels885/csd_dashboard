@@ -487,6 +487,7 @@ class ProductChoice(models.Model):
     uce_code = models.CharField('UCE Code', max_length=2, blank=True)
     unlock_key = models.CharField('Unlock Key', max_length=4, blank=True)
     supplier = models.ForeignKey('psa.SupplierCode', on_delete=models.SET_NULL, null=True, blank=True)
+    firmware = models.ForeignKey('psa.Firmware', on_delete=models.SET_NULL, limit_choices_to={'is_active': True}, null=True, blank=True)
 
     class Meta:
         verbose_name = "Choix produit"
